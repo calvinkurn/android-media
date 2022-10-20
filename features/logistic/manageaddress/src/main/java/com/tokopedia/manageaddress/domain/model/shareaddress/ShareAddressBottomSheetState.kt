@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.model
+package com.tokopedia.manageaddress.domain.model.shareaddress
 
 sealed class ShareAddressBottomSheetState {
     object Success: ShareAddressBottomSheetState()

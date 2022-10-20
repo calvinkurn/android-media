@@ -133,7 +133,7 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
             }
         }
 
-        private fun isMainAddressView() : Boolean {
+        private fun isMainAddressView(): Boolean {
             return mainAddressItemAdapterListener != null && isNeedToShareAddress.not()
         }
 

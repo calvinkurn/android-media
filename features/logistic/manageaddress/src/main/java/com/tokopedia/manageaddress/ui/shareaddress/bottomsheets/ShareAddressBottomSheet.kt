@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.ui.shareaddress
+package com.tokopedia.manageaddress.ui.shareaddress.bottomsheets
 
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -15,23 +15,23 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.logisticCommon.util.ShareAddressUtil
+import com.tokopedia.manageaddress.util.ShareAddressUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.logisticCommon.R
-import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
-import com.tokopedia.logisticCommon.databinding.BottomsheetShareAddressBinding
-import com.tokopedia.logisticCommon.di.DaggerRequestShareAddressComponent
-import com.tokopedia.logisticCommon.di.RequestShareAddressComponent
-import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
-import com.tokopedia.logisticCommon.domain.request.SendShareAddressRequestParam
-import com.tokopedia.logisticCommon.domain.request.ShareAddressToUserParam
+import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
+import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressBinding
+import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
+import com.tokopedia.manageaddress.di.ShareAddressComponent
+import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressBottomSheetState
+import com.tokopedia.manageaddress.domain.request.SendShareAddressRequestParam
+import com.tokopedia.manageaddress.domain.request.ShareAddressToUserParam
 import javax.inject.Inject
 
 class ShareAddressBottomSheet : BottomSheetUnify(),
-    HasComponent<RequestShareAddressComponent> {
+    HasComponent<ShareAddressComponent> {
 
     private var binding by autoCleared<BottomsheetShareAddressBinding>()
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
@@ -49,8 +49,8 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
     private var mRequestAddressListener: RequestAddressListener? = null
     private var source: String = ""
 
-    override fun getComponent(): RequestShareAddressComponent {
-        return DaggerRequestShareAddressComponent.builder()
+    override fun getComponent(): ShareAddressComponent {
+        return DaggerShareAddressComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
     }
@@ -69,21 +69,27 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
     }
 
     private fun initObserver() {
-        viewModel.requestAddressResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShareAddressBottomSheetState.Success -> onSuccessRequestAddress()
-                is ShareAddressBottomSheetState.Fail -> showInputError(it.errorMessage)
-                is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
+        viewModel.requestAddressResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShareAddressBottomSheetState.Success -> onSuccessRequestAddress()
+                    is ShareAddressBottomSheetState.Fail -> showInputError(it.errorMessage)
+                    is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
+                }
             }
-        })
+        )
 
-        viewModel.checkShareAddressResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShareAddressBottomSheetState.Success -> onSuccessCheckingShareAddress()
-                is ShareAddressBottomSheetState.Fail -> showInputError(it.errorMessage)
-                is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
+        viewModel.checkShareAddressResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShareAddressBottomSheetState.Success -> onSuccessCheckingShareAddress()
+                    is ShareAddressBottomSheetState.Fail -> showInputError(it.errorMessage)
+                    is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
+                }
             }
-        })
+        )
     }
 
     private fun onSuccessRequestAddress() {

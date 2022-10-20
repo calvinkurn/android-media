@@ -34,7 +34,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 205
+        const val SIZE_MAPPER = 206
     }
 
     override fun setup() {
@@ -1303,7 +1303,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check share address appLink then should return tokopedia internal logistic manage address in customerapp`() {
-        val expectedDeepLink = ApplinkConstInternalLogistic.MANAGE_ADDRESS
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/manageaddress/"
         val appLink = UriUtil.buildUri(ApplinkConst.SHARE_ADDRESS)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }

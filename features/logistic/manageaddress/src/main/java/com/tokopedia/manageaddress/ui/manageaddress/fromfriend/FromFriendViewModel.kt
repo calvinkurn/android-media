@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.manageaddress.domain.mapper.SharedAddressMapper
-import com.tokopedia.manageaddress.domain.model.shareaddress.GetSharedAddressListParam
 import com.tokopedia.manageaddress.domain.model.shareaddress.SenderShareAddressParam
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddrGetSharedAddressList
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.DeleteFromFriendAddressUseCase

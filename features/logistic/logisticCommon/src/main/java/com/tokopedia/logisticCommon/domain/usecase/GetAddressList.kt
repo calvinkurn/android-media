@@ -27,13 +27,15 @@ class GetAddressCornerUseCase
                 excludeSharedAddress: Boolean = false): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 10,
                 prevState = prevState, localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhitelistChosenAddress,
-                excludeSharedAddress = excludeSharedAddress)
+                excludeSharedAddress = excludeSharedAddress
+            )
 
     fun loadMore(query: String, page: Int, prevState: Int?, localChosenAddrId: Long?, isWhitelistChosenAddress: Boolean,
                  excludeSharedAddress: Boolean = false): Observable<AddressListModel> =
             this.getObservable(query = query, page = page, isAddress = true, isCorner = false, limit = 10,
                 prevState = prevState, localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhitelistChosenAddress,
-                excludeSharedAddress = excludeSharedAddress)
+                excludeSharedAddress = excludeSharedAddress
+            )
 
     private fun getObservable(query: String, page: Int, isAddress: Boolean, isCorner: Boolean, limit: Int,
                               prevState: Int?, localChosenAddrId: Long?, isWhitelistChosenAddress: Boolean,

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.request
+package com.tokopedia.manageaddress.domain.request
 
 import com.google.gson.annotations.SerializedName
 
@@ -12,7 +12,7 @@ data class ShareAddressToUserParam(
     @SerializedName("initial_check")
     val initialCheck: Boolean
 ) {
-    fun toMapParam() : Map<String, Any> = mapOf(PARAM to this)
+    fun toMapParam(): Map<String, Any> = mapOf(PARAM to this)
 
     companion object {
         private const val PARAM = "param"

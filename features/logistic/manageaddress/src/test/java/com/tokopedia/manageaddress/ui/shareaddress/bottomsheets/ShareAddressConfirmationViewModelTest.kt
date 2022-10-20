@@ -2,11 +2,11 @@ package com.tokopedia.manageaddress.ui.shareaddress.bottomsheets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
+import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressBottomSheetState
 import com.tokopedia.logisticCommon.domain.response.ErrorDefaultAddress
-import com.tokopedia.logisticCommon.domain.response.shareaddress.KeroAddrSendShareAddressData
-import com.tokopedia.logisticCommon.domain.response.shareaddress.KeroShareAddrToUserResponse
-import com.tokopedia.logisticCommon.domain.usecase.ShareAddressToUserUseCase
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddrSendShareAddressData
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrToUserResponse
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
 import com.tokopedia.manageaddress.domain.response.shareaddress.SelectShareAddressResponse
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.SelectShareAddressUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -44,13 +44,15 @@ class ShareAddressConfirmationViewModelTest {
 
     @Test
     fun `verify when approve share address success`() {
-        val mockResponse = spyk(KeroShareAddrToUserResponse().apply {
-            keroAddrSendShareAddressToUser = spyk(
-                KeroAddrSendShareAddressData(
-                    numberOfRequest = 1
+        val mockResponse = spyk(
+            KeroShareAddrToUserResponse().apply {
+                keroAddrSendShareAddressToUser = spyk(
+                    KeroAddrSendShareAddressData(
+                        numberOfRequest = 1
+                    )
                 )
-            )
-        })
+            }
+        )
 
         coEvery {
             shareAddressUseCase.invoke(any())
@@ -67,13 +69,15 @@ class ShareAddressConfirmationViewModelTest {
 
     @Test
     fun `verify when not approve share address success`() {
-        val mockResponse = spyk(KeroShareAddrToUserResponse().apply {
-            keroAddrSendShareAddressToUser = spyk(
-                KeroAddrSendShareAddressData(
-                    numberOfRequest = 1
+        val mockResponse = spyk(
+            KeroShareAddrToUserResponse().apply {
+                keroAddrSendShareAddressToUser = spyk(
+                    KeroAddrSendShareAddressData(
+                        numberOfRequest = 1
+                    )
                 )
-            )
-        })
+            }
+        )
 
         coEvery {
             shareAddressUseCase.invoke(any())
@@ -91,14 +95,16 @@ class ShareAddressConfirmationViewModelTest {
     @Test
     fun `verify when share address not success`() {
         val errorMessage = "error message"
-        val mockResponse = spyk(KeroShareAddrToUserResponse().apply {
-            keroAddrSendShareAddressToUser = spyk(
-                KeroAddrSendShareAddressData(
-                    numberOfRequest = 0,
-                    error = spyk(ErrorDefaultAddress(detail = errorMessage))
+        val mockResponse = spyk(
+            KeroShareAddrToUserResponse().apply {
+                keroAddrSendShareAddressToUser = spyk(
+                    KeroAddrSendShareAddressData(
+                        numberOfRequest = 0,
+                        error = spyk(ErrorDefaultAddress(detail = errorMessage))
+                    )
                 )
-            )
-        })
+            }
+        )
 
         coEvery {
             shareAddressUseCase.invoke(any())
@@ -116,8 +122,7 @@ class ShareAddressConfirmationViewModelTest {
         coEvery {
             shareAddressUseCase.invoke(any())
         } throws mockThrowable
-
-
+        
         viewModel.shareAddress(mockk())
 
         verify {
@@ -185,5 +190,4 @@ class ShareAddressConfirmationViewModelTest {
             observer.onChanged(ShareAddressBottomSheetState.Fail(mockThrowable.message.orEmpty()))
         }
     }
-
 }

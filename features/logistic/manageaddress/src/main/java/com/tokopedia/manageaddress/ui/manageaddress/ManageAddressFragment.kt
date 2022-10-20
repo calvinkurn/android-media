@@ -19,7 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
@@ -110,13 +110,16 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
     }
 
     private fun observerValidateShareAddress() {
-        viewModel.validateShareAddressState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ValidateShareAddressState.Success -> bindView()
-                is ValidateShareAddressState.Fail -> onFailedValidateShareAddress()
-                is ValidateShareAddressState.Loading -> showLoading(it.isShowLoading)
+        viewModel.validateShareAddressState.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ValidateShareAddressState.Success -> bindView()
+                    is ValidateShareAddressState.Fail -> onFailedValidateShareAddress()
+                    is ValidateShareAddressState.Loading -> showLoading(it.isShowLoading)
+                }
             }
-        })
+        )
     }
 
     private fun bindView() {
@@ -209,7 +212,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
     private fun openSoftKeyboard() {
         binding?.searchInputView?.searchBarTextField?.let {
             (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
-                it, InputMethodManager.SHOW_IMPLICIT
+                it,
+                InputMethodManager.SHOW_IMPLICIT
             )
         }
     }

@@ -33,8 +33,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.webview)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation rootProject.ext.unifyDependencies.icons
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.network)

@@ -73,9 +73,9 @@ class ShareAddressRobot {
     }
 
     fun clickShareButton() {
-        onView(ViewMatchers.withId(com.tokopedia.logisticCommon.R.id.btn_share))
+        onView(ViewMatchers.withId(R.id.btn_share))
             .check(matches(isDisplayed()))
-        onView(ViewMatchers.withId(com.tokopedia.logisticCommon.R.id.btn_share))
+        onView(ViewMatchers.withId(R.id.btn_share))
             .perform(click())
         waitForData()
     }

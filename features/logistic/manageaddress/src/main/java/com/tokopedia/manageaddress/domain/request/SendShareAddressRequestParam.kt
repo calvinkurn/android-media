@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.request
+package com.tokopedia.manageaddress.domain.request
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,7 +8,7 @@ data class SendShareAddressRequestParam(
     @SerializedName("sender_phone_number_or_email")
     var senderPhoneNumberOrEmail: String
 ) {
-    fun toMapParam() : Map<String, Any> = mapOf(PARAM to this)
+    fun toMapParam(): Map<String, Any> = mapOf(PARAM to this)
 
     companion object {
         private const val PARAM = "param"

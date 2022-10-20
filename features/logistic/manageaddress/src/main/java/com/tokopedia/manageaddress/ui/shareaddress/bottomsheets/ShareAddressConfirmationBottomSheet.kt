@@ -18,8 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
-import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
+import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressBottomSheetState
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmationBinding
 import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
 import com.tokopedia.manageaddress.di.ShareAddressComponent
@@ -27,11 +27,12 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 import com.tokopedia.manageaddress.R
-import com.tokopedia.logisticCommon.domain.request.ShareAddressToUserParam
+import com.tokopedia.manageaddress.domain.request.ShareAddressToUserParam
 import com.tokopedia.manageaddress.domain.model.shareaddress.SelectShareAddressParam
 import com.tokopedia.media.loader.loadImage
 
-class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
+class ShareAddressConfirmationBottomSheet :
+    BottomSheetUnify(),
     HasComponent<ShareAddressComponent> {
 
     private var binding by autoCleared<BottomsheetShareAddressConfirmationBinding>()
@@ -68,13 +69,16 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     }
 
     private fun initObserver() {
-        viewModel.shareAddressResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShareAddressBottomSheetState.Success -> onSuccessShareAddress()
-                is ShareAddressBottomSheetState.Fail -> onFailedShareAddress(it.errorMessage)
-                is ShareAddressBottomSheetState.Loading -> onLoadingShareAddress(it.isShowLoading)
+        viewModel.shareAddressResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShareAddressBottomSheetState.Success -> onSuccessShareAddress()
+                    is ShareAddressBottomSheetState.Fail -> onFailedShareAddress(it.errorMessage)
+                    is ShareAddressBottomSheetState.Loading -> onLoadingShareAddress(it.isShowLoading)
+                }
             }
-        })
+        )
     }
 
     private fun onSuccessShareAddress() {
@@ -196,7 +200,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
         }
     }
 
-    private fun isFromNotif() : Boolean {
+    private fun isFromNotif(): Boolean {
         return receiverUserId?.isNotBlank() == true
     }
 

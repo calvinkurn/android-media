@@ -23,14 +23,14 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMap
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet
+import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressBottomSheet
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
@@ -70,13 +70,17 @@ import javax.inject.Inject
  * MainAddressFragment
  * fragment inside viewPager of ManageAddressFragment
  */
-class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainAddressItemAdapterListener,
-    ShareAddressConfirmationBottomSheet.Listener{
+class MainAddressFragment :
+    BaseDaggerFragment(),
+    ManageAddressItemAdapter.MainAddressItemAdapterListener,
+    ShareAddressConfirmationBottomSheet.Listener {
 
     companion object {
 
-        private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
-        private const val EMPTY_SEARCH_PICT_URL = "https://ecs7.tokopedia.net/android/others/address_not_found3x.png"
+        private const val EMPTY_STATE_PICT_URL =
+            "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
+        private const val EMPTY_SEARCH_PICT_URL =
+            "https://ecs7.tokopedia.net/android/others/address_not_found3x.png"
         private const val IS_SUCCESS = "success"
         private const val IS_NOT_SUCCESS = "not success"
 
@@ -98,7 +102,6 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     private val viewModel: ManageAddressViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ManageAddressViewModel::class.java]
     }
-
 
     private var binding by autoClearedNullable<FragmentMainAddressBinding>()
     private var bottomSheetLainnya: BottomSheetUnify? = null
@@ -128,7 +131,11 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         getComponent(ManageAddressComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentMainAddressBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -150,8 +157,10 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     }
 
     private fun initArguments() {
-        isFromCheckoutChangeAddress = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS)
-        isFromCheckoutSnippet = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET)
+        isFromCheckoutChangeAddress =
+            arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS)
+        isFromCheckoutSnippet =
+            arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET)
         isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
         typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
         prevState = arguments?.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS) ?: -1
@@ -192,114 +201,119 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     }
 
     private fun observerSetChosenAddress() {
-        viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (binding?.btnChooseAddress?.text == getString((R.string.pilih_alamat))) ChooseAddressTracking.onClickButtonPilihAlamat(
-                        userSession.userId,
-                        IS_SUCCESS
-                    )
-                    val data = it.data
-                    context?.let { context ->
-                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                            context,
-                            data.addressId.toString(),
-                            data.cityId.toString(),
-                            data.districtId.toString(),
-                            data.latitude,
-                            data.longitude,
-                            ChooseAddressUtils.setLabel(data),
-                            data.postalCode,
-                            data.tokonowModel.shopId.toString(),
-                            data.tokonowModel.warehouseId.toString(),
-                            TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
-                            data.tokonowModel.serviceType
+        viewModel.setChosenAddress.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (binding?.btnChooseAddress?.text == getString((R.string.pilih_alamat))) ChooseAddressTracking.onClickButtonPilihAlamat(
+                            userSession.userId,
+                            IS_SUCCESS
                         )
-                    }
-                    if (isFromCheckoutChangeAddress == true) {
-                        val resultIntent = Intent().apply {
-                            putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, data)
+                        val data = it.data
+                        context?.let { context ->
+                            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                                context,
+                                data.addressId.toString(),
+                                data.cityId.toString(),
+                                data.districtId.toString(),
+                                data.latitude,
+                                data.longitude,
+                                ChooseAddressUtils.setLabel(data),
+                                data.postalCode,
+                                data.tokonowModel.shopId.toString(),
+                                data.tokonowModel.warehouseId.toString(),
+                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                                data.tokonowModel.serviceType
+                            )
                         }
-                        activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS, resultIntent)
-                    } else if (isFromCheckoutSnippet == true) {
-                        activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_SELECT_ADDRESS_FOR_SNIPPET)
+                        if (isFromCheckoutChangeAddress == true) {
+                            val resultIntent = Intent().apply {
+                                putExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA, data)
+                            }
+                            activity?.setResult(
+                                CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS,
+                                resultIntent
+                            )
+                        } else if (isFromCheckoutSnippet == true) {
+                            activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_SELECT_ADDRESS_FOR_SNIPPET)
+                        }
+                        activity?.finish()
                     }
-                    activity?.finish()
-                }
 
-                is Fail -> {
-                    if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(
-                        userSession.userId,
-                        IS_NOT_SUCCESS
-                    )
-                    view?.let { view ->
-                        Toaster.build(
-                            view, it.throwable.message
-                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
-                        ).show()
+                    is Fail -> {
+                        if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(
+                            userSession.userId,
+                            IS_NOT_SUCCESS
+                        )
+                        showToaster(
+                            message = it.throwable.message ?: DEFAULT_ERROR_MESSAGE,
+                            toastType = Toaster.TYPE_ERROR
+                        )
                     }
                 }
             }
-        })
+        )
     }
 
     private fun observerGetChosenAddress() {
-        viewModel.getChosenAddress.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    val data = it.data
-                    context?.let { context ->
-                        if (isFromEditAddress == true) {
-                            val newRecipientAddressModel = RecipientAddressModel()
-                            newRecipientAddressModel.apply {
-                                id = data.addressId.toString()
-                                addressStatus = data.status
-                                recipientName = data.receiverName
-                                addressName = data.addressName
-                                latitude = data.latitude
-                                longitude = data.longitude
-                                destinationDistrictId = data.districtId.toString()
-                                postalCode = data.postalCode
+        viewModel.getChosenAddress.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        val data = it.data
+                        context?.let { context ->
+                            if (isFromEditAddress == true) {
+                                val newRecipientAddressModel = RecipientAddressModel()
+                                newRecipientAddressModel.apply {
+                                    id = data.addressId.toString()
+                                    addressStatus = data.status
+                                    recipientName = data.receiverName
+                                    addressName = data.addressName
+                                    latitude = data.latitude
+                                    longitude = data.longitude
+                                    destinationDistrictId = data.districtId.toString()
+                                    postalCode = data.postalCode
+                                }
+                                _selectedAddressItem = newRecipientAddressModel
+                                if (isFromEditChosenAddress == true) {
+                                    editedChosenAddress = newRecipientAddressModel
+                                }
                             }
-                            _selectedAddressItem = newRecipientAddressModel
-                            if (isFromEditChosenAddress == true) {
-                                editedChosenAddress = newRecipientAddressModel
-                            }
-                        }
-                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                            context,
-                            data.addressId.toString(),
-                            data.cityId.toString(),
-                            data.districtId.toString(),
-                            data.latitude,
-                            data.longitude,
-                            ChooseAddressUtils.setLabel(data),
-                            data.postalCode,
-                            data.tokonowModel.shopId.toString(),
-                            data.tokonowModel.warehouseId.toString(),
-                            TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
-                            data.tokonowModel.serviceType,
-                            data.tokonowModel.lastUpdate
-                        )
+                            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                                context,
+                                data.addressId.toString(),
+                                data.cityId.toString(),
+                                data.districtId.toString(),
+                                data.latitude,
+                                data.longitude,
+                                ChooseAddressUtils.setLabel(data),
+                                data.postalCode,
+                                data.tokonowModel.shopId.toString(),
+                                data.tokonowModel.warehouseId.toString(),
+                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                                data.tokonowModel.serviceType,
+                                data.tokonowModel.lastUpdate
+                            )
 
-                        if (isFromDeleteAddress == true) {
-                            context?.let {
-                                viewModel.searchAddress("", prevState, data.addressId, true)
+                            if (isFromDeleteAddress == true) {
+                                context?.let {
+                                    viewModel.searchAddress("", prevState, data.addressId, true)
+                                }
                             }
                         }
                     }
-                }
 
-                is Fail -> {
-                    view?.let { view ->
-                        Toaster.build(
-                            view, it.throwable.message
-                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
-                        ).show()
+                    is Fail -> {
+                        showToaster(
+                            message = it.throwable.message ?: DEFAULT_ERROR_MESSAGE,
+                            toastType = Toaster.TYPE_ERROR
+                        )
                     }
                 }
             }
-        })
+        )
     }
 
     private fun observerListAddress() {
@@ -340,99 +354,101 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     }
 
     private fun observerSetDefault() {
-        viewModel.setDefault.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ManageAddressState.Success ->
-                    if (isLocalization == true || isFromCheckoutChangeAddress == true || isFromCheckoutSnippet == true) {
-                        bottomSheetLainnya?.dismiss()
-                        setChosenAddress()
-                    } else {
-                        bottomSheetLainnya?.dismiss()
-                        viewModel.getStateChosenAddress("address")
+        viewModel.setDefault.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ManageAddressState.Success ->
+                        if (isLocalization == true || isFromCheckoutChangeAddress == true || isFromCheckoutSnippet == true) {
+                            bottomSheetLainnya?.dismiss()
+                            setChosenAddress()
+                        } else {
+                            bottomSheetLainnya?.dismiss()
+                            viewModel.getStateChosenAddress("address")
+                        }
+
+                    is ManageAddressState.Fail -> {
+                        showToaster(
+                            message = it.throwable?.message ?: DEFAULT_ERROR_MESSAGE,
+                            toastType = Toaster.TYPE_ERROR
+                        )
                     }
 
-                is ManageAddressState.Fail -> {
-                    view?.let { view ->
-                        Toaster.build(
-                            view, it.throwable?.message
-                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
-                        ).show()
+                    else -> {
+                        // no-op
                     }
-                }
-
-                else -> {
-                    //no-op
                 }
             }
-        })
+        )
     }
 
     private fun observerRemovedAddress() {
-        viewModel.resultRemovedAddress.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ManageAddressState.Success ->
-                    Toaster.build(requireView(), getString(R.string.toaster_remove_address_success), Toaster.TYPE_NORMAL).show()
-                else -> {
-                    //no-op
+        viewModel.resultRemovedAddress.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ManageAddressState.Success -> showToaster(getString(R.string.toaster_remove_address_success))
+                    else -> {
+                        // no-op
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observerEligibleForAddressFeature() {
-        viewModel.eligibleForAddressFeature.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    when (it.data.featureId) {
-                        ANA_REVAMP_FEATURE_ID -> {
-                            goToAddAddress(it.data.eligible)
-                        }
-                        EDIT_ADDRESS_REVAMP_FEATURE_ID -> {
-                            it.data.data?.let { recipientAddressModel ->
-                                goToEditAddress(
-                                    it.data.eligible,
-                                    recipientAddressModel
-                                )
+        viewModel.eligibleForAddressFeature.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        when (it.data.featureId) {
+                            ANA_REVAMP_FEATURE_ID -> {
+                                goToAddAddress(it.data.eligible)
+                            }
+                            EDIT_ADDRESS_REVAMP_FEATURE_ID -> {
+                                it.data.data?.let { recipientAddressModel ->
+                                    goToEditAddress(
+                                        it.data.eligible,
+                                        recipientAddressModel
+                                    )
+                                }
                             }
                         }
                     }
-                }
-
-                is Fail -> {
-                    view?.let { view ->
-                        Toaster.build(
-                            view, it.throwable.message
-                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
-                        ).show()
+                    is Fail -> {
+                        showToaster(
+                            message = it.throwable.message ?: DEFAULT_ERROR_MESSAGE,
+                            toastType = Toaster.TYPE_ERROR
+                        )
                     }
                 }
             }
-        })
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PARAM_CREATE) {
-            val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
+            val addressDataModel =
+                data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (addressDataModel != null) {
                 setChosenAddressANA(addressDataModel)
-                view?.let { Toaster.build(it, getString(R.string.add_address_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
+                showToaster(getString(R.string.add_address_success))
             } else {
                 performSearch(viewModel.savedQuery, null)
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             isFromEditAddress = true
-            isFromEditChosenAddress = data?.getBooleanExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, false)
+            isFromEditChosenAddress =
+                data?.getBooleanExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, false)
 
             performSearch(viewModel.savedQuery, null)
             viewModel.getStateChosenAddress("address")
             setButtonEnabled(true)
             val addressData = data?.getStringExtra(EXTRA_EDIT_ADDRESS)
             if (addressData != null) {
-                view?.let {
-                    Toaster.build(it, getString(R.string.edit_address_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL)
-                        .show()
-                }
+                showToaster(message = getString(R.string.edit_address_success))
             }
         }
     }
@@ -461,13 +477,15 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
             SCREEN_NAME_USER_NEW
         }
         if (eligible) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+            val intent =
+                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
             intent.putExtra(KERO_TOKEN, token)
             intent.putExtra(EXTRA_REF, screenName)
             intent.putExtra(PARAM_SOURCE, viewModel.source)
             startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
         } else {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+            val intent =
+                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
             intent.putExtra(KERO_TOKEN, token)
             intent.putExtra(EXTRA_REF, screenName)
             startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
@@ -476,12 +494,16 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
 
     private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
         if (eligibleForEditRevamp) {
-            val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}")
+            val intent = RouteManager.getIntent(
+                context,
+                "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}"
+            )
             intent.putExtra(PARAM_SOURCE, viewModel.source)
             startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
         } else {
             val token = viewModel.token
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
+            val intent =
+                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
             val mapper = AddressModelMapper()
             intent.putExtra(EDIT_PARAM, mapper.transform(data))
             intent.putExtra(KERO_TOKEN, token)
@@ -508,7 +530,8 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
                     }
                 }
             }
-        })
+        }
+        )
     }
 
     /**
@@ -516,7 +539,6 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
      */
     private fun setEmptyState() {
         binding?.run {
-
             if (adapter.addressList.isNotEmpty()) {
                 emptyStateManageAddress.root.gone()
                 getManageAddressFragment()?.searchInputVisibility(true)
@@ -611,46 +633,60 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
 
     private fun openBottomSheetView(data: RecipientAddressModel) {
         bottomSheetLainnya = BottomSheetUnify()
-        val viewBottomSheetLainnya = BottomsheetActionAddressBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            if (data.addressStatus == 2) {
-                btnAlamatUtama.gone()
-                divider.gone()
-                btnAlamatUtamaChoose.gone()
-                dividerUtamaChoose.gone()
-            } else {
-                if (!data.isStateChosenAddress) {
-                    btnAlamatUtama.gone()
-                    divider.gone()
-                    btnAlamatUtamaChoose.visible()
-                    dividerUtamaChoose.visible()
-                } else {
-                    btnAlamatUtama.visible()
-                    divider.visible()
-                    btnAlamatUtamaChoose.gone()
-                    dividerUtamaChoose.gone()
+        val viewBottomSheetLainnya =
+            BottomsheetActionAddressBinding.inflate(LayoutInflater.from(context), null, false)
+                .apply {
+                    if (data.addressStatus == 2) {
+                        btnAlamatUtama.gone()
+                        divider.gone()
+                        btnAlamatUtamaChoose.gone()
+                        dividerUtamaChoose.gone()
+                    } else {
+                        if (!data.isStateChosenAddress) {
+                            btnAlamatUtama.gone()
+                            divider.gone()
+                            btnAlamatUtamaChoose.visible()
+                            dividerUtamaChoose.visible()
+                        } else {
+                            btnAlamatUtama.visible()
+                            divider.visible()
+                            btnAlamatUtamaChoose.gone()
+                            dividerUtamaChoose.gone()
+                        }
+                    }
+                    btnAlamatUtama.setOnClickListener {
+                        if (isFromCheckoutChangeAddress == true || isLocalization == true) {
+                            _selectedAddressItem = data
+                        }
+                        isStayOnPageState = true
+                        viewModel.setDefaultPeopleAddress(
+                            data.id,
+                            false,
+                            prevState,
+                            data.id.toLong(),
+                            true
+                        )
+                        bottomSheetLainnya?.dismiss()
+                    }
+                    btnHapusAlamat.setOnClickListener {
+                        viewModel.deletePeopleAddress(data.id)
+                        bottomSheetLainnya?.dismiss()
+                        isFromDeleteAddress = true
+                    }
+                    btnAlamatUtamaChoose.setOnClickListener {
+                        isStayOnPageState = false
+                        context?.let {
+                            viewModel.setDefaultPeopleAddress(
+                                data.id,
+                                true,
+                                prevState,
+                                data.id.toLong(),
+                                true
+                            )
+                        }
+                        _selectedAddressItem = data
+                    }
                 }
-            }
-            btnAlamatUtama.setOnClickListener {
-                if (isFromCheckoutChangeAddress == true || isLocalization == true) {
-                    _selectedAddressItem = data
-                }
-                isStayOnPageState = true
-                viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toLong(), true)
-                bottomSheetLainnya?.dismiss()
-            }
-            btnHapusAlamat.setOnClickListener {
-                viewModel.deletePeopleAddress(data.id)
-                bottomSheetLainnya?.dismiss()
-                isFromDeleteAddress = true
-            }
-            btnAlamatUtamaChoose.setOnClickListener {
-                isStayOnPageState = false
-                context?.let {
-                    viewModel.setDefaultPeopleAddress(data.id, true, prevState, data.id.toLong(), true)
-                }
-                _selectedAddressItem = data
-            }
-        }
 
         bottomSheetLainnya?.apply {
             setTitle(LABEL_LAINNYA)
@@ -673,26 +709,27 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
             }
             is RuntimeException -> {
                 when (throwable.localizedMessage.toIntOrNull()) {
-                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
+                        GlobalError.NO_CONNECTION
+                    )
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
 
                     else -> {
-                        view?.let {
-                            showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
-                        }
+                        showGlobalError(GlobalError.SERVER_ERROR)
+                        showToaster(
+                            message = DEFAULT_ERROR_MESSAGE,
+                            toastType = Toaster.TYPE_ERROR
+                        )
                     }
                 }
             }
             else -> {
-                view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(
-                        it, throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
-                    ).show()
-                }
+                    showToaster(
+                        message = throwable.message ?: DEFAULT_ERROR_MESSAGE,
+                        toastType = Toaster.TYPE_ERROR
+                    )
             }
         }
     }
@@ -717,7 +754,9 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         ShareAddressAnalytics.onChooseAddressList()
         setButtonEnabled(true)
         _selectedAddressItem = peopleAddress
-        if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(userSession.userId)
+        if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(
+            userSession.userId
+        )
     }
 
     private fun setChosenAddress(isClickBackButton: Boolean = false) {

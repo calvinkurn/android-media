@@ -153,4 +153,14 @@
     <string name="tablayout_label_from_friend">Dari teman</string>
     <string name="tablayout_label_from_friend_with_value">Dari teman (+%1$s)</string>
 
+    <string name="share_address_bottom_sheet_title_share">Bagikan ke teman kamu</string>
+    <string name="share_address_bottom_sheet_title_request">Minta alamat ke teman kamu</string>
+    <string name="share_address_bottom_sheet_email_or_phone_number">Email / No Hp</string>
+    <string name="share_address_bottom_sheet_description">Dengan klik Kirim, kamu setuju membagikan informasi alamat kamu ke orang lain.</string>
+    <string name="request_address_bottom_sheet_description">Dengan klik Minta Alamat, kamu setuju menggunakan kontak teman kamu untuk dimintakan alamat.</string>
+    <string name="request_address_bottom_sheet_btn_request">Minta Alamat</string>
+    <string name="share_address_bottom_sheet_btn_send">Kirim</string>
+    <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
+    <string name="contact_not_found">Kontak tidak ditemukan</string>
+
 </resources>

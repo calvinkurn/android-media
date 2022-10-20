@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.usecase
+package com.tokopedia.manageaddress.domain.usecase.shareaddress
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -6,18 +6,18 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
-import com.tokopedia.logisticCommon.domain.request.ShareAddressToUserParam
-import com.tokopedia.logisticCommon.domain.response.shareaddress.KeroShareAddrToUserResponse
+import com.tokopedia.manageaddress.domain.request.SendShareAddressRequestParam
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrRequestResponse
 import javax.inject.Inject
 
-open class ShareAddressToUserUseCase @Inject constructor(
+open class SendShareAddressRequestUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<ShareAddressToUserParam, KeroShareAddrToUserResponse>(dispatcher.io) {
+) : CoroutineUseCase<SendShareAddressRequestParam, KeroShareAddrRequestResponse>(dispatcher.io) {
 
-    override suspend fun execute(params: ShareAddressToUserParam): KeroShareAddrToUserResponse {
+    override suspend fun execute(params: SendShareAddressRequestParam): KeroShareAddrRequestResponse {
         return repository.request(graphqlQuery(), params.toMapParam())
     }
 
-    override fun graphqlQuery(): String = KeroLogisticQuery.kero_share_addr_to_user_request
+    override fun graphqlQuery(): String = KeroLogisticQuery.kero_send_share_addr_request
 }

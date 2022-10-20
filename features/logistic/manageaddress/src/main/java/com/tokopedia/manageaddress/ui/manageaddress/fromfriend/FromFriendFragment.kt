@@ -14,9 +14,9 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
-import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet
-import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet.Companion.TAG_SHARE_ADDRESS
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
+import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressBottomSheet
+import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressBottomSheet.Companion.TAG_SHARE_ADDRESS
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.ui.uimodel.FromFriendAddressActionState
 import com.tokopedia.manageaddress.ui.uimodel.FromFriendAddressListState
@@ -80,7 +80,9 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     private fun initArguments() {
-        viewModel.isShareAddressFromNotif = arguments?.getBoolean(ManageAddressConstant.EXTRA_SHARE_ADDRESS_FROM_NOTIF, false) ?: false
+        viewModel.isShareAddressFromNotif =
+            arguments?.getBoolean(ManageAddressConstant.EXTRA_SHARE_ADDRESS_FROM_NOTIF, false)
+                ?: false
         viewModel.source = arguments?.getString(PARAM_SOURCE, "") ?: ""
     }
 
@@ -112,36 +114,45 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     private fun initObserver() {
-        viewModel.getFromFriendAddressState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is FromFriendAddressListState.Success -> {
-                    showTotalAddressTicker(it.data?.message)
-                    onSuccessGetList()
-                    updateTabText(it.data?.numberOfRequest)
+        viewModel.getFromFriendAddressState.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is FromFriendAddressListState.Success -> {
+                        showTotalAddressTicker(it.data?.message)
+                        onSuccessGetList()
+                        updateTabText(it.data?.numberOfRequest)
+                    }
+                    is FromFriendAddressListState.Fail -> onFailedGetList(it.throwable)
+                    is FromFriendAddressListState.Loading -> onLoadingGetList(it.isShowLoading)
                 }
-                is FromFriendAddressListState.Fail -> onFailedGetList(it.throwable)
-                is FromFriendAddressListState.Loading -> onLoadingGetList(it.isShowLoading)
             }
-        })
+        )
 
-        viewModel.saveAddressState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is FromFriendAddressActionState.Success -> onSuccessSaveAddress(it.message)
-                is FromFriendAddressActionState.Fail -> {
-                    trackOnClickSaveButton(isSuccess = false)
-                    showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+        viewModel.saveAddressState.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is FromFriendAddressActionState.Success -> onSuccessSaveAddress(it.message)
+                    is FromFriendAddressActionState.Fail -> {
+                        trackOnClickSaveButton(isSuccess = false)
+                        showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                    }
+                    is FromFriendAddressActionState.Loading -> onLoadingSaveAddress(it.isShowLoading)
                 }
-                is FromFriendAddressActionState.Loading -> onLoadingSaveAddress(it.isShowLoading)
             }
-        })
+        )
 
-        viewModel.deleteAddressState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is FromFriendAddressActionState.Success -> onSuccessDeleteAddress()
-                is FromFriendAddressActionState.Fail -> onFailedDeleteAddress(it.errorMessage)
-                is FromFriendAddressActionState.Loading -> refreshListAndButton()
+        viewModel.deleteAddressState.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is FromFriendAddressActionState.Success -> onSuccessDeleteAddress()
+                    is FromFriendAddressActionState.Fail -> onFailedDeleteAddress(it.errorMessage)
+                    is FromFriendAddressActionState.Loading -> refreshListAndButton()
+                }
             }
-        })
+        )
     }
 
     private fun refreshListAndButton() {
@@ -184,8 +195,10 @@ class FromFriendFragment : BaseDaggerFragment(),
                     setType(GlobalError.MAINTENANCE)
                     errorIllustration.loadImage(IMAGE_SHARE_ADDRESS)
                     errorIllustration.adjustViewBounds = true
-                    errorTitle.text = getString(R.string.title_failed_saved_share_address_from_notif)
-                    errorDescription.text = getString(R.string.description_failed_saved_share_address_from_notif)
+                    errorTitle.text =
+                        getString(R.string.title_failed_saved_share_address_from_notif)
+                    errorDescription.text =
+                        getString(R.string.description_failed_saved_share_address_from_notif)
                 }
             } else {
                 globalError.gone()
@@ -243,7 +256,7 @@ class FromFriendFragment : BaseDaggerFragment(),
         showToaster(errorMessage, Toaster.TYPE_ERROR)
     }
 
-    private fun initButtonClickListener(){
+    private fun initButtonClickListener() {
         binding?.apply {
             btnDelete.setOnClickListener {
                 viewModel.deleteAddress()
@@ -263,11 +276,9 @@ class FromFriendFragment : BaseDaggerFragment(),
 
     private fun handleError(throwable: Throwable) {
         when (throwable) {
-            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                view?.let {
-                    showGlobalError(GlobalError.NO_CONNECTION)
-                }
-            }
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> showGlobalError(
+                GlobalError.NO_CONNECTION
+            )
             is RuntimeException -> {
                 when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
@@ -276,24 +287,20 @@ class FromFriendFragment : BaseDaggerFragment(),
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
                     else -> {
-                        view?.let {
-                            showGlobalError(GlobalError.SERVER_ERROR)
-                            showToaster(
-                                ManageAddressConstant.DEFAULT_ERROR_MESSAGE,
-                                Toaster.TYPE_ERROR
-                            )
-                        }
+                        showGlobalError(GlobalError.SERVER_ERROR)
+                        showToaster(
+                            ManageAddressConstant.DEFAULT_ERROR_MESSAGE,
+                            Toaster.TYPE_ERROR
+                        )
                     }
                 }
             }
             else -> {
-                view?.let {
-                    showGlobalError(GlobalError.SERVER_ERROR)
-                    showToaster(
-                        throwable.message ?: ManageAddressConstant.DEFAULT_ERROR_MESSAGE,
-                        Toaster.TYPE_ERROR
-                    )
-                }
+                showGlobalError(GlobalError.SERVER_ERROR)
+                showToaster(
+                    throwable.message ?: ManageAddressConstant.DEFAULT_ERROR_MESSAGE,
+                    Toaster.TYPE_ERROR
+                )
             }
         }
     }
@@ -388,7 +395,8 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     companion object {
-        private const val IMAGE_SHARE_ADDRESS = "https://images.tokopedia.net/img/android/share_address/share_address_image.png"
+        private const val IMAGE_SHARE_ADDRESS =
+            "https://images.tokopedia.net/img/android/share_address/share_address_image.png"
 
         fun newInstance(bundle: Bundle, listener: Listener): FromFriendFragment {
             return FromFriendFragment().apply {

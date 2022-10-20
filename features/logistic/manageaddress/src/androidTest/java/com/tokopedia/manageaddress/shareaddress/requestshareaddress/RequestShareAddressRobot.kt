@@ -49,7 +49,7 @@ class ShareAddressRobot {
     }
 
     fun clickRequestButton() {
-        onView(ViewMatchers.withId(com.tokopedia.logisticCommon.R.id.btn_share))
+        onView(ViewMatchers.withId(R.id.btn_share))
             .check(matches(isDisplayed()))
             .perform(click())
     }

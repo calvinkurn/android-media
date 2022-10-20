@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.response.shareaddress
+package com.tokopedia.manageaddress.domain.response.shareaddress
 
 import com.google.gson.annotations.SerializedName
 

@@ -121,7 +121,7 @@ class ManageAddressViewModel @Inject constructor(
                     }
 
                     override fun onCompleted() {
-                        //no-op
+                        // no-op
                     }
                 })
         )
@@ -146,7 +146,7 @@ class ManageAddressViewModel @Inject constructor(
                     }
 
                     override fun onCompleted() {
-                        //no-op
+                        // no-op
                     }
                 })
         )

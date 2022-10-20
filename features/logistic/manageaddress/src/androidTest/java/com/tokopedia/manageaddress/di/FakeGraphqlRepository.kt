@@ -7,8 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
-import com.tokopedia.logisticCommon.domain.response.shareaddress.KeroShareAddrRequestResponse
-import com.tokopedia.logisticCommon.domain.response.shareaddress.KeroShareAddrToUserResponse
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrRequestResponse
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrToUserResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.DeleteShareAddressResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.GetSharedAddressListResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.SaveShareAddressResponse

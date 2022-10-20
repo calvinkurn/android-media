@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.response.shareaddress
+package com.tokopedia.manageaddress.domain.response.shareaddress
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.logisticCommon.domain.response.ErrorDefaultAddress
@@ -10,7 +10,7 @@ data class KeroAddrSendShareAddressData(
     var error: ErrorDefaultAddress? = null,
 ) {
     val errorMessage: String
-        get() = when(error?.code) {
+        get() = when (error?.code) {
             INVALID_PHONE_NUMBER_ERROR_CODE, USER_NOT_FOUND_ERROR_CODE -> NO_ACCOUNT_ERROR_MESSAGE
             REQUEST_ALREADY_EXIST_ERROR_CODE -> ALREADY_USED_ERROR_MESSAGE
             else -> error?.detail ?: ""

@@ -76,7 +76,11 @@ class FromFriendViewModelTest {
 
         Assert.assertEquals(viewModel.source, source)
         verify {
-            getShareAddressObserver.onChanged(FromFriendAddressListState.Success(keroAddrGetSharedAddressList))
+            getShareAddressObserver.onChanged(
+                FromFriendAddressListState.Success(
+                    keroAddrGetSharedAddressList
+                )
+            )
         }
     }
 
@@ -101,12 +105,16 @@ class FromFriendViewModelTest {
     @Test
     fun `verify when save share address is success`() {
         val message = "Success Save Address"
-        val mockResponse = spyk(SaveShareAddressResponse(
-            data = spyk(SaveShareAddressResponse.KeroAddrSaveSharedAddress(
-                isSuccess = true,
-                message = message
-            ))
-        ))
+        val mockResponse = spyk(
+            SaveShareAddressResponse(
+                data = spyk(
+                    SaveShareAddressResponse.KeroAddrSaveSharedAddress(
+                        isSuccess = true,
+                        message = message
+                    )
+                )
+            )
+        )
 
         coEvery {
             saveShareAddressUseCase.invoke(any())
@@ -122,14 +130,20 @@ class FromFriendViewModelTest {
     @Test
     fun `verify when save share address not success`() {
         val fakeErrorMessage = "error message"
-        val mockResponse = spyk(SaveShareAddressResponse(
-            data = spyk(SaveShareAddressResponse.KeroAddrSaveSharedAddress(
-                isSuccess = false,
-                error = spyk(ErrorDefaultAddress(
-                    detail = fakeErrorMessage
-                ))
-            ))
-        ))
+        val mockResponse = spyk(
+            SaveShareAddressResponse(
+                data = spyk(
+                    SaveShareAddressResponse.KeroAddrSaveSharedAddress(
+                        isSuccess = false,
+                        error = spyk(
+                            ErrorDefaultAddress(
+                                detail = fakeErrorMessage
+                            )
+                        )
+                    )
+                )
+            )
+        )
 
         coEvery {
             saveShareAddressUseCase.invoke(any())
@@ -168,12 +182,16 @@ class FromFriendViewModelTest {
         val message = "Success Delete Address"
         val addressList = arrayListOf<RecipientAddressModel>(spyk(), spyk())
         viewModel.addressList.addAll(addressList)
-        val mockResponse = spyk(DeleteShareAddressResponse(
-            data = spyk(DeleteShareAddressResponse.KeroAddrDeleteSharedAddress(
-                isSuccess = true,
-                message = message
-            ))
-        ))
+        val mockResponse = spyk(
+            DeleteShareAddressResponse(
+                data = spyk(
+                    DeleteShareAddressResponse.KeroAddrDeleteSharedAddress(
+                        isSuccess = true,
+                        message = message
+                    )
+                )
+            )
+        )
 
         coEvery {
             deleteFromFriendAddressUseCase.invoke(any())
@@ -194,14 +212,20 @@ class FromFriendViewModelTest {
         val addressList = arrayListOf<RecipientAddressModel>(spyk(), spyk())
         viewModel.addressList.addAll(addressList)
         val fakeErrorMessage = "error message"
-        val mockResponse = spyk(DeleteShareAddressResponse(
-            data = spyk(DeleteShareAddressResponse.KeroAddrDeleteSharedAddress(
-                isSuccess = false,
-                error = spyk(ErrorDefaultAddress(
-                    detail = fakeErrorMessage
-                ))
-            ))
-        ))
+        val mockResponse = spyk(
+            DeleteShareAddressResponse(
+                data = spyk(
+                    DeleteShareAddressResponse.KeroAddrDeleteSharedAddress(
+                        isSuccess = false,
+                        error = spyk(
+                            ErrorDefaultAddress(
+                                detail = fakeErrorMessage
+                            )
+                        )
+                    )
+                )
+            )
+        )
 
         coEvery {
             deleteFromFriendAddressUseCase.invoke(any())

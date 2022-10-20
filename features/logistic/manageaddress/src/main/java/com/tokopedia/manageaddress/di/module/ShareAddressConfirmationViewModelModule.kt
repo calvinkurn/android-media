@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressConfirmationViewModel
+import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,4 +23,10 @@ abstract class ShareAddressConfirmationViewModelModule {
     @IntoMap
     @ViewModelKey(ShareAddressConfirmationViewModel::class)
     abstract fun shareAddressConfirmationViewModel(viewModelInactivePhone: ShareAddressConfirmationViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShareAddressViewModel::class)
+    abstract fun shareAddressViewModel(viewModelShareAddress: ShareAddressViewModel): ViewModel
 }

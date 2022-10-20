@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.data.analytics
+package com.tokopedia.manageaddress.data.analytics
 
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.builder.util.BaseTrackerConst
