@@ -25,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.item_chat_invoice_attach_selection.view.*
 
 /**
  * Created by Hendri on 28/03/18.
@@ -36,7 +35,7 @@ class AttachedInvoiceSelectionViewHolder(
     private val selectedListener: AttachedInvoiceSelectionListener
 ) :
     AbstractViewHolder<AttachInvoiceSelectionUiModel>(itemView) {
-    private val view = itemView as ItemChatInvoiceAttachSelectionBinding
+    private val view = ItemChatInvoiceAttachSelectionBinding.bind(itemView)
     private val singleItemAdapter: AttachedInvoiceSelectionViewHolder.AttachedInvoicesItemsAdapter
     private val invoiceSelection: RecyclerView = view.attachInvoiceChatInvoiceSelection
 

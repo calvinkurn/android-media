@@ -100,6 +100,7 @@ import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.databinding.FragmentChatbotBinding
 import com.tokopedia.chatbot.databinding.ReplyBubbleBottomSheetLayoutBinding
+import com.tokopedia.chatbot.databinding.RetryUploadMediaBottomSheetLayoutBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -601,6 +602,7 @@ class ChatbotFragment :
         dateIndicator = getBindingView().dateIndicator
         dateIndicatorContainer = getBindingView().dateIndicatorContainer
         sendButton = getBindingView().composeArea.sendBut
+        guideline = getBindingView().composeArea.guidelineReplyBubble
 
         setUpFloatingInvoiceListeners()
 
@@ -1894,7 +1896,7 @@ class ChatbotFragment :
     private fun createRetryMediaUploadBottomSheet(element: SendableUiModel) {
         val bottomSheetPage = BottomSheetUnify()
         val viewBottomSheetPage =
-            View.inflate(context, R.layout.retry_upload_media_bottom_sheet_layout, null).apply {
+            RetryUploadMediaBottomSheetLayoutBinding.inflate(LayoutInflater.from(context)).apply {
                 setUpMediaRetryBottomSheet(this, element, bottomSheetPage)
             }
 
@@ -1910,7 +1912,7 @@ class ChatbotFragment :
                         ?: ""
                 )
             showCloseIcon = false
-            setChild(viewBottomSheetPage)
+            setChild(viewBottomSheetPage.root)
             showKnob = true
         }
         fragmentManager?.let {
@@ -1918,8 +1920,8 @@ class ChatbotFragment :
         }
     }
 
-    private fun setUpMediaRetryBottomSheet(view: View, element: SendableUiModel, bottomSheetPage: BottomSheetUnify) {
-        val rvPages = view.findViewById<RecyclerView>(R.id.rv_image_upload_option)
+    private fun setUpMediaRetryBottomSheet(view: RetryUploadMediaBottomSheetLayoutBinding, element: SendableUiModel, bottomSheetPage: BottomSheetUnify) {
+        val rvPages = view.rvImageUploadOption
         rvPages.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val adapter =
