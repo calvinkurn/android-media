@@ -16,16 +16,13 @@ data class ReviewerCredibilityStatsWrapper(
     val label: ReviewerCredibilityLabel = ReviewerCredibilityLabel(),
     @SerializedName("stats")
     @Expose
-    val stats: List<ReviewerCredibilityStat> = listOf()
+    val stats: List<ReviewerCredibilityStat> = listOf(),
+    @SerializedName("userProfile")
+    @Expose
+    val userProfile: UserProfile? = null
 ) : Serializable
 
 data class ReviewerCredibilityLabel(
-    @SerializedName("userName")
-    @Expose
-    val userName: String = "",
-    @SerializedName("joinDate")
-    @Expose
-    val joinDate: String = "",
     @SerializedName("subtitle")
     @Expose
     val subtitle: String = "",
@@ -96,3 +93,21 @@ data class Achievement(
     @Expose
     val mementoLink: String? = null,
 ) : Serializable
+
+data class UserProfile(
+    @SerializedName("firstName")
+    @Expose
+    val firstName: String? = null,
+    @SerializedName("profilePicture")
+    @Expose
+    val profilePicture: String? = null,
+    @SerializedName("joinDate")
+    @Expose
+    val joinDate: String? = null,
+    @SerializedName("buttonProfileText")
+    @Expose
+    val buttonProfileText: String? = null,
+    @SerializedName("buttonProfileLink")
+    @Expose
+    val buttonProfileLink: String? = null,
+)
