@@ -2,7 +2,6 @@ package com.tokopedia.play_common.ui.leaderboard.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,7 +18,6 @@ import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
-import com.tokopedia.play_common.view.setTextGradient
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
@@ -39,8 +37,6 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
     /**
      * Quiz
      */
-    private val ivReward = itemView.findViewById<IconUnify>(R.id.iv_reward)
-    private val tvReward = itemView.findViewById<Typography>(R.id.tv_reward)
     private val rvChoices = itemView.findViewById<RecyclerView>(R.id.rv_choices)
     private val tvEndsIn = itemView.findViewById<Typography>(R.id.tv_ends_in)
     private val timerEndsIn = itemView.findViewById<TimerUnifySingle>(R.id.timer_ends_in)
@@ -73,7 +69,6 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
 
         if (leaderboard.winners.isEmpty()) hideParticipant(leaderboard) else showParticipant(leaderboard)
         if (leaderboard.choices.isEmpty()) hideQuiz() else showQuiz(leaderboard)
-        if (leaderboard.reward.isBlank()) hideReward() else showReward(leaderboard)
         if (leaderboard.endsIn == 0) hideTimer() else showTimer(leaderboard.endsIn.toLong())
 
         tvOtherParticipant.text = leaderboard.otherParticipantText
@@ -86,19 +81,11 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
     private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel) {
         when (leaderboard.leaderBoardType) {
             LeadeboardType.Quiz -> {
-                ivReward.showWithCondition(leaderboard.reward.isNotEmpty())
-                tvReward.showWithCondition(leaderboard.reward.isNotEmpty())
                 ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
                 ivLeaderBoard.showWithCondition(leaderboard.endsIn == 0 )
             }
             LeadeboardType.Giveaway -> {
                 ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
-                ivReward.hide()
-                tvReward.hide()
-            }
-            else -> {
-                ivReward.hide()
-                tvReward.hide()
             }
         }
     }
@@ -125,26 +112,6 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
 
     private fun hideQuiz(){
         rvChoices.hide()
-    }
-
-    private fun showReward(leaderboard: PlayLeaderboardUiModel) {
-        ivReward.show()
-        tvReward.show()
-        tvReward.text = "Hadiah: ${leaderboard.reward}"
-        tvReward.setTextGradient(
-            intArrayOf(
-                MethodChecker.getColor(
-                    itemView.context,
-                    R.color.play_dms_quiz_header_gradient_start
-                ),
-                MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_end)
-            )
-        )
-    }
-
-    private fun hideReward() {
-        ivReward.hide()
-        tvReward.hide()
     }
 
     private fun showTimer(duration: Long) {

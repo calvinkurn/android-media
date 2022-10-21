@@ -18,6 +18,7 @@ import com.tokopedia.video_widget.VideoPlayerProvider
 abstract class ProductItemViewHolder(
         itemView: View,
         protected val productListener: ProductListener,
+        override val isAutoplayEnabled: Boolean,
 ) : AbstractViewHolder<ProductItemDataView>(itemView), VideoPlayerProvider {
 
     abstract val productCardView: IProductCardView?
@@ -41,7 +42,7 @@ abstract class ProductItemViewHolder(
             freeOngkir = freeOngkirDataView.toProductCardModelFreeOngkir(),
             isTopAds = isTopAds || isOrganicAds,
             countSoldRating = ratingString,
-            hasThreeDots = hasThreeDots(),
+            hasThreeDots = !showButtonAtc,
             labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
             labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
             isWideContent = isWideContent,
@@ -50,10 +51,6 @@ abstract class ProductItemViewHolder(
             productListType = productListType,
             hasAddToCartButton = showButtonAtc,
         )
-    }
-
-    private fun ProductItemDataView.hasThreeDots(): Boolean {
-        return !showButtonAtc
     }
 
     private fun List<BadgeItemDataView>?.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {

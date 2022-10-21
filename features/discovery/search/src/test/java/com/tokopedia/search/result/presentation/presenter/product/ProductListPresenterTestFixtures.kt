@@ -12,24 +12,30 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banned.BannedProductsView
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.BroadMatchView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
+import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -50,6 +56,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val searchProductCommonResponseJSON = "searchproduct/common-response.json"
     protected val searchProductFirstPageJSON = "searchproduct/loaddata/first-page.json"
     protected val searchProductSecondPageJSON = "searchproduct/loaddata/second-page.json"
+    protected val className = "SearchClassName"
 
     protected val productListView = mockk<ProductListSectionContract.View>(relaxed = true)
     protected val searchProductFirstPageUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
@@ -74,7 +81,9 @@ internal open class ProductListPresenterTestFixtures {
     protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val bannedProductsView = mockk<BannedProductsView>(relaxed = true)
-    protected val pagination = PaginationImpl()
+    protected val broadMatchView = mockk<BroadMatchView>(relaxed = true)
+    protected val inspirationCarouselDynamicProductView =
+        mockk<InspirationCarouselDynamicProductView>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -92,15 +101,19 @@ internal open class ProductListPresenterTestFixtures {
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     protected val searchParameterProvider = mockk<SearchParameterProvider>(relaxed = true)
     protected val inspirationListAtcView = mockk<InspirationListAtcView>(relaxed = true)
+    protected val classNameProvider = mockk<ClassNameProvider> {
+        every { className } returns this@ProductListPresenterTestFixtures.className
+    }
+    protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
 
-    protected lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
     open fun setUp() {
+        val pagination = PaginationImpl()
         val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
         val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
-        sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
+        val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,
             requestParamsGenerator,
             sameSessionRecommendationUseCase,
@@ -108,6 +121,7 @@ internal open class ProductListPresenterTestFixtures {
             queryKeyProvider,
             productFilterIndicator,
         )
+        val suggestionPresenter = SuggestionPresenter()
 
         val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
             addToCartUseCase,
@@ -142,6 +156,17 @@ internal open class ProductListPresenterTestFixtures {
             sameSessionRecommendationPresenterDelegate,
             BannedProductsPresenterDelegate(bannedProductsView, viewUpdater),
             inspirationListAtcPresenterDelegate,
+            BroadMatchPresenterDelegate(
+                broadMatchView,
+                inspirationCarouselDynamicProductView,
+                viewUpdater,
+                topAdsUrlHitter,
+                classNameProvider,
+                applinkModifier,
+                pagination,
+                suggestionPresenter,
+            ),
+            suggestionPresenter,
             addToCartUseCase,
         )
         productListPresenter.attachView(productListView)

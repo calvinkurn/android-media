@@ -293,7 +293,7 @@ class DiscoveryDataMapper {
                 productName = productName,
                 slashedPrice = slashedPrice,
                 formattedPrice = formattedPrice,
-                discountPercentage = if (dataItem.discountPercentage?.toIntOrZero() != 0) {
+                discountPercentage = if (!dataItem.discountPercentage.isNullOrEmpty() && dataItem.discountPercentage?.toIntOrZero() != 0) {
                     "${dataItem.discountPercentage}%"
                 } else {
                     ""

@@ -1,9 +1,12 @@
 package com.tokopedia.shop.info.view.viewmodel
 
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.data.model.ShopInfoData
+import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
+import com.tokopedia.shop.common.graphql.data.shopinfo.ChatMessageId
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -143,6 +146,57 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         assert(userId == mockUserId)
     }
 
+    @Test
+    fun `when user is login and success to get chat existing message id`() {
+        runBlocking {
+            //define return expected
+            val shopMessageChat = ChatMessageId("123")
+            onGetMessageIdChat_thenReturn(ChatExistingChat(shopMessageChat))
+            isLoginSession_returnTrue()
+
+            //on exceute
+            viewModel.getMessageIdOnChatExist("12")
+            val resultInReal = viewModel.messageIdOnChatExist.value as Success<String>
+
+            //on assertion result
+            assert(viewModel.messageIdOnChatExist.value is Success)
+            assertEquals("123", resultInReal.data)
+        }
+    }
+
+    @Test
+    fun `when user not login to get chat existing message id`() {
+        runBlocking {
+            //define return expected
+            isLoginSession_returnFalse()
+
+            //on exceute
+            viewModel.getMessageIdOnChatExist("0")
+
+            //on assertion result
+            val actualResultOfMessageId = (viewModel.messageIdOnChatExist.value)
+            assert(actualResultOfMessageId is Fail)
+            val failData = actualResultOfMessageId as Fail
+            assert(failData.throwable is UserNotLoginException)
+        }
+    }
+
+    @Test
+    fun `when user login but error to get chat existing message id`() {
+        runBlocking {
+            //define return expected
+            isLoginSession_returnTrue()
+            onGetMessageIdChat_thenReturn_Error()
+
+            //on exceute
+            viewModel.getMessageIdOnChatExist("0")
+
+            //on assertion result
+            val actualResultOfMessageId = (viewModel.messageIdOnChatExist.value)
+            assert(actualResultOfMessageId is Fail)
+        }
+    }
+
     //region stub
     private suspend fun onGetShopInfo_thenReturn(shopInfo: ShopInfo) {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns shopInfo
@@ -258,6 +312,23 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
             }
         }
     }
-
     // endregion
+
+    //start GetMessageId
+    private suspend fun onGetMessageIdChat_thenReturn(shopMessageChat: ChatExistingChat) {
+        coEvery { getMessageIdChatUseCase.executeOnBackground() } returns shopMessageChat
+    }
+
+    private suspend fun onGetMessageIdChat_thenReturn_Error() {
+        coEvery { getMessageIdChatUseCase.executeOnBackground() } throws Exception()
+    }
+
+    private fun isLoginSession_returnTrue() {
+        every { userSessionInterface.isLoggedIn } returns true
+    }
+
+    private fun isLoginSession_returnFalse() {
+        every { userSessionInterface.isLoggedIn } returns false
+    }
+    //end GetMessageId
 }

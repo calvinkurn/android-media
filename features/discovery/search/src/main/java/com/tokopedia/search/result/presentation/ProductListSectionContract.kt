@@ -3,7 +3,6 @@ package com.tokopedia.search.result.presentation
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -11,9 +10,8 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.pagination.Pagination
@@ -68,8 +66,6 @@ interface ProductListSectionContract {
         fun openAddToCartToaster(message: String, isSuccess: Boolean)
         fun openVariantBottomSheet(data: ProductItemDataView)
         fun sendGTMTrackingProductATC(productItemDataView: ProductItemDataView?, cartId: String?)
-        fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
-        fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
         fun onQuickFilterSelected(filter: Filter, option: Option)
         fun initFilterController(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
@@ -81,30 +77,12 @@ interface ProductListSectionContract {
         fun sendTrackingOpenFilterPage()
         fun openBottomSheetFilter(dynamicFilterModel: DynamicFilterModel?)
         fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel)
-        fun trackEventClickBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
         fun redirectionStartActivity(applink: String?, url: String?)
         fun trackEventLongPress(productID: String)
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
         fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>)
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
-        fun trackDynamicProductCarouselImpression(
-            dynamicProductCarousel: BroadMatchItemDataView,
-            type: String,
-            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
-        )
-        fun trackDynamicProductCarouselClick(
-            dynamicProductCarousel: BroadMatchItemDataView,
-            type: String,
-            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
-        )
-        fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView)
-        fun trackEventClickSeeMoreDynamicProductCarousel(
-            dynamicProductCarousel: BroadMatchDataView,
-            type: String,
-            inspirationCarouselOption: InspirationCarouselDataView.Option,
-        )
-        fun modifyApplinkToSearchResult(applink: String): String
         fun trackEventImpressionInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
         fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
         fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
@@ -118,7 +96,12 @@ interface ProductListSectionContract {
         fun updateSearchBarNotification()
     }
 
-    interface Presenter : CustomerPresenter<View>, Pagination, BannerAdsPresenter {
+    interface Presenter :
+        CustomerPresenter<View>,
+        Pagination,
+        BannerAdsPresenter,
+        BroadMatchPresenter {
+
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
         val pageComponentId: String
@@ -139,11 +122,6 @@ interface ProductListSectionContract {
         val isBottomSheetFilterEnabled: Boolean
         fun onBottomSheetFilterDismissed()
         fun onApplySortFilter(mapParameter: Map<String, Any>)
-        fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
-        fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
-        fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
-        fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
-        fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView)
         fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
         fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
