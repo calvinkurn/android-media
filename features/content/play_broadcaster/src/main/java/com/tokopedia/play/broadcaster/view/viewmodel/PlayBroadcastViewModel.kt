@@ -421,18 +421,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun getConfiguration(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
 
+            val currConfigInfo = _configInfo.value
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
+            setChannelId(configUiModel.channelId)
+            _configInfo.value = configUiModel
 
             if (!isAccountEligible(configUiModel, selectedAccount)) {
                 if (isFirstOpen && isAllowChangeAccount) {
                     isFirstOpen = false
                     handleSwitchAccount(false)
                 } else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+                if (currConfigInfo != null) {
+                    setChannelId(currConfigInfo.channelId)
+                    _configInfo.value = currConfigInfo
+                }
                 return@launchCatchError
             }
 
-            setChannelId(configUiModel.channelId)
-            _configInfo.value = configUiModel
             isFirstOpen = false
 
             // create channel when there are no channel exist
