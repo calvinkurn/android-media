@@ -93,6 +93,7 @@ sealed class TableRowsUiModel(
         override val valueStr: String = "",
         override val width: Int = 0,
         val icon:String = "",
+        override val meta: Meta = Meta(),
         val isLeftAlign: Boolean = false,
         var colorInt: Int? = null
     ) : TableRowsUiModel(valueStr, width) {

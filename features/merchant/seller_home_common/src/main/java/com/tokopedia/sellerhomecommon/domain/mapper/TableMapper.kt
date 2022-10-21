@@ -116,6 +116,7 @@ class TableMapper @Inject constructor(
                                 col.value,
                                 width,
                                 col.iconUrl.orEmpty(),
+                                meta = getTableRowMeta(col.meta),
                                 isLeftAlign = firstTextColumn == col,
                                 getColorFromHtml(col.value)
                             ) //it's COLUMN_HTML WITH ICON

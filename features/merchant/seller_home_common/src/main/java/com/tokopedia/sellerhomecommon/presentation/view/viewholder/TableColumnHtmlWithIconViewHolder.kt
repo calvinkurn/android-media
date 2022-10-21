@@ -14,6 +14,7 @@ import com.tokopedia.applink.DeepLinkChecker
 import com.tokopedia.applink.DeeplinkMatcher
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
@@ -31,7 +32,7 @@ import timber.log.Timber
 
 class TableColumnHtmlWithIconViewHolder(
     itemView: View,
-    private val listener: Listener
+    private val listener: TableColumnHtmlViewHolder.Listener
 ) : AbstractViewHolder<TableRowsUiModel.RowColumnHtmlWithIcon>(itemView) {
 
     companion object {
@@ -84,7 +85,7 @@ class TableColumnHtmlWithIconViewHolder(
                         SpannableTouchListener(spannable)
                     },
                     onUrlClicked = { url, _ ->
-                        listener.onHyperlinkClicked(url)
+                        listener.onHyperlinkClicked(url,String.EMPTY,element.meta)
                         Uri.parse(url).let { uri ->
                             if (isAppLink(uri)) {
                                 RouteManager.route(context, url)
@@ -146,9 +147,5 @@ class TableColumnHtmlWithIconViewHolder(
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
         }
-    }
-
-    interface Listener {
-        fun onHyperlinkClicked(url: String)
     }
 }

@@ -12,8 +12,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHt
 
 class TableItemAdapter(
     listener: TableColumnHtmlViewHolder.Listener,
-    listenerHtmlWithIcon: TableColumnHtmlWithIconViewHolder.Listener
-) : BaseAdapter<TableItemFactoryImpl>(TableItemFactoryImpl(listener,listenerHtmlWithIcon)) {
+) : BaseAdapter<TableItemFactoryImpl>(TableItemFactoryImpl(listener)) {
 
     val items: MutableList<Visitable<*>>
         get() = visitables
