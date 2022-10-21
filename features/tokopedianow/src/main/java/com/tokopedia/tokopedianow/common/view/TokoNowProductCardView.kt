@@ -21,14 +21,18 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.LABEL_GIMMICK
+import com.tokopedia.tokopedianow.common.model.LABEL_STATUS
 import com.tokopedia.tokopedianow.common.model.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
+import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class TokoNowProductCardView @JvmOverloads constructor(
     context: Context,
@@ -64,6 +68,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
             progressBarLabelColor = "#ef144a",
             progressBarPercentage = 20,
             labelGroupList = listOf(
+                LabelGroup(
+                    position = LABEL_STATUS,
+                    type = TRANSPARENT_BLACK,
+                    title = "Stok Habis"
+                ),
                 LabelGroup(
                     position = LABEL_GIMMICK,
                     type = TEXT_DARK_ORANGE,
@@ -128,7 +137,9 @@ class TokoNowProductCardView @JvmOverloads constructor(
         imageUrl: String,
         brightness: Float
     ) {
-        imageFilterView.loadImage(imageUrl)
+        imageFilterView.loadImage(
+            url = imageUrl
+        )
         imageFilterView.brightness = brightness
     }
 
@@ -222,14 +233,13 @@ class TokoNowProductCardView @JvmOverloads constructor(
         isOos: Boolean
     ) {
         oosLabel.showIfWithBlock( labelGroup != null && isOos) {
-            text = labelGroup?.title
-            unlockFeature = true
-            setLabelType(
-                getHexColorFromIdColor(
-                    context = context,
-                    idColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            labelGroup?.let { labelGroup ->
+                text = labelGroup.title
+                unlockFeature = true
+                adjustBackgroundColor(
+                    colorType = labelGroup.type
                 )
-            )
+            }
             initWishlistButton(
                 isOos = isOos
             )
@@ -277,43 +287,6 @@ class TokoNowProductCardView @JvmOverloads constructor(
             adjustFireIcon(progressBarLabel)
         }
     }
-
-    /**
-     * This function is used for phase 2
-     */
-//    private fun LayoutTokopedianowProductCardViewBinding.initCategoryInfo(
-//        weight: String,
-//        category: String,
-//        isBold: Boolean,
-//        color: String
-//    ) {
-//        val weightNotBlank = weight.isNotBlank()
-//        val categoryNotBlank = category.isNotBlank()
-//        categoryInfoTypography.showIfWithBlock(weightNotBlank || categoryNotBlank) {
-//            val concatenatedSpannable = SpannableStringBuilder()
-//            if (weightNotBlank) concatenatedSpannable.append(weight)
-//            if (categoryNotBlank) {
-//                concatenatedSpannable.append(MethodChecker.fromHtml("&#8226;"))
-//                val categorySpannable = SpannableString("Halal")
-//                if (isBold) {
-//                    categorySpannable.setSpan(
-//                        color,
-//                        0,
-//                        categorySpannable.length,
-//                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
-//                    )
-//                    categorySpannable.setSpan(
-//                        StyleSpan(Typeface.BOLD),
-//                        0,
-//                        category.length,
-//                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
-//                    )
-//                }
-//                concatenatedSpannable.append(categorySpannable)
-//            }
-//            categoryInfoTypography.setText(concatenatedSpannable, TextView.BufferType.SPANNABLE)
-//        }
-//    }
 
     private fun LayoutTokopedianowProductCardViewBinding.adjustRatingPosition() {
         val constraintSet = ConstraintSet()
@@ -455,6 +428,25 @@ class TokoNowProductCardView @JvmOverloads constructor(
             TEXT_DARK_ORANGE -> {
                 setTextColorCompat(
                     resourceId = com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                )
+            }
+        }
+    }
+
+    private fun Label.adjustBackgroundColor(
+        colorType: String
+    ) {
+        when (colorType) {
+            TRANSPARENT_BLACK -> {
+                setLabelType(
+                    getHexColorFromIdColor(
+                        context = context,
+                        idColor = if (context.isDarkMode()) {
+                            com.tokopedia.unifyprinciples.R.color.Unify_N200_68
+                        } else {
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        }
+                    )
                 )
             }
         }
