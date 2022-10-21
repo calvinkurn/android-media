@@ -613,7 +613,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prev: AccountStateInfo?,
         state: AccountStateInfo
     ) {
-        if (prev == null || prev == state) return
+        if (prev == state) return
         when(state.type) {
             AccountStateInfoType.Live -> {
                 analytic.viewDialogViolation(parentViewModel.channelId)

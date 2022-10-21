@@ -62,16 +62,6 @@ class SwitchAccountTest {
     }
 
     @Test
-    fun test_entryPointWhenShopAccountBanned() {
-        coEvery { mockRepo.getAccountList() } returns accountListResponse().filter { it.isShop }
-        coEvery {
-            mockRepo.getChannelConfiguration(any(), any())
-        } returns buildConfigurationUiModel(streamAllowed = false)
-
-        createRobot().entryPointWhenShopAccountBanned()
-    }
-
-    @Test
     fun test_entryPointWhenBothAccountLive() {
         coEvery {
             mockRepo.getChannelConfiguration(any(), any())
