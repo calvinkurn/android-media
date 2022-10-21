@@ -78,13 +78,6 @@ dependencies {
      * COMPOSE
      */
     implementation projectOrAar(rootProject.ext.libraries.commonCompose)
-    implementation rootProject.ext.composeDependencies.composeCompiler
-    implementation rootProject.ext.composeDependencies.composeUi
-    implementation rootProject.ext.composeDependencies.composeMaterial
-    implementation rootProject.ext.composeDependencies.composeUiTooling
-    implementation rootProject.ext.composeDependencies.composePreview
-    implementation rootProject.ext.composeDependencies.composeFoundation
-    implementation rootProject.ext.composeDependencies.composeRuntime
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.composeLiveData
