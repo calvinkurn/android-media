@@ -187,7 +187,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
     private var isAturMode = false
-    private var collectionShareBottomSheet: UniversalShareBottomSheet? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

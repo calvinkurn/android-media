@@ -19,7 +19,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/collection_create_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/collection_create_name_input_text_field"
         android:text="@string/collection_create_bottomsheet_button_label"

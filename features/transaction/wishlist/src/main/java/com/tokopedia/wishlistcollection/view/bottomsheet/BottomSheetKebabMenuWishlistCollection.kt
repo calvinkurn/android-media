@@ -79,15 +79,6 @@ class BottomSheetKebabMenuWishlistCollection: BottomSheetUnify() {
                 _collectionId = collectionId
                 _collectionName = collectionName
             }
-            /*llKebabMenu1.setOnClickListener {
-                dismiss()
-                actionListener?.onChangeCollectionName(collectionId, collectionName)
-                WishlistCollectionAnalytics.sendClickUbahNamaKoleksiOnThreeDotsBottomsheetEvent()
-            }
-            llKebabMenu2.setOnClickListener {
-                dismiss()
-                actionListener?.onDeleteCollectionItem(collectionId, collectionName)
-            }*/
         }
         setChild(binding?.root)
     }

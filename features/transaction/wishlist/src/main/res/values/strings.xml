@@ -67,6 +67,9 @@
     <string name="collection_coachmark_back">Balik</string>
     <string name="update_collection_bottomsheet_title">Ubah nama Koleksi</string>
     <string name="update_collection_bottomsheet_button">Simpan Perubahan</string>
+    <string name="update_collection_access_confirmation">Siapa yang boleh lihat Koleksi ini?</string>
+    <string name="collection_access_private">Hanya saya</string>
+    <string name="collection_access_private_label">Pribadi</string>
 
     <string name="wishlist_collection_detail_delete_confirmation_title">Hapus Koleksi \"%s\"?</string>
     <string name="wishlist_collection_detail_delete_confirmation_desc">Barang dalam koleksi ini akan tetap tersimpan di Wishlist kamu.</string>

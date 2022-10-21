@@ -58,14 +58,18 @@ import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmp
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
+import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
+import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionEditAdapter
 import com.tokopedia.wishlistcollection.view.adapter.itemdecoration.WishlistCollectionItemOffsetDecoration
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollection
@@ -638,6 +642,10 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     override fun onEditCollection(collectionId: String, collectionName: String) {
         // showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
         // TODO: create new activity for editing
+        val intent = Intent(context, WishlistCollectionEditActivity::class.java)
+        intent.putExtra(COLLECTION_ID, collectionId)
+        intent.putExtra(COLLECTION_NAME, collectionName)
+        startActivity(intent)
     }
 
     private fun showUpdateWishlistCollectionNameBottomSheet(collectionId: String, collectionName: String) {
