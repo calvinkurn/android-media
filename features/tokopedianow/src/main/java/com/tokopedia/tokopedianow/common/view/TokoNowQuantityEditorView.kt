@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -254,6 +253,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     fun setQuantity(quantity: Int) {
         binding.apply {
             if (quantity > DEFAULT_NUMBER) {
+                root.setTransition(R.id.startWithValue, R.id.end)
                 counter = quantity
                 editText.setText(counter.toString())
                 setEditTextPadding()

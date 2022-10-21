@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.show
@@ -21,7 +20,9 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.LABEL_GIMMICK
+import com.tokopedia.tokopedianow.common.model.LABEL_PRICE
 import com.tokopedia.tokopedianow.common.model.LABEL_STATUS
+import com.tokopedia.tokopedianow.common.model.LIGHT_GREEN
 import com.tokopedia.tokopedianow.common.model.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
@@ -57,8 +58,9 @@ class TokoNowProductCardView @JvmOverloads constructor(
         val model = TokoNowProductCardViewUiModel(
             imageUrl = "https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fimages.tokopedia.net%2Fimg%2Fandroid%2Fnow%2FPN-RICH.jpg",
             minOrder = 2,
-            maxOrder = 3,
-            stock = 0,
+            maxOrder = 122,
+            stock = 10,
+            orderQuantity = 5,
             price = "Rp 15.000.000",
             discount = "10%",
             slashPrice = "12121",
@@ -77,6 +79,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     position = LABEL_GIMMICK,
                     type = TEXT_DARK_ORANGE,
                     title = "Terbaru"
+                ),
+                LabelGroup(
+                    position = LABEL_PRICE,
+                    type = LIGHT_GREEN,
+                    title = "Beli 1x disc 20%"
                 ),
 //                LabelGroup(
 //                    position = LABEL_BEST_SELLER,
@@ -102,6 +109,12 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 imageUrl = model.imageUrl,
                 brightness = model.getImageBrightness()
             )
+            initQuantityEditor(
+                minOrder = model.minOrder,
+                maxOrder = model.maxOrder,
+                orderQuantity = model.orderQuantity,
+                isOos = model.isOos()
+            )
             initAssignedValueTypography(
                 labelGroup = model.getAssignedValueLabelGroup()
             )
@@ -110,7 +123,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
             )
             initPromoLabel(
                 label = model.discount,
-                slashPrice = model.slashPrice
+                slashPrice = model.slashPrice,
+                labelGroup = model.getPriceLabelGroup()
             )
             initProductNameTypography(
                 productName = model.name
@@ -121,7 +135,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 isNormal = model.isNormal()
             )
             initOosLabel(
-                labelGroup = model.getOosLabel(),
+                labelGroup = model.getOosLabelGroup(),
                 isOos = model.isOos()
             )
             initProgressBar(
@@ -141,6 +155,21 @@ class TokoNowProductCardView @JvmOverloads constructor(
             url = imageUrl
         )
         imageFilterView.brightness = brightness
+    }
+
+    private fun LayoutTokopedianowProductCardViewBinding.initQuantityEditor(
+        minOrder: Int,
+        maxOrder: Int,
+        orderQuantity: Int,
+        isOos: Boolean
+    ) {
+        quantityEditor.showIfWithBlock(!isOos) {
+            quantityEditor.minQuantity = minOrder
+            quantityEditor.maxQuantity = maxOrder
+            quantityEditor.setQuantity(
+                quantity = orderQuantity
+            )
+        }
     }
 
     private fun LayoutTokopedianowProductCardViewBinding.initAssignedValueTypography(
@@ -172,11 +201,20 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initPromoLabel(
         label: String,
-        slashPrice: String
+        slashPrice: String,
+        labelGroup: LabelGroup?
     ) {
-        promoLabel.showIfWithBlock(label.isNotBlank()) {
-            text = label
-            initSlashPriceTypography(slashPrice)
+        val isLabelNotNull = labelGroup != null
+        promoLabel.showIfWithBlock(label.isNotBlank() || isLabelNotNull) {
+            if (isLabelNotNull) {
+                labelGroup?.let { labelGroup ->
+                    text = labelGroup.title
+                    adjustLabelType(labelGroup.type)
+                }
+            } else {
+                text = label
+                initSlashPriceTypography(slashPrice)
+            }
         }
     }
 
@@ -253,7 +291,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         isOos: Boolean
     ) {
         wishlistButton.showIfWithBlock(isOos) {
-            quantityEditor.hide()
+            // then set
         }
     }
 
@@ -313,7 +351,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
             ConstraintSet.START,
             ratingIcon.id,
             ConstraintSet.END,
-            getDpFromDimen(context, R.dimen.tokopedianow_product_card_rating_typography_start_margin_normal_state).toIntSafely()
+            getDpFromDimen(
+                context = context,
+                id = R.dimen.tokopedianow_product_card_rating_typography_start_margin_normal_state
+            ).toIntSafely()
         )
 
         constraintSet.connect(
@@ -321,7 +362,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
             ConstraintSet.START,
             ConstraintSet.PARENT_ID,
             ConstraintSet.START,
-            getDpFromDimen(context, R.dimen.tokopedianow_product_card_rating_icon_start_margin_normal_state).toIntSafely()
+            getDpFromDimen(
+                context = context,
+                id = R.dimen.tokopedianow_product_card_rating_icon_start_margin_normal_state
+            ).toIntSafely()
         )
 
         constraintSet.connect(
@@ -329,7 +373,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
             ConstraintSet.BOTTOM,
             ConstraintSet.PARENT_ID,
             ConstraintSet.BOTTOM,
-            getDpFromDimen(context, R.dimen.tokopedianow_product_card_rating_typography_bottom_margin_normal_state).toIntSafely()
+            getDpFromDimen(
+                context = context,
+                id = R.dimen.tokopedianow_product_card_rating_typography_bottom_margin_normal_state
+            ).toIntSafely()
         )
 
         constraintSet.applyTo(root)
@@ -449,6 +496,14 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     )
                 )
             }
+        }
+    }
+
+    private fun Label.adjustLabelType(
+        labelType: String
+    ) {
+        when (labelType) {
+            LIGHT_GREEN -> setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
         }
     }
 }
