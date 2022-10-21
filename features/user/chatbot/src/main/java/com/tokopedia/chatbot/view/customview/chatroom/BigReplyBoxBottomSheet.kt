@@ -97,7 +97,11 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     companion object {
         @JvmStatic
-        fun newInstance(context: FragmentActivity): BigReplyBoxBottomSheet {
+        fun newInstance(
+            context: FragmentActivity,
+            replyBoxBottomSheetPlaceHolder: String,
+            replyBoxBottomSheetTitle: String
+        ): BigReplyBoxBottomSheet {
             return BigReplyBoxBottomSheet().apply {
                 this.context = context
             }

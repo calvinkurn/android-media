@@ -8,12 +8,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
-import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.CardUnify
 
 class BigReplyBox (context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
 
-    private var replyBox: CardUnify2? = null
+    private var replyBox: CardUnify? = null
     private var addAttachmentMenu: ImageView? = null
     private var sendButton: ImageView? = null
     private var parentLayout: ConstraintLayout? = null
@@ -48,7 +48,7 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun disableSendButton() {
+    private fun disableSendButton() {
         sendButtonListener?.disableSendButton()
         sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
     }

@@ -1941,7 +1941,8 @@ class ChatbotFragment :
 
     override fun goToBigReplyBoxBottomSheet() {
         activity?.let {
-            val bottomSheetUnify = BigReplyBoxBottomSheet.newInstance(it)
+            val bottomSheetUnify = BigReplyBoxBottomSheet
+                .newInstance(it, replyBoxBottomSheetPlaceHolder, replyBoxBottomSheetTitle)
             BigReplyBoxBottomSheet.replyBoxClickListener = this
             bottomSheetUnify.clearContentPadding = true
             bottomSheetUnify.show(childFragmentManager, "")

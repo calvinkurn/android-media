@@ -379,8 +379,9 @@ class ChatbotPresenter @Inject constructor(
         val replyBoxAttribute =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
-        if (Attachment34RenderType.mapTypeToDeviceType(replyBoxAttribute?.renderTarget) == Attachment34RenderType.RenderAttachment34) {
-
+        if (Attachment34RenderType.mapTypeToDeviceType(replyBoxAttribute?.renderTarget)
+            == Attachment34RenderType.RenderAttachment34
+        ) {
             when (replyBoxAttribute?.contentCode) {
                 TYPE_BIG_REPLY_BOX -> {
                     val bigReplyBoxContent = Gson().fromJson(
