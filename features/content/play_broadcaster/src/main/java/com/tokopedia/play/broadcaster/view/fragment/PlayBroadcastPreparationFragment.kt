@@ -473,7 +473,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
-                renderAccountStateInfo(state.accountStateInfo)
+                renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
             }
         }
     }
@@ -609,7 +609,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun renderAccountStateInfo(state: AccountStateInfo) {
+    private fun renderAccountStateInfo(
+        prev: AccountStateInfo?,
+        state: AccountStateInfo
+    ) {
+        if (prev == null || prev == state) return
         when(state.type) {
             AccountStateInfoType.Live -> {
                 analytic.viewDialogViolation(parentViewModel.channelId)
