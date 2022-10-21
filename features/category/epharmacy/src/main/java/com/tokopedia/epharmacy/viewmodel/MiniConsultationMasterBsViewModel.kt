@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
+import com.tokopedia.epharmacy.network.params.GetMiniConsultationBottomSheetParams
 import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyMiniConsultationMasterResponse
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
@@ -22,29 +23,19 @@ class MiniConsultationMasterBsViewModel @Inject constructor(
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 )  : BaseViewModel(dispatcherBackground){
 
-    private val _miniConsultationLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
-    val miniConsultationLiveData: LiveData<Result<EPharmacyDataModel>> = _miniConsultationLiveData
+    private val _miniConsultationLiveData = MutableLiveData<Result<EPharmacyMiniConsultationMasterResponse>>()
+    val miniConsultationLiveData: LiveData<Result<EPharmacyMiniConsultationMasterResponse>> = _miniConsultationLiveData
 
-    private val _miniConsultationUiLiveData = MutableLiveData<EPharmacyMiniConsultationMasterResponse.EPharmacyMiniConsultationData>()
-    val miniConsultationUiLiveData: LiveData<EPharmacyMiniConsultationMasterResponse.EPharmacyMiniConsultationData> = _miniConsultationUiLiveData
-
-    fun getEPharmacyOrderDetail(dataType: String, enabler: String) {
-        getEPharmacyMiniConsultationMasterUseCase.cancelJobs()
-        getEPharmacyMiniConsultationMasterUseCase.getEPharmacyOrderDetail(
-            ::onSuccessMiniConsultation,
-            ::onFail,
-            dataType,
-            enabler
-        )
-    }
-
-    private fun onSuccessMiniConsultation(ePharmacyMiniConsultationMasterResponse: EPharmacyMiniConsultationMasterResponse) {
-        ePharmacyMiniConsultationMasterResponse.let { data ->
-
-        }
-    }
-
-    private fun onFail(throwable: Throwable) {
-        _miniConsultationLiveData.postValue(Fail(throwable))
+    fun getEPharmacyMiniConsultationDetail(param: GetMiniConsultationBottomSheetParams) {
+        launchCatchError(block = {
+            val result = getEPharmacyMiniConsultationMasterUseCase(param)
+            if(result.data != null){
+                _miniConsultationLiveData.value = Success(result)
+            }else{
+                _miniConsultationLiveData.value = Fail(Throwable())
+            }
+        }, onError = {
+            _miniConsultationLiveData.value = Fail(it)
+        })
     }
 }

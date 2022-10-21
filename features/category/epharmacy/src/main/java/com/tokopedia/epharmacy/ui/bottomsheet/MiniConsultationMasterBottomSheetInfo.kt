@@ -6,38 +6,53 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.epharmacy.R
-import com.tokopedia.epharmacy.databinding.EpharmacyItemMasterMiniConsultationBsBinding
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.epharmacy.databinding.EpharmacyMasterMiniConsultationBottomSheetBinding
+import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
+import com.tokopedia.epharmacy.di.EPharmacyComponent
+import com.tokopedia.epharmacy.network.params.GetMiniConsultationBottomSheetParams
+import com.tokopedia.epharmacy.network.response.EPharmacyMiniConsultationMasterResponse
+import com.tokopedia.epharmacy.ui.adapter.EpharmacyMiniConsultationStepsAdapter
 import com.tokopedia.epharmacy.viewmodel.MiniConsultationMasterBsViewModel
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
 class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
 
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
-    private var binding by viewBinding(EpharmacyItemMasterMiniConsultationBsBinding::bind)
+    private var binding by viewBinding(EpharmacyMasterMiniConsultationBottomSheetBinding::bind)
+    private val miniConsultationAdapter: EpharmacyMiniConsultationStepsAdapter by lazy {
+        EpharmacyMiniConsultationStepsAdapter(mutableListOf())
+    }
 
     companion object {
-        private const val TICKER_DATA = "tickerData"
-        private const val TICKER_ID = "tickerId"
-        fun newInstance(
+        private const val DATA_TYPE = "data_type"
+        private const val ENABLER_NAME = "enabler_name"
+        fun newInstance(dataType: String, enabler: String
         ): MiniConsultationMasterBottomSheetInfo {
             return MiniConsultationMasterBottomSheetInfo().apply {
-                arguments = Bundle().apply {}
+                arguments = Bundle().apply {
+                    putString(DATA_TYPE, dataType)
+                    putString(ENABLER_NAME, enabler)
+                }
             }
         }
     }
 
+    @JvmField
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    var viewModelFactory: ViewModelProvider.Factory? = null
 
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(requireActivity(), viewModelFactory).get(MiniConsultationMasterBsViewModel::class.java)
+        viewModelFactory?.let {
+            ViewModelProvider(requireActivity(), it).get(
+                MiniConsultationMasterBsViewModel::class.java
+            )
+        }
     }
 
     override fun onCreateView(
@@ -45,7 +60,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = EpharmacyItemMasterMiniConsultationBsBinding.inflate(
+        val view = EpharmacyMasterMiniConsultationBottomSheetBinding.inflate(
             inflater, container, false
         ).apply { binding = this }.root
         setChild(view)
@@ -53,21 +68,91 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel?.getEPharmacyMiniConsultationDetail(requestParams())
+        binding?.closeIcon?.setOnClickListener {
+            dismiss()
+        }
+        initRecyclerView()
+        setupObservers()
+    }
+
+    private fun requestParams(): GetMiniConsultationBottomSheetParams {
+        val dataType = arguments?.getString(DATA_TYPE)
+        val enabler = arguments?.getString(ENABLER_NAME)
+        if(dataType != null && enabler != null) {
+            return GetMiniConsultationBottomSheetParams(
+                dataType = dataType,
+                enablerName = enabler
+            )
+        }
+        else{
+            dismiss()
+            return GetMiniConsultationBottomSheetParams()
+        }
+    }
+
+    private fun initRecyclerView() {
+        binding?.stepListRv?.apply {
+            adapter = miniConsultationAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            setHasFixedSize(true)
+        }
+    }
+
     private fun init() {
-        arguments?.let {}
-        setData()
+        arguments?.let {
+
+        }
         setCloseClickListener {
             dismiss()
         }
     }
 
-    private fun setData() {
+    private fun setupObservers() {
+        viewModel?.miniConsultationLiveData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val bottomSheetData = it.data.data
+                    setupBottomSheetUiData(bottomSheetData)
+                }
+                is Fail -> {
+                    onFailMiniConsultationData(it)
+                }
+            }
+        }
+    }
+
+    private fun setupBottomSheetUiData(bottomSheetData: EPharmacyMiniConsultationMasterResponse.EPharmacyMiniConsultationData?) {
+        binding?.let {
+            with(it) {
+                headingTitle.text = bottomSheetData?.infoTitle.toEmptyStringIfNull()
+                paraSubtitle.text = bottomSheetData?.infoText.toEmptyStringIfNull()
+                headingSubtitle.text = bottomSheetData?.stepTitle.toEmptyStringIfNull()
+            }
+        }
+        bottomSheetData?.steps?.let { miniConsultationAdapter.setStepList(it) }
+    }
+
+
+    private fun onFailMiniConsultationData(miniConsultationMasterResponseFail: Fail) {
 
     }
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-//        initInject()
+        initInject()
         return super.onCreateDialog(savedInstanceState)
     }
+
+    private fun initInject() {
+        getComponent().inject(this)
+    }
+
+    private fun getComponent(): EPharmacyComponent =
+        DaggerEPharmacyComponent
+            .builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build()
 }

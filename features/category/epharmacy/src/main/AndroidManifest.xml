@@ -32,7 +32,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="@string/host_epharmacy"
-                    android:scheme="@string/internal_scheme" />
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/edu"/>
             </intent-filter>
         </activity>
     </application>

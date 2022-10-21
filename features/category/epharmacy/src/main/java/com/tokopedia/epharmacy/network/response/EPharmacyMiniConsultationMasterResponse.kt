@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class EPharmacyMiniConsultationMasterResponse(
     @SerializedName("data")
-    val `data`: EPharmacyMiniConsultationData,
+    val `data`: EPharmacyMiniConsultationData?,
     @SerializedName("error")
     val error: String?,
     @SerializedName("header")

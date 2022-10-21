@@ -1,47 +1,25 @@
 package com.tokopedia.epharmacy.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.epharmacy.network.gql.GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY
-import com.tokopedia.epharmacy.network.gql.GQL_FETCH_ORDER_DETAILS_QUERY
+import com.tokopedia.epharmacy.network.params.GetMiniConsultationBottomSheetParams
 import com.tokopedia.epharmacy.network.response.EPharmacyMiniConsultationMasterResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 @GqlQuery("GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY",GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY)
-class GetEPharmacyMiniConsultationMasterUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<EPharmacyMiniConsultationMasterResponse>(graphqlRepository) {
+class GetEPharmacyMiniConsultationMasterUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<GetMiniConsultationBottomSheetParams, EPharmacyMiniConsultationMasterResponse>(dispatchers.io) {
 
-    fun getEPharmacyOrderDetail(onSuccess: (EPharmacyMiniConsultationMasterResponse) -> Unit,
-                                onError: (Throwable) -> Unit,
-                                dataType:String,
-                                enabler: String) {
-        try {
-            this.setTypeClass(EPharmacyMiniConsultationMasterResponse::class.java)
-            this.setRequestParams(getRequestParams(dataType,enabler))
-            this.setGraphqlQuery(GQL_FETCH_ORDER_DETAILS_QUERY)
-            this.execute(
-                { result ->
-                    onSuccess(result)
-                }, { error ->
-                    onError(error)
-                }
-            )
-        } catch (throwable: Throwable) {
-            onError(throwable)
+        override suspend fun execute(params: GetMiniConsultationBottomSheetParams): EPharmacyMiniConsultationMasterResponse {
+            return repository.request(GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY, params)
         }
-    }
 
-    private fun getRequestParams(dataType: String, enabler: String): MutableMap<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap[PARAM_DATA_TYPE] = dataType
-        requestMap[PARAM_ENABLER_NAME] = enabler
-        return requestMap
-    }
-
-    companion object {
-        const val PARAM_DATA_TYPE = "data_type"
-        const val PARAM_ENABLER_NAME = "enabler_name"
-    }
-
+    override fun graphqlQuery(): String = GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY
 }
