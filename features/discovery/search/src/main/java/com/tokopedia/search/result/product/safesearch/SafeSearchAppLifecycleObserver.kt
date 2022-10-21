@@ -10,7 +10,7 @@ class SafeSearchAppLifecycleObserver(
 ) : LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onAppGoBackground() {
-        if(safeSearchPreference.isShowAdult) {
+        if (safeSearchPreference.isShowAdult) {
             safeSearchPreference.isShowAdult = false
             ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
         }
