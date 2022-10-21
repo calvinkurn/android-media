@@ -102,7 +102,6 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
 import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
-import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.FragmentProvider
