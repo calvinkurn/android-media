@@ -152,9 +152,10 @@ class PlayBroadcastActivity : BaseActivity(),
 
         setupObserve()
 
-        PlayBroadcasterIdlingResource.increment()
-        getConfiguration()
-
+        if (!viewModel.isLiveStreamEnded()) {
+            PlayBroadcasterIdlingResource.increment()
+            getConfiguration()
+        }
         observeConfiguration()
 
         if (GlobalConfig.DEBUG) setupDebugView()
@@ -197,6 +198,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         try {
+            viewModel.saveState(outState)
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
         } catch (e: Throwable) {}
@@ -300,6 +302,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
+        viewModel.restoreState(savedInstanceState)
         channelId?.let { viewModel.setChannelId(it) }
         channelType?.let {
             this.channelType = ChannelStatus.getByValue(it)
