@@ -41,6 +41,9 @@ class RecyclerViewUpdater @Inject constructor(
     override val itemCount: Int
         get() = productListAdapter?.itemCount ?: 0
 
+    override val itemList: List<Visitable<*>>?
+        get() = productListAdapter?.itemList
+
     fun initialize(
         recyclerView: RecyclerView?,
         rvLayoutManager: RecyclerView.LayoutManager?,
