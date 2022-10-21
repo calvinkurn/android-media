@@ -19,24 +19,6 @@ public interface SearchConstant {
     int CPM_TEMPLATE_ID = 4;
     int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
-    interface RecyclerView {
-        int VIEW_LIST = 3;
-        int VIEW_PRODUCT_BIG_GRID = 12;
-        int VIEW_PRODUCT_SMALL_GRID = 13;
-    }
-
-    enum ViewType {
-        LIST, SMALL_GRID, BIG_GRID
-    }
-
-    interface DefaultViewType {
-        int SMALL_GRID = 1;
-        int LIST = 2;
-        String VIEW_TYPE_NAME_SMALL_GRID = "grid 2";
-        String VIEW_TYPE_NAME_BIG_GRID = "grid 1";
-        String VIEW_TYPE_NAME_LIST = "list";
-    }
-
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
         String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";
@@ -183,6 +165,7 @@ public interface SearchConstant {
         String LAYOUT_INSPIRATION_CAROUSEL_BUNDLE = "bundle";
         String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
+        String LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC = "product_list_atc";
         String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
         String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
         String TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING = "single_bundling";

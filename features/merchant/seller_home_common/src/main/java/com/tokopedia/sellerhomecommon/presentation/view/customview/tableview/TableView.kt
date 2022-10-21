@@ -26,7 +26,7 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
         null
     private var slideImpressionListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? =
         null
-    private var htmlClickListener: ((url: String, isEmpty: Boolean) -> Unit)? = null
+    private var htmlClickListener: ((url: String, text: String, isEmpty: Boolean) -> Unit)? = null
     private val mTablePageAdapter by lazy { TablePageAdapter() }
     private var isPageIndicatorEnabled: Boolean = true
     private var alreadyAttachToSnapHelper = false
@@ -93,7 +93,7 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
         this.onSwipeListener = onSwipe
     }
 
-    fun addOnHtmlClickListener(onClick: (url: String, isEmpty: Boolean) -> Unit) {
+    fun addOnHtmlClickListener(onClick: (url: String, text: String, isEmpty: Boolean) -> Unit) {
         this.htmlClickListener = onClick
     }
 

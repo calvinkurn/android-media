@@ -1,27 +1,23 @@
 package com.tokopedia.search.result.presentation.view.typefactory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsEmptySearchViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsTickerViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder
+import com.tokopedia.search.result.product.broadmatch.BroadMatchViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder
@@ -30,18 +26,21 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTitleViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTopAdsImageViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
+import com.tokopedia.search.result.product.suggestion.SuggestionViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder
-import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
+import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
-import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
+import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
+import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchViewHolder
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.banner.BannerListener
 import com.tokopedia.search.result.product.banner.BannerViewHolder
+import com.tokopedia.search.result.product.changeview.ChangeViewListener
+import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListener
 import com.tokopedia.search.result.product.cpm.CpmDataView
@@ -58,6 +57,9 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleLi
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleViewHolder
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListener
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.BigGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
@@ -98,7 +100,7 @@ class ProductListTypeFactoryImpl(
     private val broadMatchListener: BroadMatchListener,
     private val inspirationCardListener: InspirationCardListener,
     private val searchInTokopediaListener: SearchInTokopediaListener,
-    private val searchNavigationListener: SearchNavigationClickListener,
+    private val changeViewListener: ChangeViewListener,
     private val topAdsImageViewListener: TopAdsImageViewListener,
     private val chooseAddressListener: ChooseAddressListener,
     private val bannerListener: BannerListener,
@@ -107,13 +109,13 @@ class ProductListTypeFactoryImpl(
     private val violationListener: ViolationListener,
     private val videoCarouselListener: InspirationVideoCarouselListener,
     private val inspirationBundleListener: InspirationBundleListener,
+    private val inspirationListAtcListener: InspirationListAtcListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isUsingViewStub: Boolean = false,
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
+    private val recycledViewPool: RecyclerView.RecycledViewPool,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
-
-    override var recyclerViewItem = 0
 
     override fun type(cpmDataView: CpmDataView): Int {
         return CpmViewHolder.LAYOUT
@@ -128,14 +130,12 @@ class ProductListTypeFactoryImpl(
     }
 
     override fun type(productItem: ProductItemDataView): Int {
-        return when (recyclerViewItem) {
-            SearchConstant.RecyclerView.VIEW_LIST ->
+        return when (changeViewListener.viewType) {
+            ViewType.LIST ->
                 ListProductItemViewHolder.layout(isUsingViewStub)
-            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
+            ViewType.BIG_GRID ->
                 BigGridProductItemViewHolder.LAYOUT
-            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
-                SmallGridProductItemViewHolder.layout(isUsingViewStub)
-            else ->
+            ViewType.SMALL_GRID ->
                 SmallGridProductItemViewHolder.layout(isUsingViewStub)
         }
     }
@@ -176,22 +176,16 @@ class ProductListTypeFactoryImpl(
         return BannedProductsEmptySearchViewHolder.LAYOUT
     }
 
-    override fun type(bannedProductsTickerDataView: BannedProductsTickerDataView): Int {
-        return BannedProductsTickerViewHolder.LAYOUT
-    }
-
     override fun type(broadMatchDataView: BroadMatchDataView): Int {
         return BroadMatchViewHolder.LAYOUT
     }
 
     override fun type(inspirationCardDataView: InspirationCardDataView): Int {
-        return when (recyclerViewItem) {
-            SearchConstant.RecyclerView.VIEW_LIST,
-            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
+        return when (changeViewListener.viewType) {
+            ViewType.LIST, ViewType.BIG_GRID ->
                 BigGridInspirationCardViewHolder.LAYOUT
-            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
+            ViewType.SMALL_GRID ->
                 SmallGridInspirationCardViewHolder.LAYOUT
-            else -> SmallGridInspirationCardViewHolder.LAYOUT
         }
     }
 
@@ -231,6 +225,9 @@ class ProductListTypeFactoryImpl(
     override fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView): Int =
         SameSessionRecommendationViewHolder.LAYOUT
 
+    override fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int =
+        InspirationListAtcViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -247,7 +244,7 @@ class ProductListTypeFactoryImpl(
             EmptyStateFilterViewHolder.LAYOUT -> EmptyStateFilterViewHolder(view, emptyStateListener)
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
-                InspirationCarouselViewHolder(view, inspirationCarouselListener)
+                InspirationCarouselViewHolder(view, inspirationCarouselListener, recycledViewPool)
             InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
                     view,
                     videoCarouselListener,
@@ -263,8 +260,8 @@ class ProductListTypeFactoryImpl(
             RecommendationItemViewHolder.LAYOUT ->
                 RecommendationItemViewHolder(view, recommendationListener)
             BannedProductsEmptySearchViewHolder.LAYOUT -> BannedProductsEmptySearchViewHolder(view)
-            BannedProductsTickerViewHolder.LAYOUT -> BannedProductsTickerViewHolder(view)
-            BroadMatchViewHolder.LAYOUT -> BroadMatchViewHolder(view, broadMatchListener)
+            BroadMatchViewHolder.LAYOUT ->
+                BroadMatchViewHolder(view, broadMatchListener, recycledViewPool)
             SmallGridInspirationCardViewHolder.LAYOUT ->
                 SmallGridInspirationCardViewHolder(view, inspirationCardListener)
             BigGridInspirationCardViewHolder.LAYOUT ->
@@ -278,7 +275,7 @@ class ProductListTypeFactoryImpl(
                 ChooseAddressViewHolder(
                     view,
                     chooseAddressListener,
-                    searchNavigationListener,
+                    changeViewListener,
                     fragmentProvider,
                 )
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
@@ -290,6 +287,8 @@ class ProductListTypeFactoryImpl(
                 inspirationCarouselListener,
                 sameSessionRecommendationListener,
             )
+            InspirationListAtcViewHolder.LAYOUT ->
+                InspirationListAtcViewHolder(view, inspirationListAtcListener, recycledViewPool)
 
             else -> super.createViewHolder(view, type)
         }
