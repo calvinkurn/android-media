@@ -10,7 +10,6 @@
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        tools:src="@drawable/iconunify_close"
         android:tint="@color/Unify_NN1000"
         app:layout_constraintBottom_toBottomOf="@id/text_parent"
         app:layout_constraintStart_toStartOf="parent"

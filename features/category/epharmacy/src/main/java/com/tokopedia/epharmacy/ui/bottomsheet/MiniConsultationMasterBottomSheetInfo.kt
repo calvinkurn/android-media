@@ -47,9 +47,9 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
 
-    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val viewModel by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(requireActivity(), it).get(
+            ViewModelProvider(this, it).get(
                 MiniConsultationMasterBsViewModel::class.java
             )
         }
@@ -72,7 +72,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         viewModel?.getEPharmacyMiniConsultationDetail(requestParams())
         binding?.closeIcon?.setOnClickListener {
-            dismiss()
+            closeBottomSheet()
         }
         initRecyclerView()
         setupObservers()
@@ -88,7 +88,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
             )
         }
         else{
-            dismiss()
+            closeBottomSheet()
             return GetMiniConsultationBottomSheetParams()
         }
     }
@@ -102,11 +102,8 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
     }
 
     private fun init() {
-        arguments?.let {
-
-        }
         setCloseClickListener {
-            dismiss()
+            closeBottomSheet()
         }
     }
 
@@ -140,6 +137,10 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
 
     }
 
+    private fun closeBottomSheet(){
+        dismiss()
+        activity?.finish()
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         initInject()

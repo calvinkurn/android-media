@@ -18,7 +18,7 @@ class EPharmacyMiniConsultationTransparentActivity : BaseActivity() {
         val dataType = intent.getStringExtra(DATA_TYPE)
         val enabler = intent.getStringExtra(ENABLER_NAME)
         if (dataType != null && enabler != null) {
-            MiniConsultationMasterBottomSheetInfo.newInstance(dataType, enabler)
+            MiniConsultationMasterBottomSheetInfo.newInstance(dataType, enabler).show(supportFragmentManager,"")
         }else{
             finish()
         }

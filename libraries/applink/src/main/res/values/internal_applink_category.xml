@@ -25,5 +25,5 @@
     <string name="hotlist_label">hotlist</string>
     <string name="applink_path_tradein_tnc" translatable="false">/tradein_tnc</string>
     <string name="applink_path_tradein_black_market" translatable="false">/tradein_black_market</string>
-    <string name="edu" translatable="false">/edu</string>
+    <string name="edu" translatable="false">/edu/</string>
 </resources>
