@@ -83,8 +83,6 @@ class ProductTagParentFragment @Inject constructor(
 
     private var coachmark: CoachMark2? = null
 
-    private val scope = CoroutineScope(dispatchers.main)
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -150,7 +148,6 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        scope.cancel()
         _binding = null
     }
 
@@ -464,7 +461,7 @@ class ProductTagParentFragment @Inject constructor(
         if(isShow) {
             coachmark = CoachMark2(activity as Context)
 
-            scope.launch {
+            viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
                 val isParentBottomSheet = getParentFragmentByInstance<BottomSheetUnify>() != null
                 if(isParentBottomSheet) {
                     withContext(dispatchers.computation) {
@@ -472,17 +469,14 @@ class ProductTagParentFragment @Inject constructor(
                     }
                 }
 
-
-                withContext(dispatchers.main) {
-                    coachmark?.showCoachMark(arrayListOf(
-                        CoachMark2Item(
-                            binding.tvCcProductTagProductSource,
-                            getString(R.string.content_creation_search_coachmark_header),
-                            getString(R.string.content_creation_search_coachmark_desc),
-                            CoachMark2.POSITION_BOTTOM
-                        )
-                    ))
-                }
+                coachmark?.showCoachMark(arrayListOf(
+                    CoachMark2Item(
+                        binding.tvCcProductTagProductSource,
+                        getString(R.string.content_creation_search_coachmark_header),
+                        getString(R.string.content_creation_search_coachmark_desc),
+                        CoachMark2.POSITION_BOTTOM
+                    )
+                ))
             }
         }
     }
