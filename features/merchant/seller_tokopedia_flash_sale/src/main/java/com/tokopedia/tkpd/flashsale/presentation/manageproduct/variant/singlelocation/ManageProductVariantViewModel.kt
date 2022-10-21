@@ -84,7 +84,7 @@ class ManageProductVariantViewModel @Inject constructor(
         val selectedItem = productData.childProducts[itemPosition]
         selectedItem.isToggleOn = value
         selectedItem.warehouses.map {
-            it.isToggleOn = !value
+            it.isToggleOn = value
         }
     }
 
