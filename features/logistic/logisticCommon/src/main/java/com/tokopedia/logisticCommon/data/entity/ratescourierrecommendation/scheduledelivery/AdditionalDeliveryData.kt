@@ -13,7 +13,7 @@ class AdditionalDeliveryData(
     @SerializedName("available")
     val available: Boolean = false,
     @SerializedName("hidden")
-    val hidden: Boolean = false,
+    val hidden: Boolean = true,
     @SerializedName("title")
     val title: String = "",
     @SerializedName("text")

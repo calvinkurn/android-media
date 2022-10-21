@@ -22,8 +22,6 @@ data class ScheduleDeliveryUiModel(
     var timeslotId: Long = 0L,
     // selected delivery products
     var deliveryProduct: DeliveryProduct? = null,
-    // show coach mark
-    var isNeedShowCoachMark: Boolean = false
 ) : Parcelable {
 
     fun setScheduleDateAndTimeslotId(
@@ -32,6 +30,7 @@ data class ScheduleDeliveryUiModel(
     ) {
         if (scheduleDate != null && timeslotId != null) {
             getSelectedDeliveryServices(scheduleDate, timeslotId) { recommendScheduleDate, recommendDeliveryProduct ->
+                this.isSelected = true
                 this.scheduleDate = recommendScheduleDate
                 this.timeslotId = recommendDeliveryProduct.id
                 this.deliveryProduct = recommendDeliveryProduct

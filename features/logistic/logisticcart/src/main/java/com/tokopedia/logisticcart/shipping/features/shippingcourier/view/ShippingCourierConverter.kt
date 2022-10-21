@@ -130,8 +130,7 @@ class ShippingCourierConverter @Inject constructor() {
             title = title,
             text = text,
             notice = notice,
-            deliveryServices = deliveryServices,
-            isNeedShowCoachMark = true
+            deliveryServices = deliveryServices
         ).apply {
             setScheduleDateAndTimeslotId(scheduleDate, timeslotId)
         }

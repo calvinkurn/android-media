@@ -70,68 +70,9 @@ class ShippingDurationConverter @Inject constructor() {
                 // Has service / duration list
                 shippingRecommendationData.shippingDurationUiModels =
                     convertShippingDuration(ratesData.ratesDetailData)
-
-                // Get Schedule Delivery Data
-//                shippingRecommendationData.additionalDeliveryData = ratesData.ratesDetailData.additionalDeliveryData
-                shippingRecommendationData.additionalDeliveryData = mockAdditionalDeliveryData()
             }
         }
         return shippingRecommendationData
-    }
-
-    private fun mockAdditionalDeliveryData(): AdditionalDeliveryData {
-        return AdditionalDeliveryData(
-            recommendAdditionalShipper = true,
-            deliveryType = 0,
-            available = true,
-            hidden = false,
-            title = "Jadwal lainnya",
-            text = "Semua jadwal lain penuh dipesan",
-            deliveryServices = arrayListOf(
-                DeliveryService(
-                    title = "Hari ini, 20 Sep",
-                    titleLabel = "Hari ini",
-                    id = "2022-09-20T00:00:00Z",
-                    shipperId = 10,
-                    available = true,
-                    hidden = false,
-                    deliveryProducts = arrayListOf(
-                        DeliveryProduct(
-                            title = "Tiba 14:00 - 16:00",
-                            textEta = "Tiba hari ini, 14:00 - 16:00",
-                            id = 2022092014123, // timeslot_id from schelly
-                            finalPrice = 0.0,
-                            realPrice = 10000.0,
-                            textFinalPrice = "Rp0",
-                            textRealPrice = "Rp10.000",
-                            text = "Sisa 3 slot",
-                            shipperId = 10,
-                            shipperProductId = 28,
-                            available = true,
-                            hidden = false,
-                            recommend = true,
-                            promoCode = ""
-                        ),
-                        DeliveryProduct(
-                            title = "Tiba 16:00 - 18:00",
-                            textEta = "Tiba Besok, 08:00 - 10:00",
-                            id = 2022092014124, // timeslot_id from schelly
-                            finalPrice = 10000.0,
-                            realPrice = 0.0,
-                            textFinalPrice = "Rp10.000",
-                            textRealPrice = "",
-                            text = "Sisa 3 slot",
-                            shipperId = 10,
-                            shipperProductId = 28,
-                            available = true,
-                            hidden = false,
-                            recommend = false,
-                            promoText = "Kuota gratis ongkirmu habis"
-                        )
-                    )
-                )
-            )
-        )
     }
 
     private fun convertShippingDuration(ratesDetailData: RatesDetailData): List<ShippingDurationUiModel> {
