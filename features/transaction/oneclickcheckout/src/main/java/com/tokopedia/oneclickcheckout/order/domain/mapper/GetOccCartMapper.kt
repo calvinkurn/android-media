@@ -8,7 +8,9 @@ import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
@@ -59,7 +61,8 @@ class GetOccCartMapper @Inject constructor() {
                 popUpMessage = data.popUpMessage,
                 totalProductPrice = data.totalProductPrice,
                 profileCode = data.paymentAdditionalData.profileCode,
-                popUp = mapPopUp(data.popUp)
+                popUp = mapPopUp(data.popUp),
+                imageUpload = mapImageUpload(data.imageUpload)
         )
     }
 
@@ -579,6 +582,16 @@ class GetOccCartMapper @Inject constructor() {
             needPrescription = ethicalDrugResponse.needPrescription,
             iconUrl = ethicalDrugResponse.iconUrl,
             text = ethicalDrugResponse.text
+        )
+    }
+
+    private fun mapImageUpload(imageUploadResponse: ImageUploadResponse): ImageUploadDataModel {
+        return ImageUploadDataModel(
+            showImageUpload = imageUploadResponse.showImageUpload,
+            text = imageUploadResponse.text,
+            leftIconUrl = imageUploadResponse.leftIconUrl,
+            checkoutId = imageUploadResponse.checkoutId,
+            frontEndValidation = imageUploadResponse.frontEndValidation,
         )
     }
 }

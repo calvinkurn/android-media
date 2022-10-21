@@ -1,9 +1,9 @@
-package com.tokopedia.checkout.domain.usecase
+package com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase
 
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -12,7 +12,11 @@ import javax.inject.Inject
 class GetPrescriptionIdsUseCase @Inject constructor(private val gql: GraphqlUseCase) {
 
     fun execute(checkoutId: String): Observable<GetPrescriptionIdsResponse> {
-        val gqlRequest = GraphqlRequest(query, GetPrescriptionIdsResponse::class.java, getRequestParams(checkoutId))
+        val gqlRequest = GraphqlRequest(
+            GET_PRESCRIPTION_IDS_QUERY,
+            GetPrescriptionIdsResponse::class.java,
+            getRequestParams(checkoutId)
+        )
         gql.clearCache()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
@@ -34,18 +38,4 @@ class GetPrescriptionIdsUseCase @Inject constructor(private val gql: GraphqlUseC
     companion object {
         const val PARAM_CHECKOUT_ID = "checkout_id"
     }
-
 }
-
-private val query = """
-    query GetEpharmacyCheckoutData(${'$'}checkout_id: String!) {
-    getEpharmacyCheckoutData(checkout_id: ${'$'}checkout_id) {
-      data {
-        checkout_id
-        prescription_images {
-          prescription_id
-        }
-      }
-    }
-}
-""".trimIndent()
