@@ -98,7 +98,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
     private fun initConfig() {
         val gson = GsonBuilder().setPrettyPrinting().create()
         val pickerConfigJson = gson.toJson(PickerParam().apply {
-            withEditor(true)
+            withEditor()
         })
         val editorConfigJson = gson.toJson(EditorParam().apply {
             withRemoveBackground()
