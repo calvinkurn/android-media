@@ -30,7 +30,7 @@ class AddGqlActivity : BaseActivity() {
     lateinit var etCustomName: EditText
     lateinit var etResponse: EditText
     lateinit var toolbar: Toolbar
-    lateinit var radioGroup: RadioGroup
+    var radioGroup: RadioGroup? = null
 
     override fun getLayout() = R.layout.fake_activity_add_gql
     lateinit var viewModel: AddGqlVM
@@ -66,7 +66,7 @@ class AddGqlActivity : BaseActivity() {
         etResponse = findViewById(R.id.etResponse)
         toolbar = findViewById(R.id.toolbar)
         radioGroup = findViewById(R.id.rgCheckedResponseState)
-        radioGroup.setOnCheckedChangeListener { radioGroup, i ->
+        radioGroup?.setOnCheckedChangeListener { _, i ->
             isResponseSuccess = (i == R.id.rbCheckedSuccess)
         }
         cbDelayResponse.setOnCheckedChangeListener { compoundButton, b ->
