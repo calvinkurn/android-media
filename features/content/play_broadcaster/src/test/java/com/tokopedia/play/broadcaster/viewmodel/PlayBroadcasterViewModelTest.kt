@@ -990,29 +990,4 @@ class PlayBroadcasterViewModelTest {
         }
     }
 
-    @Test
-    fun `when shop and buyer account eligible but banned then selected account is user`() {
-        val configMock = uiModelBuilder.buildConfigurationUiModel(streamAllowed = false)
-        val accountMock = uiModelBuilder.buildAccountListModel()
-
-        coEvery { mockRepo.getAccountList() } returns accountMock
-        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(),
-        )
-
-        robot.use {
-            val state = robot.recordState {
-                it.getAccountConfiguration()
-            }
-            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
-            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.Unknown)
-        }
-    }
-
 }
