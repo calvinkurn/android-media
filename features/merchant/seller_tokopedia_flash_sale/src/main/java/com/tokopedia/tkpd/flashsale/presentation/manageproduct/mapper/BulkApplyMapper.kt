@@ -103,4 +103,23 @@ object BulkApplyMapper {
         )
     }
 
+    fun mapBulkResultToProductByVariant(
+        product: ChildProduct,
+        result: ProductBulkApplyResult,
+    ) = ChildProduct(
+        disabledReason = product.disabledReason,
+        isDisabled = product.isDisabled,
+        isMultiwarehouse = product.isMultiwarehouse,
+        isToggleOn = product.isToggleOn,
+        name = product.name,
+        picture = product.picture,
+        price = product.price,
+        productCriteria = product.productCriteria,
+        productId = product.productId,
+        sku = product.sku,
+        stock = product.stock,
+        url = product.url,
+        warehouses = mapResultToWarehouse(product.warehouses, result)
+    )
+
 }
