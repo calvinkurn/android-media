@@ -713,6 +713,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     @Override
                     public void onNext(Boolean needToShowCoachmark) {
                         if (!isUnsubscribed() && needToShowCoachmark) {
+                            shipmentPresenter.fetchEpharmacyData();
                             int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
                             rvShipment.scrollToPosition(uploadPrescriptionPosition);
                             rvShipment.post(() -> {

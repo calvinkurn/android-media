@@ -378,6 +378,8 @@ public interface ShipmentContract {
 
         void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId);
 
+        void fetchEpharmacyData();
+
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
         LastApplyUiModel getLastApplyData();

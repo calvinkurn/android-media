@@ -5,6 +5,7 @@ import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
+import android.text.TextUtils;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -2420,42 +2421,62 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
+    @Override
     public void fetchEpharmacyData() {
         epharmacyUseCase.getEPharmacyPrepareProductsGroup(ePharmacyPrepareProductsGroupResponse -> {
-            GroupData data = ePharmacyPrepareProductsGroupResponse.getDetailData().getGroupsData();
-            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
-                    boolean updated = false;
-                    int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
-                    if (position > 0) {
-                        for (GroupData.EpharmacyGroup epharmacyGroup : data.getEpharmacyGroups()) {
-                            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                                for (ProductsInfo productInfo : epharmacyGroup.getProductsInfo()) {
-                                    if (Long.parseLong(productInfo.getShopId()) == shipmentCartItemModel.getShopId()) {
-                                        for (ProductsInfo.Product product : productInfo.getProducts()) {
-                                            if (cartItemModel.getProductId() == product.getProductId()) {
-                                                if (Long.parseLong(epharmacyGroup.getConsultationData().getTokoConsultationId()) > 0) {
-                                                    if (epharmacyGroup.getConsultationData().getConsultationStatus() == 4) {
-                                                        shipmentCartItemModel.setError(true);
-                                                        shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
-                                                        getView().resetCourier(shipmentCartItemModel);
-                                                        updated = true;
-                                                        break;
+            if (ePharmacyPrepareProductsGroupResponse.getDetailData() != null) {
+                GroupData data = ePharmacyPrepareProductsGroupResponse.getDetailData().getGroupsData();
+                if (data != null && data.getEpharmacyGroups() != null) {
+                    for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                        if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
+                            boolean updated = false;
+                            int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
+                            if (position > 0) {
+                                for (GroupData.EpharmacyGroup epharmacyGroup : data.getEpharmacyGroups()) {
+                                    if (epharmacyGroup != null && epharmacyGroup.getProductsInfo() != null) {
+                                        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                                            for (ProductsInfo productInfo : epharmacyGroup.getProductsInfo()) {
+                                                if (productInfo != null && productInfo.getShopId() != null && productInfo.getProducts() != null && Long.parseLong(productInfo.getShopId()) == shipmentCartItemModel.getShopId()) {
+                                                    for (ProductsInfo.Product product : productInfo.getProducts()) {
+                                                        if (product != null && product.getProductId() != null && cartItemModel.getProductId() == product.getProductId()) {
+                                                            if (epharmacyGroup.getConsultationData() != null && !TextUtils.isEmpty(epharmacyGroup.getConsultationData().getTokoConsultationId()) && epharmacyGroup.getConsultationData().getTokoConsultationId() != "0") {
+                                                                if (epharmacyGroup.getConsultationData().getConsultationStatus() == 4) {
+                                                                    shipmentCartItemModel.setError(true);
+                                                                    shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
+                                                                    shipmentCartItemModel.setTokoConsultationId("");
+                                                                    shipmentCartItemModel.setPartnerConsultationId("");
+                                                                    getView().resetCourier(shipmentCartItemModel);
+                                                                    updated = true;
+                                                                    break;
+                                                                } else if (epharmacyGroup.getConsultationData().getConsultationStatus() == 2) {
+                                                                    shipmentCartItemModel.setTokoConsultationId(epharmacyGroup.getConsultationData().getTokoConsultationId());
+                                                                    shipmentCartItemModel.setPartnerConsultationId(epharmacyGroup.getConsultationData().getPartnerConsultationId());
+                                                                }
+                                                            } else if (epharmacyGroup.getPrescriptionImages() != null && !epharmacyGroup.getPrescriptionImages().isEmpty()) {
+                                                                ArrayList<String> prescriptionIds = new ArrayList<>();
+                                                                for (GroupData.EpharmacyGroup.PrescriptionImage prescriptionImage : epharmacyGroup.getPrescriptionImages()) {
+                                                                    if (prescriptionImage != null && !TextUtils.isEmpty(prescriptionImage.getPrescriptionId())) {
+                                                                        prescriptionIds.add(prescriptionImage.getPrescriptionId());
+                                                                    }
+                                                                }
+                                                                shipmentCartItemModel.setPrescriptionIds(prescriptionIds);
+                                                            }
+                                                        }
                                                     }
                                                 }
+                                                if (updated) {
+                                                    break;
+                                                }
+                                            }
+                                            if (updated) {
+                                                break;
                                             }
                                         }
-                                    }
-                                    if (updated) {
-                                        break;
+                                        if (updated) {
+                                            break;
+                                        }
                                     }
                                 }
-                                if (updated) {
-                                    break;
-                                }
-                            }
-                            if (updated) {
-                                break;
                             }
                         }
                     }

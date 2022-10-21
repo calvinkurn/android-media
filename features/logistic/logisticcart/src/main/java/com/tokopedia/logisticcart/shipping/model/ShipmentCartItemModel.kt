@@ -118,7 +118,10 @@ class ShipmentCartItemModel(
 
     // Epharmacy
     var supportMiniConsul: Boolean = true,
-    var hasEthicalProducts: Boolean = false
+    var hasEthicalProducts: Boolean = false,
+    var prescriptionIds: List<String> = emptyList(),
+    var tokoConsultationId: String = "",
+    var partnerConsultationId: String = ""
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean
