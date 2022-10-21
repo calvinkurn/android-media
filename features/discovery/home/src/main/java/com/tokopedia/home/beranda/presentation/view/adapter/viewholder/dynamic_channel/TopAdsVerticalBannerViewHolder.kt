@@ -5,7 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeTopAdsVerticalBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.databinding.ItemHomeVerticalTopAdsBannerBinding
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
@@ -47,8 +49,19 @@ class TopAdsVerticalBannerViewHolder constructor(
             binding?.topadsBanner?.renderTdnBanner(tdnBannerList.first(), onTdnBannerClicked = {
                 if (it.isNotEmpty()) RouteManager.route(binding?.topadsBanner?.context, it)
             })
+            setChannelDivider(element.channel)
         } else {
             binding?.root?.hide()
+        }
+    }
+
+    private fun setChannelDivider(channel: DynamicHomeChannel.Channels) {
+        binding?.run {
+            HomeChannelWidgetUtil.validateHomeComponentDivider(
+                channelModel = channel,
+                dividerTop = homeComponentTopAdsDividerHeader,
+                dividerBottom = homeComponentTopAdsDividerFooter
+            )
         }
     }
 
