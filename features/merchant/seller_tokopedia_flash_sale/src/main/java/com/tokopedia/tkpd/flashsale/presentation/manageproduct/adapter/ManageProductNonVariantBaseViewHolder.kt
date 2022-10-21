@@ -168,6 +168,10 @@ open class ManageProductNonVariantBaseViewHolder(
         quantityEditor.maxValue = criteria.maxCustomStock
         textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
         setupInitialFieldMessage(criteria)
+        if (textFieldPriceDiscountNominal.editText.text.isNotEmpty() ||
+            textFieldPriceDiscountPercentage.editText.text.isNotEmpty()) {
+            triggerListener(criteria, discount)
+        }
         isEditing = false
         listenerNumberFormatDiscountNominal = NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountNominal)
         listenerNumberFormatDiscountPercent = NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountPercentage)
