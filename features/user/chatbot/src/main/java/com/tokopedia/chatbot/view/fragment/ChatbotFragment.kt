@@ -392,7 +392,6 @@ class ChatbotFragment :
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
 
         chatbotAdapter = adapter as ChatbotAdapter
-        goToBigReplyBoxBottomSheet()
         return view
     }
 
@@ -1951,6 +1950,15 @@ class ChatbotFragment :
     }
 
     override fun getMessageContentFromBottomSheet(msg: String) {
+        val startTime = SendableUiModel.generateStartTime()
 
+        presenter.sendMessage(
+            messageId,
+            msg,
+            startTime,
+            opponentId,
+            replyBubbleContainer?.referredMsg,
+            onSendingMessage(msg, startTime, replyBubbleContainer?.referredMsg)
+        )
     }
 }

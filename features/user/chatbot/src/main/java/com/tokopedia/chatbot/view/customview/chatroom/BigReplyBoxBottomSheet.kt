@@ -49,10 +49,10 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     private fun setUpEditText() {
         getBindingView().chatText.minLine = MINIMUM_NUMBER_OF_LINES
-        //        getBindingView().chatText.labelText.text = labelText
-//        getBindingView().chatText.textInputLayout.hint= hintText
-        getBindingView().chatText.labelText.text = "LABEL"
-        getBindingView().chatText.textInputLayout.hint= "HINT"
+        getBindingView().chatText.labelText.text = labelText
+        getBindingView().chatText.textInputLayout.hint= hintText
+//        getBindingView().chatText.labelText.text = "LABEL"
+//        getBindingView().chatText.textInputLayout.hint= "HINT"
     }
 
     private fun setUpTextWatcher() {
@@ -80,9 +80,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     private fun getTextWatcherForMessage(): TextWatcher {
         return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (getWordCount() >= MINIMUM_NUMBER_OF_WORDS) {
