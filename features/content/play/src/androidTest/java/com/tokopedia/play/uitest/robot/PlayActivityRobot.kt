@@ -12,9 +12,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.play.R
 import com.tokopedia.content.test.espresso.clickOnViewChild
 import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.content.test.espresso.waitUntilViewIsDisplayed
+import com.tokopedia.play.R
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
@@ -41,6 +42,9 @@ class PlayActivityRobot(
     init {
         scenario.moveToState(Lifecycle.State.RESUMED)
 
+        waitUntilViewIsDisplayed(
+            withId(R.id.view_video)
+        )
         delay(initialDelay)
     }
 

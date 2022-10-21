@@ -8,6 +8,7 @@ import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
+import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
@@ -46,36 +47,37 @@ class PlayPinnedProductUiTest {
 
     private val uiModelBuilder = UiModelBuilder.get()
 
-    private val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-
     private val channelId = "12669"
 
     init {
-        every { mockChannelStorage.getChannelList() } returns listOf(channelId)
-        every { mockChannelStorage.getData(any()) } returns uiModelBuilder.buildChannelData(
-            id = channelId,
-            tagItems = uiModelBuilder.buildTagItem(
-                product = uiModelBuilder.buildProductModel(
-                    canShow = true,
+        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
+            channelData = listOf(
+                uiModelBuilder.buildChannelData(
+                    id = channelId,
+                    tagItems = uiModelBuilder.buildTagItem(
+                        product = uiModelBuilder.buildProductModel(
+                            canShow = true,
+                        )
+                    ),
+                    videoMetaInfo = PlayVideoMetaInfoUiModel(
+                        videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
+                            params = PlayGeneralVideoPlayerParams(
+                                videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
+                                buffer = PlayBufferControl(),
+                                lastMillis = null,
+                            )
+                        ),
+                        videoStream = PlayVideoStreamUiModel(
+                            "", VideoOrientation.Vertical, "Video Keren"
+                        ),
+                    ),
                 )
             ),
-            videoMetaInfo = PlayVideoMetaInfoUiModel(
-                videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
-                    params = PlayGeneralVideoPlayerParams(
-                        videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
-                        buffer = PlayBufferControl(),
-                        lastMillis = null,
-                    )
-                ),
-                videoStream = PlayVideoStreamUiModel(
-                    "", VideoOrientation.Vertical, "Video Keren"
-                ),
-            ),
+            cursor = "",
         )
-
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext, mockChannelStorage))
+                .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
                 .playTestRepositoryModule(PlayTestRepositoryModule(repo))
                 .build()

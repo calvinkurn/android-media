@@ -12,6 +12,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.common.producttag.analytic.coordinator.ShopImpressionCoordinator
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
@@ -138,6 +139,7 @@ class ProductChooserUGCRobot(
                     ProductTagParentFragment(
                         analyticUserSession,
                         ugcViewModel,
+                        CoroutineDispatchersProvider,
                     )
                 }
                 LastTaggedProductFragment::class.java.name -> {
