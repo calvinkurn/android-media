@@ -20,12 +20,11 @@ import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: DiscoProductBundlingLayoutBinding = DiscoProductBundlingLayoutBinding.bind(itemView)
-    private var productBundleList : ArrayList<BundleUiModel>? = null
-    private var lastSentPosition: Int = 0
-    private var hasScrolled = false
+    private var productBundleList: ArrayList<BundleUiModel>? = null
     private var mProductBundleRecycleAdapter: ProductBundleWidgetAdapter
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mProductBundlingViewModel: ProductBundlingViewModel? = null
@@ -76,18 +75,20 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val totalItemCount: Int = linearLayoutManager.itemCount
                     val lastVisibleItemPosition: Int = linearLayoutManager.findLastVisibleItemPosition()
-                    if (hasScrolled && (lastSentPosition <= totalItemCount - 1) && (lastVisibleItemPosition > lastSentPosition || lastVisibleItemPosition == totalItemCount - 1)) {
-                        mProductBundlingViewModel?.components?.let {
-                            productBundleList?.let { bundledProductList ->
-                                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                                    .trackEventProductBundlingCarouselImpression(it, bundledProductList, totalItemCount, lastSentPosition, lastVisibleItemPosition)
-                                lastSentPosition = lastVisibleItemPosition + 1
+                    mProductBundlingViewModel?.let { viewModel ->
+                        if (viewModel.hasScrolled && (viewModel.lastSentPosition <= totalItemCount - 1) && (lastVisibleItemPosition > viewModel.lastSentPosition || lastVisibleItemPosition == totalItemCount - 1)) {
+                            viewModel.components.let {
+                                productBundleList?.let { bundledProductList ->
+                                    (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                                        .trackEventProductBundlingCarouselImpression(it, bundledProductList, totalItemCount, viewModel.lastSentPosition, lastVisibleItemPosition)
+                                    viewModel.lastSentPosition = lastVisibleItemPosition + 1
+                                }
                             }
                         }
                     }
                 }
-                if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
-                    hasScrolled = true
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    mProductBundlingViewModel?.hasScrolled = true
                 }
             }
         })
@@ -128,7 +129,7 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
 
     private fun productBundleCallback() = object : ProductBundleListener {
         override fun onBundleProductClicked(bundleType: BundleTypes, bundle: BundleUiModel, selectedMultipleBundle: BundleDetailUiModel, selectedProduct: BundleProductUiModel, productItemPosition: Int) {
-            if(selectedProduct.productAppLink.isNotEmpty()) {
+            if (selectedProduct.productAppLink.isNotEmpty()) {
                 itemView.context?.let { context ->
                     RouteManager.route(context, selectedProduct.productAppLink)
                 }
@@ -136,44 +137,44 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         }
 
         override fun addMultipleBundleToCart(selectedMultipleBundle: BundleDetailUiModel, productDetails: List<BundleProductUiModel>) {
-            if(selectedMultipleBundle.bundleId.isNotEmpty()) {
+            if (selectedMultipleBundle.bundleId.isNotEmpty()) {
                 itemView.context?.let { context ->
-                    RouteManager.route(context,context.getString(R.string.product_bundling_atc_applink, productDetails.firstOrNull()?.productId, selectedMultipleBundle.bundleId))
+                    RouteManager.route(context, context.getString(R.string.product_bundling_atc_applink, productDetails.firstOrNull()?.productId, selectedMultipleBundle.bundleId))
                 }
             }
             mProductBundlingViewModel?.components?.let {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                    .trackEventProductBundlingAtcClick(it,selectedMultipleBundle)
+                    .trackEventProductBundlingAtcClick(it, selectedMultipleBundle)
             }
         }
 
         override fun addSingleBundleToCart(selectedBundle: BundleDetailUiModel, bundleProducts: BundleProductUiModel) {
-            if(selectedBundle.bundleId.isNotEmpty()) {
+            if (selectedBundle.bundleId.isNotEmpty()) {
                 itemView.context?.let { context ->
-                    if(selectedBundle.selectedBundleApplink.isNotEmpty()){
-                        RouteManager.route(context,selectedBundle.selectedBundleApplink)
-                    }else {
+                    if (selectedBundle.selectedBundleApplink.isNotEmpty()) {
+                        RouteManager.route(context, selectedBundle.selectedBundleApplink)
+                    } else {
                         RouteManager.route(context, context.getString(R.string.product_bundling_atc_applink, bundleProducts.productId, selectedBundle.selectedBundleId))
                     }
                 }
             }
             mProductBundlingViewModel?.components?.let {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                    .trackEventProductBundlingAtcClick(it,selectedBundle)
+                    .trackEventProductBundlingAtcClick(it, selectedBundle)
             }
         }
 
         override fun onTrackSingleVariantChange(selectedProduct: BundleProductUiModel, selectedSingleBundle: BundleDetailUiModel, bundleName: String) {
             mProductBundlingViewModel?.components?.let {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                    .trackEventClickProductBundlingChipSelection(it,selectedProduct,selectedSingleBundle)
+                    .trackEventClickProductBundlingChipSelection(it, selectedProduct, selectedSingleBundle)
             }
         }
 
         override fun impressionProductBundleSingle(selectedSingleBundle: BundleDetailUiModel, selectedProduct: BundleProductUiModel, bundleName: String, bundlePosition: Int) {
             mProductBundlingViewModel?.components?.let {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                    .trackEventProductBundlingViewImpression(it,selectedSingleBundle,bundlePosition)
+                    .trackEventProductBundlingViewImpression(it, selectedSingleBundle, bundlePosition)
             }
 
         }
@@ -181,7 +182,7 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         override fun impressionProductBundleMultiple(selectedMultipleBundle: BundleDetailUiModel, bundlePosition: Int) {
             mProductBundlingViewModel?.components?.let {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                    .trackEventProductBundlingViewImpression(it,selectedMultipleBundle,bundlePosition)
+                    .trackEventProductBundlingViewImpression(it, selectedMultipleBundle, bundlePosition)
             }
         }
 
