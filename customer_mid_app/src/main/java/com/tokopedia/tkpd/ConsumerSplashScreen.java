@@ -56,7 +56,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
-    private boolean isApkTempered;
 
     private SharedPreferences preferences;
     private SharedPreferences.OnSharedPreferenceChangeListener deepLinkListener;
@@ -161,7 +160,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
                 syncFcmToken();
                 registerPushNotif();
-                return checkApkTempered();
+                return true;
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
@@ -185,31 +184,8 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    @NotNull
-    private Boolean checkApkTempered() {
-        isApkTempered = false;
-        try {
-            getResources().getDrawable(R.drawable.launch_screen);
-        } catch (Exception e) {
-            isApkTempered = true;
-            runOnUiThread(() -> setTheme(R.style.Theme_Tokopedia3_PlainGreen));
-        }
-        checkExecTemperedFlow();
-        return true;
-    }
-
-    private void checkExecTemperedFlow() {
-        if (isApkTempered) {
-            startActivity(new Intent(this, FallbackActivity.class));
-            finish();
-        }
-    }
-
     @Override
     public void finishSplashScreen() {
-        if (isApkTempered) {
-            return;
-        }
 
         Intent homeIntent = new Intent(this, MainParentActivity.class);
         boolean needClearTask = getIntent() == null || !getIntent().hasExtra("branch");
