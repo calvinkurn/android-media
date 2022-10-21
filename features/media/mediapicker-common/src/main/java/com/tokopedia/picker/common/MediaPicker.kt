@@ -37,34 +37,10 @@ object MediaPicker {
     }
 
     /**
-     * Intent builder for Picker module.
-     * @param: [PickerParam]
-     * @param: [EditorParam]
-     * @param: context
-     *
-     * this intent builder for media-picker that integrate with media-editor
-     *
-     * and you can use a normal startActivityForIntent to run it.
-     */
-    fun intent(
-        pickerParam: PickerParam.() -> Unit = {},
-        editorParam: EditorParam.() -> Unit = {},
-        context: Context
-    ): Intent {
-        return intent(
-            context = context,
-            appLink = INTERNAL_MEDIA_PICKER,
-            pickerParam = pickerParam,
-            editorParam = editorParam
-        )
-    }
-
-    /**
      * The intent builder with a custom appLink for Picker module.
      * @param: appLink
      * @param: context
      * @param: [PickerParam]
-     * @param: [EditorParam]
      *
      * this intent builder is similar like [MediaPicker.intent] above.
      * The differentiate is you can put a custom appLink for picker module
@@ -85,30 +61,24 @@ object MediaPicker {
     fun intent(
         appLink: String = INTERNAL_MEDIA_PICKER,
         context: Context,
-        pickerParam: PickerParam.() -> Unit = {},
-        editorParam: EditorParam.() -> Unit = {}
+        pickerParam: PickerParam.() -> Unit = {}
     ): Intent {
         return RouteManager.getIntent(context, appLink).apply {
             putExtra(
                 EXTRA_PICKER_PARAM,
                 PickerParam().apply(pickerParam)
             )
-            putExtra(EXTRA_EDITOR_PARAM,
-                EditorParam().apply(editorParam)
-            )
         }
     }
 
     fun intentWithGalleryFirst(
         context: Context,
-        pickerParam: PickerParam.() -> Unit = {},
-        editorParam: EditorParam.() -> Unit = {}
+        pickerParam: PickerParam.() -> Unit = {}
     ): Intent {
         return intent(
             context = context,
             appLink = "${INTERNAL_MEDIA_PICKER}?start=1",
-            pickerParam = pickerParam,
-            editorParam = editorParam
+            pickerParam = pickerParam
         )
     }
 
