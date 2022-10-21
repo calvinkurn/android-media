@@ -2,16 +2,13 @@ package com.tokopedia.tokopedianow.common.view
 
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.graphics.drawable.TransitionDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.motion.widget.MotionLayout
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.util.ImageUtil.convertVectorToDrawable
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowWishlistButtonViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.iconunify.R.drawable as iconR
 
 class TokoNowWishlistButtonView @JvmOverloads constructor(
     context: Context,
@@ -26,16 +23,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
     }
 
     private var binding: LayoutTokopedianowWishlistButtonViewBinding
-    private val transitionDrawable = getTransitionDrawable()
-
-    var isChosen: Boolean = false
-        set(value) {
-            field = value
-            if (value) {
-                binding.root.setTransition(R.id.end, R.id.start)
-                binding.root.transitionToEnd()
-            }
-        }
+    private var hasBeenSelected: Boolean = false
 
     init {
         binding = LayoutTokopedianowWishlistButtonViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
@@ -48,18 +36,12 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                 START_POSITION
             ).setDuration(ANIMATION_DURATION.toLong())
 
-            icon.setImageDrawable(transitionDrawable)
-
             root.setTransitionListener(object : MotionLayout.TransitionListener {
-                    override fun onTransitionStarted(motionLayout: MotionLayout?, p1: Int, p2: Int) = onAnimationStarted(
-                        motionLayout = motionLayout,
-                        ringingAnimation = ringingAnimation,
-                        transitionDrawable = transitionDrawable
-                    )
+                    override fun onTransitionStarted(motionLayout: MotionLayout?, p1: Int, p2: Int) = ringingAnimation.start()
+
+                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) { hasBeenSelected = !hasBeenSelected }
 
                     override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) { /* nothing to do */ }
-
-                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) { /* nothing to do */ }
 
                     override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) { /* nothing to do */ }
                 }
@@ -67,36 +49,14 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         }
     }
 
-    private fun getTransitionDrawable(): TransitionDrawable {
-        val transitionDrawable = TransitionDrawable(
-            arrayOf(
-                convertVectorToDrawable(
-                    context = context,
-                    drawableId = iconR.iconunify_bell,
-                    colorId = R.color.tokopedianow_product_card_dms_wishlist_button_icon_color
-                ),
-                convertVectorToDrawable(
-                    context = context,
-                    drawableId = iconR.iconunify_bell_filled,
-                    colorId = R.color.tokopedianow_product_card_dms_wishlist_button_icon_color
-                )
-            )
-        )
-        transitionDrawable.isCrossFadeEnabled = true
-        return transitionDrawable
-    }
-
-    private fun onAnimationStarted(
-        motionLayout: MotionLayout?,
-        ringingAnimation: ObjectAnimator,
-        transitionDrawable: TransitionDrawable
-    ) {
-        ringingAnimation.start()
-        if (motionLayout?.currentState == R.id.start) {
-            transitionDrawable.startTransition(ANIMATION_DURATION)
+    fun setValue(isSelected: Boolean) {
+        hasBeenSelected = isSelected
+        if (hasBeenSelected) {
+            binding.root.setTransition(R.id.end, R.id.start)
         } else {
-            transitionDrawable.reverseTransition(ANIMATION_DURATION)
+            binding.root.setTransition(R.id.start, R.id.end)
         }
     }
 
+    fun getValue() = hasBeenSelected
 }

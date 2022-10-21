@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -30,6 +30,9 @@
         android:layout_marginEnd="5.25dp"
         android:layout_marginBottom="4.25dp"
         android:translationZ="1dp"
+        android:tint="@color/tokopedianow_product_card_dms_wishlist_button_icon_color"
+        app:srcCompat="@drawable/iconunify_bell"
+        app:altSrc="@drawable/iconunify_bell_filled"
         app:layout_constraintBottom_toBottomOf="@id/background"
         app:layout_constraintEnd_toEndOf="@id/background"
         app:layout_constraintStart_toStartOf="@id/background"

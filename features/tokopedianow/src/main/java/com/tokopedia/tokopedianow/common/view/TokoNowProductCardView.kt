@@ -58,7 +58,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
             imageUrl = "https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fimages.tokopedia.net%2Fimg%2Fandroid%2Fnow%2FPN-RICH.jpg",
             minOrder = 2,
             maxOrder = 20,
-            availableStock = 12,
+            availableStock = 0,
             orderQuantity = 100,
             price = "Rp 15.000.000",
             discount = "10%",
@@ -295,7 +295,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         hasBeenWishlist: Boolean
     ) {
         wishlistButton.showIfWithBlock(isOos) {
-            wishlistButton.isChosen = hasBeenWishlist
+            wishlistButton.setValue(hasBeenWishlist)
         }
     }
 
