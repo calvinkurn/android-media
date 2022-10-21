@@ -195,9 +195,6 @@ class AffiliatePromotionShopItemVH(
     private fun getMessageData(
         item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
     ): String? {
-        return when(item.status?.messages?.firstOrNull()?.messageType){
-            SHOP_INACTIVE , SHOP_CLOSED -> item.status?.messages?.firstOrNull()?.title
-            else -> ""
-        }
+        return item.status?.messages?.firstOrNull()?.title
     }
 }
