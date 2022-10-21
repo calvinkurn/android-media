@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet.WarningType
 import com.tokopedia.content.common.ui.model.AccountStateInfo
@@ -350,7 +351,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.GetAccountList -> handleGetAccountList()
+            is PlayBroadcastAction.GetAccountList -> handleGetAccountList(event.selectedType)
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount()
 
             /** Game */
@@ -1442,7 +1443,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         mIsBroadcastStopped = true
     }
 
-    private fun handleGetAccountList() {
+    private fun handleGetAccountList(selectedType: String = TYPE_UNKNOWN) {
         viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
@@ -1453,6 +1454,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (accountList.isNotEmpty()) {
                 updateSelectedAccount(
                     getSelectedAccount(
+                        selectedType = selectedType,
                         cacheSelectedType = sharedPref.getLastSelectedAccount(),
                         accountList = accountList
                     )
@@ -1466,11 +1468,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     // TODO need to refactor this for entry point from user profile
     private fun getSelectedAccount(
+        selectedType: String,
         cacheSelectedType: String,
         accountList: List<ContentAccountUiModel>,
     ): ContentAccountUiModel {
         return accountList.firstOrNull {
             it.type == when {
+                selectedType != TYPE_UNKNOWN -> selectedType
                 GlobalConfig.isSellerApp() -> TYPE_SHOP
                 cacheSelectedType.isNotEmpty() -> cacheSelectedType
                 else -> null
