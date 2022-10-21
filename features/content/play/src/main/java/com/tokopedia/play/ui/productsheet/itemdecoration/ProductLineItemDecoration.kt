@@ -26,7 +26,7 @@ class ProductLineItemDecoration(
     private val offset4 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_4)
     private val offset8 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_8)
     private val offset14 = context.resources.getDimensionPixelOffset(playCommonR.dimen.play_dp_14)
-    private val offset16 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_16)
+    private val offset16 = context.resources.getDimensionPixelOffset(playCommonR.dimen.play_dp_8)
 
     private val mPaint = Paint()
 
