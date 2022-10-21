@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.action
 
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -25,7 +25,7 @@ sealed interface PlayBroadcastAction {
 
     data class SetSchedule(val date: Date) : PlayBroadcastAction
     object DeleteSchedule : PlayBroadcastAction
-    object GetAccountList: PlayBroadcastAction
+    data class GetAccountList(val selectedType: String = TYPE_UNKNOWN): PlayBroadcastAction
     object SwitchAccount: PlayBroadcastAction
 
     object ExitLive : PlayBroadcastAction
