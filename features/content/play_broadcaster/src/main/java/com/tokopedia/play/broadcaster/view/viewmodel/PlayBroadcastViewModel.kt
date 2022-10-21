@@ -479,7 +479,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             updateSelectedAccount(selectedAccount)
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { handleSwitchAccount() }
+            _observableConfigInfo.value = NetworkResult.Fail(it) { getConfiguration(selectedAccount) }
         }
     }
 
@@ -1494,7 +1494,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 getConfiguration(_selectedAccount.value)
             } else throw Throwable()
         }, onError = {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
+            _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList(selectedType) }
         })
     }
 
