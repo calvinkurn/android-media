@@ -75,7 +75,7 @@ class SwitchAccountRobot(
             getAddedChannelTagsUseCase = addedChannelTagsUseCase,
             sharedPref = sharedPreferences,
         ).apply {
-            submitAction(PlayBroadcastAction.GetAccountList)
+            submitAction(PlayBroadcastAction.GetAccountList())
         }
     }
 
