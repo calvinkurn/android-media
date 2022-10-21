@@ -1154,7 +1154,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         val media =
             if (feedXCard.lastCarouselIndex < feedXCard.media.size) feedXCard.media[feedXCard.lastCarouselIndex] else null
         if (products.isNotEmpty()) {
-            productTagBS = ProductItemInfoBottomSheet(viewModelFactory)
+            productTagBS = ProductItemInfoBottomSheet()
             productTagBS.show(
                 childFragmentManager,
                 this,
@@ -1170,7 +1170,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                     mediaType = media?.type ?: "",
                     saleStatus = feedXCard.campaign.status,
                     saleType = feedXCard.campaign.name
-                )
+                ),
+                viewModelFactory
             )
             productTagBS.closeClicked = {
                 analyticsTracker.sendClickXSgcImageEvent(
