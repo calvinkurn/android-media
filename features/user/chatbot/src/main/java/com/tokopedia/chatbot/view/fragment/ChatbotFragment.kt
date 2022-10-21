@@ -1066,7 +1066,7 @@ class ChatbotFragment :
     }
 
     override fun setBigReplyBoxTitle(text: String, placeholder: String) {
-        smallReplyBox?.hideReplyBox()
+        smallReplyBox?.hide()
         bigReplyBox?.show()
         bigReplyBox?.setText(text)
         replyBoxBottomSheetPlaceHolder = placeholder

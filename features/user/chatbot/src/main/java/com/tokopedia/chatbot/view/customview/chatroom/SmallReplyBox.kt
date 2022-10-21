@@ -49,7 +49,7 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
     }
 
     fun hideReplyBox() {
-        replyBox?.hide()
+        hide()
     }
 
     fun showReplyBox() {
