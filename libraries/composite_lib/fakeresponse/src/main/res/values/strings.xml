@@ -24,4 +24,6 @@
     <string name="text_notif_off">Off</string>
     <string name="notification">Notification</string>
     <string name="set_delay_response_5_second">Set Delay Response (5 second)</string>
+    <string name="notification_fake_response_on">Fake Response on Notification Enable</string>
+    <string name="notification_fake_response_off">Fake Response on Notification Disable</string>
 </resources>

@@ -95,9 +95,9 @@ class FakeResponseFragment : BaseFragment() {
     fun handleResetData() {
         if (context is FakeResponseActivity) {
             Toast.makeText(
-                    context,
-                    "All data cleared, Restart app to use this library again",
-                    Toast.LENGTH_LONG
+                context,
+                "All data cleared, Restart app to use this library again",
+                Toast.LENGTH_LONG
             ).show()
         }
     }
@@ -141,14 +141,19 @@ class FakeResponseFragment : BaseFragment() {
             }
             R.id.notification_on -> {
                 Preference.updateNotification(true)
-                Toast.makeText(context, "Fake Response on Notification Enable", Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(context,
+                    context?.getString(com.tokopedia.fakeresponse.R.string.notification_fake_response_on)
+                        .orEmpty(),
+                    Toast.LENGTH_LONG
+                ).show()
             }
             R.id.notification_off -> {
                 Preference.updateNotification(false)
-                Toast.makeText(context, "Fake Response on Notification Disable", Toast.LENGTH_LONG)
-                    .show()
-
+                Toast.makeText(context,
+                    context?.getString(com.tokopedia.fakeresponse.R.string.notification_fake_response_off)
+                        .orEmpty(),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
         return true

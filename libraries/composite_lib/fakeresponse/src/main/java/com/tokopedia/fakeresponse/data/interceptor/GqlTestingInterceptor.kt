@@ -17,6 +17,11 @@ import okio.Buffer
 
 class GqlTestingInterceptor(val context: Context) : Interceptor {
 
+    companion object {
+        const val DELAY_RESPONSE_TIME = 5000L
+        const val ERROR_MOCK = "Error Mock"
+    }
+
     private val gqlDao = AppDatabase.getDatabase(context).gqlDao()
     private val gqlRequestParser = GqlRequestBodyParser(gqlDao)
 
@@ -42,7 +47,7 @@ class GqlTestingInterceptor(val context: Context) : Interceptor {
                             )
                         }
                         if (fakeResponse.isDelayResponse) {
-                            SystemClock.sleep(5000)
+                            SystemClock.sleep(DELAY_RESPONSE_TIME)
                         }
                         return createResponseFromFakeResponse(
                             fakeResponse = fakeResponse.response.orEmpty(),
@@ -83,9 +88,9 @@ class GqlTestingInterceptor(val context: Context) : Interceptor {
         } else {
             return Response.Builder()
                 .code(500)
-                .message("Error Mock")
+                .message(ERROR_MOCK)
                 .request(request)
-                .body(ResponseBody.create(mediaType, "Error Mock"))
+                .body(ResponseBody.create(mediaType, ERROR_MOCK))
                 .protocol(Protocol.HTTP_2)
                 .build()
         }
