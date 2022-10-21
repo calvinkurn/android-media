@@ -184,6 +184,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   buttonLink
                 }
               }
+              partnerLabel
             }
             nearestWarehouse {
               product_id
@@ -312,9 +313,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             shopPackSpeed {
               hour
               speedFmt
-            }
-            shopFeature{
-              IsGoApotik
             }
             restrictionInfo{
                 message
