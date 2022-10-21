@@ -1809,7 +1809,6 @@ class ProductListPresenter @Inject constructor(
 
     override fun onProductAddToCart(item: ProductItemDataView) {
         if (item.shouldOpenVariantBottomSheet()) {
-            //should insert unification tracking of product item here
             view.openVariantBottomSheet(item)
         } else {
             executeAtcCommon(item)

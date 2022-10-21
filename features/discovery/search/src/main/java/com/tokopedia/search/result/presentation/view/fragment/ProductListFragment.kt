@@ -157,7 +157,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val REQUEST_CODE_LOGIN = 561
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
-        private const val REQUEST_CODE_CHECKOUT = 12382
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {

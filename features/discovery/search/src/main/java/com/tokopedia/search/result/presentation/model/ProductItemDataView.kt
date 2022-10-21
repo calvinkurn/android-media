@@ -7,6 +7,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_PARENT_ID
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
 import com.tokopedia.search.utils.getFormattedPositionName
@@ -70,7 +71,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var dimension131: String = ""
     var keywordIntention: Int = DEFAULT_KEYWORD_INTENT
     var showButtonAtc: Boolean = false
-    var parentId: String = "0"
+    var parentId: String = DEFAULT_PARENT_ID
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -109,12 +110,6 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
         componentId: String,
         cartId: String?,
     ): Any {
-        val dataLayerMap = getProductAsObjectDataLayer(filterSortParams, componentId) as Map<String, Any>
-        val dataLayerMutableMap = dataLayerMap.toMutableMap()
-        dataLayerMutableMap["quantity"] = minOrder
-        dataLayerMutableMap["shop_id"] = shopID
-        dataLayerMutableMap["shop_name"] = shopName
-
         return DataLayer.mapOf(
             "name", productName,
             "id", productID,
@@ -137,7 +132,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
         )
     }
 
-    fun shouldOpenVariantBottomSheet(): Boolean = parentId != "" && parentId != "0"
+    fun shouldOpenVariantBottomSheet(): Boolean = parentId != "" && parentId != DEFAULT_PARENT_ID
 
     private fun getDimension81(): String {
         val shopType = badgesList?.find { it.isShown && it.imageUrl.isNotEmpty() && it.title.isNotEmpty() }

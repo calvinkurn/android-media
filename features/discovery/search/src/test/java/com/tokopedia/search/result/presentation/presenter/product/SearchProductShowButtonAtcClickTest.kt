@@ -26,7 +26,6 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
         SearchApiConst.UNIQUE_ID to "unique_id",
         SearchApiConst.USER_ID to "0",
     )
-    private lateinit var clickedProductAtc: ProductItemDataView
 
     private val expectedAtcSuccessResponse = AddToCartDataModel(
         data = DataModel(
@@ -47,7 +46,8 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
         `Given Load Data`()
         `Given Add to cart is succeed`()
 
-        `When User Click Non Variant Product ATC`()
+        val clickedProductAtc = visitableList.filterIsInstance<ProductItemDataView>()[0]
+        `When User Click Non Variant Product ATC`(clickedProductAtc)
 
         `Then verify add to cart API will hit`()
         `Then Verify ATC Notification Updated`()
@@ -55,8 +55,8 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
             expectedAtcSuccessResponse.data.message.firstOrNull() ?: "",
             true
         )
-        `Then Verify Product Click Tracked`()
-        `Then Verify Add To Cart Tracked`()
+        `Then Verify Product Click Tracked`(clickedProductAtc)
+        `Then Verify Add To Cart Tracked`(clickedProductAtc)
     }
 
     @Test
@@ -68,7 +68,8 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
         `Given Load Data`()
         `Given Add to cart is failed`()
 
-        `When User Click Non Variant Product ATC`()
+        val clickedProductAtc = visitableList.filterIsInstance<ProductItemDataView>()[0]
+        `When User Click Non Variant Product ATC`(clickedProductAtc)
 
         `Then verify add to cart API will hit`()
         `Then Verify Toaster Opened`(
@@ -86,9 +87,10 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
         `Given Load Data`()
         `Given Add to cart is succeed`()
 
-        `When User Click Variant Product ATC`()
+        val clickedProductAtc = visitableList.filterIsInstance<ProductItemDataView>()[1]
+        `When User Click Variant Product ATC`(clickedProductAtc)
 
-        `Then Verify Variant BottomSheet Opened`()
+        `Then Verify Variant BottomSheet Opened`(clickedProductAtc)
     }
 
     @Test
@@ -100,7 +102,8 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
         `Given Load Data`()
         `Given Add to cart is succeed`()
 
-        `When User Click Non Variant Product Ads ATC`()
+        val clickedProductAtc = visitableList.filterIsInstance<ProductItemDataView>()[2]
+        `When User Click Non Variant Product Ads ATC`(clickedProductAtc)
 
         `Then verify add to cart API will hit`()
         `Then Verify ATC Notification Updated`()
@@ -108,10 +111,10 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
             expectedAtcSuccessResponse.data.message.firstOrNull() ?: "",
             true
         )
-        `Then Verify Product Click Tracked`()
-        `Then Verify TopAds Url Hit`()
-        `Then Verify TopAds GTM Click Tracked`()
-        `Then Verify Add To Cart Tracked`()
+        `Then Verify Product Click Tracked`(clickedProductAtc)
+        `Then Verify TopAds Url Hit`(clickedProductAtc)
+        `Then Verify TopAds GTM Click Tracked`(clickedProductAtc)
+        `Then Verify Add To Cart Tracked`(clickedProductAtc)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -130,18 +133,15 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
         } just runs
     }
 
-    private fun `When User Click Non Variant Product ATC`() {
-        clickedProductAtc = visitableList.filterIsInstance<ProductItemDataView>()[0]
+    private fun `When User Click Non Variant Product ATC`(clickedProductAtc: ProductItemDataView) {
         productListPresenter.onProductAddToCart(clickedProductAtc)
     }
 
-    private fun `When User Click Variant Product ATC`() {
-        clickedProductAtc = visitableList.filterIsInstance<ProductItemDataView>()[1]
+    private fun `When User Click Variant Product ATC`(clickedProductAtc: ProductItemDataView) {
         productListPresenter.onProductAddToCart(clickedProductAtc)
     }
 
-    private fun `When User Click Non Variant Product Ads ATC`() {
-        clickedProductAtc = visitableList.filterIsInstance<ProductItemDataView>()[2]
+    private fun `When User Click Non Variant Product Ads ATC`(clickedProductAtc: ProductItemDataView) {
         productListPresenter.onProductAddToCart(clickedProductAtc)
     }
 
@@ -175,13 +175,13 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
         }
     }
 
-    private fun `Then Verify Product Click Tracked`() {
+    private fun `Then Verify Product Click Tracked`(clickedProductAtc: ProductItemDataView) {
         verify {
             productListPresenter.trackProductClick(clickedProductAtc)
         }
     }
 
-    private fun `Then Verify Add To Cart Tracked`() {
+    private fun `Then Verify Add To Cart Tracked`(clickedProductAtc: ProductItemDataView) {
         verify {
             productListView.sendGTMTrackingProductATC(
                 clickedProductAtc,
@@ -190,13 +190,13 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
         }
     }
 
-    private fun `Then Verify Variant BottomSheet Opened`() {
+    private fun `Then Verify Variant BottomSheet Opened`(clickedProductAtc: ProductItemDataView) {
         verify {
             productListView.openVariantBottomSheet(clickedProductAtc)
         }
     }
 
-    private fun `Then Verify TopAds Url Hit`() {
+    private fun `Then Verify TopAds Url Hit`(clickedProductAtc: ProductItemDataView) {
         verify {
             topAdsUrlHitter.hitClickUrl(
                 productListView.className,
@@ -209,7 +209,7 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
         }
     }
 
-    private fun `Then Verify TopAds GTM Click Tracked`() {
+    private fun `Then Verify TopAds GTM Click Tracked`(clickedProductAtc: ProductItemDataView) {
         verify {
             productListView.sendTopAdsGTMTrackingProductClick(clickedProductAtc)
         }
