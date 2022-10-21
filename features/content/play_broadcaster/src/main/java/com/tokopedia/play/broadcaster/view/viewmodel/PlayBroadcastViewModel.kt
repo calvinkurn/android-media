@@ -1476,6 +1476,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleGetAccountList(selectedType: String = TYPE_UNKNOWN) {
         viewModelScope.launchCatchError(block = {
+            _accountStateInfo.value = AccountStateInfo()
             _observableConfigInfo.value = NetworkResult.Loading
 
             val accountList = repo.getAccountList()
