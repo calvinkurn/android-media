@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class GetMerchantCampaignTNCRequest (
         @SerializedName("campaign_id")
         @Expose
-        var campaignId: Int = 1,
+        var campaignId: Long = 1,
         @SerializedName("action_from")
         @Expose
         var actionFrom: String = ""

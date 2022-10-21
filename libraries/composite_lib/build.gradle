@@ -31,6 +31,7 @@ buildscript {
                 username = "${artifactory_username}"
                 password = "${artifactory_password}"
             }
+            allowInsecureProtocol = true
         }
     }
     dependencies {

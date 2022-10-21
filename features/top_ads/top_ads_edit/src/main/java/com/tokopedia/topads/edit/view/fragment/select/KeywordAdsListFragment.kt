@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.Constants.KEYWORD_CHARACTER_COUNT
 import com.tokopedia.topads.common.data.response.KeywordData
@@ -144,7 +146,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun sortListSelected() {
         keywordSelectedAdapter.items.sortWith { lhs, rhs ->
-            lhs?.totalSearch?.toInt() ?: 0.compareTo(rhs?.totalSearch?.toInt() ?: 0)
+            (lhs?.totalSearch?.toLongOrZero() ?: 0).compareTo(rhs?.totalSearch?.toLongOrZero() ?: 0)
         }
         keywordSelectedAdapter.items.reverse()
         keywordSelectedAdapter.notifyDataSetChanged()
@@ -152,8 +154,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun sortList() {
         keywordListAdapter.items.sortWith { lhs, rhs ->
-            (lhs as KeywordItemViewModel).data.totalSearch.toInt()
-                .compareTo((rhs as KeywordItemViewModel).data.totalSearch.toInt())
+            ((lhs as? KeywordItemViewModel)?.data?.totalSearch?.toLongOrZero() ?: 0)
+                .compareTo((rhs as? KeywordItemViewModel)?.data?.totalSearch?.toLongOrZero() ?: 0)
         }
         keywordListAdapter.items.reverse()
         keywordListAdapter.notifyDataSetChanged()

@@ -235,8 +235,16 @@ open class PickerPreviewActivity : BaseActivity()
         showContinueButtonAs(true)
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
-        if (!param.get().isEditorEnabled()) {
-            navToolbar.setContinueTitle(getString(R.string.picker_button_upload))
+        param.get().apply {
+            if (!isEditorEnabled()) {
+                navToolbar.setContinueTitle(
+                    if (previewActionText().isNotEmpty()) {
+                        previewActionText()
+                    } else {
+                        getString(R.string.picker_button_upload)
+                    }
+                )
+            }
         }
     }
 
