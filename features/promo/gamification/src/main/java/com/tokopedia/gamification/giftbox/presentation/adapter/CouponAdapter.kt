@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.PrecomputedTextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.data.entities.CouponType
@@ -102,9 +101,9 @@ class OvoVh(itemView: View) : CouponListVHDaily(itemView) {
 open class CouponListVHDaily(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        val LAYOUT_TAP_TAP = com.tokopedia.gamification.R.layout.list_item_coupons
-        val LAYOUT_DAILY = com.tokopedia.gamification.R.layout.list_item_coupons_daily
-        val LAYOUT_OVO = com.tokopedia.gamification.R.layout.list_item_coupons_ovo
+        val LAYOUT_TAP_TAP = R.layout.list_item_coupons
+        val LAYOUT_DAILY = R.layout.list_item_coupons_daily
+        val LAYOUT_OVO = R.layout.list_item_coupons_ovo
         const val WIDTH_RATIO = 1.26
     }
 
