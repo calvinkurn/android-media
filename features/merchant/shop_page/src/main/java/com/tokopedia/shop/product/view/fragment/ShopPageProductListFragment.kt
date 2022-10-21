@@ -199,7 +199,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopProductFilterParameter?.setSortId(value)
         }
     private val sortName
-        get() = viewModel?.getSortNameById(sortId)
+        get() = viewModel?.getSortNameById(sortId).orEmpty()
 
     private val userId: String
         get() = viewModel?.userId.orEmpty()
@@ -1585,7 +1585,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 selectedEtalaseId = selectedEtalaseId,
                 selectedEtalaseName = selectedEtalaseName,
                 selectedSortId = sortId,
-                selectedSortName = sortName.orEmpty(),
+                selectedSortName = sortName,
                 filterIndicatorCounter = getIndicatorCount(
                         shopProductFilterParameter?.getMapData()
                 )
@@ -1757,12 +1757,12 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         changeShopProductFilterParameterSharedData()
         changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
         scrollToChangeProductGridSegment()
-        applySortFilterTracking(sortName.orEmpty(), applySortFilterModel.selectedFilterMapParameter)
+        applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
     }
 
     private fun changeSortData(sortId: String){
         this.sortId = sortId
-        shopProductAdapter.changeSelectedSortFilter(this.sortId, sortName.orEmpty())
+        shopProductAdapter.changeSelectedSortFilter(this.sortId, sortName)
         shopProductAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
         ))
