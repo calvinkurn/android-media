@@ -87,10 +87,12 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -154,6 +156,8 @@ class ProductListPresenter @Inject constructor(
     private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val suggestionPresenter: SuggestionPresenter,
+    private val tickerPresenter: TickerPresenter,
+    private val safeSearchPresenter: SafeSearchPresenter,
     private val addToCartUseCase: AddToCartUseCase,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
@@ -162,7 +166,9 @@ class ProductListPresenter @Inject constructor(
     DynamicFilterModelProvider,
     LastFilterPresenter by lastFilterPresenterDelegate,
     InspirationListAtcPresenter by inspirationListAtcPresenterDelegate,
-    BroadMatchPresenter by broadMatchDelegate {
+    BroadMatchPresenter by broadMatchDelegate,
+    TickerPresenter by tickerPresenter,
+    SafeSearchPresenter by safeSearchPresenter {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -237,15 +243,6 @@ class ProductListPresenter @Inject constructor(
 
     override val isUserLoggedIn: Boolean
         get() = userSession.isLoggedIn
-
-    //region Ticker
-    override var isTickerHasDismissed = false
-        private set
-
-    override fun onPriceFilterTickerDismissed() {
-        isTickerHasDismissed = true
-    }
-    //endregion
 
     //region Load Data / Load More / Recommendations
     override fun clearData() {
@@ -2202,6 +2199,7 @@ class ProductListPresenter @Inject constructor(
         getLocalSearchRecommendationUseCase.get()?.unsubscribe()
         getInspirationCarouselChipsUseCase.get()?.unsubscribe()
         saveLastFilterUseCase.get()?.unsubscribe()
+        onSafeSearchViewDestroyed()
         if (compositeSubscription?.isUnsubscribed == true) unsubscribeCompositeSubscription()
     }
 
