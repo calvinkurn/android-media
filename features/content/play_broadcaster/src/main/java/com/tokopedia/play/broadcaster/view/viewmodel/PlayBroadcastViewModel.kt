@@ -395,8 +395,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
 
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
-            setChannelId(configUiModel.channelId)
-            _configInfo.value = configUiModel
 
             if (!isAccountEligible(configUiModel, selectedAccount)) {
                 if (isFirstOpen && isAllowChangeAccount) {
@@ -406,6 +404,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 return@launchCatchError
             }
 
+            setChannelId(configUiModel.channelId)
+            _configInfo.value = configUiModel
             isFirstOpen = false
 
             // create channel when there are no channel exist
