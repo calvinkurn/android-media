@@ -434,6 +434,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 if (currConfigInfo != null) {
                     setChannelId(currConfigInfo.channelId)
                     _configInfo.value = currConfigInfo
+                    _observableConfigInfo.value = NetworkResult.Success(currConfigInfo)
                 }
                 return@launchCatchError
             }
