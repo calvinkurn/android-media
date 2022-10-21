@@ -67,7 +67,7 @@ class WidgetTitleView : ConstraintLayout {
         if (isTagVisible) {
             binding?.notifShcTag?.setNotification(
                 tag,
-                NotificationUnify.TEXT_TYPE,
+                NotificationUnify.COUNTER_TYPE,
                 NotificationUnify.COLOR_TEXT_TYPE
             )
         }

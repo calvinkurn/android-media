@@ -252,7 +252,7 @@ class LineGraphViewHolder(
             if (isTagVisible) {
                 notifTagLineGraph.setNotification(
                     tag,
-                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COUNTER_TYPE,
                     NotificationUnify.COLOR_TEXT_TYPE
                 )
             }

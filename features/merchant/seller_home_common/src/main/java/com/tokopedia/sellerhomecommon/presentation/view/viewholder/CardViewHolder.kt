@@ -45,14 +45,15 @@ class CardViewHolder(
 
     private fun setupTag(element: CardWidgetUiModel) {
         with(binding) {
-            val isTagVisible = element.tag.isNotBlank()
-            notifTagCard.isVisible = isTagVisible
-            if (isTagVisible) {
+            if (element.tag.isNotBlank()) {
+                notifTagCard.visible()
                 notifTagCard.setNotification(
                     element.tag,
-                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COUNTER_TYPE,
                     NotificationUnify.COLOR_TEXT_TYPE
                 )
+            } else {
+                notifTagCard.gone()
             }
         }
     }
@@ -64,7 +65,7 @@ class CardViewHolder(
             data.error.isNotBlank() -> {
                 showShimmer(false)
                 showOnError(element, true)
-                listener.setOnErrorWidget(adapterPosition, element, data.error)
+                listener.setOnErrorWidget(absoluteAdapterPosition, element, data.error)
                 setupTag(element)
             }
             else -> {
@@ -172,10 +173,10 @@ class CardViewHolder(
         with(binding) {
             element.data?.lastUpdated?.let {
                 val shouldShowRefreshButton = it.needToUpdated.orFalse()
-                        && !element.showLoadingState
+                    && !element.showLoadingState
                 val isError = !element.data?.error.isNullOrBlank()
                 icShcRefreshCard.isVisible = (shouldShowRefreshButton && it.isEnabled)
-                        || isError
+                    || isError
                 icShcRefreshCard.setOnClickListener {
                     refreshWidget(element)
                 }
