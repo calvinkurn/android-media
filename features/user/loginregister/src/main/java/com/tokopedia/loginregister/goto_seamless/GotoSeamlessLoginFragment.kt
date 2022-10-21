@@ -99,7 +99,7 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
                 }
                 GOJEK_NAME_VARIANT -> {
                     renderGojekIcon()
-                    "Masuk sebagai ${data.name}"
+                    "Masuk sebagai ${takeFirstName(data.name)}"
                 }
                 else -> {
                     description = it.getString(R.string.goto_seamless_description_text)
