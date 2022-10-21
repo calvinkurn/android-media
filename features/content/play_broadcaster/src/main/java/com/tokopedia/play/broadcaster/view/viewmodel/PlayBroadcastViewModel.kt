@@ -1569,7 +1569,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 false
             }
-            (selectedAccount.isShop && !configUiModel.streamAllowed) || !selectedAccount.hasAcceptTnc -> {
+            !selectedAccount.hasAcceptTnc -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
