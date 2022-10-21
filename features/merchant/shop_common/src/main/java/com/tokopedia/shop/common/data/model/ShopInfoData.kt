@@ -20,5 +20,6 @@ data class ShopInfoData(
         val isGoApotik: Boolean,
         val siaNumber: String,
         val sipaNumber: String,
-        val apj: String
-): Parcelable
+        val apj: String,
+        val partnerLabel: String
+) : Parcelable
