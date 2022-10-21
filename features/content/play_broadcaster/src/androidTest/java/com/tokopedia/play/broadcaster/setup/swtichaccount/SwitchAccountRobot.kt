@@ -44,6 +44,8 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
+import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlin.LazyThreadSafetyMode.NONE
@@ -112,7 +114,7 @@ class SwitchAccountRobot(
         summaryAnalytic = mockk(relaxed = true),
         scheduleAnalytic = mockk(relaxed = true),
         pinProductAnalytic = mockk(relaxed = true),
-        accountAnalytic = mockk(relaxed = true),
+        accountAnalytic = PlayBroadcastAccountAnalyticImpl(analyticUserSession, hydraConfigStore),
     )
 
     private val ugcViewModelFactory = object : UGCOnboardingViewModelFactory.Creator {
