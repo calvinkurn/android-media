@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.preview.presentation.service
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -114,7 +115,11 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 val draftId = productDraftId.toString()
                 val intent = AddEditProductPreviewActivity.createInstance(context, draftId,
                         isFromSuccessNotif = false, isFromNotifEditMode = true)
-                return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+                } else {
+                    PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                }
             }
         }
     }

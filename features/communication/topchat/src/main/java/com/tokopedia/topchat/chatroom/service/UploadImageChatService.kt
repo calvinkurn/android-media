@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.service
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -61,7 +62,11 @@ open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
             notificationManager = object: UploadImageNotificationManager(this@UploadImageChatService) {
                 override fun getFailedIntent(errorMessage: String): PendingIntent {
                     val intent = createLocalChatRoomIntent()
-                    return PendingIntent.getActivity(this@UploadImageChatService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        PendingIntent.getActivity(this@UploadImageChatService, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+                    } else {
+                        PendingIntent.getActivity(this@UploadImageChatService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    }
                 }
             }
         }
