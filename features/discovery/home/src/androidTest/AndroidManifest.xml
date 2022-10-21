@@ -23,8 +23,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".environment.InstrumentationHomeEmptyActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
     </application>
 </manifest>
