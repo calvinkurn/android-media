@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +28,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -45,6 +47,7 @@ import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
@@ -123,8 +126,11 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private var searchParameter: HashMap<String, String>? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var localCacheModel: LocalCacheModel? = null
+    private var currentSortFilterValue: String = String.EMPTY
 
     private var keyword: String = ""
+    private var itemsScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> = mutableListOf()
+    private var addressWidgetScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -210,7 +216,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
             destinationId = getDestinationId(),
             keyword = keyword,
             merchant = merchant,
-            sortValue = viewModel.getCurrentSortValue(),
+            sortFilterValue = currentSortFilterValue,
             index = position
         )
     }
@@ -220,7 +226,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
             destinationId = getDestinationId(),
             keyword = keyword,
             merchant = merchant,
-            sortValue = viewModel.getCurrentSortValue(),
+            sortFilterValue = currentSortFilterValue,
             index = position
         )
         goToMerchantPage(merchant.applink)
@@ -233,6 +239,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
             merchant = merchant
         )
         TokofoodRouteManager.routePrioritizeInternal(context, merchant.branchApplink)
+    }
+
+    override fun onImpressionListenerAdded(listener: ViewTreeObserver.OnScrollChangedListener) {
+        itemsScrollChangedListenerList.add(listener)
     }
 
     override fun onResetFilterButtonClicked() {
@@ -333,7 +343,11 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onDestroyView() {
+        tokofoodSearchFilterTab?.removeListener()
         tokofoodSearchFilterTab = null
+        removeAllScrollListener()
+        itemsScrollChangedListenerList.clear()
+        addressWidgetScrollChangedListener = null
         searchParameter = null
         sortFilterBottomSheet = null
         super.onDestroyView()
@@ -352,6 +366,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun setupLayout() {
         setupAdapter()
         setupAddressWidget()
+        setupSortFilter()
     }
 
     private fun setupAdapter() {
@@ -368,8 +383,21 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun setupAddressWidget() {
         binding?.addressTokofoodSearchResult?.run {
             bindChooseAddress(this@SearchResultFragment)
-            addOnImpressionListener(addressWidgetImpressHolder) {
+            val scrollChangedListener = addAndReturnImpressionListener(addressWidgetImpressHolder) {
                 analytics.sendAddressWidgetImpressionTracking(getDestinationId())
+            }
+            addressWidgetScrollChangedListener = scrollChangedListener
+        }
+    }
+
+    private fun setupSortFilter() {
+        if (tokofoodSearchFilterTab == null) {
+            binding?.filterTokofoodSearchResult?.let { sortFilter ->
+                tokofoodSearchFilterTab = TokofoodSearchFilterTab(
+                    sortFilter,
+                    context,
+                    this
+                )
             }
         }
     }
@@ -386,6 +414,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.searchParameterMap.collect {
                 searchParameter = it
+                currentSortFilterValue = getCurrentSortFilterValue()
                 if (it != null) {
                     viewModel.loadQuickSortFilter(it)
                     viewModel.getInitialMerchantSearchResult(it)
@@ -530,15 +559,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun applySearchFilterTab(uiModels: List<TokofoodSortFilterItemUiModel>) {
-        if (tokofoodSearchFilterTab == null && uiModels.isNotEmpty()) {
-            binding?.filterTokofoodSearchResult?.let { sortFilter ->
-                tokofoodSearchFilterTab = TokofoodSearchFilterTab(
-                    sortFilter,
-                    context,
-                    this
-                )
-            }
-        }
         tokofoodSearchFilterTab?.setQuickFilter(uiModels)
     }
 
@@ -831,8 +851,22 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         showToasterError(errorMessage)
     }
 
+    private fun removeAllScrollListener() {
+        itemsScrollChangedListenerList.forEach {
+            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+        addressWidgetScrollChangedListener?.let {
+            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+    }
+
     private fun getDestinationId(): String {
         return localCacheModel?.district_id.orEmpty()
+    }
+
+    private fun getCurrentSortFilterValue(): String {
+        return searchParameter?.entries?.filter { it.key != SearchApiConst.Q }
+            ?.joinToString(AND_SEPARATOR) { it.toString() }.orEmpty()
     }
 
     private fun getOkayMessage(): String = context?.getString(com.tokopedia.tokofood.R.string.search_srp_ooc_okay).orEmpty()
@@ -866,6 +900,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
         private const val TOTO_LATITUDE = "-6.2216771"
         private const val TOTO_LONGITUDE = "106.8184023"
+
+        private const val AND_SEPARATOR = "&"
     }
 
 }

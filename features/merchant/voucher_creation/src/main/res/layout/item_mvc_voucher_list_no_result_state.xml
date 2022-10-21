@@ -16,7 +16,8 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/image_voucher_list_no_result_content_description" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcNoResultStateTitle"

@@ -7,11 +7,13 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_CAROUSEL
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_SINGLE
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.utils.TdnHelper
@@ -20,15 +22,22 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
+import javax.inject.Inject
 
 class TdnBannerView : FrameLayout {
 
-    private val topAdsImageViewViewModel: TopAdsImageViewViewModel by lazy {
-        ViewModelProvider(context as AppCompatActivity).get(TopAdsImageViewViewModel::class.java)
-    }
     private var tdnCarouselView: TdnCarouselView? = null
     private var singleTdnView: SingleTdnView? = null
     private var tdnBannerResponseListener: TdnBannerResponseListener? = null
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModelProvider by lazy { ViewModelProvider(context as AppCompatActivity, viewModelFactory) }
+
+    private val topAdsImageViewViewModel by lazy {
+        viewModelProvider.get(TopAdsImageViewViewModel::class.java)
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -50,6 +59,14 @@ class TdnBannerView : FrameLayout {
         val view = View.inflate(context, R.layout.layout_widget_tdn_view, this)
         tdnCarouselView = view.findViewById(R.id.tdnCarouselView)
         singleTdnView = view.findViewById(R.id.singleTdnView)
+
+
+        val application = context.applicationContext as BaseMainApplication
+        val component = DaggerTopAdsComponent.builder()
+            .baseAppComponent(application.baseAppComponent)
+            .build()
+        component.inject(this)
+
     }
 
     fun setTdnResponseListener(listener: TdnBannerResponseListener) {

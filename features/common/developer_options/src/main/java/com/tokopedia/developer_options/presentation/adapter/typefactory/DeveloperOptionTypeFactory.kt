@@ -9,6 +9,7 @@ import com.tokopedia.developer_options.presentation.model.*
  */
 
 interface DeveloperOptionTypeFactory {
+    fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int
     fun type(uiModel: PdpDevUiModel): Int
     fun type(uiModel: AccessTokenUiModel): Int
     fun type(uiModel: SystemNonSystemAppsUiModel): Int
@@ -52,4 +53,5 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int
     fun type(uiModel: TypographySwitchUiModel): Int
     fun type(uiModel: ConvertResourceIdUiModel): Int
+    fun type(uiModel: ViewHanselPatchUiModel): Int
 }

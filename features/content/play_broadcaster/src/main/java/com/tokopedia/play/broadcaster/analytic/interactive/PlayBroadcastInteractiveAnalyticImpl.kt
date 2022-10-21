@@ -221,20 +221,6 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun onClickQuizGift(channelId: String, channelTitle: String) {
-        sendClickEvent(
-            "click - giveaway optional",
-            "$shopId - $channelId - $channelTitle",
-        )
-    }
-
-    override fun onClickCloseQuizGift(channelId: String, channelTitle: String) {
-        sendClickEvent(
-            "click - x giveaway optional",
-            "$shopId - $channelId - $channelTitle",
-        )
-    }
-
     override fun onClickStartQuiz(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - start quiz",

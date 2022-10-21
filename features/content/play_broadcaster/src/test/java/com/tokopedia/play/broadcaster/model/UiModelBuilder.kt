@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.model
 
 import com.google.gson.Gson
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
@@ -162,7 +163,6 @@ class UiModelBuilder {
         waitingDuration: Long = 0,
         duration: Int = 0,
         choices: List<QuizChoicesUiModel> = emptyList(),
-        reward: String = ""
     ): InteractiveUiModel.Quiz {
         return InteractiveUiModel.Quiz(
             id = id,
@@ -172,7 +172,6 @@ class UiModelBuilder {
                 add(Calendar.SECOND, duration)
             }),
             listOfChoices = choices,
-            reward = reward
         )
     }
 }

@@ -295,6 +295,7 @@ public interface ApplinkConst {
     String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
     String PURCHASE_HISTORY = "tokopedia://buyer/history";
     String PURCHASE_ONGOING = "tokopedia://buyer/ongoing-order";
+    String TOKOPEDIA_PLUS_ORDER = "tokopedia://plus/order";
 
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
@@ -544,9 +545,15 @@ public interface ApplinkConst {
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
         String REPURCHASE = "tokopedia://now/repurchase-page";
+        String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
+        String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";
+        String RECIPE_HOME = "tokopedia://now/recipe";
+        String RECIPE_SEARCH = "tokopedia://now/recipe/search";
+        String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
     }
 
     interface TokoFood {
+        String GOFOOD = "tokopedia://gofood";
         String MAIN_PATH = "tokopedia://food";
         String HOME = "tokopedia://food/home";
         String CATEGORY = "tokopedia://food/category";
@@ -725,6 +732,10 @@ public interface ApplinkConst {
 
         String VALUE_CAMERA_PAGE = "0"; // camera page
         String VALUE_GALLERY_PAGE = "1"; // gallery page
+    }
+
+    interface MediaEditor {
+        String MEDIA_EDITOR = "tokopedia://media-editor";
     }
 
     interface GeneralInfo {

@@ -65,6 +65,8 @@ data class ShipmentAddressFormDataResponse(
         val imageUpload: ImageUpload = ImageUpload(),
         @SerializedName("upsell")
         val upsell: Upsell = Upsell(),
+        @SerializedName("upsell_v2")
+        val newUpsell: NewUpsell = NewUpsell(),
         @SerializedName("cart_data")
         val cartData: String = "",
 )
