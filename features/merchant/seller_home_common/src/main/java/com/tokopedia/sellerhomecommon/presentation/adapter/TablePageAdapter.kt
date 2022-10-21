@@ -26,7 +26,7 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
     private var itemImpressionListener: (
         (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit
     )? = null
-    private var itemClickHtmlListener: ((url: String, text: String, isEmpty: Boolean) -> Unit)? = null
+    private var itemClickHtmlListener: ((url: String, text: String, meta: TableRowsUiModel.Meta, isEmpty: Boolean) -> Unit)? = null
     private var items: List<TablePageUiModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TablePageViewHolder {
@@ -40,9 +40,9 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
     override fun onBindViewHolder(holder: TablePageViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item, onView = {
-            itemImpressionListener?.invoke(position, items.size.orZero(), item.rows.isNullOrEmpty())
-        }, onClickHtml = { url, text ->
-            itemClickHtmlListener?.invoke(url, text, item.rows.isNullOrEmpty())
+            itemImpressionListener?.invoke(position, items.size.orZero(), item.rows.isEmpty())
+        }, onClickHtml = { url, text, meta ->
+            itemClickHtmlListener?.invoke(url, text, meta, item.rows.isEmpty())
         })
     }
 
@@ -56,7 +56,7 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
         this.itemImpressionListener = onView
     }
 
-    fun addOnClickHtmlListener(onClick: (url: String, text: String, isEmpty: Boolean) -> Unit) {
+    fun addOnClickHtmlListener(onClick: (url: String, text: String, meta: TableRowsUiModel.Meta, isEmpty: Boolean) -> Unit) {
         this.itemClickHtmlListener = onClick
     }
 
@@ -65,13 +65,13 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
     ) : RecyclerView.ViewHolder(binding.root), TableColumnHtmlViewHolder.Listener,
         TableColumnHtmlWithIconViewHolder.Listener {
 
-        private val tableAdapter = TableItemAdapter(this, this)
-        private var onHtmlClicked: (String, String) -> Unit = { _, _ -> }
+        private val tableAdapter = TableItemAdapter(this)
+        private var onHtmlClicked: (String, String, TableRowsUiModel.Meta) -> Unit = { _, _, _ -> }
 
         fun bind(
             item: TablePageUiModel,
             onView: () -> Unit,
-            onClickHtml: (String, String) -> Unit
+            onClickHtml: (String, String, TableRowsUiModel.Meta) -> Unit
         ) = with(binding) {
             val mSpanCount = item.headers.sumOf { it.width }
             val mLayoutManager = object : GridLayoutManager(root.context, mSpanCount) {
@@ -118,8 +118,8 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
             tableAdapter.notifyDataSetChanged()
         }
 
-        override fun onHyperlinkClicked(url: String, text: String) {
-            onHtmlClicked(url, text)
+        override fun onHyperlinkClicked(url: String, text: String, meta: TableRowsUiModel.Meta) {
+            onHtmlClicked(url, text, meta)
         }
 
         override fun onHyperlinkClicked(url: String) {
