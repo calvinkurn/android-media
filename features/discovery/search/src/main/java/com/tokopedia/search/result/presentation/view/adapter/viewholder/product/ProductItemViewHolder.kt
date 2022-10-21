@@ -18,6 +18,7 @@ import com.tokopedia.video_widget.VideoPlayerProvider
 abstract class ProductItemViewHolder(
         itemView: View,
         protected val productListener: ProductListener,
+        override val isAutoplayEnabled: Boolean,
 ) : AbstractViewHolder<ProductItemDataView>(itemView), VideoPlayerProvider {
 
     abstract val productCardView: IProductCardView?

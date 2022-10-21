@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -22,8 +23,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
@@ -85,6 +86,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
         private const val NAVIGATION_HOME_MENU_POSITION = 0
+        private const val TRACKER_PREF_NAME = "NotificationUserSettings"
+        private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
     }
 
     @Inject
@@ -117,12 +120,15 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
     private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
     private var binding: ActivitySahSellerHomeBinding? = null
-
-    var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
+    private val sharedPreference: SharedPreferences by lazy {
+        applicationContext.getSharedPreferences(TRACKER_PREF_NAME, MODE_PRIVATE)
+    }
 
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
 
     override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
+
+    var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setActivityOrientation()
@@ -146,6 +152,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
+        sendNotificationUserSetting()
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -259,14 +266,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     override fun getSomListLoadTimeMonitoring() = performanceMonitoringSomListPlt
 
-    private fun fetchSellerAppWidget() {
-        val broadcastIntent = Intent().apply {
-            action = ACTION_GET_ALL_APP_WIDGET_DATA
-            setPackage(packageName)
-        }
-        sendBroadcast(broadcastIntent)
-    }
-
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
@@ -277,6 +276,25 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     fun attachOtherMenuFragmentChangeCallback(callback: FragmentChangeCallback) {
         otherMenuFragmentChangeCallback = callback
+    }
+
+    private fun sendNotificationUserSetting() {
+        val isSettingsSent: Boolean =
+            sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY, false)
+        if (userSession.isLoggedIn && !isSettingsSent) {
+            NotificationUserSettingsTracker(applicationContext).sendNotificationUserSettings()
+            sharedPreference.edit()
+                .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
+                .apply()
+        }
+    }
+
+    private fun fetchSellerAppWidget() {
+        val broadcastIntent = Intent().apply {
+            action = ACTION_GET_ALL_APP_WIDGET_DATA
+            setPackage(packageName)
+        }
+        sendBroadcast(broadcastIntent)
     }
 
     private fun setContentView() {
