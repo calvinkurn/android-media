@@ -32,14 +32,14 @@ object MediaPicker {
         return intent(
             context = context,
             appLink = INTERNAL_MEDIA_PICKER,
-            pickerParam = param
+            param = param
         )
     }
 
     /**
      * The intent builder with a custom appLink for Picker module.
-     * @param: appLink
      * @param: context
+     * @param: appLink
      * @param: [PickerParam]
      *
      * this intent builder is similar like [MediaPicker.intent] above.
@@ -59,26 +59,26 @@ object MediaPicker {
      *
      */
     fun intent(
-        appLink: String = INTERNAL_MEDIA_PICKER,
         context: Context,
-        pickerParam: PickerParam.() -> Unit = {}
+        appLink: String = INTERNAL_MEDIA_PICKER,
+        param: PickerParam.() -> Unit = {}
     ): Intent {
         return RouteManager.getIntent(context, appLink).apply {
             putExtra(
                 EXTRA_PICKER_PARAM,
-                PickerParam().apply(pickerParam)
+                PickerParam().apply(param)
             )
         }
     }
 
     fun intentWithGalleryFirst(
         context: Context,
-        pickerParam: PickerParam.() -> Unit = {}
+        param: PickerParam.() -> Unit = {}
     ): Intent {
         return intent(
             context = context,
             appLink = "${INTERNAL_MEDIA_PICKER}?start=1",
-            pickerParam = pickerParam
+            param = param
         )
     }
 
@@ -95,7 +95,7 @@ object MediaPicker {
      * `compressedImages` will hit the save-to-gallery on device.
      */
     fun result(data: Intent?): PickerResult {
-        return data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
+        return data?.getParcelableExtra(EXTRA_RESULT_PICKER) ?: PickerResult()
     }
 
 }
