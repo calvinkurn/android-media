@@ -579,14 +579,10 @@ object DeeplinkMapper {
 
     // mechanism to bring most frequent deeplink to top of the list
     private fun putToTop(index: Int) {
-        // Uncomment this for performance for RouteManager. Currently disabled in production
-        // Requirement: deeplinkPatternTokopediaSchemeList should be order-independent
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            deeplinkPatternTokopediaSchemeList.add(
-                0,
-                deeplinkPatternTokopediaSchemeList.removeAt(index)
-            )
-        }
+        deeplinkPatternTokopediaSchemeList.add(
+            0,
+            deeplinkPatternTokopediaSchemeList.removeAt(index)
+        )
     }
 
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {
