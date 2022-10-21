@@ -16,13 +16,12 @@ object ReviewCredibilityResponseMapper {
         label: ReviewerCredibilityLabel
     ): List<ReviewCredibilityAchievementBoxUiModel.ReviewCredibilityAchievementUiModel> {
         return label.achievements?.mapNotNull {
-            if (it.image.isNullOrBlank() || it.name.isNullOrBlank() || it.total.isNullOrBlank() || it.color.isNullOrBlank() || it.mementoLink.isNullOrBlank()) {
+            if (it.image.isNullOrBlank() || it.name.isNullOrBlank() || it.color.isNullOrBlank() || it.mementoLink.isNullOrBlank()) {
                 null
             } else {
                 ReviewCredibilityAchievementBoxUiModel.ReviewCredibilityAchievementUiModel(
                     avatar = it.image,
                     name = it.name,
-                    counter = it.total,
                     color = it.color,
                     mementoLink = it.mementoLink
                 )

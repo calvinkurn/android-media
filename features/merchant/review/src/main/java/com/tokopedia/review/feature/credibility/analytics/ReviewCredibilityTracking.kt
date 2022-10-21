@@ -23,7 +23,7 @@ object ReviewCredibilityTracking {
     ): Bundle {
         val promotions = achievements.mapIndexed { index, reviewCredibilityAchievementUiModel ->
             Bundle().apply {
-                putString(AnalyticConstant.KEY_EE_CREATIVE_NAME, reviewCredibilityAchievementUiModel.counter)
+                putString(AnalyticConstant.KEY_EE_CREATIVE_NAME, "")
                 putInt(AnalyticConstant.KEY_EE_CREATIVE_SLOT, index)
                 putString(AnalyticConstant.KEY_EE_ITEM_ID, ReviewCredibilityTrackingConstant.ITEM_ID_ACHIEVEMENT_STICKER)
                 putString(AnalyticConstant.KEY_EE_ITEM_NAME, reviewCredibilityAchievementUiModel.name)

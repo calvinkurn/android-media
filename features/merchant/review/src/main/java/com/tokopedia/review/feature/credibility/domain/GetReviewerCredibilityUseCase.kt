@@ -34,7 +34,6 @@ class GetReviewerCredibilityUseCase @Inject constructor(
                       achievements {
                         image
                         name
-                        total
                         color
                         mementoLink
                       }

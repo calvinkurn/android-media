@@ -9,7 +9,6 @@ data class ReviewCredibilityAchievementBoxUiModel(
     data class ReviewCredibilityAchievementUiModel(
         val avatar: String,
         val name: String,
-        val counter: String,
         val color: String,
         val mementoLink: String
     )
