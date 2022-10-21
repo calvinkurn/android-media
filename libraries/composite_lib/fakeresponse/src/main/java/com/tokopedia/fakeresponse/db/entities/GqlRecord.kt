@@ -2,8 +2,6 @@ package com.tokopedia.fakeresponse.db.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tokopedia.fakeresponse.data.models.ResponseItemType
 import com.tokopedia.fakeresponse.data.models.ResponseListData
 import java.util.*
