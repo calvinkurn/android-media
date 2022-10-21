@@ -196,13 +196,6 @@ class SwitchAccountRobot(
         delay(1000L)
     }
 
-    fun entryPointWhenShopAccountBanned() = chainable {
-        Espresso.onView(withId(contentR.id.rv_tnc_benefit))
-            .check(matches(isCompletelyDisplayed()))
-
-        delay()
-    }
-
     fun entryPointWhenBothAccountLive() = chainable {
         Espresso.onView(withId(contentR.id.tv_warning_title))
             .check(matches(withText(context.getString(contentR.string.ugc_warning_both_account_live_title))))
