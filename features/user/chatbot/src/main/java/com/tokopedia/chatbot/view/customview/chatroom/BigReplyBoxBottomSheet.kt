@@ -43,9 +43,11 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         setUpTextWatcher()
         disableSendButton()
         bindClickListeners()
-        getBindingView().chatText.minLine = 3
-        getBindingView().chatText.labelText.text = labelText
-        getBindingView().chatText.textInputLayout.hint= hintText
+
+//        getBindingView().chatText.labelText.text = labelText
+//        getBindingView().chatText.textInputLayout.hint= hintText
+        getBindingView().chatText.labelText.text = "LABEL"
+        getBindingView().chatText.textInputLayout.hint= "HINT"
      //   getBindingView().chatText.editText.unify_text_field_message = ""
         return super.onCreateView(inflater, container, savedInstanceState)
     }
