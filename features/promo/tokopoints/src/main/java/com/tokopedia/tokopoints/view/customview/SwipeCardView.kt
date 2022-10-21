@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.customview
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -53,6 +54,7 @@ class SwipeCardView : FrameLayout,View.OnTouchListener {
         initView(context)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onFinishInflate() {
         super.onFinishInflate()
         val params = mTouchView?.layoutParams as? RelativeLayout.LayoutParams

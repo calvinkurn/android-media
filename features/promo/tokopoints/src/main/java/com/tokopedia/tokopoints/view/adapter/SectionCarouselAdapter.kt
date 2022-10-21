@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.ImageList
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import java.util.*
 
 class SectionCarouselAdapter(
     private val mItems:List<ImageList>?,
@@ -71,7 +73,7 @@ class SectionCarouselAdapter(
 
     fun handledClick(appLink: String?, webLink: String?) {
         if (TextUtils.isEmpty(appLink)) {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, webLink))
+            RouteManager.route(context, String.format(Locale.getDefault(),"%s?url=%s", ApplinkConst.WEBVIEW, Uri.encode(webLink)))
         } else {
             RouteManager.route(context, appLink)
         }

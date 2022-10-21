@@ -1,6 +1,6 @@
 package com.tokopedia.tokopoints.view.util
 
-import android.os.Build
+
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import com.google.android.material.tabs.TabLayout
@@ -36,15 +36,10 @@ object TabUtil {
     }
 
     private fun setMargin(layoutParams: MarginLayoutParams, start: Int, end: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            layoutParams.marginStart = start
-            layoutParams.marginEnd = end
-            layoutParams.leftMargin = start
-            layoutParams.rightMargin = end
-        } else {
-            layoutParams.leftMargin = start
-            layoutParams.rightMargin = end
-        }
+        layoutParams.marginStart = start
+        layoutParams.marginEnd = end
+        layoutParams.leftMargin = start
+        layoutParams.rightMargin = end
     }
 
     fun removedPaddingAtLast(tabLayout: TabLayout, internalMargin: Int) {

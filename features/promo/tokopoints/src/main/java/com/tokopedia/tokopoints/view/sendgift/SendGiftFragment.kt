@@ -48,10 +48,10 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override val activityContext: Context
-        get() = activity!!
+        get() = requireActivity()
 
     override val appContext: Context
-        get() = activity!!
+        get() = requireActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
@@ -245,7 +245,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             val tvTitle = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_title)
             val tvContent = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.content)
             val btnSuccess = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.btn_sentSuccess)
-            btnSuccess.setOnClickListener {  activity!!.finish() }
+            btnSuccess.setOnClickListener {  requireActivity().finish() }
             tvTitle.text = title
             tvContent.text = message
             adb.setView(viewSentSuccess)
@@ -254,7 +254,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             val tvContent = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.content)
             val tvRoute = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_route)
             val btnFailed = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.btn_sentFail)
-            btnFailed.setOnClickListener {  activity!!.finish() }
+            btnFailed.setOnClickListener {  requireActivity().finish() }
             tvRoute.setOnClickListener {  RouteManager.route(this.context, ApplinkConst.TOKOPEDIA_REWARD) }
             tvTitle.text = title
             tvContent.text = message

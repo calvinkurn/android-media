@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.CategoryTokopointsList
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import java.util.*
 
 class SectionCategoryAdapter(
     private val context: Context?,
@@ -52,9 +54,10 @@ class SectionCategoryAdapter(
                     if (TextUtils.isEmpty(it.appLink)) {
                         RouteManager.route(
                             context, String.format(
+                                Locale.getDefault(),
                                 "%s?url=%s",
                                 ApplinkConst.WEBVIEW,
-                                it.url
+                                Uri.encode(it.url)
                             )
                         )
                     } else {
