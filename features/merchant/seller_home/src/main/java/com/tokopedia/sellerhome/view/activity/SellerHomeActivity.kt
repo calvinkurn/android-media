@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -29,6 +30,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -82,6 +84,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
         private const val NAVIGATION_HOME_MENU_POSITION = 0
+        private const val TRACKER_PREF_NAME = "NotificationUserSettings"
+        private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
     }
 
     @Inject
@@ -120,6 +124,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
 
     override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
+    private val sharedPreference: SharedPreferences by lazy {
+        applicationContext.getSharedPreferences(TRACKER_PREF_NAME, MODE_PRIVATE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setActivityOrientation()
@@ -143,6 +150,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
+        sendNotificationUserSetting()
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -255,6 +263,17 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     override fun getSomListLoadTimeMonitoring() = performanceMonitoringSomListPlt
+
+    private fun sendNotificationUserSetting() {
+        val isSettingsSent: Boolean =
+            sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY, false)
+        if (userSession.isLoggedIn && !isSettingsSent) {
+            NotificationUserSettingsTracker(applicationContext).sendNotificationUserSettings()
+            sharedPreference.edit()
+                .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
+                .apply()
+        }
+    }
 
     private fun fetchSellerAppWidget() {
         val broadcastIntent = Intent().apply {

@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase;
 
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.CacheType;
 import com.tokopedia.common.network.data.model.RestCacheStrategy;
 import com.tokopedia.common.network.data.model.RestRequest;
@@ -10,6 +9,7 @@ import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint;
 import com.tokopedia.contactus.inboxticket2.domain.TicketDetailResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;

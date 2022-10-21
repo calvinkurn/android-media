@@ -84,7 +84,7 @@ import kotlin.collections.HashMap
 /**
  * Created by Rafli Syam 20/07/2020
  */
-class UniversalShareBottomSheet : BottomSheetUnify() {
+open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     companion object {
         @LayoutRes

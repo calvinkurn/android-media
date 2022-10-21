@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
@@ -208,6 +209,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
 
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
+    private var isLiveStreamEnded = false
+
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
         PinnedMessageUiModel.Empty()
     )
@@ -343,6 +346,22 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
 
     }
+
+    fun saveState(outState: Bundle) {
+        outState.putParcelable(KEY_CONFIG, _configInfo.value)
+        outState.putBoolean(KEY_IS_LIVE_STREAM_ENDED, isLiveStreamEnded)
+    }
+
+    fun restoreState(savedInstanceState: Bundle) {
+        _configInfo.value = savedInstanceState.getParcelable(KEY_CONFIG)
+        isLiveStreamEnded = savedInstanceState.getBoolean(KEY_IS_LIVE_STREAM_ENDED)
+    }
+
+    fun setIsLiveStreamEnded() {
+        isLiveStreamEnded = true
+    }
+
+    fun isLiveStreamEnded() = isLiveStreamEnded
 
     override fun onCleared() {
         super.onCleared()
@@ -1537,6 +1556,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val UI_STATE_STOP_TIMEOUT = 5000L
 
         private const val KEY_TITLE = "title"
+        private const val KEY_CONFIG = "config_ui_model"
+        private const val KEY_IS_LIVE_STREAM_ENDED = "key_is_live_stream_ended"
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
