@@ -36,23 +36,10 @@ internal class SearchProductVideoCarouselTest: ProductListPresenterTestFixtures(
     )
     private val expectedDimension90 = Dimension90Utils.getDimension90(searchParameter)
 
-
-    private fun `Given view will return video widget ab test`() {
-        every {
-            productListView.abTestRemoteConfig?.getString(
-                RollenceKey.SEARCH_VIDEO_WIDGET,
-                any()
-            )
-        } answers {
-            RollenceKey.SEARCH_VIDEO_WIDGET_VARIANT
-        }
-    }
-
     @Test
-    fun `Show video widget if video widget ab test enabled`() {
+    fun `Show video widget`() {
         val searchProductModel: SearchProductModel = videoWidget.jsonToObject()
 
-        `Given view will return video widget ab test`()
         `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
         `Given Mechanism to save and get product position from cache`()
 
@@ -174,72 +161,6 @@ internal class SearchProductVideoCarouselTest: ProductListPresenterTestFixtures(
             actual.dimension90 shouldBe expectedDimension90
 
             expectedOptionPosition++
-        }
-    }
-
-    private fun InspirationCarouselDataView.assertCarouselGridHasBanner(shouldAddBannerCard: Boolean) {
-        this.options[0].shouldAddBannerCard() shouldBe shouldAddBannerCard
-    }
-
-    private fun `Given view will return no video widget ab test`() {
-        every {
-            productListView.abTestRemoteConfig?.getString(
-                RollenceKey.SEARCH_VIDEO_WIDGET,
-                any()
-            )
-        } answers {
-            ""
-        }
-    }
-
-    @Test
-    fun `Show no video widget if video widget ab test disabled`() {
-        val searchProductModel: SearchProductModel = videoWidget.jsonToObject()
-
-        `Given view will return no video widget ab test`()
-        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
-        `Given Mechanism to save and get product position from cache`()
-
-        `When Load Data`()
-
-        `Then verify view set product list`()
-        `Then verify visitable list has product sequence and no video widget on first page`()
-    }
-
-
-    private fun `Then verify visitable list has product sequence and no video widget on first page`() {
-        val visitableList = visitableListSlot.captured
-
-        // 0 -> choose address data
-        // 1 -> product
-        // 2 -> product
-        // 3 -> product
-        // 4 -> product
-        // 5 -> product
-        // 6 -> product
-        // 7 -> product
-        // 8 -> product
-        // 9 -> product
-        // 10 -> product
-        // 11 -> product
-        // 12 -> productØ
-        // 13 -> product
-        // 14 -> product
-        visitableList.size shouldBe 15
-
-        visitableList.forEachIndexed { index, visitable ->
-            when (index) {
-                0 -> {
-                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
-                        "visitable list at index $index should be ChooseAddressDataView"
-                    )
-                }
-                else -> {
-                    visitable.shouldBeInstanceOf<ProductItemDataView>(
-                        "visitable list at index $index should be ProductItemViewModel"
-                    )
-                }
-            }
         }
     }
 }

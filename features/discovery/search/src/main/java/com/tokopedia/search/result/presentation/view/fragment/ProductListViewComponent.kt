@@ -31,6 +31,7 @@ import com.tokopedia.search.result.product.performancemonitoring.PerformanceMoni
 import com.tokopedia.search.result.product.safesearch.SafeSearchModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationModule
 import com.tokopedia.search.result.product.ticker.TickerModule
+import com.tokopedia.search.result.product.video.VideoModule
 import com.tokopedia.search.utils.ProductionSchedulersProviderModule
 import com.tokopedia.search.utils.applinkmodifier.SearchApplinkModifierModule
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
@@ -69,6 +70,7 @@ import dagger.Component
     BroadMatchModule::class,
     SearchApplinkModifierModule::class,
     InspirationCarouselModule::class,
+    VideoModule::class,
     TickerModule::class,
     SafeSearchModule::class,
  ], dependencies = [BaseAppComponent::class])

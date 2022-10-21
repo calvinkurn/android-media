@@ -55,6 +55,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PRODUCT_CARD_VIEWSTUB
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.ProductClickAnalyticsData
@@ -216,6 +217,10 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject @Suppress("LateinitUsage")
     lateinit var applinkModifier: ApplinkModifier
 
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var productVideoAutoplay: VideoPlayerAutoplay
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -238,9 +243,22 @@ class ProductListFragment: BaseDaggerFragment(),
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
-    private val productVideoAutoplay : VideoPlayerAutoplay by lazy {
-        VideoPlayerAutoplay(remoteConfig)
+    private val isSneakPeekEnabled: Boolean by lazy {
+        getABTestVideoSneakPeek()
     }
+
+    private fun getABTestVideoSneakPeek(): Boolean {
+        return try {
+            val abTestVideoSneakPeekAutoPlay = abTestRemoteConfig?.getString(
+                RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY,
+                ""
+            )
+            RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT == abTestVideoSneakPeekAutoPlay
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
     private lateinit var networkMonitor : DefaultNetworkMonitor
 
@@ -478,7 +496,8 @@ class ProductListFragment: BaseDaggerFragment(),
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
             sameSessionRecommendationListener = sameSessionRecommendationListener,
-            recycledViewPool = recycledViewPool
+            recycledViewPool = recycledViewPool,
+            isSneakPeekEnabled = isSneakPeekEnabled,
         )
     }
 
