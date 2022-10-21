@@ -23,7 +23,6 @@ object NotificationHelper {
         contentText: String?,
         intent: Intent
     ) {
-
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         setNotificationChannel(notificationManager)
