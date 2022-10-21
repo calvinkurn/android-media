@@ -430,11 +430,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 if (isFirstOpen && isAllowChangeAccount) {
                     isFirstOpen = false
                     handleSwitchAccount(false)
-                } else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+                }
                 if (currConfigInfo != null) {
                     setChannelId(currConfigInfo.channelId)
                     _configInfo.value = currConfigInfo
                 }
+                _observableConfigInfo.value = NetworkResult.Success(currConfigInfo ?: configUiModel)
                 return@launchCatchError
             }
 
