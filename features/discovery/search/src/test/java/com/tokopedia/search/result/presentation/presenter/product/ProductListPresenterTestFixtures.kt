@@ -30,9 +30,13 @@ import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegat
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.safesearch.MutableSafeSearchPreference
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegate
+import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
@@ -105,6 +109,8 @@ internal open class ProductListPresenterTestFixtures {
         every { className } returns this@ProductListPresenterTestFixtures.className
     }
     protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
+    protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
+    protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
 
     protected lateinit var productListPresenter: ProductListPresenter
 
@@ -128,6 +134,11 @@ internal open class ProductListPresenterTestFixtures {
             userSession,
             inspirationListAtcView,
             searchParameterProvider,
+        )
+        val tickerPresenter = TickerPresenterDelegate()
+        val safeSearchPresenter = SafeSearchPresenterDelegate(
+            safeSearchPreference,
+            safeSearchView,
         )
 
         productListPresenter = ProductListPresenter(
@@ -167,6 +178,8 @@ internal open class ProductListPresenterTestFixtures {
                 suggestionPresenter,
             ),
             suggestionPresenter,
+            tickerPresenter,
+            safeSearchPresenter,
         )
         productListPresenter.attachView(productListView)
     }
