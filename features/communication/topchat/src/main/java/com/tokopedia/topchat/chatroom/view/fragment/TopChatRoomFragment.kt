@@ -188,6 +188,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.trackSuccessDoB
 import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.topchat.common.util.Utils.isFromBubble
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
@@ -288,11 +289,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
      * Ticker Reminder flag, only 1 ticker can exist in 1 session
      */
     private var isTickerNotShownYet = true
-
-    /*
-    * Bubble Flag
-     */
-    private var isFromBubble = false
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -681,9 +677,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this,
             (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
-            isFromBubble =
-                getStringArgument(Constant.EXTRA_IS_FROM_BUBBLE, null) == Constant.EXTRA_BUBBLE_SOURCE
-            it.isFromBubble = isFromBubble
+            it.isFromBubble = activity?.isFromBubble() == true
             topchatViewState = it
         }
     }
@@ -1892,7 +1886,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
-        if (isFromBubble) {
+        if (activity?.isFromBubble() == true) {
             TopChatAnalyticsKt.clickVoucherFromBubble(session.shopId, data.voucher.voucherId)
         } else {
             TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
@@ -1952,7 +1946,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (::viewModel.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
-            if (isFromBubble) {
+            if (activity?.isFromBubble() == true) {
                 activity?.onBackPressed()
             } else {
                 finishActivity()
@@ -2059,7 +2053,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachProduct(menu: AttachmentMenu) {
-        if (isFromBubble) {
+        if (activity?.isFromBubble() == true) {
             TopChatAnalyticsKt.clickAddAttachmentProductFromBubble(session.shopId)
         } else {
             analytics.eventAttachProduct()
@@ -2069,7 +2063,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
-        if (isFromBubble) {
+        if (activity?.isFromBubble() == true) {
             TopChatAnalyticsKt.clickAddAttachmentImageFromBubble(session.shopId)
         } else {
             analytics.eventPickImage()
@@ -2079,7 +2073,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {
-        if (isFromBubble) {
+        if (activity?.isFromBubble() == true) {
             TopChatAnalyticsKt.clickAddAttachmentVoucherFromBubble(session.shopId)
         } else {
             analytics.trackChatMenuClicked(voucherMenu.label)
@@ -2088,7 +2082,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
-        if (isFromBubble) {
+        if (activity?.isFromBubble() == true) {
             TopChatAnalyticsKt.clickAddAttachmentInvoiceFromBubble(session.shopId)
         } else {
             analytics.trackChatMenuClicked(menu.label)
