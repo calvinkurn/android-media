@@ -1950,11 +1950,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onBackPressed(): Boolean {
         if (super.onBackPressed()) return true
-        if (isFromBubble) {
-            activity?.onBackPressed()
+        if (::viewModel.isInitialized && viewModel.isUploading()) {
+            showDialogConfirmToAbortUpload()
         } else {
-            if (::viewModel.isInitialized && viewModel.isUploading()) {
-                showDialogConfirmToAbortUpload()
+            if (isFromBubble) {
+                activity?.onBackPressed()
             } else {
                 finishActivity()
             }
