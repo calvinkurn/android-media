@@ -264,4 +264,16 @@ yang ditemukan</string>
     <string name="topchat_operational_insight_performance_shop">Performa Toko</string>
     <string name="topchat_operational_insight_good">baik</string>
     <string name="topchat_operational_insight_need_improvement">perlu ditingkatkan</string>
+
+    <string name="topchat_bubble_ticker_activation_guide_desc">Tampilan fitur bisa berbeda tergantung dari versi sistem operasi atau merek HP Android-mu.</string>
+
+    <string name="topchat_bubble_activation_guide_1_desc">Pastikan pengaturan notifikasi HP-mu aktif. Pakai fitur ini dengan cara klik ikon pas dapet notifikasi dari pembeli.</string>
+    <string name="topchat_bubble_activation_guide_1_desc_sample_icon">Ini contoh ikonnya</string>
+    <string name="topchat_bubble_activation_guide_2_desc">Yay! Bubbles akan muncul di layar HP-mu (dari Notifikasi yang kamu pilih sebelumnya).</string>
+    <string name="topchat_bubble_activation_guide_3_desc">Akses ruang chat lebih cepat dengan klik Bubbles yang melayang di layar HP tanpa buka aplikasi Seller terlebih dahulu.</string>
+
+    <string name="topchat_bubble_activation_guide_seller_edu_label">Mau tau lebih banyak? Cek di Seller Edu</string>
+    <string name="topchat_bubble_activation_guide_button_title">Cek Pengaturan Bubbles</string>
+
+
 </resources>
