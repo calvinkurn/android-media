@@ -762,12 +762,7 @@ class ChatbotFragment :
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroomViewModel, chatReplies ->
-            val list = chatroomViewModel.listChat.filter {
-                !(
-                    (it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                        (it is MessageUiModel && it.message.isEmpty())
-                    )
-            }
+            val list = filterChatList(chatroomViewModel)
 
             updateViewData(chatroomViewModel)
             renderList(list)
@@ -1730,14 +1725,19 @@ class ChatbotFragment :
         hideLoading()
     }
 
+    private fun filterChatList(chatroom: ChatroomViewModel): List<Visitable<*>> {
+        return chatroom.listChat.filter {
+            !(
+                (it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
+                    (it is MessageUiModel && it.message.isEmpty())
+                )
+        }
+    }
+
+
     private fun onSuccessGetTopChatData(replyTime: String = "", fromOnClick: Boolean = false): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroom, chatReplies ->
-            val list = chatroom.listChat.filter {
-                !(
-                    (it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                        (it is MessageUiModel && it.message.isEmpty())
-                    )
-            }
+            val list = filterChatList(chatroom)
             if (list.isNotEmpty()) {
                 val filteredList = getViewState()?.clearDuplicate(list)
                 updateHasNextState(chatReplies)
@@ -1764,12 +1764,7 @@ class ChatbotFragment :
 
     private fun onSuccessGetBottomChatData(replyTime: String = "", fromOnClick: Boolean = false): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroom, chatReplies ->
-            val list = chatroom.listChat.filter {
-                !(
-                    (it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                        (it is MessageUiModel && it.message.isEmpty())
-                    )
-            }
+            val list = filterChatList(chatroom)
             if (list.isNotEmpty()) {
                 val filteredList = getViewState()?.clearDuplicate(list)
                 rvScrollListener?.finishBottomLoadingState()
