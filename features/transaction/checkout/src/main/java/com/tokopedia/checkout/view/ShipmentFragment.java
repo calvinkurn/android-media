@@ -1881,7 +1881,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCheckoutValidationResult(boolean result, Object shipmentData, int errorPosition) {
+    public void onCheckoutValidationResult(boolean result, Object shipmentData, int errorPosition, boolean epharmacyError) {
         if (shipmentData == null && result) {
             if (shipmentPresenter.isIneligiblePromoDialogEnabled()) {
                 ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList = new ArrayList<>();
@@ -1988,8 +1988,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (isTradeIn()) {
                 checkoutTradeInAnalytics.eventClickBayarCourierNotComplete();
             }
-            sendAnalyticsCourierNotComplete();
-            checkShippingCompletion(true);
+            if (!epharmacyError) {
+                sendAnalyticsCourierNotComplete();
+            }
+            checkShippingCompletion(true, epharmacyError);
         }
     }
 
@@ -3379,10 +3381,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCheckShippingCompletionClicked() {
         checkoutAnalyticsCourierSelection.clickCekOnSummaryTransactionTickerCourierNotComplete(userSessionInterface.getUserId());
-        checkShippingCompletion(false);
+        checkShippingCompletion(false, false);
     }
 
-    private void checkShippingCompletion(boolean isTriggeredByPaymentButton) {
+    private void checkShippingCompletion(boolean isTriggeredByPaymentButton, boolean epharmacyError) {
         if (getActivity() != null) {
             List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
             if (isTradeInByDropOff()) {
@@ -3417,8 +3419,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         }
                     } else if (shipmentDataList.get(i) instanceof UploadPrescriptionUiModel) {
                         UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                        if (uploadPrescriptionUiModel.getFrontEndValidation() && uploadPrescriptionUiModel.getUploadedImageCount() != null
-                                && uploadPrescriptionUiModel.getUploadedImageCount() == 0) {
+                        if (epharmacyError) {
                             if (firstFoundPosition == 0) {
                                 showToastNormal(getActivity().getString(R.string.message_error_prescription_not_found));
                                 firstFoundPosition = i;

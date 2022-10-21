@@ -31,7 +31,7 @@ public interface ShipmentAdapterActionListener {
 
     void onDataDisableToCheckout(String message);
 
-    void onCheckoutValidationResult(boolean result, Object shipmentData, int position);
+    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, boolean epharmacyError);
 
     void onChangeAddress();
 

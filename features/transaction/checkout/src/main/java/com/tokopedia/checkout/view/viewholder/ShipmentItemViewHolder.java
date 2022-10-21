@@ -905,8 +905,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
         layoutStateFailedShipping.setVisibility(View.GONE);
 
-        labelErrorShippingTitle.setText(shipmentCartItemModel.getCourierSelectionErrorTitle());
-        labelErrorShippingDescription.setText(shipmentCartItemModel.getCourierSelectionErrorDescription());
+        if (TextUtils.isEmpty(shipmentCartItemModel.getCourierSelectionErrorTitle())) {
+            labelErrorShippingTitle.setText(itemView.getResources().getString(R.string.checkout_error_shipping_title));
+        } else {
+            labelErrorShippingTitle.setText(shipmentCartItemModel.getCourierSelectionErrorTitle());
+        }
+        if (TextUtils.isEmpty(shipmentCartItemModel.getCourierSelectionErrorDescription())) {
+            labelErrorShippingDescription.setText(itemView.getResources().getString(R.string.checkout_error_shipping_description));
+        } else {
+            labelErrorShippingDescription.setText(shipmentCartItemModel.getCourierSelectionErrorDescription());
+        }
         layoutStateHasErrorShipping.setVisibility(View.VISIBLE);
 
         llShippingExperienceStateLoading.setVisibility(View.GONE);

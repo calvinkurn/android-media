@@ -647,6 +647,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             boolean availableCheckout = true;
             int errorPosition = DEFAULT_ERROR_POSITION;
             Object errorSelectedShipmentData = null;
+            boolean isPrescriptionFrontEndValidationError = false;
             for (int i = 0; i < shipmentDataList.size(); i++) {
                 Object shipmentData = shipmentDataList.get(i);
                 if (shipmentData instanceof ShipmentCartItemModel) {
@@ -660,34 +661,45 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             availableCheckout = false;
                             errorPosition = i;
                             errorSelectedShipmentData = shipmentData;
+                            break;
                         }
                     }
-                }
-            }
-
-            boolean isPrescriptionFrontEndValidationError = false;
-            if (availableCheckout) {
-                for (int i = 0; i < shipmentDataList.size(); i++) {
-                    Object shipmentData = shipmentDataList.get(i);
-                    if (shipmentData instanceof UploadPrescriptionUiModel) {
-                        if (((UploadPrescriptionUiModel) shipmentData).getFrontEndValidation()
-                                && ((UploadPrescriptionUiModel) shipmentData).getUploadedImageCount() != null
-                                && ((UploadPrescriptionUiModel) shipmentData).getUploadedImageCount() == 0) {
+                    if (((ShipmentCartItemModel) shipmentData).getHasEthicalProducts()) {
+                        boolean prescriptionIdsEmpty = ((ShipmentCartItemModel) shipmentData).getPrescriptionIds().isEmpty();
+                        boolean consultationEmpty = (TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getTokoConsultationId()) ||
+                                TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getPartnerConsultationId()) ||
+                                ((ShipmentCartItemModel) shipmentData).getTokoConsultationId().equals("0") ||
+                                ((ShipmentCartItemModel) shipmentData).getPartnerConsultationId().equals("0"));
+                        if (prescriptionIdsEmpty && consultationEmpty) {
                             isPrescriptionFrontEndValidationError = true;
-                            errorPosition = i;
-                            errorSelectedShipmentData = shipmentData;
-                        } else {
-                            isPrescriptionFrontEndValidationError = false;
+                            availableCheckout = false;
                         }
                     }
                 }
             }
 
-            if (isPrescriptionFrontEndValidationError) {
-                shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
-            } else {
-                shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition);
-            }
+//            if (availableCheckout) {
+//                for (int i = 0; i < shipmentDataList.size(); i++) {
+//                    Object shipmentData = shipmentDataList.get(i);
+//                    if (shipmentData instanceof UploadPrescriptionUiModel) {
+//                        if (((UploadPrescriptionUiModel) shipmentData).getFrontEndValidation()
+//                                && ((UploadPrescriptionUiModel) shipmentData).getUploadedImageCount() != null
+//                                && ((UploadPrescriptionUiModel) shipmentData).getUploadedImageCount() == 0) {
+//                            isPrescriptionFrontEndValidationError = true;
+//                            errorPosition = i;
+//                            errorSelectedShipmentData = shipmentData;
+//                        } else {
+//                            isPrescriptionFrontEndValidationError = false;
+//                        }
+//                    }
+//                }
+//            }
+
+//            if (isPrescriptionFrontEndValidationError) {
+//                shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
+//            } else {
+            shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition, isPrescriptionFrontEndValidationError);
+//            }
         } else {
             int errorPosition = 0;
             if (shipmentCartItemModelList != null && shipmentDataList != null) {
@@ -699,7 +711,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             }
-            shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
+            shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition, false);
         }
     }
 

@@ -2,22 +2,22 @@ package com.tokopedia.checkout.view.converter;
 
 import com.google.gson.Gson;
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee;
+import com.tokopedia.checkout.data.model.request.common.RatesFeature;
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee;
-import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest;
-import com.tokopedia.checkout.data.model.request.common.RatesFeature;
-import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,7 +156,11 @@ public class ShipmentDataRequestConverter {
                 }
 
                 shopProductCheckout.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
-                shopProductCheckout.setNeedPrescription(productInCartNeedsPrescription(shipmentCartItemModel));
+                shopProductCheckout.setNeedPrescription(shipmentCartItemModel.getHasEthicalProducts());
+
+                shopProductCheckout.setPrescriptionIds(shipmentCartItemModel.getPrescriptionIds());
+                shopProductCheckout.setTokoConsultationId(shipmentCartItemModel.getTokoConsultationId());
+                shopProductCheckout.setPartnerConsultationId(shipmentCartItemModel.getPartnerConsultationId());
 
                 return shopProductCheckout;
             }
