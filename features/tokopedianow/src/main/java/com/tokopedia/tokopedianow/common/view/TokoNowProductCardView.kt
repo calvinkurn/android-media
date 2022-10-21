@@ -2,12 +2,10 @@ package com.tokopedia.tokopedianow.common.view
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -16,17 +14,21 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.model.LABEL_BEST_SELLER
+import com.tokopedia.tokopedianow.common.model.LABEL_GIMMICK
 import com.tokopedia.tokopedianow.common.model.LabelGroup
+import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
+import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class TokoNowProductCardView @JvmOverloads constructor(
     context: Context,
@@ -63,10 +65,15 @@ class TokoNowProductCardView @JvmOverloads constructor(
             progressBarPercentage = 20,
             labelGroupList = listOf(
                 LabelGroup(
-                    position = LABEL_BEST_SELLER,
-                    type = "#E1AA1D",
-                    title = "Terlaris"
-                )
+                    position = LABEL_GIMMICK,
+                    type = TEXT_DARK_ORANGE,
+                    title = "Terbaru"
+                ),
+//                LabelGroup(
+//                    position = LABEL_BEST_SELLER,
+//                    type = "#E1AA1D",
+//                    title = "Terlaris"
+//                )
             ),
         )
         setData(model)
@@ -81,17 +88,13 @@ class TokoNowProductCardView @JvmOverloads constructor(
     private fun setupUi(
         model: TokoNowProductCardViewUiModel
     ) {
-        val isOos = model.isOos()
-        val isFlashSale = model.isFlashSale()
-        val isNormal = !isOos && !isFlashSale
-
         binding.apply {
             initImageFilterView(
                 imageUrl = model.imageUrl,
-                brightness = if (isOos) 0.5f else 1f
+                brightness = model.getImageBrightness()
             )
             initAssignedValueTypography(
-                labelGroup = model.getBestSellerLabel()
+                labelGroup = model.getAssignedValueLabelGroup()
             )
             initMainPriceTypography(
                 price = model.price
@@ -105,15 +108,15 @@ class TokoNowProductCardView @JvmOverloads constructor(
             )
             initRatingTypography(
                 rating = model.rating,
-                isFlashSale = isFlashSale,
-                isNormal = isNormal
+                isFlashSale = model.isFlashSale(),
+                isNormal = model.isNormal()
             )
             initOosLabel(
                 labelGroup = model.getOosLabel(),
-                isOos = isOos
+                isOos = model.isOos()
             )
             initProgressBar(
-                isFlashSale = isFlashSale,
+                isFlashSale = model.isFlashSale(),
                 progressBarLabel = model.progressBarLabel,
                 progressBarLabelColor = model.progressBarLabelColor,
                 progressBarPercentage = model.progressBarPercentage
@@ -133,24 +136,18 @@ class TokoNowProductCardView @JvmOverloads constructor(
         labelGroup: LabelGroup?
     ) {
         assignedValueTypography.showIfWithBlock(labelGroup != null) {
-            text = labelGroup?.title
-            background = ContextCompat.getDrawable(
-                context,
-                R.drawable.tokopedianow_bg_product_card_best_seller
-            )
-            backgroundTintList = ColorStateList.valueOf(
-                safeParseColor(labelGroup?.type.orEmpty())
-            )
-        }
-    }
-
-    fun safeParseColor(color: String): Int {
-        return try {
-            Color.parseColor(color)
-        }
-        catch (throwable: Throwable) {
-            throwable.printStackTrace()
-            0
+            labelGroup?.let { labelGroup ->
+                text = labelGroup.title
+                if (labelGroup.isBestSellerPosition()) {
+                    adjustBestSellerLabelBackground(
+                        labelGroup = labelGroup
+                    )
+                } else {
+                    adjustTextColor(
+                        colorType = labelGroup.type
+                    )
+                }
+            }
         }
     }
 
@@ -230,7 +227,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
             setLabelType(
                 getHexColorFromIdColor(
                     context = context,
-                    idColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    idColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 )
             )
             initWishlistButton(
@@ -272,18 +269,14 @@ class TokoNowProductCardView @JvmOverloads constructor(
             progressTypography.showIfWithBlock(isFlashSale) {
                 text = progressBarLabel
                 if (progressBarLabelColor.isNotBlank()) {
-                    setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifycomponents.R.color.Unify_RN500
-                        )
+                    setTextColorCompat(
+                        resourceId = com.tokopedia.unifycomponents.R.color.Unify_RN500
                     )
                 }
             }
             adjustFireIcon(progressBarLabel)
         }
     }
-
 
     /**
      * This function is used for phase 2
@@ -409,7 +402,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun TextView.adjustChevronIcon(
+    private fun Typography.adjustChevronIcon(
         drawable: Drawable?
     ) {
         val widthRight = getDpFromDimen(
@@ -435,5 +428,35 @@ class TokoNowProductCardView @JvmOverloads constructor(
             drawable,
             null
         )
+    }
+
+    private fun Typography.adjustBestSellerLabelBackground(
+        labelGroup: LabelGroup
+    ) {
+        background = ContextCompat.getDrawable(
+            context,
+            R.drawable.tokopedianow_bg_product_card_best_seller
+        )
+        backgroundTintList = ColorStateList.valueOf(
+            safeParseColor(
+                color = labelGroup.type,
+                defaultColor = ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
+            )
+        )
+    }
+
+    private fun Typography.adjustTextColor(
+        colorType: String
+    ) {
+        when (colorType) {
+            TEXT_DARK_ORANGE -> {
+                setTextColorCompat(
+                    resourceId = com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                )
+            }
+        }
     }
 }
