@@ -41,7 +41,7 @@ abstract class ProductItemViewHolder(
             freeOngkir = freeOngkirDataView.toProductCardModelFreeOngkir(),
             isTopAds = isTopAds || isOrganicAds,
             countSoldRating = ratingString,
-            hasThreeDots = true,
+            hasThreeDots = hasThreeDots(),
             labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
             labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
             isWideContent = isWideContent,
@@ -50,6 +50,10 @@ abstract class ProductItemViewHolder(
             productListType = productListType,
             hasAddToCartButton = showButtonAtc,
         )
+    }
+
+    private fun ProductItemDataView.hasThreeDots(): Boolean {
+        return !showButtonAtc
     }
 
     private fun List<BadgeItemDataView>?.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {
