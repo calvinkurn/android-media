@@ -43,13 +43,16 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         setUpTextWatcher()
         disableSendButton()
         bindClickListeners()
+        setUpEditText()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-//        getBindingView().chatText.labelText.text = labelText
+    private fun setUpEditText() {
+        getBindingView().chatText.minLine = MINIMUM_NUMBER_OF_LINES
+        //        getBindingView().chatText.labelText.text = labelText
 //        getBindingView().chatText.textInputLayout.hint= hintText
         getBindingView().chatText.labelText.text = "LABEL"
         getBindingView().chatText.textInputLayout.hint= "HINT"
-     //   getBindingView().chatText.editText.unify_text_field_message = ""
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun setUpTextWatcher() {
@@ -122,6 +125,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         var replyBoxClickListener: ReplyBoxClickListener? = null
         val LAYOUT = R.layout.bottom_sheet_big_reply_box
         const val MINIMUM_NUMBER_OF_WORDS = 2
+        const val MINIMUM_NUMBER_OF_LINES = 3
     }
 
 }

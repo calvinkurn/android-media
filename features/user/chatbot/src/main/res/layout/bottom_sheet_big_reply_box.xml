@@ -7,6 +7,8 @@
 
     <com.tokopedia.unifycomponents.TextAreaUnify2
         android:id="@+id/chat_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
@@ -14,9 +16,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/attachment_container"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:unify_text_field_maxline="5"
         app:unify_text_field_label_static="true"
         />
 
