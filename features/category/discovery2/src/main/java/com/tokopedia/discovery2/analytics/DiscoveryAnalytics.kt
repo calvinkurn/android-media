@@ -766,9 +766,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         }
     }
 
-    override fun trackEventProductATCTokonow(componentsItems: ComponentsItem, userID: String?) {
+    override fun trackEventProductATCTokonow(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
+        val login = if (userSession.isLoggedIn) LOGIN else NON_LOGIN
         var productTypeName = ""
         componentsItems.data?.firstOrNull()?.let {
             productTypeName = getProductName(it.typeProductCard)
@@ -780,6 +781,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[KEY_ATC_CATEGORY_ID] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[DIMENSION38] = ""
+            productMap[DIMENSION40] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
+//            productMap[DIMENSION45] = cartID
             productMap[DIMENSION83] = getProductDime83(it)
             productMap[DIMENSION84] = ""
             productMap[DIMENSION90] = sourceIdentifier
@@ -794,14 +797,20 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val productsMap = mapOf(PRODUCTS to list)
         val eCommerce = mapOf(
             CURRENCY_CODE to IDR,
-            KEY_ADD to productsMap)
-        val map = createGeneralEvent(eventName = EVENT_PRODUCT_ATC,
-            eventAction = PRODUCT_ATC_ACTION_TOKONOW, eventLabel = productTypeName)
+            KEY_ADD to productsMap
+        )
+        val map = createGeneralEvent(
+            eventName = EVENT_PRODUCT_ATC,
+            eventAction = PRODUCT_ATC_ACTION_TOKONOW,
+            eventLabel = productTypeName,
+            shouldSendSourceAsDestination = true
+        )
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[USER_ID] = (userID?: "")
+        map[USER_ID] = (userSession.userId?: "")
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[TRACKER_ID] = "21643"
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
