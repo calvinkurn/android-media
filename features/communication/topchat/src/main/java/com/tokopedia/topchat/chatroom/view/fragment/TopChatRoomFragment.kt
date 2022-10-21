@@ -681,6 +681,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this,
             (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
+            isFromBubble =
+                getStringArgument(Constant.EXTRA_IS_FROM_BUBBLE, null) == Constant.EXTRA_BUBBLE_SOURCE
             it.isFromBubble = isFromBubble
             topchatViewState = it
         }
@@ -767,9 +769,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             getParamString(ApplinkConst.Chat.SEARCH_CREATE_TIME, arguments, savedInstanceState)
         searchQuery =
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
-
-        isFromBubble =
-            getStringArgument(Constant.EXTRA_IS_FROM_BUBBLE, null) == Constant.EXTRA_BUBBLE_SOURCE
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
