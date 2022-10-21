@@ -1188,7 +1188,6 @@ class PlayViewModel @AssistedInject constructor(
     private fun updateChatHistory() {
         viewModelScope.launchCatchError(block = {
             chatStreams.setWaitingForHistory()
-            delay(5000)
             val response = repo.getChatHistory(channelId)
             chatStreams.addHistoryChat(response.chatList.reversed())
         }) { }
