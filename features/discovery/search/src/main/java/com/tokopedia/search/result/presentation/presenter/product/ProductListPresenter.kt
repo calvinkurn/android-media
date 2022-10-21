@@ -169,10 +169,8 @@ class ProductListPresenter @Inject constructor(
             SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
             SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
             SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
         )
-        private val showInspirationCarouselLayoutWithVideo =
-            showInspirationCarouselLayout +
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
         private const val QUICK_FILTER_MINIMUM_SIZE = 2
@@ -228,24 +226,6 @@ class ProductListPresenter @Inject constructor(
 
         chooseAddressDelegate.updateChooseAddress()
     }
-
-    //region AB Test booleans
-    private val isABTestVideoWidget: Boolean by lazy {
-        getABTestVideoWidget()
-    }
-
-    private fun getABTestVideoWidget() : Boolean {
-        return try {
-            val abTestVideoWidget = view.abTestRemoteConfig?.getString(
-                RollenceKey.SEARCH_VIDEO_WIDGET,
-                ""
-            )
-            RollenceKey.SEARCH_VIDEO_WIDGET_VARIANT == abTestVideoWidget
-        } catch (e: Exception) {
-            false
-        }
-    }
-    //endregion
 
     override val userId: String
         get() = getUserId(userSession)
@@ -1191,7 +1171,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
-        return !isABTestVideoWidget && isVideoLayout() && isFirstOptionHasNoProducts()
+        return isVideoLayout() && isFirstOptionHasNoProducts()
     }
     private fun InspirationCarouselDataView.isInvalidProductBundleLayout() : Boolean {
         return isBundleLayout()
@@ -1205,26 +1185,18 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun shouldShowInspirationCarousel(layout: String): Boolean {
-        val validInspirationCarouselLayout = if(!isABTestVideoWidget) {
-            showInspirationCarouselLayout
-        } else {
-            showInspirationCarouselLayoutWithVideo
-        }
-        return validInspirationCarouselLayout.contains(layout)
+        return showInspirationCarouselLayout.contains(layout)
     }
 
     private fun constructInspirationCarouselVisitableList(data: InspirationCarouselDataView) =
         when {
             data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
-            data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
+            data.isVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
             data.isBundleLayout() -> convertInspirationCarouselToInspirationProductBundle(data)
             data.isListAtcLayout() ->
                 inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
             else -> listOf(data)
         }
-    private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
-        return isABTestVideoWidget && isVideoLayout()
-    }
     private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
         return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
                 && isFirstOptionHasNoProducts()
