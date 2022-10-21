@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.product.safesearch
 
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import java.lang.ref.Reference
