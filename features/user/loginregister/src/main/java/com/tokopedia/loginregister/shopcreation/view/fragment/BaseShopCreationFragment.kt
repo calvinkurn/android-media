@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
 abstract class BaseShopCreationFragment : BaseDaggerFragment() {
 
-    abstract fun getToolbar(): Toolbar
+    abstract fun getToolbar(): Toolbar?
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,7 +25,8 @@ abstract class BaseShopCreationFragment : BaseDaggerFragment() {
 
     private fun initToolbar() {
         (activity as AppCompatActivity).let {
-            it.setSupportActionBar(getToolbar())
+            getToolbar()?.let { toolbar -> it.setSupportActionBar(toolbar) }
+
             it.supportActionBar?.apply {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)

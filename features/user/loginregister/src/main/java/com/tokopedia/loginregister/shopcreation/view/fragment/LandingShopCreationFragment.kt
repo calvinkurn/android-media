@@ -82,7 +82,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         return viewBinding?.root
     }
 
-    override fun getToolbar(): Toolbar = viewBinding?.toolbarShopCreation as Toolbar
+    override fun getToolbar(): Toolbar? = viewBinding?.toolbarShopCreation
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
