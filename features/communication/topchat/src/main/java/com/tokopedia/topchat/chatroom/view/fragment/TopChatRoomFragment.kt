@@ -292,7 +292,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     /*
     * Bubble Flag
      */
-    var isFromBubble = false
+    private var isFromBubble = false
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
