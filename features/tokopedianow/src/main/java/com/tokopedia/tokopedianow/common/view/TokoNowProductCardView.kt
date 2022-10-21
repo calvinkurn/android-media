@@ -57,9 +57,9 @@ class TokoNowProductCardView @JvmOverloads constructor(
         val model = TokoNowProductCardViewUiModel(
             imageUrl = "https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fimages.tokopedia.net%2Fimg%2Fandroid%2Fnow%2FPN-RICH.jpg",
             minOrder = 2,
-            maxOrder = 122,
-            availableStock = 0,
-            orderQuantity = 0,
+            maxOrder = 20,
+            availableStock = 12,
+            orderQuantity = 100,
             price = "Rp 15.000.000",
             discount = "10%",
             slashPrice = "12121",

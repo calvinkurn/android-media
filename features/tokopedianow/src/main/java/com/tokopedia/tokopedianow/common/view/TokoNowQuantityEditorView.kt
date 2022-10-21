@@ -143,6 +143,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         val currentCounter = text.toIntOrZero()
         counter = if (currentCounter >= maxQuantity) {
             editText.setText(maxQuantity.toString())
+            editText.setSelection(text.length)
             addButton.setColorFilter(getEnabledColor(false))
             maxQuantity
         }   else {
@@ -153,18 +154,14 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setupAddButton() {
         addButton.setOnClickListener {
-            if (counter < maxQuantity) {
-                if (root.currentState == R.id.start) {
-                    expandAnimationWhenStartingWithoutValue()
-                    editText.setText(minQuantity.toString())
-                } else {
-                    if (root.currentState == R.id.startWithValue) {
-                        expandAnimationWhenStartingWithValue()
-                    } else {
-                        counter++
-                        editText.setText(counter.toString())
-                    }
-                }
+            if (root.currentState == R.id.start) {
+                expandAnimationWhenStartingWithoutValue()
+                editText.setText(minQuantity.toString())
+            } else if (root.currentState == R.id.startWithValue) {
+                expandAnimationWhenStartingWithValue()
+            } else if (counter < maxQuantity) {
+                counter++
+                editText.setText(counter.toString())
             }
         }
     }
