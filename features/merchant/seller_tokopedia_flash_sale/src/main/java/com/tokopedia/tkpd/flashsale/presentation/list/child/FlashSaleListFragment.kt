@@ -621,6 +621,8 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     private fun handleUpcomingFlashSaleTracker(selectedFlashSale: UpcomingFlashSaleItem, tabName: String) {
         if (selectedFlashSale.quotaUsagePercentage < QUOTA_USAGE_FULL && now.before(selectedFlashSale.submissionEndDate)) {
             tracker.sendRegisterFlashSaleEvent(selectedFlashSale.id, tabName)
+        } else {
+            tracker.sendViewCampaignDetailButtonClickEvent(selectedFlashSale.id, tabName)
         }
     }
 }
