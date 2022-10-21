@@ -41,13 +41,19 @@ class UploadPrescriptionViewHolder(
     }
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
-        uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
-        uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
-        if (uploadPrescriptionUiModel.uploadedImageCount == 0) {
+        if (uploadPrescriptionUiModel.uploadedImageCount == null || uploadPrescriptionUiModel.uploadedImageCount == 0) {
+            uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
+            uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
             uploadDescriptionText.hide()
         } else {
+            uploadPrescriptionText.text =
+                itemView.resources.getString(R.string.pp_epharmacy_upload_success_title_text)
+            uploadPrescriptionIcon.loadImage(EPharmacyCountImageUrl)
+            uploadDescriptionText.text = itemView.resources.getString(
+                R.string.pp_epharmacy_upload_count_text,
+                uploadPrescriptionUiModel.uploadedImageCount
+            )
             uploadDescriptionText.show()
-            uploadDescriptionText.text = uploadPrescriptionUiModel.descriptionText
         }
         uploadPrescriptionLayout.setOnClickListener {
             listener.uploadPrescriptionAction(uploadPrescriptionUiModel)
@@ -60,13 +66,21 @@ class UploadPrescriptionViewHolder(
                 .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
                 .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
                 .setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animator: Animator) {}
-                    override fun onAnimationEnd(animator: Animator) {
-
+                    override fun onAnimationStart(animator: Animator) {
+                        /* no-op */
                     }
 
-                    override fun onAnimationCancel(animator: Animator) {}
-                    override fun onAnimationRepeat(animator: Animator) {}
+                    override fun onAnimationEnd(animator: Animator) {
+                        /* no-op */
+                    }
+
+                    override fun onAnimationCancel(animator: Animator) {
+                        /* no-op */
+                    }
+
+                    override fun onAnimationRepeat(animator: Animator) {
+                        /* no-op */
+                    }
                 })
                 .start()
         } else {

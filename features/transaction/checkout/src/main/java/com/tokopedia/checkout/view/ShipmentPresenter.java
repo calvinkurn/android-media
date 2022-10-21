@@ -2426,7 +2426,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         epharmacyUseCase.getEPharmacyPrepareProductsGroup(ePharmacyPrepareProductsGroupResponse -> {
             if (ePharmacyPrepareProductsGroupResponse.getDetailData() != null) {
                 GroupData data = ePharmacyPrepareProductsGroupResponse.getDetailData().getGroupsData();
-                if (data != null && data.getEpharmacyGroups() != null) {
+                if (data != null && data.getEpharmacyGroups() != null && shipmentCartItemModelList != null) {
+                    HashMap<String, Integer> mapPrescriptionCount = new HashMap<>();
                     for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                         if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
                             boolean updated = false;
@@ -2451,6 +2452,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                 } else if (epharmacyGroup.getConsultationData().getConsultationStatus() == 2) {
                                                                     shipmentCartItemModel.setTokoConsultationId(epharmacyGroup.getConsultationData().getTokoConsultationId());
                                                                     shipmentCartItemModel.setPartnerConsultationId(epharmacyGroup.getConsultationData().getPartnerConsultationId());
+                                                                    mapPrescriptionCount.put(epharmacyGroup.getEpharmacyGroupId(), epharmacyGroup.getConsultationData().getPrescription().size());
                                                                 }
                                                             } else if (epharmacyGroup.getPrescriptionImages() != null && !epharmacyGroup.getPrescriptionImages().isEmpty()) {
                                                                 ArrayList<String> prescriptionIds = new ArrayList<>();
@@ -2460,6 +2462,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                     }
                                                                 }
                                                                 shipmentCartItemModel.setPrescriptionIds(prescriptionIds);
+                                                                mapPrescriptionCount.put(epharmacyGroup.getEpharmacyGroupId(), prescriptionIds.size());
                                                             }
                                                         }
                                                     }
@@ -2480,6 +2483,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
                         }
                     }
+                    int totalPrescription = 0;
+                    for (Integer value : mapPrescriptionCount.values()) {
+                        totalPrescription += value;
+                    }
+                    uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
+                    getView().updateUploadPrescription(uploadPrescriptionUiModel);
                 }
             }
             return Unit.INSTANCE;
@@ -2487,6 +2496,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             Timber.d(throwable);
             return Unit.INSTANCE;
         });
+    }
+
+    @Override
+    public void setPrescriptionIds(ArrayList<String> prescriptionIds) {
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
+                    shipmentCartItemModel.setPrescriptionIds(prescriptionIds);
+                }
+            }
+        }
     }
 
     @Override

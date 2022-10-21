@@ -194,6 +194,8 @@ public interface ShipmentContract {
                                                  RecipientAddressModel recipientAddressModel);
 
         void showPrescriptionReminderDialog();
+
+        void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
     }
 
     interface AnalyticsActionListener {
@@ -379,6 +381,8 @@ public interface ShipmentContract {
         void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId);
 
         void fetchEpharmacyData();
+
+        void setPrescriptionIds(ArrayList<String> prescriptionIds);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
