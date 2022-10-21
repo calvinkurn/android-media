@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.databinding.ItemHomeVerticalTopAdsBannerBinding
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.utils.TdnHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -46,6 +47,8 @@ class TopAdsVerticalBannerViewHolder constructor(
             binding?.topadsBanner?.renderTdnBanner(tdnBannerList.first(), onTdnBannerClicked = {
                 if (it.isNotEmpty()) RouteManager.route(binding?.topadsBanner?.context, it)
             })
+        } else {
+            binding?.root?.hide()
         }
     }
 
