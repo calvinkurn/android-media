@@ -86,9 +86,6 @@ data class Achievement(
     @SerializedName("name")
     @Expose
     val name: String? = null,
-    @SerializedName("total")
-    @Expose
-    val total: String? = null,
     @SerializedName("color")
     @Expose
     val color: String? = null,
