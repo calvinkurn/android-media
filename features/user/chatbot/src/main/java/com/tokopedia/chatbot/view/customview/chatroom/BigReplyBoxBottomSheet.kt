@@ -17,6 +17,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     private lateinit var context: FragmentActivity
     private var isSendButtonActivated: Boolean = false
+    private var labelText = ""
+    private var hintText = ""
 
     private var _viewBinding: BottomSheetBigReplyBoxBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -24,8 +26,10 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     init {
         isFullpage = false
         isCancelable = false
-        showKnob = true
+        showKnob = false
         showCloseIcon = false
+        clearContentPadding = true
+        showHeader = false
         clearContentPadding = true
     }
 
@@ -39,6 +43,10 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         setUpTextWatcher()
         disableSendButton()
         bindClickListeners()
+        getBindingView().chatText.minLine = 3
+        getBindingView().chatText.labelText.text = labelText
+        getBindingView().chatText.textInputLayout.hint= hintText
+     //   getBindingView().chatText.editText.unify_text_field_message = ""
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -104,6 +112,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         ): BigReplyBoxBottomSheet {
             return BigReplyBoxBottomSheet().apply {
                 this.context = context
+                this.labelText = replyBoxBottomSheetTitle
+                this.hintText = replyBoxBottomSheetPlaceHolder
             }
         }
 

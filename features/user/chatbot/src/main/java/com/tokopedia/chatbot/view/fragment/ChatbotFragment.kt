@@ -392,6 +392,7 @@ class ChatbotFragment :
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
 
         chatbotAdapter = adapter as ChatbotAdapter
+        goToBigReplyBoxBottomSheet()
         return view
     }
 
