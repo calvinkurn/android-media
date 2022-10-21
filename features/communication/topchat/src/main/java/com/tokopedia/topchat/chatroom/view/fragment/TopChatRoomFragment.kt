@@ -292,7 +292,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     /*
     * Bubble Flag
      */
-    private var isFromBubble = false
+    var isFromBubble = false
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -1950,7 +1950,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onBackPressed(): Boolean {
         if (super.onBackPressed()) return true
-        if (isFromBubble) return true
+        if (isFromBubble) activity?.onBackPressed()
         if (::viewModel.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
