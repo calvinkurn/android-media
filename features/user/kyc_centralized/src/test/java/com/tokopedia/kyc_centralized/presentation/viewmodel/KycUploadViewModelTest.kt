@@ -464,9 +464,4 @@ class KycUploadViewModelTest {
         val result = viewModel.kycResponseLiveData.value as Fail
         assert(result.throwable.message?.contains(KycUploadErrorCodeUtil.FAILED_ENCRYPTION) == true)
     }
-
-    @Test
-    fun `send logger`() {
-        viewModel.sendLoadTimeUploadLog("", 0L)
-    }
 }
