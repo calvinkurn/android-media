@@ -36,6 +36,8 @@ dependencies {
     api rootProject.ext.composeDependencies.composeUiTooling
     api rootProject.ext.composeDependencies.composePreview
     implementation rootProject.ext.composeDependencies.composeCoil
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.unifyDependencies.principles
 }
 
 project.ext {

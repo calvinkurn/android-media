@@ -6,11 +6,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.principles.getString
-import com.tokopedia.common_compose.principles.nest_text.NestText
-import com.tokopedia.common_compose.principles.nest_text.NestTextType
+import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
@@ -28,10 +27,9 @@ fun ProductReportComposeContent(
 ) {
     Column {
         if (uiState.error.isNullOrBlank().not()) {
-            NestText(
+            NestTypography(
                 text = "error: ${uiState.error.orEmpty()}",
-                type = NestTextType.Body3,
-                textStyle = TextStyle(
+                textStyle = NestTheme.typography.body3.copy(
                     color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                 )
             )

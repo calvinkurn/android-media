@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.principles.nest_text.NestText
-import com.tokopedia.common_compose.principles.nest_text.NestTextType
+import com.tokopedia.common_compose.principles.NestTypography
+import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
@@ -25,12 +25,12 @@ fun ProductReportReasonFooter(
     text: String,
     onClick: (String) -> Unit
 ) {
-    NestText(
+    NestTypography(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         text = text,
-        type = NestTextType.Body3,
+        textStyle = NestTheme.typography.body3
     )
 }
 

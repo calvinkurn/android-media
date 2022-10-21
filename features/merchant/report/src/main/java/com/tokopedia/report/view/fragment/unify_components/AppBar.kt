@@ -10,11 +10,11 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.principles.nest_text.NestText
-import com.tokopedia.common_compose.principles.nest_text.NestTextType
-import com.tokopedia.common_compose.principles.nest_text.NestTextWeight
+import com.tokopedia.common_compose.principles.NestTypography
+import com.tokopedia.common_compose.ui.NestTheme
 
 /**
  * Created by yovi.putra on 05/10/22"
@@ -29,7 +29,12 @@ fun AppBar(
 ) {
     TopAppBar(
         title = {
-            NestText(text = title, type = NestTextType.Heading3, weight = NestTextWeight.Bold)
+            NestTypography(
+                text = title,
+                textStyle = NestTheme.typography.heading4.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
         },
         modifier = modifier,
         backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN0),
