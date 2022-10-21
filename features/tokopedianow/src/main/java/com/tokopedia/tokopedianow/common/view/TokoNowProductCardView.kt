@@ -19,8 +19,8 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.LABEL_BEST_SELLER
 import com.tokopedia.tokopedianow.common.model.LABEL_GIMMICK
-import com.tokopedia.tokopedianow.common.model.LABEL_PRICE
 import com.tokopedia.tokopedianow.common.model.LABEL_STATUS
 import com.tokopedia.tokopedianow.common.model.LIGHT_GREEN
 import com.tokopedia.tokopedianow.common.model.LabelGroup
@@ -33,7 +33,6 @@ import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewB
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class TokoNowProductCardView @JvmOverloads constructor(
     context: Context,
@@ -60,16 +59,16 @@ class TokoNowProductCardView @JvmOverloads constructor(
             minOrder = 2,
             maxOrder = 122,
             availableStock = 0,
-            orderQuantity = 5,
+            orderQuantity = 0,
             price = "Rp 15.000.000",
             discount = "10%",
             slashPrice = "12121",
             name = "hello world",
             rating = "4.5",
             hasBeenWishlist = false,
-            progressBarLabel = WORDING_SEGERA_HABIS,
-            progressBarLabelColor = "#ef144a",
-            progressBarPercentage = 20,
+            progressBarLabel = "",
+            progressBarLabelColor = "",
+            progressBarPercentage = 50,
             labelGroupList = listOf(
                 LabelGroup(
                     position = LABEL_STATUS,
@@ -81,16 +80,16 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     type = TEXT_DARK_ORANGE,
                     title = "Terbaru"
                 ),
-                LabelGroup(
-                    position = LABEL_PRICE,
-                    type = LIGHT_GREEN,
-                    title = "Beli 1x disc 20%"
-                ),
 //                LabelGroup(
-//                    position = LABEL_BEST_SELLER,
-//                    type = "#E1AA1D",
-//                    title = "Terlaris"
-//                )
+//                    position = LABEL_PRICE,
+//                    type = LIGHT_GREEN,
+//                    title = "Beli 1x disc 20%"
+//                ),
+                LabelGroup(
+                    position = LABEL_BEST_SELLER,
+                    type = "#E1AA1D",
+                    title = "Terlaris"
+                )
             ),
         )
         setData(model)
@@ -493,11 +492,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 setLabelType(
                     getHexColorFromIdColor(
                         context = context,
-                        idColor = if (context.isDarkMode()) {
-                            com.tokopedia.unifyprinciples.R.color.Unify_N200_68
-                        } else {
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                        }
+                        idColor = R.color.tokopedianow_product_card_dms_status_label_background
                     )
                 )
             }

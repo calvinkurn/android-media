@@ -129,7 +129,7 @@
             motion:layout_constraintStart_toStartOf="@id/sub_button">
             <CustomAttribute
                 motion:attributeName="textColor"
-                motion:customColorValue="@color/Unify_NN950"/>
+                motion:customColorValue="@color/tokopedianow_quantity_editor_dms_edit_text_focus_text_color"/>
         </Constraint>
         <Constraint
             motion:layout_constraintEnd_toEndOf="parent"
@@ -169,7 +169,7 @@
             android:layout_marginStart="0dp">
             <CustomAttribute
                 motion:attributeName="crossfade"
-                motion:customFloatValue="1" />
+                motion:customFloatValue="0" />
         </Constraint>
         <Constraint
             android:layout_height="46dp"
@@ -197,7 +197,7 @@
             android:layout_marginStart="8dp">
             <CustomAttribute
                 motion:attributeName="textColor"
-                motion:customColorValue="@color/Unify_GN500"/>
+                motion:customColorValue="@color/tokopedianow_quantity_editor_dms_edit_text_not_focus_text_color"/>
         </Constraint>
         <Constraint
             android:id="@+id/add_button"

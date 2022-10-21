@@ -73,11 +73,12 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                 convertVectorToDrawable(
                     context = context,
                     drawableId = iconR.iconunify_bell,
-                    colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN900),
+                    colorId = R.color.tokopedianow_product_card_dms_wishlist_button_icon_color
+                ),
                 convertVectorToDrawable(
                     context = context,
                     drawableId = iconR.iconunify_bell_filled,
-                    colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                    colorId = R.color.tokopedianow_product_card_dms_wishlist_button_icon_color
                 )
             )
         )

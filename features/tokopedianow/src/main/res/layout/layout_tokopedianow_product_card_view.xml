@@ -3,7 +3,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/cardunify_background">
 
     <com.tokopedia.tokopedianow.common.view.TokoNowQuantityEditorView
         android:id="@+id/quantity_editor"
@@ -153,8 +154,8 @@
         android:layout_width="10dp"
         android:layout_height="0dp"
         android:layout_marginStart="9dp"
-        app:icon_color_light_enable="@color/Unify_YN300"
-        app:icon_color_night_enable="@color/Unify_YN300"
+        app:icon_color_light_enable="@color/tokopedianow_product_card_dms_rating_color"
+        app:icon_color_night_enable="@color/tokopedianow_product_card_dms_rating_color"
         app:icon_name="STAR_FILLED"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/rating_typography"
