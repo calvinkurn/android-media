@@ -59,13 +59,14 @@ class TokoNowProductCardView @JvmOverloads constructor(
             imageUrl = "https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fimages.tokopedia.net%2Fimg%2Fandroid%2Fnow%2FPN-RICH.jpg",
             minOrder = 2,
             maxOrder = 122,
-            stock = 10,
+            availableStock = 0,
             orderQuantity = 5,
             price = "Rp 15.000.000",
             discount = "10%",
             slashPrice = "12121",
             name = "hello world",
             rating = "4.5",
+            hasBeenWishlist = false,
             progressBarLabel = WORDING_SEGERA_HABIS,
             progressBarLabelColor = "#ef144a",
             progressBarPercentage = 20,
@@ -136,7 +137,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
             )
             initOosLabel(
                 labelGroup = model.getOosLabelGroup(),
-                isOos = model.isOos()
+                isOos = model.isOos(),
+                hasBeenWishlist = model.hasBeenWishlist
             )
             initProgressBar(
                 isFlashSale = model.isFlashSale(),
@@ -268,7 +270,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initOosLabel(
         labelGroup: LabelGroup?,
-        isOos: Boolean
+        isOos: Boolean,
+        hasBeenWishlist: Boolean
     ) {
         oosLabel.showIfWithBlock( labelGroup != null && isOos) {
             labelGroup?.let { labelGroup ->
@@ -279,7 +282,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 )
             }
             initWishlistButton(
-                isOos = isOos
+                isOos = isOos,
+                hasBeenWishlist = hasBeenWishlist
             )
             initSimilarProductTypography(
                 isOos = isOos
@@ -288,10 +292,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowProductCardViewBinding.initWishlistButton(
-        isOos: Boolean
+        isOos: Boolean,
+        hasBeenWishlist: Boolean
     ) {
         wishlistButton.showIfWithBlock(isOos) {
-            // then set
+            wishlistButton.isChosen = hasBeenWishlist
         }
     }
 

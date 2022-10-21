@@ -6,7 +6,7 @@ data class TokoNowProductCardViewUiModel(
     val imageUrl: String = "",
     val minOrder: Int = 0,
     val maxOrder: Int = 0,
-    val stock: Int = 0,
+    val availableStock: Int = 0,
     val orderQuantity: Int = 0,
     val price: String = "",
     val discount: String = "",
@@ -16,7 +16,7 @@ data class TokoNowProductCardViewUiModel(
     val progressBarLabel: String = "",
     val progressBarLabelColor: String = "",
     val progressBarPercentage: Int = 0,
-    val status: String = "",
+    val hasBeenWishlist: Boolean = false,
     val labelGroupList: List<LabelGroup> = listOf(),
 ) {
     private companion object {
@@ -28,7 +28,7 @@ data class TokoNowProductCardViewUiModel(
     private fun getBestSellerLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isBestSellerPosition() }
     private fun isBestSellerLabelAvailable(): Boolean = getBestSellerLabelGroup() != null
 
-    fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { stock.isZero() && it.isStatusPosition() && it.isTransparentBlackColor() }
+    fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { availableStock.isZero() && it.isStatusPosition() && it.isTransparentBlackColor() }
     fun getAssignedValueLabelGroup(): LabelGroup? = if (isBestSellerLabelAvailable()) getBestSellerLabelGroup() else getNewProductLabelGroup()
     fun getPriceLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isPricePosition() && it.isLightGreenColor() }
     fun getImageBrightness(): Float = if (isOos()) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS

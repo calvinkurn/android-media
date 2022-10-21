@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.motion.widget.MotionLayout
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.ImageUtil.convertVectorToDrawable
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowWishlistButtonViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -25,6 +26,16 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
     }
 
     private var binding: LayoutTokopedianowWishlistButtonViewBinding
+    private val transitionDrawable = getTransitionDrawable()
+
+    var isChosen: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                binding.root.setTransition(R.id.end, R.id.start)
+                binding.root.transitionToEnd()
+            }
+        }
 
     init {
         binding = LayoutTokopedianowWishlistButtonViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
@@ -37,7 +48,6 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                 START_POSITION
             ).setDuration(ANIMATION_DURATION.toLong())
 
-            val transitionDrawable = getTransitionDrawable()
             icon.setImageDrawable(transitionDrawable)
 
             root.setTransitionListener(object : MotionLayout.TransitionListener {
@@ -81,7 +91,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         transitionDrawable: TransitionDrawable
     ) {
         ringingAnimation.start()
-        if (motionLayout?.currentState == motionLayout?.endState) {
+        if (motionLayout?.currentState == R.id.start) {
             transitionDrawable.startTransition(ANIMATION_DURATION)
         } else {
             transitionDrawable.reverseTransition(ANIMATION_DURATION)
