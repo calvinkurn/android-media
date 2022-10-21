@@ -177,7 +177,7 @@ class RequestParamsGenerator @Inject constructor(
         requestParams.putString(SearchApiConst.SHOW_ADULT, getShowAdult(searchParameter))
     }
 
-    private fun getShowAdult(searchParameter: Map<String, Any>) : String {
+    private fun getShowAdult(searchParameter: Map<String, Any>): String {
         val showAdult = searchParameter.getValueString(SearchApiConst.SHOW_ADULT)
         return showAdult.ifEmpty { SearchApiConst.DEFAULT_VALUE_OF_SHOW_ADULT }
     }
