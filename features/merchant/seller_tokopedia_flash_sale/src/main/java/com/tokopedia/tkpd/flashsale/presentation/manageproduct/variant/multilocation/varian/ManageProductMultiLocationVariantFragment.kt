@@ -105,7 +105,9 @@ class ManageProductMultiLocationVariantFragment :
     private fun validationOnEligibilityWarehouse(product: ReservedProduct.Product): ReservedProduct.Product {
         val criteria = product.productCriteria
         product.childProducts[variantPositionOnProduct].warehouses.forEach { warehouse ->
-            if (!viewModel.isEligibleItem(warehouse, criteria)) warehouse.isToggleOn = false
+            // if (!viewModel.isEligibleItem(warehouse, criteria)) warehouse.isToggleOn = false
+            // Set Default Toggle to Off regardless eligible or not
+            warehouse.isToggleOn = false
         }
 
         return product
