@@ -96,7 +96,6 @@ class GqlTestingInterceptor(val context: Context) : Interceptor {
         }
     }
 
-
     fun isGqlRequest(requestBody: String?): Boolean {
         return Utils.isGqlRequest(requestBody)
     }
