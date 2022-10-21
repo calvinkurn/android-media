@@ -17,7 +17,7 @@ data class FeedXCampaign(
     @SerializedName("endTime")
     var endTime: String = "",
     @SerializedName("restrictions")
-    var restrictions: List<FeedXRestriction> = mutableListOf(),
+    val restrictions: List<FeedXRestriction> = emptyList(),
     var reminder: FeedASGCUpcomingReminderStatus = FeedASGCUpcomingReminderStatus.Off(id.toLongOrZero())
 ) {
     val campaignId: Long

@@ -9,13 +9,13 @@ data class FeedXGQLResponse(
 
 data class FeedXGetActivityProductsResponse(
         @SerializedName("products")
-        var products: List<FeedXProduct> = emptyList(),
+        val products: List<FeedXProduct> = emptyList(),
         @SerializedName("isFollowed")
-        var isFollowed: Boolean ,
+        val isFollowed: Boolean ,
         @SerializedName("contentType")
-        var contentType: String ,
+        val contentType: String ,
         @SerializedName("campaign")
-        var campaign: FeedXCampaign ,
+        val campaign: FeedXCampaign ,
         @SerializedName("nextCursor")
-        var nextCursor: String = "",
+        val nextCursor: String = "",
 )

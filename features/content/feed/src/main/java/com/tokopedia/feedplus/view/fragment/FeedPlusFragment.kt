@@ -429,7 +429,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                         Toaster.TYPE_NORMAL,
                                         getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                                     )
-                                    feedFollowersOnlyBottomSheet.dismiss()
+                                    if (::feedFollowersOnlyBottomSheet.isInitialized && feedFollowersOnlyBottomSheet.isAdded && feedFollowersOnlyBottomSheet.isVisible)
+                                        feedFollowersOnlyBottomSheet.dismiss()
                                 }
 
                             } else {
@@ -557,7 +558,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                         Toaster.TYPE_NORMAL,
                                         getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                                     )
-                                    feedFollowersOnlyBottomSheet.dismiss()
+                                    if (::feedFollowersOnlyBottomSheet.isInitialized && feedFollowersOnlyBottomSheet.isAdded && feedFollowersOnlyBottomSheet.isVisible)
+                                        feedFollowersOnlyBottomSheet.dismiss()
                                 }
                             }
                             onSuccessToggleFavoriteShop(data)
@@ -3587,6 +3589,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (!::feedFollowersOnlyBottomSheet.isInitialized) {
             feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
         }
+        if (!feedFollowersOnlyBottomSheet.isAdded && !feedFollowersOnlyBottomSheet.isVisible)
             feedFollowersOnlyBottomSheet.show(
                 childFragmentManager,
                 this,

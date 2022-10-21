@@ -199,15 +199,14 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 when (it) {
                     is Success -> {
                         val data = it.data
-                        if (data.isSuccess) {
-                            if (data.isFollow) {
-                                showToast(
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
-                                    Toaster.TYPE_NORMAL,
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
-                                )
-                                onResponseAfterFollowFromBottomSheet(true)
-                            }
+                        if (data.isSuccess && data.isFollow) {
+                            showToast(
+                                getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                Toaster.TYPE_NORMAL,
+                                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
+                            )
+                            onResponseAfterFollowFromBottomSheet(true)
+
                         }
                     }
                     is Fail -> {
@@ -230,7 +229,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                                 getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                             )
                             onResponseAfterFollowFromBottomSheet(true)
-                            if (::feedFollowersOnlyBottomSheet.isInitialized) {
+                            if (::feedFollowersOnlyBottomSheet.isInitialized && feedFollowersOnlyBottomSheet.isAdded && feedFollowersOnlyBottomSheet.isVisible) {
                                 feedFollowersOnlyBottomSheet.dismiss()
                             }
                         }
@@ -366,18 +365,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         return view
     }
 
-    private fun onFollowKolClicked(rowNumber: Int, id: Int) {
-        if (userSession.isLoggedIn) {
-            feedViewModel.doFollowKol(id, rowNumber)
-        } else {
-            onGoToLogin()
-        }
-    }
-
     private fun onShopFollowRequestedFromBottomSheet(){
-        if (userSession.isLoggedIn) {
+        requireLogin {
             if (authorType == FollowCta.AUTHOR_USER) {
-                onFollowKolClicked(0, shopId.toIntOrZero())
+                feedViewModel.doFollowKol(shopId.toIntOrZero(), 0)
             } else if (authorType == FollowCta.AUTHOR_SHOP) {
                 feedViewModel.doToggleFavoriteShop(
                     rowNumber = 0,
@@ -386,8 +377,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     follow = false
                 )
             }
-        } else {
-            onGoToLogin()
         }
     }
 
@@ -490,6 +479,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         if (!::feedFollowersOnlyBottomSheet.isInitialized) {
             feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
         }
+        if (!feedFollowersOnlyBottomSheet.isAdded && !feedFollowersOnlyBottomSheet.isVisible)
         feedFollowersOnlyBottomSheet.show(childFragmentManager, this, status = saleStatus)
     }
 
@@ -658,6 +648,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             playChannelId: String,
             campaignStatusValue: String = ""
     ) {
+        //send tracker data
         if (campaignStatusValue.isEmpty()) {
             if (type == TYPE_FEED_X_CARD_PLAY)
                 feedAnalytics.eventAddToCartFeedVOD(
@@ -697,12 +688,20 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 shopName
             )
         }
-        if (userSession.isLoggedIn) {
+
+       requireLogin {
             feedViewModel.addtoCartProduct(postTagItem, shopId, type, isFollowed, activityId)
-        } else {
-            onGoToLogin()
         }
     }
+
+    private fun requireLogin(action: () -> Unit) {
+        if (!userSession.isLoggedIn) {
+            onGoToLogin()
+        } else {
+            action.invoke()
+        }
+    }
+
     private fun addToWishList(
             postId: String,
             productId: String,
@@ -817,9 +816,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     private fun setUpShopDataHeader() {
-        (activity as FeedPlusDetailActivity).getShopInfoLayout()?.run {
+        (activity as? FeedPlusDetailActivity)?.getShopInfoLayout()?.run {
             product_detail_back_icon?.setOnClickListener {
-                (activity as FeedPlusDetailActivity).onBackPressed()
+                (activity as? FeedPlusDetailActivity)?.onBackPressed()
             }
             show()
         }
@@ -885,8 +884,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     private fun getReturnIntent(isFollowSuccessFromBottomSheet: Boolean): Intent {
         val intent = Intent()
-        val arguments = arguments
-        if (arguments != null && arguments.size() > 0) intent.putExtras(arguments)
+        arguments?.let {
+            intent.putExtras(it)
+        }
         intent.putExtra(PARAM_IS_FOLLOWED, isFollowSuccessFromBottomSheet)
         return intent
     }

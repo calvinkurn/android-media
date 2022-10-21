@@ -41,12 +41,14 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
 
         setSubtitleText()
 
-        followBtn.setOnClickListener { mPositionInFeed?.let { it1 ->
-            followBtn.isLoading = true
-            listener?.onFollowClickedFromFollowBottomSheet(
-                it1
-            )
-        } }
+        followBtn.setOnClickListener {
+            mPositionInFeed.let { it1 ->
+                followBtn.isLoading = true
+                listener?.onFollowClickedFromFollowBottomSheet(
+                    it1
+                )
+            }
+        }
 
         setCloseClickListener {
             dismissedByClosing = true
