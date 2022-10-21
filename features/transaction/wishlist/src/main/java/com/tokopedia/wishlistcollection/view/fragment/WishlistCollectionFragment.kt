@@ -69,7 +69,6 @@ import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActi
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
-import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionEditAdapter
 import com.tokopedia.wishlistcollection.view.adapter.itemdecoration.WishlistCollectionItemOffsetDecoration
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollection
@@ -92,6 +91,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private var isEligibleAddNewCollection = false
     private var wordingMaxLimitCollection = ""
     private var bottomSheetOnboarding = BottomSheetOnboardingWishlistCollection()
+    private var bottomSheetKebabMenu = BottomSheetKebabMenuWishlistCollection()
     private var _allCollectionView: View? = null
     private var _createCollectionView: View? = null
     private lateinit var trackingQueue: TrackingQueue
@@ -150,6 +150,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         const val PARAM_HOME = "home"
         private const val COACHMARK_WISHLIST = "coachmark-wishlist"
         private const val WISHLIST_PAGE = "wishlist page"
+        private const val EDIT_WISHLIST_COLLECTION_REQUEST_CODE = 188
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -611,7 +612,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         collectionName: String,
         actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>
     ) {
-        val bottomSheetKebabMenu =
+        bottomSheetKebabMenu =
             BottomSheetKebabMenuWishlistCollection.newInstance(collectionName, collectionId, actions)
         bottomSheetKebabMenu.setListener(this@WishlistCollectionFragment)
         if (bottomSheetKebabMenu.isAdded || childFragmentManager.isStateSaved) return
@@ -640,12 +641,11 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onEditCollection(collectionId: String, collectionName: String) {
-        // showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
-        // TODO: create new activity for editing
+        bottomSheetKebabMenu.dismiss()
         val intent = Intent(context, WishlistCollectionEditActivity::class.java)
         intent.putExtra(COLLECTION_ID, collectionId)
         intent.putExtra(COLLECTION_NAME, collectionName)
-        startActivity(intent)
+        startActivityForResult(intent, EDIT_WISHLIST_COLLECTION_REQUEST_CODE)
     }
 
     private fun showUpdateWishlistCollectionNameBottomSheet(collectionId: String, collectionName: String) {
@@ -761,19 +761,15 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_COLLECTION_DETAIL) {
+        if (requestCode == REQUEST_CODE_COLLECTION_DETAIL || requestCode == EDIT_WISHLIST_COLLECTION_REQUEST_CODE) {
             getWishlistCollections()
             binding?.run { rvWishlistCollection.scrollToPosition(0) }
 
             val isSuccess = data?.getBooleanExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS, false)
             val messageToaster =
                 data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
-            if (messageToaster != null) {
-                if (isSuccess == true) {
-                    showToasterActionOke(messageToaster, Toaster.TYPE_NORMAL)
-                } else {
-                    showToasterActionOke(messageToaster, Toaster.TYPE_ERROR)
-                }
+            if (messageToaster != null && isSuccess == true) {
+                showToasterActionOke(messageToaster, Toaster.TYPE_NORMAL)
             }
         }
     }

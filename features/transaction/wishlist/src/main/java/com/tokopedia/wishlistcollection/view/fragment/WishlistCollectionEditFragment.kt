@@ -1,5 +1,7 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,7 +18,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -52,6 +56,9 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
     private var _collectionId = ""
     private var newCollectionName = ""
     private var newAccessId = 0
+    private var _existingAccessId = 0
+    private var hasCollectionNameChanges = false
+    private var hasAccessChanges = false
     private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> = emptyList()
     private val wishlistCollectionEditAdapter = WishlistCollectionEditAdapter()
     private val handler = Handler(Looper.getMainLooper())
@@ -127,10 +134,11 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
                 override fun afterTextChanged(p0: Editable?) {
                     newCollectionName = p0.toString().trimStart().trimEnd()
                     if (newCollectionName.isNotEmpty()) {
-                        handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME
-                        )
+                        handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
                     } else {
-                        disableSaveButton()
+                        hasCollectionNameChanges = false
+                        updateSaveButton()
+                        // disableSaveButton()
                     }
                 }
 
@@ -164,11 +172,14 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
     private fun observingData() {
         observingGetCollectionById()
         observeCollectionNames()
+        observeUpdateCollection()
     }
 
     private fun checkIsCollectionNameExists(checkName: String) {
         if (checkName.isEmpty()) {
-            disableSaveButton()
+            hasCollectionNameChanges = false
+            updateSaveButton()
+            // disableSaveButton()
         } else {
             if (listCollections.isNotEmpty()) {
                 run check@ {
@@ -180,17 +191,36 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
                                     val labelMessage = context?.getString(R.string.collection_create_bottomsheet_name_error) ?: ""
                                     tfCollectionName.setMessage(labelMessage)
                                 }
-                                disableSaveButton()
+                                hasCollectionNameChanges = false
+                                updateSaveButton()
+                                // disableSaveButton()
                                 return@check
                             }
                         } else {
                             binding?.run {
                                 tfCollectionName.isInputError = false
                                 tfCollectionName.setMessage("")
-                                enableSaveButton()
+                                hasCollectionNameChanges = true
+                                updateSaveButton()
+                                // enableSaveButton()
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun updateSaveButton() {
+        binding?.run {
+            collectionSaveButton.apply {
+                text = getString(R.string.collection_save_to_existing_collection)
+                if (hasCollectionNameChanges || hasAccessChanges) {
+                    isEnabled = true
+                    setOnClickListener { updateCollection() }
+                } else {
+                    isEnabled = false
+                    setOnClickListener {  }
                 }
             }
         }
@@ -222,7 +252,8 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
         wishlistCollectionEditViewModel.getWishlistCollectionByIdResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    if (result.data.status == WishlistCollectionConsts.OK && result.data.errorMessage.isEmpty()) {
+                    if (result.data.status == WishlistCollectionConsts.OK) {
+                        _existingAccessId = result.data.data.collection.access
                         getWishlistCollectionNames()
                         updateLayout(result.data.data)
                     } else {
@@ -259,18 +290,47 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
         }
     }
 
+    private fun observeUpdateCollection() {
+        wishlistCollectionEditViewModel.updateWishlistCollectionResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.status == WishlistCollectionConsts.OK) {
+                        val intent = Intent()
+                        intent.putExtra(
+                            ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+                            true
+                        )
+                        intent.putExtra(
+                            ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER,
+                            result.data.data.message
+                        )
+                        activity?.setResult(Activity.RESULT_OK, intent)
+                        activity?.finish()
+                    } else {
+                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
+                            R.string.wishlist_common_error_msg) }
+                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
     private fun updateLayout(data: GetWishlistCollectionByIdResponse.GetWishlistCollectionById.Data) {
-        var tickerDesc = "<![CDATA[\n" +
-            "        <html>\n" +
-            "        <body><ul>"
+        var tickerDesc = "<html>\n" +
+            "        <body> ${data.ticker.title} \n" +
+            "<ul>"
 
         data.ticker.descriptions.forEach {
             tickerDesc += "<li> $it </li>"
         }
 
         tickerDesc += "</ul></body>\n" +
-            "        </html>\n" +
-            "        ]]"
+            "        </html>"
 
         binding?.run {
             tfCollectionName.editText.setText(data.collection.name)
@@ -280,16 +340,16 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
             wishlistCollectionEditAdapter.apply {
                 setActionListener(this@WishlistCollectionEditFragment)
                 addList(data.accessOptions)
+                setCurrentAccess(data.collection.access)
             }
         }
     }
 
     private fun updateCollection() {
-        // TODO: update with access onclick
         val params = UpdateWishlistCollectionParams(
             id = _collectionId.toLongOrZero(),
             name = newCollectionName.ifEmpty { _existingCollectionName },
-            access = 2
+            access = newAccessId.toLong()
         )
         wishlistCollectionEditViewModel.updateAccessWishlistCollection(params)
     }
@@ -298,7 +358,7 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
         binding?.run {
             tfCollectionName.isInputError = true
             tfCollectionName.setMessage(errorMessage)
-            disableSaveButton()
+            // disableSaveButton()
         }
     }
 
@@ -316,6 +376,8 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
         } else {
             hideTickerAccessInfo()
         }
+        hasAccessChanges = newAccessId != _existingAccessId
+        updateSaveButton()
     }
 
     private fun showTickerAccessInfo() {

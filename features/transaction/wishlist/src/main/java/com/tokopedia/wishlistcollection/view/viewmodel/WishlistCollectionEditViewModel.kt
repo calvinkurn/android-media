@@ -53,7 +53,7 @@ class WishlistCollectionEditViewModel @Inject constructor(
     fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
         launchCatchError(block = {
             val result = updateWishlistCollectionUseCase(updateWishlistCollectionParams)
-            if (result.updateWishlistCollection.status == WishlistV2CommonConsts.OK && result.updateWishlistCollection.errorMessage.isEmpty()) {
+            if (result.updateWishlistCollection.status == WishlistV2CommonConsts.OK) {
                 _updateWishlistCollectionResult.value = Success(result.updateWishlistCollection)
             } else {
                 _updateWishlistCollectionResult.value = Fail(Throwable())
@@ -66,7 +66,7 @@ class WishlistCollectionEditViewModel @Inject constructor(
     fun getWishlistCollectionById(collectonId: String) {
         launchCatchError(block = {
             val result = getWishlistCollectionByIdUseCase(collectonId)
-            if (result.getWishlistCollectionById.status == WishlistV2CommonConsts.OK && result.getWishlistCollectionById.errorMessage.isEmpty()) {
+            if (result.getWishlistCollectionById.status == WishlistV2CommonConsts.OK) {
                 _getWishlistCollectionByIdResult.value = Success(result.getWishlistCollectionById)
             } else {
                 _getWishlistCollectionByIdResult.value = Fail(Throwable())

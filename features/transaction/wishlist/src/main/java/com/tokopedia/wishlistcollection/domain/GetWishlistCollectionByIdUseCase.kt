@@ -23,7 +23,7 @@ class GetWishlistCollectionByIdUseCase @Inject constructor(
     override fun graphqlQuery(): String = query
 
     private fun toMap(collectionId: String): Map<String, Any> = mapOf(
-        collectionId to collectionId
+        collectionID to collectionId
     )
 
     companion object {
@@ -48,8 +48,9 @@ class GetWishlistCollectionByIdUseCase @Inject constructor(
                         name
                       }
                     }
+                  }
                 }"""
 
-        const val collectionId = "collectionID"
+        const val collectionID = "collectionID"
     }
 }

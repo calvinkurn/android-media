@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@id/rv_access_options"
         app:tickerShapeType="loose"
         app:tickerType="information"
-        android:layout_marginTop="20dp"/>
+        app:closeButtonVisibility="gone"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/collection_delete_button"
@@ -51,6 +51,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
         android:text="@string/collection_item_kebab_menu_2"
         android:textColor="@color/Unify_NN600"

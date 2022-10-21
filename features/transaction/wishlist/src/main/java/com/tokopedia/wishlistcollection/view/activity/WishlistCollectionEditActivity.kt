@@ -7,7 +7,7 @@ import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionEditFragment
 
 class WishlistCollectionEditActivity: BaseSimpleActivity() {
-    override fun getLayoutRes() = R.layout.activity_collection_wishlist
+    override fun getLayoutRes() = R.layout.activity_wishlist_collection_edit
 
     override fun getParentViewResourceID() = R.id.parent_view
 
