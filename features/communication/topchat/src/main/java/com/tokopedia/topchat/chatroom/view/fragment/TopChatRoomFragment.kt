@@ -769,7 +769,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
 
         isFromBubble =
-            getParamString(Constant.EXTRA_IS_FROM_BUBBLE, arguments, savedInstanceState) == Constant.EXTRA_BUBBLE_SOURCE
+            getStringArgument(Constant.EXTRA_IS_FROM_BUBBLE, null) == Constant.EXTRA_BUBBLE_SOURCE
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
