@@ -371,8 +371,7 @@ class ChatbotFragment :
         smallReplyBox = view.findViewById(R.id.small_reply_box)
         smallReplyBox?.bindCommentTextBackground()
         bigReplyBox = view.findViewById(R.id.big_reply_box)
-        bigReplyBox?.show()
-        smallReplyBox?.showReplyBox()
+     //   smallReplyBox?.showReplyBox()
 
         setUpBigReplyBoxListeners()
 
@@ -607,11 +606,14 @@ class ChatbotFragment :
 
     private fun showReplyBox(toShow: Boolean) {
         if (toShow) {
+            add_comment_area.show()
             smallReplyBox?.showReplyBox()
-            bigReplyBox?.show()
+            bigReplyBox?.hide()
+
         } else {
-            smallReplyBox?.showReplyBox()
-            bigReplyBox?.show()
+            add_comment_area.hide()
+            smallReplyBox?.hideReplyBox()
+            bigReplyBox?.hide()
         }
     }
 
@@ -1064,6 +1066,7 @@ class ChatbotFragment :
     }
 
     override fun setBigReplyBoxTitle(text: String, placeholder: String) {
+        smallReplyBox?.hideReplyBox()
         bigReplyBox?.show()
         bigReplyBox?.setText(text)
         replyBoxBottomSheetPlaceHolder = placeholder
@@ -1071,11 +1074,12 @@ class ChatbotFragment :
     }
 
     override fun handleSmallReplyBox(hidden: Boolean) {
-//        if (hidden) {
-//            smallReplyBox?.hideReplyBox()
-//        } else {
-//            smallReplyBox?.showReplyBox()
-//        }
+        bigReplyBox?.hide()
+        if (hidden) {
+            smallReplyBox?.hideReplyBox()
+        } else {
+            smallReplyBox?.showReplyBox()
+        }
     }
 
     private fun sendAnalyticsForVideoUpload(videoFilePath : String) {

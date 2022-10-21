@@ -113,6 +113,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVI
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOURCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.chatbot.view.util.Attachment34RenderType
 import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
@@ -375,41 +376,44 @@ class ChatbotPresenter @Inject constructor(
         val dynamicAttachmentContents =
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
-        Log.d("LEVI", "handleReplyBoxWSToggle: $dynamicAttachmentContents")
-
         val replyBoxAttribute =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
-        when (replyBoxAttribute?.contentCode) {
-            TYPE_BIG_REPLY_BOX -> {
-                val bigReplyBoxContent = Gson().fromJson(
-                    replyBoxAttribute.dynamicContent,
-                    BigReplyBoxAttribute::class.java
-                )
-                handleBigReplyBoxWS(bigReplyBoxContent)
-            }
-            TYPE_SMALL_REPLY_BOX -> {
-                val smallReplyBoxContent = Gson().fromJson(
-                    replyBoxAttribute?.dynamicContent,
-                    SmallReplyBoxAttribute::class.java
-                )
-                handleSmallReplyBoxWS(smallReplyBoxContent)
-            }
-            else -> {
-                //TODO need to show fallback message
+        if (Attachment34RenderType.mapTypeToDeviceType(replyBoxAttribute?.renderTarget) == Attachment34RenderType.RenderAttachment34) {
+
+            when (replyBoxAttribute?.contentCode) {
+                TYPE_BIG_REPLY_BOX -> {
+                    val bigReplyBoxContent = Gson().fromJson(
+                        replyBoxAttribute.dynamicContent,
+                        BigReplyBoxAttribute::class.java
+                    )
+                    Log.d("LEVII", "handleReplyBoxWSToggle: handleBigReplyBoxWS")
+                    handleBigReplyBoxWS(bigReplyBoxContent)
+                }
+                TYPE_SMALL_REPLY_BOX -> {
+                    val smallReplyBoxContent = Gson().fromJson(
+                        replyBoxAttribute.dynamicContent,
+                        SmallReplyBoxAttribute::class.java
+                    )
+                    Log.d("LEVII", "handleReplyBoxWSToggle: handleSmallReplyBoxWS")
+                    handleSmallReplyBoxWS(smallReplyBoxContent)
+                }
+                else -> {
+                    //TODO need to show fallback message
+                }
             }
         }
 
     }
 
     private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
-//        if (bigReplyBoxContent.isActive) {
-//            view.setBigReplyBoxTitle(bigReplyBoxContent.title, bigReplyBoxContent.placeholder)
-//        }
+        if (bigReplyBoxContent.isActive) {
+            view.setBigReplyBoxTitle(bigReplyBoxContent.title, bigReplyBoxContent.placeholder)
+        }
     }
 
     private fun handleSmallReplyBoxWS(smallReplyBoxContent: SmallReplyBoxAttribute) {
-     //   view.handleSmallReplyBox(smallReplyBoxContent.isHidden)
+        view.handleSmallReplyBox(smallReplyBoxContent.isHidden)
     }
 
     private fun onError(): (Throwable) -> Unit {
