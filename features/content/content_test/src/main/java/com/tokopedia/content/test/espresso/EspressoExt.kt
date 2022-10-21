@@ -51,9 +51,6 @@ class ViewIdlingResource(
 
     private var resourceCallback: IdlingResource.ResourceCallback? = null
 
-    /**
-     * {@inheritDoc}
-     */
     override fun isIdleNow(): Boolean {
         val view: View? = getView(viewMatcher)
         val isIdle: Boolean = idleMatcher?.matches(view) ?: false
@@ -63,23 +60,14 @@ class ViewIdlingResource(
         return isIdle
     }
 
-    /**
-     * {@inheritDoc}
-     */
     override fun registerIdleTransitionCallback(resourceCallback: IdlingResource.ResourceCallback?) {
         this.resourceCallback = resourceCallback
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    override fun getName(): String? {
+    override fun getName(): String {
         return "$this ${viewMatcher.toString()}"
     }
 
-    /**
-     * Tries to find the view associated with the given [<].
-     */
     private fun getView(viewMatcher: Matcher<View?>?): View? {
         return try {
             val viewInteraction = onView(viewMatcher)
