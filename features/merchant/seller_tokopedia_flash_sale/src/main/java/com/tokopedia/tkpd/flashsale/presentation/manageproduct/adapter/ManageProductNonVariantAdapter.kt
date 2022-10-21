@@ -48,7 +48,7 @@ class ManageProductNonVariantAdapter: RecyclerView.Adapter<ManageProductNonVaria
             binding.mainLayout.apply {
                 val discount = warehouse.discountSetup
                 setupInputField(criteria, discount)
-                setupListener(criteria, discount)
+                setupInputListener(criteria, discount)
             }
         }
     }

@@ -218,6 +218,7 @@
     <string name="choose_product_variant_count_format">%d Varian Produk</string>
     <string name="chooseproduct_criteria_variant_format">%d varian sesuai kriteria</string>
     <string name="chooseproduct_filter_criteria_text">Memenuhi Kriteria</string>
+    <string name="chooseproduct_filter_criteria_unfiltered_text">Semua Produk</string>
     <string name="chooseproduct_filter_category_text">Semua Kategori</string>
     <string name="chooseproduct_error_max_product_item">Kamu sudah mengajukan 40 produk.</string>
     <string name="chooseproduct_error_max_quota_item">Kuota pengajuan produkmu sudah habis.</string>

@@ -119,7 +119,29 @@ open class ManageProductNonVariantBaseViewHolder(
         ))
     }
 
-    protected fun LayoutCampaignManageProductDetailInformationBinding.setupListener(
+    private fun applyListeners(binding: LayoutCampaignManageProductDetailInformationBinding) {
+        binding.apply {
+            listenerNumberFormatDiscountNominal = NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountNominal)
+            listenerNumberFormatDiscountPercent = NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountPercentage)
+            listenerTrackerOfNominalDiscount = EditTextWatcher { listener?.trackOnClickPrice(it) }
+            listenerTrackerOfPercentDiscount = EditTextWatcher { listener?.trackOnClickPercent(it) }
+            addTrackerListenerNominal()
+            addTrackerListenerPercent()
+            textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerNumberFormatDiscountNominal)
+            textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerNumberFormatDiscountPercent)
+        }
+    }
+
+    private fun removeListeners(binding: LayoutCampaignManageProductDetailInformationBinding) {
+        binding.apply {
+            removeTrackerListenerNominal()
+            removeTrackerListenerPercent()
+            textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerNumberFormatDiscountNominal)
+            textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerNumberFormatDiscountPercent)
+        }
+    }
+
+    protected fun LayoutCampaignManageProductDetailInformationBinding.setupInputListener(
         criteria: ProductCriteria,
         discount: DiscountSetup?
     ) {
@@ -154,10 +176,7 @@ open class ManageProductNonVariantBaseViewHolder(
         criteria: ProductCriteria,
         discount: DiscountSetup?
     ) {
-        removeTrackerListenerNominal()
-        removeTrackerListenerPercent()
-        textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerNumberFormatDiscountNominal)
-        textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerNumberFormatDiscountPercent)
+        removeListeners(this)
         isEditing = true
         periodSection.gone()
         tickerPriceError.gone()
@@ -168,15 +187,12 @@ open class ManageProductNonVariantBaseViewHolder(
         quantityEditor.maxValue = criteria.maxCustomStock
         textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
         setupInitialFieldMessage(criteria)
+        if (textFieldPriceDiscountNominal.editText.text.isNotEmpty() ||
+            textFieldPriceDiscountPercentage.editText.text.isNotEmpty()) {
+            triggerListener(criteria, discount)
+        }
         isEditing = false
-        listenerNumberFormatDiscountNominal = NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountNominal)
-        listenerNumberFormatDiscountPercent = NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountPercentage)
-        listenerTrackerOfNominalDiscount = EditTextWatcher { listener?.trackOnClickPrice(it) }
-        listenerTrackerOfPercentDiscount = EditTextWatcher { listener?.trackOnClickPercent(it) }
-        addTrackerListenerNominal()
-        addTrackerListenerPercent()
-        textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerNumberFormatDiscountNominal)
-        textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerNumberFormatDiscountPercent)
+        applyListeners(this)
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setTicker(context: Context) {
