@@ -31,6 +31,8 @@ interface TmTrackerImpl {
     fun viewBottomSheetHome(shopId: String)
     fun clickDismissBottomSheetHome(shopId: String)
     fun viewHomeTabsSection(shopId: String)
+    fun clickHomeUbahKartu(shopId: String)
+    fun clickHomeFeedback(shopId: String)
 
     fun viewProgramListTabSection(shopId: String)
     fun clickProgramListButton(shopId: String)
@@ -52,6 +54,7 @@ interface TmTrackerImpl {
     fun clickBackCouponList(shopId: String)
     fun clickCouponCancelPopUpPrimary(shopId: String)
     fun clickCouponCancelPopUpSecondary(shopId: String)
+    fun clickSpecificCoupon(shopId: String)
 
     fun clickProgramActiveThreeDot(shopId: String, programId: String)
 
@@ -91,5 +94,16 @@ interface TmTrackerImpl {
     //Program Detail
     fun clickProgramItemButton(shopId: String, programId: String)
     fun viewProgramDetail(shopId: String, programId: String)
+
+    //Coupon Detail
+    fun viewCouponDetail(shopId:String)
+    fun clickCouponDetailTambahKuota(shopId:String)
+    fun clickAddQuotaCouponDetail(shopId:String)
+
+    //Member List
+    fun viewMemberList(shopId: String)
+
+    //Edit Card
+    fun clickSimpanEditCard(shopId:String)
 
 }

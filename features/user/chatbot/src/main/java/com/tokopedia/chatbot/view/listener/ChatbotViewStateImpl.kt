@@ -261,11 +261,6 @@ class ChatbotViewStateImpl(
         }
     }
 
-
-    override fun onClickReasonRating() {
-
-    }
-
     override fun onImageUpload(it: ImageUploadUiModel) {
         getAdapter().addElement(it)
         scrollDownWhenInBottom()

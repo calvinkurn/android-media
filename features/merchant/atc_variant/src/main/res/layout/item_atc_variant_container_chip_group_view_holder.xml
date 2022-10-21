@@ -46,6 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_variant_category_name"
         app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:visibility="visible" />
 
     <com.google.android.material.chip.ChipGroup

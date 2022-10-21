@@ -1,3 +1,4 @@
+/features/content/content_common/                       @tokopedia/android-minionlance-dev
 /features/content/createpost/           				@tokopedia/android-minionlance-dev
 /features/content/createpost_common/           			@tokopedia/android-minionlance-dev
 /features/content/explore/              				@tokopedia/android-minionlance-dev
@@ -6,7 +7,7 @@
 /features/content/kol_common/           				@tokopedia/android-minionlance-dev
 /features/content/people/                               @tokopedia/android-minionlance-dev
 /features/content/feed_component/       				@tokopedia/android-minionlance-dev
-/features/content/content_test/       				    @tokopedia/android-minionlance-dev
+/features/content/content_test/                         @tokopedia/android-minionlance-dev
 /features/merchant/feed_shop/                           @tokopedia/android-minionlance-dev
 /features/category/       				                @tokopedia/android-miniondarth-dev
 /features/discovery/topadssdk/                      	@tokopedia/android-minionsolo-dev

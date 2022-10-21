@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.R.color.Unify_NN0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
@@ -89,7 +90,8 @@ class NonGroupItemsItemViewHolder(
                 label?.visibility = View.INVISIBLE
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_dash_white))
+                    Unify_NN0
+                ))
                 imgMenu?.visibility = View.VISIBLE
                 checkBox?.visibility = View.GONE
                 label?.visibility = View.VISIBLE
@@ -112,10 +114,10 @@ class NonGroupItemsItemViewHolder(
 
             if (checkBox?.isChecked == false) {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_dash_white))
+                    Unify_NN0))
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_select_color))
+                    com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
             }
         }
 
@@ -125,10 +127,10 @@ class NonGroupItemsItemViewHolder(
                 item.isChecked = checkBox?.isChecked == true
                 if (item.isChecked)
                     cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                        R.color.topads_select_color))
+                        com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
                 else
                     cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                        R.color.topads_dash_white))
+                        Unify_NN0))
             }
         }
 
@@ -159,7 +161,7 @@ class NonGroupItemsItemViewHolder(
             item.isChecked = true
             checkBox?.isChecked = true
             cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                R.color.topads_select_color))
+                com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
             selectMode.invoke(true)
             true
         }
