@@ -1946,9 +1946,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (::viewModel.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
-            if (activity?.isFromBubble() == true) {
-                activity?.onBackPressed()
-            } else {
+            if (activity?.isFromBubble() == false) {
                 finishActivity()
             }
         }
