@@ -81,6 +81,10 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.composeLiveData
+
+    //Macrobenchmark
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.ext.composeVersion}")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:${rootProject.ext.composeVersion}")
 }
 
 project.ext {

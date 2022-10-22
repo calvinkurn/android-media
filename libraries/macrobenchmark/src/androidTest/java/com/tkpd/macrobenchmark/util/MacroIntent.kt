@@ -112,4 +112,19 @@ object MacroIntent {
             return intent
         }
     }
+
+    object ProductReport {
+
+        const val PACKAGE_NAME = "com.tokopedia.report"
+
+        fun getStartupIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-report/5468977597/?dffallbackurl=https%3A%2F%2Fm.tokopedia.com%2F11530573-tammamstore%2Fkemeja-pria-pendek%2Freport%2F")
+            return intent
+        }
+
+        fun getCampaignListFrameTimingIntent(): Intent {
+            return getStartupIntent().apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+        }
+    }
 }
