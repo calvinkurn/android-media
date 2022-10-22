@@ -4,6 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
@@ -23,6 +26,8 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -153,6 +158,7 @@ class ProductListPresenter @Inject constructor(
     private val suggestionPresenter: SuggestionPresenter,
     private val tickerPresenter: TickerPresenter,
     private val safeSearchPresenter: SafeSearchPresenter,
+    private val addToCartUseCase: AddToCartUseCase,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -424,7 +430,8 @@ class ProductListPresenter @Inject constructor(
         val list = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProductModel.getProductListType()
+            searchProductModel.getProductListType(),
+            searchProductModel.isShowButtonAtc,
         ).toMutableList()
         productList.addAll(list)
 
@@ -448,6 +455,7 @@ class ProductListPresenter @Inject constructor(
         productDataView: ProductDataView,
         searchParameter: Map<String, Any>,
         productListType: String,
+        showButtonAtc: Boolean,
     ): List<Visitable<*>> {
         return if (isHideProductAds(productDataView))
             productDataView.productList
@@ -460,6 +468,7 @@ class ProductListPresenter @Inject constructor(
                 productListType,
                 externalReference,
                 productDataView.keywordIntention,
+                showButtonAtc,
             )
     }
 
@@ -926,6 +935,7 @@ class ProductListPresenter @Inject constructor(
             productDataView,
             searchParameter,
             searchProductModel.getProductListType(),
+            searchProductModel.isShowButtonAtc,
         ).toMutableList()
         list.addAll(productList)
 
@@ -1749,8 +1759,7 @@ class ProductListPresenter @Inject constructor(
     override fun onProductClick(item: ProductItemDataView?, adapterPosition: Int) {
         if (isViewNotAttached || item == null) return
 
-        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
-        else getViewToTrackOnClickOrganicProduct(item)
+        trackProductClick(item)
 
         sameSessionRecommendationPresenterDelegate.requestSameSessionRecommendation(
             item,
@@ -1762,14 +1771,19 @@ class ProductListPresenter @Inject constructor(
         view.routeToProductDetail(item, adapterPosition)
     }
 
+    override fun trackProductClick(item: ProductItemDataView) {
+        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
+        else getViewToTrackOnClickOrganicProduct(item)
+    }
+
     private fun getViewToTrackOnClickTopAdsProduct(item: ProductItemDataView) {
         topAdsUrlHitter.hitClickUrl(
-                view.className,
-                item.topadsClickUrl,
-                item.productID,
-                item.productName,
-                item.imageUrl,
-                SearchConstant.TopAdsComponent.TOP_ADS
+            view.className,
+            item.topadsClickUrl,
+            item.productID,
+            item.productName,
+            item.imageUrl,
+            SearchConstant.TopAdsComponent.TOP_ADS
         )
 
         view.sendTopAdsGTMTrackingProductClick(item)
@@ -1778,16 +1792,65 @@ class ProductListPresenter @Inject constructor(
     private fun getViewToTrackOnClickOrganicProduct(item: ProductItemDataView) {
         if (item.isOrganicAds) {
             topAdsUrlHitter.hitClickUrl(
-                    view.className,
-                    item.topadsClickUrl,
-                    item.productID,
-                    item.productName,
-                    item.imageUrl,
-                    SearchConstant.TopAdsComponent.ORGANIC_ADS
+                view.className,
+                item.topadsClickUrl,
+                item.productID,
+                item.productName,
+                item.imageUrl,
+                SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
         }
 
         view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
+    }
+
+    override fun onProductAddToCart(item: ProductItemDataView) {
+        if (item.shouldOpenVariantBottomSheet()) {
+            view.openVariantBottomSheet(item)
+        } else {
+            executeAtcCommon(item)
+        }
+    }
+
+    private fun executeAtcCommon(data: ProductItemDataView) {
+        val requestParams = data.createAddToCartRequestParams()
+
+        addToCartUseCase.setParams(requestParams)
+        addToCartUseCase.execute(
+            {
+                onAddToCartUseCaseSuccess(it, data)
+            },
+            ::onAddToCartUseCaseFailed
+        )
+    }
+
+    private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
+        return AddToCartRequestParams(
+            productId = productID.toLongOrZero(),
+            shopId = shopID.toIntOrZero(),
+            quantity = minOrder,
+            productName = productName,
+            price = price,
+            userId = if (userSession.isLoggedIn) userSession.userId else "0"
+        )
+    }
+
+    private fun onAddToCartUseCaseSuccess(
+        addToCartDataModel: AddToCartDataModel?,
+        productItemDataView: ProductItemDataView,
+    ) {
+        view.updateSearchBarNotification()
+
+        val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
+        view.openAddToCartToaster(message, true)
+
+        trackProductClick(productItemDataView)
+        view.sendGTMTrackingProductATC(productItemDataView, addToCartDataModel?.data?.cartId)
+    }
+
+    private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
+        val message = throwable?.message ?: ""
+        view.openAddToCartToaster(message, false)
     }
 
     override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {
