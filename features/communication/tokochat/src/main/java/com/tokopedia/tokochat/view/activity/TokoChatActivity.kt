@@ -4,8 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.tokochat.tokochat_config_common.di.DaggerTokoChatConfigComponent
-import com.tokochat.tokochat_config_common.di.TokoChatConfigComponent
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -48,8 +46,6 @@ import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
  */
 class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
-    private var tokoChatConfigComponent: TokoChatConfigComponent? = null
-
     override fun setupFragmentFactory() {
         supportFragmentManager.fragmentFactory = TokoChatFragmentFactory()
     }
@@ -62,7 +58,6 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     private fun initializeTokoChatComponent(): TokoChatComponent {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .tokoChatConfigComponent(getTokoChatConfigComponent())
             .tokoChatContextModule(TokoChatContextModule(this))
             .build().also {
                 tokoChatComponent = it
@@ -71,16 +66,6 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
     override fun getComponent(): TokoChatComponent {
         return tokoChatComponent ?: initializeTokoChatComponent()
-    }
-
-    private fun initializeTokoChatConfigComponent(): TokoChatConfigComponent {
-        return DaggerTokoChatConfigComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
-    }
-
-    private fun getTokoChatConfigComponent(): TokoChatConfigComponent {
-        return tokoChatConfigComponent ?: initializeTokoChatConfigComponent()
     }
 
     override fun getNewFragment(): Fragment {

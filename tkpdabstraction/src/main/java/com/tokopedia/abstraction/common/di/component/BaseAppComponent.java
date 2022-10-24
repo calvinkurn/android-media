@@ -2,7 +2,10 @@ package com.tokopedia.abstraction.common.di.component;
 
 import android.content.Context;
 
+import com.gojek.conversations.courier.BabbleCourierClient;
+import com.gojek.courier.CourierConnection;
 import com.google.gson.Gson;
+import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -50,4 +53,18 @@ public interface BaseAppComponent {
     GraphqlUseCaseInterface graphqlInterface();
 
     UserSessionDataStore userSessionDataStore();
+
+    // TokoChat Section
+
+    @TokoChatQualifier
+    Context getTokoChatContext();
+
+    @TokoChatQualifier
+    Retrofit getTokoChatRetrofit();
+
+    @TokoChatQualifier
+    BabbleCourierClient getBabbleCourierClient();
+
+    @TokoChatQualifier
+    CourierConnection getCourierConnection();
 }

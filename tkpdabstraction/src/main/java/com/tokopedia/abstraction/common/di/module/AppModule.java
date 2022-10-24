@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.net.NetModule;
+import com.tokopedia.abstraction.common.di.module.tokochat.TokoChatConfigConversationModule;
+import com.tokopedia.abstraction.common.di.module.tokochat.TokoChatConfigModule;
+import com.tokopedia.abstraction.common.di.module.tokochat.TokoChatConfigNetworkModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
@@ -23,7 +26,12 @@ import dagger.Provides;
 /**
  * @author kulomady on 1/9/17.
  */
-@Module(includes = {NetModule.class})
+@Module(includes = {
+        NetModule.class,
+        TokoChatConfigModule.class,
+        TokoChatConfigNetworkModule.class,
+        TokoChatConfigConversationModule.class
+})
 public class AppModule {
 
     private final Context context;

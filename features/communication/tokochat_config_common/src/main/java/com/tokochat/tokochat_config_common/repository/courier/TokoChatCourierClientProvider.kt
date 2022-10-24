@@ -1,6 +1,7 @@
 package com.tokochat.tokochat_config_common.repository.courier
 
 import android.content.Context
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.gojek.chuckmqtt.external.MqttChuckConfig
 import com.gojek.chuckmqtt.external.MqttChuckInterceptor
 import com.gojek.courier.CourierConnection
@@ -10,19 +11,18 @@ import com.gojek.courier.di.CourierComponent
 import com.gojek.courier.di.UsernameProvider
 import com.gojek.mqtt.client.MqttInterceptor
 import com.google.gson.Gson
-import com.tokochat.tokochat_config_common.di.TokoChatNetworkModule.RETROFIT_NAME
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier
 import com.tokochat.tokochat_config_common.util.TokoChatCourierConnectionLifecycle
-import com.tokopedia.user.session.BuildConfig
+import com.tokochat.tokochat_config_common.util.TokoChatProcessLifecycleObserver
+import com.tokopedia.config.BuildConfig
 import com.tokopedia.user.session.UserSessionInterface
 import retrofit2.Retrofit
 import javax.inject.Inject
-import javax.inject.Named
 
 class TokoChatCourierClientProvider @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @TokoChatQualifier private val context: Context,
     private val gson: Gson,
-    @Named(RETROFIT_NAME) private val retrofit: Retrofit,
+    @TokoChatQualifier private val retrofit: Retrofit,
     private val userSession: UserSessionInterface,
     private val courierRemoteConfig: CourierRemoteConfig
 ) {
@@ -42,6 +42,10 @@ class TokoChatCourierClientProvider @Inject constructor(
             courierRemoteConfig = courierRemoteConfig,
             connectionLifecycle = TokoChatCourierConnectionLifecycle
         )
+
+        //Attach observer lifecycle
+        ProcessLifecycleOwner.get().lifecycle.addObserver(TokoChatProcessLifecycleObserver())
+
         return CourierComponent.getOrCreate(params).courierConnection()
     }
 

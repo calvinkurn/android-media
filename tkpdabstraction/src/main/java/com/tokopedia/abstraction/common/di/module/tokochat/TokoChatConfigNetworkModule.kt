@@ -1,7 +1,8 @@
-package com.tokochat.tokochat_config_common.di
+package com.tokopedia.abstraction.common.di.module.tokochat
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.interceptor.GojekInterceptor
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -15,42 +16,37 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 
 @Module
-object TokoChatNetworkModule {
+object TokoChatConfigNetworkModule {
 
     //TODO: Move this to TokopediaUrl
-    private const val BASE_URL = "https://integration-api.gojekapi.com/"
+    const val BASE_URL = "https://integration-api.gojekapi.com/"
 
     private const val NET_READ_TIMEOUT = 300
     private const val NET_WRITE_TIMEOUT = 300
     private const val NET_CONNECT_TIMEOUT = 300
     private const val NET_RETRY = 3
 
-    const val RETROFIT_NAME = "retrofit_tokochat"
-
-    @TokoChatConfigScope
     @Provides
-    @Named(RETROFIT_NAME)
-    fun provideChatRetrofit(
-        retrofitBuilder: Retrofit.Builder,
-        okHttpClient: OkHttpClient
-    ): Retrofit {
-        return retrofitBuilder
-            .baseUrl(BASE_URL)
-            .addConverterFactory(StringResponseConverter())
-            .client(okHttpClient).build()
+    @TokoChatQualifier
+    fun okHttpRetryPolicy(): OkHttpRetryPolicy {
+        return OkHttpRetryPolicy(
+            NET_READ_TIMEOUT,
+            NET_WRITE_TIMEOUT,
+            NET_CONNECT_TIMEOUT,
+            NET_RETRY
+        )
     }
 
-    @TokoChatConfigScope
     @Provides
+    @TokoChatQualifier
     fun provideOkHttpClient(
-        retryPolicy: OkHttpRetryPolicy,
+        @TokoChatQualifier retryPolicy: OkHttpRetryPolicy,
         loggingInterceptor: HttpLoggingInterceptor,
-        errorResponseInterceptor: ErrorResponseInterceptor,
-        chuckerInterceptor: ChuckerInterceptor,
-        gojekInterceptor: GojekInterceptor
+        @TokoChatQualifier errorResponseInterceptor: ErrorResponseInterceptor,
+        @TokoChatQualifier chuckerInterceptor: ChuckerInterceptor,
+        @TokoChatQualifier gojekInterceptor: GojekInterceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(errorResponseInterceptor)
@@ -69,27 +65,35 @@ object TokoChatNetworkModule {
         return builder.build()
     }
 
-    @TokoChatConfigScope
     @Provides
-    fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
-        return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
+    @TokoChatQualifier
+    fun provideChatRetrofit(
+        retrofitBuilder: Retrofit.Builder,
+        @TokoChatQualifier okHttpClient: OkHttpClient
+    ): Retrofit {
+        return retrofitBuilder
+            .baseUrl(BASE_URL)
+            .addConverterFactory(StringResponseConverter())
+            .client(okHttpClient).build()
     }
 
-    @TokoChatConfigScope
     @Provides
+    @TokoChatQualifier
+    fun provideChuckerInterceptor(
+        @ApplicationContext context: Context
+    ): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
+    }
+
+    @Provides
+    @TokoChatQualifier
     fun provideGojekInterceptor(): GojekInterceptor {
         return GojekInterceptor()
     }
 
-    @TokoChatConfigScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
-    }
-
-    @TokoChatConfigScope
-    @Provides
-    fun okHttpRetryPolicy(): OkHttpRetryPolicy {
-        return OkHttpRetryPolicy(NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY)
+    @TokoChatQualifier
+    fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
+        return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
     }
 }

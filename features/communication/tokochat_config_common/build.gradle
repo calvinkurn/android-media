@@ -21,7 +21,6 @@ buildscript {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
@@ -37,8 +36,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chuckMqtt
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-
-    implementation rootProject.ext.debugToolsDependencies.chuck
 }
 
 project.ext {

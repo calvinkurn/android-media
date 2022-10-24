@@ -8,31 +8,33 @@ import com.gojek.conversations.config.ConversationsConfig
 import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.conversations.logging.ConversationsLogger
 import com.gojek.conversations.utils.ConversationsConstants
-import com.tokochat.tokochat_config_common.di.TokoChatNetworkModule.RETROFIT_NAME
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier
 import retrofit2.Retrofit
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 
 class TokoChatRepository @Inject constructor(
-    @Named(RETROFIT_NAME) private val retrofit: Retrofit,
-    @ApplicationContext private val context: Context,
-    private val babbleCourier: BabbleCourierClient
+    @TokoChatQualifier private val retrofit: Retrofit,
+    @TokoChatQualifier private val context: Context,
+    @TokoChatQualifier private val babbleCourier: BabbleCourierClient
 ): ConversationsLogger.ILog, ConversationsAnalyticsTracker {
 
     private var conversationRepository: ConversationsRepository? = null
 
     fun getConversationRepository(): ConversationsRepository {
         if (conversationRepository == null) {
-            ConversationsRepository.init(
-                context, retrofit, this, this,
-                conversationsConfig = getConversationsConfig(),
-                courierClient = babbleCourier
-            )
-            conversationRepository = ConversationsRepository.instance
+            initConversationRepository()
         }
         return conversationRepository!!
+    }
+
+    fun initConversationRepository() {
+        ConversationsRepository.init(
+            context, retrofit, this, this,
+            conversationsConfig = getConversationsConfig(),
+            courierClient = babbleCourier
+        )
+        conversationRepository = ConversationsRepository.instance
     }
 
     private fun getConversationsConfig(): ConversationsConfig {
