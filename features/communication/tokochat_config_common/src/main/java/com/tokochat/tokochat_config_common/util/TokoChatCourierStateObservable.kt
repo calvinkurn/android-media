@@ -4,7 +4,7 @@ import com.gojek.conversations.courier.CourierState
 import com.gojek.courier.CourierConnection
 import com.gojek.courier.event.handler.BaseCourierEventHandler
 import com.gojek.mqtt.event.MqttEvent
-import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier
+import com.tokochat.tokochat_config_common.di.TokoChatQualifier
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import javax.inject.Inject

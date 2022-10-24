@@ -5,7 +5,7 @@ import android.content.Context;
 import com.gojek.conversations.courier.BabbleCourierClient;
 import com.gojek.courier.CourierConnection;
 import com.google.gson.Gson;
-import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier;
+import com.tokochat.tokochat_config_common.di.TokoChatQualifier;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;

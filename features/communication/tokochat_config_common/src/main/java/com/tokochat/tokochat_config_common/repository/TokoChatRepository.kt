@@ -8,7 +8,7 @@ import com.gojek.conversations.config.ConversationsConfig
 import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.conversations.logging.ConversationsLogger
 import com.gojek.conversations.utils.ConversationsConstants
-import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier
+import com.tokochat.tokochat_config_common.di.TokoChatQualifier
 import retrofit2.Retrofit
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,7 +28,7 @@ class TokoChatRepository @Inject constructor(
         return conversationRepository!!
     }
 
-    fun initConversationRepository() {
+    private fun initConversationRepository() {
         ConversationsRepository.init(
             context, retrofit, this, this,
             conversationsConfig = getConversationsConfig(),
@@ -70,5 +70,9 @@ class TokoChatRepository @Inject constructor(
 
     override fun w(tag: String, message: String) {
         Timber.w("$tag - $message")
+    }
+
+    companion object {
+
     }
 }

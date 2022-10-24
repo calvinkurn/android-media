@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.gojek.conversations.ConversationsRepository;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -220,6 +221,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
+        removeTokoChat();
         DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
@@ -253,6 +255,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(this);
         userSession.logoutSession();
+        removeTokoChat();
     }
 
     public void checkIfForceLogoutMustShow() {
@@ -338,4 +341,19 @@ public abstract class BaseActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
+    protected void removeTokoChat() {
+        try {
+            new Thread(new Runnable() {
+                @Override
+                public void run(){
+                    if (ConversationsRepository.Companion.getInstance() != null) {
+                        ConversationsRepository.Companion.getInstance().resetConversationsData();
+                        ConversationsRepository.Companion.destroy();
+                    }
+                }
+            }).start();
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+    }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.abstraction.common.di.module.tokochat
 
 import android.content.Context
 import com.gojek.conversations.courier.BabbleCourierClient
-import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier
+import com.tokochat.tokochat_config_common.di.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl

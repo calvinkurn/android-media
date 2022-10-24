@@ -5,7 +5,7 @@ import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.courier.CourierConnection
 import com.gojek.courier.config.CourierRemoteConfig
 import com.google.gson.Gson
-import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier
+import com.tokochat.tokochat_config_common.di.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.courier.TokoChatBabbleCourierImpl
 import com.tokochat.tokochat_config_common.repository.courier.TokoChatCourierClientProvider
 import com.tokochat.tokochat_config_common.util.TokoChatCourierRemoteConfigImpl

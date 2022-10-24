@@ -11,7 +11,7 @@ import com.gojek.courier.di.CourierComponent
 import com.gojek.courier.di.UsernameProvider
 import com.gojek.mqtt.client.MqttInterceptor
 import com.google.gson.Gson
-import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier
+import com.tokochat.tokochat_config_common.di.TokoChatQualifier
 import com.tokochat.tokochat_config_common.util.TokoChatCourierConnectionLifecycle
 import com.tokochat.tokochat_config_common.util.TokoChatProcessLifecycleObserver
 import com.tokopedia.config.BuildConfig

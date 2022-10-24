@@ -2,7 +2,7 @@ package com.tokopedia.abstraction.common.di.module.tokochat
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.tokochat.tokochat_config_common.dagger.TokoChatQualifier
+import com.tokochat.tokochat_config_common.di.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.interceptor.GojekInterceptor
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
