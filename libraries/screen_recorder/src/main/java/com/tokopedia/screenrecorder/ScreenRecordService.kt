@@ -370,8 +370,11 @@ class ScreenRecordService : Service(), CoroutineScope {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(uri, "video/*")
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-        return PendingIntent.getActivity(applicationContext, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getActivity(applicationContext, 1, intent, PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            PendingIntent.getActivity(applicationContext, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
     }
 
     override fun onBind(intent: Intent): IBinder? {

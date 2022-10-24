@@ -147,7 +147,7 @@ public abstract class BaseNotificationFactory {
                     context,
                     notificationId,
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    PendingIntent.FLAG_IMMUTABLE
             );
         }
 
