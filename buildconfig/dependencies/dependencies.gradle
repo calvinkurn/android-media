@@ -34,9 +34,9 @@ ext {
     glideVersion = '4.9.0'
     viewPager2 = '1.0.0'
     deeplinkDispatchVersion = '4.1.0'
-    espressoVersion = "3.1.0"
-    runnerVersion = "1.1.0"
-    rulesVersion = "1.1.0"
+    espressoVersion = "3.4.0"
+    runnerVersion = "1.4.0"
+    rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'
     lottieVersion = '3.4.1'
     cardioVersion = '5.5.1'
@@ -347,7 +347,7 @@ ext {
             spek2Api              : "org.spekframework.spek2:spek-runner-junit5:2.0.8",
             spek2Dsl              : "org.spekframework.spek2:spek-dsl-jvm:2.0.8",
             platformEngine        : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
-            junitPlatformRunner   : "org.junit.platform:junit-platform-runner:1.0.0",
+            junitPlatformRunner   : "org.junit.platform:junit-platform-runner:1.8.2",
             archCoreTesting       : "androidx.arch.core:core-testing:$archCoreVersion",
             json                  : "org.json:json:20140107",
             benchmark             : "androidx.benchmark:benchmark-junit4:$benchmarkTestVersion",
