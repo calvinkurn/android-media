@@ -101,7 +101,7 @@ object OrderWidgetSuccessState {
                 putExtra(Const.Extra.SELLER_ORDER, order)
             }
             val switchPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.getBroadcast(context, 0, switchIntent, PendingIntent.FLAG_IMMUTABLE)
+                PendingIntent.getBroadcast(context, 0, switchIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             } else {
                 PendingIntent.getBroadcast(context, 0, switchIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             }
@@ -178,7 +178,7 @@ object OrderWidgetSuccessState {
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
             val itemPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_IMMUTABLE)
+                PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             } else {
                 PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             }

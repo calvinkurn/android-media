@@ -44,7 +44,7 @@ object PendingIntentUtil {
                     context,
                     notificationId,
                     intent,
-                    PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         }
 

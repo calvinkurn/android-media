@@ -109,7 +109,7 @@ public class DefaultShare implements ShareCallback {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0,
-                        receiver, PendingIntent.FLAG_IMMUTABLE);
+                        receiver, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                 activity.startActivity(Intent.createChooser(intent, TITLE_OTHER,
                         pendingIntent.getIntentSender()));
             } else {
