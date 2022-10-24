@@ -165,9 +165,5 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-        <activity
-            android:name="com.tokopedia.fakeresponse.presentation.activities.FakeResponseActivity"
-            tools:node="merge"
-            android:exported="true"/>
     </application>
 </manifest>
