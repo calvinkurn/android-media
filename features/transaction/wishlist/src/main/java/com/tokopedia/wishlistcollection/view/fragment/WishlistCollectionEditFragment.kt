@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,8 +20,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -40,7 +41,6 @@ import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
-import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionKebabMenuItemAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionEditAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionEditViewModel
@@ -148,6 +148,33 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
                 text = getString(R.string.collection_save_to_existing_collection)
             }
         }
+
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (hasCollectionNameChanges || hasAccessChanges) {
+                    showDialogExitConfirmation()
+                }
+            }
+        })
+    }
+
+    private fun showDialogExitConfirmation() {
+        val dialog = context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.collection_edit_back_dialog_confirmation_title))
+                setDescription(getString(R.string.collection_edit_back_dialog_confirmation_desc))
+                setPrimaryCTAText(getString(R.string.collection_edit_back_dialog_confirmation_primary_button))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    activity?.finish()
+                }
+                setSecondaryCTAText(getString(R.string.collection_edit_back_dialog_confirmation_secondary_button))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }
+        }
+        dialog?.show()
     }
 
     private fun checkLogin() {

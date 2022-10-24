@@ -154,7 +154,6 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     }
 
     override fun getItemCount(): Int {
-        println("++ size = ${listTypeData.size}")
         return listTypeData.size
     }
 
