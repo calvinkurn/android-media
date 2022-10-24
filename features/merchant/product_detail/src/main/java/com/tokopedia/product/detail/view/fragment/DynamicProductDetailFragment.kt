@@ -32,12 +32,7 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID
@@ -3814,7 +3809,8 @@ open class DynamicProductDetailFragment :
             )
         resultIntent.putExtra(ProductDetailConstant.WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
         resultIntent.putExtra("product_id", productId)
-        activity?.let { it.setResult(Activity.RESULT_CANCELED, resultIntent) }
+        resultIntent.putExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_NEED_REFRESH, true)
+        activity?.let { it.setResult(Activity.RESULT_OK, resultIntent) }
     }
 
     private fun gotoEditProduct() {

@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
@@ -117,7 +116,6 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_NAME_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_BULK_ADD
-import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.PARAM_INSIDE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
@@ -2659,22 +2657,31 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
-        } else if (requestCode == REQUEST_CODE_GO_TO_PDP || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST && data != null) {
+        } else if (requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST && data != null) {
             doRefresh()
-            val isSuccess = data?.getBooleanExtra(
-                ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
-                false
-            )
-            val messageToaster =
-                data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
-
-            if (isSuccess == true) {
-                messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
-            } else {
-                messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
-            }
+            showToasterFromIntent(data)
         } else if (requestCode == REQUEST_CODE_GO_TO_COLLECTION_DETAIL) {
             doRefresh()
+        } else if (requestCode == REQUEST_CODE_GO_TO_PDP) {
+            if (resultCode == Activity.RESULT_OK && data?.getBooleanExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_NEED_REFRESH, false) == true) {
+                doRefresh()
+            }
+            showToasterFromIntent(data)
+        }
+    }
+
+    private fun showToasterFromIntent(data: Intent?) {
+        val isSuccess = data?.getBooleanExtra(
+            ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+            false
+        )
+        val messageToaster =
+            data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
+
+        if (isSuccess == true) {
+            messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
+        } else {
+            messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
         }
     }
 
