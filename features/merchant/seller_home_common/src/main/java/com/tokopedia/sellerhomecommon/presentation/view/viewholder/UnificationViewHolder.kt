@@ -311,7 +311,7 @@ class UnificationViewHolder(
                 shcNotifTagTab.visible()
                 shcNotifTagTab.setNotification(
                     newTag,
-                    NotificationUnify.COUNTER_TYPE,
+                    NotificationUnify.TEXT_TYPE,
                     NotificationUnify.COLOR_TEXT_TYPE
                 )
             } else {

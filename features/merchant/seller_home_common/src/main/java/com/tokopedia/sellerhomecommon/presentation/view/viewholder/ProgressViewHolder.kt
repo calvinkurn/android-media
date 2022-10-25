@@ -140,7 +140,7 @@ class ProgressViewHolder(
             if (isTagVisible) {
                 notifTagProgress.setNotification(
                     tag,
-                    NotificationUnify.COUNTER_TYPE,
+                    NotificationUnify.TEXT_TYPE,
                     NotificationUnify.COLOR_TEXT_TYPE
                 )
             }

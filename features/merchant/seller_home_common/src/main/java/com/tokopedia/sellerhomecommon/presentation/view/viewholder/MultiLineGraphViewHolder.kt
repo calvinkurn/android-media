@@ -128,7 +128,7 @@ class MultiLineGraphViewHolder(
             if (isTagVisible) {
                 notifTagMultiLineGraph.setNotification(
                     tag,
-                    NotificationUnify.COUNTER_TYPE,
+                    NotificationUnify.TEXT_TYPE,
                     NotificationUnify.COLOR_TEXT_TYPE
                 )
             }

@@ -309,7 +309,7 @@ class MilestoneViewHolder(
             if (isTagVisible) {
                 notifTagMilestone.setNotification(
                     tag,
-                    NotificationUnify.COUNTER_TYPE,
+                    NotificationUnify.TEXT_TYPE,
                     NotificationUnify.COLOR_TEXT_TYPE
                 )
             }

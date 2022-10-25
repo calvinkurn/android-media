@@ -90,7 +90,7 @@ class UnificationTabAdapter(
                         val newTag = root.context.getString(R.string.shc_new)
                         shcUnificationTabTag.setNotification(
                             newTag,
-                            NotificationUnify.COUNTER_TYPE,
+                            NotificationUnify.TEXT_TYPE,
                             NotificationUnify.COLOR_TEXT_TYPE
                         )
                     }
@@ -99,7 +99,7 @@ class UnificationTabAdapter(
                         val newTag = root.context.getString(R.string.shc_no_access)
                         shcUnificationTabTag.setNotification(
                             newTag,
-                            NotificationUnify.COUNTER_TYPE,
+                            NotificationUnify.TEXT_TYPE,
                             com.tokopedia.unifyprinciples.R.color.Unify_NN100
                         )
                         shcUnificationTabTag.setTextColor(

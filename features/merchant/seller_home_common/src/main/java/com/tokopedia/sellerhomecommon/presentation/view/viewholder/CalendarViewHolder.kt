@@ -69,7 +69,7 @@ class CalendarViewHolder(
             binding.notifShcTagCalendar.visible()
             binding.notifShcTagCalendar.setNotification(
                 element.tag,
-                NotificationUnify.COUNTER_TYPE,
+                NotificationUnify.TEXT_TYPE,
                 NotificationUnify.COLOR_TEXT_TYPE
             )
         }

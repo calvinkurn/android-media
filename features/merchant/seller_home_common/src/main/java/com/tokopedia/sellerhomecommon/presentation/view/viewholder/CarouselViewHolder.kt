@@ -114,7 +114,7 @@ class CarouselViewHolder(
             if (isTagVisible) {
                 notifTagCarousel.setNotification(
                     tag,
-                    NotificationUnify.COUNTER_TYPE,
+                    NotificationUnify.TEXT_TYPE,
                     NotificationUnify.COLOR_TEXT_TYPE
                 )
             }
