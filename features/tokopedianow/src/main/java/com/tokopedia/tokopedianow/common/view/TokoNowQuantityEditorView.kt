@@ -54,6 +54,9 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             }
         }
 
+    var onClickListener: (counter: Int) -> Unit = {}
+    var onClickVariantListener: () -> Unit = {}
+
     init {
         binding = LayoutTokopedianowQuantityEditorViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
             setupAddButton()
@@ -208,6 +211,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
         root.transitionToEnd()
         cancelTimer()
+        onClickListener(counter)
     }
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextWhenStartingWithValueAnimation() {

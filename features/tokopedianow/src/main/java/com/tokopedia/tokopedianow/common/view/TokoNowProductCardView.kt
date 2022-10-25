@@ -20,9 +20,6 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.model.LABEL_BEST_SELLER
-import com.tokopedia.tokopedianow.common.model.LABEL_GIMMICK
-import com.tokopedia.tokopedianow.common.model.LABEL_STATUS
 import com.tokopedia.tokopedianow.common.model.LIGHT_GREEN
 import com.tokopedia.tokopedianow.common.model.LIGHT_RED
 import com.tokopedia.tokopedianow.common.model.LabelGroup
@@ -79,7 +76,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 price = model.price
             )
             initPromoLabel(
-                label = model.discount,
+                discount = model.discount,
                 labelGroup = model.getPriceLabelGroup()
             )
             initSlashPriceTypography(
@@ -162,19 +159,19 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowProductCardViewBinding.initPromoLabel(
-        label: String,
+        discount: String,
         labelGroup: LabelGroup?
     ) {
-        val isLabelNotNull = labelGroup != null
-        promoLabel.showIfWithBlock(label.isNotBlank() || isLabelNotNull) {
-            if (isLabelNotNull) {
+        val isDiscountNotBlank = discount.isNotBlank()
+        promoLabel.showIfWithBlock(isDiscountNotBlank || labelGroup != null) {
+            if (isDiscountNotBlank) {
+                text = discount
+                adjustLabelType(LIGHT_RED)
+            } else {
                 labelGroup?.let { labelGroup ->
                     text = labelGroup.title
                     adjustLabelType(labelGroup.type)
                 }
-            } else {
-                text = label
-                adjustLabelType(LIGHT_RED)
             }
         }
     }
@@ -462,5 +459,13 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     fun setData(model: TokoNowProductCardViewUiModel) {
         setupUi(model)
+    }
+
+    fun setOnClickQuantityEditorListener(
+        onClickListener: (Int) -> Unit,
+        onClickVariantListener: () -> Unit
+    ) {
+        binding.quantityEditor.onClickListener = onClickListener
+        binding.quantityEditor.onClickVariantListener = onClickVariantListener
     }
 }
