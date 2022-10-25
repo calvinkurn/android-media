@@ -565,6 +565,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initChatTextAreaLayout()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
+        }
+    }
+
     private fun setupLifecycleObserver() {
         viewLifecycleOwner.lifecycle.addObserver(viewModel)
     }
@@ -1875,6 +1882,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
     }
 
+    override fun onClickHeaderMenu() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuBubble(session.shopId)
+        }
+    }
+
+    override fun onClickHeaderMenuItem(menuItemTitle: String) {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuItemBubble(menuItemTitle)
+        }
+    }
+
     private fun getChatReportUrl(): String {
         var url = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
         if (isSeller()) {
@@ -1987,6 +2006,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onDestroy() {
         super.onDestroy()
         unregisterUploadImageReceiver()
+        sendBubbleDismissTracker()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentUiModel) {
@@ -2230,6 +2250,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onStickerOpened() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickStickerBubble()
+        }
         topchatViewState?.onStickerOpened()
     }
 
@@ -2513,6 +2536,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             uploadImageBroadcastReceiver?.let { receiver ->
                 LocalBroadcastManager.getInstance(it).unregisterReceiver(receiver)
             }
+        }
+    }
+
+    private fun sendBubbleDismissTracker() {
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventDismissBubbleChat(session.shopId, opponentId, messageId)
         }
     }
 
