@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
@@ -9,6 +10,7 @@ import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationM
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
 import com.tokopedia.search.shouldBe
+import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.just
 import io.mockk.runs
@@ -32,6 +34,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private val recommendationSlot = slot<SameSessionRecommendationDataView>()
     private val selectedVisitableSlot = slot<Visitable<*>>()
+    private val requestParamsSlot = slot<RequestParams>()
 
     @Test
     fun `Product click return empty recommendation`() {
@@ -54,6 +57,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
+        `Then assert same session request params`(productItemDataView)
         `Then verify no recommendationItem added`()
     }
 
@@ -78,6 +82,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
+        `Then assert same session request params`(productItemDataView)
         `Then verify recommendationItem`(sameSessionRecommendation, productItemDataView)
     }
 
@@ -166,7 +171,12 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     private fun `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
         searchSameSessionRecommendationModel: SearchSameSessionRecommendationModel
     ) {
-        every { sameSessionRecommendationUseCase.execute(any(), any()) }.answers {
+        every {
+            sameSessionRecommendationUseCase.execute(
+                capture(requestParamsSlot),
+                any()
+            )
+        }.answers {
             secondArg<Subscriber<SearchSameSessionRecommendationModel>>().complete(
                 searchSameSessionRecommendationModel
             )
@@ -291,6 +301,16 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         verify(exactly = 1) {
             sameSessionRecommendationUseCase.execute(any(), any())
         }
+    }
+
+    private fun `Then assert same session request params`(
+        productItemDataView: ProductItemDataView,
+    ) {
+        val requestParams = requestParamsSlot.captured
+        requestParams.getString(
+            SearchApiConst.PRODUCT_ID,
+            ""
+        ) shouldBe productItemDataView.productID
     }
 
 }
