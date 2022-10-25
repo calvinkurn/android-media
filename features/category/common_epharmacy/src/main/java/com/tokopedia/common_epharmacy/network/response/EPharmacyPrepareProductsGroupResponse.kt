@@ -38,6 +38,8 @@ data class EPharmacyPrepareProductsGroupResponse(
                 data class ConsultationData(
                     @SerializedName("consultation_status")
                     val consultationStatus: Int?,
+                    @SerializedName("consultation_string")
+                    val consultationString: String?,
                     @SerializedName("doctor_details")
                     val doctorDetails: DoctorDetails?,
                     @SerializedName("end_time")

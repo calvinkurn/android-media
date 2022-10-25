@@ -77,6 +77,7 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                                 start_time
                                 end_time
                                 consultation_status
+                                consultation_string
                             }
                         }
                     }
