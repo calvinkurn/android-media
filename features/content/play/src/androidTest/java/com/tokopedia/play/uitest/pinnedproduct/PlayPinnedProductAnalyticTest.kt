@@ -80,13 +80,8 @@ class PlayPinnedProductAnalyticTest {
                         )
                     ),
                     videoMetaInfo = PlayVideoMetaInfoUiModel(
-                        videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
-                            params = PlayGeneralVideoPlayerParams(
-                                videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
-                                buffer = PlayBufferControl(),
-                                lastMillis = null,
-                            )
-                        ),
+                        //Use YouTube for now because non Youtube shows Unify Loader that can prevent app from being Idle
+                        videoPlayer = PlayVideoPlayerUiModel.YouTube(""),
                         videoStream = PlayVideoStreamUiModel(
                             "", VideoOrientation.Vertical, "Video Keren"
                         ),
@@ -225,7 +220,7 @@ class PlayPinnedProductAnalyticTest {
         assertCassavaByEventAction("click - pinned lihat keranjang")
     }
 
-    private fun createRobot() = PlayActivityRobot(channelId, initialDelay = 3500)
+    private fun createRobot() = PlayActivityRobot(channelId, initialDelay = 3500, isYouTube = true)
 
     private fun buildTagItemWithPinned(
         numOfSections: Int = 1,

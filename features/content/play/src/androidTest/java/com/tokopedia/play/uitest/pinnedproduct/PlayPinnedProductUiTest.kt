@@ -12,20 +12,16 @@ import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
-import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.recom.PlayGeneralVideoPlayerParams
 import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.test.application.annotations.UiTest
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
@@ -60,13 +56,8 @@ class PlayPinnedProductUiTest {
                         )
                     ),
                     videoMetaInfo = PlayVideoMetaInfoUiModel(
-                        videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
-                            params = PlayGeneralVideoPlayerParams(
-                                videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
-                                buffer = PlayBufferControl(),
-                                lastMillis = null,
-                            )
-                        ),
+                        //Use YouTube for now because non Youtube shows Unify Loader that can prevent app from being Idle
+                        videoPlayer = PlayVideoPlayerUiModel.YouTube(""),
                         videoStream = PlayVideoStreamUiModel(
                             "", VideoOrientation.Vertical, "Video Keren"
                         ),
@@ -253,7 +244,7 @@ class PlayPinnedProductUiTest {
             )
     }
 
-    private fun createRobot() = PlayActivityRobot(channelId, 3000)
+    private fun createRobot() = PlayActivityRobot(channelId, 3000, isYouTube = true)
 
     private fun buildTagItemWithPinned(
         numOfSections: Int = 1,

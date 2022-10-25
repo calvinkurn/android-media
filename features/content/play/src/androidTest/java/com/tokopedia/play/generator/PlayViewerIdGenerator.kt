@@ -322,33 +322,36 @@ class PlayViewerIdGenerator {
 
     @Test
     fun youTubePlayer() {
-        val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-        every { mockChannelStorage.getChannelList() } returns listOf("12680")
-        every { mockChannelStorage.getData(any()) } returns PlayChannelData(
-            id = "12669",
-            channelDetail = PlayChannelDetailUiModel(),
-            partnerInfo = PlayPartnerInfo(name = "test"),
-            likeInfo = PlayLikeInfoUiModel(),
-            channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
-            pinnedInfo = PlayPinnedInfoUiModel(
-                PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
-            ),
-            quickReplyInfo = PlayQuickReplyInfoUiModel(emptyList()),
-            videoMetaInfo = PlayVideoMetaInfoUiModel(
-                videoPlayer = PlayVideoPlayerUiModel.YouTube("E4qo_PkR7WE"),
-                videoStream = PlayVideoStreamUiModel(
-                    "", VideoOrientation.Horizontal(16, 9), "Video Keren"
+        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
+            channelData = listOf(
+                PlayChannelData(
+                    id = "12680",
+                    channelDetail = PlayChannelDetailUiModel(),
+                    partnerInfo = PlayPartnerInfo(name = "test"),
+                    likeInfo = PlayLikeInfoUiModel(),
+                    channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
+                    pinnedInfo = PlayPinnedInfoUiModel(
+                        PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
+                    ),
+                    quickReplyInfo = PlayQuickReplyInfoUiModel(emptyList()),
+                    videoMetaInfo = PlayVideoMetaInfoUiModel(
+                        videoPlayer = PlayVideoPlayerUiModel.YouTube("E4qo_PkR7WE"),
+                        videoStream = PlayVideoStreamUiModel(
+                            "", VideoOrientation.Horizontal(16, 9), "Video Keren"
+                        ),
+                    ),
+                    upcomingInfo = PlayUpcomingUiModel(),
+                    tagItems = TagItemUiModel.Empty,
+                    status = PlayStatusUiModel.Empty,
+                    leaderboard = LeaderboardUiModel.Empty
                 ),
             ),
-            upcomingInfo = PlayUpcomingUiModel(),
-            tagItems = TagItemUiModel.Empty,
-            status = PlayStatusUiModel.Empty,
-            leaderboard = LeaderboardUiModel.Empty
+            cursor = "",
         )
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext, mockChannelStorage))
+                .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
                 .playTestRepositoryModule(PlayTestRepositoryModule(repo))
                 .build()

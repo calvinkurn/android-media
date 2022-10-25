@@ -29,6 +29,7 @@ import org.hamcrest.CoreMatchers.not
 class PlayActivityRobot(
     channelId: String,
     initialDelay: Long = 1000,
+    isYouTube: Boolean = false,
 ) {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -43,7 +44,10 @@ class PlayActivityRobot(
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         waitUntilViewIsDisplayed(
-            withId(R.id.view_video)
+            withId(
+                if (!isYouTube) R.id.view_video
+                else R.id.fl_youtube_player
+            )
         )
         delay(initialDelay)
     }
