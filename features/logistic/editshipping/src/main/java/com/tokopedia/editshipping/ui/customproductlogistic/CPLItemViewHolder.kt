@@ -74,12 +74,6 @@ class CPLItemViewHolder(
 
         binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
             listener.onShipperCheckboxClicked(data.shipperId, isChecked)
-//            cplShipperItemAdapter.updateChecked(isChecked)
-//            if (isChecked) {
-//                binding.itemChildLayout.visible()
-//            } else {
-//                binding.itemChildLayout.gone()
-//            }
         }
     }
 
