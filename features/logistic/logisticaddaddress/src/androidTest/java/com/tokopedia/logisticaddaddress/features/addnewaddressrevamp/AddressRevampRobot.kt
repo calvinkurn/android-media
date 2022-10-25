@@ -39,22 +39,34 @@ class AddressRevampRobot {
 
     fun onClickChooseLocation() {
         onView(withId(R.id.btn_primary)).perform(click())
-        waitForData(3000)
+        waitForData()
     }
 
     fun fillAddress(address: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
-                .perform(click(), typeText(address), closeSoftKeyboard())
+                .perform(click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
+            .perform(typeText(address), closeSoftKeyboard())
+        waitForData()
     }
 
     fun fillReceiver(receiver: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
-                .perform(click(), typeText(receiver), closeSoftKeyboard())
+                .perform(click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
+            .perform(typeText(receiver), closeSoftKeyboard())
+        waitForData()
     }
 
     fun fillPhoneNumber(phone: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
-                .perform(click(), typeText(phone), closeSoftKeyboard())
+                .perform(click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
+            .perform(typeText(phone), closeSoftKeyboard())
+        waitForData()
     }
 
     fun clickManualForm() {
@@ -98,8 +110,8 @@ class AddressRevampRobot {
                 .perform(click(), replaceText(address), closeSoftKeyboard())
     }
 
-    private fun waitForData(millis: Long = 1000L) {
-        Thread.sleep(millis)
+    private fun waitForData() {
+        Thread.sleep(1000L)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
