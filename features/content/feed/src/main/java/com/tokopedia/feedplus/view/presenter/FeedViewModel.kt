@@ -891,7 +891,14 @@ class FeedViewModel @Inject constructor(
     }
 
     fun handleClickRemoveButtonShopRecom(itemID: Long) {
-        removeItemShopRecom(itemID)
+        _shopRecom.update { data ->
+            data.copy(
+                shopRecomUiModel = data.shopRecomUiModel.copy(
+                    items = data.shopRecomUiModel.items.filterNot { it.id == itemID }
+                ),
+                onError = ""
+            )
+        }
     }
 
     private fun updateItemFollowStatusShopRecom(
@@ -920,20 +927,9 @@ class FeedViewModel @Inject constructor(
             data.copy(
                 shopRecomUiModel = data.shopRecomUiModel.copy(
                     items = data.shopRecomUiModel.items.map {
-                    if (itemID == it.id) it.copy(state = state)
-                    else it
+                        if (itemID == it.id) it.copy(state = state)
+                        else it
                     }
-                ),
-                onError = ""
-            )
-        }
-    }
-
-    private fun removeItemShopRecom(itemID: Long) {
-        _shopRecom.update { data ->
-            data.copy(
-                shopRecomUiModel = data.shopRecomUiModel.copy(
-                    items = data.shopRecomUiModel.items.filterNot { it.id == itemID }
                 ),
                 onError = ""
             )
