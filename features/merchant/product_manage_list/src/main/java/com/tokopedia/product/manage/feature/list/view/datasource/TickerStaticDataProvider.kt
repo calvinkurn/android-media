@@ -41,9 +41,18 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         }
     }
 
+    fun getTickers(multiLocationSeller: Boolean, isShowTickerNotifyMe: Boolean = false): List<TickerData> {
+        return mutableListOf<TickerData>().apply {
+            if (isShowTickerNotifyMe){
+                addNotifyMeTicker()
+            }
+            addMaxStockTicker()
+            addMultiLocationTicker(multiLocationSeller)
+        }.filter { it.description.isNotBlank() }
+    }
+
     fun getTickers(multiLocationSeller: Boolean): List<TickerData> {
         return mutableListOf<TickerData>().apply {
-            addNotifyMeTicker()
             addMultiLocationTicker(multiLocationSeller)
         }.filter { it.description.isNotBlank() }
     }

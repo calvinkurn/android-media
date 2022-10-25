@@ -922,7 +922,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetTickerData_thenReturn(listOf(mockk()))
 
-            viewModel.getTickerData()
+            viewModel.getTickerData(false)
             viewModel.getProductList(shopId, paramsProductList)
 
             viewModel.showTicker
@@ -956,7 +956,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetTickerData_thenReturn(listOf(mockk()))
 
-            viewModel.getTickerData()
+            viewModel.getTickerData(false)
             viewModel.getProductList(shopId)
             viewModel.hideTicker()
             viewModel.getProductList(shopId)
@@ -994,7 +994,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetTickerData_thenReturn(emptyList())
 
-            viewModel.getTickerData()
+            viewModel.getTickerData(false)
             viewModel.getProductList(shopId, paramsProductList)
 
             viewModel.showTicker
@@ -1028,7 +1028,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetTickerData_thenReturn(emptyList())
 
-            viewModel.getTickerData()
+            viewModel.getTickerData(false)
             viewModel.getProductList(shopId)
             viewModel.hideTicker()
             viewModel.getProductList(shopId)
@@ -1043,7 +1043,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         runBlocking {
             onGetTickerData_thenReturn(listOf(mockk()))
 
-            viewModel.getTickerData()
+            viewModel.getTickerData(false)
             viewModel.showTicker()
 
             viewModel.showTicker
@@ -1077,7 +1077,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetProductList_thenReturn(productListData)
             onGetTickerData_thenReturn(listOf(mockk()))
 
-            viewModel.getTickerData()
+            viewModel.getTickerData(false)
             viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
             verifyGetWarehouseIdCalled()
@@ -2011,7 +2011,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 )
             )
             val expectedResult =
-                GetVariantResult(productName, productVariants, selections, emptyList())
+                GetVariantResult(productName, 3, productVariants, selections, emptyList())
             val expectedSuccessResult = Success(expectedResult)
 
             verifyGetVariantsCalled()
@@ -2074,7 +2074,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 )
             )
             val expectedResult =
-                GetVariantResult(productName, productVariants, selections, emptyList())
+                GetVariantResult(productName, 3,productVariants, selections, emptyList())
             val expectedSuccessResult = Success(expectedResult)
 
             verifyGetVariantsCalled()
@@ -2447,7 +2447,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val tickerData = listOf<TickerData>(mockk())
         onGetTickerData_thenReturn(tickerData)
 
-        viewModel.getTickerData()
+        viewModel.getTickerData(true)
 
         verifyTickerDataEquals(tickerData)
     }

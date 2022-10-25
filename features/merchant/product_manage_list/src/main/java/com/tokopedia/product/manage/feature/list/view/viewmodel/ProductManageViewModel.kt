@@ -377,9 +377,9 @@ class ProductManageViewModel @Inject constructor(
         })
     }
 
-    fun getTickerData() {
+    fun getTickerData(isShowTickerNotifyMe: Boolean) {
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        _tickerData.value = tickerStaticDataProvider.getTickers(isMultiLocationShop)
+        _tickerData.value = tickerStaticDataProvider.getTickers(isMultiLocationShop,isShowTickerNotifyMe)
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {

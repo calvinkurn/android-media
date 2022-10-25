@@ -194,6 +194,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.STOCK_ALERT_ACTIVE
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.*
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_TICKER_NOTIFY_ME
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterId.NOTIFY_ME_ONLY
 import com.tokopedia.unifycomponents.*
 import timber.log.Timber
@@ -2620,7 +2621,7 @@ open class ProductManageFragment :
     }
 
     private fun getTickerData() {
-        viewModel.getTickerData()
+        viewModel.getTickerData(remoteConfig.getBoolean(ENABLE_TICKER_NOTIFY_ME,true))
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {
