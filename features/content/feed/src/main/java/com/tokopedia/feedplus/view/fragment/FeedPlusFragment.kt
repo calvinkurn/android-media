@@ -3730,7 +3730,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             if (item.feedXCard.tags.isNotEmpty())
                 feedAnalytics.eventClickBSitem(
                     item.feedXCard.id,
-                    postTagItem,
+                    item.feedXCard.tags,
                     itemPosition,
                     item.feedXCard.typename,
                     item.feedXCard.followers.isFollowed,
