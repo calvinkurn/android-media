@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/uc_tool_removebg"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center_horizontal"
+    android:visibility="gone"
+    tools:visibility="visible"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:padding="2dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/remove_bg_ori_btn"
+            app:srcCompat="@drawable/editor_remove_bg_icon_original"
+            android:layout_width="64dp"
+            android:layout_height="64dp"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintLeft_toLeftOf="@id/remove_bg_ori_btn"
+            app:layout_constraintRight_toRightOf="@id/remove_bg_ori_btn"
+            app:layout_constraintTop_toBottomOf="@id/remove_bg_ori_btn"
+            android:layout_marginTop="4dp"
+            android:text="Original"
+            app:typographyType="small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:padding="2dp"
+            app:layout_constraintLeft_toRightOf="@id/remove_bg_ori_btn"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="16dp"
+            android:id="@+id/remove_bg_white_btn"
+            app:srcCompat="@drawable/editor_remove_bg_icon_white"
+            android:layout_width="64dp"
+            android:layout_height="64dp"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintLeft_toLeftOf="@id/remove_bg_white_btn"
+            app:layout_constraintRight_toRightOf="@id/remove_bg_white_btn"
+            app:layout_constraintTop_toBottomOf="@id/remove_bg_white_btn"
+            android:layout_marginTop="4dp"
+            android:text="Latar Putih"
+            app:typographyType="small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:padding="2dp"
+            app:layout_constraintLeft_toRightOf="@id/remove_bg_white_btn"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="16dp"
+            android:id="@+id/remove_bg_gray_btn"
+            app:srcCompat="@drawable/editor_remove_bg_icon_gray"
+            android:layout_width="64dp"
+            android:layout_height="64dp"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintLeft_toLeftOf="@id/remove_bg_gray_btn"
+            app:layout_constraintRight_toRightOf="@id/remove_bg_gray_btn"
+            app:layout_constraintTop_toBottomOf="@id/remove_bg_gray_btn"
+            android:layout_marginTop="4dp"
+            android:text="Latar Kelabu"
+            app:typographyType="small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
