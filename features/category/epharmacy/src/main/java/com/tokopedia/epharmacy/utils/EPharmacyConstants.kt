@@ -17,6 +17,7 @@ const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"
 
 const val PRODUCT_COMPONENT = "product component"
+const val GROUP_COMPONENT = "group component"
 
 const val EPHARMACY_SCREEN_NAME = "epharmacy page"
 

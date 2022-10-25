@@ -9,9 +9,9 @@ import com.tokopedia.epharmacy.network.response.PrescriptionImage
 
 data class EPharmacyAttachmentDataModel(val name : String = "", val type : String = "",
                                         val orderName : String?,
-                                        val partnerName : String, val partnerLogo: String?,
+                                        val partnerName : String?, val partnerLogo: String?,
                                         val shopInfo : EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
-                                        val uploadWidgetText : String, val uploadWidgetIcon : String?,
+                                        val uploadWidgetText : String?, val uploadWidgetIcon : String?,
                                         val uploadWidgetAppLink : String?,
                                         val uploadWidget : Boolean = false
 )

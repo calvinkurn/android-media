@@ -8,7 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/pesanan"
+        android:id="@+id/orderName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,8 +22,8 @@
         android:id="@+id/shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/pesanan"
-        app:layout_constraintTop_toBottomOf="@id/pesanan"
+        app:layout_constraintStart_toStartOf="@id/orderName"
+        app:layout_constraintTop_toBottomOf="@id/orderName"
         android:layout_marginStart="16dp"
         app:typographyType="display_3"
         app:typographyWeight="bold"
@@ -116,6 +116,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_image_card"
+        tools:visibility="visible"
+        android:visibility="gone"
         />
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -136,6 +138,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_products"
         layout="@layout/epharmacy_chat_upload_widget"
+        tools:visibility="visible"
+        android:visibility="gone"
         />
 
     <com.tokopedia.unifycomponents.DividerUnify

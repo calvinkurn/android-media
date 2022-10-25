@@ -2,11 +2,11 @@ package com.tokopedia.epharmacy.component.viewholder
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.epharmacy.R
-import com.tokopedia.epharmacy.adapters.EPharmacyListener
-import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
-import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,16 +17,21 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.math.BigDecimal
 
-class EPharmacyAttachmentViewHolder(view: View) : AbstractViewHolder<EPharmacyProductDataModel>(view) {
+class EPharmacyAttachmentViewHolder(view: View) : AbstractViewHolder<EPharmacyAttachmentDataModel>(view) {
 
+    private val orderName = view.findViewById<Typography>(R.id.orderName)
     private val productText = view.findViewById<Typography>(R.id.product_name)
     private val shopNameText = view.findViewById<Typography>(R.id.shop_name)
-    private val shopLocationText = view.findViewById<Typography>(R.id.shop_location)
     private val shopIcon = view.findViewById<ImageUnify>(R.id.shop_icon)
+    private val enablerImage = view.findViewById<ImageUnify>(R.id.enabler_image)
     private val productQuantity = view.findViewById<Typography>(R.id.product_quantity)
     private val productImageUnify = view.findViewById<ImageView>(R.id.product_image)
-    private val productCard = view.findViewById<CardUnify2>(R.id.product_image_card)
     private val divider = view.findViewById<DividerUnify>(R.id.divider)
+    private val dividerProducts = view.findViewById<DividerUnify>(R.id.divider_products)
+    private val productAccordionView = view.findViewById<AccordionUnify>(R.id.product_accordion_view)
+    private val chatDokterUploadLayout = view.findViewById<LinearLayout>(R.id.chat_dokter_upload_layout)
+    private val chatDokterUploadText = view.findViewById<Typography>(R.id.upload_prescription_text)
+    private val chatDokterUploadIcon = view.findViewById<ImageUnify>(R.id.upload_icon)
 
     companion object {
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
@@ -36,41 +41,53 @@ class EPharmacyAttachmentViewHolder(view: View) : AbstractViewHolder<EPharmacyPr
         private const val LABEL_GRAM = " gr"
     }
 
-    override fun bind(element: EPharmacyProductDataModel) {
-        renderProductData(element)
+    override fun bind(element: EPharmacyAttachmentDataModel) {
+        renderGroupData(element)
     }
 
-    private fun renderProductData(dataModel: EPharmacyProductDataModel) {
-        dataModel.product?.apply {
-            productCard.cardType = CardUnify2.TYPE_BORDER
-            productText.text = name ?: ""
-            productQuantity.text = java.lang.String.format(
-                itemView.context.getString(R.string.epharmacy_quantity_weight_text),
-                quantity ?: "",
-                getFormattedWeight(
-                    itemWeight ?: 0.0,
-                    quantity ?: 0
-                )
-            )
-            productImageUnify.loadImage(productImage)
-            shopNameText.displayTextOrHide(shopName ?: "")
-            shopLocationText.displayTextOrHide(shopLocation ?: "")
-            renderShopIcon(shopLogoUrl)
-            renderDivider(divider)
+    private fun renderGroupData(dataModel: EPharmacyAttachmentDataModel) {
+        renderPartnerData(dataModel)
+        renderShopData(dataModel)
+        renderProductsData(dataModel)
+        renderButton(dataModel)
+        renderDivider(dataModel)
+    }
+
+    private fun renderPartnerData(dataModel: EPharmacyAttachmentDataModel) {
+        orderName.displayTextOrHide(dataModel.orderName ?: "")
+        enablerImage.loadImage(dataModel.partnerLogo)
+    }
+
+    private fun renderShopData(dataModel: EPharmacyAttachmentDataModel) {
+        shopNameText.displayTextOrHide(dataModel.shopInfo?.shopName ?: "")
+        shopIcon.loadImage(dataModel.shopInfo?.shopLogoUrl)
+    }
+
+    private fun renderProductsData(dataModel: EPharmacyAttachmentDataModel) {
+        dataModel.shopInfo?.products?.firstOrNull()?.let {  firstProduct ->
+            productText.text = firstProduct.name
+            productQuantity.text = firstProduct.quantityString
+            productImageUnify.loadImage(firstProduct.productImage)
+        }
+
+        if(!dataModel.shopInfo?.products.isNullOrEmpty()){
+            productAccordionView.show()
         }
     }
 
-    private fun renderShopIcon(shopLogoUrl : String?) {
-        if(shopLogoUrl.isNullOrBlank()){
-            shopIcon.hide()
-        }else{
-            shopIcon.show()
-            shopIcon.loadImage(shopLogoUrl)
+    private fun renderButton(dataModel: EPharmacyAttachmentDataModel) {
+        if(dataModel.uploadWidget){
+            chatDokterUploadLayout.show()
+            chatDokterUploadText.text = dataModel.uploadWidgetText
+            chatDokterUploadIcon.loadImage(dataModel.uploadWidgetIcon)
+            chatDokterUploadLayout.setOnClickListener {
+
+            }
         }
     }
 
-    private fun renderDivider(isDivider : Boolean){
-        if(isDivider) divider.show() else divider.hide()
+    private fun renderDivider(dataModel: EPharmacyAttachmentDataModel){
+        divider.show()
     }
 
     private fun getFormattedWeight(weight: Double, qty: Int): String {
