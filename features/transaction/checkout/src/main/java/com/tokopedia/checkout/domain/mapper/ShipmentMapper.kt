@@ -8,6 +8,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellI
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
@@ -24,6 +25,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
@@ -146,6 +148,7 @@ class ShipmentMapper @Inject constructor() {
             popup = mapPopUp(shipmentAddressFormDataResponse.popup)
             addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
             upsell = mapUpsell(shipmentAddressFormDataResponse.upsell)
+            newUpsell = mapUpsell(shipmentAddressFormDataResponse.newUpsell)
             cartData = shipmentAddressFormDataResponse.cartData
         }
     }
@@ -1022,6 +1025,24 @@ class ShipmentMapper @Inject constructor() {
                 upsell.description,
                 upsell.appLink,
                 upsell.image
+        )
+    }
+
+    private fun mapUpsell(upsell: NewUpsell): NewUpsellData {
+        return NewUpsellData(
+                upsell.isShow,
+                upsell.isSelected,
+                upsell.description,
+                upsell.appLink,
+                upsell.image,
+                upsell.price,
+                upsell.priceWording,
+                upsell.duration,
+                upsell.summaryInfo,
+                upsell.button.text,
+                upsell.id,
+                upsell.additionalVerticalId,
+                upsell.transactionType
         )
     }
 

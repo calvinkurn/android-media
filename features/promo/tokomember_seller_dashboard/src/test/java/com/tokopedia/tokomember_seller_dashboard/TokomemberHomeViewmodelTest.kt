@@ -2,13 +2,12 @@ package com.tokopedia.tokomember_seller_dashboard
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashHomeUsecase
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
 import com.tokopedia.tokomember_seller_dashboard.model.TmDashHomeResponse
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
-import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
@@ -29,10 +28,10 @@ class TokomemberHomeViewmodelTest {
 
     @Before
     fun setUp() {
-        viewModel = TokomemberDashHomeViewmodel(
+        viewModel = spyk(TokomemberDashHomeViewmodel(
             tokomemberDashHomeUsecase,
             dispatcher
-        )
+        ))
     }
 
     @Test

@@ -182,7 +182,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         groupNameInput?.setMessage(getString(R.string.topads_dash_name_empty_error))
     }
 
-    fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
+    fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateNameV2) {
         if (data.errors.isEmpty()) {
             groupNameInput?.setError(false)
             submitButton?.isEnabled = true

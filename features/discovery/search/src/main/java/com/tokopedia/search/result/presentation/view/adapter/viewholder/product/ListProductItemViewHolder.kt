@@ -12,8 +12,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ListProductItemViewHolder(
     itemView: View,
-    productListener: ProductListener
-) : ProductItemViewHolder(itemView, productListener) {
+    productListener: ProductListener,
+    isAutoplayEnabled: Boolean = false,
+) : ProductItemViewHolder(itemView, productListener, isAutoplayEnabled) {
 
     companion object {
         @LayoutRes
@@ -60,6 +61,10 @@ class ListProductItemViewHolder(
 
         productCardView.setOnClickListener {
             productListener.onItemClicked(productItemData, adapterPosition)
+        }
+
+        productCardView.setAddToCartOnClickListener {
+            productListener.onAddToCartClick(productItemData)
         }
 
         productCardView.setImageProductViewHintListener(

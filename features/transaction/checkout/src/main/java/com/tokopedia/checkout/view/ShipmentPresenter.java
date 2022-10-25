@@ -66,6 +66,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
@@ -194,6 +195,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ExecutorSchedulers executorSchedulers;
 
     private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
+    private ShipmentNewUpsellModel shipmentNewUpsellModel = new ShipmentNewUpsellModel();
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private ShipmentTickerErrorModel shipmentTickerErrorModel = new ShipmentTickerErrorModel();
     private TickerAnnouncementHolderData tickerAnnouncementHolderData = new TickerAnnouncementHolderData();
@@ -568,7 +570,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                boolean isReloadAfterPriceChangeHinger,
                                                @Nullable String cornerId,
                                                @Nullable String deviceId,
-                                               @Nullable String leasingId) {
+                                               @Nullable String leasingId,
+                                               boolean isPlusSelected) {
         if (isReloadData) {
             getView().setHasRunningApiCall(true);
             getView().showLoading();
@@ -577,7 +580,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         getShipmentAddressFormV3UseCase.setParams(
-                isOneClickShipment, isTradeIn, isSkipUpdateOnboardingState, cornerId, deviceId, leasingId
+                isOneClickShipment, isTradeIn, isSkipUpdateOnboardingState, cornerId, deviceId, leasingId,
+                isPlusSelected
         );
         getShipmentAddressFormV3UseCase.execute(
                 cartShipmentAddressFormData -> {
@@ -715,6 +719,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setRecipientAddressModel(newAddress);
 
         this.shipmentUpsellModel = shipmentDataConverter.getShipmentUpsellModel(cartShipmentAddressFormData.getUpsell());
+        this.shipmentNewUpsellModel = shipmentDataConverter.getShipmentNewUpsellModel(cartShipmentAddressFormData.getNewUpsell());
 
         if (cartShipmentAddressFormData.getDonation() != null) {
             ShipmentDonationModel shipmentDonationModel = shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData);
@@ -785,7 +790,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 boolean isTradeInDropOff,
                                 String deviceId,
                                 String cornerId,
-                                String leasingId) {
+                                String leasingId,
+                                boolean isPlusSelected) {
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
@@ -816,7 +822,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     checkoutGqlUseCase.createObservable(requestParams)
                             .subscribe(getSubscriberCheckoutCart(
                                     checkoutRequest, isOneClickShipment, isTradeIn, deviceId,
-                                    cornerId, leasingId, deviceModel, devicePrice, diagnosticId)
+                                    cornerId, leasingId, deviceModel, devicePrice, diagnosticId, isPlusSelected)
                             )
             );
         } else {
@@ -1092,7 +1098,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                String leasingId,
                                                                String deviceModel,
                                                                long devicePrice,
-                                                               String diagnosticId) {
+                                                               String diagnosticId,
+                                                               boolean isPlusSelected) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -1110,7 +1117,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage);
                 getView().setHasRunningApiCall(false);
                 getView().showToastError(errorMessage);
-                processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
+                processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId, isPlusSelected);
                 getView().logOnErrorCheckout(e, checkoutRequest.toString());
             }
 
@@ -1146,7 +1153,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         getView().renderCheckoutCartError(defaultErrorMessage);
                         getView().logOnErrorCheckout(new MessageErrorException(defaultErrorMessage), checkoutRequest.toString());
                     }
-                    processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
+                    processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId, isPlusSelected);
                 }
             }
         };
@@ -1520,8 +1527,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     listCrossSellItemRequest.add(crossSellItemRequestModel);
                 }
             }
-            crossSellRequest.setListItem(listCrossSellItemRequest);
         }
+        if (shipmentNewUpsellModel.isSelected() && shipmentNewUpsellModel.isShow()) {
+            CrossSellItemRequestModel crossSellItemRequestModel = new CrossSellItemRequestModel();
+            crossSellItemRequestModel.setId(Utils.toIntOrZero(shipmentNewUpsellModel.getId()));
+            crossSellItemRequestModel.setPrice((int) shipmentNewUpsellModel.getPrice());
+            crossSellItemRequestModel.setAdditionalVerticalId(Utils.toIntOrZero(shipmentNewUpsellModel.getAdditionalVerticalId()));
+            crossSellItemRequestModel.setTransactionType(shipmentNewUpsellModel.getTransactionType());
+            listCrossSellItemRequest.add(crossSellItemRequestModel);
+        }
+        crossSellRequest.setListItem(listCrossSellItemRequest);
         CheckoutRequest checkoutRequest = new CheckoutRequest();
         checkoutRequest.setDonation(isDonation);
         checkoutRequest.setCrossSell(crossSellRequest);
@@ -2155,7 +2170,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().hideLoading();
                                     getView().setHasRunningApiCall(false);
                                     if (setShippingAddressData.isSuccess()) {
-                                        getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
+                                        if (setShippingAddressData.getMessages().isEmpty()) {
+                                            getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
+                                        } else {
+                                            getView().showToastNormal(setShippingAddressData.getMessages().get(0));
+                                        }
                                         hitClearAllBo();
                                         getView().renderChangeAddressSuccess(reloadCheckoutPage);
                                     } else {
@@ -2364,9 +2383,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         // As deals product is using OCS, the shipment should only contain 1 product
         long productId = ShipmentCartItemModelHelper.getFirstProductId(shipmentCartItemModelList);
         if (productId != 0) {
-            compositeSubscription.add(releaseBookingUseCase
+            releaseBookingUseCase
                     .execute(productId)
-                    .subscribe(new ReleaseBookingStockSubscriber()));
+                    .subscribe(new ReleaseBookingStockSubscriber());
         }
     }
 
@@ -2550,6 +2569,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ShipmentUpsellModel getShipmentUpsellModel() {
         return shipmentUpsellModel;
+    }
+
+    @Override
+    public ShipmentNewUpsellModel getShipmentNewUpsellModel() {
+        return shipmentNewUpsellModel;
     }
 
     @Override
@@ -2738,6 +2762,42 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                     }
                 }
+            }
+        }
+    }
+
+    @Override
+    public void cancelUpsell(boolean isReloadData, boolean isOneClickShipment,
+                             boolean isTradeIn, boolean skipUpdateOnboardingState,
+                             boolean isReloadAfterPriceChangeHinger,
+                             String cornerId, String deviceId, String leasingId, boolean isPlusSelected) {
+        hitClearAllBo();
+        processInitialLoadCheckoutPage(isReloadData, isOneClickShipment, isTradeIn,
+                skipUpdateOnboardingState, isReloadAfterPriceChangeHinger, cornerId,
+                deviceId, leasingId, isPlusSelected);
+    }
+
+    @Override
+    public void clearAllBoOnTemporaryUpsell() {
+        if (shipmentNewUpsellModel.isShow() && shipmentNewUpsellModel.isSelected()) {
+            ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
+            boolean hasBo = false;
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (shipmentCartItemModel != null && shipmentCartItemModel.getShipmentCartData() != null && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null && !shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode().isEmpty()) {
+                    ArrayList<String> boCodes = new ArrayList<>();
+                    boCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                    clearOrders.add(new ClearPromoOrder(
+                            shipmentCartItemModel.getCartString(),
+                            shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
+                            boCodes, shipmentCartItemModel.getShopId(), shipmentCartItemModel.isProductIsPreorder(),
+                            String.valueOf(shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay()), shipmentCartItemModel.getFulfillmentId()
+                    ));
+                    hasBo = true;
+                }
+            }
+            if (hasBo) {
+                clearCacheAutoApplyStackUseCase.setParams(new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, false, new ClearPromoOrderData(new ArrayList<>(), clearOrders)));
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe();
             }
         }
     }
