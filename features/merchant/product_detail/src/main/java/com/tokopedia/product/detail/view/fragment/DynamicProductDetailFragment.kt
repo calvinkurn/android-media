@@ -5359,15 +5359,14 @@ open class DynamicProductDetailFragment :
         componentTrackDataModel: ComponentTrackDataModel,
         label: String
     ) {
-        DynamicProductDetailTracking.Impression
-            .eventOneLinerImpression(
-                trackingQueue = trackingQueue,
-                componentTrackDataModel = componentTrackDataModel,
-                productInfo = viewModel.getDynamicProductInfoP1,
-                userId = viewModel.userId,
-                lcaWarehouseId = getLcaWarehouseId(),
-                label = label
-            )
+        OneLinersTracker.onImpression(
+            trackingQueue = trackingQueue,
+            componentTrackDataModel = componentTrackDataModel,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            userId = viewModel.userId,
+            lcaWarehouseId = getLcaWarehouseId(),
+            label = label
+        )
     }
 
     override fun onClickInformationIconAtStockAssurance(
