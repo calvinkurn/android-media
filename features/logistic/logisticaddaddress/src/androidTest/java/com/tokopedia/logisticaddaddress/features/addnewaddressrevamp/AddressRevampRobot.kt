@@ -39,7 +39,7 @@ class AddressRevampRobot {
 
     fun onClickChooseLocation() {
         onView(withId(R.id.btn_primary)).perform(click())
-        waitForData()
+        waitForData(3000)
     }
 
     fun fillAddress(address: String) {
@@ -47,7 +47,7 @@ class AddressRevampRobot {
                 .perform(click())
         waitForData()
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
-            .perform(typeText(address), closeSoftKeyboard())
+            .perform(replaceText(address), closeSoftKeyboard())
         waitForData()
     }
 
@@ -56,7 +56,7 @@ class AddressRevampRobot {
                 .perform(click())
         waitForData()
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
-            .perform(typeText(receiver), closeSoftKeyboard())
+            .perform(replaceText(receiver), closeSoftKeyboard())
         waitForData()
     }
 
@@ -65,7 +65,7 @@ class AddressRevampRobot {
                 .perform(click())
         waitForData()
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
-            .perform(typeText(phone), closeSoftKeyboard())
+            .perform(replaceText(phone), closeSoftKeyboard())
         waitForData()
     }
 
@@ -81,7 +81,7 @@ class AddressRevampRobot {
     fun searchKotaKecamatan(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
         onView(withId(R.id.searchbar_textfield))
-                .perform(click(), typeText(keyword), closeSoftKeyboard())
+                .perform(click(), replaceText(keyword), closeSoftKeyboard())
         waitForData()
     }
 
@@ -110,8 +110,8 @@ class AddressRevampRobot {
                 .perform(click(), replaceText(address), closeSoftKeyboard())
     }
 
-    private fun waitForData() {
-        Thread.sleep(1000L)
+    private fun waitForData(millis: Long = 1000) {
+        Thread.sleep(millis)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
