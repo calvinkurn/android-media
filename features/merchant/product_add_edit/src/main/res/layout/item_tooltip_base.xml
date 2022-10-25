@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/green_circle"
-        android:layout_width="@dimen/spacing_lvl4"
-        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginStart="21dp"
         android:layout_marginTop="17dp"
         android:tint="@color/Unify_G500"
@@ -34,8 +34,8 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvNumber"
-        android:layout_width="@dimen/spacing_lvl4"
-        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="20dp"
         android:layout_marginTop="16.5dp"

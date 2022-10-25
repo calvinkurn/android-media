@@ -28,7 +28,7 @@
             android:layout_marginEnd="24dp"
             android:drawablePadding="8dp"
             android:textColor="@color/Unify_N700_96"
-            android:textSize="@dimen/fontSize_lvl3"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/transparent"
-    android:paddingBottom="@dimen/layout_lvl3">
+    android:paddingBottom="24dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcDescription"

@@ -15,12 +15,12 @@
         android:id="@+id/cardThumbnail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl4">
+        android:layout_marginBottom="16dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_lvl4">
+            android:padding="16dp">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgThumbnail"
@@ -32,7 +32,7 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgPlay"
-                android:layout_width="@dimen/layout_lvl4"
+                android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="@+id/imgThumbnail"
                 app:layout_constraintEnd_toEndOf="@+id/imgThumbnail"
@@ -44,7 +44,7 @@
                 android:id="@+id/tvVideoTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginStart="16dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/Unify_N700_96"
@@ -57,8 +57,8 @@
                 android:id="@+id/tvVideoSubtitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/Unify_N700_68"

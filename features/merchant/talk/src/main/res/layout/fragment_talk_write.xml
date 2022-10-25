@@ -31,9 +31,9 @@
             android:id="@+id/write_category_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/write_category_title"
             app:typographyWeight="bold"
             app:typographyType="heading_4"
@@ -43,8 +43,8 @@
             android:id="@+id/writeCategoryChips"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/layout_lvl2"
-            android:paddingEnd="@dimen/layout_lvl2"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:layout_marginTop="12dp"
             app:layout_constraintTop_toBottomOf="@id/write_category_header"/>
 
@@ -52,7 +52,7 @@
             android:id="@+id/writeCategoryDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginTop="8dp"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/writeCategoryChips"/>
 
@@ -65,9 +65,9 @@
 
         <com.tokopedia.unifycomponents.TextAreaUnify
             android:id="@+id/writeQuestionTextArea"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl3"
+            android:layout_marginTop="24dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/write_category_header"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
@@ -78,8 +78,8 @@
         <View
             android:id="@+id/empty_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
-            android:minHeight="@dimen/layout_lvl2"
+            android:layout_height="0dp"
+            android:minHeight="16dp"
             app:layout_constraintTop_toBottomOf="@id/writeQuestionTextArea"
             app:layout_constraintBottom_toTopOf="@id/writeTNC" />
 
@@ -88,8 +88,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:paddingStart="@dimen/layout_lvl2"
-            android:paddingEnd="@dimen/layout_lvl2"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:textColor="@color/Unify_N700_32"
             app:layout_constraintTop_toBottomOf="@id/empty_view"
             app:typographyType="small"
@@ -108,10 +108,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/talk_send"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl1"
-                android:layout_marginBottom="@dimen/layout_lvl1"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:enabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>

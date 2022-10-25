@@ -29,7 +29,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/label_manage_at_once"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/heading_5"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/topDivider" />
 
@@ -71,7 +71,7 @@
         android:layout_marginTop="20dp"
         android:text="@string/label_add_sku"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/heading_5"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/firstDivider" />
 
@@ -91,7 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/firstDivider" />
 
@@ -111,7 +111,7 @@
         android:layout_marginBottom="16dp"
         android:text="@string/label_variant_list"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/heading_5"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/secondDivider" />
 
@@ -123,7 +123,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/action_pick_main_variant"
         android:textColor="@color/Unify_G500"
-        android:textSize="@dimen/body_3"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@id/textViewVariantList"
         app:layout_constraintRight_toRightOf="parent" />
 

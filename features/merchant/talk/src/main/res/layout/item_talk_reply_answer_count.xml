@@ -8,9 +8,9 @@
         android:id="@+id/talkReplyTotalAnswers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/layout_lvl2"
-        android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
+        android:paddingTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="parent"/>

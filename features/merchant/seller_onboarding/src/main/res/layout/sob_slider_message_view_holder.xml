@@ -9,7 +9,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSobSliderMessageTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sob_title_top_margin"
         android:gravity="center"
@@ -22,7 +22,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessageBg"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sob_circle_bg_start_end_margin"
         android:layout_marginEnd="@dimen/sob_circle_bg_start_end_margin"
@@ -35,10 +35,10 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage1"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginStart="@dimen/layout_lvl4"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/sob_dimen_120"
         android:scaleType="fitStart"
         app:layout_constraintBottom_toTopOf="@+id/imgSobMessage2"
@@ -49,10 +49,10 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage2"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="@dimen/sob_dimen_104"
-        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:layout_marginEnd="32dp"
         android:scaleType="fitEnd"
         app:layout_constraintBottom_toTopOf="@+id/imgSobMessage3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,9 +62,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage3"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
         android:layout_marginEnd="@dimen/sob_dimen_72"
         android:scaleType="fitStart"
         app:layout_constraintBottom_toBottomOf="parent"

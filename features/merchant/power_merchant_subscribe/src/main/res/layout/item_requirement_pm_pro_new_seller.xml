@@ -8,8 +8,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivRequirementPmProNewSeller"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -17,10 +17,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvRequirementPmProNewSeller"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         app:typographyType="body_2"
         android:textColor="@color/Unify_N700_96"
         tools:text="@string/title_requirement_pm_pro_new_seller_1"

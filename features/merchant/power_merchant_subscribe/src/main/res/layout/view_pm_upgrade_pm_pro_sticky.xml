@@ -7,22 +7,22 @@
     android:gravity="center"
     android:orientation="horizontal"
     android:id="@+id/viewPmUpgradePmProSticky"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingTop="@dimen/layout_lvl1"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingBottom="@dimen/layout_lvl1"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp"
     tools:background="@drawable/bg_pm_upgrade_pm_pro_sticky">
 
     <com.tokopedia.iconunify.IconUnify
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_name="CHEVRON_DOWN" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_4"
+        android:layout_marginStart="4dp"
         android:text="@string/pm_upgrade_to_power_merchant_pro"
         android:textColor="@color/Unify_N0"
         app:typographyType="body_3"

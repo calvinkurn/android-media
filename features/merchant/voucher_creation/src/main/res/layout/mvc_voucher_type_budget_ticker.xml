@@ -14,10 +14,10 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/typeBudgetTipsIcon"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         app:srcCompat="@drawable/ic_mvc_tips_yellow"
         app:layout_constraintVertical_bias="@integer/mvc_create_voucher_type_budget_ticker_tips_vertical_bias"
         app:layout_constraintTop_toBottomOf="@id/typeBudgetTickerDividerTop"

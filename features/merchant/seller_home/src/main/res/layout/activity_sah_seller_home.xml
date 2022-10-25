@@ -16,7 +16,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_height="2dp"
         android:layout_below="@id/sahToolbar"
         android:background="@drawable/sah_shadow" />
 
@@ -31,7 +31,7 @@
     <View
         android:id="@+id/navBarShadow"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_height="2dp"
         android:layout_above="@id/sahBottomNav"
         android:background="@drawable/sah_shadow"
         android:rotation="@integer/shadow_inverted_rotation" />

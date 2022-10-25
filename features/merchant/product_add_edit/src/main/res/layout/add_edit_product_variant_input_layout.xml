@@ -34,7 +34,7 @@
         android:contentDescription="@string/content_desc_tvAddVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         android:text="@string/label_add_variant"
         android:textColor="@color/Unify_G500"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
     <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardView
         android:id="@+id/layoutVariantTips"
         app:text="@string/label_add_product_variant_tips"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVariantLevel1Count"
         app:typographyType="body_2" />

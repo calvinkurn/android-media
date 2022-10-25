@@ -3,28 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingStart="@dimen/spacing_lvl4"
-    android:paddingEnd="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/spacing_lvl3"
-    android:paddingBottom="@dimen/spacing_lvl3"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:background="?selectableItemBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSearchResultOrder"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="4"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSearchResultOrderTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
         app:typographyType="body_2"
-        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivSearchResultOrder"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,12 +32,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSearchResultOrderDesc"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivSearchResultOrder"
         app:layout_constraintTop_toBottomOf="@id/tvSearchResultOrderTitle"

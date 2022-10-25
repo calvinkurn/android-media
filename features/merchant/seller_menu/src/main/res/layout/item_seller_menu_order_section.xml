@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/spacing_lvl4"
-    android:layout_marginRight="@dimen/spacing_lvl4"
-    android:layout_marginBottom="@dimen/spacing_lvl3">
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cardNewOrder"
@@ -17,8 +17,8 @@
 
         <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/containerNewOrder"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -43,9 +43,9 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelNewOrder"
-            android:layout_width="@dimen/layout_lvl7"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="8dp"
             android:text="@string/seller_menu_new_order"
             android:textColor="@color/Unify_N700_96"
             app:typographyWeight="bold"
@@ -65,8 +65,8 @@
 
         <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/containerReadyToShip"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -91,9 +91,9 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelDelivery"
-            android:layout_width="@dimen/layout_lvl7"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="8dp"
             android:text="@string/seller_menu_delivery"
             app:typographyWeight="bold"
             android:textColor="@color/Unify_N700_96"

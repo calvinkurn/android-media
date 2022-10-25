@@ -130,7 +130,7 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/trxDownloadDateSelected"
-                        android:layout_width="@dimen/layout_lvl0"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/trx_fee_date"

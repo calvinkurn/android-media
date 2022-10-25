@@ -11,7 +11,7 @@
         android:contentDescription="@string/content_desc_textFieldUnifyCustomValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         app:text_field_counter="@integer/max_custom_variant_unit_value_length"
         app:text_field_label="jhfksdjfskdfj"
         app:text_field_message="@string/label_variant_custom_input_message" />
@@ -21,8 +21,8 @@
         android:contentDescription="@string/content_desc_buttonSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:enabled="false"
         android:text="@string/action_variant_save" />
 

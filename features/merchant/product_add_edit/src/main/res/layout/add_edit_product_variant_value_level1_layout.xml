@@ -8,7 +8,7 @@
         android:id="@+id/typographyVariantValueLevel1Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,7 +19,7 @@
         android:contentDescription="@string/content_desc_linkAddVariantValueLevel1"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginEnd="16dp"
         android:gravity="center"
         android:text="@string/action_add"
         android:textColor="@color/Unify_G500"
@@ -33,10 +33,10 @@
         android:id="@+id/recyclerViewVariantValueLevel1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/body_2"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="14sp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typographyVariantValueLevel1Title" />
@@ -44,8 +44,8 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/body_2"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recyclerViewVariantValueLevel1" />
 

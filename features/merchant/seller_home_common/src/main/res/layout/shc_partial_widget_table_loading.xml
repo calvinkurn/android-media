@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:padding="@dimen/layout_lvl2">
+    android:padding="16dp">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shcTableLoader0"
         android:layout_width="@dimen/shc_dimen_88dp"
-        android:layout_height="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +20,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shcTableLoader1"
         android:layout_width="@dimen/shc_dimen_88dp"
-        android:layout_height="@dimen/layout_lvl1"
+        android:layout_height="8dp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,9 +28,9 @@
 
     <View
         android:id="@+id/shcTableLoaderHorLine0"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="@dimen/shc_dimen_1dp"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,8 +38,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shcTableLoader"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginTop="@dimen/shc_dimen_140dp"
         android:layout_marginBottom="@dimen/shc_dimen_140dp"
         app:layout_constraintBottom_toBottomOf="parent"

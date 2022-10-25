@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:padding="@dimen/layout_lvl2">
+    tools:padding="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/successTitle"
@@ -20,7 +20,7 @@
         android:id="@+id/successDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:text="@string/mvc_success_create_desc"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_2"
@@ -31,13 +31,13 @@
         android:id="@+id/successLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:background="@drawable/mvc_bg_success"
         app:layout_constraintTop_toBottomOf="@id/successDesc">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/successImage"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             app:layout_constraintWidth_percent="0.27"
@@ -58,7 +58,7 @@
 
         <com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
             android:id="@+id/successDate"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/mvc_success_info_margin"
             android:layout_marginStart="@dimen/mvc_success_info_margin"
@@ -73,7 +73,7 @@
         android:id="@+id/successShareButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl4"
+        android:layout_marginTop="32dp"
         android:text="@string/mvc_share_now"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
@@ -84,8 +84,8 @@
         android:id="@+id/successDownloadButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/mvc_download"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"

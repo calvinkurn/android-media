@@ -10,18 +10,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/layout_lvl2" />
+        app:layout_constraintGuide_begin="16dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineExpandableEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/layout_lvl2" />
+        app:layout_constraintGuide_end="16dp" />
 
     <com.tokopedia.power_merchant.subscribe.view.viewcomponent.PmCurrentBenefitSectionView
         android:id="@+id/viewPmBenefitSection"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/guidelineExpandableEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineExpandableStart"
@@ -30,9 +30,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPmExpandableItem"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelineExpandableEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineExpandableStart"
@@ -69,8 +69,8 @@
             <com.tokopedia.iconunify.IconUnify
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginStart="@dimen/unify_space_4"
-                android:layout_marginTop="@dimen/unify_space_4"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
                 app:icon_color_light_enable="@color/Unify_GN500"
                 app:icon_name="LIGHT_BULB"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +80,7 @@
                 android:id="@+id/text_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginTop="16dp"
                 android:text="@string/pm_info_benefit_increase_title"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -93,8 +93,8 @@
                 android:id="@+id/text_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_8"
-                android:layout_marginBottom="@dimen/unify_space_16"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

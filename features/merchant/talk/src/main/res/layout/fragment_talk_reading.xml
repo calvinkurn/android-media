@@ -10,7 +10,7 @@
         android:id="@+id/talk_reading_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="@dimen/layout_lvl0">
+        app:elevation="0dp">
 
         <com.tokopedia.header.HeaderUnify
             android:id="@+id/headerTalkReading"
@@ -22,7 +22,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/layout_lvl6"
+            android:minHeight="48dp"
             app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
             <com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingHeader

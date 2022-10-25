@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/unify_space_16">
+    android:paddingBottom="16dp">
 
     <ScrollView
         android:id="@+id/content"
@@ -16,9 +16,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="@dimen/unify_space_16">
+            android:layout_marginEnd="16dp">
 
             <com.tokopedia.unifycomponents.ChipsUnify
                 android:id="@+id/chipOneYearPeriod"
@@ -36,7 +36,7 @@
                 android:id="@+id/chipSixMonthPeriod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
                 app:centerText="true"
                 app:chipSize="medium"
@@ -49,7 +49,7 @@
                 android:id="@+id/chipOneMonthPeriod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginTop="8dp"
                 app:centerText="true"
                 app:chipSize="medium"
                 app:chipText="@string/sd_one_month_ahead"
@@ -61,8 +61,8 @@
                 android:id="@+id/chipCustomSelection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 app:centerText="true"
                 app:chipSize="medium"
                 app:chipText="@string/sd_custom_selection"
@@ -74,8 +74,8 @@
                 android:id="@+id/tfuStartDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
-                android:layout_marginEnd="@dimen/unify_space_4"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
                 app:layout_constraintEnd_toStartOf="@+id/tfuEndDate"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +87,7 @@
                 android:id="@+id/tfuEndDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_4"
+                android:layout_marginStart="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/tfuStartDate"
@@ -98,8 +98,8 @@
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/unify_space_2"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_height="2dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tfuStartDate" />
@@ -112,9 +112,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/sd_apply"
         android:visibility="gone"
         app:unifyButtonRightLoader="false"
@@ -125,14 +125,14 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
-        android:layout_width="@dimen/unify_space_64"
-        android:layout_height="@dimen/unify_space_64"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:loader_type="circular" />
 
 </RelativeLayout>

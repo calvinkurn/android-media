@@ -5,7 +5,7 @@
     android:id="@+id/cardPromoCreation"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_lvl2">
+    android:paddingBottom="4dp">
 
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="@dimen/width_card_recommendation_feature"
@@ -23,15 +23,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingStart="@dimen/layout_lvl1"
-            android:paddingEnd="@dimen/layout_lvl1"
-            android:paddingBottom="@dimen/layout_lvl1">
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvItemRecommendedTitle"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_marginTop="24dp"
                 android:gravity="center_horizontal"
                 android:textAlignment="center"
                 android:textColor="@color/Unify_N700_96"
@@ -44,9 +44,9 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvItemRecommendedDescription"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginTop="8dp"
                 android:textAlignment="center"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -74,7 +74,7 @@
             android:id="@+id/ivRecommendedPromo"
             android:layout_width="@dimen/shop_performance_promo_creation_icon_size"
             android:layout_height="@dimen/shop_performance_promo_creation_icon_size"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginTop="8dp"
             android:adjustViewBounds="true"
             android:padding="12dp" />
 

@@ -6,10 +6,10 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_inbox_shimmer_thumbnail"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,7 +19,7 @@
         android:id="@+id/talk_inbox_shimmer_title"
         android:layout_width="@dimen/dp_168"
         android:layout_height="12dp"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toTopOf="@id/talk_inbox_shimmer_thumbnail"
@@ -27,9 +27,9 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_inbox_shimmer_date"
-        android:layout_width="@dimen/layout_lvl4"
+        android:layout_width="32dp"
         android:layout_height="12dp"
-        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginEnd="16dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toTopOf="@id/talk_inbox_shimmer_thumbnail"
@@ -39,7 +39,7 @@
         android:id="@+id/talk_inbox_shimmer_subtitle"
         android:layout_width="@dimen/dp_204"
         android:layout_height="12dp"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_title"
@@ -49,7 +49,7 @@
         android:id="@+id/talk_inbox_body"
         android:layout_width="@dimen/dp_204"
         android:layout_height="12dp"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_subtitle"
@@ -59,14 +59,14 @@
         android:id="@+id/talk_inbox_body_2"
         android:layout_width="@dimen/dp_80"
         android:layout_height="12dp"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_body"
         app:layout_constraintStart_toStartOf="@id/talk_inbox_shimmer_title"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_body_2"/>

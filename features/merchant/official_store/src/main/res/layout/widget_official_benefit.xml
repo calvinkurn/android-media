@@ -12,14 +12,14 @@
         android:orientation="horizontal"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:paddingTop="@dimen/spacing_lvl3"
-        android:paddingBottom="@dimen/spacing_lvl3"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/image_icon_benefit"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center"
             android:contentDescription="@string/content_desc_os_benefit"/>
 

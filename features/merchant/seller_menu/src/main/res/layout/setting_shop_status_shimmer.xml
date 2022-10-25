@@ -11,7 +11,7 @@
         android:id="@+id/shimmeringShopStatus"
         android:layout_width="0dp"
         android:layout_height="@dimen/setting_card_height"
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginHorizontal="16dp"
         app:loader_corner_radius="30dp"
         app:loader_type="line"
         app:layout_constraintStart_toStartOf="parent"

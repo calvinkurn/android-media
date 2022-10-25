@@ -4,13 +4,13 @@
     android:id="@+id/sahPostListOnLoadingLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/shc_large_widget_height"
-    android:padding="@dimen/layout_lvl2">
+    android:padding="16dp">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_card_title"
         android:layout_width="@dimen/shc_dimen_156dp"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_height="16dp"
+        android:layout_marginTop="2dp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
         layout="@layout/shc_partial_shimmering_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/shimmering_first_info_seller_item" />
 
     <include
@@ -37,12 +37,12 @@
         layout="@layout/shc_partial_shimmering_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/shimmering_second_info_seller_item" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/shc_dimen_156dp"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="16dp"
         android:layout_marginTop="@dimen/shc_dimen_28dp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"

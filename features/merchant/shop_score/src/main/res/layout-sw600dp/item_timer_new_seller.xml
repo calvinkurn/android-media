@@ -11,7 +11,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/containerTimerNewSeller"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
+            android:layout_height="0dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -55,11 +55,11 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_shop_performance_learn"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/shop_performance_learn"
             android:textColor="@color/Unify_G500"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -84,10 +84,10 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_watch_video"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/title_tv_watch"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="@id/btn_shop_performance_learn"

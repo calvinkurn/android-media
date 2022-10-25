@@ -20,7 +20,7 @@
         android:id="@+id/label_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginStart="4dp"
         app:labelType="general_light_red"
         tool:labelTitle="30%" />
 
@@ -28,7 +28,7 @@
         android:id="@+id/tv_slash_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginStart="4dp"
         android:textColor="@color/Unify_N700_44"
         app:typographyType="body_2"
         tool:text="Rp36.000" />
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="tv_price,label_discount,tv_slash_price"
         app:flow_horizontalBias="0"
-        app:flow_horizontalGap="@dimen/spacing_lvl2"
+        app:flow_horizontalGap="4dp"
         app:flow_verticalBias="0"
         app:flow_wrapMode="chain"
         app:layout_constraintEnd_toEndOf="parent"

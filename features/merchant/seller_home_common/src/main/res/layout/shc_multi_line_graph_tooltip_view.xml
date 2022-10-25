@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgShcTooltipDot"
-        android:layout_width="@dimen/layout_lvl1"
-        android:layout_height="@dimen/layout_lvl1"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvShcTooltipTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvShcTooltipTitle"
@@ -18,7 +18,7 @@
         android:id="@+id/tvShcTooltipTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
         android:textColor="@color/Unify_N700_44"
         app:layout_constraintStart_toEndOf="@+id/imgShcTooltipDot"
         app:layout_constraintTop_toTopOf="parent"

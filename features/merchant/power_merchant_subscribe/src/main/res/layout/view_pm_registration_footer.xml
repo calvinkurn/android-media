@@ -7,16 +7,16 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginTop="2dp"
         android:background="@color/Unify_N0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/layout_lvl2"
-            android:paddingTop="@dimen/layout_lvl1"
-            android:paddingEnd="@dimen/layout_lvl2"
-            android:paddingBottom="@dimen/unify_space_12">
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp">
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cbPmRegistrationTnC"
@@ -28,7 +28,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvPmRegistrationTnC"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/pm_tnc_agreement_text"
                 app:layout_constraintBottom_toBottomOf="@+id/cbPmRegistrationTnC"
@@ -38,9 +38,9 @@
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnPmRegister"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginTop="8dp"
                 android:text="@string/power_merchant_register_now"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -12,9 +12,9 @@
         android:textColor="@color/Unify_N700_96"
         app:typographyType="display_1"
         app:typographyWeight="bold"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:visibility="gone"
         android:text="@string/pdp_title_topads_headline" />
 

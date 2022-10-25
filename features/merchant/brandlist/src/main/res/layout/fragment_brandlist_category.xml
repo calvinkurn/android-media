@@ -9,7 +9,7 @@
     <View
         android:id="@+id/statusbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_height="24dp"
         android:background="@color/Unify_N0"
         android:visibility="invisible"
         app:layout_collapseMode="pin" />
@@ -49,7 +49,7 @@
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/layout_lvl4"
+                android:minHeight="32dp"
                 app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
                 <com.tokopedia.brandlist.brandlist_category.presentation.widget.BrandlistCategoryTabLayout

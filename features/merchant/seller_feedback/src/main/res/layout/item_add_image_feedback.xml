@@ -4,8 +4,8 @@
     android:id="@+id/addImage"
     android:layout_width="@dimen/dp_56"
     android:layout_height="@dimen/dp_56"
-    android:layout_marginStart="@dimen/spacing_lvl2"
-    android:layout_marginTop="@dimen/spacing_lvl2"
+    android:layout_marginStart="4dp"
+    android:layout_marginTop="4dp"
     android:background="@drawable/border_add_image">
 
     <View

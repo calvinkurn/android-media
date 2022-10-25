@@ -12,12 +12,12 @@
         android:id="@+id/play_sgc_widget_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
-        app:cardCornerRadius="@dimen/spacing_lvl3"
+        app:cardCornerRadius="8dp"
         app:layout_constraintBottom_toTopOf="@+id/tickerShopStatus"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -27,7 +27,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_lvl3">
+            android:padding="8dp">
 
             <com.tokopedia.topads.sdk.view.FlowLayout
                 android:id="@+id/play_sgc_container_desc"
@@ -49,8 +49,8 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lvl2"
-                    android:paddingTop="@dimen/spacing_lvl2"
+                    android:layout_marginStart="4dp"
+                    android:paddingTop="4dp"
                     app:srcCompat="@drawable/ic_play_beta_badge" />
 
                 <com.tokopedia.unifyprinciples.Typography

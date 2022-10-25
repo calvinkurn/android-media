@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/transparent"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingStart="16dp"
+    android:paddingLeft="16dp"
     android:paddingTop="@dimen/mvc_dimen_12dp"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingRight="@dimen/layout_lvl2"
+    android:paddingEnd="16dp"
+    android:paddingRight="16dp"
     android:paddingBottom="@dimen/mvc_dimen_12dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icMvcTips"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvMvcTips"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvMvcTips"
@@ -23,7 +23,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcTips"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/mvc_dimen_10dp"
         android:layout_marginLeft="@dimen/mvc_dimen_10dp"

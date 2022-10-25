@@ -7,7 +7,7 @@
     android:background="@drawable/mvc_bg_button_download"
     android:gravity="center"
     android:orientation="horizontal"
-    android:padding="@dimen/spacing_lvl2">
+    android:padding="4dp">
 
     <ImageView
         android:layout_width="@dimen/mvc_dimen_12dp"

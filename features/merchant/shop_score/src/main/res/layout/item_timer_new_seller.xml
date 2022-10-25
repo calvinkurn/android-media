@@ -24,7 +24,7 @@
             android:id="@+id/timerNewSeller"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,11 +33,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_performance_new_seller"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center"
             android:text="@string/title_shop_performance_become_existing_seller"
             android:textColor="@color/Unify_Static_White"
@@ -49,11 +49,11 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_shop_performance_learn"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/shop_performance_learn"
             android:textColor="@color/Unify_G500"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -68,9 +68,9 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_video_shop_performance_learn"
-            android:layout_width="@dimen/spacing_lvl5"
-            android:layout_height="@dimen/spacing_lvl5"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_name="VIDEO"
             app:layout_constraintBottom_toBottomOf="@id/btn_shop_performance_learn"
@@ -79,10 +79,10 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_watch_video"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/title_tv_watch"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="@id/btn_shop_performance_learn"

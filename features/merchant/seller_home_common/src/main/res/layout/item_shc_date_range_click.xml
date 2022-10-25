@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/shc_dimen_date_filter_height"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl0">
+    android:paddingStart="16dp"
+    android:paddingEnd="0dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvStcDateRangeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
@@ -29,11 +29,11 @@
         android:id="@+id/tvStcDefaultDateRange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/fontSize_lvl2"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/verLineStcDefault"
         app:layout_constraintEnd_toStartOf="@+id/radStcDefaultDateRange"
         app:layout_constraintHorizontal_bias="0.0"
@@ -44,9 +44,9 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radStcDefaultDateRange"
-        android:layout_width="@dimen/layout_lvl3"
+        android:layout_width="24dp"
         android:layout_height="22dp"
-        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvStcDefaultDateRange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvStcDateRangeLabel" />

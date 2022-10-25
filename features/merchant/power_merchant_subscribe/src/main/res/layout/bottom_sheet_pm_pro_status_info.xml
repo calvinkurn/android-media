@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/layout_lvl2">
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
         android:id="@+id/tvPmActiveInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         tools:text="@string/pm_status_info_description" />
@@ -27,7 +27,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:text="@string/pm_every_monday_next_month"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
@@ -37,7 +37,7 @@
         android:id="@+id/tvPmProNextUpdateInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_marginTop="2dp"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         tools:text="@string/pm_status_info_next_update" />
@@ -46,7 +46,7 @@
         android:id="@+id/tvPmProActiveInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         tools:text="@string/pm_pro_status_info_description" />

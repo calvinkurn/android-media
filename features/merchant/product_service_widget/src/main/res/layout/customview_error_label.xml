@@ -8,8 +8,8 @@
     <com.tokopedia.iconunify.IconUnify
         app:icon_name="INFORMATION"
         app:icon_color_light_enable="@color/Unify_R500"
-        android:layout_width="@dimen/unify_space_12"
-        android:layout_height="@dimen/unify_space_12"/>
+        android:layout_width="12dp"
+        android:layout_height="12dp"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_label"
@@ -17,6 +17,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_R500"
         app:typographyType="small"
-        android:layout_marginStart="@dimen/spacing_lvl2"/>
+        android:layout_marginStart="4dp"/>
 
 </LinearLayout>

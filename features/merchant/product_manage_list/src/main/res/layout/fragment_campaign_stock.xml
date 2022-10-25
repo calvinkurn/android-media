@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/layout_campaign_stock_product_info"
-        tools:layout_height="@dimen/layout_lvl6"/>
+        tools:layout_height="48dp"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp2_campaign_stock"
@@ -54,7 +54,7 @@
         android:id="@+id/divider_campaign_stock"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/btn_campaign_stock_save"
         tools:visibility="visible"/>
@@ -63,11 +63,11 @@
         android:id="@+id/btn_campaign_stock_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/product_manage_campaign_stock_save"
         android:visibility="gone"
         app:unifyButtonSize="large"
@@ -77,8 +77,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_campaign_stock"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

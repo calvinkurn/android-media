@@ -8,12 +8,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOnGoingPromo"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -54,7 +54,7 @@
     <View
         android:id="@+id/onGoingPromoLayoutDivider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl1"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

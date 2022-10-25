@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:padding="12dp"
     android:layout_marginStart="12dp"
-    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginTop="8dp"
     android:layout_marginEnd="12dp"
     app:card_type="border">
 
@@ -16,7 +16,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/talkTemplate"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -28,8 +28,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/talkMoveTemplateIcon"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_marginEnd="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/talkEditTemplateIcon"
@@ -38,8 +38,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/talkEditTemplateIcon"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             app:icon_name="EDIT"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
