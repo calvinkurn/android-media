@@ -60,7 +60,6 @@
             android:gravity="center"
             android:maxLines="1"
             android:textColor="@color/Unify_NN950"
-            android:textSize="@dimen/unify_font_12"
             app:typographyType="heading_6"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
