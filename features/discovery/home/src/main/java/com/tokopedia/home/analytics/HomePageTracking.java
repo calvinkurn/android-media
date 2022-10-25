@@ -43,7 +43,6 @@ public class HomePageTracking {
     private static final String ACTION_CLICK_JUMP_RECOMENDATION = "cek rekomendasi jumper click";private static final String ACTION_CLICK_HOME_USE_CASE = "click 5 use cases";
     private static final String ACTION_CLICK_SEE_ALL_LEGO_PRODUCT = "click view all on lego product";
     private static final String ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL = "curated list click view all";
-    private static final String ACTION_CLICK_SEE_ALL_DC_BANNER_CHANNEL = "lego banner gif click view all";
 
     private static final String LABEL_EMPTY = "";
     public static final String EVENT = "event";
@@ -67,7 +66,6 @@ public class HomePageTracking {
     public static final String EVENT_LEGO_BANNER_IMPRESSION = "home banner impression";
     public static final String EVENT_LEGO_BANNER = "lego banner gif impression";
 
-    public static final String EVENT_LEGO_BANNER_CLICK = "lego banner gif click";
     public static final String LIST = "list";
     public static final String PROMOTIONS_NAME = "/ - p1 - lego banner gif - %s";
     public static final String EVENT_CLICK_TICKER = "clickTicker";
@@ -240,17 +238,6 @@ public class HomePageTracking {
         getTracker().sendGeneralEvent(map);
     }
 
-    public static void eventClickSeeAllGifDCBannerChannel(String headerName,
-                                                          String channelId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
-        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
-        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_DC_BANNER_CHANNEL);
-        map.put(EVENT_LABEL, headerName);
-        map.put(CHANNEL_ID, channelId);
-        getTracker().sendGeneralEvent(map);
-    }
-
     public static void eventEnhanceImpressionLegoAndCuratedHomePage(
             TrackingQueue trackingQueue,
             List<Object> legoAndCuratedList) {
@@ -412,40 +399,6 @@ public class HomePageTracking {
 
                 )
         );
-    }
-
-    public static void eventEnhanceClickBannerGif(DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    DataLayer.mapOf(
-                            EVENT, PROMO_CLICK,
-                            EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                            EVENT_ACTION, EVENT_LEGO_BANNER_CLICK,
-                            EVENT_LABEL, bannerChannel.getName(),
-                            CHANNEL_ID, bannerChannel.getId(),
-                            ATTRIBUTION, bannerChannel.getGalaxyAttribution(),
-                            AFFINITY_LABEL, bannerChannel.getPersona(),
-                            GALAXY_CATEGORY_ID, bannerChannel.getCategoryPersona(),
-                            SHOP_ID, bannerChannel.getBrandId(),
-                            CAMPAIGN_CODE, bannerChannel.getCampaignCode(),
-                            ECOMMERCE, DataLayer.mapOf(
-                                    PROMO_CLICK, DataLayer.mapOf(
-                                            PROMOTIONS, DataLayer.listOf(
-                                                    DataLayer.mapOf(
-                                                            FIELD_ID, bannerChannel.getId() + "_" + bannerChannel.getBanner().getId()+ "_" + bannerChannel.getPersoType()+ "_" + bannerChannel.getCategoryID(),
-                                                            FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
-                                                            FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
-                                                            FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
-                                                            FIELD_POSITION, String.valueOf(1)
-                                                    )
-                                            )
-                                    )
-
-                            )
-                    )
-            );
-        }
     }
 
     public static HashMap<String, Object> getEnhanceImpressionSprintSaleHomePage(

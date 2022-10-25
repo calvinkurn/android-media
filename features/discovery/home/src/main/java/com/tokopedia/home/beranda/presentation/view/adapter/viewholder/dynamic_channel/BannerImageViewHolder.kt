@@ -28,7 +28,6 @@ class BannerImageViewHolder(itemView: View,
         bannerImageView.loadGif(channel.banner.imageUrl)
         bannerImageView.setOnClickListener {
             RouteManager.route(it.context, channel.banner.applink)
-            HomePageTracking.eventEnhanceClickBannerGif(channel)
         }
     }
 
@@ -37,6 +36,6 @@ class BannerImageViewHolder(itemView: View,
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        HomePageTracking.eventClickSeeAllGifDCBannerChannel(channel.header.name, channel.id)
+
     }
 }
