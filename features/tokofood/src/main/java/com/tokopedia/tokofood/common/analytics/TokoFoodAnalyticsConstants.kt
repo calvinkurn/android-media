@@ -35,6 +35,10 @@ object TokoFoodAnalyticsConstants {
     const val HOME_PAGE = "Tokofood Homepage"
     const val OUT_OF_COVERAGE = "Error State Out of Coverage"
     const val NO_PIN_POIN = "Error State No Pinpoint"
+    const val TRACKER_ID_31288 = "31288"
+    const val TRACKER_ID_31289 = "31289"
+    const val TRACKER_ID_32007 = "32007"
+    const val TRACKER_ID_32008 = "32008"
 
     //post purchase
     const val ORDER_DETAIL_PAGE = "Order detail page"
