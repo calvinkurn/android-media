@@ -51,6 +51,7 @@ import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
@@ -75,6 +76,8 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -1040,6 +1043,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
 
+        TopChatAnalyticsKt.eventViewReadMsgFromBubble(chatBubble?.replyId.orEmpty())
+
         renderTickerReminder(chatBubble)
     }
 
@@ -1926,15 +1931,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onVoucherSeen(data: TopChatVoucherUiModel, source: String) {
         if (seenAttachmentVoucher.add(data.voucher.voucherId.toString())) {
             TopChatAnalyticsKt.eventViewVoucher(source, data.voucher.voucherId)
-        }
-    }
-
-    /*
-     * Impress Message Chat from Bubbles
-     */
-    override fun impressReadMessageForBubbles(replyId: String) {
-        if (isFromBubble) {
-            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
         }
     }
 
@@ -2906,6 +2902,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         onSuccessGetExistingChatFirstTime(
                             result.data.chatroomViewModel, result.data.chatReplies
                         )
+                        val replyId = (result.data.chatroomViewModel
+                            .listChat.getOrNull(Int.ZERO) as? BaseChatUiModel)?.replyId.orEmpty()
+                        TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
                     } else {
                         onSuccessResetChatToFirstPage(
                             result.data.chatroomViewModel, result.data.chatReplies
