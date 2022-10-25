@@ -1,10 +1,9 @@
-package com.tokopedia.abstraction.common.di.module.tokochat
+package com.tokochat.tokochat_config_common.di.module
 
 import android.content.Context
 import com.gojek.conversations.courier.BabbleCourierClient
-import com.tokochat.tokochat_config_common.di.TokoChatQualifier
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -18,22 +17,14 @@ object TokoChatConfigModule {
 
     @Provides
     @TokoChatQualifier
-    fun provideTokoChatContext(
-        @ApplicationContext context: Context
-    ): Context {
-        return context
-    }
-
-    @Provides
-    @TokoChatQualifier
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSessionInterface(@TokoChatQualifier context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
     @TokoChatQualifier
     fun providesRemoteConfig(
-        @ApplicationContext context: Context
+        @TokoChatQualifier context: Context
     ): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
@@ -42,8 +33,8 @@ object TokoChatConfigModule {
     @TokoChatQualifier
     fun provideTokoChatRepository(
         @TokoChatQualifier retrofit: Retrofit,
-        @ApplicationContext context: Context,
-        babbleCourierClient: BabbleCourierClient
+        @TokoChatQualifier context: Context,
+        @TokoChatQualifier babbleCourierClient: BabbleCourierClient
     ): TokoChatRepository {
         return TokoChatRepository(retrofit, context, babbleCourierClient)
     }

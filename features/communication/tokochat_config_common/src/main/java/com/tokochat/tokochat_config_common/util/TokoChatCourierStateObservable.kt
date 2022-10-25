@@ -1,21 +1,17 @@
 package com.tokochat.tokochat_config_common.util
 
 import com.gojek.conversations.courier.CourierState
-import com.gojek.courier.CourierConnection
 import com.gojek.courier.event.handler.BaseCourierEventHandler
 import com.gojek.mqtt.event.MqttEvent
-import com.tokochat.tokochat_config_common.di.TokoChatQualifier
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import javax.inject.Inject
 
-class TokoChatCourierStateObservable @Inject constructor(
-    @TokoChatQualifier courierConnection: CourierConnection
-) {
+class TokoChatCourierStateObservable @Inject constructor() {
     private val publishSubject = BehaviorSubject.create<CourierState>()
 
     init {
-        courierConnection.addEventHandler(object : BaseCourierEventHandler() {
+        TokoChatConnection.courierConnection?.addEventHandler(object : BaseCourierEventHandler() {
             override fun onEvent(mqttEvent: MqttEvent) {
                 when (mqttEvent) {
                     is MqttEvent.MqttConnectSuccessEvent -> {

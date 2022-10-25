@@ -57,8 +57,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
-    implementation rootProject.ext.debugToolsDependencies.chuck
-
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dataStore
 }

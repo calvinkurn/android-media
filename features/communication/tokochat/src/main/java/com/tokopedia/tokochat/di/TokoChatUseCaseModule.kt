@@ -1,8 +1,6 @@
 package com.tokopedia.tokochat.di
 
-import com.gojek.courier.CourierConnection
 import android.content.Context
-import com.tokochat.tokochat_config_common.di.TokoChatQualifier
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
@@ -85,9 +83,8 @@ object TokoChatUseCaseModule {
     @TokoChatScope
     @Provides
     fun provideMutationProfileUseCase(
-        repository: TokoChatRepository,
-        @TokoChatQualifier courierConnection: CourierConnection
+        repository: TokoChatRepository
     ): TokoChatMutationProfileUseCase {
-        return TokoChatMutationProfileUseCase(repository, courierConnection)
+        return TokoChatMutationProfileUseCase(repository)
     }
 }

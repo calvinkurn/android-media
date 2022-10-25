@@ -3,9 +3,9 @@ package com.tokopedia.abstraction.common.di.component;
 import android.content.Context;
 
 import com.gojek.conversations.courier.BabbleCourierClient;
-import com.gojek.courier.CourierConnection;
 import com.google.gson.Gson;
-import com.tokochat.tokochat_config_common.di.TokoChatQualifier;
+import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent;
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -27,6 +27,9 @@ import retrofit2.Retrofit;
 @ApplicationScope
 @Component(modules = {
         AppModule.class
+},
+dependencies = {
+        TokoChatConfigComponent.class
 })
 public interface BaseAppComponent {
 
@@ -57,14 +60,11 @@ public interface BaseAppComponent {
     // TokoChat Section
 
     @TokoChatQualifier
-    Context getTokoChatContext();
-
-    @TokoChatQualifier
     Retrofit getTokoChatRetrofit();
 
     @TokoChatQualifier
     BabbleCourierClient getBabbleCourierClient();
 
     @TokoChatQualifier
-    CourierConnection getCourierConnection();
+    Context getTokoChatContext();
 }

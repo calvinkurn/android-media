@@ -36,6 +36,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chuckMqtt
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
 }
 
 project.ext {

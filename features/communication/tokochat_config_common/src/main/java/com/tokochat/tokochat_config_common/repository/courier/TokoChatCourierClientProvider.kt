@@ -1,7 +1,6 @@
 package com.tokochat.tokochat_config_common.repository.courier
 
 import android.content.Context
-import androidx.lifecycle.ProcessLifecycleOwner
 import com.gojek.chuckmqtt.external.MqttChuckConfig
 import com.gojek.chuckmqtt.external.MqttChuckInterceptor
 import com.gojek.courier.CourierConnection
@@ -11,9 +10,8 @@ import com.gojek.courier.di.CourierComponent
 import com.gojek.courier.di.UsernameProvider
 import com.gojek.mqtt.client.MqttInterceptor
 import com.google.gson.Gson
-import com.tokochat.tokochat_config_common.di.TokoChatQualifier
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.util.TokoChatCourierConnectionLifecycle
-import com.tokochat.tokochat_config_common.util.TokoChatProcessLifecycleObserver
 import com.tokopedia.config.BuildConfig
 import com.tokopedia.user.session.UserSessionInterface
 import retrofit2.Retrofit
@@ -28,7 +26,7 @@ class TokoChatCourierClientProvider @Inject constructor(
 ) {
 
     // TODO: Change the value after BE ready
-    fun initializeCourierConnection(): CourierConnection {
+    fun initializeCourierComponent(): CourierComponent {
         val params = CourierComponent.Params(
             context = context,
             gson = gson,
@@ -43,10 +41,8 @@ class TokoChatCourierClientProvider @Inject constructor(
             connectionLifecycle = TokoChatCourierConnectionLifecycle
         )
 
-        //Attach observer lifecycle
-        ProcessLifecycleOwner.get().lifecycle.addObserver(TokoChatProcessLifecycleObserver())
-
-        return CourierComponent.getOrCreate(params).courierConnection()
+        // Build Courier Component
+       return CourierComponent.getOrCreate(params)
     }
 
     private fun getUsernameProvider(): UsernameProvider {

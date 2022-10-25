@@ -1,4 +1,4 @@
-package com.tokochat.tokochat_config_common.di
+package com.tokochat.tokochat_config_common.di.qualifier
 
 import javax.inject.Qualifier
 
