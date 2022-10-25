@@ -131,7 +131,11 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
         shopPageHeaderAdapter?.setPlayWidgetData(shopPageHeaderDataModel)
     }
 
-    fun updateShopTicker(tickerData: ShopPageTickerData, isMyShop: Boolean) {
+    fun updateShopTicker(
+        tickerData: ShopPageTickerData,
+        isMyShop: Boolean,
+        tickerVisibilityState: (tickerState: Int) -> Unit
+    ) {
         when {
             shouldShowShopStatusTicker(tickerData.shopInfo.statusInfo.statusTitle, tickerData.shopInfo.statusInfo.statusMessage) -> {
                 showShopStatusTicker(tickerData.shopInfo, isMyShop)
@@ -143,6 +147,16 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
                 hideShopStatusTicker()
             }
         }
+        tickerVisibilityState(tickerShopStatus?.visibility.orZero())
+        tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
+
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+            }
+
+            override fun onDismiss() {
+                tickerVisibilityState(tickerShopStatus.visibility.orZero())
+            }
+        })
     }
 
     private fun shouldShowShopStatusTicker(title: String, message: String): Boolean {

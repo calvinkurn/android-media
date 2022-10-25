@@ -32,6 +32,7 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
         private const val TOP_BOUND = 5
         private const val RIGHT_BOUND_COUNTER = 5
         private const val TEST_ASCENT_MULTIPLIER = 0.15
+        private const val BUTTON_SIZE_FOLD_ABLE = 4
 
     }
 
@@ -62,6 +63,9 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
         val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         val isFollowing = model.isFollowing
         buttonFollow?.apply {
+            if(ShopUtil.isFoldableAndHorizontalScreen){
+                buttonFollow.buttonSize = BUTTON_SIZE_FOLD_ABLE
+            }
             when (shopFollowButtonVariantType) {
                 RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD -> {
                     // existing/old variant type follow button

@@ -41,6 +41,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 object ShopUtil {
+    var isFoldableAndHorizontalScreen: Boolean = false
+
     fun getProductPerPage(context: Context?): Int{
         return context?.let{
             if(DeviceScreenInfo.isTablet(context)){

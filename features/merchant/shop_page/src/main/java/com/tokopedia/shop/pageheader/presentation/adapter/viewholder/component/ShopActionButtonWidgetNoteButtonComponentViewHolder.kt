@@ -7,6 +7,7 @@ import android.text.style.ImageSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.databinding.LayoutShopActionButtonWidgetNoteButtonComponentBinding
@@ -24,12 +25,21 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_shop_action_button_widget_note_button_component
+        private const val BUTTON_SIZE_FOLD_ABLE = 4
+        private const val BUTTON_WIDTH_FOLD_ABLE = 24
+        private const val BUTTON_HEIGHT_FOLD_ABLE = 24
+        private const val IMAGE_SIZE_FOLD_ABLE = 16
     }
 
     private val viewBinding: LayoutShopActionButtonWidgetNoteButtonComponentBinding? by viewBinding()
     private val imageButtonShopNote: UnifyButton? = viewBinding?.imageButtonShopNote
 
     override fun bind(model: ShopHeaderButtonComponentUiModel) {
+        if(ShopUtil.isFoldableAndHorizontalScreen){
+            imageButtonShopNote?.buttonSize = BUTTON_SIZE_FOLD_ABLE
+            imageButtonShopNote?.layoutParams?.height = BUTTON_WIDTH_FOLD_ABLE.toPx()
+            imageButtonShopNote?.layoutParams?.width = BUTTON_HEIGHT_FOLD_ABLE.toPx()
+        }
         imageButtonShopNote?.setOnClickListener {
             listener.onClickNoteButton(model.link)
         }
@@ -40,10 +50,15 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
 
     private fun setDrawable(button: UnifyButton, url: String) {
         if (url.isNotBlank()) {
+            val imageSize = if (ShopUtil.isFoldableAndHorizontalScreen) {
+                IMAGE_SIZE_FOLD_ABLE
+            } else {
+                itemView.context.resources.getInteger(R.integer.header_button_shop_note_icon_size)
+            }
             convertUrlToBitmapAndLoadImage(
-                    itemView.context,
-                    url,
-                    itemView.context.resources.getInteger(R.integer.header_button_shop_note_icon_size).toPx()
+                itemView.context,
+                url,
+                imageSize.toPx()
             ){
                 try {
                     val drawableImage = BitmapDrawable(itemView.resources, it)

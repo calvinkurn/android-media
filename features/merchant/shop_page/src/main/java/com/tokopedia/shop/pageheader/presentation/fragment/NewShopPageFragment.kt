@@ -19,7 +19,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
@@ -74,7 +73,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -161,10 +159,8 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -363,6 +359,11 @@ class NewShopPageFragment :
 
     private val feedShopFragmentClassName = Class.forName(FEED_SHOP_FRAGMENT)
     private var isConfettiAlreadyShown = false
+    private val layoutPartialShopHeaderDefaultMarginBottom:  Int by lazy{
+        val layoutParams = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.root?.layoutParams as? LinearLayout.LayoutParams
+        layoutParams?.bottomMargin.orZero()
+    }
+
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
                 .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
@@ -714,7 +715,13 @@ class NewShopPageFragment :
 
         shopViewModel?.shopPageTickerData?.observe(owner, Observer { result ->
             if (result is Success) {
-                shopPageFragmentHeaderViewHolder?.updateShopTicker(result.data, isMyShop)
+                shopPageFragmentHeaderViewHolder?.updateShopTicker(
+                    result.data,
+                    isMyShop
+                ){ tickerVisibilityState ->
+                    shopTickerVisibilityState = tickerVisibilityState
+                    configShopHeaderForFoldableScreen()
+                }
             }
         })
 
@@ -2961,38 +2968,38 @@ class NewShopPageFragment :
         miniCart?.updateData()
     }
 
+    private var foldableScreenHorizontalBottomBound: Int? = null
+    private var shopTickerVisibilityState: Int?= null
+
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
         if (foldableInfo.isFoldableDevice() && foldableInfo.isHalfOpen() && foldableInfo.foldingFeature?.orientation == FoldingFeature.ORIENTATION_HORIZONTAL) {
-            viewBindingShopContentLayout?.appBarLayout?.post {
-                val bt = foldableInfo.foldingFeature?.bounds?.bottom.orZero()
-                viewBindingShopContentLayout?.appBarLayout?.layoutParams?.apply {
-                    height = bt - DisplayMetricUtils.getStatusBarHeight(context!!) - viewBinding?.toolbarContainer?.height.orZero()
+            foldableScreenHorizontalBottomBound =
+                foldableInfo.foldingFeature?.bounds?.bottom.orZero()
+            ShopUtil.isFoldableAndHorizontalScreen = true
+            configShopHeaderForFoldableScreen()
+        } else {
+            ShopUtil.isFoldableAndHorizontalScreen = false
+        }
+    }
+
+    //config shop header for foldable screen
+    private fun configShopHeaderForFoldableScreen() {
+        viewBindingShopContentLayout?.apply {
+            val layoutPartialHeaderBottomMargin: Int = if (foldableScreenHorizontalBottomBound != null && shopTickerVisibilityState != null) {
+                if (shopTickerVisibilityState == View.VISIBLE) {
+                    0
+                } else {
+                    layoutPartialShopHeaderDefaultMarginBottom
                 }
+            } else {
+                layoutPartialShopHeaderDefaultMarginBottom
             }
-
-//            val set = ConstraintSet().apply { clone(viewBinding!!.mainLayout) }
-
-//            val newSet = foldableInfo.alignSeparatorViewToFoldingFeatureBounds(
-//                set,
-//                findViewById<View>(android.R.id.content).rootView,
-//                R.id.separator
-//            )
-//            newSet.connect(R.id.appBarLayout, ConstraintSet.END, R.id.separator, ConstraintSet.START)
-//            newSet.connect(R.id.container_2, ConstraintSet.START, R.id.separator, ConstraintSet.END)
-//            newSet.applyTo(constraintLayout)
-//            foldableInfo.alignSeparatorViewToFoldingFeatureBounds()
-//            viewBindingShopContentLayout?.coordLayout?.hide()
-//            viewBindingShopContentLayout?.coordLayoutFold?.show()
-
-//            viewPager?.adapter = viewPagerAdapter
-//            viewPagerAdapter?.notifyDataSetChanged()
-        }else {
-            viewBindingShopContentLayout?.appBarLayout?.layoutParams?.apply {
-                height = AppBarLayout.LayoutParams.WRAP_CONTENT
-            }
-//            viewPager?.adapter = viewPagerAdapter
-//            viewPagerAdapter?.notifyDataSetChanged()
-//            viewBindingShopContentLayout?.coordLayoutFold?.hide()
+            layoutPartialShopPageHeader.root.setMargin(
+                Int.ZERO,
+                Int.ZERO,
+                Int.ZERO,
+                layoutPartialHeaderBottomMargin
+            )
         }
     }
 }
