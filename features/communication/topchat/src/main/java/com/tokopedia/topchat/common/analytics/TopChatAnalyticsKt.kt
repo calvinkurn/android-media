@@ -851,6 +851,73 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventClickHeaderMenuBubble(shopId: String?) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_HEADER_THREE_BULLETS,
+            shopId!!,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_37704
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickHeaderMenuItemBubble(clickedMenuTitle: String?) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_SETTINGS_MENU_CHOICES,
+            clickedMenuTitle!!,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_37705
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickBubbleChat(shopId: String, userId: String, messageId: String) {
+        val eventLabel = "$shopId - $messageId - $userId"
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_NEW_NOTIFICATION_BUBBLE_CHAT,
+            eventLabel,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_37707
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventDismissBubbleChat(shopId: String, userId: String, messageId: String) {
+        val eventLabel = "$shopId - $messageId - $userId"
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_DISMISS_NEW_NOTIFICATION_BUBBLE_CHAT,
+            eventLabel,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_37708
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickStickerBubble() {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Bubbles.BUBBLE_CHAT_DETAIL,
+            Bubbles.CLICK_ADD_STICKER,
+            "",
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_38044
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -892,6 +959,26 @@ object TopChatAnalyticsKt {
         }
     }
 
+    private fun createBubbleEvent(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        businessUnit: String,
+        currentSite: String,
+        trackerId: String
+    ): Map<String?, Any?>? {
+        return mutableMapOf(
+            TrackAppUtils.EVENT to event,
+            TrackAppUtils.EVENT_CATEGORY to category,
+            TrackAppUtils.EVENT_ACTION to action,
+            TrackAppUtils.EVENT_LABEL to label,
+            KEY_BUSINESS_UNIT to businessUnit,
+            KEY_CURRENT_SITE to currentSite,
+            TRACKER_ID to trackerId
+        )
+    }
+
     object Event {
         const val CHAT_DETAIL = "clickChatDetail"
         const val CLICK_COMMUNICATION = "clickCommunication"
@@ -914,6 +1001,11 @@ object TopChatAnalyticsKt {
         const val CLICK_ADD_ATTACHMENT_PRODUCT = "click add attachment - product"
         const val CLICK_ADD_ATTACHMENT_IMAGE = "click add attachment - image"
         const val CLICK_ADD_ATTACHMENT_INVOICE = "click add attachment - invoice"
+        const val CLICK_HEADER_THREE_BULLETS = "click header three bullets"
+        const val CLICK_SETTINGS_MENU_CHOICES = "click settings menu choices"
+        const val CLICK_NEW_NOTIFICATION_BUBBLE_CHAT = "click on new notification bubble chat"
+        const val CLICK_DISMISS_NEW_NOTIFICATION_BUBBLE_CHAT = "click dismiss new notification bubble chat"
+        const val CLICK_ADD_STICKER = "click add sticker"
 
         //tracker ID
         const val TRACKER_ID_37516 = "37516"
@@ -923,6 +1015,11 @@ object TopChatAnalyticsKt {
         const val TRACKER_ID_37520 = "37520"
         const val TRACKER_ID_37521 = "37521"
         const val TRACKER_ID_37522 = "37522"
+        const val TRACKER_ID_37704 = "37704"
+        const val TRACKER_ID_37705 = "37705"
+        const val TRACKER_ID_37707 = "37707"
+        const val TRACKER_ID_37708 = "37708"
+        const val TRACKER_ID_38044 = "38044"
     }
 
     object Action {
