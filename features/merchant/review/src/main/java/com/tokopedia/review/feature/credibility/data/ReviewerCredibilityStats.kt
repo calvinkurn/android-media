@@ -107,4 +107,4 @@ data class UserProfile(
     @SerializedName("buttonProfileLink")
     @Expose
     val buttonProfileLink: String? = null,
-)
+) : Serializable
