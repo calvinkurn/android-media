@@ -568,7 +568,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onResume() {
         super.onResume()
         if (isFromBubble) {
-            analytics.eventClickBubbleChat(session.shopId, opponentId, messageId)
+            TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
         }
     }
 
@@ -1883,11 +1883,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickHeaderMenu() {
-        analytics.eventClickHeaderMenuBubble(session.shopId)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuBubble(session.shopId)
+        }
     }
 
     override fun onClickHeaderMenuItem(menuItemTitle: String) {
-        analytics.eventClickHeaderMenuItemBubble(menuItemTitle)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickHeaderMenuItemBubble(menuItemTitle)
+        }
     }
 
     private fun getChatReportUrl(): String {
@@ -2246,7 +2250,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onStickerOpened() {
-        analytics.eventClickStickerBubble()
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickStickerBubble()
+        }
         topchatViewState?.onStickerOpened()
     }
 
@@ -2534,7 +2540,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendBubbleDismissTracker() {
-        analytics.eventDismissBubbleChat(session.shopId, opponentId, messageId)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventDismissBubbleChat(session.shopId, opponentId, messageId)
+        }
     }
 
     override fun onClickSrwQuestion(question: QuestionUiModel) {
