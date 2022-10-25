@@ -128,16 +128,10 @@ public class ShipmentDataRequestConverter {
                 shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
 
                 ScheduleDelivery scheduleDelivery = new ScheduleDelivery();
-                // TODO: 10/10/22 add is scheduled delivery radio button checked validation and
-                //  get timeslotid and scheduledate from selected courier if necessary
+                // TODO: 10/10/22 add is scheduled delivery radio button checked validation
                 scheduleDelivery.setTimeslotId(shipmentCartItemModel.getTimeslotId());
                 scheduleDelivery.setScheduleDate(shipmentCartItemModel.getScheduleDate());
-                if (courierItemData.getScheduleDeliveryUiModel() != null && courierItemData.getScheduleDeliveryUiModel().getDeliveryProduct() != null) {
-                    scheduleDelivery.setShippingPrice(courierItemData.getScheduleDeliveryUiModel().getDeliveryProduct().getRealPrice());
-                }
-                else {
-                    scheduleDelivery.setShippingPrice(0.0);
-                }
+                scheduleDelivery.setShippingPrice(courierItemData.getSelectedShipper().getShippingRate());
 
                 shopProductCheckout.setScheduleDelivery(scheduleDelivery);
 
@@ -171,7 +165,7 @@ public class ShipmentDataRequestConverter {
                     shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
                 }
 
-                shopProductCheckout.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
+                shopProductCheckout.setFreeShippingMetadata(courierItemData.getSelectedShipper().getFreeShippingMetadata());
                 shopProductCheckout.setNeedPrescription(productInCartNeedsPrescription(shipmentCartItemModel));
 
                 return shopProductCheckout;
