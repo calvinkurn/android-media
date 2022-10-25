@@ -80,6 +80,16 @@ class PlayProductTagUiMapper @Inject constructor() {
             isTokoNow = input.isTokoNow,
             isPinned = input.isPinned,
             isRilisanSpesial = sectionType == ProductSectionType.Active || sectionType == ProductSectionType.Upcoming,
+            buttonUiModels = mapButtons(input.buttons),
         )
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun mapButtons(buttons: List< Product.ProductButton>) : List<ProductButtonUiModel> {
+        return buildList {
+            buttons.forEach { btn ->
+                add(ProductButtonUiModel(text = btn.text, color = ProductButtonColor.getByValue(btn.color), type = ProductButtonType.getByValue(btn.buttonType)))
+            }
+        }
     }
 }

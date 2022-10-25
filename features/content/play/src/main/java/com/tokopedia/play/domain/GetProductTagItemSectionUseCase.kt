@@ -87,6 +87,11 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                     peek_product_count
                     title_bottomsheet
                 }
+                available_buttons: AvailableButtons {
+                    text
+                    color
+                    buttonType
+                }
               }
             }
         """
