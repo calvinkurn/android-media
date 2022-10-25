@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.updateScrollingChild
@@ -60,7 +60,11 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayBroQuizDetailBinding
         get() = _binding!!
 
-    private lateinit var parentViewModel: PlayBroadcastViewModel
+    private val parentViewModel: PlayBroadcastViewModel by activityViewModels {
+        parentViewModelFactoryCreator.create(
+            requireActivity()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,10 +73,6 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         setChild(binding.root)
         showHeader = false
         clearContentPadding = true
-        parentViewModel = ViewModelProvider(
-            requireActivity(),
-            parentViewModelFactoryCreator.create(requireActivity())
-        )[PlayBroadcastViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
