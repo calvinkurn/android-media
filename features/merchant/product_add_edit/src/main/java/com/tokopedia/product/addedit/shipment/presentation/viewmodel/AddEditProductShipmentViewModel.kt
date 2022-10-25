@@ -103,7 +103,6 @@ class AddEditProductShipmentViewModel @Inject constructor(
                 _cplList.value = Success(
                     customProductLogisticMapper.mapCPLData(
                         cplList.response.data,
-                        productId,
                         shipmentServicesIds
                     )
                 )

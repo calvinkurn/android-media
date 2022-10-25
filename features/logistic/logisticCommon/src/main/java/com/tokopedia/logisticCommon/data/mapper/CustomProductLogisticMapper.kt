@@ -8,48 +8,10 @@ class CustomProductLogisticMapper @Inject constructor() {
 
     fun mapCPLData(
         response: GetCPLData,
-        productId: Long,
         draftShipperServices: List<Long>? = null
     ): CustomProductLogisticModel {
         return CustomProductLogisticModel().apply {
-            cplProduct = mapCPLProduct(response.cplProduct, productId, draftShipperServices)
             shipperList = mapShipperList(response.shipperList, draftShipperServices)
-        }
-    }
-
-    private fun mapCPLProduct(
-        response: List<CPLProduct>,
-        productId: Long,
-        draftShipperServices: List<Long>? = null
-    ): List<CPLProductModel> {
-        return if (response.isNotEmpty()) {
-            response.map {
-                CPLProductModel(
-                    productId = it.productId,
-                    cplStatus = draftShipperServices?.getCplStatus() ?: it.cplStatus,
-                    shipperServices = draftShipperServices ?: it.shipperServices
-                )
-            }
-        } else {
-            draftShipperServices?.mapCPLProductFromDraft(productId) ?: arrayListOf()
-        }
-    }
-
-    private fun List<Long>.mapCPLProductFromDraft(productId: Long): List<CPLProductModel> {
-        return arrayListOf(
-            CPLProductModel(
-                productId = productId,
-                cplStatus = getCplStatus(),
-                shipperServices = this
-            )
-        )
-    }
-
-    private fun List<Long>.getCplStatus(): Int {
-        return if (isNotEmpty()) {
-            CPL_CUSTOM_SHIPMENT_STATUS
-        } else {
-            CPL_STANDARD_SHIPMENT_STATUS
         }
     }
 
@@ -153,10 +115,5 @@ class CustomProductLogisticMapper @Inject constructor() {
                 isActive = draftShipperServices?.contains(it.shipperProductId) ?: it.isActive
             )
         }
-    }
-
-    companion object {
-        const val CPL_STANDARD_SHIPMENT_STATUS = 0
-        const val CPL_CUSTOM_SHIPMENT_STATUS = 1
     }
 }

@@ -14,22 +14,8 @@ data class OngkirGetCPLResponse (
 )
 
 data class GetCPLData (
-    @SerializedName("cpl_product")
-    @Deprecated("use shipper_product.is_active")
-    var cplProduct: List<CPLProduct> = listOf(),
     @SerializedName("shipper_list")
     var shipperList: List<ShipperList> = listOf()
-)
-
-@Deprecated("use shipper_product.is_active")
-data class CPLProduct(
-    @SuppressLint("Invalid Data Type")
-    @SerializedName("product_id")
-    var productId: Long = 0,
-    @SerializedName("cpl_status")
-    var cplStatus: Int = 0,
-    @SerializedName("shipper_services")
-    var shipperServices: List<Long> = listOf()
 )
 
 data class ShipperList(

@@ -34,7 +34,7 @@ class CustomProductLogisticViewModel @Inject constructor(
                 val param = getCplList.getParam(shopId, productId, cplParam?: listOf())
                 val cplList = getCplList(param)
                 _cplList.value =
-                    Success(mapper.mapCPLData(cplList.response.data, productId, shipperServicesIds))
+                    Success(mapper.mapCPLData(cplList.response.data, shipperServicesIds))
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
             }

@@ -116,9 +116,9 @@ class AddEditProductShipmentViewModelTest {
             customProductLogisticUseCase(any())
         } returns OngkirGetCPLQGLResponse()
         every {
-            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data, any(), any())
+            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data, any())
         } returns testData
-        viewModel.getCPLList(1234, "9876", null, null)
+        viewModel.getCPLList(1234, 9876, null, null)
         verify { cplListObserver.onChanged(Success(testData)) }
     }
 
@@ -128,7 +128,7 @@ class AddEditProductShipmentViewModelTest {
         coEvery {
             customProductLogisticUseCase(any())
         } throws testError
-        viewModel.getCPLList(1234, "9876", null, null)
+        viewModel.getCPLList(1234, 9876, null, null)
         verify {
             cplListObserver.onChanged(Fail(testError))
             customProductLogisticMapper wasNot Called
