@@ -25,4 +25,3 @@ data class CpmModel(
     @SerializedName(KEY_DATA)
     var data: MutableList<CpmData> = ArrayList()
 ) : Parcelable
-}
