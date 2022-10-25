@@ -38,6 +38,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
+        extractPageType()
         if(!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_EPHARMACY_UPLOAD_PAGE, true)) {
             this.finish()
         }

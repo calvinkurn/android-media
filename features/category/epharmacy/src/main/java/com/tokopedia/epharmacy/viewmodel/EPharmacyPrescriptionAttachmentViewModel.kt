@@ -11,9 +11,12 @@ import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
-import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.epharmacy.utils.FIRST_INDEX
+import com.tokopedia.epharmacy.utils.PRESCRIPTION_COMPONENT
+import com.tokopedia.epharmacy.utils.PRODUCT_COMPONENT
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -38,31 +41,22 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun onAvailablePrepareProductGroup(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
         ePharmacyPrepareProductsGroupResponse.let { data ->
-//            if(data.detailData?.formData?.ePharmacyProducts?.isEmpty() == true)
-//                onFailPrepareProductGroup(IllegalStateException("Data invalid"))
-//            else {
-//                _productDetailLiveData.postValue(Success(mapOrderResponseInDataModel(data)))
-//                if(data.detailData?.formData?.isReUploadEnabled == true){
-//                    _buttonLiveData.postValue(EPharmacyButtonKey.RE_UPLOAD.key)
-//                }else {
-//                    _buttonLiveData.postValue(EPharmacyButtonKey.CHECK.key)
-//                }
-//            }
+            if(data.detailData?.groupsData?.epharmacyGroups?.isEmpty() == true)
+                onFailPrepareProductGroup(IllegalStateException("Data invalid"))
+            else {
+                _productGroupLiveData.postValue(Success(mapGroupsDataIntoDataModel(data)))
+            }
         }
     }
 
-    private fun mapOrderResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
+    private fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse) : EPharmacyDataModel{
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
         val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
             PRESCRIPTION_COMPONENT, data.detailData?.formData?.prescriptionImages, data.detailData?.formData?.isReUploadEnabled ?: false)
         listOfComponents.add(prescriptionDataModel)
         data.detailData?.formData?.ePharmacyProducts?.forEachIndexed { index, eProduct ->
             if(index == FIRST_INDEX){
-                eProduct?.shopId = data.detailData.formData.shopId
-                eProduct?.shopName = data.detailData.formData.shopName
-                eProduct?.shopLocation = data.detailData.formData.shopLocation
-                eProduct?.shopType = data.detailData.formData.shopType
-                eProduct?.shopLogoUrl = data.detailData.formData.shopLogoUrl
+
             }
             listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, eProduct?.productId ?: eProduct.hashCode().toString(),
                 eProduct))

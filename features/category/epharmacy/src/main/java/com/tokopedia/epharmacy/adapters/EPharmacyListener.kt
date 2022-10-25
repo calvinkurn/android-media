@@ -8,12 +8,12 @@ interface EPharmacyListener {
      * Prescription Image Gallery
      */
 
-    fun onPrescriptionCrossImageClick(adapterPosition: Int)
+    fun onPrescriptionCrossImageClick(adapterPosition: Int){}
 
-    fun onPrescriptionReLoadButtonClick(adapterPosition: Int , image : PrescriptionImage)
+    fun onPrescriptionReLoadButtonClick(adapterPosition: Int , image : PrescriptionImage){}
 
-    fun onPrescriptionImageClick(adapterPosition: Int, image: PrescriptionImage)
+    fun onPrescriptionImageClick(adapterPosition: Int, image: PrescriptionImage){}
 
-    fun onCameraClick()
+    fun onCameraClick(){}
 
 }
