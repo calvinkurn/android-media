@@ -304,7 +304,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.screenshot_observer)
     implementation projectOrAar(rootProject.ext.features.addOnGifting)
     implementation projectOrAar(rootProject.ext.features.appCommon)
-    implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
 
     implementation projectOrAar(rootProject.ext.libraries.network)
 
