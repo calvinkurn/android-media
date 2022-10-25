@@ -33,6 +33,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var mvcTextContainerFirst: MvcTextContainer
     lateinit var mvcTextContainerSecond: MvcTextContainer
     lateinit var mvcContainer: View
+    lateinit var imageCouponBackground: SquareImageView
 
     var mvcAnimationHandler: MvcAnimationHandler
     private var startActivityForResultFunction: (() -> Unit)? = null
@@ -60,6 +61,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         mvcContainer = this.findViewById(R.id.mvc_container)
         mvcTextContainerFirst = this.findViewById(R.id.mvc_text_container_first)
         mvcTextContainerSecond = this.findViewById(R.id.mvc_text_container_second)
+        imageCouponBackground = this.findViewById(R.id.image_coupon_bg)
     }
 
     private fun setClicks() {

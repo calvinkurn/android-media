@@ -939,14 +939,29 @@ class MerchantPageFragment : BaseMultiFragment(),
                 hide()
             } else {
                 show()
-                setData(
-                    mvcData = mvcData,
-                    shopId = shopId,
-                    source = MvcSource.TOKOFOOD,
-                    startActivityForResultFunction = ::goToPromoPage,
-                    mvcTrackerImpl = TokofoodMerchantMvcTrackerImpl()
-                )
+                renderMvcData(mvcData)
+                renderMvcImageBackground()
             }
+        }
+    }
+
+    private fun renderMvcData(mvcData: MvcData) {
+        binding?.mvcTokofoodMerchantPage?.setData(
+            mvcData = mvcData,
+            shopId = merchantId,
+            source = MvcSource.TOKOFOOD,
+            startActivityForResultFunction = ::goToPromoPage,
+            mvcTrackerImpl = TokofoodMerchantMvcTrackerImpl()
+        )
+    }
+
+    private fun renderMvcImageBackground() {
+        try {
+            binding?.mvcTokofoodMerchantPage?.imageCouponBackground?.setImageResource(
+                com.tokopedia.tokofood.R.drawable.ic_mvc_tokofood_background
+            )
+        } catch (ex: Exception) {
+            Timber.e(ex)
         }
     }
 
