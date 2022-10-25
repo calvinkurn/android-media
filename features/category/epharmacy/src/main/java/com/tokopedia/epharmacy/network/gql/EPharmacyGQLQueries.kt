@@ -68,9 +68,9 @@ const val GQL_FETCH_CHECKOUT_DETAILS_QUERY = """
       }
     }
 """
-const val GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY = """
-    query getEpharmacyStaticData(${'$'}data_type: String,${'$'}enabler: String ) {
-    getEpharmacyStaticData(data_type: ${'$'}data_type, enabler: ${'$'}enabler) {
+val GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY = """
+    query getEpharmacyStaticData(${'$'}data_type: String!,${'$'}enabler_name: String! ) {
+    getEpharmacyStaticData(data_type: ${'$'}data_type, enabler_name: ${'$'}enabler_name) {
         header {
             server_process_time
             code
@@ -90,4 +90,4 @@ const val GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY = """
         }
     }
 }
-"""
+""".trimIndent()

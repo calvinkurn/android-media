@@ -15,16 +15,18 @@ import com.tokopedia.epharmacy.network.params.GetMiniConsultationBottomSheetPara
 import com.tokopedia.epharmacy.network.response.EPharmacyMiniConsultationMasterResponse
 import com.tokopedia.epharmacy.ui.adapter.EpharmacyMiniConsultationStepsAdapter
 import com.tokopedia.epharmacy.viewmodel.MiniConsultationMasterBsViewModel
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
 
-    private var binding by viewBinding(EpharmacyMasterMiniConsultationBottomSheetBinding::bind)
+    private var binding by autoClearedNullable<EpharmacyMasterMiniConsultationBottomSheetBinding>()
     private val miniConsultationAdapter: EpharmacyMiniConsultationStepsAdapter by lazy {
         EpharmacyMiniConsultationStepsAdapter(mutableListOf())
     }
@@ -35,6 +37,9 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         fun newInstance(dataType: String, enabler: String
         ): MiniConsultationMasterBottomSheetInfo {
             return MiniConsultationMasterBottomSheetInfo().apply {
+                showCloseIcon = false
+                showHeader = false
+                clearContentPadding = true
                 arguments = Bundle().apply {
                     putString(DATA_TYPE, dataType)
                     putString(ENABLER_NAME, enabler)
@@ -60,22 +65,34 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = EpharmacyMasterMiniConsultationBottomSheetBinding.inflate(
+        binding = EpharmacyMasterMiniConsultationBottomSheetBinding.inflate(
             inflater, container, false
-        ).apply { binding = this }.root
-        setChild(view)
-        init()
+        )
+        setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel?.getEPharmacyMiniConsultationDetail(requestParams())
-        binding?.closeIcon?.setOnClickListener {
-            closeBottomSheet()
-        }
+        init()
         initRecyclerView()
         setupObservers()
+    }
+
+    private fun init(){
+        binding?.let {
+            with(it) {
+                shimmerParent.parentShimmerView.show()
+                bottomSheetParent.invisible()
+                viewModel?.getEPharmacyMiniConsultationDetail(requestParams())
+                closeIcon.setOnClickListener {
+                    closeBottomSheet()
+                }
+                setOnDismissListener {
+                    activity?.finish()
+                }
+            }
+        }
     }
 
     private fun requestParams(): GetMiniConsultationBottomSheetParams {
@@ -101,12 +118,6 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         }
     }
 
-    private fun init() {
-        setCloseClickListener {
-            closeBottomSheet()
-        }
-    }
-
     private fun setupObservers() {
         viewModel?.miniConsultationLiveData?.observe(viewLifecycleOwner) {
             when (it) {
@@ -124,6 +135,8 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
     private fun setupBottomSheetUiData(bottomSheetData: EPharmacyMiniConsultationMasterResponse.EPharmacyMiniConsultationData?) {
         binding?.let {
             with(it) {
+                shimmerParent.parentShimmerView.invisible()
+                bottomSheetParent.show()
                 headingTitle.text = bottomSheetData?.infoTitle.toEmptyStringIfNull()
                 paraSubtitle.text = bottomSheetData?.infoText.toEmptyStringIfNull()
                 headingSubtitle.text = bottomSheetData?.stepTitle.toEmptyStringIfNull()

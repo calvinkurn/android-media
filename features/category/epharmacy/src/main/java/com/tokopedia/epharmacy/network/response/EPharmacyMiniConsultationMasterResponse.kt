@@ -34,7 +34,7 @@ data class EPharmacyMiniConsultationMasterResponse(
     data class Header(
         @SerializedName("code")
         val code: Int?,
-        @SerializedName("server_prosess_time")
-        val serverProsessTime: String?
+        @SerializedName("server_process_time")
+        val serverProcessTime: String?
     )
 }
