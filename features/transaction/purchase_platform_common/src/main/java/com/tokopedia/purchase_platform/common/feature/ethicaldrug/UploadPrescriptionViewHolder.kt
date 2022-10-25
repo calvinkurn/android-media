@@ -42,9 +42,18 @@ class UploadPrescriptionViewHolder(
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
         if (uploadPrescriptionUiModel.uploadedImageCount == null || uploadPrescriptionUiModel.uploadedImageCount == 0) {
-            uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
-            uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
-            uploadDescriptionText.hide()
+            if (uploadPrescriptionUiModel.hasInvalidPrescription) {
+                uploadPrescriptionText.text =
+                    itemView.resources.getString(R.string.pp_epharmacy_upload_invalid_title_text)
+                uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
+                uploadDescriptionText.text =
+                    itemView.resources.getString(R.string.pp_epharmacy_upload_invalid_description_text)
+                uploadDescriptionText.show()
+            } else {
+                uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
+                uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
+                uploadDescriptionText.hide()
+            }
         } else {
             uploadPrescriptionText.text =
                 itemView.resources.getString(R.string.pp_epharmacy_upload_success_title_text)

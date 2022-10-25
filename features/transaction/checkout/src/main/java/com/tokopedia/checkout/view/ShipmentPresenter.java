@@ -778,7 +778,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 new ArrayList<>(), 0, "", false,
                 cartShipmentAddressFormData.getEpharmacyData().getFrontEndValidation(),
                 cartShipmentAddressFormData.getEpharmacyData().getConsultationFlow(),
-                "cartShipmentAddressFormData.getEpharmacyData().getRejectedWording()"
+                "cartShipmentAddressFormData.getEpharmacyData().getRejectedWording()",
+                false
         ));
 //        fetchPrescriptionIds(cartShipmentAddressFormData.getEpharmacyData().getShowImageUpload(), cartShipmentAddressFormData.getEpharmacyData().getCheckoutId());
 
@@ -2428,6 +2429,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 GroupData data = ePharmacyPrepareProductsGroupResponse.getDetailData().getGroupsData();
                 if (data != null && data.getEpharmacyGroups() != null && shipmentCartItemModelList != null) {
                     HashMap<String, Integer> mapPrescriptionCount = new HashMap<>();
+                    boolean hasInvalidPrescription = false;
                     for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                         if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
                             boolean updated = false;
@@ -2448,6 +2450,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                     shipmentCartItemModel.setPartnerConsultationId("");
                                                                     getView().resetCourier(shipmentCartItemModel);
                                                                     updated = true;
+                                                                    hasInvalidPrescription = true;
                                                                     break;
                                                                 } else if (epharmacyGroup.getConsultationData().getConsultationStatus() == 2) {
                                                                     shipmentCartItemModel.setTokoConsultationId(epharmacyGroup.getConsultationData().getTokoConsultationId());
@@ -2487,7 +2490,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     for (Integer value : mapPrescriptionCount.values()) {
                         totalPrescription += value;
                     }
+                    uploadPrescriptionUiModel.setError(false);
                     uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
+                    uploadPrescriptionUiModel.setHasInvalidPrescription(hasInvalidPrescription);
                     getView().updateUploadPrescription(uploadPrescriptionUiModel);
                 }
             }
@@ -2506,6 +2511,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     shipmentCartItemModel.setPrescriptionIds(prescriptionIds);
                 }
             }
+            uploadPrescriptionUiModel.setUploadedImageCount(prescriptionIds.size());
         }
     }
 
@@ -2898,8 +2904,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public boolean validatePrescriptionOnBackPressed() {
         if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() && shipmentCartItemModelList != null && getView() != null) {
-            // todo: validate if prescription is available & not error
-            if (uploadPrescriptionUiModel.getPrescriptionIds().isEmpty()) {
+            if (uploadPrescriptionUiModel.getUploadedImageCount() != null && uploadPrescriptionUiModel.getUploadedImageCount() > 0) {
                 getView().showPrescriptionReminderDialog();
                 return false;
             }

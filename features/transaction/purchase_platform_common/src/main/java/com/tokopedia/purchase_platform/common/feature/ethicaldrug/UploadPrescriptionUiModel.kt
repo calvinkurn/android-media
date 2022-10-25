@@ -16,5 +16,6 @@ data class UploadPrescriptionUiModel(
     var isError: Boolean = false,
     var frontEndValidation: Boolean = false,
     var consultationFlow: Boolean = false,
-    var rejectedWording: String = ""
+    var rejectedWording: String = "",
+    var hasInvalidPrescription: Boolean = false
 ) : Parcelable

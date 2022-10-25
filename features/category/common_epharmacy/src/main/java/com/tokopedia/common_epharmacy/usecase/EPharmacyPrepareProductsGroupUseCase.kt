@@ -43,21 +43,32 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                                 ),
                                 numberPrescriptionImages = 0,
                                 prescriptionImages = listOf(
-                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage(
-                                        expiredAt = null,
-                                        prescriptionId = "1",
-                                        rejectReason = null,
-                                        status = null
-                                    )
+//                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage(
+//                                        expiredAt = null,
+//                                        prescriptionId = "1",
+//                                        rejectReason = null,
+//                                        status = null
+//                                    )
                                 ),
                                 consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
-                                    tokoConsultationId = "0",
-                                    partnerConsultationId = "0",
-                                    consultationStatus = 0,
+                                    tokoConsultationId = "123",
+                                    partnerConsultationId = "asdf",
+                                    consultationStatus = 2,
                                     doctorDetails = null,
                                     endTime = null,
                                     medicalRecommendation = null,
-                                    prescription = null,
+                                    prescription = listOf(
+                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                                            "",
+                                            "",
+                                            ""
+                                        ),
+                                        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                                            "",
+                                            "",
+                                            ""
+                                        )
+                                    ),
                                     startTime = ""
                                 ),
                                 consultationSource = null,
