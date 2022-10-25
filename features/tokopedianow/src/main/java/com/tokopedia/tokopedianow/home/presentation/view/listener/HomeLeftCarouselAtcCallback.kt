@@ -11,7 +11,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardSeeMoreViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardSpaceViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -25,7 +24,6 @@ class HomeLeftCarouselAtcCallback (
     private val startActivityForResult: (Intent, Int) -> Unit
 ): HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
    HomeLeftCarouselAtcProductCardSeeMoreViewHolder.HomeLeftCarouselAtcProductCardSeeMoreListener,
-   HomeLeftCarouselAtcProductCardSpaceViewHolder.HomeLeftCarouselAtcProductCardSpaceListener,
    HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener
 {
 
@@ -103,19 +101,6 @@ class HomeLeftCarouselAtcCallback (
 
     override fun onRemoveLeftCarouselAtc(channelId: String) {
         viewModel.removeLeftCarouselAtc(channelId)
-    }
-
-    override fun onProductCardSpaceClicked(
-        appLink: String,
-        channelId: String,
-        headerName: String
-    ) {
-        openAppLink(appLink)
-
-        trackClickBanner(
-            channelId = channelId,
-            channelHeaderName = headerName
-        )
     }
 
     override fun onProductCardSeeMoreClickListener(product: HomeLeftCarouselAtcProductCardSeeMoreUiModel) {

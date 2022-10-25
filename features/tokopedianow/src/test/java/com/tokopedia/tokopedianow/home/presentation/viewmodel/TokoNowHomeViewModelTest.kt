@@ -812,10 +812,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     id = "2322",
                     recomWidget = recommendationWidget
                 ),
-                createLeftCarouselAtcDataModel(
-                    id = "2122",
-                    headerName = "Mix Left Atc Carousel",
-                ),
                 createLeftCarouselDataModel(
                     id = "2333",
                     groupId = "",
@@ -866,11 +862,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expectedResultWithLeftCarouselAtcWidget = Success(
             HomeLayoutListUiModel(
                 items = listOf(
-                    TokoNowChooseAddressWidgetUiModel(id = "0"),
-                    createLeftCarouselAtcDataModel(
-                        id = "2122",
-                        headerName = "Mix Left Atc Carousel",
-                    )
+                    TokoNowChooseAddressWidgetUiModel(id = "0")
                 ),
                 state = TokoNowLayoutState.UPDATE
             )

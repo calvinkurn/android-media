@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,6 +24,7 @@ import com.tokopedia.tokopedianow.common.model.LABEL_BEST_SELLER
 import com.tokopedia.tokopedianow.common.model.LABEL_GIMMICK
 import com.tokopedia.tokopedianow.common.model.LABEL_STATUS
 import com.tokopedia.tokopedianow.common.model.LIGHT_GREEN
+import com.tokopedia.tokopedianow.common.model.LIGHT_RED
 import com.tokopedia.tokopedianow.common.model.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
@@ -48,56 +50,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
     private var binding: LayoutTokopedianowProductCardViewBinding
 
     init {
-        binding = LayoutTokopedianowProductCardViewBinding.inflate(LayoutInflater.from(context), this, true)
-        /**
-         * note :
-         * - init category info
-         * - set text and background color from BE (promo label and assigned value)
-         */
-        val model = TokoNowProductCardViewUiModel(
-            imageUrl = "https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fimages.tokopedia.net%2Fimg%2Fandroid%2Fnow%2FPN-RICH.jpg",
-            minOrder = 2,
-            maxOrder = 20,
-            availableStock = 0,
-            orderQuantity = 100,
-            price = "Rp 15.000.000",
-            discount = "10%",
-            slashPrice = "12121",
-            name = "hello world",
-            rating = "4.5",
-            hasBeenWishlist = false,
-            progressBarLabel = "",
-            progressBarLabelColor = "",
-            progressBarPercentage = 50,
-            labelGroupList = listOf(
-                LabelGroup(
-                    position = LABEL_STATUS,
-                    type = TRANSPARENT_BLACK,
-                    title = "Stok Habis"
-                ),
-                LabelGroup(
-                    position = LABEL_GIMMICK,
-                    type = TEXT_DARK_ORANGE,
-                    title = "Terbaru"
-                ),
-//                LabelGroup(
-//                    position = LABEL_PRICE,
-//                    type = LIGHT_GREEN,
-//                    title = "Beli 1x disc 20%"
-//                ),
-                LabelGroup(
-                    position = LABEL_BEST_SELLER,
-                    type = "#E1AA1D",
-                    title = "Terlaris"
-                )
-            ),
-        )
-        setData(model)
-    }
-
-    fun setData(model: TokoNowProductCardViewUiModel) {
-        setupUi(
-            model = model
+        binding = LayoutTokopedianowProductCardViewBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
         )
     }
 
@@ -123,11 +79,13 @@ class TokoNowProductCardView @JvmOverloads constructor(
             )
             initPromoLabel(
                 label = model.discount,
-                slashPrice = model.slashPrice,
                 labelGroup = model.getPriceLabelGroup()
             )
+            initSlashPriceTypography(
+                slashPrice = model.slashPrice,
+            )
             initProductNameTypography(
-                productName = model.name
+                model.name
             )
             initRatingTypography(
                 rating = model.rating,
@@ -138,6 +96,13 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 labelGroup = model.getOosLabelGroup(),
                 isOos = model.isOos(),
                 hasBeenWishlist = model.hasBeenWishlist
+            )
+            initWishlistButton(
+                isOos = model.isOos(),
+                hasBeenWishlist = model.hasBeenWishlist
+            )
+            initSimilarProductTypography(
+                isOos = model.isOos()
             )
             initProgressBar(
                 isFlashSale = model.isFlashSale(),
@@ -152,9 +117,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         imageUrl: String,
         brightness: Float
     ) {
-        imageFilterView.loadImage(
-            url = imageUrl
-        )
+        imageFilterView.loadImage(imageUrl)
         imageFilterView.brightness = brightness
     }
 
@@ -180,13 +143,9 @@ class TokoNowProductCardView @JvmOverloads constructor(
             labelGroup?.let { labelGroup ->
                 text = labelGroup.title
                 if (labelGroup.isBestSellerPosition()) {
-                    adjustBestSellerLabelBackground(
-                        labelGroup = labelGroup
-                    )
+                    adjustBestSellerLabelBackground(labelGroup)
                 } else {
-                    adjustTextColor(
-                        colorType = labelGroup.type
-                    )
+                    adjustTextColor(labelGroup.type)
                 }
             }
         }
@@ -202,7 +161,6 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initPromoLabel(
         label: String,
-        slashPrice: String,
         labelGroup: LabelGroup?
     ) {
         val isLabelNotNull = labelGroup != null
@@ -214,7 +172,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 }
             } else {
                 text = label
-                initSlashPriceTypography(slashPrice)
+                adjustLabelType(LIGHT_RED)
             }
         }
     }
@@ -241,6 +199,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         isFlashSale: Boolean,
         isNormal: Boolean
     ) {
+        ratingIcon.hide()
         ratingTypography.showIfWithBlock(rating.isNotBlank() && !isFlashSale) {
             ratingIcon.show()
             text = rating
@@ -280,13 +239,6 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     colorType = labelGroup.type
                 )
             }
-            initWishlistButton(
-                isOos = isOos,
-                hasBeenWishlist = hasBeenWishlist
-            )
-            initSimilarProductTypography(
-                isOos = isOos
-            )
         }
     }
 
@@ -477,9 +429,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
     ) {
         when (colorType) {
             TEXT_DARK_ORANGE -> {
-                setTextColorCompat(
-                    resourceId = com.tokopedia.unifyprinciples.R.color.Unify_YN500
-                )
+                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_YN500)
             }
         }
     }
@@ -504,6 +454,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
     ) {
         when (labelType) {
             LIGHT_GREEN -> setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+            LIGHT_RED -> setLabelType(Label.HIGHLIGHT_LIGHT_RED)
         }
+    }
+
+    fun setData(model: TokoNowProductCardViewUiModel) {
+        setupUi(model)
     }
 }

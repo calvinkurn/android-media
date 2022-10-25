@@ -11,7 +11,6 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelModel
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSpaceUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
@@ -27,15 +26,6 @@ object LeftCarouselAtcMapper {
     ): HomeLayoutItemUiModel {
         val channelModel = mapToChannelModel(response)
         val productList = mutableListOf<Visitable<*>>()
-
-        // Add front space to make distance
-        productList.add(
-            HomeLeftCarouselAtcProductCardSpaceUiModel(
-                channelId = channelModel.id,
-                channelHeaderName = channelModel.channelHeader.name,
-                appLink = channelModel.channelBanner.applink
-            )
-        )
 
         // Add mix left carousel products
         channelModel.channelGrids.forEachIndexed { index, channelGrid ->

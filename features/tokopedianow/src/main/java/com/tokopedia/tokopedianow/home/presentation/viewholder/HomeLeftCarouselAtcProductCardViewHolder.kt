@@ -1,12 +1,13 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.LabelGroup
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcProductCardBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -24,36 +25,63 @@ class HomeLeftCarouselAtcProductCardViewHolder(
     private var binding: ItemTokopedianowHomeLeftCarouselAtcProductCardBinding? by viewBinding()
 
     override fun bind(element: HomeLeftCarouselAtcProductCardUiModel) {
-        binding?.productCardGridView?.apply {
-            applyCarousel()
-            layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
-            setProductModel(element.productCardModel)
-            setOnClickListener {
-                listener?.onProductCardClicked(
-                    position = element.position,
-                    product = element
-                )
-            }
-            setAddVariantClickListener {
-                listener?.onProductCardAddVariantClicked(element)
-            }
-            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
-                override fun onQuantityChanged(quantity: Int) {
-                    listener?.onProductCardQuantityChanged(
-                        product = element,
-                        quantity = quantity
+        binding?.productCard?.setData(
+            TokoNowProductCardViewUiModel(
+                imageUrl = element.productCardModel.productImageUrl,
+                minOrder = element.productCardModel.nonVariant?.minQuantityFinal.orZero(),
+                maxOrder = element.productCardModel.nonVariant?.maxQuantityFinal.orZero(),
+                availableStock = element.productCardModel.nonVariant?.quantity.orZero(),
+                orderQuantity = 0,
+                price = element.productCardModel.formattedPrice,
+                discount = element.productCardModel.discountPercentage,
+                slashPrice = element.productCardModel.slashedPrice,
+                name = element.productCardModel.productName,
+                rating = element.productCardModel.countSoldRating,
+                hasBeenWishlist = false,
+                progressBarLabel = element.productCardModel.stockBarLabel,
+                progressBarLabelColor = element.productCardModel.stockBarLabelColor,
+                progressBarPercentage = element.productCardModel.stockBarPercentage,
+                labelGroupList = element.productCardModel.labelGroupList.map {
+                    LabelGroup(
+                        position = it.position,
+                        type = it.type,
+                        title = it.title,
+                        imageUrl = it.imageUrl
                     )
                 }
-            })
-            setImageProductViewHintListener(element, object : ViewHintListener{
-                override fun onViewHint() {
-                    listener?.onProductCardImpressed(
-                        position = element.position,
-                        product = element
-                    )
-                }
-            })
-        }
+            )
+        )
+        val carouselLayoutParams = binding?.productCard?.layoutParams
+        carouselLayoutParams?.height = RecyclerView.LayoutParams.MATCH_PARENT
+        binding?.productCard?.layoutParams = carouselLayoutParams
+
+//        binding?.productCardGridView?.apply {
+//            setOnClickListener {
+//                listener?.onProductCardClicked(
+//                    position = element.position,
+//                    product = element
+//                )
+//            }
+//            setAddVariantClickListener {
+//                listener?.onProductCardAddVariantClicked(element)
+//            }
+//            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+//                override fun onQuantityChanged(quantity: Int) {
+//                    listener?.onProductCardQuantityChanged(
+//                        product = element,
+//                        quantity = quantity
+//                    )
+//                }
+//            })
+//            setImageProductViewHintListener(element, object : ViewHintListener{
+//                override fun onViewHint() {
+//                    listener?.onProductCardImpressed(
+//                        position = element.position,
+//                        product = element
+//                    )
+//                }
+//            })
+//        }
     }
 
     interface HomeLeftCarouselAtcProductCardListener {

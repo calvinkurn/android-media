@@ -1,7 +1,5 @@
 package com.tokopedia.tokopedianow.common.model
 
-import com.tokopedia.kotlin.extensions.view.isZero
-
 data class TokoNowProductCardViewUiModel(
     val imageUrl: String = "",
     val minOrder: Int = 0,
@@ -17,6 +15,7 @@ data class TokoNowProductCardViewUiModel(
     val progressBarLabelColor: String = "",
     val progressBarPercentage: Int = 0,
     val hasBeenWishlist: Boolean = false,
+    val isVariant: Boolean = false,
     val labelGroupList: List<LabelGroup> = listOf(),
 ) {
     private companion object {
@@ -28,7 +27,7 @@ data class TokoNowProductCardViewUiModel(
     private fun getBestSellerLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isBestSellerPosition() }
     private fun isBestSellerLabelAvailable(): Boolean = getBestSellerLabelGroup() != null
 
-    fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { availableStock.isZero() && it.isStatusPosition() && it.isTransparentBlackColor() }
+    fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { availableStock < minOrder && it.isStatusPosition() && it.isTransparentBlackColor() }
     fun getAssignedValueLabelGroup(): LabelGroup? = if (isBestSellerLabelAvailable()) getBestSellerLabelGroup() else getNewProductLabelGroup()
     fun getPriceLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isPricePosition() && it.isLightGreenColor() }
     fun getImageBrightness(): Float = if (isOos()) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
@@ -54,6 +53,17 @@ data class LabelGroup(
     fun isLightGreenColor() = type == LIGHT_GREEN
 }
 
+data class Variant(
+    val orderQuantity: Int = 0
+)
+
+data class NonVariant(
+    val minOrder: Int = 0,
+    val maxOrder: Int = 0,
+    val availableStock: Int = 0,
+    val orderQuantity: Int = 0,
+)
+
 /**
  * Position
  */
@@ -76,4 +86,5 @@ internal const val TEXT_DARK_ORANGE = "textDarkOrange"
  * Label Type
  */
 internal const val LIGHT_GREEN = "lightGreen"
+internal const val LIGHT_RED = "lightRed"
 
