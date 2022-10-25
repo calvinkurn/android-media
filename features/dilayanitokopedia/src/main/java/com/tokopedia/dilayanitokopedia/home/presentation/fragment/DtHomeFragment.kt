@@ -36,6 +36,7 @@ import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtHomeLef
 import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeViewModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -60,6 +61,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
@@ -78,6 +80,8 @@ class DtHomeFragment : Fragment() {
     @Inject
     lateinit var viewModelDtHome: DtHomeViewModel
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
@@ -99,7 +103,7 @@ class DtHomeFragment : Fragment() {
 //                homeTickerListener = this,
 //                tokoNowChooseAddressWidgetListener = this,
 //                tokoNowCategoryGridListener = this,
-//                bannerComponentListener = createSlideBannerCallback(),
+                bannerComponentListener = createSlideBannerCallback(),
 //                homeProductRecomListener = this,
 //                tokoNowProductCardListener = this,
 //                homeSharingEducationListener = this,
@@ -780,4 +784,37 @@ class DtHomeFragment : Fragment() {
         }
     }
 
+
+    private fun createSlideBannerCallback(): BannerComponentListener? {
+       return object :BannerComponentListener{
+            override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
+                if (userSession.isLoggedIn) {
+                    openApplink(channelGrid.applink)
+
+                } else {
+//                    openLoginPage()
+                }
+            }
+
+            override fun isMainViewVisible(): Boolean {
+                return true
+            }
+
+            override fun onPromoScrolled(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
+            }
+
+            override fun onPageDragStateChanged(isDrag: Boolean) {
+            }
+
+            override fun onPromoAllClick(channelModel: ChannelModel) {}
+
+            override fun isBannerImpressed(id: String): Boolean {
+                return false
+            }
+
+            override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
+            }
+
+        }
+    }
 }

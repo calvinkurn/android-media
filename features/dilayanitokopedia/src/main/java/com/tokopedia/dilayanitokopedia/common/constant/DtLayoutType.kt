@@ -38,7 +38,7 @@ annotation class DtLayoutType {
 
 
         const val BANNER_CAROUSEL = "banner_carousel_v2"
-                const val EDUCATIONAL_INFORMATION = "page_usp"
+        const val EDUCATIONAL_INFORMATION = "page_usp"
         const val MIX_TOP_CAROUSEL = "top_carousel"
         const val LEGO_6_IMAGE = "6_image"
         const val FEATURED_SHOP = "shop_widget"

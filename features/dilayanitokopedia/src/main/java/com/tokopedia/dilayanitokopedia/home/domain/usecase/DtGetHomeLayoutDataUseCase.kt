@@ -52,7 +52,7 @@ class DtGetHomeLayoutDataUseCase @Inject constructor(
 
         val response = executeOnBackground().response
         response.data.forEach {
-            Timber.d("respondDataa $it")
+            Timber.d("respondDataa ${it.layout}")
 
         }
         return response.data

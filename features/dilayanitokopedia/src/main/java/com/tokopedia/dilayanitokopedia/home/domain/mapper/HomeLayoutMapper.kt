@@ -12,6 +12,7 @@ import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companio
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.FeaturedShopMapper.mapToFeaturedShop
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.LeftCarouselMapper.mapToLeftCarousel
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.TopCarouselMapper.mapTopCarouselModel
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
@@ -133,7 +134,7 @@ object HomeLayoutMapper {
             LEGO_6_IMAGE -> mapLegoBannerDataModel(response, loadedState)
 
             //TODO - need to recheck what wrong at banner carousel
-//            BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
+            BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
 
                 MIX_TOP_CAROUSEL -> mapTopCarouselModel(response, loadedState)
 //                EDUCATIONAL_INFORMATION  -> mapEducationalInformationUiModel(response, loadedState, serviceType)

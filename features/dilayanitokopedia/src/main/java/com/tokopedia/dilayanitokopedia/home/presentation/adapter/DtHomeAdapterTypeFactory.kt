@@ -128,8 +128,7 @@ class DtHomeAdapterTypeFactory(
 
     //current used in DT
     override fun type(bannerDataModel: BannerDataModel): Int = BannerComponentViewHolder.LAYOUT
-    override fun type(mixLeftDataModel: MixLeftDataModel): Int =
-        MixLeftComponentViewHolder.LAYOUT
+    override fun type(mixLeftDataModel: MixLeftDataModel): Int = MixLeftComponentViewHolder.LAYOUT
 
     override fun type(featuredShopDataModel: FeaturedShopDataModel): Int =
         FeaturedShopViewHolder.LAYOUT
@@ -145,8 +144,6 @@ class DtHomeAdapterTypeFactory(
 //            TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
 //            TokoNowRepurchaseViewHolder.LAYOUT -> TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener, tokoNowView)
 
-            //LCA
-            DtChooseAddressWidgetViewHolder.LAYOUT -> DtChooseAddressWidgetViewHolder(view, dtView, dtChooseAddressWidgetListener)
 
 //            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
 //            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
@@ -171,6 +168,13 @@ class DtHomeAdapterTypeFactory(
 
             // region Global Home Component
             // home component - reuse from component
+
+            BannerComponentViewHolder.LAYOUT -> {
+                BannerComponentViewHolder(view, bannerComponentListener, null)
+            }
+
+            //LCA
+            DtChooseAddressWidgetViewHolder.LAYOUT -> DtChooseAddressWidgetViewHolder(view, dtView, dtChooseAddressWidgetListener)
 
             DynamicLegoBannerViewHolder.LAYOUT -> {
                 DynamicLegoBannerViewHolder(view, dynamicLegoBannerCallback, null)
