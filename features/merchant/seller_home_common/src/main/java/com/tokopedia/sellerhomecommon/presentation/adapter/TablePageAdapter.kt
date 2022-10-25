@@ -121,6 +121,5 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
             onHtmlClicked(url, text, meta)
         }
 
-
     }
 }
