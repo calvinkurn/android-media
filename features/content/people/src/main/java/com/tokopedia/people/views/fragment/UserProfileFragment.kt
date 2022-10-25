@@ -763,7 +763,7 @@ class UserProfileFragment @Inject constructor(
             userProfileTracker.impressionProfileRecommendation(
                 viewModel.profileUserID,
                 shopImpress,
-                postPosition + 1
+                postPosition
             )
         }
     }
