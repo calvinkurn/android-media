@@ -62,6 +62,8 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMa
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
+import com.tokopedia.applink.promo.getDynamicDeeplinkForTokomember
+import com.tokopedia.applink.promo.getRegisteredNavigationPromoFromHttp
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
@@ -269,6 +271,11 @@ object DeeplinkMapper {
         val applinkRecommendation = getRegisteredNavigationRecommendationFromHttp(uri)
         if (applinkRecommendation.isNotBlank()) {
             return applinkRecommendation
+        }
+
+        val applinkPromo = getRegisteredNavigationPromoFromHttp(uri)
+        if(applinkPromo.isNotBlank()){
+            return applinkPromo
         }
 
         if (pathSize >= 1 && uri.pathSegments[0] == "qrcode-login") {
@@ -579,14 +586,10 @@ object DeeplinkMapper {
 
     // mechanism to bring most frequent deeplink to top of the list
     private fun putToTop(index: Int) {
-        // Uncomment this for performance for RouteManager. Currently disabled in production
-        // Requirement: deeplinkPatternTokopediaSchemeList should be order-independent
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            deeplinkPatternTokopediaSchemeList.add(
-                0,
-                deeplinkPatternTokopediaSchemeList.removeAt(index)
-            )
-        }
+        deeplinkPatternTokopediaSchemeList.add(
+            0,
+            deeplinkPatternTokopediaSchemeList.removeAt(index)
+        )
     }
 
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {
@@ -620,7 +623,7 @@ object DeeplinkMapper {
      * If not found, return current deeplink, means it registered
      */
     private fun getRegisteredNavigationFromSellerapp(context: Context, uri: Uri, deeplink: String): String {
-        return when (UriUtil.trimDeeplink(uri, deeplink)) {
+        return when (val trimmedDeeplink = UriUtil.trimDeeplink(uri, deeplink)) {
             ApplinkConst.SellerApp.WEBVIEW -> ApplinkConstInternalGlobal.WEBVIEW_BASE
             ApplinkConst.SellerApp.BROWSER -> ApplinkConstInternalGlobal.BROWSER
             ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
@@ -655,6 +658,10 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.STATISTIC_DASHBOARD -> DeepLinkMapperStatistic.getStatisticAppLink(uri)
             ApplinkConst.SellerApp.SHOP_SCORE_DETAIL -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri)
             ApplinkConst.SellerApp.TOKOMEMBER -> ApplinkConstInternalSellerapp.TOKOMEMBER
+            ApplinkConst.SellerApp.TOKOMEMBER_PROGRAM_LIST -> ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_LIST
+            ApplinkConst.SellerApp.TOKOMEMBER_COUPON_LIST -> ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_LIST
+            ApplinkConst.SellerApp.TOKOMEMBER_PROGRAM_CREATION -> ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_CREATION
+            ApplinkConst.SellerApp.TOKOMEMBER_COUPON_CREATION -> ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_CREATION
             ApplinkConst.SellerApp.ADMIN_INVITATION -> ApplinkConstInternalMarketplace.ADMIN_INVITATION
             ApplinkConst.SellerApp.ADMIN_ACCEPTED -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri)
             ApplinkConst.SellerApp.ADMIN_REDIRECTION -> ApplinkConstInternalMarketplace.ADMIN_REDIRECTION
@@ -666,6 +673,9 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isVoucherProductListApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductList(deeplink)
                 DeeplinkMapperMerchant.isVoucherProductDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductDetail(deeplink)
                 DeeplinkMapperMerchant.isSellerShopFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopFlashSale(deeplink)
+
+                //For Tokomember applinks with params
+                trimmedDeeplink.startsWith(ApplinkConst.Tokomember.MAIN_PATH) -> getDynamicDeeplinkForTokomember(trimmedDeeplink)
                 else -> ""
             }
         }

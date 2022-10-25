@@ -25,6 +25,8 @@ import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.ui.custom.PlayTermsAndConditionView
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,7 +39,6 @@ import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -48,7 +49,6 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcasterContract
-import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
@@ -152,9 +152,10 @@ class PlayBroadcastActivity : BaseActivity(),
 
         setupObserve()
 
-        PlayBroadcasterIdlingResource.increment()
-        getConfiguration()
-
+        if (!viewModel.isLiveStreamEnded()) {
+            PlayBroadcasterIdlingResource.increment()
+            getConfiguration()
+        }
         observeConfiguration()
 
         if (GlobalConfig.DEBUG) setupDebugView()
@@ -197,6 +198,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         try {
+            viewModel.saveState(outState)
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
         } catch (e: Throwable) {}
@@ -300,6 +302,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
+        viewModel.restoreState(savedInstanceState)
         channelId?.let { viewModel.setChannelId(it) }
         channelType?.let {
             this.channelType = ChannelStatus.getByValue(it)

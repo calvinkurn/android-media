@@ -26,12 +26,12 @@ class DataCreditViewHolder(
         itemView.setOnClickListener { listener.select(adapterPosition) }
         if (radioButton.isChecked) {
             radioButton.setTextColor(ContextCompat.getColor(itemView.context,
-                com.tokopedia.topads.common.R.color.topads_common_select_color_checked))
+                com.tokopedia.topads.common.R.color.Unify_G500))
             itemView.background =
                 AppCompatResources.getDrawable(itemView.context, R.drawable.topads_credit_item_bg)
         } else {
             radioButton.setTextColor(ContextCompat.getColor(itemView.context,
-                com.tokopedia.topads.common.R.color.black))
+                com.tokopedia.unifyprinciples.R.color.Unify_NN1000))
             itemView.background = null
         }
     }
