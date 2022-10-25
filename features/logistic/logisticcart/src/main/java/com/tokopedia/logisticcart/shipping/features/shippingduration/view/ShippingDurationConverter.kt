@@ -81,7 +81,7 @@ class ShippingDurationConverter @Inject constructor() {
 
     private fun mockAdditionalDeliveryData(): AdditionalDeliveryData {
         return AdditionalDeliveryData(
-            recommendAdditionalShipper = true,
+            recommendAdditionalShipper = false,
             deliveryType = 0,
             available = true,
             hidden = false,
@@ -111,7 +111,8 @@ class ShippingDurationConverter @Inject constructor() {
                             hidden = false,
                             recommend = true,
                             promoCode = "",
-                            validationMetadata = "{\\\"validation_metadata\\\":{\\\"timeslot_id\\\":2022092014123,\\\"schedule_date\\\":\\\"2022-09-20T00:00:00Z\\\"}}"
+                            validationMetadata = "{\\\"validation_metadata\\\":{\\\"timeslot_id\\\":2022092014123,\\\"schedule_date\\\":\\\"2022-09-20T00:00:00Z\\\"}}",
+                            insurancePrice = 1000.0
                         ),
                         DeliveryProduct(
                             title = "Tiba 16:00 - 18:00",
@@ -128,7 +129,8 @@ class ShippingDurationConverter @Inject constructor() {
                             hidden = false,
                             recommend = false,
                             promoText = "Kuota gratis ongkirmu habis",
-                            validationMetadata = "{\\\"validation_metadata\\\":{\\\"timeslot_id\\\":2022092014124,\\\"schedule_date\\\":\\\"2022-09-20T00:00:00Z\\\"}}"
+                            validationMetadata = "{\\\"validation_metadata\\\":{\\\"timeslot_id\\\":2022092014124,\\\"schedule_date\\\":\\\"2022-09-20T00:00:00Z\\\"}}",
+                            insurancePrice = 0.0
                         )
                     )
                 )

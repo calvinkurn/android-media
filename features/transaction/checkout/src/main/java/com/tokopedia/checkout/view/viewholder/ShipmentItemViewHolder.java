@@ -1146,7 +1146,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 shippingPrice = courierItemData.getSelectedShipper().getShipperPrice();
                 Boolean useInsurance = shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance();
                 if (useInsurance != null && useInsurance) {
-                    insurancePrice = courierItemData.getInsurancePrice();
+                    insurancePrice = courierItemData.getSelectedShipper().getInsurancePrice();
                 }
                 Boolean isOrderPriority = shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority();
                 if (isOrderPriority != null && isOrderPriority) {
