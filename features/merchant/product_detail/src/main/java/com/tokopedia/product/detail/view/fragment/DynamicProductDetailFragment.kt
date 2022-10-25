@@ -5180,29 +5180,33 @@ open class DynamicProductDetailFragment :
     override fun onClickCheckBundling(
         bundleId: String,
         bundleType: String,
-        componentTrackDataModel: ComponentTrackDataModel
+        componentTrackDataModel: ComponentTrackDataModel,
+        openBundling: Boolean
     ) {
         val productInfoP1 = viewModel.getDynamicProductInfoP1
         DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
             bundleId, bundleType, productInfoP1, componentTrackDataModel
         )
-        val productId = productInfoP1?.basic?.productID
-        val appLink =
-            UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, productId)
-        val parameterizedAppLink = Uri.parse(appLink).buildUpon()
-            .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
-            .appendQueryParameter(
-                ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE,
-                ApplinkConstInternalMechant.SOURCE_PDP
-            )
-            .appendQueryParameter(
-                ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID,
-                viewModel.getMultiOriginByProductId().id
-            )
-            .build()
-            .toString()
-        val intent = RouteManager.getIntent(requireContext(), parameterizedAppLink)
-        startActivity(intent)
+
+        if (openBundling) {
+            val productId = productInfoP1?.basic?.productID
+            val appLink =
+                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, productId)
+            val parameterizedAppLink = Uri.parse(appLink).buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
+                .appendQueryParameter(
+                    ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE,
+                    ApplinkConstInternalMechant.SOURCE_PDP
+                )
+                .appendQueryParameter(
+                    ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID,
+                    viewModel.getMultiOriginByProductId().id
+                )
+                .build()
+                .toString()
+            val intent = RouteManager.getIntent(requireContext(), parameterizedAppLink)
+            startActivity(intent)
+        }
     }
 
     override fun onClickProductInBundling(

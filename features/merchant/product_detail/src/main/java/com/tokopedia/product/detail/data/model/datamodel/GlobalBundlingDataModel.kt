@@ -9,7 +9,8 @@ data class GlobalBundlingDataModel(
     private val name: String = "",
     private val type: String = "",
     override val impressHolder: ImpressHolder = ImpressHolder(),
-    val data: GlobalBundling = GlobalBundling()
+    val data: GlobalBundling = GlobalBundling(),
+    var shouldRefresh: Boolean = true
 ) : DynamicPdpDataModel {
 
     companion object {
