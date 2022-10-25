@@ -22,6 +22,7 @@ class AddressRevampRobot {
         val i = Intent()
         i.putExtra(EXTRA_REF, screenName)
         rule.launchActivity(i)
+        waitForData()
     }
 
     fun searchAddressStreet(keyword: String) {
