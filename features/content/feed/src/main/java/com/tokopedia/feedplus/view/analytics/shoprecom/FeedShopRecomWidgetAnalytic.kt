@@ -68,11 +68,13 @@ class FeedShopRecomWidgetAnalytic @Inject constructor(
             hashMapOf(
                 KEY_ECOMMERCE to hashMapOf(
                     EVENT_NAME_PROMO_CLICK to hashMapOf(
-                        KEY_PROMOTIONS to convertToPromotion(
-                            creativeName = shopsImageUrl,
-                            creativeSlot = postPosition,
-                            itemId = shopId,
-                            itemName = ITEM_NAME_SHOP_RECOMMENDATIONS_CAROUSEL
+                        KEY_PROMOTIONS to listOf(
+                            convertToPromotion(
+                                creativeName = shopsImageUrl,
+                                creativeSlot = postPosition,
+                                itemId = shopId,
+                                itemName = ITEM_NAME_SHOP_RECOMMENDATIONS_CAROUSEL
+                            )
                         )
                     )
                 )

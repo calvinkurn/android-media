@@ -21,7 +21,7 @@ class ShopRecomAdapter(
     }
 
     override fun onBindViewHolder(holder: ShopRecomViewHolder, position: Int) {
-        shopRecomCallback.onShopRecomItemImpress(shopRecomItem[position], position)
+        shopRecomCallback.onShopRecomItemImpress(shopRecomItem[position], position + 1)
         holder.bindData(shopRecomItem[position])
     }
 

@@ -3780,7 +3780,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             eventLabel = itemID.toString(),
             shopId = itemID.toString(),
             shopsImageUrl = imageUrl,
-            postPosition = postPosition + 1
+            postPosition = postPosition
         )
         RouteManager.route(requireContext(), appLink)
     }
@@ -3790,7 +3790,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedShopRecomWidgetAnalytics.sendImpressionShopRecommendationEvent(
                 item.id.toString(),
                 shopImpress,
-                postPosition + 1
+                postPosition
             )
         }
     }
