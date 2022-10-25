@@ -31,11 +31,15 @@ data class ScheduleDeliveryUiModel(
         timeslotId: Long
     ) {
         if (scheduleDate != "" && timeslotId != 0L) {
-            getSelectedDeliveryServices(scheduleDate, timeslotId) { recommendScheduleDate, recommendDeliveryProduct ->
+            getSelectedDeliveryServices(scheduleDate, timeslotId, { recommendScheduleDate, recommendDeliveryProduct ->
                 this.scheduleDate = recommendScheduleDate
                 this.timeslotId = recommendDeliveryProduct.id
                 this.deliveryProduct = recommendDeliveryProduct
-            }
+                this.isSelected = true
+            },
+            {
+                this.isSelected = false
+            })
         } else {
             getSelectedDeliveryServicesRecommend { recommendScheduleDate, recommendDeliveryProduct ->
                 this.scheduleDate = recommendScheduleDate
@@ -59,7 +63,8 @@ data class ScheduleDeliveryUiModel(
 
     private fun getSelectedDeliveryServices(
         scheduleDate: String, timeslotId: Long,
-        callback: (scheduleDate: String, deliveryProduct: DeliveryProduct) -> Unit
+        callback: (scheduleDate: String, deliveryProduct: DeliveryProduct) -> Unit,
+        notFound: () -> Unit,
     ) {
         val deliveryService = deliveryServices.find { it.id == scheduleDate }
         val deliveryProduct = deliveryService?.deliveryProducts?.find { it.id == timeslotId }
@@ -67,5 +72,7 @@ data class ScheduleDeliveryUiModel(
         if (deliveryService != null && deliveryProduct != null) {
             callback(deliveryService.id, deliveryProduct)
         }
+        else
+            notFound()
     }
 }
