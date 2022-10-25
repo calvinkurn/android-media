@@ -39,7 +39,7 @@ class AddressRevampRobot {
 
     fun onClickChooseLocation() {
         onView(withId(R.id.btn_primary)).perform(click())
-        waitForData()
+        waitForData(3000)
     }
 
     fun fillAddress(address: String) {
@@ -98,8 +98,8 @@ class AddressRevampRobot {
                 .perform(click(), replaceText(address), closeSoftKeyboard())
     }
 
-    private fun waitForData() {
-        Thread.sleep(1000L)
+    private fun waitForData(millis: Long = 1000L) {
+        Thread.sleep(millis)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
