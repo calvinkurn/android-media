@@ -29,8 +29,19 @@
         android:text="OPEN PICKER"
         app:unifyButtonSize="medium" />
 
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:layout_below="@id/btn_action"
+        android:checked="true"
+        android:id="@+id/editor_checkbox"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="With editor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <ScrollView
-        android:layout_below="@+id/btn_action"
+        android:layout_below="@+id/editor_checkbox"
         android:layout_above="@+id/drawer_selector"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
