@@ -615,6 +615,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 
     override fun clearAdapterData() {
         adapter?.clearData()
+        viewModel.productCounter = Int.ZERO
     }
 
     override fun onShowLoading() {
