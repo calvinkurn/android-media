@@ -26,6 +26,7 @@
         tools:text="Text Of Table" />
 
     <ImageView
+         android:contentDescription="@null"
         android:id="@+id/icon"
         android:layout_width="13dp"
         android:layout_height="13dp"

@@ -15,7 +15,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableItemDivider
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlViewHolder
-import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlWithIconViewHolder
 
 /**
  * Created By @ilhamsuaib on 30/06/20
@@ -62,7 +61,7 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
 
     inner class TablePageViewHolder(
         private val binding: ShcItemTablePageBinding
-    ) : RecyclerView.ViewHolder(binding.root), TableColumnHtmlViewHolder.Listener{
+    ) : RecyclerView.ViewHolder(binding.root), TableColumnHtmlViewHolder.Listener {
 
         private val tableAdapter = TableItemAdapter(this)
         private var onHtmlClicked: (String, String, TableRowsUiModel.Meta) -> Unit = { _, _, _ -> }
@@ -120,7 +119,6 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
         override fun onHyperlinkClicked(url: String, text: String, meta: TableRowsUiModel.Meta) {
             onHtmlClicked(url, text, meta)
         }
-
 
     }
 }

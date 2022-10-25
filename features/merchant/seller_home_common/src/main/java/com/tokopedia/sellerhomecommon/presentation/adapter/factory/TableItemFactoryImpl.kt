@@ -45,7 +45,7 @@ class TableItemFactoryImpl(
             TableColumnTextViewHolder.RES_LAYOUT -> TableColumnTextViewHolder(parent)
             TableColumnImageViewHolder.RES_LAYOUT -> TableColumnImageViewHolder(parent)
             TableColumnHtmlViewHolder.RES_LAYOUT -> TableColumnHtmlViewHolder(parent, listener)
-            TableColumnHtmlWithIconViewHolder.RES_LAYOUT -> TableColumnHtmlWithIconViewHolder(parent,listener)
+            TableColumnHtmlWithIconViewHolder.RES_LAYOUT -> TableColumnHtmlWithIconViewHolder(parent, listener)
             TableItemDividerViewHolder.RES_LAYOUT -> TableItemDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
