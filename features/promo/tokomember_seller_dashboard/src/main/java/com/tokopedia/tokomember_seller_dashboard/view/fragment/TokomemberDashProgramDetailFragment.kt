@@ -22,6 +22,7 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.TM_PROGRAM_FORM
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
@@ -39,6 +40,7 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
 
     private var shopId = 0
     private var programId = 0
+    private var tmTracker : TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -69,6 +71,9 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        tmTracker = TmTracker()
+        tmTracker?.viewProgramDetail(shopId.toString(), programId.toString())
 
         Glide.with(linear_top)
             .asDrawable()

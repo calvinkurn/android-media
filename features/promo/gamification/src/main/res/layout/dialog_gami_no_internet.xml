@@ -35,7 +35,7 @@
         android:layout_marginTop="@dimen/dp_18"
         android:gravity="center_horizontal"
         android:text="@string/gami_no_internet_title"
-        android:textColor="@color/gf_loader_title_color"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_2"
         app:typographyWeight="bold" />
 
@@ -45,7 +45,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/gami_no_internet_message"
-        android:textColor="@color/gf_loader_message_color"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
@@ -55,7 +55,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_32"
         android:text="@string/gami_coba_lagi_refresh"
-        android:textColor="@color/gf_green_settings"
         app:unifyButtonSize="large" />
 
     <com.tokopedia.unifycomponents.UnifyButton
