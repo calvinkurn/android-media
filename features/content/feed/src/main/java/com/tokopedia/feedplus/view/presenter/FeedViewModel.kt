@@ -895,7 +895,8 @@ class FeedViewModel @Inject constructor(
             data.copy(
                 shopRecomUiModel = data.shopRecomUiModel.copy(
                     items = data.shopRecomUiModel.items.filterNot { it.id == itemID }
-                )
+                ),
+                onError = ""
             )
         }
     }
@@ -911,7 +912,8 @@ class FeedViewModel @Inject constructor(
                         if (currentItem.id == it.id) {
                             it.copy(state = if (currentState == FOLLOW) UNFOLLOW else FOLLOW)
                         } else it
-                    })
+                    }),
+                onError = ""
             )
         }
 
@@ -928,7 +930,8 @@ class FeedViewModel @Inject constructor(
                         if (itemID == it.id) it.copy(state = state)
                         else it
                     }
-                )
+                ),
+                onError = ""
             )
         }
     }
