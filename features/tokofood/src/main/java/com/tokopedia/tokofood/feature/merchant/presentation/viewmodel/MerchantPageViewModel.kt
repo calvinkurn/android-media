@@ -9,6 +9,8 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.mvcwidget.AnimatedInfos
+import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
@@ -44,6 +46,8 @@ class MerchantPageViewModel @Inject constructor(
     val getMerchantDataResult: SingleLiveEvent<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>> get() = _chooseAddress
+    private val _mvcLiveData = SingleLiveEvent<MvcData?>()
+    val mvcLiveData: LiveData<MvcData?> get() = _mvcLiveData
 
     // map of productId to card positions info <dataset,adapter>
     val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
@@ -86,8 +90,10 @@ class MerchantPageViewModel @Inject constructor(
             filterList = result.tokofoodGetMerchantData.filters
             merchantData = result.tokofoodGetMerchantData
             getMerchantDataResultLiveData.value = Success(result)
+            _mvcLiveData.value = getMvcData(result.tokofoodGetMerchantData.topBanner)
         }, onError = {
             getMerchantDataResultLiveData.value = Fail(it)
+            _mvcLiveData.value = null
         })
     }
 
@@ -325,6 +331,19 @@ class MerchantPageViewModel @Inject constructor(
         return customListItems
     }
 
+    private fun getMvcData(topBanner: TokoFoodTopBanner): MvcData? {
+        return topBanner.takeIf { it.isShown }?.let {
+            MvcData(
+                listOf(
+                    AnimatedInfos(
+                        title = it.title,
+                        subTitle = it.subtitle,
+                        iconURL = it.imageUrl
+                    )
+                )
+            )
+        }
+    }
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {
         return tickerData.title.isBlank() && tickerData.subtitle.isBlank()

@@ -34,6 +34,12 @@ class GetMerchantDataUseCase @Inject constructor(@ApplicationContext repository:
               link
               type
             }
+            topBanner {
+              title
+              subtitle
+              imageURL
+              isShown
+            }
             merchantProfile {
               name
               address

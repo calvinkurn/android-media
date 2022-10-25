@@ -48,6 +48,8 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMap
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
@@ -71,6 +73,7 @@ import com.tokopedia.tokofood.feature.merchant.common.util.MerchantShareComponen
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTopBanner
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.MerchantPageCarouselAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductListAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CategoryFilterBottomSheet
@@ -91,6 +94,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantShareC
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.mvc.TokofoodMerchantMvcTrackerImpl
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
@@ -675,6 +679,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                 }
             }
         })
+
+        viewModel.mvcLiveData.observe(viewLifecycleOwner) {
+            renderMvc(it)
+        }
     }
 
     private fun logExceptionToServerLogger(
@@ -921,6 +929,23 @@ class MerchantPageFragment : BaseMultiFragment(),
             this.tickerTitle = tickerData.title
             this.setTextDescription(tickerData.subtitle)
             this.show()
+        }
+    }
+
+    private fun renderMvc(mvcData: MvcData?) {
+        binding?.mvcTokofoodMerchantPage?.run {
+            if (mvcData == null) {
+                hide()
+            } else {
+                show()
+                setData(
+                    mvcData = mvcData,
+                    shopId = shopId,
+                    source = MvcSource.TOKOFOOD,
+                    startActivityForResultFunction = ::goToPromoPage,
+                    mvcTrackerImpl = TokofoodMerchantMvcTrackerImpl()
+                )
+            }
         }
     }
 
@@ -1556,6 +1581,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         } catch (ex: Exception) {
             Timber.e(ex)
         }
+    }
+
+    private fun goToPromoPage() {
+        // TODO: Go to promo page
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
