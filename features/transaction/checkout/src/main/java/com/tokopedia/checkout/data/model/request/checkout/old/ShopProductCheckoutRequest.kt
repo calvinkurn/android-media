@@ -43,6 +43,5 @@ data class ShopProductCheckoutRequest(
     var isTokoNow: Boolean = false,
     var giftingAddOnOrderLevel: ArrayList<AddOnGiftingRequest>? = null,
     var prescriptionIds: List<String> = emptyList(),
-    var tokoConsultationId: String = "",
-    var partnerConsultationId: String = ""
+    var consultationDataString: String = ""
 ) : Parcelable

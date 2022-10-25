@@ -121,7 +121,8 @@ class ShipmentCartItemModel(
     var hasEthicalProducts: Boolean = false,
     var prescriptionIds: List<String> = emptyList(),
     var tokoConsultationId: String = "",
-    var partnerConsultationId: String = ""
+    var partnerConsultationId: String = "",
+    var consultationDataString: String = ""
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean

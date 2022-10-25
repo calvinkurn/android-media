@@ -476,7 +476,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                               String pageSource) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 dataCheckoutRequests, shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
-                listShipmentCrossSellModel, leasingId, uploadPrescriptionUiModel.getPrescriptionIds()
+                listShipmentCrossSellModel, leasingId
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step, pageSource);
         if (eeDataLayer != null) {
@@ -775,7 +775,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 cartShipmentAddressFormData.getEpharmacyData().getUploadText(),
                 cartShipmentAddressFormData.getEpharmacyData().getLeftIconUrl(),
                 cartShipmentAddressFormData.getEpharmacyData().getCheckoutId(),
-                new ArrayList<>(), 0, "", false,
+                0, false,
                 cartShipmentAddressFormData.getEpharmacyData().getFrontEndValidation(),
                 cartShipmentAddressFormData.getEpharmacyData().getConsultationFlow(),
                 "cartShipmentAddressFormData.getEpharmacyData().getRejectedWording()",
@@ -801,8 +801,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
-                listShipmentCrossSellModel, leasingId, uploadPrescriptionUiModel.getPrescriptionIds()
-        );
+                listShipmentCrossSellModel, leasingId);
 
         if (checkoutRequest != null && checkoutRequest.getData() != null && checkoutRequest.getData().size() > 0) {
             // Get additional param for trade in analytics
@@ -1485,8 +1484,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
                                                    int isDonation,
                                                    ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel,
-                                                   String leasingId,
-                                                   ArrayList<String> prescriptionsIds) {
+                                                   String leasingId) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short));
             return null;
@@ -1584,10 +1582,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (leasingId != null && !leasingId.isEmpty()) {
             checkoutRequest.setLeasingId(Utils.toIntOrZero(leasingId));
-        }
-
-        if (prescriptionsIds != null && !prescriptionsIds.isEmpty()) {
-            checkoutRequest.setPrescriptionIds(prescriptionsIds);
         }
 
         return checkoutRequest;
@@ -2448,6 +2442,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                     shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
                                                                     shipmentCartItemModel.setTokoConsultationId("");
                                                                     shipmentCartItemModel.setPartnerConsultationId("");
+                                                                    shipmentCartItemModel.setConsultationDataString("");
                                                                     getView().resetCourier(shipmentCartItemModel);
                                                                     updated = true;
                                                                     hasInvalidPrescription = true;
@@ -2455,6 +2450,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                 } else if (epharmacyGroup.getConsultationData().getConsultationStatus() == 2) {
                                                                     shipmentCartItemModel.setTokoConsultationId(epharmacyGroup.getConsultationData().getTokoConsultationId());
                                                                     shipmentCartItemModel.setPartnerConsultationId(epharmacyGroup.getConsultationData().getPartnerConsultationId());
+                                                                    shipmentCartItemModel.setConsultationDataString(epharmacyGroup.getConsultationData().getConsultationString());
                                                                     mapPrescriptionCount.put(epharmacyGroup.getEpharmacyGroupId(), epharmacyGroup.getConsultationData().getPrescription().size());
                                                                 }
                                                             } else if (epharmacyGroup.getPrescriptionImages() != null && !epharmacyGroup.getPrescriptionImages().isEmpty()) {

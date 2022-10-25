@@ -374,7 +374,7 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId, ArrayList<String> prescriptionIds);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
 
         void releaseBooking();
 

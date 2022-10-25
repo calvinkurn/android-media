@@ -669,7 +669,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         boolean consultationEmpty = (TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getTokoConsultationId()) ||
                                 TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getPartnerConsultationId()) ||
                                 ((ShipmentCartItemModel) shipmentData).getTokoConsultationId().equals("0") ||
-                                ((ShipmentCartItemModel) shipmentData).getPartnerConsultationId().equals("0"));
+                                ((ShipmentCartItemModel) shipmentData).getPartnerConsultationId().equals("0") ||
+                                TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getConsultationDataString()));
                         if (prescriptionIdsEmpty && consultationEmpty) {
                             isPrescriptionFrontEndValidationError = true;
                             availableCheckout = false;

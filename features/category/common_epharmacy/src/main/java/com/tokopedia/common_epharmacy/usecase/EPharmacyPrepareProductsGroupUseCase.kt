@@ -51,6 +51,7 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
 //                                    )
                                 ),
                                 consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
+                                    consultationString = "asdf123",
                                     tokoConsultationId = "123",
                                     partnerConsultationId = "asdf",
                                     consultationStatus = 2,
@@ -77,7 +78,6 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                         ),
                         attachmentPageTickerText = null
                     ),
-                    header = null
                 )
             )
         )

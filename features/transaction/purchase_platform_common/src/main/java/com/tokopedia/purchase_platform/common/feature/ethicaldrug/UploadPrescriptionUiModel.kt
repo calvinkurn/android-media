@@ -10,9 +10,7 @@ data class UploadPrescriptionUiModel(
     var leftIconUrl: String? = "",
     var checkoutId: String? = "",
 
-    var prescriptionIds: ArrayList<String> = arrayListOf(),
     var uploadedImageCount: Int? = 0,
-    var descriptionText: String? = "",
     var isError: Boolean = false,
     var frontEndValidation: Boolean = false,
     var consultationFlow: Boolean = false,
