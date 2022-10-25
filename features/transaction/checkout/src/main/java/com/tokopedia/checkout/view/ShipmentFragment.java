@@ -1124,7 +1124,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                     tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
                                     tmpShipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                                     tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                                ordersItem.getCodes().remove(tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode());
+                                ordersItem.getCodes().remove(tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getLogPromoCode());
                             }
                         }
                     }
@@ -3243,7 +3243,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                     if (shipmentCartItemModel.getCartString().equals(promoCheckoutVoucherOrdersItemUiModel.getUniqueId()) &&
                             shipmentCartItemModel.getSelectedShipmentDetailData() != null && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode().equals(promoCheckoutVoucherOrdersItemUiModel.getCode())) {
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getLogPromoCode().equals(promoCheckoutVoucherOrdersItemUiModel.getCode())) {
                         resetCourier(shipmentCartItemModel);
                     }
                 }
@@ -3268,7 +3268,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) &&
                             shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                             shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                        String redStateBBOCode = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode();
+                        String redStateBBOCode = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getLogPromoCode();
                         ordersItem.getCodes().remove(redStateBBOCode);
                     }
                 }
@@ -3624,11 +3624,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.setSelectedCourier(position, newCourierItemData, true);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
 
-            ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
             SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
+
+            ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
             if (selectedShipperModel.getLogPromoCode() != null && selectedShipperModel.getLogPromoCode().length() > 0) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(newCourierItemData.getLogPromoCode())) {
+                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(newCourierItemData.getSelectedShipper().getLogPromoCode())) {
                         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                             // remove previous logistic promo code
                             ordersItem.getCodes().remove(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
@@ -3670,7 +3671,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     break;
                 }
             }
-            shipmentPresenter.doValidateUseLogisticPromo(position, shipmentCartItemModel.getCartString(), validateUsePromoRequest, courierItemData.getLogPromoCode());
+            shipmentPresenter.doValidateUseLogisticPromo(position, shipmentCartItemModel.getCartString(), validateUsePromoRequest, selectedShipperModel.getLogPromoCode());
         }
     }
 

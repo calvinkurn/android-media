@@ -1155,7 +1155,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 additionalPrice = courierItemData.getAdditionalPrice();
                 subTotalPrice += (totalItemPrice + insurancePrice + totalPurchaseProtectionPrice + additionalPrice + priorityPrice);
                 if (voucherLogisticItemUiModel != null) {
-                    int discountedRate = courierItemData.getDiscountedRate();
+                    int discountedRate = courierItemData.getSelectedShipper().getDiscountedRate();
                     subTotalPrice += discountedRate;
                 } else {
                     subTotalPrice += shippingPrice;
@@ -1175,10 +1175,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
                 voucherLogisticItemUiModel != null) {
-            if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate() == 0) {
+            if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getDiscountedRate() == 0) {
                 TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(0.0, false)), R.string.content_desc_tv_shipping_fee_price_subtotal);
             } else {
-                TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, getPriceFormat(tvShippingFee, tvShippingFeePrice, shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate()), R.string.content_desc_tv_shipping_fee_price_subtotal);
+                TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, getPriceFormat(tvShippingFee, tvShippingFeePrice, shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getSelectedShipper().getDiscountedRate()), R.string.content_desc_tv_shipping_fee_price_subtotal);
             }
         }
         TextViewExtKt.setTextAndContentDescription(tvInsuranceFeePrice, getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice), R.string.content_desc_tv_insurance_fee_price_subtotal);
