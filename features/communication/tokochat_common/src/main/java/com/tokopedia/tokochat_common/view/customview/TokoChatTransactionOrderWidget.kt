@@ -42,6 +42,13 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         defStyleAttr
     )
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        partialOrderStatusWidgetBinding = null
+        shimmerOrderStatusWidgetBinding = null
+        binding = null
+    }
+
     init {
         setupViewBinding()
     }
