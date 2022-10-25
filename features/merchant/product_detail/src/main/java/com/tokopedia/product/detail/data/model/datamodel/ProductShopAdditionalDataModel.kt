@@ -14,12 +14,12 @@ data class ProductShopAdditionalDataModel(
     val name: String = String.EMPTY,
     val type: String = String.EMPTY,
 
-    val title: String = String.EMPTY,
-    val icon: String = String.EMPTY,
-    val description: String = String.EMPTY,
-    val appLink: String = String.EMPTY,
-    val linkText: String = String.EMPTY,
-    val labels: List<String> = emptyList()
+    var title: String = String.EMPTY,
+    var icon: String = String.EMPTY,
+    var description: String = String.EMPTY,
+    var appLink: String = String.EMPTY,
+    var linkText: String = String.EMPTY,
+    var labels: List<String> = emptyList()
 ) : DynamicPdpDataModel {
 
     override fun type(): String = type
@@ -52,4 +52,6 @@ data class ProductShopAdditionalDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
     }
+
+    val isLoading get() = title.isEmpty() && description.isEmpty()
 }

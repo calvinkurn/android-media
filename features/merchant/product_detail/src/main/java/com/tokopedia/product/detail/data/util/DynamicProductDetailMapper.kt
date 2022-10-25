@@ -227,7 +227,11 @@ object DynamicProductDetailMapper {
                     )
                 }
                 ProductDetailConstant.PRODUCT_SHOP_ADDITIONAL -> {
-                    listOfComponent.add(mapToShopAdditional(data = component))
+                    val shopAdditional = ProductShopAdditionalDataModel(
+                        name = component.componentName,
+                        type = component.type
+                    )
+                    listOfComponent.add(shopAdditional)
                 }
             }
         }
@@ -668,26 +672,6 @@ object DynamicProductDetailMapper {
                     stockQty = productInfo.getFinalStock().toIntOrZero()
                 )
             )
-        )
-    }
-
-    /**
-     * Shop Additional Component Mapper
-     */
-    private fun mapToShopAdditional(data: Component): ProductShopAdditionalDataModel {
-        val component = data.componentData.firstOrNull() ?: ComponentData()
-
-        return ProductShopAdditionalDataModel(
-            type = data.type,
-            name = data.componentName,
-            title = component.title,
-            icon = component.icon,
-            description = component.description,
-            appLink = component.applink,
-            linkText = component.linkText,
-            labels = component.labels.map {
-                it.value
-            }
         )
     }
 }

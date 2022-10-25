@@ -29,7 +29,6 @@ import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetData
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -44,6 +43,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
@@ -52,6 +52,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -96,23 +97,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
 
-    val productWholesaleInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
-
     val productInstallmentInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_INSTALLMENT_INFO] as? ProductGeneralInfoDataModel
 
-    val productInstallmentPaylater: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO] as? ProductGeneralInfoDataModel
-
-    val orderPriorityMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.ORDER_PRIORITY] as? ProductGeneralInfoDataModel
-
     val productProtectionMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_PROTECTION] as? ProductGeneralInfoDataModel
-
-    val productFullfilmentMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_FULLFILMENT] as? ProductGeneralInfoDataModel
 
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
@@ -164,6 +153,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val contentWidgetData: ContentWidgetDataModel?
         get() = mapOfData[ProductDetailConstant.PLAY_CAROUSEL] as? ContentWidgetDataModel
+
+    val dilayaniTokopdia: ProductShopAdditionalDataModel?
+        get() = mapOfData[ProductDetailConstant.DILAYANI_TOKOPEDIA] as? ProductShopAdditionalDataModel
 
     private val verticalRecommendationItems = mutableListOf<ProductRecommendationVerticalDataModel>()
 
@@ -482,6 +474,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 removeComponent(ProductDetailConstant.TICKER_INFO)
             } else {
                 updateTicker(it.getTickerByProductId(productId))
+            }
+
+            updateData(ProductDetailConstant.DILAYANI_TOKOPEDIA) {
+                dilayaniTokopdia?.apply {
+                    title = it.shopAdditional.title
+                    description = it.shopAdditional.subTitle
+                    icon = it.shopAdditional.icon
+                    labels = it.shopAdditional.label
+                    appLink = it.shopAdditional.appLink
+                    linkText = it.shopAdditional.linkText
+                }
             }
         }
     }

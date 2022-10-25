@@ -1,9 +1,9 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicShopAdditionalBinding
+import com.tokopedia.product.detail.databinding.ItemDynamicShopAdditionalContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.Label
 
@@ -32,36 +33,23 @@ class ProductShopAdditionalViewHolder(
 
     private val context get() = binding.root.context
 
+    private val contentBinding by lazy(LazyThreadSafetyMode.NONE) {
+        ItemDynamicShopAdditionalContentBinding.bind(
+            binding.shopAdditionalShimmerLayoutStub.inflate()
+        )
+    }
+
     override fun bind(element: ProductShopAdditionalDataModel) {
-        val shouldRenderView = shouldRenderView(element = element)
-
-        renderView(shouldRender = shouldRenderView)
-
-        if (shouldRenderView) {
+        if (!element.isLoading) {
+            prepareRenderContent()
             impressComponent(element)
-
             setWidgetContent(element)
-
             setupAppLink(element)
         }
     }
 
-    /**
-     * get view visibility condition
-     */
-    private fun shouldRenderView(element: ProductShopAdditionalDataModel): Boolean {
-        return element.title.isNotEmpty() || element.description.isNotEmpty()
-    }
-
-    /**
-     * show or not [ProductShopAdditionalViewHolder] view
-     */
-    private fun renderView(shouldRender: Boolean) = with(binding) {
-        if (shouldRender) {
-            shopAdditionalContainer.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        } else {
-            shopAdditionalContainer.layoutParams.height = 0
-        }
+    private fun prepareRenderContent() = with(binding) {
+        shopAdditionalShimmerLoader.root.gone()
     }
 
     private fun impressComponent(element: ProductShopAdditionalDataModel) {
@@ -79,7 +67,7 @@ class ProductShopAdditionalViewHolder(
      */
     private fun setupAppLink(
         element: ProductShopAdditionalDataModel
-    ) = with(binding) {
+    ) = with(contentBinding) {
         shopAdditionalActionLabel.shouldShowWithAction(element.linkText.isNotBlank()) {
             shopAdditionalActionLabel.text = element.linkText
 
@@ -92,7 +80,7 @@ class ProductShopAdditionalViewHolder(
     /**
      * render widget and set content with condition
      */
-    private fun setWidgetContent(element: ProductShopAdditionalDataModel) = with(binding) {
+    private fun setWidgetContent(element: ProductShopAdditionalDataModel) = with(contentBinding) {
         shopAdditionalImage.shouldShowWithAction(element.icon.isNotBlank()) {
             shopAdditionalImage.loadIcon(element.icon)
         }
