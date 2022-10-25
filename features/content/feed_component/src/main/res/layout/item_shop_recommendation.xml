@@ -54,7 +54,7 @@
             android:id="@+id/txt_item_shop_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginStart="@dimen/unify_space_2"
             android:layout_marginTop="@dimen/unify_space_8"
             android:ellipsize="end"
             android:gravity="center"
