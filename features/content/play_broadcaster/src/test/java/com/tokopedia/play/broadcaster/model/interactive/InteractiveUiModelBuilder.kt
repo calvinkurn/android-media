@@ -7,7 +7,10 @@ import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
-import com.tokopedia.play_common.model.ui.*
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardConfigUiModel
+import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 
 /**
  * Created By : Jonathan Darwin on February 21, 2022

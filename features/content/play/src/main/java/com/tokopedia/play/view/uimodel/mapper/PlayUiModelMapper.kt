@@ -78,7 +78,6 @@ class PlayUiModelMapper @Inject constructor(
         return interactiveMapper.mapInteractive(input)
     }
 
-    @ExperimentalStdlibApi
     fun mapInteractiveLeaderboard(input: GetLeaderboardSlotResponse): List<LeaderboardGameUiModel> {
         return interactiveLeaderboardMapper.mapNewPlayLeaderboard(input) { false }
     }

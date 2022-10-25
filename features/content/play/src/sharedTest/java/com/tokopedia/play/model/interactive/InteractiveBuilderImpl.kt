@@ -3,9 +3,11 @@ package com.tokopedia.play.model.interactive
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
-import java.util.*
+import com.tokopedia.play_common.model.ui.LeadeboardType
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import java.util.Calendar
 
 /**
  * Created by kenny.hadisaputra on 11/05/22

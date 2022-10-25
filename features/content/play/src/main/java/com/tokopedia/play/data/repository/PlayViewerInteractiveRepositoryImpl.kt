@@ -43,7 +43,6 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
         } catch (e: MessageErrorException) { false }
     }
 
-    @ExperimentalStdlibApi
     override suspend fun getInteractiveLeaderboard(channelId: String): List<LeaderboardGameUiModel> = withContext(dispatchers.io) {
         val response = getInteractiveViewerLeaderboardUseCase.apply {
             setRequestParams(getInteractiveViewerLeaderboardUseCase.createParams(channelId))
