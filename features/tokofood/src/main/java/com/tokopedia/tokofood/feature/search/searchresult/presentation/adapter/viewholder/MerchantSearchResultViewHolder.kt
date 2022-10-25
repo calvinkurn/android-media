@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.domain.response.AdditionalData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
@@ -39,7 +40,7 @@ class MerchantSearchResultViewHolder(
     private fun setMerchantLayout(merchant: Merchant) {
         setImageMerchant(merchant.imageURL)
         setTitleMerchant(merchant.name)
-        setLabelDiscount(merchant.promo, merchant.priceLevel)
+        setPromoInfo(merchant.promo, merchant.additionalData)
         setMerchantDistance(merchant.distanceFmt, merchant.etaFmt)
         setMerchantRating(merchant.ratingFmt, merchant.rating)
         setMerchantCategory(merchant.merchantCategories, merchant.priceLevel)
@@ -64,26 +65,27 @@ class MerchantSearchResultViewHolder(
         }
     }
 
-    private fun setLabelDiscount(label: String, priceLevel: PriceLevel) {
-        if (label.isBlank()) {
-            binding?.labelItemSrpMerchantDiskon?.hide()
-        } else {
-            binding?.labelItemSrpMerchantDiskon?.show()
-            binding?.labelItemSrpMerchantDiskon?.text = label
-        }
-
-        binding?.labelItemSrpMerchantDiskon?.run {
-            val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-            if (priceLevel.fareCount <= Int.ZERO) {
-                labelParams.topToBottom =
-                    binding?.tgTokofoodItemSrpMerchantCategory?.id ?: ConstraintLayout.LayoutParams.UNSET
+    private fun setPromoInfo(promo: String, additionalData: AdditionalData) {
+        binding?.run {
+            if (promo.isBlank()) {
+                ribbonTokofoodPromo.hide()
+                ivItemSrpMerchantDiscount.hide()
+                tvItemSrpMerchantPromoDetail.hide()
             } else {
-                labelParams.topToBottom =
-                    binding?.tgTokofoodItemSrpMerchantPriceScale?.id ?: ConstraintLayout.LayoutParams.UNSET
+                ribbonTokofoodPromo.run {
+                    show()
+                    setRibbonText(additionalData.topTextBanner)
+                }
+                ivItemSrpMerchantDiscount.run {
+                    show()
+                    setImageUrl(additionalData.discountIcon)
+                }
+                tvItemSrpMerchantPromoDetail.run {
+                    show()
+                    text = promo
+                }
             }
-            layoutParams = labelParams
         }
-
     }
 
     private fun setMerchantDistance(distance: String, eta: String) {
