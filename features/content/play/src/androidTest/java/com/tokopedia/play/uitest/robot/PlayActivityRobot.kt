@@ -27,6 +27,7 @@ import org.hamcrest.CoreMatchers.not
  */
 class PlayActivityRobot(
     channelId: String,
+    initialDelay: Long = 1000,
 ) {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -40,7 +41,7 @@ class PlayActivityRobot(
     init {
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        delay(1000)
+        delay(initialDelay)
     }
 
     fun openProductBottomSheet() = chainable {

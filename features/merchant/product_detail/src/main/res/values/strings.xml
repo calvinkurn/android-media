@@ -149,8 +149,6 @@
 
     <string name="shop_chat_speed_in_minute">%1d menit</string>
 
-    <string name="label_go_apotik">Go-Apotik</string>
-
     <string name="pdp_tradein_text_permission_description">Izinkan Tokopedia mengakses IMEI, WiFi, dan lainnya untuk tes fungsi HP</string>
     <string name="pdp_tradein_text_request_access">Izin akses ke HP-mu</string>
 

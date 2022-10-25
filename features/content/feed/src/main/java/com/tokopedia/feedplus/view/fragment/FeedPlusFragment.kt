@@ -11,6 +11,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
@@ -139,6 +140,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
+import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
+import com.tokopedia.globalerror.GlobalError
 
 /**
  * @author by nisie on 5/15/17.
@@ -173,6 +176,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ShareCallback, ProductItemInfoBottomSheet.Listener,
     FeedPlusTabParentFragment {
 
+    @Suppress("LateinitUsage")
+    private lateinit var feedGlobalError: GlobalError
+    @Suppress("LateinitUsage")
+    private lateinit var feedContainer: RelativeLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var mainContent: View
@@ -230,6 +237,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         get() {
             return userSession.userId.toLongOrZero()
         }
+
+    private val feedProductTagSharingHelper by lazy(LazyThreadSafetyMode.NONE) {
+        FeedProductTagSharingHelper(
+            fragmentManager = childFragmentManager,
+            fragment = this,
+            listener = object : FeedProductTagSharingHelper.Listener {
+                override fun onErrorCreatingUrl(linkerError: LinkerError?) {
+                    showToast(
+                        message = linkerError?.errorMessage ?: getString(R.string.default_request_error_unknown),
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        )
+    }
 
     companion object {
 
@@ -725,6 +747,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ): View? {
         retainInstance = true
         val parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false)
+        feedGlobalError = parentView.findViewById(R.id.feed_plus_global_error)
+        feedContainer = parentView.findViewById(R.id.feed_plus_container)
         recyclerView = parentView.findViewById(R.id.recycler_view)
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout)
         mainContent = parentView.findViewById(R.id.main)
@@ -2591,64 +2615,46 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onShareProduct(
-        id: String,
-        title: String,
-        description: String,
-        url: String,
-        applink: String,
-        imageUrl: String,
+        item: ProductPostTagViewModelNew,
         activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        isTopads: Boolean = false,
-        mediaType: String,
-        trackerid: String = ""
+        trackerId: String = ""
     ) {
         feedAnalytics.eventonShareProductClicked(
             activityId,
-            id,
-            type,
-            isFollowed, shopId,
-            mediaType,
-            trackerid
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            item.mediaType,
+            trackerId
         )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        val urlString: String = if (isTopads) {
-            shareBottomSheetProduct = true
-            url
-        } else {
-            shareBottomSheetProduct = false
-            url
-        }
-        activity?.let {
-            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id)
-                .setName(title)
-                .setDescription(description)
-                .setImgUri(imageUrl)
-                .setUri(url)
-                .setDeepLink(applink)
-                .setType(LinkerData.FEED_TYPE)
-                .setDesktopUrl(urlString)
 
-            if (isTopads) {
-                linkerBuilder.setOgImageUrl(imageUrl)
-                linkerBuilder.setDesktopUrl(url)
-            }
-            shareData = linkerBuilder.build()
-            val linkerShareData = DataMapper().getLinkerShareData(shareData)
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(
-                    0,
-                    linkerShareData,
-                    this
-                )
-            )
+        shareBottomSheetProduct = item.isTopads
+
+        val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
+            .setId(item.id)
+            .setName(item.text)
+            .setDescription(item.description)
+            .setImgUri(item.imgUrl)
+            .setUri(item.weblink)
+            .setDeepLink(item.applink)
+            .setType(LinkerData.FEED_TYPE)
+            .setDesktopUrl(item.weblink)
+
+        if (item.isTopads) {
+            linkerBuilder.setOgImageUrl(item.imgUrl)
         }
 
+        shareData = linkerBuilder.build()
+
+        feedProductTagSharingHelper.show(
+            productTagShareModel = FeedProductTagSharingHelper.Model.map(item),
+            shareData = shareData
+        )
     }
 
     override fun muteUnmuteVideo(
@@ -2767,6 +2773,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun fetchFirstPage() {
+        feedContainer.show()
         showRefresh()
         adapter.showShimmer()
         feedViewModel.getFeedFirstPage()
@@ -2808,18 +2815,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorGetFirstFeed(e: Throwable) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            e.printStackTrace()
-        }
+        if (GlobalConfig.isAllowDebuggingTools()) e.printStackTrace()
         finishLoading()
-        val errorMessage = ErrorHandler.getErrorMessage(context, e)
-        if (adapter.itemCount == 0) {
-            NetworkErrorHelper.showEmptyState(
-                activity, mainContent, errorMessage
-            ) { fetchFirstPage() }
-        } else {
-            NetworkErrorHelper.showSnackbar(activity, errorMessage)
-        }
+        showGlobalError()
         stopTracePerformanceMon()
     }
 
@@ -2883,6 +2881,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 else
                     feedViewModel.doFollowKol(data.id, data.rowNumber)
             })
+    }
+
+    private fun showGlobalError() {
+        feedGlobalError.apply {
+            visible()
+            errorSecondaryAction.hide()
+            setActionClickListener {
+                fetchFirstPage()
+                hide()
+            }
+        }
+        feedContainer.hide()
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
@@ -3619,21 +3629,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 trackerIdAsgcRecom = "13433",
                 trackerIdAsgc = "13447"
             )
-            onShareProduct(
-                item.id,
-                item.text,
-                item.description,
-                item.weblink,
-                item.applink,
-                item.imgUrl,
-                finalID,
-                item.postType,
-                item.isFollowed,
-                item.shopId,
-                item.isTopads,
-                item.mediaType,
-                shareTrackerId
-            )
+            onShareProduct(item, finalID, shareTrackerId)
         }
         sheet.addToCartCB = {
             onTagSheetItemBuy(

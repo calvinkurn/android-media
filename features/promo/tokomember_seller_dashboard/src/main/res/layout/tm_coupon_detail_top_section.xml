@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Created by - Harshit Jain on Aug 2022-->
+<com.tokopedia.unifycomponents.ContainerUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:container_color="GREEN"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/coupon_detail_image_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="17dp"
+            >
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/coupon_detail_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:unify_image_corner_radius="6"
+                app:unify_image_type="rect"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+            <LinearLayout
+                android:id="@+id/coupon_detail_share_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingVertical="6dp"
+                android:background="@drawable/tm_coupon_detail_share_bg"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center"
+                >
+                <com.tokopedia.iconunify.IconUnify
+                    android:layout_width="9dp"
+                    android:layout_height="9dp"
+                    app:icon_name="SHARE_MOBILE"
+                    app:icon_color_light_enable="@color/Unify_N0"
+                    />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="small"
+                    app:typographyWeight="bold"
+                    android:text="@string/tm_share_text"
+                    android:layout_marginStart="7dp"
+                    android:textColor="@color/Unify_N0"
+                    />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/coupon_detail_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/coupon_detail_image_container"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="20dp"
+            app:timer_unify_single_showClockIcon="false"
+            app:timer_unify_single_variant="main"
+            app:timer_unify_single_type="day"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/coupon_detail_status_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/coupon_detail_timer"
+            app:layout_constraintStart_toEndOf="@+id/coupon_detail_image_container"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/Unify_GN500"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/coupon_detail_period_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/coupon_detail_status_tv"
+            app:layout_constraintStart_toEndOf="@+id/coupon_detail_image_container"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="20dp"
+            >
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/coupon_detail_start_period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:typographyType="display_3"
+                />
+
+            <View
+                android:id="@+id/date_delimiter"
+                android:layout_width="10dp"
+                android:layout_height="1dp"
+                android:background="@color/Unify_N700_96"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/coupon_detail_start_period"
+                android:layout_marginStart="11dp"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/coupon_detail_end_period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="display_3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/date_delimiter"
+                android:layout_marginStart="8dp"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/coupon_detail_membership_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="small"
+            android:padding="4dp"
+            android:background="@drawable/tm_bg_coupon_membership"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toBottomOf="@+id/coupon_detail_period_container"
+            app:layout_constraintStart_toEndOf="@+id/coupon_detail_image_container"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="20dp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.ContainerUnify>
