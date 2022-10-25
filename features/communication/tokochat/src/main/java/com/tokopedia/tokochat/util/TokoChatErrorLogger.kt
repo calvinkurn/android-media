@@ -9,7 +9,7 @@ object TokoChatErrorLogger {
     //todo need update after add into configru
     private const val ERROR_TAG = "BUYER_FLOW_TOKOCHAT"
 
-    // Scalyr Error Keys
+    // new relic Error Keys
     private const val ERROR_TYPE_KEY = "error_type"
     private const val DEVICE_ID_KEY = "device_id"
     private const val MESSAGE_KEY = "message"

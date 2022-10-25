@@ -120,15 +120,14 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         }
     }
 
-    override fun onDestroyView() {
+    override fun onDestroy() {
         removeObservers(viewModel.orderTransactionStatus)
         removeObservers(viewModel.chatRoomTicker)
         removeObservers(viewModel.chatBackground)
         removeObservers(viewModel.isChatConnected)
         removeObservers(viewModel.channelDetail)
         removeObservers(viewModel.error)
-        super.onDestroyView()
-
+        super.onDestroy()
     }
 
     private fun setDataFromArguments(savedInstanceState: Bundle?) {
@@ -549,10 +548,11 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         loadTransactionWidget()
     }
 
-    //todo will update later in order to proper logic
     override fun onTransactionWidgetClicked(appLink: String) {
-        context?.let {
-            RouteManager.route(it, appLink)
+        if (appLink.isNotBlank()) {
+            context?.let {
+                RouteManager.route(it, appLink)
+            }
         }
     }
 

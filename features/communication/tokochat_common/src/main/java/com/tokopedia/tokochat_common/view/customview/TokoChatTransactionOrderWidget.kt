@@ -248,9 +248,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     private fun bindClickCardContainer() {
         partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.setOnClickListener {
             tokoChatOrderProgressUiModel?.appLink?.let {
-                if (it.isNotBlank()) {
-                    listener?.onTransactionWidgetClicked(it)
-                }
+                listener?.onTransactionWidgetClicked(it)
             }
         }
     }
