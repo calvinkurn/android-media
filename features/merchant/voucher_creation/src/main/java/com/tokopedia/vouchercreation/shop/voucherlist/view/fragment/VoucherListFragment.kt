@@ -46,6 +46,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -64,6 +65,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
+import com.tokopedia.vouchercreation.common.consts.ShareComponentConstant
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst.JPEG_EXT
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -71,6 +73,7 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
+import com.tokopedia.vouchercreation.common.tracker.SharingComponentTracker
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.databinding.FragmentMvcVoucherListBinding
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
@@ -136,6 +139,9 @@ class VoucherListFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var sharingComponentTracker: SharingComponentTracker
 
     private var binding by autoClearedNullable<FragmentMvcVoucherListBinding>()
 
@@ -229,6 +235,7 @@ class VoucherListFragment :
     private fun showUniversalBottomSheet(voucherUiModel: VoucherUiModel) {
         universalBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             setOgImageUrl(voucherUiModel.imageSquare)
+
             init(object: ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     context?.let {
@@ -238,12 +245,19 @@ class VoucherListFragment :
                 }
 
                 override fun onCloseOptionClicked() {
+                    sharingComponentTracker.sendShareVoucherBottomSheetDismissClickEvent(voucherUiModel.id.toString(), VoucherCreationAnalyticConstant.Values.TRACKER_ID_DISMISS_SHARE)
                 }
 
             })
+            getImageFromMedia(getImageFromMediaFlag = true)
+            setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.MVC_PRODUCT)
             setMetaData(voucherUiModel.name, voucherUiModel.imageSquare)
+            voucherUiModel.addParamImageGenerator(this, shopBasicData?.shopName ?: "", shopBasicData?.logo ?: "")
         }
         universalBottomSheet?.show(childFragmentManager, "")
+
+        sharingComponentTracker.sendShareVoucherBottomSheetDisplayedEvent(voucherUiModel.id.toString(), VoucherCreationAnalyticConstant.Values.TRACKER_ID_VIEW_SHARE)
+
     }
 
     private fun onItemShareClick(shareModel: ShareModel, voucher: VoucherUiModel, shopDomain: String, userId: String) {
@@ -273,11 +287,11 @@ class VoucherListFragment :
                 override fun onError(linkerError: LinkerError?) {}
             })
         )
-        val socmedType = convertToSocmedType(shareModel)
-        VoucherCreationTracking.sendShareClickTracking(
-            socmedType = socmedType,
-            userId = userId,
-            isDetail = true
+        sharingComponentTracker.sendSelectVoucherShareChannelClickEvent(
+            shareModel.channel.orEmpty(),
+            voucher.id.toString(),
+            VoucherCreationAnalyticConstant.Values.TRACKER_ID_CLICK_CHANNEL_SHARE,
+            VoucherCreationAnalyticConstant.Values.IMAGE_TYPE_SHARE
         )
     }
 
@@ -455,6 +469,7 @@ class VoucherListFragment :
             isActive = isActiveVoucher,
             userId = userSession.userId
         )
+        trackerClickEntrypointShare(voucher.id.toString())
         showShareBottomSheet(voucher)
     }
 
@@ -502,6 +517,7 @@ class VoucherListFragment :
             }
             is ShareVoucher -> {
                 moreMenuClickEventAction = Click.SHARE_ONGOING
+                trackerClickEntrypointShare(voucher.id.toString())
                 showShareBottomSheet(voucher)
             }
             is EditPeriod -> {
@@ -733,6 +749,13 @@ class VoucherListFragment :
                 }
             }
             shareVoucherBottomSheet?.show(childFragmentManager)
+        }
+    }
+
+    private fun trackerClickEntrypointShare(voucherId: String) {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHARE_SELLER, true)) {
+            sharingComponentTracker.sendShareVoucherClickEvent(ShareComponentConstant.ENTRY_POINT_COUPON_LIST, voucherId, VoucherCreationAnalyticConstant.Values.TRACKER_ID_CLICK_ENTRYPOINT_SHARE)
         }
     }
 
@@ -1341,6 +1364,7 @@ class VoucherListFragment :
                     action = Click.VOUCHER_SUCCESS_SHARE_NOW,
                     userId = userSession.userId
                 )
+                trackerClickEntrypointShare(uiModel.id.toString())
                 showShareBottomSheet(uiModel)
             }
             .setOnBroadCastClickListener {

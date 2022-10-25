@@ -33,6 +33,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -49,6 +50,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
+import com.tokopedia.vouchercreation.common.consts.ShareComponentConstant
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst.JPEG_EXT
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
@@ -57,11 +59,12 @@ import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
+import com.tokopedia.vouchercreation.common.tracker.SharingComponentTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getDisplayedDateString
-import com.tokopedia.vouchercreation.common.utils.convertToSocmedType
+import com.tokopedia.vouchercreation.common.utils.addParamImageGenerator
 import com.tokopedia.vouchercreation.common.utils.getShareMessage
 import com.tokopedia.vouchercreation.common.utils.shareVoucher
 import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
@@ -119,6 +122,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var sharingComponentTracker: SharingComponentTracker
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -245,11 +251,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
         voucherUiModel?.run {
             // Bagikan Voucher button
             if (status == VoucherStatusConst.ONGOING) {
-                VoucherCreationTracking.sendVoucherDetailClickTracking(
-                        status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
-                        action = Click.SHARE_VOUCHER,
-                        userId = userSession.userId
-                )
+                trackerClickEntrypointShare(this.id.toString())
                 showShareBottomSheet(this)
             } else {
                 //Duplikat Voucher button
@@ -267,6 +269,19 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                     startActivity(intent)
                 }
             }
+        }
+    }
+
+    fun trackerClickEntrypointShare(voucherId: String) {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHARE_SELLER, true)) {
+            sharingComponentTracker.sendShareVoucherClickEvent(ShareComponentConstant.ENTRY_POINT_DETAIL, voucherId.toString(), VoucherCreationAnalyticConstant.Values.TRACKER_ID_CLICK_ENTRYPOINT_SHARE)
+        } else {
+            VoucherCreationTracking.sendVoucherDetailClickTracking(
+                status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                action = Click.SHARE_VOUCHER,
+                userId = userSession.userId
+            )
         }
     }
 
@@ -325,6 +340,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                             userId = userSession.userId
                     )
                     voucherUiModel?.run {
+                        trackerClickEntrypointShare(this.id.toString())
                         showShareBottomSheet(this)
                     }
                 }
@@ -523,12 +539,18 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 }
 
                 override fun onCloseOptionClicked() {
+                    sharingComponentTracker.sendShareVoucherBottomSheetDismissClickEvent(voucherUiModel.id.toString(), VoucherCreationAnalyticConstant.Values.TRACKER_ID_DISMISS_SHARE)
                 }
 
             })
+            getImageFromMedia(getImageFromMediaFlag = true)
+            setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.MVC_PRODUCT)
             setMetaData(voucherUiModel.name, voucherUiModel.imageSquare)
+            voucherUiModel.addParamImageGenerator(this, shopBasicData?.shopName ?: "", shopBasicData?.logo ?: "")
         }
         universalBottomSheet?.show(childFragmentManager, "")
+
+        sharingComponentTracker.sendShareVoucherBottomSheetDisplayedEvent(voucherUiModel.id.toString(), VoucherCreationAnalyticConstant.Values.TRACKER_ID_VIEW_SHARE)
     }
 
     private fun onItemShareClick(shareModel: ShareModel, voucher: VoucherUiModel, shopDomain: String, userId: String) {
@@ -558,11 +580,11 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 override fun onError(linkerError: LinkerError?) {}
             })
         )
-        val socmedType = convertToSocmedType(shareModel)
-        VoucherCreationTracking.sendShareClickTracking(
-            socmedType = socmedType,
-            userId = userId,
-            isDetail = true
+        sharingComponentTracker.sendSelectVoucherShareChannelClickEvent(
+            shareModel.channel.orEmpty(),
+            voucher.id.toString(),
+            VoucherCreationAnalyticConstant.Values.TRACKER_ID_CLICK_CHANNEL_SHARE,
+            VoucherCreationAnalyticConstant.Values.IMAGE_TYPE_SHARE
         )
     }
 

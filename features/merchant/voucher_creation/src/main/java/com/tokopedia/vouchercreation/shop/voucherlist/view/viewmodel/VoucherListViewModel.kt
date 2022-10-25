@@ -13,6 +13,11 @@ import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant.GET_INIT_VOU
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.product.create.data.response.GetProductsByProductIdResponse
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
+import com.tokopedia.vouchercreation.product.create.domain.usecase.GetMostSoldProductsUseCase
+import com.tokopedia.vouchercreation.product.share.domain.entity.ShopWithTopProducts
+import com.tokopedia.vouchercreation.product.share.domain.usecase.GetShopAndTopProductsUseCase
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.shop.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.*
