@@ -98,6 +98,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.mvc.TokofoodMerchant
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -1584,7 +1585,12 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun goToPromoPage() {
-        // TODO: Go to promo page
+        navigateToNewFragment(
+            TokoFoodPromoFragment.createInstance(
+                SOURCE,
+                merchantId
+            )
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

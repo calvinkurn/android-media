@@ -1034,7 +1034,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onPromoWidgetClicked() {
-        navigateToNewFragment(TokoFoodPromoFragment.createInstance())
+        navigateToNewFragment(TokoFoodPromoFragment.createInstance(SOURCE))
     }
 
     override fun onButtonCheckoutClicked() {
