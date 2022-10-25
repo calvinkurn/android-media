@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -68,7 +69,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     private var headerUiModel: TokoChatHeaderUiModel? = null
     private var channelId = ""
     private var source: String = ""
-    private var orderId: String = ""
+    private var tkpdOrderId: String = ""
     private var firstTimeOpen = true
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
@@ -116,7 +117,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     private fun setDataFromArguments(savedInstanceState: Bundle?) {
         source = getParamString(ApplinkConst.TokoChat.PARAM_SOURCE, arguments,
             savedInstanceState)
-        orderId = getParamString(
+        tkpdOrderId = getParamString(
             ApplinkConst.TokoChat.ORDER_ID_TKPD,
             arguments,
             savedInstanceState
@@ -140,6 +141,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         observeChannelDetails()
         observerTyping()
         observeMemberLeft()
+        observeLoadOrderTransactionStatus()
     }
 
     override fun disableSendButton(isExceedLimit: Boolean) {
@@ -229,11 +231,11 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
                 when (it) {
                     is Success -> {
 //                        updateAllOrderLiveTracking(it.data)
-                        viewModel.updateOrderStatusParam(Pair(orderId, source))
+                        viewModel.updateOrderStatusParam(Pair(tkpdOrderId, source))
                     }
                     is Fail -> {
 //                        logExceptionToServerLogger(it.throwable)
-                        viewModel.updateOrderStatusParam(Pair(orderId, source))
+                        viewModel.updateOrderStatusParam(Pair(tkpdOrderId, source))
                     }
                 }
             }
@@ -328,7 +330,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     private fun loadTransactionWidget() {
         baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
-        viewModel.loadOrderCompletedStatus(orderId, source)
+        viewModel.loadOrderCompletedStatus(tkpdOrderId, source)
     }
 
     private fun setShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
@@ -362,10 +364,14 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             appLink = tokoChatOrderProgress.uri
         )
 
-        baseBinding?.tokochatTransactionOrder?.showTransactionWidget(
-            this,
-            orderProgressUiModelTemp
-        )
+        if (orderProgressUiModel.isEnable) {
+            baseBinding?.tokochatTransactionOrder?.showTransactionWidget(
+                this,
+                orderProgressUiModel
+            )
+        } else {
+            baseBinding?.tokochatTransactionOrder?.hide()
+        }
     }
 
     private fun setShowTransactionLocalLoad() {

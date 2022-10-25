@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class TokoChatOrderProgressParam(
     @SerializedName("orderID")
-    var orderID: String,
+    val orderID: String,
     @SerializedName("serviceType")
-    var serviceType: String,
+    val serviceType: String,
 ): GqlParam

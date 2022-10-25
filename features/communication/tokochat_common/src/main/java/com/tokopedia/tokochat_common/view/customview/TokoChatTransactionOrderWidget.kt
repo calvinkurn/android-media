@@ -58,6 +58,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     ) {
         assignFields(listener, orderProgressUiModel)
         binding?.tokochatLocalloadErrorTransactionWidget?.hide()
+        shimmerOrderStatusWidgetBinding?.root?.hide()
         partialOrderStatusWidgetBinding?.root?.show()
         setupPartialOrderStatusBinding()
         render()
