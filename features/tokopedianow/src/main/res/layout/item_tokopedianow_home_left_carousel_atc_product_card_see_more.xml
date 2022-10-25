@@ -4,12 +4,12 @@
     android:id="@+id/card_see_more_banner_mix"
     android:layout_width="104dp"
     android:layout_height="match_parent"
-    android:background="@color/cardunify_background"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_banner_mix_more"
+        android:background="@color/cardunify_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

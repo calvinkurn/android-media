@@ -188,7 +188,10 @@ class HomeLeftCarouselAtcViewHolder(
     ) {
         launch {
             val scrollState = recyclerView.layoutManager?.onSaveInstanceState()
-            tokoNowView?.saveScrollState(layoutPosition, scrollState)
+            tokoNowView?.saveScrollState(
+                adapterPosition = layoutPosition,
+                scrollState = scrollState
+            )
 
             val mapParallaxState = mapOf(
                 IMAGE_TRANSLATION_X to parallaxImageView.translationX,
@@ -201,7 +204,9 @@ class HomeLeftCarouselAtcViewHolder(
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.restoreInstanceStateToLayoutManager() {
         launch {
             tokoNowView?.apply {
-                val scrollState = getScrollState(layoutPosition)
+                val scrollState = getScrollState(
+                    adapterPosition = layoutPosition
+                )
                 rvProduct.layoutManager?.onRestoreInstanceState(scrollState)
 
                 parallaxImageView.translationX = getParallaxState()[IMAGE_TRANSLATION_X].orZero()
@@ -227,9 +232,22 @@ class HomeLeftCarouselAtcViewHolder(
     }
 
     interface HomeLeftCarouselAtcListener {
-        fun onSeeMoreClicked(appLink: String, channelId: String, headerName: String)
-        fun onLeftCarouselImpressed(channelId: String, headerName: String)
-        fun onLeftCarouselLeftImageClicked(appLink: String, channelId: String, headerName: String)
-        fun onRemoveLeftCarouselAtc(channelId: String)
+        fun onSeeMoreClicked(
+            appLink: String,
+            channelId: String,
+            headerName: String
+        )
+        fun onLeftCarouselImpressed(
+            channelId: String,
+            headerName: String
+        )
+        fun onLeftCarouselLeftImageClicked(
+            appLink: String,
+            channelId: String,
+            headerName: String
+        )
+        fun onRemoveLeftCarouselAtc(
+            channelId: String
+        )
     }
 }

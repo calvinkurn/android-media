@@ -2,7 +2,6 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcProductCardSeeMoreBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
@@ -20,16 +19,23 @@ class HomeLeftCarouselAtcProductCardSeeMoreViewHolder(
     private val binding: ItemTokopedianowHomeLeftCarouselAtcProductCardSeeMoreBinding? by viewBinding()
 
     override fun bind(element: HomeLeftCarouselAtcProductCardSeeMoreUiModel) {
-        binding?.backgroundBannerMixMore?.setOnClickListener {
-            listener?.onProductCardSeeMoreClickListener(element)
-        }
-        binding?.backgroundBannerMixMore?.loadImageWithoutPlaceholder(element.backgroundImage)
-        binding?.containerBannerMixMore?.setOnClickListener {
-            listener?.onProductCardSeeMoreClickListener(element)
+        binding?.apply {
+            backgroundBannerMixMore.setOnClickListener {
+                listener?.onProductCardSeeMoreClickListener(
+                    product = element
+                )
+            }
+            containerBannerMixMore.setOnClickListener {
+                listener?.onProductCardSeeMoreClickListener(
+                    product = element
+                )
+            }
         }
     }
 
     interface HomeLeftCarouselAtcProductCardSeeMoreListener {
-        fun onProductCardSeeMoreClickListener(product: HomeLeftCarouselAtcProductCardSeeMoreUiModel)
+        fun onProductCardSeeMoreClickListener(
+            product: HomeLeftCarouselAtcProductCardSeeMoreUiModel
+        )
     }
 }
