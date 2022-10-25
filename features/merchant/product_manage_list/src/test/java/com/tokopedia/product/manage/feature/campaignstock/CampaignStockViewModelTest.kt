@@ -1464,7 +1464,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
     private fun onGetTickerData_thenReturn(tickerData: List<TickerData>) {
         every {
-            tickerStaticDataProvider.getTickers(any(), isShowTickerNotifyMe)
+            tickerStaticDataProvider.getTickers(any())
         } returns tickerData
     }
 
