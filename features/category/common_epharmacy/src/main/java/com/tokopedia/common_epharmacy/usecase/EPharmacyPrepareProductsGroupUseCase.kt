@@ -13,7 +13,7 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(graphqlRepository
                                    onError: (Throwable) -> Unit) {
         try {
             this.setTypeClass(EPharmacyPrepareProductsGroupResponse::class.java)
-            setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
+            this.setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
             this.execute(
                 { result ->
                     onSuccess(result)

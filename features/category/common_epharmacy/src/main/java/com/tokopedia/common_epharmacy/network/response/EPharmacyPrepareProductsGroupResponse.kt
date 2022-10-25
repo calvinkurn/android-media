@@ -11,8 +11,6 @@ data class EPharmacyPrepareProductsGroupResponse(
     data class EPharmacyPrepareProductsGroupData(
         @SerializedName("data")
         val groupsData : GroupData?,
-        @SerializedName("header")
-        val header: Header?
     ){
 
         data class GroupData(
@@ -156,12 +154,5 @@ data class EPharmacyPrepareProductsGroupResponse(
                 }
             }
         }
-
-        data class Header(
-            @SerializedName("code")
-            val code: Int?,
-            @SerializedName("server_prosess_time")
-            val serverProsessTime: String?
-        )
     }
 }
