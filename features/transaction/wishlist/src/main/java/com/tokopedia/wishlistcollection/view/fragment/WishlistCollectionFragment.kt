@@ -648,18 +648,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         startActivityForResult(intent, EDIT_WISHLIST_COLLECTION_REQUEST_CODE)
     }
 
-    private fun showUpdateWishlistCollectionNameBottomSheet(collectionId: String, collectionName: String) {
-        val bottomSheetUpdateWishlistCollectionName = BottomSheetUpdateWishlistCollectionName.newInstance(collectionId, collectionName)
-        bottomSheetUpdateWishlistCollectionName.setListener(this@WishlistCollectionFragment)
-        if (bottomSheetUpdateWishlistCollectionName.isAdded || childFragmentManager.isStateSaved) return
-        bottomSheetUpdateWishlistCollectionName.show(childFragmentManager)
-    }
-
     override fun onDeleteCollection(collectionId: String, collectionName: String) {
+        bottomSheetKebabMenu.dismiss()
         showDialogDeleteCollection(collectionId, collectionName)
     }
 
     override fun onShareCollection(collectionId: String) {
+        bottomSheetKebabMenu.dismiss()
         collectionViewModel.getWishlistCollectionSharingData(collectionId.toLongOrZero())
     }
 
