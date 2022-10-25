@@ -62,7 +62,7 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
 
     inner class TablePageViewHolder(
         private val binding: ShcItemTablePageBinding
-    ) : RecyclerView.ViewHolder(binding.root), TableColumnHtmlViewHolder.Listener{
+    ) : RecyclerView.ViewHolder(binding.root), TableColumnHtmlViewHolder.Listener {
 
         private val tableAdapter = TableItemAdapter(this)
         private var onHtmlClicked: (String, String, TableRowsUiModel.Meta) -> Unit = { _, _, _ -> }
