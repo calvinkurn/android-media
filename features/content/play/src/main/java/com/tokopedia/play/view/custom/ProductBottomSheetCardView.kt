@@ -16,15 +16,12 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewProductBottomSheetCardBinding
-import com.tokopedia.play.view.type.ComingSoon
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by kenny.hadisaputra on 19/08/22
@@ -152,6 +149,46 @@ class ProductBottomSheetCardView(
 
             val stockText = context.getString(R.string.play_product_item_stock, item.stock.stock.toString())
             append(stockText, stockSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        }
+    }
+
+    /**
+     * Move to another file?
+     */
+    private fun UnifyButton.generateButton(button: ProductButtonUiModel){
+        //Setup Text
+        text = button.text
+
+        //Setup Icon if any, for now its only for ATC
+        when (button.type) {
+            ProductButtonType.ATC ->
+                setDrawable(
+                    getIconUnifyDrawable(context, IconUnify.ADD, ContextCompat.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN100)))
+        }
+
+        //Setup Color, default?
+        when (button.color) {
+            ProductButtonColor.PRIMARY_BUTTON -> {
+                buttonVariant = UnifyButton.Variant.FILLED
+                buttonType = UnifyButton.Type.MAIN
+                isEnabled = true
+            }
+            ProductButtonColor.SECONDARY_BUTTON -> {
+                buttonVariant = UnifyButton.Variant.GHOST
+                buttonType = UnifyButton.Type.MAIN
+                isEnabled = true
+            }
+            ProductButtonColor.DISABLED_BUTTON -> {
+                buttonVariant = UnifyButton.Variant.FILLED
+                buttonType = UnifyButton.Type.MAIN
+                isEnabled = false
+            }
+            ProductButtonColor.SECONDARY_GRAY_BUTTON -> {
+                buttonVariant = UnifyButton.Variant.GHOST
+                buttonType = UnifyButton.Type.MAIN
+                isEnabled = false
+            }
         }
     }
 
