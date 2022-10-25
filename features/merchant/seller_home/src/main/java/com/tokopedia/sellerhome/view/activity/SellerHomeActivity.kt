@@ -161,7 +161,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
-        homeViewModel.checkIfWearHasCompanionApp()
+        if (Build.VERSION.SDK_INT >= 25) {
+            homeViewModel.checkIfWearHasCompanionApp()
+        }
 
         if (!userSession.isLoggedIn) {
             RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)

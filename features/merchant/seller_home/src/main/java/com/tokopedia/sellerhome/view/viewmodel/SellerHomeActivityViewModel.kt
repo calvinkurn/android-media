@@ -158,7 +158,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     fun checkIfWearHasCompanionApp() {
         launch {
             nodeClient.connectedNodes.await().let { connectedNodes ->
-                connectedNodes?.let {
+                connectedNodes?.firstOrNull { it.isNearby }?.let {
                     try {
                         val capabilityInfo = capabilityClient
                             .getCapability(CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
@@ -169,10 +169,9 @@ class SellerHomeActivityViewModel @Inject constructor(
                             // capability), so I am just grabbing the first one (which should be the only one).
                             val nodes = capabilityInfo?.nodes
                             val androidPhoneNodeWithApp =
-                                nodes?.firstOrNull { it.isNearby } ?: nodes?.firstOrNull()
+                                nodes?.firstOrNull { node -> node.isNearby }
 
-
-                            _shouldAskInstallCompanionApp.value = !connectedNodes.contains(androidPhoneNodeWithApp)
+                            _shouldAskInstallCompanionApp.value = it != androidPhoneNodeWithApp
                         }
                     } catch (cancellationException: CancellationException) {
                         // Request was cancelled normally
