@@ -434,8 +434,8 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickAllCategory()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String) {
-        analytics.onClickCategory(position, categoryId, headerName)
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) {
+        analytics.onClickCategory(position, categoryId, headerName, categoryName)
     }
 
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {
@@ -1921,7 +1921,7 @@ class TokoNowHomeFragment: Fragment(),
 
         shareOptionRequest(
             shareModel = shareModel,
-            shareHomeTokonow = shareHomeTokonow,
+            shareTokoNowData = shareHomeTokonow,
             activity = activity,
             view = view,
             onSuccess = {

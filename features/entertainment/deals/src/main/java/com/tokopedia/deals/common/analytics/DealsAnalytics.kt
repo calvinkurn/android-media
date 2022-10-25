@@ -2,13 +2,20 @@ package com.tokopedia.deals.common.analytics
 
 import android.os.Bundle
 import android.util.Log
+import com.tokopedia.analytic_constant.Event.Companion.BEGIN_CHECKOUT
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.deals.brand_detail.data.Product
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CART_PAGE_LOADED
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_1
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.VIEW_CHECKOUT
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BRAND
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BUSINESS_UNIT
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CART_ID
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CATEGORY_ID
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_OPTION
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_STEP
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CURRENT_SITE
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DASH_STRING
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DIMENSION_40
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_DEALS_CLICK
@@ -28,9 +35,13 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRICE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.QUANTITY
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_ID
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_NAME
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_TYPE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SLASH_DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TRAVELENTERTAINMENT_BU
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ZERO_STRING
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
@@ -45,6 +56,7 @@ import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -1135,11 +1147,49 @@ class DealsAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM_LIST, eventDataLayer)
     }
 
+    fun checkoutCartPageLoaded(quantity: Int, categoryId: String, itemId: String, itemName: String,
+                               brandName: String, price: String) {
+        val eventDataLayer = Bundle()
+        eventDataLayer.generalBusiness()
+        eventDataLayer.generalTracker(
+            BEGIN_CHECKOUT,
+            VIEW_CHECKOUT,
+            brandName.lowercase()
+        )
+        eventDataLayer.putString(CHECKOUT_OPTION, CART_PAGE_LOADED)
+        eventDataLayer.putString(CHECKOUT_STEP, CHECKOUT_STEP_1)
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(
+            Bundle().apply {
+                putString(CART_ID, ZERO_STRING)
+                putString(SHOP_ID, DASH_STRING)
+                putInt(QUANTITY, quantity)
+                putString(CATEGORY_ID, categoryId)
+                putString(ITEM_ID, itemId)
+                putLong(PRICE, price.toIntSafely().toLong())
+                putString(SHOP_TYPE, DASH_STRING)
+                putString(ITEM_NAME, itemName)
+                putString(SHOP_NAME, DASH_STRING)
+                putString(ITEM_BRAND, "")
+                putString(ITEM_VARIANT, "")
+                putString(ITEM_CATEGORY, DEALS)
+            }
+        )
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(BEGIN_CHECKOUT, eventDataLayer)
+    }
+
     private fun Bundle.generalTracker(event: String, action: String, label: String): Bundle {
         this.putString(TrackAppUtils.EVENT, event)
         this.putString(TrackAppUtils.EVENT_CATEGORY, DealsAnalyticsConstants.Category.DIGITAL_DEALS)
         this.putString(TrackAppUtils.EVENT_ACTION, action)
         this.putString(TrackAppUtils.EVENT_LABEL, label)
+        return this
+    }
+
+    private fun Bundle.generalBusiness(): Bundle {
+        this.putString(BUSINESS_UNIT, TRAVELENTERTAINMENT_BU)
+        this.putString(CURRENT_SITE, TOKOPEDIA_DIGITAL_DEALS)
         return this
     }
 }

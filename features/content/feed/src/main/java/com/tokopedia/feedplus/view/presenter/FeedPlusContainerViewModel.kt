@@ -19,12 +19,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 
 class FeedPlusContainerViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
-    private val repo: FeedPlusRepository
+    private val repo: FeedPlusRepository,
+    private val userSession: UserSessionInterface,
 ) : BaseViewModel(dispatchers.main){
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
@@ -53,6 +55,8 @@ class FeedPlusContainerViewModel @Inject constructor(
 
     fun getWhitelist() {
         viewModelScope.launchCatchError(block = {
+            if(!userSession.isLoggedIn) return@launchCatchError
+
             val response = repo.getWhitelist()
             whitelistResp.value = Success(getWhitelistDomain(response))
         }) {

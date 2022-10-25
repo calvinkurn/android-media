@@ -38,10 +38,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
-import com.tokopedia.feedcomponent.util.ColorUtil
-import com.tokopedia.feedcomponent.util.NestedScrollableHost
-import com.tokopedia.feedcomponent.util.TagConverter
-import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.util.*
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -117,6 +114,7 @@ private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
 private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
 
 private const val FOCUS_CTA_DELAY = 2000L
+private const val VIEWS_START_VALUE = 14
 
 
 /**
@@ -938,10 +936,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             SpannableString(MethodChecker.fromHtml(txt)),
                             colorLinkHashtag
                         ) { hashtag -> onHashtagClicked(hashtag, caption) }
-                        spannableString.setSpan(
+                        spannableString.safeSetSpan(
                             cs,
                             0,
-
                             MethodChecker.fromHtml(caption.author.name).length - 1 ,
                             Spannable.SPAN_INCLUSIVE_INCLUSIVE
                         )
@@ -969,7 +966,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         colorLinkHashtag
                     ) { hashtag -> onHashtagClicked(hashtag, caption) }
             }
-            spannableString.setSpan(
+            spannableString.safeSetSpan(
                 cs,
                 0,
                 MethodChecker.fromHtml(caption.author.name).length - 1,
@@ -982,6 +979,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private val colorLinkHashtag: Int
         get() = MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G400)
+
+    fun SpannableString.safeSetSpan(what: Any, start: Int, end: Int, flags: Int) {
+        try {
+            setSpan(what, start, end, flags)
+        }
+        catch (throwable: Throwable) {
+        }
+    }
 
     private fun onHashtagClicked(hashtag: String, feed: FeedXCard) {
         listener?.onHashtagClickedFeed(hashtag, feed)
@@ -1339,7 +1344,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             })
         }
         feedVODViewHolder.updateLikedText {
-            likedText.text = it
+            likedText.text = buildSpannedString {
+                append(it, 0, VIEWS_START_VALUE)
+                bold {
+                    append(it, VIEWS_START_VALUE, it.length)
+                }
+            }
         }
         feedVODViewHolder.setChangeVolumeStateCallback {
             GridPostAdapter.isMute = !GridPostAdapter.isMute

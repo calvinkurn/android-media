@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailSelectQuantityBinding
 import com.tokopedia.deals.pdp.data.ProductDetailData
@@ -49,6 +50,10 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics: DealsAnalytics
+
     private val viewModel by viewModels<DealsPDPSelectQuantityViewModel> { viewModelFactory }
     private var productDetailData: ProductDetailData? = null
     private var binding by autoClearedNullable<FragmentDealsDetailSelectQuantityBinding>()
@@ -183,6 +188,8 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
 
     private fun verifyCheckout() {
         productDetailData?.let {
+            analytics.checkoutCartPageLoaded(getCurrentQuantity(), it.categoryId, it.id, it.displayName,
+                it.brand.title, it.salesPrice)
             viewModel.setVerifyRequest(it)
         }
     }
