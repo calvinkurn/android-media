@@ -559,8 +559,6 @@ class ManageProductNonVariantViewModelTest {
         }
     }
 
-
-
     @Test
     fun `When page discount and stock input are valid and some locations are partially eligible`() {
         with(viewModel) {
