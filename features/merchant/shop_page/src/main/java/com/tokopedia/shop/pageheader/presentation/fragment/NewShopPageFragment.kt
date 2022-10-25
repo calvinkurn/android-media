@@ -253,7 +253,7 @@ class NewShopPageFragment :
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
         private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
-
+        private const val PARTIAL_SHOP_HEADER_MARGIN_BOTTOM_FOLDABLE = 4
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
     }
@@ -2987,7 +2987,7 @@ class NewShopPageFragment :
         viewBindingShopContentLayout?.apply {
             val layoutPartialHeaderBottomMargin: Int = if (foldableScreenHorizontalBottomBound != null && shopTickerVisibilityState != null) {
                 if (shopTickerVisibilityState == View.VISIBLE) {
-                    0
+                    PARTIAL_SHOP_HEADER_MARGIN_BOTTOM_FOLDABLE.toPx()
                 } else {
                     layoutPartialShopHeaderDefaultMarginBottom
                 }
