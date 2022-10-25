@@ -41,7 +41,7 @@
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/topads_common_line_color"
+        android:background="@color/Unify_N75"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layout_constraintBottom_toBottomOf="parent"

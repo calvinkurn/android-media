@@ -11,6 +11,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
@@ -145,6 +146,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
+import com.tokopedia.globalerror.GlobalError
 
 /**
  * @author by nisie on 5/15/17.
@@ -180,6 +182,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ShopRecomWidgetCallback,
     FeedPlusTabParentFragment {
 
+    @Suppress("LateinitUsage")
+    private lateinit var feedGlobalError: GlobalError
+    @Suppress("LateinitUsage")
+    private lateinit var feedContainer: RelativeLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var mainContent: View
@@ -764,6 +770,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ): View? {
         retainInstance = true
         val parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false)
+        feedGlobalError = parentView.findViewById(R.id.feed_plus_global_error)
+        feedContainer = parentView.findViewById(R.id.feed_plus_container)
         recyclerView = parentView.findViewById(R.id.recycler_view)
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout)
         mainContent = parentView.findViewById(R.id.main)
@@ -2789,6 +2797,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun fetchFirstPage() {
+        feedContainer.show()
         showRefresh()
         adapter.showShimmer()
         feedViewModel.getFeedFirstPage()
@@ -2830,18 +2839,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorGetFirstFeed(e: Throwable) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            e.printStackTrace()
-        }
+        if (GlobalConfig.isAllowDebuggingTools()) e.printStackTrace()
         finishLoading()
-        val errorMessage = ErrorHandler.getErrorMessage(context, e)
-        if (adapter.itemCount == 0) {
-            NetworkErrorHelper.showEmptyState(
-                activity, mainContent, errorMessage
-            ) { fetchFirstPage() }
-        } else {
-            NetworkErrorHelper.showSnackbar(activity, errorMessage)
-        }
+        showGlobalError()
         stopTracePerformanceMon()
     }
 
@@ -2905,6 +2905,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 else
                     feedViewModel.doFollowKol(data.id, data.rowNumber)
             })
+    }
+
+    private fun showGlobalError() {
+        feedGlobalError.apply {
+            visible()
+            errorSecondaryAction.hide()
+            setActionClickListener {
+                fetchFirstPage()
+                hide()
+            }
+        }
+        feedContainer.hide()
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {

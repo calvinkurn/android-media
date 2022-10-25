@@ -887,7 +887,7 @@ class UserProfileFragment @Inject constructor(
         private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
         private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
         private const val KEY_IS_OPEN_FROM = "key_is_open_from"
-        private const val VALUE_IS_OPEN_FROM_USER_PROFILE = 11023
+        private const val VALUE_IS_OPEN_FROM_USER_PROFILE = "is_open_from_user_profile"
 
         private const val TAG = "UserProfileFragment"
 

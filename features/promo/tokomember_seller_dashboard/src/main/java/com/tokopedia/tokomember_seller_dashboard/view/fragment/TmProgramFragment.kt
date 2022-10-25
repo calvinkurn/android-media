@@ -327,7 +327,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.EXTEND -> {
-                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE_EXTEND, bundle)
             }
             ProgramActionType.EDIT -> {
                 val intent = Intent()
@@ -344,13 +344,27 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
     private fun renderHeader() {
 
         headerProgram.setNavigationOnClickListener {
-            if (programActionType == ProgramActionType.CREATE) {
-                tmTracker?.clickProgramCreationBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
-            }
-            if (programActionType == ProgramActionType.CREATE_BUAT) {
-                tmTracker?.clickProgramCreationBackFromProgramList(
-                    arguments?.getInt(BUNDLE_SHOP_ID).toString()
-                )
+            when (programActionType) {
+                ProgramActionType.CREATE -> {
+                    tmTracker?.clickProgramCreationBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                }
+                ProgramActionType.CREATE_BUAT -> {
+                    tmTracker?.clickProgramCreationBackFromProgramList(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString()
+                    )
+                }
+                ProgramActionType.EXTEND -> {
+                    tmTracker?.clickProgramExtensionBack(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.EDIT -> {
+                    tmTracker?.clickProgramEditBack(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
             }
             activity?.onBackPressed()
         }
@@ -491,23 +505,37 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
             clickDatePicker()
         }
         btnCreateProgram?.setOnClickListener {
-            if (programActionType == ProgramActionType.CREATE) {
-                tmTracker?.clickProgramCreationButton(
-                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
-                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
-                )
-            }
-            if (programActionType == ProgramActionType.CREATE_FROM_COUPON) {
-                tmTracker?.clickProgramCreationButton(
-                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
-                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
-                )
-            }
-            if (programActionType == ProgramActionType.CREATE_BUAT) {
-                tmTracker?.clickProgramCreationButtonFromProgramList(
-                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
-                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
-                )
+            when (programActionType) {
+                ProgramActionType.CREATE -> {
+                    tmTracker?.clickProgramCreationButton(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.CREATE_FROM_COUPON -> {
+                    tmTracker?.clickProgramCreationButton(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.CREATE_BUAT -> {
+                    tmTracker?.clickProgramCreationButtonFromProgramList(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.EXTEND -> {
+                    tmTracker?.clickProgramExtensionCreateButton(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.EDIT -> {
+                    tmTracker?.clickProgramEditButton(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
             }
             initCreateProgram(membershipGetProgramForm)
         }
