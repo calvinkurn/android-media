@@ -13,19 +13,16 @@ import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.SINGLE_LOCATIO
 import com.tokopedia.tkpd.flashsale.util.tracker.ManageProductNonVariantTracker
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
-import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.unmockkAll
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -459,23 +456,124 @@ class ManageProductNonVariantViewModelTest {
         }
     }
 
-    // TODO("Unfinished)
-//    @Test
-//    fun `When every product is toggled on then bulk apply caption will be shown`() {
-//        with(viewModel) {
-//            val expected = "Atur Sekaligus 5 Lokasi"
-//            val product = ProductGenerator.createNonVariantProduct(isMultiLocation = true)
-//
-//            every {
-//                context.getString(
-//                    R.string.manageproductnonvar_bulk_apply_text,
-//                    any()
-//                )
-//            } returns expected
-//
-//            val actual = bulkApplyCaption.getOrAwaitValue(500)
-//            assertEquals(expected, actual)
-//        }
-//    }
+    @Test
+    fun `When every product is toggled on then bulk apply caption will be shown`() {
+        with(viewModel) {
+            val expected = "Atur Sekaligus 5 Lokasi"
+            val product = ProductGenerator.createNonVariantProduct(isMultiLocation = true)
+
+            viewModel.setProduct(product)
+
+            every {
+                context.getString(R.string.manageproductnonvar_bulk_apply_text, any())
+            } returns expected
+
+            val actual = bulkApplyCaption.getOrAwaitValue(500)
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `When bulk apply is enabled`() {
+        with(viewModel) {
+            val expected = true
+            val product = ProductGenerator.createNonVariantProduct(isMultiLocation = true)
+
+            viewModel.setProduct(product)
+
+            val actual = enableBulkApply.getOrAwaitValue()
+            assertEquals(expected, actual)
+            assertTrue(actual)
+        }
+    }
+
+    @Test
+    fun `When bulk apply is disabled`() {
+        with(viewModel) {
+            val expected = false
+            val product = ProductGenerator.createNonVariantProduct(isMultiLocation = true, isPartialEligible = true)
+
+            viewModel.setProduct(product)
+
+            val actual = enableBulkApply.getOrAwaitValue()
+            assertEquals(expected, actual)
+            assertFalse(actual)
+        }
+    }
+
+    @Test
+    fun `When non variant product is multi location`() {
+        with(viewModel) {
+            val expected = true
+            val product = ProductGenerator.createNonVariantProduct(isMultiLocation = true)
+
+            viewModel.setProduct(product)
+
+            val actual = isMultiloc.getOrAwaitValue()
+            assertEquals(expected, actual)
+            assertTrue(product.isMultiWarehouse)
+        }
+    }
+
+    @Test
+    fun `When non variant product is single location`() {
+        with(viewModel) {
+            val expected = false
+            val product = ProductGenerator.createNonVariantProduct(isMultiLocation = false)
+
+            viewModel.setProduct(product)
+
+            val actual = isMultiloc.getOrAwaitValue()
+            assertEquals(expected, actual)
+            assertFalse(product.isMultiWarehouse)
+        }
+    }
+
+    @Test
+    fun `When page discount and stock input are valid`() {
+        with(viewModel) {
+            val product = ProductGenerator.createNonVariantProduct(isMultiLocation = true, isInputValid = true)
+
+            val expected = true
+
+            viewModel.setProduct(product)
+
+            val actual = isInputPageValid.getOrAwaitValue()
+            assertEquals(expected, actual)
+            assertTrue(actual)
+        }
+    }
+
+    @Test
+    fun `When page discount and stock input are invalid`() {
+        with(viewModel) {
+            val product = ProductGenerator.createNonVariantProduct(isMultiLocation = true, isInputValid = false)
+
+            val expected = false
+
+            viewModel.setProduct(product)
+
+            val actual = isInputPageValid.getOrAwaitValue()
+            assertEquals(expected, actual)
+            assertFalse(actual)
+        }
+    }
+
+
+
+    @Test
+    fun `When page discount and stock input are valid and some locations are partially eligible`() {
+        with(viewModel) {
+            val product = ProductGenerator.createNonVariantProduct(isMultiLocation = true, isInputValid = true, isPartialEligible = true)
+
+            val expected = true
+
+            viewModel.setProduct(product)
+
+            val actual = isInputPageValid.getOrAwaitValue()
+            assertEquals(expected, actual)
+            assertTrue(actual)
+        }
+    }
 
 }
