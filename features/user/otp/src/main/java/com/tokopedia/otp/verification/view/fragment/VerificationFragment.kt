@@ -267,7 +267,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     mode = modeListData.modeText,
                     userIdEnc = otpData.userIdEnc,
                     validateToken = otpData.accessToken,
-                    userId = otpData.userId.toIntOrZero()
+                    userId = otpData.userId.toIntOrZero(),
+                    msisdn = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN).orEmpty()
             )
         } else {
             viewModel.otpValidate(
