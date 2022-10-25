@@ -108,17 +108,10 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     //Compose
-    implementation "androidx.compose.compiler:compiler:$compose_compiler"
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation "androidx.compose.runtime:runtime:$compose_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
+    implementation rootProject.ext.composeDependencies.composeConstraint
 
     // viewModels delegate and ViewTreeSavedStateRegistryOwners
     implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
     //Macrobenchmark
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
