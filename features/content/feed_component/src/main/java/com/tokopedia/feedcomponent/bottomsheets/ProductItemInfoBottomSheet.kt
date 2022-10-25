@@ -19,7 +19,10 @@ import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoVie
 import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -107,10 +110,21 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         viewModel?.merchantVoucherSummary?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_SHORT).show()
+                    if (it.data.animatedInfoList?.isNotEmpty() == true) {
+                        binding?.merchantVoucherWidgetPostTag?.setData(
+                            mvcData = MvcData(
+                                it.data.animatedInfoList
+                            ),
+                            shopId = shopId,
+                            source = MvcSource.DEFAULT
+                        )
+                        binding?.merchantVoucherWidgetPostTag?.show()
+                    } else {
+                        binding?.merchantVoucherWidgetPostTag?.hide()
+                    }
                 }
                 is Fail -> {
-                    Toast.makeText(requireContext(), "Gagal", Toast.LENGTH_SHORT).show()
+                    binding?.merchantVoucherWidgetPostTag?.hide()
                 }
             }
         }
