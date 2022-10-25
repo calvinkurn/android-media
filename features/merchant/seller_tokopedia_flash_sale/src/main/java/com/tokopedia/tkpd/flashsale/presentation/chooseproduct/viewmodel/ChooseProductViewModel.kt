@@ -74,7 +74,8 @@ class ChooseProductViewModel @Inject constructor(
     val validationResult = combine(
         selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
     ) { productCount, criteriaList, maxSelectedProduct ->
-        ChooseProductUiMapper.validateSelection(productCount, maxSelectedProduct, criteriaList, selectedProductIds)
+        ChooseProductUiMapper.validateSelection(productCount, maxSelectedProduct, criteriaList,
+            selectedProductIds, selectedProductList)
     }
     val selectionValidationResult = combine(
         selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
@@ -133,8 +134,11 @@ class ChooseProductViewModel @Inject constructor(
     }
 
     fun updateCriteriaList(product: ChooseProductItem) {
-        if (isPreselectedProduct(product)) return
-        _criteriaList.value = ChooseProductUiMapper.chooseCriteria(_criteriaList.value, product)
+        _criteriaList.value = if (isPreselectedProduct(product)) {
+            _criteriaList.value
+        } else {
+            ChooseProductUiMapper.chooseCriteria(_criteriaList.value, product)
+        }
     }
 
     fun setSelectedProduct(product: ChooseProductItem) {
