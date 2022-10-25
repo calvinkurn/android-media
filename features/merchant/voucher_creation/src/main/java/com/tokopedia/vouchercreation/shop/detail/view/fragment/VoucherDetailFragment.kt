@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -533,7 +534,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
             init(object: ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     context?.let {
-                        onItemShareClick(shareModel, voucherUiModel, shopBasicData?.shopDomain ?: "", userSession.userId)
+                        onItemShareClick(shareModel, voucherUiModel, shopBasicData?.shopDomain ?: "")
                     }
 
                 }
@@ -553,12 +554,15 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
         sharingComponentTracker.sendShareVoucherBottomSheetDisplayedEvent(voucherUiModel.id.toString(), VoucherCreationAnalyticConstant.Values.TRACKER_ID_VIEW_SHARE)
     }
 
-    private fun onItemShareClick(shareModel: ShareModel, voucher: VoucherUiModel, shopDomain: String, userId: String) {
+    private fun onItemShareClick(shareModel: ShareModel, voucher: VoucherUiModel, shopDomain: String) {
+        val formattedShopName = MethodChecker.fromHtml(shopBasicData?.shopName ?: "").toString()
         val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopDomain}"
         val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
             type = LinkerData.MERCHANT_VOUCHER
             uri = shareUrl
             id = voucher.id.toString()
+            ogTitle = String.format(getString(R.string.placeholder_share_voucher_component_outgoing_title), formattedShopName)
+            ogDescription = getString(R.string.share_component_voucher_outgoing_text_description)
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                 ogImageUrl = shareModel.ogImgUrl
             }
