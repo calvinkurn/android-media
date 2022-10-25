@@ -144,9 +144,6 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
 
 /**
