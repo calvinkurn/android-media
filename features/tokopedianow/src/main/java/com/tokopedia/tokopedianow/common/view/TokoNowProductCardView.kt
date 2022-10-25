@@ -69,7 +69,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 minOrder = model.minOrder,
                 maxOrder = model.maxOrder,
                 orderQuantity = model.orderQuantity,
-                isOos = model.isOos()
+                isOos = model.isOos(),
+                needToShowQuantityEditor = model.needToShowQuantityEditor
             )
             initAssignedValueTypography(
                 labelGroup = model.getAssignedValueLabelGroup()
@@ -125,9 +126,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
         minOrder: Int,
         maxOrder: Int,
         orderQuantity: Int,
-        isOos: Boolean
+        isOos: Boolean,
+        needToShowQuantityEditor: Boolean
     ) {
-        quantityEditor.showIfWithBlock(!isOos) {
+        quantityEditor.showIfWithBlock(!isOos && needToShowQuantityEditor) {
             quantityEditor.minQuantity = minOrder
             quantityEditor.maxQuantity = maxOrder
             quantityEditor.setQuantity(

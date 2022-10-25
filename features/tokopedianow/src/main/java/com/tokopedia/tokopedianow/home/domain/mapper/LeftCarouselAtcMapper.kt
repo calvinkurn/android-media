@@ -4,9 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
+import com.tokopedia.tokopedianow.common.model.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelModel
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -16,10 +17,9 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcP
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 
 object LeftCarouselAtcMapper {
-
     private const val DEFAULT_PARENT_PRODUCT_ID = "0"
 
-    fun mapToLeftCarouselAtc(
+    fun mapResponseToLeftCarouselAtc(
         response: HomeLayoutResponse,
         state: HomeLayoutItemState,
         miniCartData: MiniCartSimplifiedData?
@@ -45,8 +45,8 @@ object LeftCarouselAtcMapper {
                     recommendationType = channelGrid.recommendationType,
                     warehouseId = channelGrid.warehouseId,
                     campaignCode = channelGrid.campaignCode,
-                    productCardModel = mapToProductCardModel(channelGrid, miniCartData),
-                    position = index + ADDITIONAL_POSITION
+                    position = index + ADDITIONAL_POSITION,
+                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData),
                 )
             )
         }
@@ -87,85 +87,33 @@ object LeftCarouselAtcMapper {
         )
     }
 
-    private fun mapToProductCardModel(channelGrid: ChannelGrid, miniCartData: MiniCartSimplifiedData? = null): ProductCardModel {
-        val quantity = HomeLayoutMapper.getAddToCartQuantity(channelGrid.id, miniCartData)
-
-        return if (isVariant(channelGrid.parentProductId)) {
-            ProductCardModel(
-                slashedPrice = channelGrid.slashedPrice,
-                productName = channelGrid.name,
-                formattedPrice = channelGrid.price,
-                productImageUrl = channelGrid.imageUrl,
-                discountPercentage = channelGrid.discount,
-                pdpViewCount = channelGrid.productViewCountFormatted,
-                stockBarLabel = channelGrid.label,
-                isTopAds = channelGrid.isTopads,
-                stockBarPercentage = channelGrid.soldPercentage,
-                shopLocation = channelGrid.shop.shopLocation,
-                shopBadgeList = channelGrid.badges.map {
-                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                },
-                labelGroupList = channelGrid.labelGroup.map {
-                    ProductCardModel.LabelGroup(
-                        position = it.position,
-                        title = it.title,
-                        type = it.type,
-                        imageUrl = it.url
-                    )
-                },
-                freeOngkir = ProductCardModel.FreeOngkir(
-                    channelGrid.isFreeOngkirActive,
-                    channelGrid.freeOngkirImageUrl
-                ),
-                isOutOfStock = channelGrid.isOutOfStock,
-                ratingCount = channelGrid.rating,
-                countSoldRating = channelGrid.ratingFloat,
-                reviewCount = channelGrid.countReview,
-                variant = if (!channelGrid.isOutOfStock) ProductCardModel.Variant(
-                    quantity = quantity
-                ) else null
-            )
-        } else {
-            ProductCardModel(
-                slashedPrice = channelGrid.slashedPrice,
-                productName = channelGrid.name,
-                formattedPrice = channelGrid.price,
-                productImageUrl = channelGrid.imageUrl,
-                discountPercentage = channelGrid.discount,
-                pdpViewCount = channelGrid.productViewCountFormatted,
-                stockBarLabel = channelGrid.label,
-                isTopAds = channelGrid.isTopads,
-                stockBarPercentage = channelGrid.soldPercentage,
-                shopLocation = channelGrid.shop.shopLocation,
-                shopBadgeList = channelGrid.badges.map {
-                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                },
-                labelGroupList = channelGrid.labelGroup.map {
-                    ProductCardModel.LabelGroup(
-                        position = it.position,
-                        title = it.title,
-                        type = it.type,
-                        imageUrl = it.url
-                    )
-                },
-                freeOngkir = ProductCardModel.FreeOngkir(
-                    channelGrid.isFreeOngkirActive,
-                    channelGrid.freeOngkirImageUrl
-                ),
-                isOutOfStock = channelGrid.isOutOfStock,
-                ratingCount = channelGrid.rating,
-                countSoldRating = channelGrid.ratingFloat,
-                reviewCount = channelGrid.countReview,
-                nonVariant = if (!channelGrid.isOutOfStock) ProductCardModel.NonVariant(
-                    quantity = quantity,
-                    minQuantity = channelGrid.minOrder,
-                    maxQuantity = channelGrid.stock
-                ) else null
+    private fun mapChannelGridToProductCard(
+        channelGrid: ChannelGrid,
+        miniCartData: MiniCartSimplifiedData? = null
+    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        imageUrl = channelGrid.imageUrl,
+        minOrder = channelGrid.minOrder,
+        maxOrder = channelGrid.maxOrder,
+        availableStock = channelGrid.stock,
+        orderQuantity = HomeLayoutMapper.getAddToCartQuantity(channelGrid.id, miniCartData),
+        price = channelGrid.price,
+        discount = channelGrid.discount,
+        slashPrice = channelGrid.slashedPrice,
+        name = channelGrid.name,
+        rating = channelGrid.ratingFloat,
+        hasBeenWishlist = false,
+        progressBarLabel = channelGrid.label,
+        progressBarLabelColor = channelGrid.labelTextColor,
+        progressBarPercentage = channelGrid.soldPercentage,
+        isVariant = channelGrid.parentProductId != DEFAULT_PARENT_PRODUCT_ID && channelGrid.parentProductId.isNotBlank(),
+        needToShowQuantityEditor = true,
+        labelGroupList = channelGrid.labelGroup.map {
+            LabelGroup(
+                position = it.position,
+                type = it.type,
+                title = it.title,
+                imageUrl = it.url
             )
         }
-    }
-
-    private fun isVariant(parentProductId: String): Boolean {
-        return parentProductId != DEFAULT_PARENT_PRODUCT_ID && parentProductId.isNotBlank()
-    }
+    )
 }

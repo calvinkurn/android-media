@@ -520,8 +520,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     ) {
         val item = productItemDataLayer(
             productId = uiModel.id.toString(),
-            productName = uiModel.productCardModel.productName,
-            price = uiModel.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero()
+            productName = uiModel.productCardModel.name,
+            price = uiModel.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
         ).apply {
             putString(KEY_DIMENSION_40, "{'list': '/tokonow - recomproduct - carousel - ${uiModel.recommendationType} - ${uiModel.channelPageName} - ${uiModel.channelHeaderName}'}")
             putString(KEY_DIMENSION_45, cartId)
@@ -660,8 +660,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val productItem = productItemDataLayer(
             index = position.toString(),
             productId = product.id.orEmpty(),
-            productName = product.productCardModel.productName,
-            price = product.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero(),
+            productName = product.productCardModel.name,
+            price = product.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
             productBrand = product.brandId,
             productCategory = product.categoryId
         )
@@ -720,8 +720,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             productItemDataLayer(
                 index = position.toString(),
                 productId = product.id.orEmpty(),
-                productName = product.productCardModel.productName,
-                price = product.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero(),
+                productName = product.productCardModel.name,
+                price = product.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
                 productBrand = product.brandId,
                 productCategory = product.categoryId
             )

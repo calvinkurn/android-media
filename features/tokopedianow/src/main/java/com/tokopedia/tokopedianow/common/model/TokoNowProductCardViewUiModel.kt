@@ -16,6 +16,7 @@ data class TokoNowProductCardViewUiModel(
     val progressBarPercentage: Int = 0,
     val hasBeenWishlist: Boolean = false,
     val isVariant: Boolean = false,
+    val needToShowQuantityEditor: Boolean = false,
     val labelGroupList: List<LabelGroup> = listOf(),
 ) {
     private companion object {

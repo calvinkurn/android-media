@@ -46,7 +46,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCat
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
-import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselAtcMapper.mapToLeftCarouselAtc
+import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselAtcMapper.mapResponseToLeftCarouselAtc
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapProductRecomDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
@@ -512,18 +512,9 @@ object HomeLayoutMapper {
             }
             val index = layoutUiModel.productList.indexOf(productUiModel)
 
-            (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.productCardModel?.run {
-                when {
-                    hasVariant() -> copy(variant = variant?.copy(quantity = quantity))
-                    nonVariant != null -> copy(
-                        hasAddToCartButton = quantity == DEFAULT_QUANTITY,
-                        nonVariant = nonVariant?.copy(quantity = quantity)
-                    )
-                    else -> return
-                }
-            }?.let {
+            (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.productCardModel?.copy(orderQuantity = quantity)?.apply {
                 updateItemById(layout.getVisitableId()) {
-                    (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.copy(productCardModel = it)?.apply {
+                    (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.copy(productCardModel = this)?.apply {
                         productList[index] = this
                     }
                     copy(layout = layoutUiModel.copy(productList = productList))
@@ -620,7 +611,7 @@ object HomeLayoutMapper {
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
             PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState, miniCartData)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
-            MIX_LEFT_CAROUSEL_ATC -> mapToLeftCarouselAtc(response, loadedState, miniCartData)
+            MIX_LEFT_CAROUSEL_ATC -> mapResponseToLeftCarouselAtc(response, loadedState, miniCartData)
             // endregion
 
             // region TokoNow Component

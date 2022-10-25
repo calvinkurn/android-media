@@ -142,6 +142,9 @@ data class Grid(
     @SerializedName("maxOrder")
     val maxOrder: Int = 0,
     @Expose
+    @SerializedName("stock")
+    val stock: Int = 0,
+    @Expose
     @SerializedName("shop")
     val shop: Shop = Shop(),
     @Expose
@@ -169,6 +172,9 @@ data class Grid(
     @Expose
     @SerializedName("label")
     val label: String = "",
+    @Expose
+    @SerializedName("labelTextColor")
+    val labelTextColor: String = "",
     @Expose
     @SerializedName("soldPercentage")
     val soldPercentage: Int = 0,

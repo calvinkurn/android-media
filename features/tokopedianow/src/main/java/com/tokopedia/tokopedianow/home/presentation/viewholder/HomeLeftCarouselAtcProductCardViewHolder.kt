@@ -29,30 +29,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     override fun bind(element: HomeLeftCarouselAtcProductCardUiModel) {
         binding?.productCard?.setData(
-            TokoNowProductCardViewUiModel(
-                imageUrl = element.productCardModel.productImageUrl,
-                minOrder = element.productCardModel.nonVariant?.minQuantityFinal.orZero(),
-                maxOrder = element.productCardModel.nonVariant?.maxQuantityFinal.orZero(),
-                availableStock = element.productCardModel.nonVariant?.quantity.orZero(),
-                orderQuantity = 0,
-                price = element.productCardModel.formattedPrice,
-                discount = element.productCardModel.discountPercentage,
-                slashPrice = element.productCardModel.slashedPrice,
-                name = element.productCardModel.productName,
-                rating = element.productCardModel.countSoldRating,
-                hasBeenWishlist = false,
-                progressBarLabel = element.productCardModel.stockBarLabel,
-                progressBarLabelColor = element.productCardModel.stockBarLabelColor,
-                progressBarPercentage = element.productCardModel.stockBarPercentage,
-                labelGroupList = element.productCardModel.labelGroupList.map {
-                    LabelGroup(
-                        position = it.position,
-                        type = it.type,
-                        title = it.title,
-                        imageUrl = it.imageUrl
-                    )
-                }
-            )
+            model = element.productCardModel
         )
 
 //        binding?.productCardGridView?.apply {
