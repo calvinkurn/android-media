@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
-import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
+import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticUseCase
 import com.tokopedia.logisticCommon.data.response.customproductlogistic.CPLProduct
 import com.tokopedia.logisticCommon.data.response.customproductlogistic.GetCPLData
 import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGetCPLQGLResponse
@@ -32,7 +32,7 @@ class CustomProductLogisticViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val repo: CustomProductLogisticRepository = mockk(relaxed = true)
+    private val repo: CustomProductLogisticUseCase = mockk(relaxed = true)
     private val mapper = CustomProductLogisticMapper()
 
     private val cplListObserver: Observer<Result<CustomProductLogisticModel>> =
@@ -62,14 +62,14 @@ class CustomProductLogisticViewModelTest {
         val mockOngkirGetCPLResponse = spyk(OngkirGetCPLResponse(data = mockGetCPLData))
         val mockResponse = spyk(OngkirGetCPLQGLResponse(response = mockOngkirGetCPLResponse))
 
-        coEvery { repo.getCPLList(any(), any(), listOf<Long>()) } returns mockResponse
+        coEvery { repo(any()) } returns mockResponse
         customProductLogisticViewModel.getCPLList(1234, "9876", arrayListOf(shipperServicesId))
         verify { cplListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get CPL List failed`() {
-        coEvery { repo.getCPLList(any(), any(), listOf<Long>()) } throws defaultThrowable
+        coEvery { repo(any()) } throws defaultThrowable
         customProductLogisticViewModel.getCPLList(1234, "9876", null)
         verify { cplListObserver.onChanged(match { it is Fail }) }
     }

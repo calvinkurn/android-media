@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
-import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
+import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticUseCase
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.IMSResourceProvider
 import com.tokopedia.product.addedit.common.util.getValueOrDefault
@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 class AddEditProductShipmentViewModel @Inject constructor(
     private val saveProductDraftUseCase: SaveProductDraftUseCase,
-    private val customProductLogisticRepository: CustomProductLogisticRepository,
+    private val getCplList: CustomProductLogisticUseCase,
     private val customProductLogisticMapper: CustomProductLogisticMapper,
     private val resourceProvider: IMSResourceProvider,
     private val dispatcher: CoroutineDispatchers
@@ -98,11 +98,8 @@ class AddEditProductShipmentViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                val cplList = customProductLogisticRepository.getCPLList(
-                    shopId,
-                    productId,
-                    cplParam ?: listOf()
-                )
+                val param = getCplList.getParam(shopId, productId, cplParam?: listOf())
+                val cplList = getCplList(param)
                 _cplList.value = Success(
                     customProductLogisticMapper.mapCPLData(
                         cplList.response.data,
