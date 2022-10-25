@@ -59,7 +59,7 @@ private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
                 .clickable { onClearFilter() }
                 .padding(horizontal = 12.dp),
             contentDescription = "Clear Filter Icon",
-            tint = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+            tint = NestTheme.colors.NN500
         )
     }
 }

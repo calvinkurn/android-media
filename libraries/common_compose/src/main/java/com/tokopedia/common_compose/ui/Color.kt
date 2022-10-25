@@ -13,6 +13,7 @@ interface TokopediaColor {
     val NN100: Color
     val NN200: Color
     val NN300: Color
+    val NN500: Color
     val NN600: Color
     val NN950: Color
     val NN900: Color
@@ -36,6 +37,7 @@ data class NestColor(
     override val NN100: Color,
     override val NN200: Color,
     override val NN300: Color,
+    override val NN500: Color,
     override val NN600: Color,
     override val NN900: Color,
     override val NN950: Color,
@@ -60,6 +62,7 @@ internal val LocalColors = staticCompositionLocalOf<TokopediaColor> {
         NN100 = NestNN100,
         NN200 = NestNN200,
         NN300 = NestNN300,
+        NN500 = NestNN500,
         NN600 = NestNN600,
         NN900 = NestNN900,
         NN950 = NestNN950,
@@ -106,6 +109,8 @@ val NestNN0 = Color(0xFFFFFFFF)
 val NestNN0Dark = Color(0xFF1D2025)
 val NestNN100 = Color(0xFFE4EBF5)
 val NestNN100Dark = Color(0xFF2D323A)
+val NestNN500 = Color(0xFF8D96AA)
+val NestNN500Dark = Color(0xFF5D6775)
 val NestNN600 = Color(0xFF6D7588)
 val NestNN600Dark = Color(0xFF808FA1)
 val NestNN700 = Color(0xFF31353B)
@@ -138,6 +143,7 @@ fun populateColor(darkTheme: Boolean) : TokopediaColor {
             NN100 = NestNN100Dark,
             NN200 = NestNN200Dark,
             NN300 = NestNN300Dark,
+            NN500 = NestNN500Dark,
             NN600 = NestNN600Dark,
             NN900 = NestNN900Dark,
             NN950 = NestNN950Dark,
@@ -161,6 +167,7 @@ fun populateColor(darkTheme: Boolean) : TokopediaColor {
             NN100 = NestNN100,
             NN200 = NestNN200,
             NN300 = NestNN300,
+            NN500 = NestNN500,
             NN600 = NestNN600,
             NN900 = NestNN900,
             NN950 = NestNN950,
