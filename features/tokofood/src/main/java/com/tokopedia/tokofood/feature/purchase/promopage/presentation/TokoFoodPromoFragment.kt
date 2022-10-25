@@ -288,14 +288,19 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     private fun renderTotalAmount(fragmentUiModel: TokoFoodPromoFragmentUiModel) {
-        viewBinding?.let {
-            it.totalAmountPurchasePromo.amountCtaView.isEnabled = true
-            it.totalAmountPurchasePromo.setCtaText(
-                context?.getString(com.tokopedia.tokofood.R.string.text_purchase_use_promo, fragmentUiModel.promoCount).orEmpty())
-            it.totalAmountPurchasePromo.setLabelTitle(fragmentUiModel.promoTitle)
-            it.totalAmountPurchasePromo.setAmount(fragmentUiModel.promoAmountStr)
-            it.totalAmountPurchasePromo.amountCtaView.setOnClickListener {
-                (activity as BaseTokofoodActivity).onBackPressed()
+        viewBinding?.totalAmountPurchasePromo?.run {
+            if (fragmentUiModel.promoTitle.isBlank()) {
+                gone()
+            } else {
+                show()
+                amountCtaView.isEnabled = true
+                setCtaText(
+                    context?.getString(com.tokopedia.tokofood.R.string.text_purchase_use_promo, fragmentUiModel.promoCount).orEmpty())
+                setLabelTitle(fragmentUiModel.promoTitle)
+                setAmount(fragmentUiModel.promoAmountStr)
+                amountCtaView.setOnClickListener {
+                    (activity as BaseTokofoodActivity).onBackPressed()
+                }
             }
         }
     }
