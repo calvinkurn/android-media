@@ -1,0 +1,49 @@
+<resources>
+    <!-- Editor tool name -->
+    <string name="editor_tool_brightness">Brightness</string>
+    <string name="editor_tool_contrast">Contrast</string>
+    <string name="editor_tool_crop">Crop</string>
+    <string name="editor_tool_rotate">Putar</string>
+    <string name="editor_tool_remove_background">Hapus Latar</string>
+    <string name="editor_tool_watermark">Watermark</string>
+
+    <!-- Content description -->
+    <string name="cd_img_preview">image preview</string>
+    <string name="editor_button_title_cancel">Batal</string>
+    <string name="editor_button_title_save">Simpan</string>
+
+    <!-- Other -->
+    <string name="editor_tool_watermark_label">Logo Tokopedia &amp; Nama Toko</string>
+    <string name="editor_tool_remove_background_failed_normal">Yah, koneksi internetmu terputus saat gunakan fitur ini. Coba lagi, ya.</string>
+    <string name="editor_tool_remove_background_failed_cta">Coba Lagi</string>
+    <string name="editor_tool_crop_box_text_format">%1$d:%2$d</string>
+
+    <!-- Toast text -->
+    <string name="editor_undo_state_format">Undo %s</string>
+    <string name="editor_redo_state_format">Redo %s</string>
+    <string name="editor_auto_crop_format">Foto berhasil dipotong %d:%d secara otomatis. Untuk mengatur posisinya, pilih editor Crop.</string>
+    
+    <!-- Dialog confirmation text -->
+    <string name="editor_detail_activity_dialog_title">Batal simpan edit media?</string>
+    <string name="editor_detail_activity_dialog_desc">Hasil editan media kamu bakal hilang kalau nggak disimpan. Mau simpan hasil editanmu?</string>
+    <string name="editor_detail_activity_dialog_primary_button_text">Simpan dan Keluar</string>
+    <string name="editor_detail_activity_dialog_secondary_button_text">Keluar tanpa Simpan</string>
+
+    <string name="editor_activity_dialog_title">Yakin mau keluar?</string>
+    <string name="editor_activity_dialog_desc">Ada media yang sudah kamu edit, lho. Kalau kamu keluar, hasil editan kamu akan hilang.</string>
+    <string name="editor_activity_dialog_primary_button_text">Ya, Keluar</string>
+    <string name="editor_activity_dialog_secondary_button_text">Tetap di Sini</string>
+
+    <string name="editor_remove_bg_dialog_title">Ingin simpan hapus latar belakang?</string>
+    <string name="editor_remove_bg_dialog_desc">Dengan lanjut simpan, nilai atau pengaturan edit lainnya yang udah kamu atur sebelumnya akan ke-reset.</string>
+    <string name="editor_remove_bg_dialog_primary_button_text">Lanjut Simpan</string>
+    <string name="editor_remove_bg_dialog_secondary_button_text">Balik</string>
+
+    <!-- Header text -->
+    <string name="editor_main_header_title_text">Edit Media</string>
+    <string name="editor_main_header_action_text">Upload</string>
+
+    <!-- Tools text -->
+    <string name="editor_rotate_text">Putar</string>
+    <string name="editor_rotate_miror_text">Balik</string>
+</resources>

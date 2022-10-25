@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
@@ -11,12 +10,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.TypingChatModel
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.databinding.ChatbotTypingChatLayoutBinding
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.chatbot.view.util.isInDarkMode
 
 class ChatBotTypingChatViewHolder(itemView: View) : AbstractViewHolder<TypingChatModel>(itemView) {
-    var logo: ImageView = itemView.findViewById(R.id.image)
-    var typingDotContainer: LinearLayout = itemView.findViewById(R.id.typing_dot_container)
+    val view = ChatbotTypingChatLayoutBinding.bind(itemView)
+    var logo: ImageView = view.image
+    var typingDotContainer: LinearLayout = view.typingDotContainer
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             typingDotContainer,
