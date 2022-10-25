@@ -97,6 +97,26 @@ class TokoChatViewModel @Inject constructor(
 
     val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
 
+    init {
+        viewModelScope.launch {
+            orderStatusParamFlow
+                .debounce(DELAY_UPDATE_ORDER_STATE)
+                .flatMapLatest { (orderId, serviceType) ->
+                    if (orderId.isNotBlank() && serviceType.isNotBlank()) {
+                        fetchOrderStatusUseCase(orderId, serviceType).catch {
+                            emit(Fail(it))
+                        }
+                    } else {
+                        emptyFlow()
+                    }
+                }
+                .flowOn(dispatcher.io)
+                .collectLatest {
+                    _updateOrderTransactionStatus.emit(it)
+                }
+        }
+    }
+
     fun sendMessage(channelId: String, text: String) {
         try {
             val messageMetaData = SendMessageMetaData()
@@ -303,27 +323,6 @@ class TokoChatViewModel @Inject constructor(
         } catch (throwable: Throwable) {
             _error.value = throwable
             MutableLiveData()
-        }
-    }
-
-    //todo it's temporary, will move into TokoChatViewModel init
-    private fun initOrderStatusFlow() {
-        viewModelScope.launch {
-            orderStatusParamFlow
-                .debounce(DELAY_UPDATE_ORDER_STATE)
-                .flatMapLatest { (orderId, serviceType) ->
-                    if (orderId.isNotBlank() && serviceType.isNotBlank()) {
-                        fetchOrderStatusUseCase(orderId, serviceType).catch {
-                            emit(Fail(it))
-                        }
-                    } else {
-                        emptyFlow()
-                    }
-                }
-                .flowOn(dispatcher.io)
-                .collectLatest {
-                    _updateOrderTransactionStatus.emit(it)
-                }
         }
     }
 

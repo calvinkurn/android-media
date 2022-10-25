@@ -19,8 +19,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
@@ -29,10 +29,12 @@ import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
+import com.tokopedia.tokochat.util.TokoChatErrorLogger
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
@@ -50,6 +52,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -62,6 +65,9 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var mapper: TokoChatConversationUiMapper
@@ -114,6 +120,17 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         }
     }
 
+    override fun onDestroyView() {
+        removeObservers(viewModel.orderTransactionStatus)
+        removeObservers(viewModel.chatRoomTicker)
+        removeObservers(viewModel.chatBackground)
+        removeObservers(viewModel.isChatConnected)
+        removeObservers(viewModel.channelDetail)
+        removeObservers(viewModel.error)
+        super.onDestroyView()
+
+    }
+
     private fun setDataFromArguments(savedInstanceState: Bundle?) {
         source = getParamString(ApplinkConst.TokoChat.PARAM_SOURCE, arguments,
             savedInstanceState)
@@ -142,6 +159,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         observerTyping()
         observeMemberLeft()
         observeLoadOrderTransactionStatus()
+        observeUpdateOrderTransactionStatus()
     }
 
     override fun disableSendButton(isExceedLimit: Boolean) {
@@ -224,17 +242,22 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         viewModel.getTokoChatBackground()
     }
 
-    //todo will be moved into initObservers when the BE is ready
     private fun observeUpdateOrderTransactionStatus() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.updateOrderTransactionStatus.collect {
                 when (it) {
                     is Success -> {
-//                        updateAllOrderLiveTracking(it.data)
-                        viewModel.updateOrderStatusParam(Pair(tkpdOrderId, source))
+                        if (it.data.tokochatOrderProgress.state !in listOf(OrderStatusType.CANCELLED, OrderStatusType.COMPLETED)) {
+                            viewModel.updateOrderStatusParam(Pair(tkpdOrderId, source))
+                        }
+                        setShowTransactionWidget(it.data.tokochatOrderProgress)
                     }
                     is Fail -> {
-//                        logExceptionToServerLogger(it.throwable)
+                        logExceptionTokoChat(
+                            it.throwable,
+                            TokoChatErrorLogger.ErrorType.ERROR_POOL_ORDER_PROGRESS,
+                            TokoChatErrorLogger.ErrorDescription.POOL_ORDER_PROGRESS_ERROR
+                        )
                         viewModel.updateOrderStatusParam(Pair(tkpdOrderId, source))
                     }
                 }
@@ -242,15 +265,21 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         }
     }
 
-    //todo will be moved into initObservers when the BE is ready
     private fun observeLoadOrderTransactionStatus() {
         observe(viewModel.orderTransactionStatus) {
             when (it) {
                 is Success -> {
+                    if (it.data.tokochatOrderProgress.state !in listOf(OrderStatusType.CANCELLED, OrderStatusType.COMPLETED)) {
+                        viewModel.updateOrderStatusParam(Pair(tkpdOrderId, source))
+                    }
                     setShowTransactionWidget(it.data.tokochatOrderProgress)
                 }
                 is Fail -> {
-                    //logExceptionToServerLogger(it.throwable)
+                    logExceptionTokoChat(
+                        it.throwable,
+                        TokoChatErrorLogger.ErrorType.ERROR_LOAD_ORDER_PROGRESS,
+                        TokoChatErrorLogger.ErrorDescription.RENDER_ORDER_PROGRESS_ERROR
+                    )
                     setShowTransactionLocalLoad()
                 }
             }
@@ -335,21 +364,6 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     private fun setShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
 
-        //todo will removed, for testing only
-        val orderProgressUiModelTemp = TokoChatOrderProgressUiModel(
-            isEnable = true,
-            state = "new_order",
-            imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/9/12/2684597/2684597_49d800f6-4a88-4dc3-81ea-4f76f429bb88_431_740.jpg",
-            invoiceId = "INV/20200220/XX/II/3098",
-            labelTitle = "Estimasi Tiba",
-            labelValue = "< 10 menit",
-            name = "Resto Name - Food Name",
-            orderId = "4005593",
-            status = "Menunggu Konfirmasi",
-            statusId = 220,
-            appLink = "tokopedia://food/postpurchase/{orderId}"
-        )
-
         val orderProgressUiModel = TokoChatOrderProgressUiModel(
             isEnable = tokoChatOrderProgress.enable,
             state = tokoChatOrderProgress.state,
@@ -364,14 +378,10 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             appLink = tokoChatOrderProgress.uri
         )
 
-        if (orderProgressUiModel.isEnable) {
-            baseBinding?.tokochatTransactionOrder?.showTransactionWidget(
-                this,
-                orderProgressUiModel
-            )
-        } else {
-            baseBinding?.tokochatTransactionOrder?.hide()
-        }
+        baseBinding?.tokochatTransactionOrder?.showTransactionWidget(
+            this,
+            orderProgressUiModel
+        )
     }
 
     private fun setShowTransactionLocalLoad() {
@@ -560,6 +570,20 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     override fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int) {
         adapter.removeItem(element)
         mapper.setFirstTicker(null)
+    }
+
+    private fun logExceptionTokoChat(
+        throwable: Throwable,
+        errorType: String,
+        description: String,
+    ){
+        TokoChatErrorLogger.logExceptionToServerLogger(
+            TokoChatErrorLogger.PAGE.TOKOCHAT,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            description
+        )
     }
 
     companion object {

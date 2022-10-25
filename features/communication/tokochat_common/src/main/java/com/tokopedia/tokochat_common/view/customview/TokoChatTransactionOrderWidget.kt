@@ -90,12 +90,13 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private fun render() {
         loadPreviousState()
+        renderLayoutVisibility()
+        if (tokoChatOrderProgressUiModel?.isEnable == false) return
         renderOrderNameContainer()
         renderBackgroundColor()
         renderStateDescription()
         renderStateChangerButton()
         renderOrderStatus()
-        renderLayoutVisibility()
         renderHasBeenSeen()
         saveCurrentState()
     }
@@ -266,10 +267,16 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     }
 
     private fun renderEstimation() {
-        partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
-            StringBuilder(tokoChatOrderProgressUiModel?.labelTitle.orEmpty()).append(":")
-        partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
-            tokoChatOrderProgressUiModel?.labelValue.orEmpty()
+        if (tokoChatOrderProgressUiModel?.labelTitle?.isNotBlank() == true &&
+            tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true) {
+            partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
+                StringBuilder(tokoChatOrderProgressUiModel?.labelTitle.orEmpty()).append(":")
+            partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
+                tokoChatOrderProgressUiModel?.labelValue.orEmpty()
+        } else {
+            partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.hide()
+            partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.hide()
+        }
     }
 
     private fun renderFirstTimeSeen() {
