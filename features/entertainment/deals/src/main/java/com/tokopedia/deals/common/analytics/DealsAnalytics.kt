@@ -2,7 +2,6 @@ package com.tokopedia.deals.common.analytics
 
 import android.os.Bundle
 import android.util.Log
-import com.tokopedia.analytic_constant.Event.Companion.BEGIN_CHECKOUT
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.deals.brand_detail.data.Product
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CART_PAGE_LOADED
@@ -1155,7 +1154,8 @@ class DealsAnalytics @Inject constructor(
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM_LIST, eventDataLayer)
     }
-fun checkoutSendScreenName() {
+
+    fun checkoutSendScreenName() {
         val map = HashMap<String, String>()
         map[BUSINESS_UNIT] = TRAVELENTERTAINMENT_BU
         map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_DEALS
