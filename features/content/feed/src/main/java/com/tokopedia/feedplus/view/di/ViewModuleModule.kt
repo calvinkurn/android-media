@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.feedcomponent.di.FeedComponentViewModelModule
 import com.tokopedia.feedplus.view.presenter.FeedDetailViewModel
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
@@ -15,7 +16,7 @@ import dagger.multibindings.IntoMap
  * @author by yoasfs on 2019-09-18
  */
 
-@Module
+@Module(includes = [FeedComponentViewModelModule::class])
 abstract class ViewModelModule {
 
     @FeedPlusScope
