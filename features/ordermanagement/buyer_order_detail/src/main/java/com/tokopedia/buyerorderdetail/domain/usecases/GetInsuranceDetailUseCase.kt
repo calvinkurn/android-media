@@ -45,8 +45,8 @@ class GetInsuranceDetailUseCase @Inject constructor(
         private const val PARAM_INPUT = "input"
 
         private const val QUERY = """
-            query ppGetInsuranceDetail(${'$'}$PARAM_INPUT: PPInsuranceDetailRequest!) {
-                ppGetInsuranceDetail(input: ${'$'}$PARAM_INPUT) {
+            query ppGetInsuranceDetail(${'$'}$PARAM_INPUT: PPGetInsuranceDetailRequest!) {
+                ppGetInsuranceDetail(params: ${'$'}$PARAM_INPUT) {
                     data {
                       protectionProduct {
                         protections {
