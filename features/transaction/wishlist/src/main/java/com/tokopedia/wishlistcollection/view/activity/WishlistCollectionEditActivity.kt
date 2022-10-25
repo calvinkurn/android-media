@@ -11,6 +11,8 @@ class WishlistCollectionEditActivity: BaseSimpleActivity() {
 
     override fun getParentViewResourceID() = R.id.parent_view
 
+    override fun getToolbarResourceID(): Int = R.id.toolbar
+
     override fun getNewFragment(): WishlistCollectionEditFragment {
         val bundle = Bundle()
         if (intent != null && intent.extras != null) {
