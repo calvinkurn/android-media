@@ -15,7 +15,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableItemDivider
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlViewHolder
-import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlWithIconViewHolder
 
 /**
  * Created By @ilhamsuaib on 30/06/20
