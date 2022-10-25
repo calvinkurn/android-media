@@ -9,12 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderCustomView
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselAtcProductCardAdapter
@@ -29,12 +28,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class HomeLeftCarouselAtcViewHolder (
+class HomeLeftCarouselAtcViewHolder(
     itemView: View,
     private val homeLeftCarouselAtcCallback: HomeLeftCarouselAtcCallback? = null,
     private val tokoNowView: TokoNowView? = null
-) : AbstractViewHolder<HomeLeftCarouselAtcUiModel>(itemView), CoroutineScope,
-    TokoNowDynamicHeaderCustomView.HeaderCustomViewListener {
+) : AbstractViewHolder<HomeLeftCarouselAtcUiModel>(itemView), CoroutineScope {
 
     companion object {
         private const val IMAGE_TRANSLATION_X = "image_translation_x"
@@ -42,7 +40,6 @@ class HomeLeftCarouselAtcViewHolder (
 
         private const val FIRST_VISIBLE_ITEM_POSITION = 0
         private const val NO_SCROLLED_POSITION = 0
-        private const val IMAGE_PARALLAX_TRANSLATION = 1
         private const val IMAGE_PARALLAX_ALPHA = 0.80f
 
         @LayoutRes
@@ -52,12 +49,6 @@ class HomeLeftCarouselAtcViewHolder (
     private var binding: ItemTokopedianowHomeLeftCarouselAtcBinding? by viewBinding()
 
     private val masterJob = SupervisorJob()
-
-    private var rvProduct: RecyclerView? = null
-    private var viewParallaxBackground: View? = null
-    private var layoutManager: LinearLayoutManager? = null
-    private var dynamicHeaderCustomView: TokoNowDynamicHeaderCustomView? = null
-    private var uiModel: HomeLeftCarouselAtcUiModel? = null
 
     private val adapter by lazy {
         HomeLeftCarouselAtcProductCardAdapter(
@@ -69,100 +60,132 @@ class HomeLeftCarouselAtcViewHolder (
         )
     }
 
-    init {
-        binding?.let {
-            rvProduct = it.rvProduct
-            dynamicHeaderCustomView = it.dynamicHeaderCustomView
-            viewParallaxBackground = it.parallaxBackground
+    private var layoutManager: LinearLayoutManager = object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
+        override fun requestChildRectangleOnScreen(
+            parent: RecyclerView,
+            child: View,
+            rect: Rect,
+            immediate: Boolean,
+            focusedChildVisible: Boolean
+        ): Boolean {
+            return if ((child as? ViewGroup)?.focusedChild is CardView) {
+                false
+            } else super.requestChildRectangleOnScreen(
+                parent,
+                child,
+                rect,
+                immediate,
+                focusedChildVisible
+            )
         }
-        rvProduct?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                binding?.apply {
-                    saveInstanceStateToLayoutManager(recyclerView)
-                    calculateParallaxImage()
-                }
+    }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            binding?.apply {
+                saveInstanceStateToLayoutManager(recyclerView)
+                calculateParallaxImage()
             }
-        })
+        }
+    }
+
+    init {
+        binding?.apply {
+            rvProduct.addOnScrollListener(scrollListener)
+            rvProduct.layoutManager = layoutManager
+        }
     }
 
     override val coroutineContext = masterJob + Dispatchers.Main
 
     override fun bind(element: HomeLeftCarouselAtcUiModel) {
-        uiModel = element
         binding?.apply {
-            setupImage(
+            setupHeader(
+                element = element
+            )
+            setupParallaxImage(
                 element = element
             )
             setupRecyclerView(
                 element = element
             )
+            hitLeftCarouselImpressionTracker(
+                element = element
+            )
         }
-        dynamicHeaderCustomView?.setModel(
+    }
+
+    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupHeader(
+        element: HomeLeftCarouselAtcUiModel
+    ) {
+        dynamicHeaderCustomView.setModel(
             model = element.header,
-            listener = this
-        )
-        setupBackgroundColor(
-            backgroundColorArray = element.backgroundColorArray
-        )
-        onLeftCarouselImpressed(
-            element = element
+            listener = getDynamicHeaderListener(
+                element = element
+            )
         )
     }
 
-    override fun onSeeAllClicked(appLink: String) {
-        homeLeftCarouselAtcCallback?.onSeeMoreClicked(
-            appLink = appLink,
-            channelId = uiModel?.id.orEmpty(),
-            headerName = uiModel?.header?.title.orEmpty()
+    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupParallaxImage(
+        element: HomeLeftCarouselAtcUiModel
+    ) {
+        parallaxImageView.apply {
+            loadImage(element.imageBanner)
+            setOnClickListener {
+                homeLeftCarouselAtcCallback?.onLeftCarouselLeftImageClicked(
+                    appLink = element.imageBannerAppLink,
+                    channelId = element.id,
+                    headerName = element.header.title
+                )
+            }
+        }
+        parallaxBackground.setGradientBackground(
+            colorArray = element.backgroundColorArray
         )
     }
 
-    override fun onChannelExpired() {
-        homeLeftCarouselAtcCallback?.onRemoveLeftCarouselAtc(uiModel?.id.orEmpty())
+    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRecyclerView(
+        element: HomeLeftCarouselAtcUiModel
+    ) {
+        restoreInstanceStateToLayoutManager()
+        rvProduct.adapter = adapter
+        adapter.submitList(element.productList)
     }
 
-    private fun onLeftCarouselImpressed(element: HomeLeftCarouselAtcUiModel) {
-        if (!element.isInvoke) {
+    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.hitLeftCarouselImpressionTracker(
+        element: HomeLeftCarouselAtcUiModel
+    ) {
+        root.addOnImpressionListener(element) {
             homeLeftCarouselAtcCallback?.onLeftCarouselImpressed(
                 channelId = element.id,
                 headerName = element.header.title
             )
-            element.invoke()
         }
-    }
-
-    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRecyclerView(element: HomeLeftCarouselAtcUiModel) {
-        setLayoutManager()
-        restoreInstanceStateToLayoutManager()
-        rvProduct.adapter = adapter
-        submitList(element)
-    }
-
-    private fun submitList(element: HomeLeftCarouselAtcUiModel) {
-        adapter.submitList(element.productList)
     }
 
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.calculateParallaxImage() {
         launch {
-            layoutManager?.apply {
-                if (findFirstVisibleItemPosition() == FIRST_VISIBLE_ITEM_POSITION) {
-                    findViewByPosition(findFirstVisibleItemPosition())?.apply {
-                        val distanceFromLeft = left
-                        val translateX = distanceFromLeft * 0.067f
-                        parallaxImageView.translationX = translateX
-                        val itemSize = width.toFloat()
-                        val alpha = (abs(left).toFloat() / itemSize * IMAGE_PARALLAX_ALPHA)
-                        parallaxImageView.alpha = alpha
-                    }
-                } else  {
-                    parallaxBackground.translationX = NO_SCROLLED_POSITION.toFloat()
+            if (layoutManager.findFirstVisibleItemPosition() == FIRST_VISIBLE_ITEM_POSITION) {
+                layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())?.apply {
+                    val distanceLeftFirstItem = left
+                    val expectedPosition = 0.067f
+                    val translateX = distanceLeftFirstItem * expectedPosition
+                    parallaxImageView.translationX = translateX
+
+                    val itemSize = width.toFloat()
+                    val alpha = (abs(distanceLeftFirstItem).toFloat() / itemSize * IMAGE_PARALLAX_ALPHA)
+                    parallaxImageView.alpha = alpha
                 }
+            } else {
+                parallaxBackground.translationX = NO_SCROLLED_POSITION.toFloat()
             }
         }
     }
 
-    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.saveInstanceStateToLayoutManager(recyclerView: RecyclerView) {
+    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.saveInstanceStateToLayoutManager(
+        recyclerView: RecyclerView
+    ) {
         launch {
             val scrollState = recyclerView.layoutManager?.onSaveInstanceState()
             tokoNowView?.saveScrollState(layoutPosition, scrollState)
@@ -177,67 +200,30 @@ class HomeLeftCarouselAtcViewHolder (
 
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.restoreInstanceStateToLayoutManager() {
         launch {
-            val scrollState = tokoNowView?.getScrollState(adapterPosition)
-            rvProduct.layoutManager?.onRestoreInstanceState(scrollState)
+            tokoNowView?.apply {
+                val scrollState = getScrollState(layoutPosition)
+                rvProduct.layoutManager?.onRestoreInstanceState(scrollState)
 
-            parallaxImageView.translationX = tokoNowView?.getParallaxState()?.get(IMAGE_TRANSLATION_X).orZero()
-            parallaxImageView.alpha = tokoNowView?.getParallaxState()?.get(IMAGE_ALPHA) ?: 1f
-        }
-    }
-
-    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupImage(element: HomeLeftCarouselAtcUiModel) {
-        parallaxImageView.apply {
-            translationX = 0f
-            loadImage(element.imageBanner)
-            setOnClickListener {
-                homeLeftCarouselAtcCallback?.onLeftCarouselLeftImageClicked(
-                    appLink = element.imageBannerAppLink,
-                    channelId = element.id,
-                    headerName = element.header.title
-                )
+                parallaxImageView.translationX = getParallaxState()[IMAGE_TRANSLATION_X].orZero()
+                parallaxImageView.alpha = tokoNowView.getParallaxState()[IMAGE_ALPHA] ?: 1f
             }
         }
     }
 
-    private fun setupBackgroundColor(backgroundColorArray: ArrayList<String>) {
-        viewParallaxBackground?.setGradientBackground(backgroundColorArray)
-    }
-
-    private fun setLayoutManager() {
-        layoutManager = object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
-            override fun requestChildRectangleOnScreen(
-                parent: RecyclerView,
-                child: View,
-                rect: Rect,
-                immediate: Boolean,
-                focusedChildVisible: Boolean
-            ): Boolean {
-                return if ((child as? ViewGroup)?.focusedChild is CardView) {
-                    false
-                } else super.requestChildRectangleOnScreen(
-                    parent,
-                    child,
-                    rect,
-                    immediate,
-                    focusedChildVisible
-                )
-            }
+    private fun getDynamicHeaderListener(
+        element: HomeLeftCarouselAtcUiModel
+    )
+    = object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
+        override fun onSeeAllClicked(appLink: String) {
+            homeLeftCarouselAtcCallback?.onSeeMoreClicked(
+                appLink = appLink,
+                channelId = element.id,
+                headerName = element.header.title
+            )
         }
-        rvProduct?.layoutManager = layoutManager
-    }
-
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-        productCardModelList: List<ProductCardModel>) {
-        val productCardHeight = getProductCardMaxHeight(productCardModelList)
-
-        val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = productCardHeight
-        this.layoutParams = carouselLayoutParams
-    }
-
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = binding?.root?.context?.resources?.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth.orZero())
+        override fun onChannelExpired() {
+            homeLeftCarouselAtcCallback?.onRemoveLeftCarouselAtc(element.id)
+        }
     }
 
     interface HomeLeftCarouselAtcListener {

@@ -18,10 +18,10 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.Calendar
 import java.util.Date
 
-class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     BaseCustomView(context, attrs, defStyleAttr) {
 
-    private var listener: HeaderCustomViewListener? = null
+    private var listener: TokoNowDynamicHeaderListener? = null
     private var itemView: View?
     private var headerContainer: ConstraintLayout? = null
     private var tpSeeAll: Typography? = null
@@ -34,12 +34,17 @@ class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context,
         this.itemView = view
     }
 
-    fun setModel(model: TokoNowDynamicHeaderUiModel, listener: HeaderCustomViewListener? = null) {
+    fun setModel(
+        model: TokoNowDynamicHeaderUiModel,
+        listener: TokoNowDynamicHeaderListener? = null
+    ) {
         this.listener = listener
         handleHeaderComponent(model)
     }
 
-    private fun handleHeaderComponent(model: TokoNowDynamicHeaderUiModel) {
+    private fun handleHeaderComponent(
+        model: TokoNowDynamicHeaderUiModel
+    ) {
         setupUi()
         handleTitle(model.title)
         handleSubtitle(model.subTitle, model.expiredTime)
@@ -55,7 +60,9 @@ class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context,
         tusCountDown = itemView?.findViewById(R.id.tus_count_down)
     }
 
-    private fun handleTitle(title: String) {
+    private fun handleTitle(
+        title: String
+    ) {
         if (title.isNotBlank()) {
             headerContainer?.show()
             tpTitle?.text = title
@@ -131,7 +138,7 @@ class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context,
         }
     }
 
-    interface HeaderCustomViewListener {
+    interface TokoNowDynamicHeaderListener {
         fun onSeeAllClicked(appLink: String)
         fun onChannelExpired()
     }

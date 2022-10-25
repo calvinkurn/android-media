@@ -2,7 +2,6 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.R
@@ -23,6 +22,10 @@ class HomeLeftCarouselAtcProductCardViewHolder(
     }
 
     private var binding: ItemTokopedianowHomeLeftCarouselAtcProductCardBinding? by viewBinding()
+
+    init {
+        setIsRecyclable(false)
+    }
 
     override fun bind(element: HomeLeftCarouselAtcProductCardUiModel) {
         binding?.productCard?.setData(
@@ -51,9 +54,6 @@ class HomeLeftCarouselAtcProductCardViewHolder(
                 }
             )
         )
-        val carouselLayoutParams = binding?.productCard?.layoutParams
-        carouselLayoutParams?.height = RecyclerView.LayoutParams.MATCH_PARENT
-        binding?.productCard?.layoutParams = carouselLayoutParams
 
 //        binding?.productCardGridView?.apply {
 //            setOnClickListener {
