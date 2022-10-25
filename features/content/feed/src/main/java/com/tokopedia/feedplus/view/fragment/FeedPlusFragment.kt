@@ -3767,7 +3767,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (userSession.isLoggedIn) {
             feedShopRecomWidgetAnalytics.sendClickFollowShopRecommendationEvent(itemID.toString())
             feedViewModel.handleClickFollowButtonShopRecom(itemID)
-        } else RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        } else onGoToLogin()
     }
 
     override fun onShopRecomItemClicked(
