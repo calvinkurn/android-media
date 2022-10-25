@@ -153,6 +153,8 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
             override fun handleOnBackPressed() {
                 if (hasCollectionNameChanges || hasAccessChanges) {
                     showDialogExitConfirmation()
+                } else {
+                    activity?.finish()
                 }
             }
         })

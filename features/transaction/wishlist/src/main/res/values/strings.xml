@@ -108,6 +108,6 @@
     <string name="collection_edit_back_dialog_confirmation_title">Mau balik tanpa menyimpan?</string>
     <string name="collection_edit_back_dialog_confirmation_desc">Perubahan yang kamu buat akan dibatalkan, lho.</string>
     <string name="collection_edit_back_dialog_confirmation_primary_button">Balik</string>
-    <string name="collection_edit_back_dialog_confirmation_secondary_button">Tetap di Sini`</string>
+    <string name="collection_edit_back_dialog_confirmation_secondary_button">Tetap di Sini</string>
 
 </resources>
