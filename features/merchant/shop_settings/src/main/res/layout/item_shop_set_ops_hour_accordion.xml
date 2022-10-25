@@ -7,7 +7,7 @@
     android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:descendantFocusability="blocksDescendants"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingBottom="8dp">
 
     <RadioGroup
         android:id="@+id/ops_hour_options"
@@ -32,7 +32,7 @@
             android:text="@string/shop_operational_hour_choose"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -99,7 +99,7 @@
             android:text="@string/shop_operational_hour_holiday"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -131,7 +131,7 @@
             android:text="@string/shop_operational_hour_holiday_cannot_atc"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             />
 
         <androidx.constraintlayout.widget.ConstraintLayout
