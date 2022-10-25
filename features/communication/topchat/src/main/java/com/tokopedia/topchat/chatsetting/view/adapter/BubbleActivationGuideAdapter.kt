@@ -33,7 +33,7 @@ class BubbleActivationGuideAdapter :
             parent,
             false
         )
-        return BubbleActivationGuideViewHolder((binding))
+        return BubbleActivationGuideViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: BubbleActivationGuideViewHolder, position: Int) {

@@ -290,6 +290,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
      */
     private var isTickerNotShownYet = true
 
+    /*
+      * Bubble Chat Flag
+     */
+    private var isFromBubble = false
+
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
 
@@ -563,6 +568,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onResume() {
         super.onResume()
+        this.isFromBubble = activity?.isFromBubble() == true
         if (isFromBubble) {
             TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
         }
@@ -1905,7 +1911,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
-        if (activity?.isFromBubble() == true) {
+        if (isFromBubble) {
             TopChatAnalyticsKt.clickVoucherFromBubble(session.shopId, data.voucher.voucherId)
         } else {
             TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
@@ -1927,7 +1933,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
      * Impress Message Chat from Bubbles
      */
     override fun impressReadMessageForBubbles(replyId: String) {
-        TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+        }
     }
 
     private fun goToMvcPage(applink: String) {
@@ -1965,7 +1973,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (::viewModel.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
-            if (activity?.isFromBubble() == true) {
+            if (isFromBubble) {
                 return false
             } else {
                 finishActivity()
@@ -2073,7 +2081,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachProduct(menu: AttachmentMenu) {
-        if (activity?.isFromBubble() == true) {
+        if (isFromBubble) {
             TopChatAnalyticsKt.clickAddAttachmentProductFromBubble(session.shopId)
         } else {
             analytics.eventAttachProduct()
@@ -2083,7 +2091,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
-        if (activity?.isFromBubble() == true) {
+        if (isFromBubble) {
             TopChatAnalyticsKt.clickAddAttachmentImageFromBubble(session.shopId)
         } else {
             analytics.eventPickImage()
@@ -2093,7 +2101,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {
-        if (activity?.isFromBubble() == true) {
+        if (isFromBubble) {
             TopChatAnalyticsKt.clickAddAttachmentVoucherFromBubble(session.shopId)
         } else {
             analytics.trackChatMenuClicked(voucherMenu.label)
@@ -2102,7 +2110,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
-        if (activity?.isFromBubble() == true) {
+        if (isFromBubble) {
             TopChatAnalyticsKt.clickAddAttachmentInvoiceFromBubble(session.shopId)
         } else {
             analytics.trackChatMenuClicked(menu.label)
