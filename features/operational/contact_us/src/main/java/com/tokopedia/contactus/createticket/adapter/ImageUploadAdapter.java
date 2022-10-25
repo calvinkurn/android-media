@@ -1,11 +1,12 @@
 package com.tokopedia.contactus.createticket.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.R;

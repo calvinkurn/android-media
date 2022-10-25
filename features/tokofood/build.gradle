@@ -14,6 +14,7 @@ android {
         main {
             res.srcDirs = [
                     pathSources,
+                    pathSources + 'common',
                     pathSources + 'home',
                     pathSources + 'merchant',
                     pathSources + 'purchase',
