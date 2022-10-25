@@ -2617,9 +2617,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                            shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
-                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                    if (shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
+                        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                             if (!ordersItem.getCodes().contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
                                 ordersItem.getCodes().add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                             }
@@ -2852,7 +2851,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
                             ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
                             ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
-                            ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getFreeShippingMetadata());
+                            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                                ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getFreeShippingMetadata());
+                            } else {
+                                ordersItem.setFreeShippingMetadata("");
+                            }
                         } else {
                             ordersItem.setShippingId(0);
                             ordersItem.setSpId(0);
@@ -2862,7 +2865,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
                             ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
                             ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
-                            ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getFreeShippingMetadata());
+                            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                                ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getFreeShippingMetadata());
+                            } else {
+                                ordersItem.setFreeShippingMetadata("");
+                            }
                         } else {
                             ordersItem.setShippingId(0);
                             ordersItem.setSpId(0);

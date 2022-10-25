@@ -31,6 +31,7 @@ ext {
             exploreCategory                 : ":features:category:explore_category",
             categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
+            contentCommon                   : ":features:content:content_common",
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
@@ -44,8 +45,9 @@ ext {
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
             playBroadcaster                 : ":features:content:play_broadcaster",
-            playTest                        : ":features:content:play_test",
+            contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
+            contentTest                     : ":features:content:content_test",
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
             digitalRecommendation           : ":features:recharge:digital_recommendation",
@@ -132,6 +134,7 @@ ext {
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
+            mediaeditor		                : ":features:media:mediaeditor",
             mediapicker		                : ":features:media:mediapicker",
             mediapickerCommon		        : ":features:media:mediapicker-common",
 

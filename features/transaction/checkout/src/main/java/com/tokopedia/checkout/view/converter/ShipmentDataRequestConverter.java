@@ -134,6 +134,7 @@ public class ShipmentDataRequestConverter {
                     promoRequest.setCode(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                     promoRequest.setType(PromoRequest.TYPE_LOGISTIC);
                     promoRequests.add(promoRequest);
+                    shopProductCheckout.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
                 }
                 shopProductCheckout.setPromos(promoRequests);
 
@@ -155,7 +156,6 @@ public class ShipmentDataRequestConverter {
                     shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
                 }
 
-                shopProductCheckout.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
                 shopProductCheckout.setNeedPrescription(shipmentCartItemModel.getHasEthicalProducts());
 
                 shopProductCheckout.setPrescriptionIds(shipmentCartItemModel.getPrescriptionIds());

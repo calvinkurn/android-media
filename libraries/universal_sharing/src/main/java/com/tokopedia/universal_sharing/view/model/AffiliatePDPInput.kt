@@ -1,6 +1,7 @@
 package com.tokopedia.universal_sharing.view.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.universal_sharing.tracker.PageType
 
 data class Product (
     @SerializedName("ProductID")
@@ -65,4 +66,16 @@ data class AffiliatePDPInput (
 
     @SerializedName("PageDetail")
     var pageDetail: PageDetail? = null
-)
+) {
+    /** get id based on page type
+     * [PageType.PDP] return [Product.productID]
+     * [PageType.PDP] return [Shop.shopID]
+     */
+    fun getIdFactory(): String {
+        return when (pageType) {
+            PageType.PDP.value -> product?.productID ?: ""
+            PageType.SHOP.value -> shop?.shopID ?: ""
+            else -> ""
+        }
+    }
+}
