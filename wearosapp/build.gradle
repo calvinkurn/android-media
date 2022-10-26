@@ -68,7 +68,7 @@ android {
         minSdkVersion 25
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        applicationId "com.tokopedia.tkpd"
+        applicationId "com.tokopedia.sellerapp"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
