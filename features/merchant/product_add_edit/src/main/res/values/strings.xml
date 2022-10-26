@@ -539,5 +539,6 @@
     <string name="error_empty_weight">Berat wajib diisi</string>
     <string name="error_minimum_weight">Min.%d g</string>
     <string name="error_max_weight">Maks. %s g</string>
+    <string name="cpl_custom_label">Ubah Pengiriman Custom</string>
 
 </resources>

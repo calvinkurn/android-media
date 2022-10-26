@@ -25,7 +25,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.product.addedit.R
@@ -66,26 +65,21 @@ import com.tokopedia.product.addedit.productlimitation.presentation.dialog.Produ
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.adapter.ShipmentAdapter
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CONVENTIONAL_VALIDATION
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_CONVENTIONAL_INDEX
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_STANDARD_SHIPMENT_STATUS
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_THRESHOLD_SIZE
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_CPL_ACTIVATED
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_CPL_PARAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.ON_DEMAND_VALIDATION
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInfoBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInsuranceBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -101,7 +95,6 @@ class AddEditProductShipmentFragment:
 
     private var tfWeightAmount: TextFieldUnify? = null
     private var shipperServicesIds: ArrayList<Long>? = arrayListOf()
-    private var isCPLActivated: Boolean = false
 
     private var radiosInsurance: RadioGroup? = null
     private var radioRequiredInsurance: RadioButtonUnify? = null
@@ -109,18 +102,12 @@ class AddEditProductShipmentFragment:
     private var tickerInsurance: Ticker? = null
 
     private var shipmentInputLayout: ConstraintLayout? = null
-    private var layoutCustomShipmentOnDemand: ConstraintLayout? = null
-    private var layoutCustomShipmentConventional: ConstraintLayout? = null
     private var radioStandarShipment: RadioButtonUnify? = null
     private var radioCustomShipment: RadioButtonUnify? = null
-    private var btnChangeOnDemandShipment: Typography? = null
-    private var btnChangeConventionalShipment: Typography? = null
-    private var btnIconOnDemand: IconUnify? = null
-    private var btnIconConventional: IconUnify? = null
-    private var shipmentListOnDemand: RecyclerView? = null
-    private var shipmentListConventional: RecyclerView? = null
-    private val shipmentOnDemandAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
-    private val shipmentConventionalAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
+    private var rvCpl: RecyclerView? = null
+    private var btnCpl: UnifyButton? = null
+    private var cplLayout: CardUnify2? = null
+    private val cplShipmentGroupAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
 
     private var btnEnd: UnifyButton? = null
     private var btnSave: UnifyButton? = null
@@ -247,18 +234,15 @@ class AddEditProductShipmentFragment:
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_CPL) {
-                val shipperServicesIdsInt = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
+                val shipperServicesIdsInt = data?.getLongArrayExtra(EXTRA_SHIPPER_SERVICES)
                 if (shipperServicesIdsInt != null) {
                     shipperServicesIds = arrayListOf()
                     shipperServicesIdsInt.forEach { ids ->
-                        shipperServicesIds?.add(ids.toLong())
+                        shipperServicesIds?.add(ids)
                     }
                     shipperServicesIds?.let {
-                        shipmentConventionalAdapter.setProductActiveState(it)
-                        shipmentOnDemandAdapter.setProductActiveState(it)
+                        shipmentViewModel.setProductActiveState(it)
                     }
-                    isCPLActivated = false
-                    updateLayoutShipment()
                 }
             }
         }
@@ -325,16 +309,11 @@ class AddEditProductShipmentFragment:
         tickerInsurance = binding.insuranceInputLayout.tickerInsurance
 
         shipmentInputLayout = binding.shipmentInputLayout.root
-        layoutCustomShipmentOnDemand = binding.shipmentInputLayout.layoutCustomOndemand
-        layoutCustomShipmentConventional = binding.shipmentInputLayout.layoutCustomConventional
         radioStandarShipment = binding.shipmentInputLayout.radioStandardShipment
         radioCustomShipment = binding.shipmentInputLayout.radioCustomShipment
-        btnChangeOnDemandShipment = binding.shipmentInputLayout.btnChangeOnDemand
-        btnChangeConventionalShipment = binding.shipmentInputLayout.btnChangeConventional
-        shipmentListOnDemand = binding.shipmentInputLayout.rvOnDemand
-        shipmentListConventional = binding.shipmentInputLayout.rvConventional
-        btnIconOnDemand = binding.shipmentInputLayout.btnInfoOnDemand
-        btnIconConventional = binding.shipmentInputLayout.btnInfoConventional
+        rvCpl = binding.shipmentInputLayout.rvShipperGroup
+        btnCpl = binding.shipmentInputLayout.btnCpl
+        cplLayout = binding.shipmentInputLayout.layoutCpl
 
         btnSave = binding.btnSave
         btnEnd = binding.btnEnd
@@ -343,17 +322,18 @@ class AddEditProductShipmentFragment:
 
     private fun initShipmentData() {
         if (shipmentViewModel.isAddMode) {
-            getCplList("")
+            getCplList(0L)
         } else {
-            getCplList(shipmentViewModel.productInputModel?.productId.toString())
+            getCplList(shipmentViewModel.productInputModel?.productId ?: 0L)
         }
     }
 
-    private fun getCplList(productId: String) {
+    private fun getCplList(productId: Long) {
         shipmentViewModel.getCPLList(
             shopId = shopId.toLong(),
             productId = productId,
-            shipmentServicesIds = shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.shipmentServicesIds
+            shipmentServicesIds = shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.shipmentServicesIds,
+            cplParam = shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.cplParam
         )
     }
 
@@ -375,20 +355,6 @@ class AddEditProductShipmentFragment:
             binding.weightInputLayout.root.isVisible = !it
             setupWeightInput()
         })
-    }
-
-    private fun updateLayoutShipment() {
-        if (shipmentOnDemandAdapter.checkActivatedSpIds().isEmpty()) {
-            layoutCustomShipmentOnDemand?.gone()
-        } else {
-            layoutCustomShipmentOnDemand?.visible()
-        }
-
-        if (shipmentConventionalAdapter.checkActivatedSpIds().isEmpty()) {
-            layoutCustomShipmentConventional?.gone()
-        } else {
-            layoutCustomShipmentConventional?.visible()
-        }
     }
 
     private fun setupWeightInput() {
@@ -418,37 +384,6 @@ class AddEditProductShipmentFragment:
 
     private fun setupShipment() {
         setupShipmentRadios()
-        shipmentListOnDemand?.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = shipmentOnDemandAdapter
-        }
-
-        shipmentListConventional?.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = shipmentConventionalAdapter
-        }
-
-        btnChangeOnDemandShipment?.setOnClickListener {
-            goToCustomProductLogistic()
-        }
-
-        btnChangeConventionalShipment?.setOnClickListener {
-            goToCustomProductLogistic()
-        }
-
-        btnIconOnDemand?.setOnClickListener {
-            ShipmentInfoBottomSheet().show(
-                childFragmentManager,
-                ShipmentInfoBottomSheet.SHIPMENT_ON_DEMAND_STATE
-            )
-        }
-
-        btnIconConventional?.setOnClickListener {
-            ShipmentInfoBottomSheet().show(
-                childFragmentManager,
-                ShipmentInfoBottomSheet.SHIPMENT_CONVENTIONAL_STATE
-            )
-        }
     }
 
     private fun goToCustomProductLogistic() {
@@ -463,14 +398,10 @@ class AddEditProductShipmentFragment:
                 } else {
                     putExtra(EXTRA_PRODUCT_ID, shipmentViewModel.productInputModel?.productId)
                 }
-                putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
-                putIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES, shipperServicesIds.convertToIntArray())
+                putExtra(EXTRA_SHIPPER_SERVICES, shipperServicesIds?.toLongArray())
+                putExtra(EXTRA_CPL_PARAM, shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.cplParam?.toLongArray())
             }, REQUEST_CODE_CPL
         )
-    }
-
-    private fun List<Long>?.convertToIntArray(): ArrayList<Int> {
-        return this?.let { ArrayList(this.map { it.toInt() }) } ?: arrayListOf()
     }
 
     private fun setupShipmentRadios() {
@@ -479,29 +410,33 @@ class AddEditProductShipmentFragment:
         }
 
         radioCustomShipment?.setOnClickListener {
-            shipmentRadioValue(false)
+            changeShipmentType(false)
         }
     }
 
-    private fun shipmentRadioValue(isStandardShipment: Boolean) {
+    private fun setShipmentLayout(isStandardShipment: Boolean, data: CustomProductLogisticModel) {
         if (isStandardShipment) {
-            layoutCustomShipmentOnDemand?.gone()
-            layoutCustomShipmentConventional?.gone()
-            shipperServicesIds = arrayListOf()
+            cplLayout?.gone()
         } else {
-            updateLayoutShipment()
-            if (shipperServicesIds?.isEmpty() == true) {
-                val newShipperServiceIds = getListActivatedSpIds(shipmentOnDemandAdapter.getActivateSpIds(), shipmentConventionalAdapter.getActivateSpIds())
-                shipperServicesIds = ArrayList(newShipperServiceIds)
+            cplLayout?.visible()
+            rvCpl?.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = cplShipmentGroupAdapter
             }
+
+            btnCpl?.setOnClickListener {
+                goToCustomProductLogistic()
+            }
+            cplShipmentGroupAdapter.updateData(data.shipperList.filter { it.getActiveServiceName().isNotEmpty() })
         }
     }
 
-    private fun getListActivatedSpIds(onDemandList: List<Long>, conventionalList: List<Long>): List<Long> {
-        val activatedListShipperIds = mutableListOf<Long>()
-        activatedListShipperIds.addAll(onDemandList)
-        activatedListShipperIds.addAll(conventionalList)
-        return activatedListShipperIds
+    private fun changeShipmentType(isStandardShipment: Boolean) {
+        if (isStandardShipment) {
+            shipmentViewModel.setAllProductDeactivated()
+        } else {
+            shipmentViewModel.setAllProductActivated()
+        }
     }
 
     private fun showDialogStandardShipment() {
@@ -522,10 +457,9 @@ class AddEditProductShipmentFragment:
             }
             setOnDismissListener {
                 if (isStandardShipment) {
-                    shipmentRadioValue(true)
+                    changeShipmentType(true)
                 } else {
-                    radioStandarShipment?.isChecked = false
-                    radioCustomShipment?.isChecked = true
+                    setCplRadioButtonState(true)
                 }
             }
         }.show()
@@ -620,58 +554,28 @@ class AddEditProductShipmentFragment:
     }
 
     private fun applyShipmentValue(data: CustomProductLogisticModel) {
-        val cplProduct = data.cplProduct
-        if (cplProduct.isEmpty() || cplProduct.firstOrNull()?.cplStatus == CPL_STANDARD_SHIPMENT_STATUS) {
-            radioStandarShipment?.isChecked = true
-            radioCustomShipment?.isChecked = false
-            isCPLActivated = true
-            updateShipmentDataStandard(data)
-            shipmentRadioValue(true)
+        val activatedSpIds = data.getActivatedSpIds()
+        val isCplActivated = activatedSpIds.isNotEmpty()
+        setSelectedShipperService(activatedSpIds)
+        setCplRadioButtonState(isCplActivated)
+        setShipmentLayout(!isCplActivated, data)
+    }
+
+    private fun setCplRadioButtonState(cplActivated: Boolean) {
+        radioStandarShipment?.isChecked = !cplActivated
+        radioCustomShipment?.isChecked = cplActivated
+    }
+
+    private fun setSelectedShipperService(activatedSpIds: List<Long>) {
+        shipperServicesIds = if (activatedSpIds.isEmpty()) {
+            arrayListOf()
         } else {
-            radioStandarShipment?.isChecked = false
-            radioCustomShipment?.isChecked = true
-            isCPLActivated = false
-            updateShipmentDataCustom(data)
-            shipmentRadioValue(false)
+            ArrayList(activatedSpIds)
         }
     }
 
     private fun hideShipment() {
         shipmentInputLayout?.gone()
-    }
-
-    private fun updateShipmentDataStandard(data: CustomProductLogisticModel) {
-        data.shipperList.firstOrNull()?.let {
-            shipmentOnDemandAdapter.updateData(it.shipper)
-            shipmentOnDemandAdapter.setAllProductIdsActivated()
-        }
-        data.shipperList.getOrNull(CPL_CONVENTIONAL_INDEX)?.let {
-            shipmentConventionalAdapter.updateData(it.shipper)
-            shipmentConventionalAdapter.setAllProductIdsActivated()
-        }
-    }
-
-    private fun updateShipmentDataCustom(data: CustomProductLogisticModel) {
-        if (data.shipperList.isNotEmpty() && data.cplProduct.isNotEmpty()) {
-            if (data.shipperList.size >= CPL_THRESHOLD_SIZE) {
-                shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
-                shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct.first())
-                shipmentConventionalAdapter.updateData(data.shipperList.last().shipper)
-                shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct.first())
-            } else {
-                when (data.shipperList.first().header) {
-                    ON_DEMAND_VALIDATION -> {
-                        shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
-                        shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct.first())
-                    }
-                    CONVENTIONAL_VALIDATION -> {
-                        shipmentConventionalAdapter.updateData(data.shipperList.first().shipper)
-                        shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct.first())
-                    }
-                }
-            }
-        }
-        updateLayoutShipment()
     }
 
     private fun showProductLimitationBottomSheet(productLimitationModel: ProductLimitationModel) {

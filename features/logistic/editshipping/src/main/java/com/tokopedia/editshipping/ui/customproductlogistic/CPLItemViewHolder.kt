@@ -3,31 +3,42 @@ package com.tokopedia.editshipping.ui.customproductlogistic
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.databinding.ItemShippingEditorCardBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
+import com.tokopedia.media.loader.loadImage
 
-class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, private val listener: CPLItemAdapter.CPLItemAdapterListener): RecyclerView.ViewHolder(binding.root) {
+class CPLItemViewHolder(
+    private val binding: ItemShippingEditorCardBinding,
+    private val listener: CPLItemAdapter.CPLItemAdapterListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     private val cplShipperItemAdapter = CPLShipperItemAdapter()
 
     fun bindData(data: ShipperCPLModel) {
-        val shipperProductData = data.shipperProduct
-
         hideUnusedLayout()
-
         binding.shipmentName.text = data.shipperName
-        binding.imgShipmentItem.let {
-            ImageHandler.loadImageFitCenter(binding.root.context, it, data.logo)
+        binding.shipmentCategory.text = data.description
+        if (data.isWhitelabel) {
+            bindWhitelabelShipment(data)
+        } else {
+            bindNormalShipment(data)
         }
+    }
 
-        binding.shipmentCategory.text =
-            shipperProductData.joinToString(" | ") { it.shipperProductName }
-
+    private fun bindNormalShipment(data: ShipperCPLModel) {
+        binding.imgShipmentItem.loadImage(data.logo)
         setAdapterData(data)
         setItemChecked(data)
+    }
+
+    private fun bindWhitelabelShipment(data: ShipperCPLModel) {
+        binding.shipmentItemList.gone()
+        binding.imgShipmentItem.gone()
+        binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
+            listener.onWhitelabelServiceCheckboxClicked(data.shipperProduct.map { it.shipperProductId }, isChecked)
+        }
     }
 
     private fun hideUnusedLayout() {
@@ -44,20 +55,15 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, priv
         }
 
         cplShipperItemAdapter.addData(data.shipperProduct)
-        cplShipperItemAdapter.setupListener(object : CPLShipperItemAdapter.CPLShipperItemAdapterListener {
-            override fun uncheckCplItem() {
-                binding.cbShipmentItem.isChecked = false
+        cplShipperItemAdapter.setupListener(object :
+            CPLShipperItemAdapter.CPLShipperItemAdapterListener {
+            override fun onCheckboxProductClicked(shipperProductId: Long, checked: Boolean) {
+                listener.onShipperProductCheckboxClicked(shipperProductId, checked)
             }
         })
     }
 
     private fun setItemChecked(data: ShipperCPLModel) {
-        data.shipperProduct.forEach {
-            if (it.isActive) {
-                data.isActive = true
-            }
-        }
-
         binding.cbShipmentItem.isChecked = data.isActive
 
         if (data.isActive) {
@@ -67,17 +73,14 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, priv
         }
 
         binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
-            listener.onCheckboxItemClicked()
-            cplShipperItemAdapter.updateChecked(isChecked)
-            if (isChecked) {
-                binding.itemChildLayout.visible()
-            } else {
-                binding.itemChildLayout.gone()
-            }
+            listener.onShipperCheckboxClicked(data.shipperId, isChecked)
         }
     }
 
     companion object {
-        fun getViewHolder(binding: ItemShippingEditorCardBinding, listener: CPLItemAdapter.CPLItemAdapterListener) = CPLItemViewHolder(binding, listener)
+        fun getViewHolder(
+            binding: ItemShippingEditorCardBinding,
+            listener: CPLItemAdapter.CPLItemAdapterListener
+        ) = CPLItemViewHolder(binding, listener)
     }
 }

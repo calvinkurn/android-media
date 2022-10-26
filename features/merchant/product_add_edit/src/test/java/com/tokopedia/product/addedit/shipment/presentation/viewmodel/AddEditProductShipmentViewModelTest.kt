@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
-import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
+import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticUseCase
 import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGetCPLQGLResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -38,7 +38,7 @@ class AddEditProductShipmentViewModelTest {
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
 
     @RelaxedMockK
-    lateinit var customProductLogisticRepository: CustomProductLogisticRepository
+    lateinit var customProductLogisticUseCase: CustomProductLogisticUseCase
 
     @RelaxedMockK
     lateinit var resourceProvider: IMSResourceProvider
@@ -51,7 +51,7 @@ class AddEditProductShipmentViewModelTest {
     private val viewModel: AddEditProductShipmentViewModel by lazy {
         AddEditProductShipmentViewModel(
             saveProductDraftUseCase,
-            customProductLogisticRepository,
+            customProductLogisticUseCase,
             customProductLogisticMapper,
             resourceProvider,
             CoroutineTestDispatchersProvider)
@@ -113,12 +113,12 @@ class AddEditProductShipmentViewModelTest {
         val testData = CustomProductLogisticModel()
 
         coEvery {
-            customProductLogisticRepository.getCPLList(any(), any())
+            customProductLogisticUseCase(any())
         } returns OngkirGetCPLQGLResponse()
         every {
-            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data, any(), any())
+            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data, any())
         } returns testData
-        viewModel.getCPLList(1234, "9876", null)
+        viewModel.getCPLList(1234, 9876, null, null)
         verify { cplListObserver.onChanged(Success(testData)) }
     }
 
@@ -126,9 +126,9 @@ class AddEditProductShipmentViewModelTest {
     fun `Get CPL List failed`() {
         val testError = Throwable("test error")
         coEvery {
-            customProductLogisticRepository.getCPLList(any(), any())
+            customProductLogisticUseCase(any())
         } throws testError
-        viewModel.getCPLList(1234, "9876", null)
+        viewModel.getCPLList(1234, 9876, null, null)
         verify {
             cplListObserver.onChanged(Fail(testError))
             customProductLogisticMapper wasNot Called
