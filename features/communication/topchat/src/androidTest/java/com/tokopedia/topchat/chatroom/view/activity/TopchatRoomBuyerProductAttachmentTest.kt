@@ -322,20 +322,39 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun should_open_wishlist_when_user_click_cek_wishlist() {
+    fun should_show_success_toaster_wishlist_when_user_add_to_wishlist() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = getZeroStockAttachment()
+        addToWishlistV2UseCase.isFail = false
         launchChatRoomActivity()
 
         //When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(0)
         clickWishlistButtonAt(1) //click wishlist
         clickWishlistButtonAt(1) //click go to wishlist
 
         //Then
-        intended(hasData(ApplinkConst.NEW_WISHLIST))
+        hasToasterWithMsg(
+            context.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg))
+    }
+
+    @Test
+    fun should_show_error_toaster_wishlist_when_user_fail_to_add_to_wishlist() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = getZeroStockAttachment()
+        addToWishlistV2UseCase.isFail = true
+        launchChatRoomActivity()
+
+        //When
+        doScrollChatToPosition(0)
+        clickWishlistButtonAt(1) //click wishlist
+        clickWishlistButtonAt(1) //click go to wishlist
+
+        //Then
+        hasFailedToasterWithMsg(
+            context.getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg))
     }
 
     @Test
