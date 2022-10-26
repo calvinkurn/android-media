@@ -16,6 +16,7 @@ fun generateTestMerchantData(): GetMerchantDataResponse {
     return GetMerchantDataResponse(
             TokoFoodGetMerchantData(
                     ticker = TokoFoodTickerDetail(),
+                    topBanner = TokoFoodTopBanner(),
                     merchantProfile = TokoFoodMerchantProfile(),
                     filters = listOf(),
                     categories = listOf()
@@ -374,6 +375,7 @@ fun generateTestDeliveryCoverageResult(): GetMerchantDataResponse {
     return GetMerchantDataResponse(
             TokoFoodGetMerchantData(
                     ticker = TokoFoodTickerDetail(),
+                    topBanner = TokoFoodTopBanner(),
                     merchantProfile = TokoFoodMerchantProfile(
                             deliverable = true
                     ),

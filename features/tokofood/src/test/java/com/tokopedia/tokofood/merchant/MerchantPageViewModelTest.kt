@@ -250,6 +250,7 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
         } returns GetMerchantDataResponse(
                 TokoFoodGetMerchantData(
                         ticker = TokoFoodTickerDetail(),
+                        topBanner = TokoFoodTopBanner(),
                         merchantProfile = TokoFoodMerchantProfile(),
                         filters = listOf(),
                         categories = generateTestFoodCategories()
@@ -269,6 +270,25 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
         val actualCustomOrderDetail = actualResult[2].productUiModel.customOrderDetails.first()
         val actualSelectedAddons = actualCustomOrderDetail.customListItems.first().addOnUiModel?.selectedAddOns
         assertEquals(expectedSelectedAddons, actualSelectedAddons)
+    }
+
+    @Test
+    fun `when getting product list items with promo is shown expect mvc data is not null`() {
+        coEvery {
+            getMerchantDataUseCase.executeOnBackground()
+        } returns GetMerchantDataResponse(
+            TokoFoodGetMerchantData(
+                ticker = TokoFoodTickerDetail(),
+                topBanner = TokoFoodTopBanner(isShown = true),
+                merchantProfile = TokoFoodMerchantProfile(),
+                filters = listOf(),
+                categories = generateTestFoodCategories()
+            )
+        )
+        viewModel.getMerchantData("merchantId", "latlong", "timezone")
+
+        val actualResult = viewModel.mvcLiveData.value
+        assert(actualResult != null)
     }
 
     @Test
