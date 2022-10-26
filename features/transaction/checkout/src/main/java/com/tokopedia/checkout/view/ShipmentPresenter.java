@@ -1660,25 +1660,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         }
-
-        for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
-            if (dataCheckoutRequest.getShopProducts() != null && dataCheckoutRequest.getShopProducts().size() > 0) {
-                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
-                    if (!shopProductCheckoutRequest.getFreeShippingMetadata().isEmpty()) {
-                        boolean containsLogisticPromo = false;
-                        for (PromoRequest promo : shopProductCheckoutRequest.getPromos()) {
-                            if (promo.getType() == PromoRequest.TYPE_LOGISTIC) {
-                                containsLogisticPromo = true;
-                                break;
-                            }
-                        }
-                        if (!containsLogisticPromo) {
-                            shopProductCheckoutRequest.setFreeShippingMetadata("");
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private boolean hasInsertPromo(List<PromoRequest> promoRequests, String promoCode) {
