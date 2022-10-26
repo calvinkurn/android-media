@@ -29,17 +29,15 @@ data class ScheduleDeliveryUiModel(
         timeslotId: Long
     ) {
         if (scheduleDate != "" && timeslotId != 0L) {
-            getSelectedDeliveryServices(scheduleDate, timeslotId, { recommendScheduleDate, recommendDeliveryProduct ->
-                this.isSelected = true
+            getSelectedDeliveryServices(scheduleDate, timeslotId) { isSelected, recommendScheduleDate, recommendDeliveryProduct ->
+                this.isSelected = isSelected
                 this.scheduleDate = recommendScheduleDate
                 this.timeslotId = recommendDeliveryProduct.id
                 this.deliveryProduct = recommendDeliveryProduct
-            },
-            {
-                this.isSelected = false
-            })
+            }
         } else {
             getSelectedDeliveryServicesRecommend { recommendScheduleDate, recommendDeliveryProduct ->
+                this.isSelected = false
                 this.scheduleDate = recommendScheduleDate
                 this.timeslotId = recommendDeliveryProduct.id
                 this.deliveryProduct = recommendDeliveryProduct
@@ -61,16 +59,18 @@ data class ScheduleDeliveryUiModel(
 
     private fun getSelectedDeliveryServices(
         scheduleDate: String, timeslotId: Long,
-        callback: (scheduleDate: String, deliveryProduct: DeliveryProduct) -> Unit,
-        notFound: () -> Unit,
+        callback: (isSelected: Boolean, scheduleDate: String, deliveryProduct: DeliveryProduct) -> Unit,
     ) {
         val deliveryService = deliveryServices.find { it.id == scheduleDate }
         val deliveryProduct = deliveryService?.deliveryProducts?.find { it.id == timeslotId }
 
         if (deliveryService != null && deliveryProduct != null) {
-            callback(deliveryService.id, deliveryProduct)
+            callback(true, deliveryService.id, deliveryProduct)
         }
-        else
-            notFound()
+        else {
+            getSelectedDeliveryServicesRecommend { date, product ->
+                callback(false, date, product)
+            }
+        }
     }
 }
