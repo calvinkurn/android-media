@@ -35,8 +35,7 @@ data class ProductUiModel(
     val haveNotifyMeOOS: Boolean,
     val notifyMeOOSCount: String,
     val notifyMeOOSWording: String,
-    val isEmptyStock: Boolean,
-    val impressHolder: ImpressHolder = ImpressHolder()
+    val isEmptyStock: Boolean
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)

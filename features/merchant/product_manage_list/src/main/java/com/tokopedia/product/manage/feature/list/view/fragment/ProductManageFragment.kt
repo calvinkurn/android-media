@@ -142,7 +142,6 @@ import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.suspend.view.bottomsheet.SuspendReasonBottomSheet
 import com.tokopedia.product.manage.feature.violation.view.bottomsheet.ViolationReasonBottomSheet
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
@@ -194,10 +193,8 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.STOCK_ALERT_ACTIVE
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.*
-import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_TICKER_NOTIFY_ME
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterId.NOTIFY_ME_ONLY
 import com.tokopedia.unifycomponents.*
-import timber.log.Timber
 import kotlin.math.abs
 
 open class ProductManageFragment :
@@ -223,9 +220,6 @@ open class ProductManageFragment :
 
     @Inject
     lateinit var productManageSession: ProductManageSession
-
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     protected var binding by autoClearedNullable<FragmentProductManageSellerBinding>()
 
@@ -2621,7 +2615,7 @@ open class ProductManageFragment :
     }
 
     private fun getTickerData() {
-        viewModel.getTickerData(remoteConfig.getBoolean(ENABLE_TICKER_NOTIFY_ME,true))
+        viewModel.getTickerData()
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {

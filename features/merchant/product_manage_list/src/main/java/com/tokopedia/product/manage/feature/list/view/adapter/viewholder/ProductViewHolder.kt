@@ -10,6 +10,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
@@ -64,8 +65,9 @@ class ProductViewHolder(
     }
 
     private fun impressionView(product: ProductUiModel){
+        val impressHolder = ImpressHolder()
         if (adapterPosition.orZero() == Int.ZERO){
-            binding?.imageNotifyMeBuyer?.addOnImpressionListener(product.impressHolder) {
+            binding?.imageNotifyMeBuyer?.addOnImpressionListener(impressHolder) {
                 listener.onImpressionNotifyMe()
             }
         }

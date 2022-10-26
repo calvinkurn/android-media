@@ -76,6 +76,7 @@ import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditPro
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.Result
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_TICKER_NOTIFY_ME
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.Data
@@ -921,8 +922,9 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetTickerData_thenReturn(listOf(mockk()))
+            onGetIsShowNotifyMeTicker(true)
 
-            viewModel.getTickerData(false)
+            viewModel.getTickerData()
             viewModel.getProductList(shopId, paramsProductList)
 
             viewModel.showTicker
@@ -955,8 +957,9 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetTickerData_thenReturn(listOf(mockk()))
+            onGetIsShowNotifyMeTicker(true)
 
-            viewModel.getTickerData(false)
+            viewModel.getTickerData()
             viewModel.getProductList(shopId)
             viewModel.hideTicker()
             viewModel.getProductList(shopId)
@@ -994,7 +997,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetTickerData_thenReturn(emptyList())
 
-            viewModel.getTickerData(false)
+            viewModel.getTickerData()
             viewModel.getProductList(shopId, paramsProductList)
 
             viewModel.showTicker
@@ -1028,7 +1031,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetTickerData_thenReturn(emptyList())
 
-            viewModel.getTickerData(false)
+            viewModel.getTickerData()
             viewModel.getProductList(shopId)
             viewModel.hideTicker()
             viewModel.getProductList(shopId)
@@ -1043,7 +1046,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         runBlocking {
             onGetTickerData_thenReturn(listOf(mockk()))
 
-            viewModel.getTickerData(false)
+            viewModel.getTickerData()
             viewModel.showTicker()
 
             viewModel.showTicker
@@ -1073,11 +1076,11 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
             onGetWarehouseId_thenReturn(locationList)
+            onGetIsShowNotifyMeTicker(true)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetProductList_thenReturn(productListData)
             onGetTickerData_thenReturn(listOf(mockk()))
-
-            viewModel.getTickerData(false)
+            viewModel.getTickerData()
             viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
             verifyGetWarehouseIdCalled()
@@ -2011,7 +2014,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 )
             )
             val expectedResult =
-                GetVariantResult(productName, 3, productVariants, selections, emptyList())
+                GetVariantResult(productName, 0, productVariants, selections, emptyList())
             val expectedSuccessResult = Success(expectedResult)
 
             verifyGetVariantsCalled()
@@ -2074,7 +2077,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 )
             )
             val expectedResult =
-                GetVariantResult(productName, 3,productVariants, selections, emptyList())
+                GetVariantResult(productName, 0,productVariants, selections, emptyList())
             val expectedSuccessResult = Success(expectedResult)
 
             verifyGetVariantsCalled()
@@ -2447,7 +2450,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val tickerData = listOf<TickerData>(mockk())
         onGetTickerData_thenReturn(tickerData)
 
-        viewModel.getTickerData(true)
+        viewModel.getTickerData()
 
         verifyTickerDataEquals(tickerData)
     }
@@ -2488,6 +2491,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
             tickerStaticDataProvider,
+            remoteConfigImpl,
             CoroutineTestDispatchersProvider
         )
 
@@ -2534,6 +2538,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
             tickerStaticDataProvider,
+            remoteConfigImpl,
             CoroutineTestDispatchersProvider
         )
 
@@ -2574,6 +2579,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
             tickerStaticDataProvider,
+            remoteConfigImpl,
             CoroutineTestDispatchersProvider
         )
 
@@ -2790,8 +2796,14 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     private fun onGetTickerData_thenReturn(tickerData: List<TickerData>) {
         every {
-            tickerStaticDataProvider.getTickers(any())
+            tickerStaticDataProvider.getTickers(any(),any())
         } returns tickerData
+    }
+
+    private fun onGetIsShowNotifyMeTicker(isShow:Boolean) {
+        every {
+            remoteConfigImpl.getBoolean(ENABLE_TICKER_NOTIFY_ME)
+        } returns isShow
     }
 
     private fun verifyEditPriceUseCaseCalled() {

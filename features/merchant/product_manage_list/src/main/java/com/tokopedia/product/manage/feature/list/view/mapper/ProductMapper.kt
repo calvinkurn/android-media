@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.mapper
 import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel

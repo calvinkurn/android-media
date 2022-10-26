@@ -7,15 +7,17 @@ import javax.inject.Inject
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
 
 
-    private fun MutableList<TickerData>.addNotifyMeTicker() {
-        add(
-            TickerData(
-                title = resourceProvider.getTickerNotifyMeTitle(),
-                description = resourceProvider.getTickerNotifyMeDescription(),
-                type = Ticker.TYPE_ANNOUNCEMENT,
-                isFromHtml = true
+    private fun MutableList<TickerData>.addNotifyMeTicker(isShowTickerNotifyMe: Boolean) {
+        if (isShowTickerNotifyMe){
+            add(
+                TickerData(
+                    title = resourceProvider.getTickerNotifyMeTitle(),
+                    description = resourceProvider.getTickerNotifyMeDescription(),
+                    type = Ticker.TYPE_ANNOUNCEMENT,
+                    isFromHtml = true
+                )
             )
-        )
+        }
     }
 
     private fun MutableList<TickerData>.addMaxStockTicker() {
@@ -41,11 +43,9 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         }
     }
 
-    fun getTickers(multiLocationSeller: Boolean, isShowTickerNotifyMe: Boolean = false): List<TickerData> {
+    fun getTickers(multiLocationSeller: Boolean, isShowTickerNotifyMe: Boolean): List<TickerData> {
         return mutableListOf<TickerData>().apply {
-            if (isShowTickerNotifyMe){
-                addNotifyMeTicker()
-            }
+            addNotifyMeTicker(isShowTickerNotifyMe)
             addMaxStockTicker()
             addMultiLocationTicker(multiLocationSeller)
         }.filter { it.description.isNotBlank() }
