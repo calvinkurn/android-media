@@ -483,8 +483,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
-
     override fun sendTableFilterImpression(element: TableWidgetUiModel) {
         getCategoryPage()?.let { categoryPage ->
             StatisticTracker.sendTableFilterImpressionEvent(categoryPage)

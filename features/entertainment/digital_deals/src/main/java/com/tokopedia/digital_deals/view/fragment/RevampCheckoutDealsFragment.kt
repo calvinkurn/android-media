@@ -34,10 +34,10 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_entertainment.data.DealsDetailsResponse
+import com.tokopedia.common_entertainment.data.DealsGeneral
+import com.tokopedia.common_entertainment.data.DealsInstant
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapResponse
-import com.tokopedia.digital_deals.data.DealsGeneral
-import com.tokopedia.digital_deals.data.DealsInstant
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
