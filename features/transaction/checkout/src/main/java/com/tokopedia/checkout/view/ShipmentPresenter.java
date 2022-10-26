@@ -58,6 +58,7 @@ import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
+import com.tokopedia.checkout.view.subscriber.GetScheduleDeliveryCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber;
 import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
@@ -2249,16 +2250,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         } else {
             observable = ratesUseCase.execute(param);
         }
+
+        Subscriber<ShippingRecommendationData> subscriber = new GetCourierRecommendationSubscriber(
+                getView(), this, shipperId, spId, itemPosition,
+                shippingCourierConverter, shipmentCartItemModel,
+                isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
+        );
+        if (shipmentCartItemModel.isTokoNow()) {
+            subscriber = new GetScheduleDeliveryCourierRecommendationSubscriber(
+                    getView(), this, shipperId, spId, itemPosition,
+                    shippingCourierConverter, shipmentCartItemModel,
+                    isInitialLoad, isForceReload, isBoUnstackEnabled
+            );
+        }
+
         observable
                 .map(shippingRecommendationData ->
                         stateConverter.fillState(shippingRecommendationData, shopShipmentList,
                                 spId, 0))
-                .subscribe(
-                        new GetCourierRecommendationSubscriber(
-                                getView(), this, shipperId, spId, itemPosition,
-                                shippingCourierConverter, shipmentCartItemModel,
-                                isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
-                        ));
+                .subscribe(subscriber);
     }
 
     @Override
