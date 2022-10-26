@@ -331,9 +331,13 @@ class ProductSheetViewComponent(
                     ProductLineItemDecoration.Background.Color.Solid(Color.TRANSPARENT)
                 }
                 section.config.background.imageUrl.isNotBlank() -> {
-                    ProductLineItemDecoration.Background.Image(
-                        getBitmapFromUrl(rootView.context, section.config.background.imageUrl)
-                    )
+                    try {
+                        ProductLineItemDecoration.Background.Image(
+                            getBitmapFromUrl(rootView.context, section.config.background.imageUrl)
+                        )
+                    } catch (e: IllegalStateException) {
+                        ProductLineItemDecoration.Background.Color.Solid(Color.TRANSPARENT)
+                    }
                 }
                 section.config.background.gradients.isNotEmpty() -> {
                     if (section.config.background.gradients.size > 1) {

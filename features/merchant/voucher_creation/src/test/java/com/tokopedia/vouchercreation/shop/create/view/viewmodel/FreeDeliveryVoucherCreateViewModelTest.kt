@@ -89,7 +89,7 @@ class FreeDeliveryVoucherCreateViewModelTest {
         with(mViewModel) {
             refreshTextFieldValue()
 
-            assert(valueListLiveData.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt())) ?: false)
+            assert(valueListLiveData.value?.contentEquals(intArrayOf(anyInt(), anyInt(), anyInt())) ?: false)
         }
     }
 
