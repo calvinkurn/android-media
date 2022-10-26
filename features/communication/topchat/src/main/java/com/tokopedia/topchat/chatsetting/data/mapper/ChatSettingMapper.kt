@@ -38,10 +38,10 @@ class ChatSettingMapper @Inject constructor(
         if (visitables.addAll(gearChat.listSeller)) {
             if (isBubbleChatEnabled()) {
                 visitables.add(ChatSettingSellerUiModel(
-                    alias = getString(R.string.topchat_bubble_settings_title,
+                    alias = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_title,
                         BubbleSettings.TITLE),
-                    description = getString(R.string.topchat_bubble_settings_desc, BubbleSettings.DESCRIPTION),
-                    label = getString(R.string.topchat_bubble_settings_label, BubbleSettings.LABEL),
+                    description = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_desc, BubbleSettings.DESCRIPTION),
+                    label = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_label, BubbleSettings.LABEL),
                     //todo will update after reivin added the bubble applink
                     link = ""
                 ))
