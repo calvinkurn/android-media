@@ -13,6 +13,7 @@ private const val KEY_IMAGE = "image"
 private const val KEY_URI = "uri"
 private const val KEY_RELATIVE_URI = "relative_uri"
 private const val KEY_PRICE_FORMAT = "price_format"
+private const val KEY_PRICE_RANGE = "price_range"
 private const val KEY_COUNT_TALK_FORMAT = "count_talk_format"
 private const val KEY_COUNT_REVIEW_FORMAT = "count_review_format"
 private const val KEY_CATEGORY = "category"
@@ -70,6 +71,10 @@ data class Product(
     @SerializedName(KEY_PRICE_FORMAT)
     @Expose
     var priceFormat: String = "",
+
+    @SerializedName(KEY_PRICE_RANGE)
+    @Expose
+    var priceRange: String = "",
 
     @SerializedName(KEY_COUNT_TALK_FORMAT)
     @Expose
@@ -198,6 +203,9 @@ data class Product(
         if (!jSONObject.isNull(KEY_PRICE_FORMAT)) {
             priceFormat = jSONObject.getString(KEY_PRICE_FORMAT)
         }
+        if (!jSONObject.isNull(KEY_PRICE_RANGE)) {
+            priceRange = jSONObject.getString(KEY_PRICE_RANGE)
+        }
         if (!jSONObject.isNull(KEY_COUNT_TALK_FORMAT)) {
             countTalkFormat = jSONObject.getString(KEY_COUNT_TALK_FORMAT)
         }
@@ -302,6 +310,7 @@ data class Product(
         parcel.readString()
         parcel.readString()
         parcel.readString()
+        parcel.readString()
         parcel.readParcelable(Category::class.java.classLoader) ?: Category()
         parcel.readByte().toInt() != 0
         parcel.readByte().toInt() != 0
@@ -336,6 +345,7 @@ data class Product(
         parcel.writeString(uri)
         parcel.writeString(relativeUri)
         parcel.writeString(priceFormat)
+        parcel.writeString(priceRange)
         parcel.writeString(countTalkFormat)
         parcel.writeString(countReviewFormat)
         parcel.writeParcelable(category, flags)

@@ -262,6 +262,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     uri
                     relative_uri
                     price_format
+                    price_range
                     wholesale_price {
                         price_format
                         quantity_max_format

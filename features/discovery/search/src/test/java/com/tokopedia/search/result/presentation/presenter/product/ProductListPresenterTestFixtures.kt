@@ -248,6 +248,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.productName shouldBe topAdsProduct.product.name
         productItem.applink shouldBe topAdsProduct.applinks
         productItem.customVideoURL shouldBe topAdsProduct.product.customVideoUrl
+        productItem.priceRange shouldBe topAdsProduct.product.priceRange
     }
 
     protected fun Visitable<*>.assertOrganicProduct(
@@ -282,6 +283,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.productListType shouldBe productListType
         productItem.showButtonAtc shouldBe isShowButtonAtc
         productItem.parentId shouldBe organicProduct.parentId
+        productItem.priceRange shouldBe organicProduct.priceRange
     }
 
     @Suppress("UNCHECKED_CAST")
