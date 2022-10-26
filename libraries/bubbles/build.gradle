@@ -22,6 +22,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide
 
 }
