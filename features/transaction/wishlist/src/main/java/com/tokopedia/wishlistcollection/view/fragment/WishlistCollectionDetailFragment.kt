@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
@@ -187,6 +188,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
     private var isAturMode = false
+    private var isCTAResetOfferFilterClicked = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -263,6 +265,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
         private const val TOTAL_LOADER = 5
         private const val COLLECTION_ITEMS_EMPTY = "COLLECTION_ITEMS_EMPTY"
+        private const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -575,6 +578,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
                         countRemovableAutomaticDelete =
                             if (collectionDetail.countRemovableItems > 0) collectionDetail.countRemovableItems else collectionDetail.totalData
+
+                        if (collectionDetail.collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                            hideGearIcon()
+                        }
                     }
                 }
                 is Fail -> {
@@ -1420,11 +1427,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         if (filterItem.isActive) {
             if (filterItem.name == FILTER_OFFERS) {
                 filterBottomSheet.setAction(CTA_RESET) {
+                    isCTAResetOfferFilterClicked = true
+                    listOptionIdSelected.clear()
+                    listTitleCheckboxIdSelected.clear()
                     filterBottomSheetAdapter.isResetCheckbox = true
                     filterBottomSheetAdapter.notifyDataSetChanged()
                     filterBottomSheet.showButtonSave()
-                    listOptionIdSelected.clear()
-                    listTitleCheckboxIdSelected.clear()
                 }
             } else {
                 filterBottomSheet.setAction(CTA_RESET) {
@@ -1459,6 +1467,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         nameSelected = FILTER_OFFERS
                     }
                 }
+
                 if (isChecked) {
                     nameSelected = name
                     if (!listOptionIdSelected.contains(optionId)) {
@@ -1468,6 +1477,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         listTitleCheckboxIdSelected.add(titleCheckbox)
                     }
                 } else {
+                    if (isCTAResetOfferFilterClicked) {
+                        isCTAResetOfferFilterClicked = false
+                        paramGetCollectionItems.sortFilters.forEach { sortFilterParam ->
+                            if (sortFilterParam.name == FILTER_OFFERS) {
+                                listOptionIdSelected.clear()
+                            }
+                        }
+                    }
+
                     listOptionIdSelected.remove(optionId)
                     listTitleCheckboxIdSelected.remove(titleCheckbox)
                 }
@@ -1488,8 +1506,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
 
             override fun onSaveCheckboxSelection() {
+                paramGetCollectionItems.sortFilters.removeAll { it.name == nameSelected }
                 if (listOptionIdSelected.isNotEmpty()) {
-                    paramGetCollectionItems.sortFilters.removeAll { it.name == nameSelected }
                     paramGetCollectionItems.sortFilters.add(
                         GetWishlistCollectionItemsParams.WishlistSortFilterParam(
                             name = nameSelected,
@@ -2078,6 +2096,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     override fun onChangeCollectionName() {
         showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
         WishlistCollectionAnalytics.sendClickUbahNamaKoleksiButtonOnEmptyStateNoCollectionItemsEvent()
+    }
+
+    override fun goToMyWishlist() {
+        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION)
+    }
+
+    override fun goToHome() {
+        RouteManager.route(context, ApplinkConst.HOME)
     }
 
     private fun showUpdateWishlistCollectionNameBottomSheet(
@@ -2770,6 +2796,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         bottomSheetCreateCollection.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
+    }
+
+    // new condition : when shared collection is opened from other user POV
+    private fun hideGearIcon() {
+        binding?.run {
+            wishlistCollectionDetailStickyCountManageLabel.iconGearCollectionDetail.gone()
+            wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
+        }
     }
 
     override fun onCollectionItemClicked(name: String, id: String) {

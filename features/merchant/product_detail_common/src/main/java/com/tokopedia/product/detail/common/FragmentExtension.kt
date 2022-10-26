@@ -23,11 +23,15 @@ fun showImmediately(
         ?: fragmentFactory.invoke()
 
     // has already been saved by its host
-    if (!dialog.isStateSaved) {
-        try {
-            dialog.show(fragmentManager, tag)
-        } catch (e: Throwable) {
-            e.printStackTrace()
+    if (!dialog.isStateSaved && !dialog.isAdded) {
+        runCatching {
+            dialog.showNow(fragmentManager, tag)
+        }.onFailure {
+            runCatching {
+                dialog.show(fragmentManager, tag)
+            }.onFailure {
+                it.printStackTrace()
+            }
         }
     }
 }

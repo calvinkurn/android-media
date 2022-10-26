@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
 import com.tokopedia.createpost.common.R
-import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
+import com.tokopedia.createpost.common.view.service.SubmitPostService
 
 class PostProgressUpdateView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -56,7 +56,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {
         if (maxCount != 0)
-            progressBar?.setValue((progress / maxCount) * 100, true)
+            progressBar?.setValue(progress * MAX_PROGRESS_VALUE / maxCount, true)
         else
             progressBar?.setValue(progress, true)
     }
@@ -92,8 +92,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
             CreatePostViewModel.TAG,
             viewModel, TimeUnit.DAYS.toMillis(7)
         )
-        cacheManager.id?.let { it1 -> SubmitPostServiceNew.startService(this.context, it1) }
-//        cacheManager.id?.let { it1 -> service?.start(this.context, it1) }
+        cacheManager.id?.let { draftId -> SubmitPostService.startService(this.context, draftId) }
         retryText?.gone()
 
     }
@@ -197,6 +196,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
         fun onRetryCLicked()
     }
 
+    companion object{
+        private const val MAX_PROGRESS_VALUE = 100
+    }
 }
-
-
