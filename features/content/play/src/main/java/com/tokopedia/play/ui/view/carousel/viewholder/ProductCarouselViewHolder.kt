@@ -73,7 +73,7 @@ class ProductCarouselViewHolder private constructor() {
             else iconCartEnabled
 
             when (button.type) {
-                ProductButtonType.ATC -> setDrawable(iconType)
+                ProductButtonType.ATC -> setDrawable(iconType , UnifyButton.DrawablePosition.RIGHT,)
             }
 
             //Setup Color, default?
@@ -102,16 +102,21 @@ class ProductCarouselViewHolder private constructor() {
         }
 
         fun bind(item: PlayProductUiModel.Product) {
+            val buttons = listOf(
+                ProductButtonUiModel(text = "Beli Langsung", color = ProductButtonColor.PRIMARY_BUTTON, type = ProductButtonType.OCC),
+                ProductButtonUiModel(text = "Keranjang", color = ProductButtonColor.SECONDARY_BUTTON, type = ProductButtonType.ATC)
+            )
+
             binding.imgProduct.loadImage(item.imageUrl)
             binding.tvName.text = item.title
             binding.labelOos.showWithCondition(item.stock == OutOfStock)
             binding.viewOverlayOos.showWithCondition(item.stock == OutOfStock)
 
             //Buttons
-            binding.btnAtc.showWithCondition(item.buttonUiModels.isNotEmpty())
-            binding.btnBuy.showWithCondition(item.buttonUiModels.isNotEmpty())
-            binding.btnAtc.generateButton(item.buttonUiModels.find { it.type == ProductButtonType.ATC }.orDefault())
-            binding.btnBuy.generateButton(item.buttonUiModels.find { it.type != ProductButtonType.ATC }.orDefault())
+            binding.btnAtc.showWithCondition(buttons.isNotEmpty())
+            binding.btnBuy.showWithCondition(buttons.isNotEmpty())
+            binding.btnAtc.generateButton(buttons.find { it.type == ProductButtonType.ATC }.orDefault())
+            binding.btnBuy.generateButton(buttons.find { it.type != ProductButtonType.ATC }.orDefault())
 
             when (item.price) {
                 is DiscountedPrice -> {
