@@ -22,10 +22,10 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                                 epharmacyGroupId = "123",
                                 shopInfo = listOf(
                                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-                                        shopId = "14005189",
+                                        shopId = "6554231",
                                         products = listOf(
                                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-                                                productId = 5232131732,
+                                                productId = 2150389388,
                                                 isEthicalDrug = true,
                                                 itemWeight = 0.0,
                                                 name = "",
@@ -45,18 +45,18 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                                 ),
                                 numberPrescriptionImages = 0,
                                 prescriptionImages = listOf(
-//                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage(
-//                                        expiredAt = null,
-//                                        prescriptionId = "1",
-//                                        rejectReason = null,
-//                                        status = null
-//                                    )
+                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage(
+                                        expiredAt = null,
+                                        prescriptionId = "1",
+                                        rejectReason = null,
+                                        status = null
+                                    )
                                 ),
                                 consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
-                                    consultationString = "asdf123",
-                                    tokoConsultationId = "123",
-                                    partnerConsultationId = "asdf",
-                                    consultationStatus = 2,
+                                    consultationString = "",
+                                    tokoConsultationId = "",
+                                    partnerConsultationId = "",
+                                    consultationStatus = 0,
                                     doctorDetails = null,
                                     endTime = null,
                                     medicalRecommendation = null,
