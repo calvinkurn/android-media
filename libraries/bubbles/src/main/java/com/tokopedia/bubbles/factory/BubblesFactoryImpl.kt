@@ -74,10 +74,6 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         }
     }
 
-    override fun sendImpressionTracking(historyModels: List<BubbleHistoryItemModel>) {
-        TODO("Not yet implemented")
-    }
-
     override fun getBitmapWidth(): Int {
         return context.resources.getDimensionPixelSize(com.tokopedia.bubbles.R.dimen.bubble_image_width)
             .orZero()
