@@ -134,9 +134,9 @@ class AddEditProductShipmentViewModel @Inject constructor(
                 it.data.shipperList.forEach { shipperGroup ->
                     shipperGroup.shipper.forEach { s ->
                         s.shipperProduct.forEach { sp ->
-                            sp.isActive = true
+                            sp.isActive = false
                         }
-                        s.isActive = true
+                        s.isActive = false
                     }
                 }
                 _cplList.value = it
