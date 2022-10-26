@@ -18,6 +18,7 @@ class ShippingCourierConverter @Inject constructor() {
         }
     }
 
+    @JvmOverloads
     fun convertToCourierItemData(
         shippingCourierUiModel: ShippingCourierUiModel?,
         shippingRecommendationData: ShippingRecommendationData? = null,
