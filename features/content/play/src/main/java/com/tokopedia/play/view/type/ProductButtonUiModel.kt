@@ -26,11 +26,18 @@ data class ProductButtonUiModel(
 
 fun ProductButtonUiModel?.orDefault() = this ?: ProductButtonUiModel.Default
 
+/**
+ *
+ * PRIMARY: colored background, white text and border
+ * PRIMARY_DISABLED: disabled primary button
+ * SECONDARY: white background, colored text and border
+ * SECONDARY_DISABLED: disabled secondary button
+ */
 enum class ProductButtonColor(val value: String) {
-    PRIMARY_BUTTON("primary"),
-    SECONDARY_BUTTON ("secondary"),
-    SECONDARY_GRAY_BUTTON ("secondary_gray"),
-    DISABLED_BUTTON("disabled"),
+    PRIMARY_BUTTON("PRIMARY"),
+    PRIMARY_DISABLED_BUTTON("PRIMARY_DISABLED"),
+    SECONDARY_BUTTON ("SECONDARY"),
+    SECONDARY_DISABLED_BUTTON ("SECONDARY_DISABLED"),
     UNKNOWN("");
 
     companion object {

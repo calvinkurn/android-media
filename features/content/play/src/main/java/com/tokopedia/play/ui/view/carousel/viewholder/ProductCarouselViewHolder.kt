@@ -68,12 +68,12 @@ class ProductCarouselViewHolder private constructor() {
             text = if(button.type == ProductButtonType.ATC) "+" else button.text
 
             //Setup Icon if any, for now its only for ATC
-            val iconType = if(button.color == ProductButtonColor.DISABLED_BUTTON)
+            val iconType = if(button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON)
                 iconCartDisabled
             else iconCartEnabled
 
             when (button.type) {
-                ProductButtonType.ATC -> setDrawable(iconType , UnifyButton.DrawablePosition.RIGHT,)
+                ProductButtonType.ATC -> setDrawable(iconType , UnifyButton.DrawablePosition.RIGHT)
             }
 
             //Setup Color, default?
@@ -88,12 +88,12 @@ class ProductCarouselViewHolder private constructor() {
                     buttonType = UnifyButton.Type.MAIN
                     isEnabled = true
                 }
-                ProductButtonColor.DISABLED_BUTTON -> {
+                ProductButtonColor.PRIMARY_DISABLED_BUTTON -> {
                     buttonVariant = UnifyButton.Variant.FILLED
                     buttonType = UnifyButton.Type.MAIN
                     isEnabled = false
                 }
-                ProductButtonColor.SECONDARY_GRAY_BUTTON -> {
+                ProductButtonColor.SECONDARY_DISABLED_BUTTON -> {
                     buttonVariant = UnifyButton.Variant.GHOST
                     buttonType = UnifyButton.Type.MAIN
                     isEnabled = false

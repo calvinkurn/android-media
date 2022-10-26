@@ -147,7 +147,7 @@ class ProductBottomSheetCardView(
         text = button.text
 
         //Setup Icon if any, for now its only for ATC
-        val iconColor = if(button.color == ProductButtonColor.DISABLED_BUTTON)
+        val iconColor = if(button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON)
                             com.tokopedia.unifyprinciples.R.color.Unify_NN100
                         else com.tokopedia.unifyprinciples.R.color.Unify_G500
 
@@ -169,12 +169,12 @@ class ProductBottomSheetCardView(
                 buttonType = UnifyButton.Type.MAIN
                 isEnabled = true
             }
-            ProductButtonColor.DISABLED_BUTTON -> {
+            ProductButtonColor.PRIMARY_DISABLED_BUTTON -> {
                 buttonVariant = UnifyButton.Variant.FILLED
                 buttonType = UnifyButton.Type.MAIN
                 isEnabled = false
             }
-            ProductButtonColor.SECONDARY_GRAY_BUTTON -> {
+            ProductButtonColor.SECONDARY_DISABLED_BUTTON -> {
                 buttonVariant = UnifyButton.Variant.GHOST
                 buttonType = UnifyButton.Type.MAIN
                 isEnabled = false
