@@ -113,8 +113,8 @@ class ProductBottomSheetCardView(
         //Buttons
         binding.btnProductAtc.showWithCondition(item.buttonUiModels.isNotEmpty())
         binding.btnProductBuy.showWithCondition(item.buttonUiModels.isNotEmpty())
-        binding.btnProductBuy.generateButton(item.buttonUiModels.firstOrNull().orDefault())
-        binding.btnProductAtc.generateButton(item.buttonUiModels.lastOrNull().orDefault())
+        binding.btnProductAtc.generateButton(item.buttonUiModels.firstOrNull().orDefault())
+        binding.btnProductBuy.generateButton(item.buttonUiModels.lastOrNull().orDefault())
     }
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {

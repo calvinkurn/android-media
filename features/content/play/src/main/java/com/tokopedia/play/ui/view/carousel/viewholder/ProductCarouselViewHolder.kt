@@ -15,11 +15,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayPinnedProductBinding
-import com.tokopedia.play.view.type.ComingSoon
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.UnifyButton
@@ -64,23 +60,58 @@ class ProductCarouselViewHolder private constructor() {
                 binding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
+        /**
+         * Need to make sure that first index is ATC if product is pinned
+         */
+        private fun UnifyButton.generateButton(button: ProductButtonUiModel){
+            //Setup Text
+            text = if(button.type == ProductButtonType.ATC) "" else button.text
+
+            //Setup Icon if any, for now its only for ATC
+            val iconType = if(button.color == ProductButtonColor.DISABLED_BUTTON)
+                iconCartDisabled
+            else iconCartEnabled
+
+            when (button.type) {
+                ProductButtonType.ATC -> setDrawable(iconType)
+            }
+
+            //Setup Color, default?
+            when (button.color) {
+                ProductButtonColor.PRIMARY_BUTTON -> {
+                    buttonVariant = UnifyButton.Variant.FILLED
+                    buttonType = UnifyButton.Type.MAIN
+                    isEnabled = true
+                }
+                ProductButtonColor.SECONDARY_BUTTON -> {
+                    buttonVariant = UnifyButton.Variant.GHOST
+                    buttonType = UnifyButton.Type.MAIN
+                    isEnabled = true
+                }
+                ProductButtonColor.DISABLED_BUTTON -> {
+                    buttonVariant = UnifyButton.Variant.FILLED
+                    buttonType = UnifyButton.Type.MAIN
+                    isEnabled = false
+                }
+                ProductButtonColor.SECONDARY_GRAY_BUTTON -> {
+                    buttonVariant = UnifyButton.Variant.GHOST
+                    buttonType = UnifyButton.Type.MAIN
+                    isEnabled = false
+                }
+            }
+        }
+
         fun bind(item: PlayProductUiModel.Product) {
             binding.imgProduct.loadImage(item.imageUrl)
             binding.tvName.text = item.title
             binding.labelOos.showWithCondition(item.stock == OutOfStock)
-
-            binding.btnAtc.setDrawable(
-                if (item.stock is StockAvailable) iconCartEnabled else iconCartDisabled,
-                UnifyButton.DrawablePosition.RIGHT,
-            )
-
             binding.viewOverlayOos.showWithCondition(item.stock == OutOfStock)
 
-            binding.btnAtc.isEnabled = item.stock is StockAvailable
-            binding.btnBuy.isEnabled = item.stock is StockAvailable
-
-            binding.btnAtc.showWithCondition(item.stock != ComingSoon)
-            binding.btnBuy.showWithCondition(item.stock != ComingSoon)
+            //Buttons
+            binding.btnAtc.showWithCondition(item.buttonUiModels.isNotEmpty())
+            binding.btnBuy.showWithCondition(item.buttonUiModels.isNotEmpty())
+            binding.btnAtc.generateButton(item.buttonUiModels.find { it.type == ProductButtonType.ATC }.orDefault())
+            binding.btnBuy.generateButton(item.buttonUiModels.find { it.type != ProductButtonType.ATC }.orDefault())
 
             when (item.price) {
                 is DiscountedPrice -> {
