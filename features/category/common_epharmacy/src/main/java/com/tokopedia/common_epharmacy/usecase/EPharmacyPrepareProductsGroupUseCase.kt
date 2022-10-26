@@ -20,7 +20,7 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                         epharmacyGroups = listOf(
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
                                 epharmacyGroupId = "123",
-                                productsInfo = listOf(
+                                shopInfo = listOf(
                                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
                                         shopId = "14005189",
                                         products = listOf(
@@ -31,14 +31,16 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                                                 name = "",
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = 1
+                                                quantity = 1,
+                                                quantityString = "1"
                                             )
                                         ),
                                         partnerLogoUrl = "",
                                         shopLocation = "",
                                         shopLogoUrl = "",
                                         shopName = "",
-                                        shopType = ""
+                                        shopType = "",
+                                        orderName = null
                                     )
                                 ),
                                 numberPrescriptionImages = 0,
@@ -73,7 +75,8 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                                     startTime = ""
                                 ),
                                 consultationSource = null,
-                                prescriptionSource = null
+                                prescriptionSource = null,
+                                cta = null
                             )
                         ),
                         attachmentPageTickerText = null

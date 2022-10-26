@@ -2430,9 +2430,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
                             if (position > 0) {
                                 for (GroupData.EpharmacyGroup epharmacyGroup : data.getEpharmacyGroups()) {
-                                    if (epharmacyGroup != null && epharmacyGroup.getProductsInfo() != null) {
+                                    if (epharmacyGroup != null && epharmacyGroup.getShopInfo() != null) {
                                         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                                            for (ProductsInfo productInfo : epharmacyGroup.getProductsInfo()) {
+                                            for (ProductsInfo productInfo : epharmacyGroup.getShopInfo()) {
                                                 if (productInfo != null && productInfo.getShopId() != null && productInfo.getProducts() != null && Long.parseLong(productInfo.getShopId()) == shipmentCartItemModel.getShopId()) {
                                                     for (ProductsInfo.Product product : productInfo.getProducts()) {
                                                         if (product != null && product.getProductId() != null && cartItemModel.getProductId() == product.getProductId()) {

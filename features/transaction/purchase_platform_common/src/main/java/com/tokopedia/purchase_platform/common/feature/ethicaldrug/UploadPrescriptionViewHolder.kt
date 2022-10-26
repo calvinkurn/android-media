@@ -57,7 +57,7 @@ class UploadPrescriptionViewHolder(
         } else {
             uploadPrescriptionText.text =
                 itemView.resources.getString(R.string.pp_epharmacy_upload_success_title_text)
-            uploadPrescriptionIcon.loadImage(EPharmacyCountImageUrl)
+            uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
             uploadDescriptionText.text = itemView.resources.getString(
                 R.string.pp_epharmacy_upload_count_text,
                 uploadPrescriptionUiModel.uploadedImageCount
