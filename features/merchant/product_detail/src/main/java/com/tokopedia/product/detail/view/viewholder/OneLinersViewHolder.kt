@@ -87,7 +87,7 @@ class OneLinersViewHolder(
     }
 
     private fun renderViewEvent(element: OneLinersDataModel) {
-        val content = element.oneLinersContent ?: OneLinersContent()
+        val content = element.oneLinersContent ?: return
 
         if (content.applink.isNotBlank()) {
             view.setOnClickListener { listener.goToApplink(content.applink) }

@@ -22,7 +22,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
  * Project name: android-tokopedia-core
  **/
 
-object OneLinersTracker {
+object OneLinersTracking {
 
     fun clickInformationButton(
         component: ComponentTrackDataModel,
@@ -38,8 +38,8 @@ object OneLinersTracker {
                 EVENT_CATEGORY to PDP,
                 EVENT_LABEL to eventLabel,
                 TRACKER_ID to "38045",
-                BUSINESS_UNIT to CURRENT_SITE,
-                TrackerConstant.CURRENT_SITE to PDP
+                BUSINESS_UNIT to PDP,
+                TrackerConstant.CURRENT_SITE to CURRENT_SITE
             ),
             productInfo = productInfo,
             componentTrackDataModel = component,
@@ -75,8 +75,8 @@ object OneLinersTracker {
             customItemId = "text:$label"
         )?.apply {
             put(TRACKER_ID, "18022")
-            put(KEY_BUSINESS_UNIT, CURRENT_SITE)
-            put(KEY_CURRENT_SITE, PDP)
+            put(KEY_BUSINESS_UNIT, PDP)
+            put(KEY_CURRENT_SITE, CURRENT_SITE)
         }
 
         trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)

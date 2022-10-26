@@ -188,7 +188,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
-import com.tokopedia.product.detail.tracking.OneLinersTracker
+import com.tokopedia.product.detail.tracking.OneLinersTracking
 import com.tokopedia.product.detail.tracking.PageErrorTracker
 import com.tokopedia.product.detail.tracking.PageErrorTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
@@ -5359,7 +5359,7 @@ open class DynamicProductDetailFragment :
         componentTrackDataModel: ComponentTrackDataModel,
         label: String
     ) {
-        OneLinersTracker.onImpression(
+        OneLinersTracking.onImpression(
             trackingQueue = trackingQueue,
             componentTrackDataModel = componentTrackDataModel,
             productInfo = viewModel.getDynamicProductInfoP1,
@@ -5376,7 +5376,7 @@ open class DynamicProductDetailFragment :
     ) {
         goToEducational(url = appLink)
 
-        OneLinersTracker.clickInformationButton(
+        OneLinersTracking.clickInformationButton(
             component = componentTrackDataModel,
             productInfo = viewModel.getDynamicProductInfoP1,
             eventLabel = label
