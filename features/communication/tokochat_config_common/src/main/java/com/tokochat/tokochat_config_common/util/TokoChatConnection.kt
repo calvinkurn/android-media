@@ -18,15 +18,12 @@ object TokoChatConnection {
             .build()
 
         // Initialize Courier Connection
-        val courierComponent =
-            tokoChatConfigComponent?.getCourierClientProvider()?.initializeCourierComponent()
-        if (courierComponent != null) {
-            courierConnection = courierComponent.courierConnection()
-        }
+        courierConnection = tokoChatConfigComponent?.getCourierConnection()
 
         if (courierConnection != null) {
             // Attach observer lifecycle
             ProcessLifecycleOwner.get().lifecycle.addObserver(TokoChatProcessLifecycleObserver())
+            tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
         }
     }
 }

@@ -2,11 +2,13 @@ package com.tokochat.tokochat_config_common.di.component
 
 import android.content.Context
 import com.gojek.conversations.courier.BabbleCourierClient
+import com.gojek.courier.CourierConnection
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigConversationModule
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigModule
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigNetworkModule
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
+import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokochat.tokochat_config_common.repository.courier.TokoChatCourierClientProvider
 import dagger.Component
 import retrofit2.Retrofit
@@ -22,7 +24,7 @@ import retrofit2.Retrofit
 interface TokoChatConfigComponent {
 
     @TokoChatQualifier
-    fun getCourierClientProvider(): TokoChatCourierClientProvider
+    fun getCourierConnection(): CourierConnection
 
     @TokoChatQualifier
     fun getRetrofit(): Retrofit
@@ -32,4 +34,7 @@ interface TokoChatConfigComponent {
 
     @TokoChatQualifier
     fun getContext(): Context
+
+    @TokoChatQualifier
+    fun getTokoChatRepository(): TokoChatRepository
 }

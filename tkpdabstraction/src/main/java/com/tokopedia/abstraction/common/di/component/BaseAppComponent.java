@@ -3,6 +3,7 @@ package com.tokopedia.abstraction.common.di.component;
 import android.content.Context;
 
 import com.gojek.conversations.courier.BabbleCourierClient;
+import com.gojek.courier.CourierConnection;
 import com.google.gson.Gson;
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent;
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier;
@@ -60,7 +61,10 @@ public interface BaseAppComponent {
     // TokoChat Section
 
     @TokoChatQualifier
-    Retrofit getTokoChatRetrofit();
+    CourierConnection getCourierConnection();
+
+    @TokoChatQualifier
+    Retrofit getRetrofit();
 
     @TokoChatQualifier
     BabbleCourierClient getBabbleCourierClient();

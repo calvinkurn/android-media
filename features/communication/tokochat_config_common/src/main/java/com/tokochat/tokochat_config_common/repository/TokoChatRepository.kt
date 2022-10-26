@@ -19,22 +19,19 @@ class TokoChatRepository @Inject constructor(
     @TokoChatQualifier private val babbleCourier: BabbleCourierClient
 ): ConversationsLogger.ILog, ConversationsAnalyticsTracker {
 
-    private var conversationRepository: ConversationsRepository? = null
-
     fun getConversationRepository(): ConversationsRepository {
-        if (conversationRepository == null) {
+        if (ConversationsRepository.instance == null) {
             initConversationRepository()
         }
-        return conversationRepository!!
+        return ConversationsRepository.instance!!
     }
 
-    private fun initConversationRepository() {
+    fun initConversationRepository() {
         ConversationsRepository.init(
             context, retrofit, this, this,
             conversationsConfig = getConversationsConfig(),
             courierClient = babbleCourier
         )
-        conversationRepository = ConversationsRepository.instance
     }
 
     private fun getConversationsConfig(): ConversationsConfig {

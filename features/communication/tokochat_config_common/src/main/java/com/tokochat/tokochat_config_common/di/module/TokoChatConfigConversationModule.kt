@@ -2,6 +2,7 @@ package com.tokochat.tokochat_config_common.di.module
 
 import android.content.Context
 import com.gojek.conversations.courier.BabbleCourierClient
+import com.gojek.courier.CourierConnection
 import com.gojek.courier.config.CourierRemoteConfig
 import com.google.gson.Gson
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
@@ -28,26 +29,28 @@ object TokoChatConfigConversationModule {
 
     @Provides
     @TokoChatQualifier
-    fun provideTokoChatCourierClientProvider(
+    fun provideTokoChatCourierConnection(
         @TokoChatQualifier context: Context,
         @TokoChatQualifier gson: Gson,
         @TokoChatQualifier retrofit: Retrofit,
         @TokoChatQualifier userSession: UserSessionInterface,
         @TokoChatQualifier courierRemoteConfig: CourierRemoteConfig
-    ): TokoChatCourierClientProvider {
-        return TokoChatCourierClientProvider(
+    ): CourierConnection {
+        val provider = TokoChatCourierClientProvider(
             context, gson, retrofit, userSession, courierRemoteConfig
         )
+        return provider.getCourierConnection()
     }
 
     @Provides
     @TokoChatQualifier
     fun provideTokoChatBabbleCourier(
+        @TokoChatQualifier courierConnection: CourierConnection,
         courierStateObservable: TokoChatCourierStateObservable,
         @TokoChatQualifier remoteConfig: RemoteConfig
     ): BabbleCourierClient {
         return TokoChatBabbleCourierImpl(
-            courierStateObservable, remoteConfig
+            courierConnection, courierStateObservable, remoteConfig
         )
     }
 }

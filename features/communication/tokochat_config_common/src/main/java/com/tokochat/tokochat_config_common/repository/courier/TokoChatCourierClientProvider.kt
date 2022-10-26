@@ -26,7 +26,7 @@ class TokoChatCourierClientProvider @Inject constructor(
 ) {
 
     // TODO: Change the value after BE ready
-    fun initializeCourierComponent(): CourierComponent {
+    fun getCourierConnection(): CourierConnection {
         val params = CourierComponent.Params(
             context = context,
             gson = gson,
@@ -41,8 +41,7 @@ class TokoChatCourierClientProvider @Inject constructor(
             connectionLifecycle = TokoChatCourierConnectionLifecycle
         )
 
-        // Build Courier Component
-       return CourierComponent.getOrCreate(params)
+       return CourierComponent.getOrCreate(params).courierConnection()
     }
 
     private fun getUsernameProvider(): UsernameProvider {

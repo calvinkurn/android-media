@@ -1,13 +1,8 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply from: "../../../compile-unit-test.gradle"
-apply from: "../../../compile-instrument-test.gradle"
-
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-    mavenCentral()
-}
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'kotlin-kapt'
 
 buildscript {
     repositories {
@@ -36,6 +31,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chuckMqtt
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.dagger
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 }

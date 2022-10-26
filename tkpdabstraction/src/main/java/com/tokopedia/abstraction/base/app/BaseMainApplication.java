@@ -2,11 +2,9 @@ package com.tokopedia.abstraction.base.app;
 
 import android.content.Context;
 
-import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent;
 import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
@@ -27,7 +25,6 @@ public class BaseMainApplication extends MultiDexApplication {
                     .tokoChatConfigComponent(getTokoChatConnection().getTokoChatConfigComponent())
                     .appModule(new AppModule(this));
             baseAppComponent = daggerBuilder.build();
-            initTokoChatConfigComponent();
         }
         return baseAppComponent;
     }
@@ -42,15 +39,9 @@ public class BaseMainApplication extends MultiDexApplication {
         SplitCompat.install(this);
     }
 
-    private void initTokoChatConfigComponent() {
-        if (tokoChatConnection == null) {
-            initTokoChatConnection();
-        }
-    }
-
     public TokoChatConnection getTokoChatConnection() {
         if (tokoChatConnection == null) {
-            initTokoChatConfigComponent();
+            initTokoChatConnection();
         }
         return tokoChatConnection;
     }
