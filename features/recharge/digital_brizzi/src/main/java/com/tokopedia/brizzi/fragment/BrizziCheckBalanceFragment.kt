@@ -244,7 +244,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
                 if (userSession.isLoggedIn) {
                     it.intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
                     val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        PendingIntent.getActivity(it, 0, it.intent, PendingIntent.FLAG_IMMUTABLE)
+                        PendingIntent.getActivity(it, 0, it.intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                     } else {
                         PendingIntent.getActivity(it, 0, it.intent, 0)
                     }
