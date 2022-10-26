@@ -1,6 +1,7 @@
-package com.tokopedia.logisticcart.shipping.features.shippingschedulewidget
+package com.tokopedia.logisticcart.scheduledelivery.view
 
 import android.content.Context
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -8,11 +9,13 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
 import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.scheduledelivery.preference.ScheduleDeliveryPreferences
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
@@ -28,6 +31,7 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     private var binding: ShippingNowWidgetBinding? = null
     private var mListener: ShippingScheduleWidgetListener? = null
+    private var scheduleDeliveryPreferences: ScheduleDeliveryPreferences? = null
 
     interface ShippingScheduleWidgetListener {
         fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel)
@@ -35,6 +39,7 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     init {
         binding = ShippingNowWidgetBinding.inflate(LayoutInflater.from(context), this, true)
+        scheduleDeliveryPreferences = ScheduleDeliveryPreferences(context)
     }
 
     fun bind(
@@ -75,7 +80,6 @@ class ShippingScheduleWidget : ConstraintLayout {
 
         scheduleDeliveryUiModel?.apply {
             shippingScheduleWidgets.add(createOtherOptionWidget())
-            isNeedShowCoachMark = false
         }
 
         return shippingScheduleWidgets
@@ -115,7 +119,7 @@ class ShippingScheduleWidget : ConstraintLayout {
             description = if (available) deliveryProduct?.textEta else text,
             label = deliveryProduct?.promoText,
             isSelected = isSelected,
-            isShowCoachMark = available && isNeedShowCoachMark,
+            isShowCoachMark = scheduleDeliveryPreferences?.isDisplayedCoachmark?.not() ?: true,
             onSelectedWidgetListener = {
                 isSelected = true
                 mListener?.onChangeScheduleDelivery(this)
@@ -128,7 +132,7 @@ class ShippingScheduleWidget : ConstraintLayout {
         val text = StringBuilder().apply {
             appendHtmlBoldText(title)
             if (available) {
-                if (deliveryProduct?.textRealPrice?.isNotBlank() == true) {
+                if (deliveryProduct?.realPrice != deliveryProduct?.finalPrice) {
                     appendHtmlBoldText(" (${deliveryProduct?.textFinalPrice} ")
                     appendHtmlStrikethroughText("${deliveryProduct?.textRealPrice}")
                     appendHtmlBoldText(")")
@@ -174,7 +178,7 @@ class ShippingScheduleWidget : ConstraintLayout {
                 setTitle(shippingNowTimeOption.title ?: "")
                 setDescription(shippingNowTimeOption.description)
                 setLabel(shippingNowTimeOption.label, shippingNowTimeOption.isSelected)
-                showRightIcon(shippingNowTimeOption.onClickIconListener != null)
+                showRightIcon(shippingNowTimeOption.onClickIconListener)
                 setTimeOptionEnable(shippingNowTimeOption.isEnable)
                 showCoachMark(shippingNowTimeOption.isShowCoachMark)
             }
@@ -185,20 +189,32 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     private fun ItemShipmentNowTimeOptionBinding.showCoachMark(isShow: Boolean) {
         if (isShow) {
-            rightIcon.apply {
-                val coachMarkItem = ArrayList<CoachMark2Item>()
-                val coachMark = CoachMark2(context)
-                coachMarkItem.add(
-                    CoachMark2Item(
-                        this,
-                        context.getString(R.string.title_coachmark_option_schedule_delivery),
-                        context.getString(R.string.description_coachmark_option_schedule_delivery),
-                        CoachMark2.POSITION_BOTTOM
+            delayed {
+                rightIcon.apply {
+                    val coachMarkItem = ArrayList<CoachMark2Item>()
+                    val coachMark = CoachMark2(context)
+                    coachMarkItem.add(
+                        CoachMark2Item(
+                            this,
+                            context.getString(R.string.title_coachmark_option_schedule_delivery),
+                            context.getString(R.string.description_coachmark_option_schedule_delivery),
+                            CoachMark2.POSITION_BOTTOM
+                        )
                     )
-                )
-                coachMark.showCoachMark(coachMarkItem)
+                    coachMark.isOutsideTouchable = true
+                    coachMark.showCoachMark(coachMarkItem)
+                    coachMark.setOnDismissListener {
+                        scheduleDeliveryPreferences?.isDisplayedCoachmark = true
+                    }
+                }
             }
         }
+    }
+
+    private fun delayed(run: () -> Unit) {
+        Handler().postDelayed({
+            run.invoke()
+        }, DELAY_SHOWING_COACHMARK)
     }
 
     private fun ItemShipmentNowTimeOptionBinding.setTimeOptionEnable(isEnable: Boolean) {
@@ -264,16 +280,20 @@ class ShippingScheduleWidget : ConstraintLayout {
         }
     }
 
-    private fun ItemShipmentNowTimeOptionBinding.showRightIcon(isShow: Boolean) {
-        if (isShow) {
+    private fun ItemShipmentNowTimeOptionBinding.showRightIcon(onClickIconListener: (() -> Unit)?) {
+        if (onClickIconListener != null) {
             rightIcon.visible()
+            rightIcon.setOnClickListener {
+                onClickIconListener.invoke()
+            }
         } else {
-            rightIcon.gone()
+            rightIcon.invisible()
         }
     }
 
     companion object {
         const val HTML_BOLD_FORMAT = "<b>%s</b>"
         private const val HTML_STRIKETHROUGH_FORMAT =  "<s>%s</s>"
+        private const val DELAY_SHOWING_COACHMARK: Long = 300
     }
 }

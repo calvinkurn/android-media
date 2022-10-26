@@ -79,6 +79,7 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase;
+import com.tokopedia.logisticcart.scheduledelivery.model.ScheduleDeliveryParam;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
@@ -95,6 +96,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
+import com.tokopedia.logisticcart.scheduledelivery.usecase.GetRatesWithScheduleUseCase;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
@@ -192,6 +194,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetPrescriptionIdsUseCase prescriptionIdsUseCase;
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
+    private final GetRatesWithScheduleUseCase ratesWithScheduleUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
     private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
@@ -252,7 +255,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
                              Gson gson,
                              ExecutorSchedulers executorSchedulers,
-                             EligibleForAddressUseCase eligibleForAddressUseCase) {
+                             EligibleForAddressUseCase eligibleForAddressUseCase,
+                             GetRatesWithScheduleUseCase ratesWithScheduleUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
@@ -275,6 +279,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.gson = gson;
         this.executorSchedulers = executorSchedulers;
         this.eligibleForAddressUseCase = eligibleForAddressUseCase;
+        this.ratesWithScheduleUseCase = ratesWithScheduleUseCase;
     }
 
     @Override
@@ -293,6 +298,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         if (ratesApiUseCase != null) {
             ratesApiUseCase.unsubscribe();
+        }
+        if (ratesWithScheduleUseCase != null) {
+            ratesWithScheduleUseCase.unsubscribe();
         }
     }
 
@@ -2236,6 +2244,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         Observable<ShippingRecommendationData> observable;
         if (isTradeInDropOff) {
             observable = ratesApiUseCase.execute(param);
+        } else if (shipmentCartItemModel.isTokoNow()) {
+            observable = ratesWithScheduleUseCase.execute(param, new ScheduleDeliveryParam());
         } else {
             observable = ratesUseCase.execute(param);
         }
@@ -2709,6 +2719,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         Observable<ShippingRecommendationData> observable;
         if (isTradeInDropOff) {
             observable = ratesApiUseCase.execute(param);
+        } else if (shipmentCartItemModel.isTokoNow()) {
+            observable = ratesWithScheduleUseCase.execute(param, new ScheduleDeliveryParam());
         } else {
             observable = ratesUseCase.execute(param);
         }
