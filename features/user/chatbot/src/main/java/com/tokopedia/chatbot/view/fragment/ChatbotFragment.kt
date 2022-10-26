@@ -267,6 +267,8 @@ class ChatbotFragment :
     private lateinit var chatbotAdapter: ChatbotAdapter
     private var isEligibleForVideoUplaod : Boolean = false
     private var guideline: Guideline? = null
+    var xForReplyBubbleOnboarding: Int  = 0
+    var yForReplyBubbleOnboarding: Int  = 0
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
@@ -639,7 +641,7 @@ class ChatbotFragment :
         }
     }
 
-    private fun goToOnboardingActivity(x: Int = 0, y: Int = 0) {
+    private fun goToOnboardingActivity() {
 
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
         val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
@@ -647,14 +649,13 @@ class ChatbotFragment :
 //        if(hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
 //            return
 //        }
+        if (true || true) {
 
-        if(x==0 && y==0)
-            return
-
-        val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
-        intent.putExtra(X_COORDINATE,x)
-        intent.putExtra(Y_COORDINATE,y)
-        startActivity(intent)
+            val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
+            intent.putExtra(X_COORDINATE, xForReplyBubbleOnboarding)
+            intent.putExtra(Y_COORDINATE, yForReplyBubbleOnboarding)
+            startActivity(intent)
+        }
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -1703,29 +1704,17 @@ class ChatbotFragment :
     }
 
     private fun checkReplyBubbleOnboardingStatus() {
-        val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
-//        if (false)
-//            return
         recyclerView?.doOnLayout {
             val location = IntArray(2)
             recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark())
                 ?.getLocationOnScreen(location)
-            val x = location[0]
-            val y = location[1]
-            goToOnboardingActivity(x, y)
+            xForReplyBubbleOnboarding = location[0]
+            yForReplyBubbleOnboarding = location[1]
         }
     }
 
-
     private fun getPositionToAnchorReplyBubbleCoachmark(): Int {
         return chatbotAdapter.getMostRecentTokopediaCareMessage()
-    }
-
-    private fun checkVideoUploadOnboardingStatus() {
-        val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
-//        if (false)
-//            return
-        goToOnboardingActivity()
     }
 
     override fun visibilityReplyBubble(state: Boolean) {
@@ -1970,7 +1959,7 @@ class ChatbotFragment :
         isConnectedToAgent = state
         replyBubbleEnabled = state
         checkReplyBubbleOnboardingStatus()
-        checkVideoUploadOnboardingStatus()
+        goToOnboardingActivity()
         createAttachmentMenus()
     }
 

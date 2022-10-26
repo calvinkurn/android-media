@@ -1,13 +1,14 @@
 package com.tokopedia.chatbot.view.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.databinding.ActivityChatbotOnboardingBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
@@ -19,14 +20,14 @@ import javax.inject.Inject
 
 class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListener {
 
-
     @Inject
     lateinit var videoUploadOnBoarding: VideoUploadOnBoarding
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
 
-    var replyBubbleOnboardingDismissed: Boolean = false
-    var videoBubbleOnBoardingDismissed: Boolean = false
+    //TODO change them
+    var replyBubbleOnboardingDismissed: Boolean = true
+    var videoBubbleOnBoardingDismissed: Boolean = true
 
     private var _viewBinding: ActivityChatbotOnboardingBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -36,13 +37,16 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         super.onCreate(savedInstanceState)
         _viewBinding = ActivityChatbotOnboardingBinding.inflate(layoutInflater)
         setContentView(_viewBinding!!.root)
-
+        Log.d("ChatbotOnBoarding", "onCreate: called ")
         initInjector()
         setUpListeners()
         checkVideoUploadOnboardingStatus()
-        val ratioY = calculateRatiosForGuideline()
-        setUpReplyBubbleGuideline(ratioY)
-        checkReplyBubbleOnboardingStatus()
+        if(false) {
+            val ratioY = calculateRatiosForGuideline()
+            setUpReplyBubbleGuideline(ratioY)
+            checkReplyBubbleOnboardingStatus()
+        }
+        supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chatbot_avatar))
     }
 
     /**
@@ -66,9 +70,11 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     }
 
     private fun setUpReplyBubbleGuideline(ratioY: Float) {
+        if (ratioY == 0F)
+            return
         val params = getBindingView().guidelineReplyBubble.layoutParams as ConstraintLayout.LayoutParams
         params.guidePercent = ratioY
-        getBindingView().guidelineReplyBubble?.layoutParams = params
+        getBindingView().guidelineReplyBubble.layoutParams = params
     }
 
     private fun setUpListeners(){
@@ -112,8 +118,6 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
 
     private fun checkToCloseOnboardingActivity() {
         if (replyBubbleOnboardingDismissed && videoBubbleOnBoardingDismissed) {
-            val intent = Intent(this, ChatbotActivity::class.java)
-            startActivity(intent)
             finish()
         }
     }
