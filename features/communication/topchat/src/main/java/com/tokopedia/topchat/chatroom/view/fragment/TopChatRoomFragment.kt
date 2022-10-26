@@ -1043,7 +1043,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
 
-        TopChatAnalyticsKt.eventViewReadMsgFromBubble(chatBubble?.replyId.orEmpty())
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventViewReadMsgFromBubble(chatBubble?.replyId.orEmpty())
+        }
 
         renderTickerReminder(chatBubble)
     }
@@ -2902,9 +2904,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         onSuccessGetExistingChatFirstTime(
                             result.data.chatroomViewModel, result.data.chatReplies
                         )
-                        val replyId = (result.data.chatroomViewModel
-                            .listChat.getOrNull(Int.ZERO) as? BaseChatUiModel)?.replyId.orEmpty()
-                        TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+
+                        if (isFromBubble) {
+                            val replyId = (result.data.chatroomViewModel
+                                .listChat.getOrNull(Int.ZERO) as? BaseChatUiModel)?.replyId.orEmpty()
+                            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+                        }
                     } else {
                         onSuccessResetChatToFirstPage(
                             result.data.chatroomViewModel, result.data.chatReplies

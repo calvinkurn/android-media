@@ -1,14 +1,10 @@
 package com.tokopedia.topchat.common.util
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
-import android.hardware.display.DisplayManager
 import android.os.Build
 import android.text.method.LinkMovementMethod
 import android.view.Display
-import androidx.annotation.RequiresApi
-import androidx.window.WindowManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topchat.common.Constant
