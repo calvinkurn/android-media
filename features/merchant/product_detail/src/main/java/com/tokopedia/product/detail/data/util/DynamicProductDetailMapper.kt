@@ -605,7 +605,7 @@ object DynamicProductDetailMapper {
             productRating = product.basic.stats.rating,
             productTitle = MethodChecker.fromHtml(product.getProductName).toString(),
             hasCampaign = product.data.campaign.activeAndHasId,
-            campaignName = product.data.campaign.campaignTypeName,
+            campaignName = product.data.thematicCampaign.campaignName,
             campaignDiscount = product.data.campaign.percentageAmount.toInt(),
             newProductPrice = product.data.campaign.discountedPrice.toInt()
 
