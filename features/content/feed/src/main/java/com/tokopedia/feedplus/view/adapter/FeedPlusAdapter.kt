@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -246,6 +247,7 @@ class FeedPlusAdapter(
             else it
         }
         updateList(newList)
+        notifyDataSetChanged()
     }
 
     fun showShimmer() {

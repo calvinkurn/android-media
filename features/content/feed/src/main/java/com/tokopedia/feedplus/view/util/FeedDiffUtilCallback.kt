@@ -2,10 +2,8 @@ package com.tokopedia.feedplus.view.util
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 
 internal class FeedDiffUtilCallback(
         private val oldList: List<Visitable<*>> = listOf(),
@@ -21,8 +19,6 @@ internal class FeedDiffUtilCallback(
 
         return if (oldItem is DynamicPostUiModel && newItem is DynamicPostUiModel) {
             areFeedItemsTheSame(oldItem, newItem)
-        } else if (oldItem is ShopRecomWidgetViewModel && newItem is ShopRecomWidgetViewModel) {
-            areShopRecomItemsSame(oldItem, newItem)
         } else oldItem::class == newItem::class
     }
 
@@ -31,13 +27,6 @@ internal class FeedDiffUtilCallback(
         newItem: DynamicPostUiModel
     ): Boolean {
         return oldItem.feedXCard.id == newItem.feedXCard.id
-    }
-
-    private fun areShopRecomItemsSame(
-        oldItem: ShopRecomWidgetViewModel,
-        newItem: ShopRecomWidgetViewModel
-    ): Boolean {
-        return oldItem.shopRecomUiModel == newItem.shopRecomUiModel
     }
 
     override fun getOldListSize(): Int {
