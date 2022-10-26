@@ -5,18 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageNotifyMeBinding
-import com.tokopedia.product.manage.databinding.BottomSheetProductManageStockInformationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class NotifyMeBuyerInformationBottomSheet : BottomSheetUnify() {
 
-    var onClickEditStock:(()->Unit)? = null
+    var onClickEditStock: (() -> Unit)? = null
 
     companion object {
         private val TAG: String = NotifyMeBuyerInformationBottomSheet::class.java.simpleName
@@ -67,7 +64,7 @@ class NotifyMeBuyerInformationBottomSheet : BottomSheetUnify() {
         show(fm, TAG)
     }
 
-    fun setOnClickEditProductStock(onClickEditStock:()->Unit){
+    fun setOnClickEditProductStock(onClickEditStock: () -> Unit) {
         this.onClickEditStock = onClickEditStock
     }
 
@@ -76,13 +73,12 @@ class NotifyMeBuyerInformationBottomSheet : BottomSheetUnify() {
         setTitle(title)
 
         val wordingNotifyMe = arguments?.getString(KEY_WORDING_NOTIFY_ME).orEmpty()
-        val description =wordingNotifyMe.parseAsHtml()
+        val description = wordingNotifyMe.parseAsHtml()
         binding?.tvMessage?.text = description
         binding?.btnManageStock?.setOnClickListener {
             onClickEditStock?.invoke()
             dismiss()
         }
     }
-
 
 }
