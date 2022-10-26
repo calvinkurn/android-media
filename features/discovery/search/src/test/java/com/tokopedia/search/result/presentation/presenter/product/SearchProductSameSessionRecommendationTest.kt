@@ -37,6 +37,17 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     private val selectedVisitableSlot = slot<Visitable<*>>()
     private val requestParamsSlot = slot<RequestParams>()
 
+    private val warehouseId = "2216"
+    private val dummyChooseAddressData = LocalCacheModel(
+        address_id = "123",
+        city_id = "45",
+        district_id = "123",
+        lat = "10.2131",
+        long = "12.01324",
+        postal_code = "12345",
+        warehouse_id = warehouseId,
+    )
+
     @Test
     fun `Product click return empty recommendation`() {
         val lowIntentionKeywordResponse =
@@ -64,6 +75,9 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     @Test
     fun `Product click return recommendation`() {
+        `Setup choose address data`(dummyChooseAddressData)
+        setUp()
+
         val lowIntentionKeywordResponse =
             searchProductLowIntentKeywordResponseJSON.jsonToObject<SearchProductModel>()
         val sameSessionRecommendation =
@@ -76,8 +90,6 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `Given same session recommendation preference will return empty`()
         `Given product filter indicator has default sorting and no active filter`()
         `Given queryKeyProvider queryKey return empty string`()
-        val localCacheModel = LocalCacheModel(city_id = "1")
-        `Given choose address return localCacheModel`(localCacheModel)
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
@@ -85,7 +97,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
-        `Then assert same session request params`(productItemDataView, localCacheModel)
+        `Then assert same session request params`(productItemDataView, dummyChooseAddressData)
         `Then verify recommendationItem`(sameSessionRecommendation, productItemDataView)
     }
 
@@ -198,9 +210,8 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         every { productFilterIndicator.isAnyFilterOrSortActive } returns true
     }
 
-    private fun `Given choose address return localCacheModel`(localCacheModel: LocalCacheModel) {
+    private fun `Setup choose address data`(localCacheModel: LocalCacheModel) {
         every { chooseAddressView.chooseAddressData } returns localCacheModel
-        chooseAddressPresenterDelegate.updateChooseAddress()
     }
 
     private fun `Given product filter indicator has non-default sorting`() {
