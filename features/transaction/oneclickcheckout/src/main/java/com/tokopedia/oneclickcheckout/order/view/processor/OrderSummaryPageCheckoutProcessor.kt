@@ -108,23 +108,35 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val addOnShopLevelItems = mutableListOf<AddOnItem>()
             val addOnItemModel = shop.addOn.addOnsDataItemModelList.firstOrNull()
             if (shop.addOn.status == 1 && addOnItemModel != null) {
-                addOnShopLevelItems.add(AddOnItem(
+                addOnShopLevelItems.add(
+                    AddOnItem(
                         itemType = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
                         itemId = addOnItemModel.addOnId,
                         itemQty = addOnItemModel.addOnQty,
                         itemMetadata = gson.toJson(addOnItemModel.addOnMetadata)
-                ))
+                    )
+                )
             }
 
             val orderMetadata = arrayListOf<OrderMetadata>()
             val logisticPromoUiModel = orderShipment.logisticPromoViewModel
-            if (orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && logisticPromoUiModel != null && logisticPromoUiModel.freeShippingMetadata.isNotBlank()) {
-                orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, logisticPromoUiModel.freeShippingMetadata))
+            if (orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && logisticPromoUiModel != null) {
+                if (logisticPromoUiModel.freeShippingMetadata.isNotBlank() && shopPromos.firstOrNull { it.code == logisticPromoUiModel.promoCode } != null) {
+                    orderMetadata.add(
+                        OrderMetadata(
+                            FREE_SHIPPING_METADATA,
+                            logisticPromoUiModel.freeShippingMetadata
+                        )
+                    )
+                }
             }
-            val param = CheckoutOccRequest(Profile(profile.profileId), ParamCart(data = listOf(ParamData(
-                    profile.address.addressId,
-                    listOf(
-                            ShopProduct(
+            val param = CheckoutOccRequest(
+                Profile(profile.profileId), ParamCart(
+                    data = listOf(
+                        ParamData(
+                            profile.address.addressId,
+                            listOf(
+                                ShopProduct(
                                     shopId = shop.shopId,
                                     isPreorder = products.first().isPreOrder,
                                     warehouseId = shop.warehouseId,
