@@ -832,8 +832,6 @@ class ChatbotFragment :
             updateHasNextState(chatReplies)
             updateHasNextAfterState(chatReplies)
             enableLoadMore()
-            checkReplyBubbleOnboardingStatus()
-            checkVideoUploadOnboardingStatus()
             replyBubbleContainer?.setReplyListener(this)
         }
     }

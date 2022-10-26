@@ -39,7 +39,6 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         checkVideoUploadOnboardingStatus()
         setUpListeners()
 
-
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val height = displayMetrics.heightPixels
@@ -81,9 +80,9 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     private fun checkReplyBubbleOnboardingStatus() {
         val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
         replyBubbleOnboardingDismissed = hasBeenShown
-        if (!hasBeenShown) {
+        if (!false) {
             replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                guideline_reply_bubble,
+                temp_view,
                 this@ChatbotOnboardingActivity
             )
         }
@@ -119,9 +118,7 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         checkToCloseOnboardingActivity()
     }
 
-    override fun onBackPressed() {
-
-    }
+    override fun onBackPressed() = Unit
 
     companion object {
         const val X_COORDINATE = "x-coordinate"
