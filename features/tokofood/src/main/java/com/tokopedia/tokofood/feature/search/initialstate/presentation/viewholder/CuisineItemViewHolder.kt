@@ -1,11 +1,11 @@
 package com.tokopedia.tokofood.feature.search.initialstate.presentation.viewholder
 
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.databinding.CuisineItemInitialStateBinding
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.CuisineItemUiModel
 
@@ -63,25 +63,15 @@ class CuisineItemViewHolder(
         item: CuisineItemUiModel,
         position: Int
     ) {
-        binding.root.addOnImpressionListener(
-            item,
-            createViewHintListener(item, position)
-        )
-    }
-
-    private fun createViewHintListener(
-        item: CuisineItemUiModel,
-        position: Int
-    ): ViewHintListener {
-        return object : ViewHintListener {
-            override fun onViewHint() {
-                actionListener.onImpressCuisineItem(item, position)
-            }
+        val impressionListener = binding.root.addAndReturnImpressionListener(item) {
+            actionListener.onImpressCuisineItem(item, position)
         }
+        actionListener.onSetCuisineImpressionListener(impressionListener)
     }
 
     interface ActionListener {
         fun setCuisineItemClicked(item: CuisineItemUiModel)
         fun onImpressCuisineItem(item: CuisineItemUiModel, position: Int)
+        fun onSetCuisineImpressionListener(listener: ViewTreeObserver.OnScrollChangedListener)
     }
 }

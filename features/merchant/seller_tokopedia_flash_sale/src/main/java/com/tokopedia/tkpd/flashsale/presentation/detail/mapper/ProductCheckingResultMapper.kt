@@ -43,7 +43,7 @@ object ProductCheckingResultMapper {
                 statusLabelType = it.getLabelType(),
                 isSubsidy = it.subsidy.hasSubsidy,
                 subsidyAmount = it.subsidy.subsidyAmount,
-                rejectionReason = it.rejectionReason
+                rejectionReason = it.getRejectionReason()
             )
         )
     }
@@ -63,6 +63,10 @@ object ProductCheckingResultMapper {
             PRODUCT_STATUS_REFUSED -> Label.HIGHLIGHT_LIGHT_RED
             else -> Label.HIGHLIGHT_LIGHT_GREEN
         }
+    }
+
+    private fun SubmittedProduct.Warehouse.getRejectionReason(): String {
+        return if (statusId == PRODUCT_STATUS_REFUSED) rejectionReason else ""
     }
 
     fun map (

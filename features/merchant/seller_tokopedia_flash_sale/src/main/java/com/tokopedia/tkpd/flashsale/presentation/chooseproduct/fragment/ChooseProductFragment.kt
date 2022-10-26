@@ -29,6 +29,7 @@ import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.CampaignCriteriaChe
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.CommonBottomSheetInitializer
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.DetailCategoryFlashSaleBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.adapter.CriteriaSelectionAdapter
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.FILTER_ALL_PRODUCTS
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.FILTER_PRODUCT_CRITERIA_PASSED
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.MAX_PER_PAGE
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.viewmodel.ChooseProductViewModel
@@ -263,6 +264,14 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         }
         viewModel.categoryAllList.observe(viewLifecycleOwner) {
             categoryFilterBottomSheet = commonBottomSheetInitializer.initFilterCategoryBottomSheet(emptyList(), it)
+        }
+        viewModel.isCriteriaEmpty.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.filterCriteria = FILTER_ALL_PRODUCTS
+                filterCriteria.selectedItem = arrayListOf(getString(R.string.chooseproduct_filter_criteria_unfiltered_text))
+                filterCriteria.refreshHighlight()
+                loadInitialData()
+            }
         }
         viewModel.error.observe(viewLifecycleOwner) {
             showGetListError(it)

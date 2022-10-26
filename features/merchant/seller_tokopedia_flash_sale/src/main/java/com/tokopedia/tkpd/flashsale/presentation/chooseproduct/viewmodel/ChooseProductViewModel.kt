@@ -54,18 +54,21 @@ class ChooseProductViewModel @Inject constructor(
     val error: LiveData<Throwable> get() = _error
 
     // Selection related
-    private val selectedProductList = MutableLiveData<List<ChooseProductItem>>()
+    private var selectedProductList = emptyList<ChooseProductItem>()
     private val remoteProductList = MutableLiveData<List<ChooseProductItem>>()
     private val maxProductSubmission = MutableLiveData<Int>()
 
     val categoryAllList = Transformations.map(criteriaList) {
         ChooseProductUiMapper.collectAllCategory(it)
     }
+    val isCriteriaEmpty = Transformations.map(criteriaList) {
+        it.isEmpty()
+    }
     val maxSelectedProduct = Transformations.map(maxProductSubmission) {
         ChooseProductUiMapper.getMaxSelectedProduct(it)
     }
     val productList = Transformations.map(remoteProductList) {
-        ChooseProductUiMapper.getSelectedProductList(selectedProductList.value, it)
+        ChooseProductUiMapper.getSelectedProductList(selectedProductList, it)
     }
 
     val validationResult = combine(
@@ -137,10 +140,10 @@ class ChooseProductViewModel @Inject constructor(
     fun setSelectedProduct(product: ChooseProductItem) {
         val isSelected = product.isSelected
         if (isSelected) {
-            selectedProductList.value = selectedProductList.value.orEmpty() + listOf(product)
+            selectedProductList = selectedProductList + listOf(product)
             if (!isPreselectedProduct(product)) _selectedProductCount.value = _selectedProductCount.value?.inc()
         } else {
-            selectedProductList.value = selectedProductList.value.orEmpty().filter {
+            selectedProductList = selectedProductList.filter {
                 it.productId != product.productId
             }
             if (!isPreselectedProduct(product)) _selectedProductCount.value = _selectedProductCount.value?.dec()
@@ -152,7 +155,7 @@ class ChooseProductViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val reservationId = userSession.shopId + Date().time.toString()
-                val param = ChooseProductUiMapper.mapToReserveParam(campaignId, reservationId, selectedProductList.value)
+                val param = ChooseProductUiMapper.mapToReserveParam(campaignId, reservationId, selectedProductList)
                 val result = doFlashSaleProductReserveUseCase.execute(param)
                 _productReserveResult.postValue(result)
             },
@@ -185,7 +188,7 @@ class ChooseProductViewModel @Inject constructor(
             block = {
                 val response = getFlashSaleDetailForSellerUseCase.execute(campaignId)
                 maxProductSubmission.postValue(response.maxProductSubmission)
-                selectedProductList.postValue(listOf())
+                selectedProductList = emptyList()
             },
             onError = { error ->
                 _error.postValue(error)

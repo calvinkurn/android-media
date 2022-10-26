@@ -36,6 +36,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
+    buildTypes {
+        release {
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+        }
+    }
+
     // Specifies 4 flavor dimensions.
     flavorDimensions "tier", "client"
 
@@ -131,6 +137,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
     //Media
+    implementation projectOrAar(rootProject.ext.features.mediaeditor)
     implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 

@@ -105,11 +105,7 @@ class ManageProductMultiLocationVariantFragment :
     private fun validationOnEligibilityWarehouse(product: ReservedProduct.Product): ReservedProduct.Product {
         val criteria = product.productCriteria
         product.childProducts[variantPositionOnProduct].warehouses.forEach { warehouse ->
-            warehouse.isToggleOn = if (viewModel.isEligibleItem(
-                    warehouse,
-                    criteria
-                )
-            ) warehouse.isToggleOn else false
+            if (!viewModel.isEligibleItem(warehouse, criteria)) warehouse.isToggleOn = false
         }
 
         return product
@@ -275,14 +271,17 @@ class ManageProductMultiLocationVariantFragment :
         val bSheet = ProductBulkApplyBottomSheet.newInstance(param)
         bSheet.setOnApplyClickListener {
             tracker.sendClickAturSekaligusEvent(createTrackerLabel())
-            val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
+            val appliedProduct = BulkApplyMapper.mapBulkResultToProductByVariant(product.childProducts[variantPositionOnProduct], it)
             inputAdapter = ManageProductVariantMultiLocationAdapter().apply {
-                setDataList(appliedProduct.childProducts[variantPositionOnProduct])
+                setDataList(appliedProduct)
                 setListener(this@ManageProductMultiLocationVariantFragment)
             }
-            showMessageToaster(appliedProduct)
+            product.childProducts[variantPositionOnProduct].apply {
+                warehouses = appliedProduct.warehouses
+            }
+            showMessageToaster(product)
             rvManageProductDetail?.adapter = inputAdapter
-            viewModel.setProduct(appliedProduct, variantPositionOnProduct, flashSaleId)
+            viewModel.setProduct(product, variantPositionOnProduct, flashSaleId)
         }
         bSheet.show(childFragmentManager, "")
     }

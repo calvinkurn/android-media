@@ -300,7 +300,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     private fun handleUiState(uiState: FlashSaleListUiState) {
         renderLoadingState(uiState.isLoading)
         renderSortFilter(uiState)
-        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.searchResultCount)
+        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.searchResultCount, uiState.totalFlashOnCurrentPage)
         refreshScrollState(uiState.allItems)
         renderScrollUpButton(uiState.allItems.size)
     }
@@ -326,16 +326,26 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
         renderStatusChips(uiState.selectedStatusIds)
     }
 
-    private fun renderEmptyState(isLoading: Boolean, isUsingFilter: Boolean, searchResultCount: Int) {
+    private fun renderEmptyState(
+        isLoading: Boolean,
+        isUsingFilter: Boolean,
+        searchResultCount: Int,
+        totalFlashOnCurrentPage: Int
+    ) {
         if (isLoading) {
             binding?.emptyState?.gone()
         } else {
-            handleEmptyState(isUsingFilter, searchResultCount)
+            handleEmptyState(isUsingFilter, searchResultCount, totalFlashOnCurrentPage)
         }
     }
 
-    private fun handleEmptyState(isUsingFilter: Boolean, searchResultCount: Int) {
+    private fun handleEmptyState(
+        isUsingFilter: Boolean,
+        searchResultCount: Int,
+        totalFlashOnCurrentPage: Int
+    ) {
         when {
+            totalFlashOnCurrentPage.isZero() && searchResultCount.isZero() -> binding?.emptyState?.gone()
             searchResultCount.isZero() -> displayEmptySearchResult()
             searchResultCount.isMoreThanZero() -> binding?.emptyState?.gone()
             isUsingFilter && searchResultCount == 0 -> displayEmptySearchResult()
@@ -611,6 +621,8 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     private fun handleUpcomingFlashSaleTracker(selectedFlashSale: UpcomingFlashSaleItem, tabName: String) {
         if (selectedFlashSale.quotaUsagePercentage < QUOTA_USAGE_FULL && now.before(selectedFlashSale.submissionEndDate)) {
             tracker.sendRegisterFlashSaleEvent(selectedFlashSale.id, tabName)
+        } else {
+            tracker.sendViewCampaignDetailButtonClickEvent(selectedFlashSale.id, tabName)
         }
     }
 }

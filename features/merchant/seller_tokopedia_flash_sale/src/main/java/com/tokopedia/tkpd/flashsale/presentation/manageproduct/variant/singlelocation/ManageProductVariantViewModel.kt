@@ -12,6 +12,8 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessa
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.util.tracker.ManageProductVariantTracker
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.SINGLE_LOCATION
+import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.MULTI_LOCATION
 import javax.inject.Inject
 
 class ManageProductVariantViewModel @Inject constructor(
@@ -20,10 +22,6 @@ class ManageProductVariantViewModel @Inject constructor(
     private val getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase,
     private val tracker: ManageProductVariantTracker
 ) : BaseViewModel(dispatchers.main) {
-
-    companion object {
-        private const val LOCATION_TYPE = "single loc"
-    }
 
     private lateinit var productData: ReservedProduct.Product
 
@@ -141,37 +139,37 @@ class ManageProductVariantViewModel @Inject constructor(
     }
 
     fun sendManageAllClickEvent(campaignId: String) {
-        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        val trackerLabel = "$campaignId - $SINGLE_LOCATION"
         tracker.sendClickManageAllEvent(trackerLabel)
     }
 
     fun sendAdjustToggleVariantEvent(campaignId: String) {
-        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        val trackerLabel = "$campaignId - $SINGLE_LOCATION"
         tracker.sendAdjustToggleVariantEvent(trackerLabel)
     }
 
     fun sendFillInColumnPriceEvent(campaignId: String) {
-        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        val trackerLabel = "$campaignId - $SINGLE_LOCATION"
         tracker.sendClickFillInCampaignPriceEvent(trackerLabel)
     }
 
     fun sendFillInDiscountPercentageEvent(campaignId: String) {
-        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        val trackerLabel = "$campaignId - $SINGLE_LOCATION"
         tracker.sendClickFillInDiscountPercentageEvent(trackerLabel)
     }
 
     fun sendSaveClickEvent(campaignId: String) {
-        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        val trackerLabel = "$campaignId - $SINGLE_LOCATION"
         tracker.sendClickSaveEvent(trackerLabel)
     }
 
     fun sendCheckDetailClickEvent(campaignId: String, productId: Long) {
-        val trackerLabel = "$campaignId - $productId - $LOCATION_TYPE"
+        val trackerLabel = "$campaignId - $productId - $SINGLE_LOCATION"
         tracker.sendClickCheckDetailEvent(trackerLabel)
     }
 
     fun sendManageAllLocationClickEvent(campaignId: String, productId: Long) {
-        val trackerLabel = "$campaignId - $productId - $LOCATION_TYPE"
+        val trackerLabel = "$campaignId - $productId - $MULTI_LOCATION"
         tracker.sendClickManageAllLocationEvent(trackerLabel)
     }
 }
