@@ -787,4 +787,16 @@ class AddProductViewModelTest {
         val actualResult = mViewModel.isLoadMoreAvailable(productListSize, totalActiveProductCount)
         assertFalse(actualResult)
     }
+
+    @Test
+    fun `product counter and total active product count should have zero default value`() {
+        assertEquals(Int.ZERO, mViewModel.productCounter)
+        assertEquals(Int.ZERO, mViewModel.totalActiveProductCount)
+    }
+
+    @Test
+    fun `paging index setter and getter should perform correctly`() {
+        mViewModel.setPagingIndex(10)
+        assertEquals(10, mViewModel.getPagingIndex())
+    }
 }
