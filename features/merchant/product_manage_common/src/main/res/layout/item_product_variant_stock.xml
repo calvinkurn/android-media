@@ -48,7 +48,7 @@
         android:textColor="@color/Unify_N300"
         android:drawablePadding="4dp"
         android:layout_marginTop="4dp"
-        android:drawableStart="@drawable/ic_notify_me_buyer"
+        tools:drawableStart="@drawable/ic_notify_me_buyer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textProductName"
         tools:text="Ada 1.223 calon pembeli yang menunggu varian ini."

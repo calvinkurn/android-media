@@ -88,7 +88,7 @@
             android:textColor="@color/Unify_N300"
             android:lines="2"
             android:drawablePadding="4dp"
-            android:drawableStart="@drawable/ic_notify_me_buyer"
+            tools:drawableStart="@drawable/ic_notify_me_buyer"
             android:visibility="gone"
             android:gravity="center_vertical"
             app:typographyType="body_3"
