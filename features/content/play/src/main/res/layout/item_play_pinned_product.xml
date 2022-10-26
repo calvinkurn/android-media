@@ -162,8 +162,8 @@
             tools:text="@string/play_product_pinned_atc"
             app:layout_constraintStart_toStartOf="@id/tv_price"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:unifyButtonSize="small"
-            app:unifyButtonVariant="ghost"
+            tools:unifyButtonSize="small"
+            tools:unifyButtonVariant="ghost"
             />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -171,12 +171,12 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginStart="@dimen/unify_space_4"
-            android:text="@string/play_product_buy"
+            tools:text="@string/play_product_buy"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_atc"
             app:layout_constraintBottom_toBottomOf="@id/btn_atc"
-            app:unifyButtonSize="small"
-            app:unifyButtonVariant="filled"
+            tools:unifyButtonSize="small"
+            tools:unifyButtonVariant="filled"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
