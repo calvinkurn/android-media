@@ -98,7 +98,7 @@ class AddEditProductShipmentViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                val param = getCplList.getParam(shopId, productId, cplParam?: listOf())
+                val param = getCplList.getParam(shopId, productId, cplParam ?: listOf())
                 val cplList = getCplList(param)
                 _cplList.value = Success(
                     customProductLogisticMapper.mapCPLData(
@@ -158,23 +158,5 @@ class AddEditProductShipmentViewModel @Inject constructor(
                 _cplList.value = it
             }
         }
-    }
-
-    fun getActivatedProductIds(): List<Long> {
-        val shipperProductIds = mutableListOf<Long>()
-        _cplList.value.let {
-            if (it is Success) {
-                it.data.shipperList.forEach { shipperGroup ->
-                    shipperGroup.shipper.forEach { s ->
-                        s.shipperProduct.forEach { sp ->
-                            if (sp.isActive) {
-                                shipperProductIds.add(sp.shipperProductId)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return shipperProductIds
     }
 }

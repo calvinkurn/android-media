@@ -234,11 +234,11 @@ class AddEditProductShipmentFragment:
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_CPL) {
-                val shipperServicesIdsInt = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
+                val shipperServicesIdsInt = data?.getLongArrayExtra(EXTRA_SHIPPER_SERVICES)
                 if (shipperServicesIdsInt != null) {
                     shipperServicesIds = arrayListOf()
                     shipperServicesIdsInt.forEach { ids ->
-                        shipperServicesIds?.add(ids.toLong())
+                        shipperServicesIds?.add(ids)
                     }
                     shipperServicesIds?.let {
                         shipmentViewModel.setProductActiveState(it)
@@ -398,14 +398,10 @@ class AddEditProductShipmentFragment:
                 } else {
                     putExtra(EXTRA_PRODUCT_ID, shipmentViewModel.productInputModel?.productId)
                 }
-                putIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES, shipperServicesIds.convertToIntArray())
-                putIntegerArrayListExtra(EXTRA_CPL_PARAM, shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.cplParam?.convertToIntArray())
+                putExtra(EXTRA_SHIPPER_SERVICES, shipperServicesIds?.toLongArray())
+                putExtra(EXTRA_CPL_PARAM, shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.cplParam?.toLongArray())
             }, REQUEST_CODE_CPL
         )
-    }
-
-    private fun List<Long>?.convertToIntArray(): ArrayList<Int> {
-        return this?.let { ArrayList(this.map { it.toInt() }) } ?: arrayListOf()
     }
 
     private fun setupShipmentRadios() {
@@ -558,8 +554,9 @@ class AddEditProductShipmentFragment:
     }
 
     private fun applyShipmentValue(data: CustomProductLogisticModel) {
-        val isCplActivated = data.isCpl()
-        setSelectedShipperService(!isCplActivated)
+        val activatedSpIds = data.getActivatedSpIds()
+        val isCplActivated = activatedSpIds.isNotEmpty()
+        setSelectedShipperService(activatedSpIds)
         setCplRadioButtonState(isCplActivated)
         setShipmentLayout(!isCplActivated, data)
     }
@@ -569,11 +566,11 @@ class AddEditProductShipmentFragment:
         radioCustomShipment?.isChecked = cplActivated
     }
 
-    private fun setSelectedShipperService(isStandardShipment: Boolean) {
-        if (isStandardShipment) {
-            shipperServicesIds = arrayListOf()
+    private fun setSelectedShipperService(activatedSpIds: List<Long>) {
+        shipperServicesIds = if (activatedSpIds.isEmpty()) {
+            arrayListOf()
         } else {
-            shipperServicesIds = ArrayList(shipmentViewModel.getActivatedProductIds())
+            ArrayList(activatedSpIds)
         }
     }
 

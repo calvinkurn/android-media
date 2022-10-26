@@ -51,24 +51,6 @@ class CustomProductLogisticViewModel @Inject constructor(
         return false
     }
 
-    fun getActivatedProductIds(): List<Int> {
-        val shipperProductIds = mutableListOf<Int>()
-        _cplList.value.let {
-            if (it is Success) {
-                it.data.shipperList.forEach { shipperGroup ->
-                    shipperGroup.shipper.forEach { s ->
-                        s.shipperProduct.forEach { sp ->
-                            if (sp.isActive) {
-                                shipperProductIds.add(sp.shipperProductId.toInt())
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return shipperProductIds
-    }
-
     fun setAllShipperServiceState(active: Boolean, shipperId: Long) {
         _cplList.value.let {
             if (it is Success) {

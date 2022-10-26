@@ -3,8 +3,16 @@ package com.tokopedia.logisticCommon.data.model
 data class CustomProductLogisticModel(
     var shipperList: List<ShipperListCPLModel> = listOf()
 ) {
-    fun isCpl(): Boolean {
-        return shipperList.any { it.shipper.any { s -> s.shipperProduct.any { sp -> sp.isActive } } }
+    fun getActivatedSpIds() : List<Long> {
+        val shipperProductIds = mutableListOf<Long>()
+        shipperList.forEach { shipperGroup ->
+            shipperGroup.shipper.filter { s -> s.isActive }.forEach { s ->
+                shipperProductIds.addAll(s.shipperProduct.filter { sp -> sp.isActive }
+                    .map { sp -> sp.shipperProductId })
+
+            }
+        }
+        return shipperProductIds
     }
 }
 

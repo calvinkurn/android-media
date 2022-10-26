@@ -73,7 +73,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun Bundle.getExtraShipperServices(key: String): List<Long>? {
-        return getIntegerArrayList(key)?.takeIf { it.isNotEmpty() }?.map { it.toLong() }
+        return getLongArray(key)?.takeIf { it.isNotEmpty() }?.toList()
     }
 
     override fun onCreateView(
@@ -95,8 +95,6 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
         viewModel.getCPLList(shopId, productId, shipperServicesIds, cplParam)
-
-        binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
 
     private fun initAdapter() {
@@ -143,6 +141,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         if (viewModel.isShipperGroupAvailable(CPL_CONVENTIONAL_INDEX)) {
             binding.shippingEditorLayoutConventional.visible()
         }
+        binding.btnSaveShipper.setOnClickListener { validateSaveButton(data.getActivatedSpIds()) }
     }
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
@@ -171,9 +170,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         }
     }
 
-    private fun validateSaveButton() {
-        val activatedSpIds = viewModel.getActivatedProductIds()
-        if (activatedSpIds.isEmpty()) {
+    private fun validateSaveButton(activatedSpIds: List<Long>) {
+        if (activatedSpIds.isNotEmpty()) {
             Toaster.build(
                 requireView(),
                 getString(R.string.toaster_cpl_error),
@@ -186,10 +184,10 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         }
     }
 
-    private fun finishActivity(shipperServices: List<Int>) {
+    private fun finishActivity(shipperServices: List<Long>) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
-                putIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES, ArrayList(shipperServices))
+                putExtra(EXTRA_SHIPPER_SERVICES, shipperServices.toLongArray())
             })
             finish()
         }
@@ -263,8 +261,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 arguments = Bundle().apply {
                     putLong(EXTRA_SHOP_ID, extra.getLong(EXTRA_SHOP_ID))
                     putLong(EXTRA_PRODUCT_ID, extra.getLong(EXTRA_PRODUCT_ID))
-                    putIntegerArrayList(EXTRA_SHIPPER_SERVICES, extra.getIntegerArrayList(EXTRA_SHIPPER_SERVICES))
-                    putIntegerArrayList(EXTRA_CPL_PARAM, extra.getIntegerArrayList(EXTRA_CPL_PARAM))
+                    putLongArray(EXTRA_SHIPPER_SERVICES, extra.getLongArray(EXTRA_SHIPPER_SERVICES))
+                    putLongArray(EXTRA_CPL_PARAM, extra.getLongArray(EXTRA_CPL_PARAM))
                 }
             }
         }
