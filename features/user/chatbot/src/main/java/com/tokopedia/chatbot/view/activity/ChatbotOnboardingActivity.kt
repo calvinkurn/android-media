@@ -8,13 +8,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.databinding.ActivityChatbotOnboardingBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.util.OnboardingDismissListener
-import kotlinx.android.synthetic.main.activity_chatbot_onboarding.*
 import javax.inject.Inject
 
 
@@ -29,16 +28,29 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     var replyBubbleOnboardingDismissed: Boolean = false
     var videoBubbleOnBoardingDismissed: Boolean = false
 
+    private var _viewBinding: ActivityChatbotOnboardingBinding? = null
+    private fun getBindingView() = _viewBinding!!
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chatbot_onboarding)
+        _viewBinding = ActivityChatbotOnboardingBinding.inflate(layoutInflater)
+        setContentView(_viewBinding!!.root)
 
         initInjector()
-
-        checkVideoUploadOnboardingStatus()
         setUpListeners()
+        checkVideoUploadOnboardingStatus()
+        val ratioY = calculateRatiosForGuideline()
+        setUpReplyBubbleGuideline(ratioY)
+        checkReplyBubbleOnboardingStatus()
+    }
 
+    /**
+     * Getting the x and y coordinates for ChatbotFragment , calculate the ratioY and align the
+     * guideline accordingly. The guideline will change the position of the reply_bubble_holder view
+     * which is used to show the pointer on the coachmark
+     * */
+    private fun calculateRatiosForGuideline(): Float {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val height = displayMetrics.heightPixels
@@ -50,11 +62,13 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         val ratioX: Float = (givenX.toFloat() / width.toFloat())
         val ratioY: Float = (givenY.toFloat() / height.toFloat())
         Log.d("EREN", "onCreate: ratioX: $ratioX ratioY: $ratioY")
+        return ratioY
+    }
 
-        val params = guideline_reply_bubble?.layoutParams as ConstraintLayout.LayoutParams
+    private fun setUpReplyBubbleGuideline(ratioY: Float) {
+        val params = getBindingView().guidelineReplyBubble.layoutParams as ConstraintLayout.LayoutParams
         params.guidePercent = ratioY
-        guideline_reply_bubble?.layoutParams = params
-        checkReplyBubbleOnboardingStatus()
+        getBindingView().guidelineReplyBubble?.layoutParams = params
     }
 
     private fun setUpListeners(){
@@ -62,19 +76,15 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         replyBubbleOnBoarding.onboardingDismissListener = this
     }
 
-
     private fun checkVideoUploadOnboardingStatus() {
         val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
         videoBubbleOnBoardingDismissed = hasBeenShown
         if (!false) {
-
             videoUploadOnBoarding.showVideoBubbleOnBoarding(
-                container_view,
+                getBindingView().containerView,
                 this
             )
         }
-
-
     }
 
     private fun checkReplyBubbleOnboardingStatus() {
@@ -82,8 +92,8 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         replyBubbleOnboardingDismissed = hasBeenShown
         if (!false) {
             replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                temp_view,
-                this@ChatbotOnboardingActivity
+                getBindingView()?.replyBubbleHolder,
+                this
             )
         }
     }
@@ -118,10 +128,14 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         checkToCloseOnboardingActivity()
     }
 
+    /**
+     * Back Button is disabled as the coachmarks needs to be closed only with the dismiss button
+     * on the coachmarks
+     * */
     override fun onBackPressed() = Unit
 
     companion object {
-        const val X_COORDINATE = "x-coordinate"
-        const val Y_COORDINATE = "y-coordinate"
+        private const val X_COORDINATE = "x-coordinate"
+        private const val Y_COORDINATE = "y-coordinate"
     }
 }

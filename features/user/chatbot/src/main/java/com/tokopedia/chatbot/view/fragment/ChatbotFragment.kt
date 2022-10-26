@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -283,6 +282,8 @@ class ChatbotFragment :
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
         private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
         private const val DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 0
+        private const val X_COORDINATE = "x-coordinate"
+        private const val Y_COORDINATE = "y-coordinate"
     }
 
     override fun initInjector() {
@@ -638,19 +639,19 @@ class ChatbotFragment :
         }
     }
 
-    private fun checkToShowCoachMark(x: Int, y: Int) {
-//        activity?.let {
-//            val bottomSheetUnify = TestBottomSheet.newInstance(it)
-//            bottomSheetUnify.clearContentPadding = true
-//            bottomSheetUnify.show(childFragmentManager, "")
+    private fun goToOnboardingActivity(x: Int = 0, y: Int = 0) {
+
+        val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
+        val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
+
+//        if(hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
+//            return
 //        }
 
         val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
-        intent.putExtra("x-coordinate",x)
-        intent.putExtra("y-coordinate",y)
-
+        intent.putExtra(X_COORDINATE,x)
+        intent.putExtra(Y_COORDINATE,y)
         startActivity(intent)
-
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -1698,59 +1699,19 @@ class ChatbotFragment :
         }
     }
 
-    var hasBeenShown = false
     private fun checkReplyBubbleOnboardingStatus() {
-        //        hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
-//        if (!replyBubbleEnabled) {
+        val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
+//        if (false)
 //            return
-//        }
-//        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-//            override fun onGlobalLayout() {
-//
-//                val position = recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark())
-//
-//                Log.d("LEVI", "checkReplyBubbleOnboardingStatus: $position")
-//
-//                if (!false) {
-//
-//                    replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-//                        recyclerView!!,
-//                        chatbotAdapter,
-//                        position,
-//                        context
-//                    )
-//                    hasBeenShown = true
-//                }
-//
-//                recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-//            }
-//
-//        })
-
-//        main?.doOnLayout{
-//            let {
-//                if (!false) {
-//                    replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-//                        recyclerView!!,
-//                        chatbotAdapter,
-//                        recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark()),
-//                        context
-//                    )
-//                    hasBeenShown = true
-//                }
-//            }
-//        }
-
         recyclerView?.doOnLayout {
             val location = IntArray(2)
-            recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark())?.getLocationOnScreen(location)
-            val x = location.get(0)
-            val y = location.get(1)
-            Log.d("LEVII", "checkReplyBubbleOnboardingStatus: $x $y")
-            checkToShowCoachMark(x,y)
+            recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark())
+                ?.getLocationOnScreen(location)
+            val x = location[0]
+            val y = location[1]
+            goToOnboardingActivity(x, y)
         }
-
-        }
+    }
 
 
     private fun getPositionToAnchorReplyBubbleCoachmark(): Int {
@@ -1758,28 +1719,10 @@ class ChatbotFragment :
     }
 
     private fun checkVideoUploadOnboardingStatus() {
-//        val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
-//        if (!isConnectedToAgent) {
+        val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
+//        if (false)
 //            return
-//        }
-//        recyclerView?.let {
-//            if (!false) {
-//                videoUploadOnBoarding.showVideoBubbleOnBoarding(
-//                    iv_chat_menu,
-//                    context
-//                )
-//            }
-//        }
-//        recyclerView?.let {
-//            if (!hasBeenShown) {
-//                replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-//                    it,
-//                    chatbotAdapter,
-//                    getBindingView().composeArea.replyBox,
-//                    context
-//                )
-//            }
-//        }
+        goToOnboardingActivity()
     }
 
     override fun visibilityReplyBubble(state: Boolean) {
@@ -1939,16 +1882,16 @@ class ChatbotFragment :
     }
 
     private fun renderBottomList(listChat: List<Visitable<*>>) {
-        chatbotAdapter?.hideBottomLoading()
+        chatbotAdapter.hideBottomLoading()
         if (listChat.isNotEmpty()) {
-            chatbotAdapter?.addBottomData(listChat)
+            chatbotAdapter.addBottomData(listChat)
         }
     }
 
     private fun renderTopList(listChat: List<Visitable<*>>) {
-        chatbotAdapter?.hideTopLoading()
+        chatbotAdapter.hideTopLoading()
         if (listChat.isNotEmpty()) {
-            chatbotAdapter?.addTopData(listChat)
+            chatbotAdapter.addTopData(listChat)
         }
     }
 
