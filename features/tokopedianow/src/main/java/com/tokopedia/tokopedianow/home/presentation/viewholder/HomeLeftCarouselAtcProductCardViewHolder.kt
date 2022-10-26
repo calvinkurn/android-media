@@ -36,15 +36,18 @@ class HomeLeftCarouselAtcProductCardViewHolder(
                     product = element
                 )
             }
-            setOnClickQuantityEditorListener(
-                onClickListener = { quantity ->
-                    listener?.onProductCardQuantityChanged(
-                        product = element,
-                        quantity = quantity
-                    )
-                },
-                onClickVariantListener = {}
-            )
+            setOnClickQuantityEditorListener { quantity ->
+                listener?.onProductCardQuantityChanged(
+                    product = element,
+                    quantity = quantity
+                )
+            }
+            setOnClickQuantityEditorVariantListener { quantity ->
+                listener?.onProductCardQuantityChanged(
+                    product = element,
+                    quantity = quantity
+                )
+            }
             addOnImpressionListener(element) {
                 listener?.onProductCardImpressed(
                     position = element.position,
@@ -52,15 +55,6 @@ class HomeLeftCarouselAtcProductCardViewHolder(
                 )
             }
         }
-
-        //            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
-//                override fun onQuantityChanged(quantity: Int) {
-//                    listener?.onProductCardQuantityChanged(
-//                        product = element,
-//                        quantity = quantity
-//                    )
-//                }
-//            })
     }
 
     interface HomeLeftCarouselAtcProductCardListener {

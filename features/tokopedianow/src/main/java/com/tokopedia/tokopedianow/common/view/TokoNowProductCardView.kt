@@ -63,6 +63,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 brightness = model.getImageBrightness()
             )
             initQuantityEditor(
+                isVariant = model.isVariant,
                 minOrder = model.minOrder,
                 maxOrder = model.maxOrder,
                 orderQuantity = model.orderQuantity,
@@ -120,6 +121,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowProductCardViewBinding.initQuantityEditor(
+        isVariant: Boolean,
         minOrder: Int,
         maxOrder: Int,
         orderQuantity: Int,
@@ -127,6 +129,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         needToShowQuantityEditor: Boolean
     ) {
         quantityEditor.showIfWithBlock(!isOos && needToShowQuantityEditor) {
+            quantityEditor.isVariant = isVariant
             quantityEditor.minQuantity = minOrder
             quantityEditor.maxQuantity = maxOrder
             quantityEditor.setQuantity(
@@ -277,12 +280,9 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     R.color.tokopedianow_product_card_dms_progress_bar_label_text_color
                 }
                 setTextColor(
-                    safeParseColor(
-                        color = progressBarLabelColor,
-                        defaultColor = ContextCompat.getColor(
-                            context,
-                            colorRes
-                        )
+                    ContextCompat.getColor(
+                        context,
+                        colorRes
                     )
                 )
             }
@@ -471,10 +471,14 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     fun setOnClickQuantityEditorListener(
-        onClickListener: (Int) -> Unit,
-        onClickVariantListener: () -> Unit
+        onClickListener: (Int) -> Unit
     ) {
         binding.quantityEditor.onClickListener = onClickListener
+    }
+
+    fun setOnClickQuantityEditorVariantListener(
+        onClickVariantListener: (Int) -> Unit
+    ) {
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
     }
 }

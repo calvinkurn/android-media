@@ -52,9 +52,9 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                 binding.setCounter()
             }
         }
-
+    var isVariant: Boolean = false
     var onClickListener: (counter: Int) -> Unit = {}
-    var onClickVariantListener: () -> Unit = {}
+    var onClickVariantListener: (counter: Int) -> Unit = {}
 
     init {
         binding = LayoutTokopedianowQuantityEditorViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
@@ -155,14 +155,18 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setupAddButton() {
         addButton.setOnClickListener {
-            if (root.currentState == R.id.start) {
-                expandAnimationWhenStartingWithoutValue()
-                editText.setText(minQuantity.toString())
-            } else if (root.currentState == R.id.startWithValue) {
-                expandAnimationWhenStartingWithValue()
-            } else if (counter < maxQuantity) {
-                counter++
-                editText.setText(counter.toString())
+            if (isVariant) {
+                onClickVariantListener(if (counter > minQuantity) counter else minQuantity)
+            } else {
+                if (root.currentState == R.id.start) {
+                    expandAnimationWhenStartingWithoutValue()
+                    editText.setText(minQuantity.toString())
+                } else if (root.currentState == R.id.startWithValue) {
+                    expandAnimationWhenStartingWithValue()
+                } else if (counter < maxQuantity) {
+                    counter++
+                    editText.setText(counter.toString())
+                }
             }
         }
     }
