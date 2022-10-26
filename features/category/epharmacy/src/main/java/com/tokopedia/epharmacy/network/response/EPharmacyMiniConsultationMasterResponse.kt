@@ -3,6 +3,11 @@ package com.tokopedia.epharmacy.network.response
 
 import com.google.gson.annotations.SerializedName
 
+data class GetEpharmacyMiniConsultationStaticData(
+    @SerializedName("getEpharmacyStaticData")
+    var getEpharmacyStaticData: EPharmacyMiniConsultationMasterResponse? = null
+)
+
 data class EPharmacyMiniConsultationMasterResponse(
     @SerializedName("data")
     val `data`: EPharmacyMiniConsultationData?,
@@ -20,6 +25,8 @@ data class EPharmacyMiniConsultationMasterResponse(
         val stepTitle: String?,
         @SerializedName("steps")
         val steps: List<ConsultationSteps?>?,
+        @SerializedName("logo_url")
+        val logoUrl: String?,
     ){
         data class ConsultationSteps(
             @SerializedName("image_url")

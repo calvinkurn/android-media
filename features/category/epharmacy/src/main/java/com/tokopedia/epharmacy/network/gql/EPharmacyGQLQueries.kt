@@ -79,13 +79,7 @@ val GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY = """
             info_title
             info_text
             step_title
-            steps [
-              {
-                image_url
-                title
-                subtitle
-              }
-            ]
+            steps
             logo_url
         }
     }

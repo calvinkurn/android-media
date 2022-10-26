@@ -11,7 +11,14 @@ import com.tokopedia.media.loader.loadImage
 class EpharmacyMiniConsultationStepsAdapter(private val items:MutableList<EPharmacyMiniConsultationData.ConsultationSteps?>): RecyclerView.Adapter<EpharmacyMiniConsultationStepsAdapter.ViewHolder>() {
 
     fun setStepList(steps: List<EPharmacyMiniConsultationData.ConsultationSteps?>) {
+        if(steps.isNullOrEmpty()) return
+        items.clear()
         items.addAll(steps)
+        notifyDataSetChanged()
+    }
+
+    fun clearStepsList() {
+        items.clear()
         notifyDataSetChanged()
     }
 
