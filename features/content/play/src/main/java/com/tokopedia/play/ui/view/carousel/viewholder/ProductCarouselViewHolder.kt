@@ -65,7 +65,7 @@ class ProductCarouselViewHolder private constructor() {
          */
         private fun UnifyButton.generateButton(button: ProductButtonUiModel){
             //Setup Text
-            text = if(button.type == ProductButtonType.ATC) "" else button.text
+            text = if(button.type == ProductButtonType.ATC) "+" else button.text
 
             //Setup Icon if any, for now its only for ATC
             val iconType = if(button.color == ProductButtonColor.DISABLED_BUTTON)

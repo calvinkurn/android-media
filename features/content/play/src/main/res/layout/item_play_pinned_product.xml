@@ -159,7 +159,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/dp_6"
-            android:text="@string/play_product_pinned_atc"
+            tools:text="@string/play_product_pinned_atc"
             app:layout_constraintStart_toStartOf="@id/tv_price"
             app:layout_constraintBottom_toBottomOf="parent"
             app:unifyButtonSize="small"
