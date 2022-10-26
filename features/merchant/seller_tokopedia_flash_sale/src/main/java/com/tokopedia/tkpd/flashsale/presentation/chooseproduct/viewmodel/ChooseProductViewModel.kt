@@ -75,7 +75,7 @@ class ChooseProductViewModel @Inject constructor(
         selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
     ) { productCount, criteriaList, maxSelectedProduct ->
         ChooseProductUiMapper.validateSelection(productCount, maxSelectedProduct, criteriaList,
-            selectedProductIds, selectedProductList)
+            submittedProductIds, selectedProductList)
     }
     val selectionValidationResult = combine(
         selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
@@ -89,7 +89,7 @@ class ChooseProductViewModel @Inject constructor(
     var filterCategory: List<Long> = emptyList()
     var campaignId: Long = 0
     var tabName: String = ""
-    var selectedProductIds: List<Long> = emptyList()
+    var submittedProductIds: List<Long> = emptyList()
 
     fun getProductList(page: Int, perPage: Int, keyword: String) {
         launchCatchError(
@@ -106,7 +106,7 @@ class ChooseProductViewModel @Inject constructor(
                 val result = getFlashSaleProductListToReserveUseCase.execute(param)
                 remoteProductList.postValue(result.productList)
                 if (_selectedProductCount.value == null) _selectedProductCount.postValue(result.selectedProductCount)
-                selectedProductIds = result.selectedProductIds
+                submittedProductIds = result.selectedProductIds
 
             },
             onError = { error ->
@@ -130,7 +130,7 @@ class ChooseProductViewModel @Inject constructor(
 
     fun isPreselectedProduct(product: ChooseProductItem): Boolean {
         val productId = product.productId.toLongOrZero()
-        return selectedProductIds.any { it == productId }
+        return submittedProductIds.any { it == productId }
     }
 
     fun updateCriteriaList(product: ChooseProductItem) {
