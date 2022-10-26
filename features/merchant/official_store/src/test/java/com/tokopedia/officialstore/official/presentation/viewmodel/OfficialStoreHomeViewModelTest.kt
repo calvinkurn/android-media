@@ -231,7 +231,7 @@ class OfficialStoreHomeViewModelTest {
         val categoryId = "0"
         val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
         val topAdsHeadlineAd = OfficialTopAdsHeadlineDataModel(TopAdsHeadlineResponse(CpmModel().apply {
-            data = listOf(CpmData().apply {
+            data = mutableListOf(CpmData().apply {
                 cpm = Cpm().apply {
                     position = 0
                 }
@@ -543,6 +543,40 @@ class OfficialStoreHomeViewModelTest {
         val resultTdnBannerAdsModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<OfficialTopAdsBannerDataModel>()
         assertFalse(resultTdnBannerAdsModel.isNullOrEmpty())
         assertNotNull(resultTdnBannerAdsModel?.find { it.tdnBanner == tdnCarouselResponse})
+    }
+
+    @Test
+    fun `when getting empty list for tdn carousel on Dynamic channel banner ads carousel then remove from list`() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+            listOf(
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL))
+            )
+        )
+
+        val tdnCarouselResponse: ArrayList<TopAdsImageViewModel> = ArrayList<TopAdsImageViewModel> ()
+        tdnCarouselResponse.addAll(
+            listOf())
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap(
+            "",
+            "12",
+            "",
+            3,
+            3,
+            ""
+        )) } returns tdnCarouselResponse
+
+        viewModel.loadFirstData(category)
+
+        val resultTdnBannerAdsModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<OfficialTopAdsBannerDataModel>()
+        assertTrue(resultTdnBannerAdsModel.isNullOrEmpty())
+        assertNull(resultTdnBannerAdsModel?.find { it.tdnBanner == tdnCarouselResponse})
     }
 
     @Test

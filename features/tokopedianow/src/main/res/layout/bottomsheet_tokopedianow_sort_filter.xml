@@ -6,9 +6,10 @@
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_sort_based_on_buying"
+        android:id="@+id/rvSortFilter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnApplyFilter"
@@ -19,5 +20,4 @@
         android:text="@string/tokopedianow_sort_filter_bottomsheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
 </LinearLayout>

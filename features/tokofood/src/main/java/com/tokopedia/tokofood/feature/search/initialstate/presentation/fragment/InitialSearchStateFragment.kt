@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -70,6 +71,10 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     private var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
     private var localCacheModel: LocalCacheModel? = null
     private var keyword: String = ""
+    private var cuisineScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
+        mutableListOf()
+    private var recentSearchScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
+        mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,6 +96,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     override fun onDestroyView() {
         initialStateViewUpdateListener = null
         localCacheModel = null
+        removeScrollChangedListener()
         super.onDestroyView()
     }
 
@@ -123,7 +129,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
 
     override fun onImpressionPopularSearch(item: ChipsPopularSearch, position: Int) {
         analytics.impressViewTopKeyword(
-            keyword,
+            item.title,
             localCacheModel?.district_id.orEmpty(),
             position,
         )
@@ -141,6 +147,10 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
             position,
             item.title
         )
+    }
+
+    override fun onSetCuisineImpressionListener(listener: ViewTreeObserver.OnScrollChangedListener) {
+        cuisineScrollChangedListenerList.add(listener)
     }
 
     override fun onHeaderAllRemovedClicked(labelAction: String) {
@@ -165,6 +175,10 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
             localCacheModel?.district_id.orEmpty(),
             position
         )
+    }
+
+    override fun onSetRecentSearchImpression(listener: ViewTreeObserver.OnScrollChangedListener) {
+        recentSearchScrollChangedListenerList.add(listener)
     }
 
     override fun onSeeMoreCuisineBtnClicked(element: SeeMoreCuisineUiModel) {
@@ -262,6 +276,17 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
             userSession.deviceId.orEmpty(),
             errorDesc
         )
+    }
+
+    private fun removeScrollChangedListener() {
+        cuisineScrollChangedListenerList.forEach {
+            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+        recentSearchScrollChangedListenerList.forEach {
+            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+        cuisineScrollChangedListenerList.clear()
+        recentSearchScrollChangedListenerList.clear()
     }
 
     companion object {

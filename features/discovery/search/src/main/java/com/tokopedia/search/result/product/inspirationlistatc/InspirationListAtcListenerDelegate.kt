@@ -41,6 +41,7 @@ class InspirationListAtcListenerDelegate @Inject constructor(
 
     override fun onListAtcItemImpressed(product: InspirationCarouselDataView.Option.Product) {
         inspirationListAtcView.trackItemImpress(product)
+        if (product.isOrganicAds) inspirationListAtcView.trackAdsImpress(product)
     }
 
     override fun onListAtcItemAddToCart(
@@ -48,5 +49,6 @@ class InspirationListAtcListenerDelegate @Inject constructor(
         type: String,
     ) {
         inspirationListAtcPresenter.onListAtcItemAddToCart(product, type)
+        if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
     }
 }
