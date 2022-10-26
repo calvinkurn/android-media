@@ -336,4 +336,16 @@ object ApplinkConstInternalUserPlatform {
     const val GROUP_ID = "groupId"
     const val CONSENT_WITHDRAWAL = "$NEW_INTERNAL_USER/consent/withdrawal?$GROUP_ID={groupId}"
 
+    /**
+     * com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
+     * @Applink : tokopedia-android-internal://user/push-notification-troubleshooter
+     **/
+    const val PUSH_NOTIFICATION_TROUBLESHOOTER = "$NEW_INTERNAL_USER/push-notification-troubleshooter"
+
+    /**
+     * com.tokopedia.telephony_masking.view.TelephonyActivity
+     * @Applink : tokopedia-android-internal://user/telephony-masking
+     **/
+    const val TELEPHONY_MASKING = "$NEW_INTERNAL_USER/telephony-masking"
+
 }
