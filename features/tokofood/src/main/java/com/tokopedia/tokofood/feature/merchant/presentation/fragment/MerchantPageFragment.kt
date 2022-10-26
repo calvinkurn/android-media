@@ -14,6 +14,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -44,6 +45,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -62,6 +64,7 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
@@ -178,6 +181,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     // TODO: move states to view model
     private var merchantId: String = ""
     private var productId: String = ""
+    private var currentPromoName: String? = null
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
@@ -190,6 +194,9 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private var cartDataUpdateJob: Job? = null
     private var uiEventUpdateJob: Job? = null
+
+    private var mvcImpressHolder: ImpressHolder? = null
+    private var mvcOnScrollChangeListener: ViewTreeObserver.OnScrollChangedListener? = null
 
     override fun getFragmentToolbar(): Toolbar? = binding?.toolbarMerchantPage
 
@@ -261,6 +268,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+        currentPromoName = null
+        removeCurrentMvcScrollChangedListener()
     }
 
     override fun onStart() {
@@ -940,6 +949,8 @@ class MerchantPageFragment : BaseMultiFragment(),
             } else {
                 show()
                 renderMvcData(mvcData)
+                currentPromoName = mvcData.animatedInfoList?.firstOrNull()?.title
+                setMvcImpressionHandling(currentPromoName.orEmpty())
                 renderMvcImageBackground()
             }
         }
@@ -963,6 +974,25 @@ class MerchantPageFragment : BaseMultiFragment(),
         } catch (ex: Exception) {
             Timber.e(ex)
         }
+    }
+
+    private fun setMvcImpressionHandling(promoName: String) {
+        removeCurrentMvcScrollChangedListener()
+        mvcImpressHolder = ImpressHolder()
+        val onScrollChangedListener = mvcImpressHolder?.let { impressHolder ->
+            binding?.mvcTokofoodMerchantPage?.addAndReturnImpressionListener(impressHolder) {
+                merchantPageAnalytics.impressPromoMvc(promoName, merchantId)
+            }
+        }
+        mvcOnScrollChangeListener = onScrollChangedListener
+    }
+
+    private fun removeCurrentMvcScrollChangedListener() {
+        mvcOnScrollChangeListener?.let {
+            binding?.mvcTokofoodMerchantPage?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+        mvcOnScrollChangeListener = null
+        mvcImpressHolder = null
     }
 
     private fun renderMerchantProfile(merchantProfile: TokoFoodMerchantProfile) {
@@ -1600,6 +1630,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun goToPromoPage() {
+        merchantPageAnalytics.clickPromoMvc(currentPromoName.orEmpty(), merchantId)
         navigateToNewFragment(
             TokoFoodPromoFragment.createInstance(
                 SOURCE,
