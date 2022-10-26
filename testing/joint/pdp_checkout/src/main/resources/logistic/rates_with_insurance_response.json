@@ -267,6 +267,176 @@
             "header": "",
             "label": "",
             "display": false
+          },
+          "rates_validation": {
+            "enable": true,
+            "error": 123,
+            "text": "Jadwal pengiriman NOW! pilihanmu baru saja habis. Ubah ke jadwal lain, ya",
+            "final_price": 0,
+            "real_price": 10000,
+            "text_final_price": "Rp0",
+            "text_real_price": "Rp10.000",
+            "promo_code": "TESTSCHDEL",
+            "benefit_class": "SCHEDULED",
+            "shipper_id": 10,
+            "shipper_product_id": 28,
+            "payment_expire_time": 1234,
+            "extra_data": "{\"cod_info\":0}",
+            "schedule_metadata": "{\"courier_name\":\"kurir ngebut\"}"
+          },
+          "additional_delivery_data": {
+            "delivery_type": 1,
+            "available": true,
+            "hidden": false,
+            "text": "Jadwal pengiriman lain tidak tersedia",
+            "notice": {
+              "title": "Kirim sesuai jadwal",
+              "text": "Bebas atur kapan pesanan tiba sesuai kebutuhanmu. Layanan ini baru tersedia untuk pesanan Tokopedia NOW!"
+            },
+            "ticker": {
+              "title": "",
+              "text": "Kuota gratis ongkirmu hari ini sudah habis"
+            },
+            "category_ids": [
+              1,
+              2,
+              3
+            ],
+            "category_names": [
+              "elektronik",
+              "sayur"
+            ],
+            "labels": [
+              "Hari ini",
+              "Besok",
+              "22 Sep",
+              "3 jadwal lainnya"
+            ],
+            "delivery_services": [
+              {
+                "title": "Hari ini, 20 Sep",
+                "titleLabel": "Hari ini",
+                "id": "2022-09-20T00:00:00Z",
+                "shipper_id": 10,
+                "available": true,
+                "hidden": false,
+                "delivery_products": [
+                  {
+                    "title": "Tiba 14:00 - 16:00",
+                    "text_eta": "Tiba hari ini, 14:00 - 16:00",
+                    "id": 2022092014123,
+                    "final_price": 0,
+                    "real_price": 10000,
+                    "text_final_price": "Rp0",
+                    "text_real_price": "Rp10.000",
+                    "text": "Sisa 3 slot",
+                    "shipper_id": 10,
+                    "shipper_product_id": 28,
+                    "available": true,
+                    "hidden": false,
+                    "recommend": true,
+                    "promocode": "test",
+                    "free_shipping_metadata": "{\"price\":0}"
+                  }
+                ]
+              },
+              {
+                "title": "Besok, 21 Sep",
+                "titleLabel": "21 Sep",
+                "id": "2022-09-20T00:00:00Z",
+                "shipper_id": 10,
+                "available": true,
+                "hidden": false,
+                "delivery_products": [
+                  {
+                    "title": "Tiba 12:00 - 14:00",
+                    "text_eta": "Tiba besok, 12:00 - 14:00",
+                    "id": 2022092112,
+                    "final_price": 0,
+                    "real_price": 10000,
+                    "text_final_price": "Rp0",
+                    "text_real_price": "Rp10.000",
+                    "text": "Sisa 3 slot",
+                    "shipper_id": 10,
+                    "shipper_product_id": 28,
+                    "available": true,
+                    "hidden": false,
+                    "recommend": false,
+                    "promocode": "test",
+                    "free_shipping_metadata": "{\"price\":0}"
+                  },
+                  {
+                    "title": "Tiba 14:00 - 16:00",
+                    "text_eta": "Tiba besok, 14:00 - 16:00",
+                    "id": 2022092114,
+                    "final_price": 0,
+                    "real_price": 10000,
+                    "text_final_price": "Rp0",
+                    "text_real_price": "Rp10.000",
+                    "text": "Slot habis",
+                    "shipper_id": 10,
+                    "shipper_product_id": 28,
+                    "available": false,
+                    "hidden": false,
+                    "recommend": false,
+                    "promocode": "test",
+                    "free_shipping_metadata": "{\"price\":0}"
+                  },
+                  {
+                    "title": "Tiba 16:00 - 18:00",
+                    "text_eta": "Tiba besok, 16:00 - 18:00",
+                    "id": 2022092116,
+                    "final_price": 0,
+                    "real_price": 10000,
+                    "text_final_price": "Rp0",
+                    "text_real_price": "Rp10.000",
+                    "text": "",
+                    "shipper_id": 10,
+                    "shipper_product_id": 28,
+                    "available": true,
+                    "hidden": false,
+                    "recommend": false,
+                    "promocode": "test",
+                    "free_shipping_metadata": "{\"price\":0}"
+                  }
+                ]
+              },
+              {
+                "title": "Kamis, 22 Sep",
+                "titleLabel": "22 Sep",
+                "id": "2022-09-20T00:00:00Z",
+                "shipper_id": 10,
+                "available": false,
+                "hidden": false,
+                "delivery_products": [
+                  {
+                    "title": "Semua jadwal",
+                    "text_eta": "",
+                    "id": 0,
+                    "final_price": 0,
+                    "real_price": 10000,
+                    "text_final_price": "Rp0",
+                    "text_real_price": "Rp10.000",
+                    "text": "Slot habis",
+                    "shipper_id": 10,
+                    "shipper_product_id": 28,
+                    "available": false,
+                    "hidden": false,
+                    "recommend": false,
+                    "promocode": "test",
+                    "free_shipping_metadata": "{\"price\":0}"
+                  }
+                ]
+              }
+            ],
+            "delivery_metadata": [
+              {
+                "courier_name": "GoTo Logistic - Pengiriman Terjadwal",
+                "eta_text": "Estimasi tiba 20 Sep, 14:00 - 16:00",
+                "delivery_time_start": "2022-09-20T07:00:00Z",
+                "delivery_time_end": "2022-09-20T09:00:00Z"
+              }
+            ]
           }
         }
       }
