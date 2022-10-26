@@ -103,7 +103,7 @@
     <string name="sharing_collection_confirmation_desc">Nanti orang lain akan bisa lihat Koleksi ini dan namamu. Mereka juga bisa menyalin Koleksi ini untuk Wishlist-nya sendiri.</string>
     <string name="sharing_collection_primary_button">Bagikan</string>
 
-    <string name="sharing_collection_desc">Koleksi bikin barang-barang impianmu tersimpan rapi di Wishlist Tokopedia!</string>
+    <string name="sharing_collection_desc">Coba cek Koleksi %s, yuk! Ada barang-barang menarik yang sudah aku pilihin di sini.</string>
 
     <string name="collection_edit_back_dialog_confirmation_title">Mau balik tanpa menyimpan?</string>
     <string name="collection_edit_back_dialog_confirmation_desc">Perubahan yang kamu buat akan dibatalkan, lho.</string>

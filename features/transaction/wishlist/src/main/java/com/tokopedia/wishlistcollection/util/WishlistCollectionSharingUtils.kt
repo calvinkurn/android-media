@@ -55,7 +55,7 @@ class WishlistCollectionSharingUtils() {
                 LinkerManager.getInstance().executeShareRequest(
                     LinkerUtils.createShareRequest(0, linkerShareResult, object : ShareCallback {
                         override fun urlCreated(linkerShareResult: LinkerShareResult?) {
-                            val shareString = activity.getString(R.string.sharing_collection_desc) + "\n${linkerShareResult?.url}"
+                            val shareString = activity.getString(R.string.sharing_collection_desc, data.collection.name) + " ${linkerShareResult?.url}"
                             shareModel.subjectName = data.collection.owner.name
                             SharingUtil.executeShareIntent(
                                 shareModel,
