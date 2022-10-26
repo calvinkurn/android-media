@@ -112,7 +112,6 @@ class PlayBroadcastUiMapper @Inject constructor(
             mutableListOf(
                 TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
                 TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
                 TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
                 TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
                 TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
