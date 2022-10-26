@@ -2,11 +2,13 @@ package com.tokopedia.tokochat.di
 
 import com.gojek.courier.CourierConnection
 import android.content.Context
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUrlUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
@@ -79,5 +81,14 @@ object TokoChatUseCaseModule {
         courierConnection: CourierConnection
     ): TokoChatMutationProfileUseCase {
         return TokoChatMutationProfileUseCase(repository, courierConnection)
+    }
+
+    @TokoChatScope
+    @Provides
+    fun provideGetImageUrlUseCase(
+        repository: TokoChatRepository,
+        dispatchers: CoroutineDispatchers
+    ): TokoChatGetImageUrlUseCase {
+        return TokoChatGetImageUrlUseCase(repository, dispatchers)
     }
 }

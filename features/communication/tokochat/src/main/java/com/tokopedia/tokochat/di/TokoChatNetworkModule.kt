@@ -4,11 +4,13 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.tokochat.data.interceptor.GojekInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -21,7 +23,7 @@ import javax.inject.Named
 object TokoChatNetworkModule {
 
     //TODO: Move this to TokopediaUrl
-    private const val BASE_URL = "https://integration-api.gojekapi.com/"
+    const val BASE_URL = "https://integration-api.gojekapi.com/"
 
     private const val NET_READ_TIMEOUT = 300
     private const val NET_WRITE_TIMEOUT = 300
@@ -91,5 +93,11 @@ object TokoChatNetworkModule {
     @Provides
     fun okHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy(NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY)
+    }
+
+    @TokoChatScope
+    @Provides
+    fun provideTokoChatImageApi(@Named(RETROFIT_NAME) retrofit: Retrofit): TokoChatImageApi {
+        return retrofit.create(TokoChatImageApi::class.java)
     }
 }

@@ -12,6 +12,7 @@ import com.tokopedia.tokochat.util.TokoChatCourierStateObservable
 import com.tokopedia.tokochat.data.repository.courier.TokoChatBabbleCourierImpl
 import com.tokopedia.tokochat.data.repository.courier.TokoChatCourierClientProvider
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
+import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import com.tokopedia.tokochat.di.TokoChatNetworkModule.RETROFIT_NAME
 import com.tokopedia.tokochat.util.TokoChatCourierRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
@@ -35,9 +36,10 @@ object TokoChatModule {
     fun provideTokoChatRepository(
         @Named(RETROFIT_NAME) retrofit: Retrofit,
         @ApplicationContext context: Context,
-        babbleCourierClient: BabbleCourierClient
+        babbleCourierClient: BabbleCourierClient,
+        tokoChatImageApi: TokoChatImageApi
     ): TokoChatRepository {
-        return TokoChatRepository(retrofit, context, babbleCourierClient)
+        return TokoChatRepository(retrofit, context, babbleCourierClient, tokoChatImageApi)
     }
 
     @TokoChatScope

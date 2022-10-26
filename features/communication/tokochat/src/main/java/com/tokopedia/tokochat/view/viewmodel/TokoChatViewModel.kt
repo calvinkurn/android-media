@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
@@ -20,6 +21,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUrlUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -40,6 +42,7 @@ class TokoChatViewModel @Inject constructor(
     private val getTokoChatBackgroundUseCase: GetTokoChatBackgroundUseCase,
     private val getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase,
     private val profileUseCase: TokoChatMutationProfileUseCase,
+    private val getImageUrlUseCase: TokoChatGetImageUrlUseCase,
     private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -246,5 +249,14 @@ class TokoChatViewModel @Inject constructor(
             _error.value = throwable
             MutableLiveData()
         }
+    }
+
+    fun getImageUrl(imageId: String) {
+        launchCatchError(block = {
+            val result = getImageUrlUseCase(imageId)
+            Log.d("IMAGE-RESULT", result.toString())
+        }, onError = {
+            _error.value = it
+        })
     }
 }

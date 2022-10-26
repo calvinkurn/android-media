@@ -372,6 +372,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         viewModel.getGroupBookingChannel(channelId)
         removeShimmering()
         observeChatHistory()
+        viewModel.getImageUrl("35ad96b3-9380-4980-a63d-d17c7f1e71c0")
     }
 
     override fun onLoadMore() {
