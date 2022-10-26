@@ -113,11 +113,12 @@ internal open class ProductListPresenterTestFixtures {
     protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
 
     protected lateinit var productListPresenter: ProductListPresenter
+    protected lateinit var chooseAddressPresenterDelegate: ChooseAddressPresenterDelegate
 
     @Before
     open fun setUp() {
         val pagination = PaginationImpl()
-        val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
+        chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
         val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
         val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,

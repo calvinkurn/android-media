@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -57,7 +58,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
-        `Then assert same session request params`(productItemDataView)
+        `Then assert same session request params`(productItemDataView, LocalCacheModel())
         `Then verify no recommendationItem added`()
     }
 
@@ -75,6 +76,8 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `Given same session recommendation preference will return empty`()
         `Given product filter indicator has default sorting and no active filter`()
         `Given queryKeyProvider queryKey return empty string`()
+        val localCacheModel = LocalCacheModel(city_id = "1")
+        `Given choose address return localCacheModel`(localCacheModel)
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
@@ -82,7 +85,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
-        `Then assert same session request params`(productItemDataView)
+        `Then assert same session request params`(productItemDataView, localCacheModel)
         `Then verify recommendationItem`(sameSessionRecommendation, productItemDataView)
     }
 
@@ -195,6 +198,11 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         every { productFilterIndicator.isAnyFilterOrSortActive } returns true
     }
 
+    private fun `Given choose address return localCacheModel`(localCacheModel: LocalCacheModel) {
+        every { chooseAddressView.chooseAddressData } returns localCacheModel
+        chooseAddressPresenterDelegate.updateChooseAddress()
+    }
+
     private fun `Given product filter indicator has non-default sorting`() {
         every {
             productFilterIndicator.isAnyFilterOrSortActive
@@ -305,12 +313,29 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private fun `Then assert same session request params`(
         productItemDataView: ProductItemDataView,
+        localCacheModel: LocalCacheModel,
     ) {
         val requestParams = requestParamsSlot.captured
-        requestParams.getString(
-            SearchApiConst.PRODUCT_ID,
-            ""
-        ) shouldBe productItemDataView.productID
+        requestParams.assertRequestProductId(productItemDataView)
+        requestParams.assertRequestLocationData(localCacheModel)
+    }
+
+    private fun RequestParams.assertRequestProductId(
+        productItemDataView: ProductItemDataView,
+    ) {
+        getString(SearchApiConst.PRODUCT_ID, "") shouldBe productItemDataView.productID
+    }
+
+    private fun RequestParams.assertRequestLocationData(
+        localCacheModel: LocalCacheModel,
+    ) {
+        getString(SearchApiConst.USER_CITY_ID, "") shouldBe localCacheModel.city_id
+        getString(SearchApiConst.USER_ADDRESS_ID, "") shouldBe localCacheModel.address_id
+        getString(SearchApiConst.USER_DISTRICT_ID, "") shouldBe localCacheModel.district_id
+        getString(SearchApiConst.USER_POST_CODE, "") shouldBe localCacheModel.postal_code
+        getString(SearchApiConst.USER_LAT, "") shouldBe localCacheModel.lat
+        getString(SearchApiConst.USER_LONG, "") shouldBe localCacheModel.long
+        getString(SearchApiConst.USER_WAREHOUSE_ID, "") shouldBe localCacheModel.warehouse_id
     }
 
 }
