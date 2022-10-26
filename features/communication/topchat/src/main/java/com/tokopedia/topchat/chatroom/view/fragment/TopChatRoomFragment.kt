@@ -740,7 +740,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun trackClickUpdateStock(product: ProductAttachmentUiModel) {
-        analytics.trackClickUpdateStock(product)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickChangeStockFromBubble(product.productId)
+        } else {
+            analytics.trackClickUpdateStock(product)
+        }
     }
 
     override fun isOCCActive(): Boolean {
@@ -1464,6 +1468,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             showToasterMsgFromUpdateStock(updateProductResult, productName, status)
             adapter.updateProductStock(updateProductResult, stockCount, status)
             viewModel.onGoingStockUpdate.remove(productId)
+
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickSaveStockFromBubble(productId?: "")
+            }
         } else {
             val errorMsg = data?.extras?.getString(EXTRA_UPDATE_MESSAGE) ?: return
             showToasterError(errorMsg)
@@ -3152,12 +3160,23 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         ) { itemMenu, msg ->
             TopChatAnalyticsKt.eventClickMsgMenu(itemMenu.title)
             when (itemMenu.id) {
-                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
-                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
+                MENU_ID_REPLY -> replyBubble(msg, text)
+                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text, msg.replyId)
                 MENU_ID_DELETE_BUBBLE -> confirmDeleteBubble(msg)
             }
         }
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
+
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickLongHoldMessageFromBubble(msg.replyId)
+        }
+    }
+
+    private fun replyBubble(msg: BaseChatUiModel, text: CharSequence) {
+        replyCompose?.composeReplyData(msg, text, true)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickReplySelectedMessageFromBubble(msg.replyId)
+        }
     }
 
     private fun confirmDeleteBubble(msg: BaseChatUiModel) {
@@ -3171,11 +3190,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     dismiss()
                 }
                 setPrimaryCTAClickListener {
-                    TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
+                    if (isFromBubble) {
+                        TopChatAnalyticsKt.clickConfirmDeleteSelectedMessageFromBubble(msg.replyId)
+                    } else {
+                        TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
+                    }
                     deleteBubble(msg)
                     dismiss()
                 }
             }.show()
+
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickDeleteSelectedMessageFromBubble(msg.replyId)
+            }
         }
     }
 
@@ -3192,12 +3219,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return shopId
     }
 
-    private fun copyToClipboard(text: CharSequence) {
+    private fun copyToClipboard(text: CharSequence, replyId: String) {
         val clipboard = context?.getSystemService(
             CLIPBOARD_SERVICE
         ) as? ClipboardManager
         val clip = ClipData.newPlainText(CLIPBOARD_CHAT, text)
         clipboard?.setPrimaryClip(clip)
+
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickCopySelectedMessageFromBubble(replyId)
+        }
     }
 
     override fun getUserName(senderId: String): String {
