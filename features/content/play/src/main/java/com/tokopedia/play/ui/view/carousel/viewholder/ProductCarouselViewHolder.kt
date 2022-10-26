@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayPinnedProductBinding
+import com.tokopedia.play.extensions.generateButton
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
@@ -63,7 +64,7 @@ class ProductCarouselViewHolder private constructor() {
         /**
          * Need to make sure that first index is ATC if product is pinned
          */
-        private fun UnifyButton.generateButton(button: ProductButtonUiModel){
+        private fun UnifyButton.configButton(button: ProductButtonUiModel){
             //Setup Text
             text = if(button.type == ProductButtonType.ATC) "+" else button.text
 
@@ -76,29 +77,7 @@ class ProductCarouselViewHolder private constructor() {
                 ProductButtonType.ATC -> setDrawable(iconType , UnifyButton.DrawablePosition.RIGHT)
             }
 
-            //Setup Color, default?
-            when (button.color) {
-                ProductButtonColor.PRIMARY_BUTTON -> {
-                    buttonVariant = UnifyButton.Variant.FILLED
-                    buttonType = UnifyButton.Type.MAIN
-                    isEnabled = true
-                }
-                ProductButtonColor.SECONDARY_BUTTON -> {
-                    buttonVariant = UnifyButton.Variant.GHOST
-                    buttonType = UnifyButton.Type.MAIN
-                    isEnabled = true
-                }
-                ProductButtonColor.PRIMARY_DISABLED_BUTTON -> {
-                    buttonVariant = UnifyButton.Variant.FILLED
-                    buttonType = UnifyButton.Type.MAIN
-                    isEnabled = false
-                }
-                ProductButtonColor.SECONDARY_DISABLED_BUTTON -> {
-                    buttonVariant = UnifyButton.Variant.GHOST
-                    buttonType = UnifyButton.Type.MAIN
-                    isEnabled = false
-                }
-            }
+            generateButton(button.color)
         }
 
         fun bind(item: PlayProductUiModel.Product) {
@@ -115,8 +94,8 @@ class ProductCarouselViewHolder private constructor() {
             //Buttons
             binding.btnAtc.showWithCondition(buttons.isNotEmpty())
             binding.btnBuy.showWithCondition(buttons.isNotEmpty())
-            binding.btnAtc.generateButton(buttons.find { it.type == ProductButtonType.ATC }.orDefault())
-            binding.btnBuy.generateButton(buttons.find { it.type != ProductButtonType.ATC }.orDefault())
+            binding.btnAtc.configButton(buttons.find { it.type == ProductButtonType.ATC }.orDefault())
+            binding.btnBuy.configButton(buttons.find { it.type != ProductButtonType.ATC }.orDefault())
 
             when (item.price) {
                 is DiscountedPrice -> {

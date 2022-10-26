@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewProductBottomSheetCardBinding
+import com.tokopedia.play.extensions.generateButton
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -36,7 +37,8 @@ class ProductBottomSheetCardView(
         this,
     )
 
-    private val imageRadius = resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
+    private val imageRadius =
+        resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
     private val separatorSpan = ForegroundColorSpan(
         MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
     )
@@ -61,7 +63,7 @@ class ProductBottomSheetCardView(
 
         binding.llInfo.showWithCondition(
             shouldShow = item.isPinned ||
-                    (item.stock is StockAvailable && item.stock.stock <= STOCK_THRESHOLD)
+                (item.stock is StockAvailable && item.stock.stock <= STOCK_THRESHOLD)
         )
         binding.iconPinned.showWithCondition(item.isPinned)
         binding.tvInfo.text = getInfo(item)
@@ -73,7 +75,8 @@ class ProductBottomSheetCardView(
             is DiscountedPrice -> {
                 binding.tvProductDiscount.show()
                 binding.tvOriginalPrice.show()
-                binding.tvProductDiscount.text = context.getString(R.string.play_discount_percent, item.price.discountPercent)
+                binding.tvProductDiscount.text =
+                    context.getString(R.string.play_discount_percent, item.price.discountPercent)
                 binding.tvOriginalPrice.text = item.price.originalPrice
                 binding.tvCurrentPrice.text = item.price.discountedPrice
             }
@@ -94,7 +97,7 @@ class ProductBottomSheetCardView(
                 binding.shadowOutOfStock.hide()
                 binding.labelOutOfStock.hide()
             }
-            is ComingSoon ->{
+            is ComingSoon -> {
                 binding.shadowOutOfStock.hide()
                 binding.labelOutOfStock.hide()
             }
@@ -113,8 +116,14 @@ class ProductBottomSheetCardView(
         //Buttons
         binding.btnProductAtc.showWithCondition(item.buttonUiModels.isNotEmpty())
         binding.btnProductBuy.showWithCondition(item.buttonUiModels.isNotEmpty())
-        binding.btnProductAtc.generateButton(item.buttonUiModels.firstOrNull().orDefault())
-        binding.btnProductBuy.generateButton(item.buttonUiModels.lastOrNull().orDefault())
+        binding.btnProductAtc.text = if (item.buttonUiModels.firstOrNull()
+                .orDefault().type == ProductButtonType.ATC) "+ ${item.buttonUiModels.firstOrNull().orDefault().text}"
+        else item.buttonUiModels.firstOrNull().orDefault().text
+        binding.btnProductBuy.text = if (item.buttonUiModels.lastOrNull()
+                .orDefault().type == ProductButtonType.ATC) "+ ${item.buttonUiModels.lastOrNull().orDefault().text}"
+        else item.buttonUiModels.lastOrNull().orDefault().text
+        binding.btnProductAtc.generateButton(item.buttonUiModels.firstOrNull().orDefault().color)
+        binding.btnProductBuy.generateButton(item.buttonUiModels.lastOrNull().orDefault().color)
     }
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
@@ -134,51 +143,9 @@ class ProductBottomSheetCardView(
                 append(' ')
             }
 
-            val stockText = context.getString(R.string.play_product_item_stock, item.stock.stock.toString())
+            val stockText =
+                context.getString(R.string.play_product_item_stock, item.stock.stock.toString())
             append(stockText, stockSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-        }
-    }
-
-    /**
-     * Move to another file?
-     */
-    private fun UnifyButton.generateButton(button: ProductButtonUiModel){
-        //Setup Text
-        text = button.text
-
-        //Setup Icon if any, for now its only for ATC
-        val iconColor = if(button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON)
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN100
-                        else com.tokopedia.unifyprinciples.R.color.Unify_G500
-
-        when (button.type) {
-            ProductButtonType.ATC ->
-                setDrawable(
-                    getIconUnifyDrawable(context, IconUnify.ADD, ContextCompat.getColor(context, iconColor)))
-        }
-
-        //Setup Color, default?
-        when (button.color) {
-            ProductButtonColor.PRIMARY_BUTTON -> {
-                buttonVariant = UnifyButton.Variant.FILLED
-                buttonType = UnifyButton.Type.MAIN
-                isEnabled = true
-            }
-            ProductButtonColor.SECONDARY_BUTTON -> {
-                buttonVariant = UnifyButton.Variant.GHOST
-                buttonType = UnifyButton.Type.MAIN
-                isEnabled = true
-            }
-            ProductButtonColor.PRIMARY_DISABLED_BUTTON -> {
-                buttonVariant = UnifyButton.Variant.FILLED
-                buttonType = UnifyButton.Type.MAIN
-                isEnabled = false
-            }
-            ProductButtonColor.SECONDARY_DISABLED_BUTTON -> {
-                buttonVariant = UnifyButton.Variant.GHOST
-                buttonType = UnifyButton.Type.MAIN
-                isEnabled = false
-            }
         }
     }
 
@@ -192,11 +159,13 @@ class ProductBottomSheetCardView(
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
         )
+
         fun onBuyProduct(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
         )
+
         fun onAtcProduct(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,

@@ -300,7 +300,8 @@ class PlayBottomSheetFragment @Inject constructor(
         action: ProductAction,
         product: PlayProductUiModel.Product,
     ) {
-        variantSheetView.setAction(action)
+        val button = product.buttonUiModels.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
+        variantSheetView.setAction(action, button)
         playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
     }
 

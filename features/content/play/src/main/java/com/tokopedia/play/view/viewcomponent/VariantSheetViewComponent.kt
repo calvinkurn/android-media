@@ -18,15 +18,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
+import com.tokopedia.play.extensions.generateButton
 import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.ui.variantsheet.adapter.VariantLabelAdapter
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantItemDecoration
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantLabelItemDecoration
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -146,11 +144,9 @@ class VariantSheetViewComponent(
         show()
     }
 
-    fun setAction(action: ProductAction) {
-        btnAction.text = getString(
-            if (action == ProductAction.Buy) R.string.play_product_buy
-            else R.string.play_product_add_to_card
-        )
+    fun setAction(action: ProductAction, button: ProductButtonUiModel) {
+        btnAction.text = button.text
+        btnAction.generateButton(button.color)
 
         mAction = action
     }
