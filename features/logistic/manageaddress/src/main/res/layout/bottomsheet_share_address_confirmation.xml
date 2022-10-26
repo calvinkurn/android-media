@@ -34,7 +34,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="@string/share_address_confirmation_description"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintTop_toBottomOf="@id/txt_title_confirm_share_address"
         app:typographyType="paragraph_2" />

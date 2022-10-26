@@ -125,7 +125,8 @@
     <string name="title_ticker_shop_setting">Atur lokasi toko di halaman Pengiriman</string>
     <string name="desc_ticker_shop_setting"><![CDATA[Sekarang kamu bisa mengatur lokasi tokomu langsung di <a href="">Halaman Pengiriman</a>.]]></string>
     <string name="share_address_confirmation_title">Bagikan alamat kamu?</string>
-    <string name="share_address_confirmation_description">Kamu akan membagikan alamat ke temanmu. Untuk keamanan datamu, Pastikan nama akun Tokopedia teman kamu sudah benar, ya.</string>
+    <string name="share_address_confirmation_description"><![CDATA[Kamu akan membagikan alamat ke %s. <b>Untuk keamanan datamu, Pastikan nama akun Tokopedia teman kamu sudah benar</b>, ya.]]></string>
+    <string name="desc_your_friend">temanmu</string>
     <string name="share_address_confirmation_tnc_content">Dengan klik Bagikan Sekarang, saya setuju untuk membagikan alamat sesuai dengan </string>
     <string name="share_address_confirmation_tnc_link">Kebijakan Privasi</string>
     <string name="select_all">Pilih Semua</string>

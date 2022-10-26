@@ -60,6 +60,7 @@ class ManageAddressViewModel @Inject constructor(
     var isClearData: Boolean = true
     var receiverUserId: String? = null
     var senderUserId: String? = null
+    var receiverUserName: String? = null
     val isNeedToShareAddress: Boolean
         get() = receiverUserId?.isNotBlank() == true
     val isReceiveShareAddress: Boolean
@@ -267,7 +268,7 @@ class ManageAddressViewModel @Inject constructor(
             )
             val result = validateShareAddressAsReceiverUseCase(params)
             _validateShareAddressState.value = if (result.keroValidateShareAddressAsReceiver?.isValid == true) {
-                ValidateShareAddressState.Success
+                ValidateShareAddressState.Success()
             } else {
                 ValidateShareAddressState.Fail
             }
@@ -287,7 +288,7 @@ class ManageAddressViewModel @Inject constructor(
             )
             val result = validateShareAddressAsSenderUseCase(params)
             _validateShareAddressState.value = if (result.keroValidateShareAddressAsSender?.isValid == true) {
-                ValidateShareAddressState.Success
+                ValidateShareAddressState.Success(result.keroValidateShareAddressAsSender.receiverUserName)
             } else {
                 ValidateShareAddressState.Fail
             }

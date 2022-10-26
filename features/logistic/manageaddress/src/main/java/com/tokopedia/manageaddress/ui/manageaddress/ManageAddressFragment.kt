@@ -114,12 +114,21 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
             viewLifecycleOwner,
             Observer {
                 when (it) {
-                    is ValidateShareAddressState.Success -> bindView()
+                    is ValidateShareAddressState.Success -> {
+                        setReceiverUserName(it.receiverUserName)
+                        bindView()
+                    }
                     is ValidateShareAddressState.Fail -> onFailedValidateShareAddress()
                     is ValidateShareAddressState.Loading -> showLoading(it.isShowLoading)
                 }
             }
         )
+    }
+
+    private fun setReceiverUserName(receiverUserName: String?) {
+        if (receiverUserName?.isNotBlank() == true) {
+            arguments?.putString(ManageAddressConstant.EXTRA_RECEIVER_USER_NAME, receiverUserName)
+        }
     }
 
     private fun bindView() {

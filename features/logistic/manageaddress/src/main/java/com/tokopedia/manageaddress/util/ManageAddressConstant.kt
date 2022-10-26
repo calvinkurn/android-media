@@ -30,5 +30,6 @@ object ManageAddressConstant {
     const val EXTRA_QUERY = "EXTRA_QUERY"
     const val QUERY_PARAM_RUID = "ruid"
     const val QUERY_PARAM_SUID = "suid"
+    const val EXTRA_RECEIVER_USER_NAME = "EXTRA_RECEIVER_USER_NAME"
     const val EXTRA_SHARE_ADDRESS_FROM_NOTIF = "EXTRA_SHARE_ADDRESS_FROM_NOTIF"
 }

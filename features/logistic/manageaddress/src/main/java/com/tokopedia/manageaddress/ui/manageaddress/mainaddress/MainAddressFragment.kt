@@ -168,6 +168,7 @@ class MainAddressFragment :
         viewModel.savedQuery = arguments?.getString(ManageAddressConstant.EXTRA_QUERY) ?: ""
         viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_RUID)
         viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_SUID)
+        viewModel.receiverUserName = arguments?.getString(ManageAddressConstant.EXTRA_RECEIVER_USER_NAME)
         viewModel.source = arguments?.getString(PARAM_SOURCE) ?: ""
     }
 
@@ -775,7 +776,8 @@ class MainAddressFragment :
                     ShareAddressAnalytics.onClickShareAddress()
                     showShareAddressConfirmationBottomSheet(
                         senderAddressId = id,
-                        receiverUserId = viewModel.receiverUserId
+                        receiverUserId = viewModel.receiverUserId,
+                        receiverUserName = viewModel.receiverUserName
                     )
                 }
             } else {
@@ -885,11 +887,13 @@ class MainAddressFragment :
         senderAddressId: String,
         receiverPhoneNumberOrEmail: String? = null,
         receiverUserId: String? = null,
+        receiverUserName: String? = null,
     ) {
         bottomSheetConfirmationShareAddress = ShareAddressConfirmationBottomSheet.newInstance(
             senderAddressId = senderAddressId,
             receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail,
             receiverUserId = receiverUserId,
+            receiverUserName = receiverUserName,
             source = viewModel.getSourceValue(),
             listener = this
         )

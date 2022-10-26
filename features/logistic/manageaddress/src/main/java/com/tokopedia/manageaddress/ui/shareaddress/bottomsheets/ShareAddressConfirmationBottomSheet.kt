@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressBottomSheetState
@@ -40,6 +41,7 @@ class ShareAddressConfirmationBottomSheet :
     private var senderAddressId: String? = null
     private var receiverPhoneNumberOrEmail: String? = null
     private var receiverUserId: String? = null
+    private var receiverUserName: String? = null
     private var source: String = ""
     private var mListener: Listener? = null
 
@@ -59,13 +61,17 @@ class ShareAddressConfirmationBottomSheet :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        showCloseIcon = false
-        showHeader = false
+        hideHeader()
         setOnDismissListener { dismiss() }
     }
 
     private fun initInjector() {
         component.inject(this)
+    }
+
+    private fun hideHeader() {
+        showCloseIcon = false
+        showHeader = false
     }
 
     private fun initObserver() {
@@ -143,12 +149,11 @@ class ShareAddressConfirmationBottomSheet :
 
     private fun setLayout() {
         binding.apply {
-            showCloseIcon = false
-            showHeader = false
             setOnDismissListener { dismiss() }
+            txtDescShareAddress.setTextDescription()
             imgConfirmation.loadImage(IMAGE_SHARE_ADDRESS)
             txtTermsShareAddress.addLinkText(getString(R.string.share_address_confirmation_tnc_link)) {
-                RouteManager.route(requireContext(), PRIVACY_POLICY_URL)
+                RouteManager.route(requireContext(), TERMS_AND_CONDITIONS)
             }
             btnAgree.setOnClickListener {
                 onClickBtnShare()
@@ -157,6 +162,16 @@ class ShareAddressConfirmationBottomSheet :
                 onClickBtnCancel()
             }
         }
+    }
+
+    private fun TextView.setTextDescription() {
+        text = MethodChecker.fromHtml(String.format(
+                getString(
+                    R.string.share_address_confirmation_description,
+                    receiverUserName?.takeIf { it.isNotBlank() } ?: getString(R.string.desc_your_friend)
+                )
+            )
+        )
     }
 
     private fun onClickBtnShare() {
@@ -238,12 +253,13 @@ class ShareAddressConfirmationBottomSheet :
     companion object {
         const val TAG_SHARE_ADDRESS_CONFIRMATION = "ShareAddressConfirmationBottomSheet"
         private const val IMAGE_SHARE_ADDRESS = "https://images.tokopedia.net/img/android/share_address/share_address_image.png"
-        private const val PRIVACY_POLICY_URL = "https://www.tokopedia.com/privacy"
+        private const val TERMS_AND_CONDITIONS = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-bagikan-alamat"
 
         fun newInstance(
             senderAddressId: String?,
             receiverPhoneNumberOrEmail: String?,
             receiverUserId: String?,
+            receiverUserName: String? = null,
             source: String?,
             listener: Listener
         ): ShareAddressConfirmationBottomSheet {
@@ -253,6 +269,7 @@ class ShareAddressConfirmationBottomSheet :
                 this.mListener = listener
                 this.receiverUserId = receiverUserId
                 this.source = source ?: ""
+                this.receiverUserName = receiverUserName
             }
         }
     }

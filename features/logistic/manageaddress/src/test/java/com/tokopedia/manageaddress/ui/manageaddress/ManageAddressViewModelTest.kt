@@ -47,8 +47,6 @@ class ManageAddressViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val success = "Success"
-
     private val getPeopleAddressUseCase: GetAddressCornerUseCase = mockk(relaxed = true)
     private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase = mockk(relaxed = true)
     private val setDefaultPeopleAddressUseCase = mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
@@ -283,7 +281,7 @@ class ManageAddressViewModelTest {
         assertTrue(manageAddressViewModel.isReceiveShareAddress)
         assertTrue(manageAddressViewModel.isNeedValidateShareAddress)
         verify {
-            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success)
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success())
         }
     }
 
@@ -327,11 +325,13 @@ class ManageAddressViewModelTest {
     @Test
     fun `verify when validate share address as sender is success`() {
         manageAddressViewModel.receiverUserId = "1"
+        val receiverUserName = "Ronaldo"
         val mockResponse = spyk(
             ValidateShareAddressAsSenderResponse(
                 keroValidateShareAddressAsSender = spyk(
                     ValidateShareAddressAsSenderResponse.ValidateShareAddressData(
-                        isValid = true
+                        isValid = true,
+                        receiverUserName = receiverUserName
                     )
                 ))
         )
@@ -345,7 +345,7 @@ class ManageAddressViewModelTest {
         assertTrue(manageAddressViewModel.isNeedToShareAddress)
         assertTrue(manageAddressViewModel.isNeedValidateShareAddress)
         verify {
-            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success)
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success(receiverUserName))
         }
     }
 
@@ -449,7 +449,7 @@ class ManageAddressViewModelTest {
         assertTrue(manageAddressViewModel.isReceiveShareAddress)
         assertTrue(manageAddressViewModel.isNeedValidateShareAddress)
         verify {
-            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success)
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success())
         }
     }
 }
