@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
@@ -93,6 +94,9 @@ open class ProductManageViewModelTestFixture {
     @RelaxedMockK
     lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
 
+    @RelaxedMockK
+    lateinit var getStatusShopUseCase: GetStatusShopUseCase
+
     protected lateinit var viewModel: ProductManageViewModel
 
     @Before
@@ -100,27 +104,28 @@ open class ProductManageViewModelTestFixture {
         MockKAnnotations.init(this)
 
         viewModel = ProductManageViewModel(
-                editPriceUseCase,
-                gqlGetShopInfoUseCase,
-                getShopInfoTopAdsUseCase,
-                userSessionInterface,
-                getShopManagerPopupsUseCase,
-                getProductListUseCase,
-                setFeaturedProductUseCase,
-                editStatusUseCase,
-                editStockUseCase,
-                deleteProductUseCase,
-                multiEditProductUseCase,
-                getProductListMetaUseCase,
-                getProductManageAccessUseCase,
-                editProductVariantUseCase,
-                getProductVariantUseCase,
-                getAdminInfoShopLocationUseCase,
-                getUploadStatusUseCase,
-                clearUploadStatusUseCase,
-                getMaxStockThresholdUseCase,
-                tickerStaticDataProvider,
-                CoroutineTestDispatchersProvider
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            getShopInfoTopAdsUseCase,
+            userSessionInterface,
+            getShopManagerPopupsUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStatusUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            getProductManageAccessUseCase,
+            editProductVariantUseCase,
+            getProductVariantUseCase,
+            getAdminInfoShopLocationUseCase,
+            getUploadStatusUseCase,
+            clearUploadStatusUseCase,
+            getMaxStockThresholdUseCase,
+            getStatusShopUseCase,
+            tickerStaticDataProvider,
+            CoroutineTestDispatchersProvider
         )
     }
 

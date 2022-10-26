@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo.Companion.ON_MODERATED_PERMANENTLY
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo.Companion.ON_MODERATED_STAGE
 import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
@@ -398,16 +399,8 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun getTickerData() {
-        if (_shopStatus.value?.isOnModerationMode().orFalse()) {
-            if (_shopStatus.value?.shopStatus.toIntSafely() == ON_MODERATED_STAGE) {
-                _tickerData.value = tickerStaticDataProvider.getTickerShopModerate()
-            } else {
-                _tickerData.value = tickerStaticDataProvider.getTickerShopModeratePermanent()
-            }
-        } else {
-            val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-            _tickerData.value = tickerStaticDataProvider.getTickers(isMultiLocationShop)
-        }
+        val isMultiLocationShop = userSessionInterface.isMultiLocationShop
+        _tickerData.value = tickerStaticDataProvider.getTickers(isMultiLocationShop,_shopStatus.value?.shopStatus.orEmpty())
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {

@@ -51,7 +51,8 @@ fun createProductUiModel(
     hasStockAlert:Boolean = false,
     stockAlertActive: Boolean = false,
     stockAlertCount:Int = 0,
-    maxStock: Int? = null
+    maxStock: Int? = null,
+    isShopModerate: Boolean = false
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -77,6 +78,7 @@ fun createProductUiModel(
         hasStockAlert,
         stockAlertActive,
         stockAlertCount,
-        maxStock
+        maxStock,
+        isShopModerate
     )
 }
