@@ -103,7 +103,6 @@ public abstract class BaseNotificationFactory {
             return Glide.with(context)
                     .asBitmap()
                     .load(url)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .submit(getImageWidth(), getImageHeight())
                     .get(3, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e) {
