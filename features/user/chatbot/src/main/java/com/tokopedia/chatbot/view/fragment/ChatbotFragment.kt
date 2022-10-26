@@ -648,6 +648,9 @@ class ChatbotFragment :
 //            return
 //        }
 
+        if(x==0 && y==0)
+            return
+
         val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
         intent.putExtra(X_COORDINATE,x)
         intent.putExtra(Y_COORDINATE,y)
