@@ -104,7 +104,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
         ::mapPaymentInfoUiState
     ).toStateFlow(PaymentInfoUiState.Loading)
     private val productListUiState = combine(
-        buyerOrderDetailDataRequestState, singleAtcRequestStates, ::mapProductListUiState
+        buyerOrderDetailDataRequestState,
+        singleAtcRequestStates,
+        ::mapProductListUiState
     ).toStateFlow(ProductListUiState.Loading)
     private val shipmentInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapShipmentInfoUiState
