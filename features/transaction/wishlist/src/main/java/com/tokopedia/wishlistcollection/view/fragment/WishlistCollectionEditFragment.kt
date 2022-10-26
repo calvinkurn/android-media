@@ -364,7 +364,9 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
         binding?.run {
             tfCollectionName.editText.setText(data.collection.name)
             tickerPublic.setHtmlDescription(tickerDesc)
-            tickerPublic.gone()
+
+            if (data.collection.access == 2) tickerPublic.visible()
+            else tickerPublic.gone()
             rvAccessOptions.adapter = wishlistCollectionEditAdapter
             rvAccessOptions.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             wishlistCollectionEditAdapter.apply {
@@ -401,7 +403,7 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
 
     override fun onOptionAccessItemClicked(accessId: Int) {
         newAccessId = accessId
-        if (accessId == 2 && _existingAccessId != 2) {
+        if (accessId == 2) {
             showTickerAccessInfo()
         } else {
             hideTickerAccessInfo()

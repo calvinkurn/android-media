@@ -235,6 +235,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
         }
 
+        const val REQUEST_CODE_LOGIN_ATC = 1880
+        const val REQUEST_CODE_LOGIN_GO_TO_CART = 1881
         const val REQUEST_CODE_LOGIN = 288
         const val REQUEST_CODE_GO_TO_PDP = 788
         const val REQUEST_CODE_GO_TO_COLLECTION_DETAIL = 388
@@ -272,6 +274,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initTrackingQueue()
+        getCollectionItems()
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -291,7 +294,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
-        checkLogin()
         observingData()
     }
 
@@ -1021,7 +1023,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
                         }
                     }
-                    addIcon(iconId = IconList.ID_CART) {}
+                    addIcon(iconId = IconList.ID_CART, disableRouteManager = true, onClick = { handleGoToCartPage() })
                     addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
                 }
             } else {
@@ -1046,6 +1048,17 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             showDialogSharePermission()
         } else {
             getCollectionSharingData()
+        }
+    }
+
+    private fun handleGoToCartPage() {
+        if (userSession.isLoggedIn) {
+            RouteManager.route(context, ApplinkConst.CART)
+        } else {
+            startActivityForResult(
+                RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN_ATC
+            )
         }
     }
 
@@ -1247,17 +1260,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         wishlistCollectionDetailViewModel.loadRecommendation(currRecommendationListPage)
     }
 
-    private fun checkLogin() {
-        if (userSession.isLoggedIn) {
-            getCollectionItems()
-        } else {
-            startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN
-            )
-        }
-    }
-
     private fun initTrackingQueue() {
         activity?.let {
             trackingQueue = TrackingQueue(it)
@@ -1265,7 +1267,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun getCollectionItems() {
-        // listSelectedProductIds.clear()
         fetchUserLatestAddressData()
         userAddressData?.let { address ->
             paramGetCollectionItems.wishlistChosenAddress =
@@ -2025,6 +2026,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         startActivityForResult(intentCollectionDetail, REQUEST_CODE_GO_TO_COLLECTION_DETAIL)
     }
 
+    private fun goToCartPage() {
+        RouteManager.route(context, ApplinkConst.CART)
+    }
+
     override fun onCariBarangClicked() {
         RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
         WishlistV2Analytics.clickCariBarangOnEmptyStateNoItems()
@@ -2448,18 +2453,30 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onAtc(wishlistItem: WishlistV2UiModel.Item, position: Int) {
+        wishlistItemOnAtc = wishlistItem
+        indexOnAtc = position
+
+        if (userSession.isLoggedIn) {
+            doAtc()
+        } else {
+            startActivityForResult(
+                RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN_ATC
+            )
+        }
+    }
+
+    private fun doAtc() {
         showLoadingDialog()
         val atcParam = AddToCartRequestParams(
-            productId = wishlistItem.id.toLong(),
-            productName = wishlistItem.name,
-            price = wishlistItem.originalPriceFmt,
-            quantity = wishlistItem.minOrder.toIntOrZero(),
-            shopId = wishlistItem.shop.id.toIntOrZero(),
+            productId = wishlistItemOnAtc.id.toLong(),
+            productName = wishlistItemOnAtc.name,
+            price = wishlistItemOnAtc.originalPriceFmt,
+            quantity = wishlistItemOnAtc.minOrder.toIntOrZero(),
+            shopId = wishlistItemOnAtc.shop.id.toIntOrZero(),
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
         )
         wishlistCollectionDetailViewModel.doAtc(atcParam)
-        wishlistItemOnAtc = wishlistItem
-        indexOnAtc = position
     }
 
     override fun onCheckSimilarProduct(url: String) {
@@ -2792,6 +2809,18 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
         } else if (requestCode == REQUEST_CODE_GO_TO_COLLECTION_DETAIL) {
             doRefresh()
+        } else if (requestCode == REQUEST_CODE_LOGIN_ATC) {
+            if (resultCode == Activity.RESULT_OK) {
+                doAtc()
+            } else {
+                activity?.finish()
+            }
+        } else if (requestCode == REQUEST_CODE_LOGIN_GO_TO_CART) {
+            if (resultCode == Activity.RESULT_OK) {
+                goToCartPage()
+            } else {
+                activity?.finish()
+            }
         }
     }
 
