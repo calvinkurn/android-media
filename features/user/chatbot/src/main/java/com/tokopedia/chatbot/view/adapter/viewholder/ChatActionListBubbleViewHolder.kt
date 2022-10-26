@@ -14,6 +14,7 @@ import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTI
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
+import com.tokopedia.chatbot.databinding.ItemChatActionBubbleSelectionListBinding
 import com.tokopedia.chatbot.util.OptionListRecyclerItemDecorator
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
@@ -29,8 +30,9 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
     BaseChatBotViewHolder<ChatActionSelectionBubbleUiModel>(itemView), ChatActionBubbleAdapter.OnChatActionSelectedListener {
     private val adapter: ChatActionBubbleAdapter
     private var model: ChatActionSelectionBubbleUiModel? = null
-    private var chatActionListSelection: RecyclerView = itemView.findViewById<RecyclerView>(R.id.chat_action_bubble_selection)
-    private var chatActionListSelectionContainer: LinearLayout = itemView.findViewById<LinearLayout>(R.id.chat_action_bubble_selection_container)
+    var viewBinding = ItemChatActionBubbleSelectionListBinding.bind(itemView)
+    private var chatActionListSelection: RecyclerView = viewBinding.chatActionBubbleSelection
+    private var chatActionListSelectionContainer: LinearLayout = viewBinding.chatActionBubbleSelectionContainer
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
@@ -90,7 +92,7 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
         super.onViewRecycled()
     }
 
-    override fun getCustomChatLayoutId(): Int = com.tokopedia.chatbot.R.id.customChatLayout
+    override fun getCustomChatLayoutId(): Int = R.id.customChatLayout
 
     companion object {
         @LayoutRes

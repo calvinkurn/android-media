@@ -3,6 +3,7 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
@@ -113,7 +114,11 @@ data class ShopInfo(
 
         @SerializedName("shopMultilocation")
         @Expose
-        val shopMultilocation: ProductShopMultilocation = ProductShopMultilocation()
+        val shopMultilocation: ProductShopMultilocation = ProductShopMultilocation(),
+
+        @SerializedName("partnerLabel")
+        @Expose
+        val partnerLabel: String = String.EMPTY
 ) {
     fun isShopInfoNotEmpty():Boolean {
         return shopCore.shopID.isNotEmpty()
@@ -140,7 +145,8 @@ data class ShopInfo(
                 isGoApotik,
                 epharmacyInfo.siaNumber,
                 epharmacyInfo.sipaNumber,
-                epharmacyInfo.apj
+                epharmacyInfo.apj,
+                partnerLabel = partnerLabel
         )
     }
 
