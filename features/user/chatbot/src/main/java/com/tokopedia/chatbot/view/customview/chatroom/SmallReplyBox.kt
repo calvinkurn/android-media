@@ -36,6 +36,10 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
     //    bindClickListeners()
     }
 
+    fun getMessageView(): EditText? {
+        return commentEditText
+    }
+
     private fun initViewBindings() {
         val view = View.inflate(context, LAYOUT, this)
         with(view) {

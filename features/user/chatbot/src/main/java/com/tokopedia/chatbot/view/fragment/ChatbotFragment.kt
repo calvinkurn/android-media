@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
@@ -165,8 +167,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * @author by nisie on 23/11/18.
@@ -266,6 +266,7 @@ class ChatbotFragment :
     private var chatbotViewStateImpl: ChatbotViewStateImpl? = null
     private var replyBoxBottomSheetPlaceHolder: String = ""
     private var replyBoxBottomSheetTitle: String = ""
+    private var addCommentArea: LinearLayout? = null
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
@@ -295,7 +296,6 @@ class ChatbotFragment :
     }
 
     override fun onClick(v: View?) {
-        getBindingView().composeArea.replyBox.hide()
         smallReplyBox?.hideReplyBox()
         val id = v?.id
         if (id == getBindingView().chatbotViewHelpRate.btnInactive1.id ||
@@ -341,8 +341,9 @@ class ChatbotFragment :
         getBindingView().chatbotViewHelpRate.txtHelpTitle.text =
             mCsatResponse.attachment?.attributes?.title
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(getBindingView().composeArea.newComment.windowToken, 0)
-        getBindingView().composeArea.replyBox.hide()
+   //     imm.hideSoftInputFromWindow(getBindingView().composeArea.newComment.windowToken, 0)
+        //TODO check this
+   //     getBindingView().composeArea.replyBox.hide()
         getBindingView().chatbotViewHelpRate.layoutOfRate.show()
     }
 
@@ -552,17 +553,20 @@ class ChatbotFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        replyEditText = getBindingView().composeArea.newComment
-        replyEditTextContainer = getBindingView().composeArea.newCommentContainer
-        replyBubbleContainer = getBindingView().composeArea.replyBubbleContainer
         floatingInvoice = getBindingView().floatingInvoice
-        bindReplyTextBackground()
+
         ticker = getBindingView().chatbotTicker
         dateIndicator = getBindingView().dateIndicator
         dateIndicatorContainer = getBindingView().dateIndicatorContainer
-        sendButton = getBindingView().composeArea.sendBut
-        guideline = getBindingView().composeArea.guidelineReplyBubble
 
+        //TODO fix guideline issue
+ //       guideline = getBindingView().composeArea.guidelineReplyBubble
+        smallReplyBox = getBindingView().smallReplyBox
+        bigReplyBox = getBindingView().bigReplyBox
+
+        smallReplyBox?.bindCommentTextBackground()
+
+        setUpBigReplyBoxListeners()
         setUpFloatingInvoiceListeners()
 
         recyclerView = getRecyclerView(view)
@@ -616,12 +620,12 @@ class ChatbotFragment :
 
     private fun showReplyBox(toShow: Boolean) {
         if (toShow) {
-            add_comment_area.show()
+            getBindingView().addCommentArea.show()
             smallReplyBox?.showReplyBox()
             bigReplyBox?.hide()
 
         } else {
-            add_comment_area.hide()
+            getBindingView().addCommentArea.hide()
             smallReplyBox?.hideReplyBox()
             bigReplyBox?.hide()
         }
@@ -1681,7 +1685,7 @@ class ChatbotFragment :
                 replyBubbleOnBoarding.showReplyBubbleOnBoarding(
                     it,
                     chatbotAdapter,
-                    getBindingView().composeArea.replyBox,
+                    smallReplyBox?.getMessageView(),
                     context
                 )
             }
