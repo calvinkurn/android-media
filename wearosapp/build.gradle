@@ -23,6 +23,14 @@ buildscript {
     }
 }
 
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : "0.1";
+}
+
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : 000000001;
+}
+
 kapt {
     correctErrorTypes = true
     generateStubs = false
@@ -30,6 +38,10 @@ kapt {
 android {
     packagingOptions {
         exclude 'META-INF/**'
+    }
+    project.ext {
+        defaultVersionCode = 000000001;
+        defaultVersionName = "0.1";
     }
     compileSdkVersion 32
     useLibrary 'org.apache.http.legacy'
