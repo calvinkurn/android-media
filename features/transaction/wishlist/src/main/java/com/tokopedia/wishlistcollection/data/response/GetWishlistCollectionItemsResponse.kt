@@ -43,6 +43,9 @@ data class GetWishlistCollectionItemsResponse(
 		@SerializedName("empty_state")
 		val emptyState: EmptyState = EmptyState(),
 
+        @SerializedName("collection_type")
+        val collectionType: Int = 0,
+
 		@SerializedName("setting")
 		val setting: Setting = Setting(),
 

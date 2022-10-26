@@ -24,6 +24,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.bottomsheets.*
+import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.*
@@ -31,6 +33,7 @@ import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
@@ -94,8 +97,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
-
-
     private var rowNumberWhenShareClicked = 0
     private var dissmisByGreyArea = true
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -219,6 +220,9 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         observeReportContent()
         observeVideoViewData()
         observeAddToCart()
+        observeReminderBtnInitialState()
+        observeReminderBtnSetState()
+        observeFeedWidgetUpdatedData()
     }
 
     private fun setupView(view: View) {
@@ -668,7 +672,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         if (!item.isFollowed && item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_IMAGE)
             analyticsTracker.sendClickShareProductSgcRecommEvent(
                 ContentDetailPageAnalyticsDataModel(
-                    activityId = item.postId.toString(),
+                    activityId = item.postId,
                     shopId = item.shopId,
                     isFollowed = item.isFollowed,
                     type = item.postType,
@@ -679,7 +683,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         else
             analyticsTracker.sendClickShareSgcImageBottomSheet(
                 ContentDetailPageAnalyticsDataModel(
-                    activityId = item.postId.toString(),
+                    activityId = item.postId,
                     shopId = item.shopId,
                     isFollowed = item.isFollowed,
                     type = item.postType,
@@ -807,7 +811,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 if (userSession.isLoggedIn) {
                     context?.let {
                         reportBottomSheet = ReportBottomSheet.newInstance(
-                            feedXCard.id.toIntOrZero(),
                             context = object : ReportBottomSheet.OnReportOptionsClick {
                                 override fun onReportAction(
                                     reasonType: String,
@@ -1074,6 +1077,28 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         )
     }
 
+    override fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int) {
+        viewModel.checkUpcomingCampaignInitialReminderStatus(card.campaign.campaignId, positionInFeed)
+    }
+
+    override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
+        viewModel.setUnsetReminder(card.campaign.campaignId, card.campaign.reminder, positionInFeed)
+    }
+
+    override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
+        if (::productTagBS.isInitialized)
+            productTagBS.dismiss()
+        viewModel.fetchLatestFeedPostWidgetData(card.id, positionInFeed)
+    }
+
+    override fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int) {
+        if (adapter.getList().size > positionInFeed) {
+            adapter.getList().removeAt(positionInFeed)
+            adapter.notifyItemRemoved(positionInFeed)
+        }
+    }
+
+
     override fun onLihatProdukClicked(
         feedXCard: FeedXCard,
         postPosition: Int,
@@ -1096,16 +1121,20 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             productTagBS = ProductItemInfoBottomSheet()
             productTagBS.show(
                 childFragmentManager,
-                products,
                 this,
-                feedXCard.id.toIntOrZero(),
-                feedXCard.author.id,
-                feedXCard.typename,
-                feedXCard.followers.isFollowed,
-                postPosition,
-                feedXCard.playChannelID,
-                shopName = feedXCard.author.name,
-                mediaType = media?.type?:""
+                ProductBottomSheetData(
+                    products = products,
+                    postId = feedXCard.id,
+                    shopId = feedXCard.author.id,
+                    postType = feedXCard.typename,
+                    isFollowed = feedXCard.followers.isFollowed,
+                    positionInFeed = postPosition,
+                    playChannelId = feedXCard.playChannelID,
+                    shopName = feedXCard.author.name,
+                    mediaType = media?.type?:"",
+                    saleStatus = feedXCard.campaign.status,
+                    saleType = feedXCard.campaign.name
+                )
             )
             productTagBS.closeClicked = {
                 analyticsTracker.sendClickXSgcImageEvent(
@@ -1202,6 +1231,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         intent.putExtra(ContentDetailArgumentModel.SHOP_NAME, feedXCard.author.name)
         intent.putExtra(ContentDetailArgumentModel.PARAM_ACTIVITY_ID, postId)
         intent.putExtra(ContentDetailArgumentModel.PARAM_POST_TYPE, feedXCard.typename)
+        intent.putExtra(ContentDetailArgumentModel.PARAM_SALE_TYPE, feedXCard.campaign.name)
+        intent.putExtra(ContentDetailArgumentModel.PARAM_SALE_STATUS, feedXCard.campaign.status)
         requireActivity().startActivity(intent)
 
     }
@@ -1334,7 +1365,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
-
     private fun onGoToLink(link: String) {
         context?.let {
             if (!TextUtils.isEmpty(link)) {
@@ -1358,7 +1388,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         if (item.postType == TYPE_FEED_X_CARD_POST && !item.isFollowed && item.mediaType == TYPE_IMAGE)
             analyticsTracker.sendClickThreeDotsSgcRecomm(
                 ContentDetailPageAnalyticsDataModel(
-                    activityId = item.postId.toString(),
+                    activityId = item.postId,
                     shopId = item.shopId,
                     isFollowed = item.isFollowed,
                     type = item.postType,
@@ -1370,7 +1400,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         else
             analyticsTracker.sendClickThreeDotsSgcImageEventForBottomSheet(
                 ContentDetailPageAnalyticsDataModel(
-                    activityId = item.postId.toString(),
+                    activityId = item.postId,
                     shopId = item.shopId,
                     isFollowed = item.isFollowed,
                     type = item.postType,
@@ -1389,7 +1419,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 )
             )
         val finalID =
-            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val sheet = ProductActionBottomSheet.newInstance(bundle)
@@ -1503,6 +1533,40 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
         onGoToLink(redirectUrl)
     }
+
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew, rowNumber: Int) {
+        val finalID =
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+
+        addToWishList(
+            finalID,
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            item.playChannelId,
+            item.mediaType,
+            item.positionInFeed
+        )
+    }
+
+    override fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew) {
+        val finalID =
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+
+        onTagSheetItemBuy(
+            finalID,
+            item.positionInFeed,
+            item.product,
+            item.shopId,
+            item.postType,
+            item.isFollowed,
+            item.playChannelId,
+            item.shopName,
+            item.mediaType
+        )
+    }
+
     private fun onTagSheetItemBuy(
         activityId: String,
         positionInFeed: Int,
@@ -1629,6 +1693,52 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)
             ).show()
         }
+    }
+
+    private fun onSuccessFetchStatusCampaignReminderButton(
+        data: FeedAsgcCampaignResponseModel,
+        shouldShowToaster: Boolean = false
+    ) {
+        val newList = adapter.getList()
+        val rowNumber = data.rowNumber
+        if (rowNumber in 0 until newList.size) {
+            val card = newList[rowNumber]
+            val campaign = card.campaign
+            if (campaign.campaignId == data.campaignId)
+                campaign.reminder = data.reminderStatus
+            if (shouldShowToaster)
+                showToastOnSuccessReminderSetForFSTorRS(card)
+
+            val reminderBtnPayload = Bundle().apply {
+                putBoolean(ContentDetailPostViewHolder.PAYLOAD_REMINDER_BTN_STATUS_UPDATED, true)
+            }
+            adapter.notifyItemChanged(rowNumber, reminderBtnPayload)
+        }
+    }
+
+    private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {
+        when{
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isFlashSaleToko -> showToast(
+                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_fst_message),
+                Toaster.TYPE_NORMAL
+            )
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isRilisanSpl -> showToast(
+                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_rs_message),
+                Toaster.TYPE_NORMAL
+            )
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.Off -> showToast(
+                getString(
+                    com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_deactivate_message
+                ) , Toaster.TYPE_NORMAL
+            )
+        }
+    }
+    private fun onSuccessFetchLatestFeedWidgetData(data: FeedXCard, rowNumber: Int) {
+        val newList = adapter.getList()
+        if (newList.size > rowNumber) {
+            newList[rowNumber] = data
+        }
+        adapter.setItemsAndAnimateChanges(newList)
     }
 
     //region observer
@@ -1816,6 +1926,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     )
                     RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
                 }).show()
+            //row number is set to 0 as asgc product bottomsheet always has 1 product
+            productTagBS.changeWishlistIconOnWishlistSuccess(0)
         }
     }
 
@@ -1988,6 +2100,38 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     ) {
                         onAddToCartSuccess()
                     }.show()
+                }
+            }
+        })
+    }
+    private fun observeReminderBtnInitialState() {
+        viewModel.asgcReminderButtonInitialStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    onSuccessFetchStatusCampaignReminderButton(it.data)
+                }
+            }
+        })
+    }
+
+    private fun observeReminderBtnSetState() {
+        viewModel.asgcReminderButtonStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    onSuccessFetchStatusCampaignReminderButton(it.data, true)
+                }
+                is ContentDetailResult.Failure -> {
+                    showToast(ErrorHandler.getErrorMessage(context, it.error), Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
+    private fun observeFeedWidgetUpdatedData() {
+        viewModel.feedWidgetLatestData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                 }
             }
         })

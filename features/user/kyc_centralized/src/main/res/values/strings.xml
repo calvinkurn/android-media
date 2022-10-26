@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">kyc_centralized</string>
 
-    <string name="alert_not_verified_text">Tingkatkan kepercayaan calon pembeli dengan
-        upload KTP. Upload Sekarang</string>
+    <string name="alert_not_verified_text">Tingkatkan kepercayaan calon pembeli dengan upload KTP. Upload Sekarang</string>
     <string name="alert_not_verified_highlight_text">Upload Sekarang</string>
 
     <string name="alert_waiting_verification_text">Akun toko Anda sedang dalam proses menunggu
@@ -192,4 +191,12 @@
 
     <string name="kyc_consent_text"><![CDATA[Saya setuju untuk bagikan data KTP & foto wajah ke Tokopedia sesuai Syarat & Ketentuan.]]></string>
 
+
+    <!--  MIGRATE FROM USER_IDENTIFICATION_COMMON  -->
+
+    <string name="kyc_error_compress_image">Gagal memproses gambar. Silahkan pilih gambar lain.</string>
+    <string name="ktp_body">"<![CDATA[<font color='#dbdee2'>\u25CF</font> &nbsp Gunakan KTP asli yang masih berlaku.<br>
+        <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP berada dalam bingkai.<br>
+        <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP terlihat terang dan jelas.]]>"</string>
+    <string name="user_identification_common_retake_photo">Foto Ulang</string>
 </resources>

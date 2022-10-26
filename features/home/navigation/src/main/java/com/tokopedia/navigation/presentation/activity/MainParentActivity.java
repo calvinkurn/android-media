@@ -68,7 +68,6 @@ import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
-import com.tokopedia.home_wishlist.view.fragment.WishlistFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -95,6 +94,8 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.notifications.utils.NotificationSettingsUtils;
+import com.tokopedia.notifications.utils.NotificationUserSettingsTracker;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -203,10 +204,10 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
-    private static final String ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2";
     private static final String ENABLE_WISHLIST_COLLECTION = "android_enable_wishlist_collection";
     public static final String PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection";
     private static final String SUFFIX_ALPHA = "-alpha";
+    private static final String NOTIFICATION_USER_SETTING_KEY = "isUserSettingSent";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -299,6 +300,17 @@ public class MainParentActivity extends BaseActivity implements
 
         if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_CREATE_METRICS)) {
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
+        }
+        sendNotificationUserSetting();
+    }
+
+    private void sendNotificationUserSetting() {
+        boolean isSettingsSent = cacheManager.getBoolean(NOTIFICATION_USER_SETTING_KEY, false);
+        if (userSession.get().isLoggedIn() && !isSettingsSent) {
+            new NotificationUserSettingsTracker(getApplicationContext()).sendNotificationUserSettings();
+            cacheManager.edit()
+                    .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
+                    .apply();
         }
     }
 
@@ -781,19 +793,13 @@ public class MainParentActivity extends BaseActivity implements
             bundleWishlistCollection.putString("WishlistCollectionFragment", MainParentActivity.class.getSimpleName());
             fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_COLLECTION_FRAGMENT, bundleWishlistCollection));
         } else {
-            if (useWishlistV2Rollence() && useRemoteConfigWishlistV2Revamp()) {
-                Bundle bundleWishlist = getIntent().getExtras();
-                if (bundleWishlist == null) {
-                    bundleWishlist = new Bundle();
-                }
-                bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
-                bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
-                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
-            } else {
-                Bundle bundleWishlist = new Bundle();
-                bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
-                fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+            Bundle bundleWishlist = getIntent().getExtras();
+            if (bundleWishlist == null) {
+                bundleWishlist = new Bundle();
             }
+            bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
+            bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
         }
 
         Bundle bundleUoh = getIntent().getExtras();
@@ -806,20 +812,6 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.UOH_LIST_FRAGMENT, bundleUoh));
 
         return fragmentList;
-    }
-
-    private boolean useWishlistV2Rollence() {
-        boolean isWishlistV2;
-        try {
-            isWishlistV2 = getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_V2_REVAMP).equals(RollenceKey.WISHLIST_EXPERIMENT_VARIANT);
-        } catch (Exception e) {
-            isWishlistV2 = true;
-        }
-        return isWishlistV2;
-    }
-
-    private boolean useRemoteConfigWishlistV2Revamp() {
-        return remoteConfig.get().getBoolean(ENABLE_REVAMP_WISHLIST_V2);
     }
 
     private boolean useWishlistCollectionRollence() {

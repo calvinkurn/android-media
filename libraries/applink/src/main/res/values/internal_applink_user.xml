@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources tools:ignore="UnusedResources"
+    xmlns:tools="http://schemas.android.com/tools">
     <string name="host_user" translatable="false">user</string>
 
     <!--Home Account-->
@@ -12,6 +13,7 @@
     <string name="path_link_account">/link-account</string>
     <string name="path_explicit_profile">/explicit-profile</string>
     <string name="path_privacy_account">/privacy-account</string>
+    <string name="path_consent_withdrawal">/consent/withdrawal</string>
 
     <!--Profile Completion-->
     <string name="path_add_name_register">/add-name-register</string>
@@ -88,5 +90,14 @@
     //Register
     <string name="applink_init_register">/init-register</string>
     <string name="applink_email_register">/email-register</string>
+
+    <!--Redefine Register-->
+    <string name="path_redefine_register_email">/redefine-register-email</string>
+
+    <!--Notif Troubleshooter-->
+    <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
+
+    <!--Telephony Masking-->
+    <string name="path_telephony_masking">/telephony-masking</string>
 
 </resources>

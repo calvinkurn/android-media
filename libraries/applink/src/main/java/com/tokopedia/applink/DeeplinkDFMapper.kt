@@ -60,7 +60,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
@@ -104,6 +103,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODU
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SCORE
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_ALBUM
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW
@@ -171,6 +171,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_PI
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.FORGOT_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
@@ -441,7 +442,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(INTERNAL_INBOX_LIST)
             }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_contact_us, { DFWebviewFallbackUrl.OPERATIONAL_CONTACT_US }))
             add(DFP({ it.startsWith(CHAT_BOT) }, DF_OPERATIONAL_CONTACT_US, R.string.title_applink_chatbot, { DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT }))
-            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.TELEPHONY_MASKING) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_telephony))
+            add(DFP({ it.startsWith(ApplinkConstInternalUserPlatform.TELEPHONY_MASKING) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_telephony))
             add(DFP({ it.startsWithPattern(ApplinkConstInternalOperational.SUCCESS_RESO) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_resolution))
 
 
@@ -566,6 +567,10 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))
 
+            add(DFP({
+                it.startsWith(INTERNAL_MEDIA_EDITOR)
+            }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
+
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
             add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.checkout_module_title_activity_shipping_address))
@@ -627,10 +632,20 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(TokopediaNow.CATEGORY) ||
                     it.startsWith(TokopediaNow.SEARCH) ||
                     it.startsWith(TokopediaNow.REPURCHASE) ||
+                    it.startsWithPattern(TokopediaNow.RECIPE_DETAIL) ||
+                    it.startsWith(TokopediaNow.RECIPE_BOOKMARK) ||
+                    it.startsWith(TokopediaNow.RECIPE_HOME) ||
+                    it.startsWith(TokopediaNow.RECIPE_SEARCH) ||
+                    it.startsWith(TokopediaNow.RECIPE_AUTO_COMPLETE) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
-                    it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE)
+                    it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE) ||
+                    it.startsWithPattern(ApplinkConstInternalTokopediaNow.RECIPE_DETAIL) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.RECIPE_HOME) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.RECIPE_SEARCH) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.RECIPE_AUTO_COMPLETE)
             }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
 
             // Tokofood
@@ -777,7 +792,16 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Tokomember dashboard
             add(DFP({ it.startsWith(TOKOMEMBER) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_LIST) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_LIST) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_CREATION) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_CREATION) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_EXTENSION) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
 
+            // Media
+            add(DFP({
+                it.startsWith(INTERNAL_MEDIA_EDITOR)
+            }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
         }
     }
 

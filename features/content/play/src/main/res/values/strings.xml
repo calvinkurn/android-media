@@ -2,7 +2,6 @@
 <resources>
     <string name="play_title">Play</string>
     <string name="play_chat_placeholder">Chat di sini&#8230;</string>
-    <string name="play_action_view">Lihat</string>
     <string name="play_follow">Follow</string>
     <string name="play_watch_again">Tonton Ulang</string>
 
@@ -11,7 +10,6 @@
     <string name="play_product_add_to_card">Tambah ke Keranjang</string>
     <string name="play_discount_percent">%d%%</string>
     <string name="play_stock_available">Stok Tersedia</string>
-    <string name="play_add_to_cart_message_success">Barang berhasil ditambahkan</string>
     <string name="play_product_empty_title">Barang &amp; promo\n pilihan telah habis</string>
     <string name="play_product_empty_desc">Wah, barang &amp; promo pilihan sudah habis, Yuk\n cek barang menarik lainnya dari toko ini!</string>
     <string name="play_product_empty_action">Ke Halaman Toko</string>
@@ -50,18 +48,11 @@
     <string name="play_pinned_msg_applink_text">Ayo Lihat</string>
 
     <!--Engagement Tools-->
-    <string name="play_interactive_prestart_timer_text">Dimulai dalam:</string>
-    <string name="play_interactive_prestart_follow_button">Follow Buat Ikutan</string>
-
-    <string name="play_interactive_error_text">Oops, game gagal dimuat. Coba lagi, ya!</string>
-    <string name="play_interactive_error_action">Muat Ulang</string>
-
-    <string name="play_interactive_live_timer_text">Berakhir dalam:</string>
-
-    <string name="play_interactive_tap_action_tap_text">Tap terus!</string>
-    <string name="play_interactive_tap_action_follow_text">Follow dulu</string>
 
     <string name="play_interactive_follow_success">Berhasil follow toko.</string>
+
+    <string name="play_quiz_finished">Lihat hasil game di sini, ya.</string>
+
 
     <!--Upcoming page-->
     <string name="play_remind_me">Ingatkan Saya</string>
@@ -83,7 +74,7 @@
 
     <!--Pinned Product-->
     <string name="play_zero">0</string>
-    <string name="play_product_item_stock">Sisa %1$d</string>
+    <string name="play_product_item_stock">Sisa %1$s</string>
 
     <!--Coupon Sheet-->
     <string name="play_product_voucher_header_desc">Masih ada %1$s Kupon Toko lainnya!</string>
@@ -111,7 +102,6 @@
     <string name="play_change_address_widget_wording">Ganti Alamat</string>
     <string name="play_address_widget_info">Lokasimu belum tersedia di NOW! <![CDATA[<strong><span style="color:#03AC0E">Cek Jangkauan</span></strong>]]></string>
     <string name="play_tokonow_info_weblink">help/article/apa-itu-tokopedia-now</string>
-    <string name="play_toaster_global_wording">Lihat Keranjang</string>
     <string name="play_toaster_tokonow_wording">Lihat</string>
     <string name="play_tokonow_minicart_applink">\?isMiniCartOpen=true</string>
     <string name="play_tokopedia_now_wording">Tokopedia NOW!</string>

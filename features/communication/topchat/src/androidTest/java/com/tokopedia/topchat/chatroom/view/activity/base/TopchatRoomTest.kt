@@ -143,9 +143,6 @@ abstract class TopchatRoomTest {
     protected lateinit var websocket: FakeTopchatWebSocket
 
     @Inject
-    protected lateinit var addWishListUseCase: AddWishListUseCaseStub
-
-    @Inject
     protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
 
     @Inject
@@ -180,6 +177,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var getChatPreAttachPayloadUseCase: GetChatPreAttachPayloadUseCaseStub
+
+    @Inject
+    protected lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCaseStub
 
     @Inject
     protected lateinit var cacheManager: TopchatCacheManager

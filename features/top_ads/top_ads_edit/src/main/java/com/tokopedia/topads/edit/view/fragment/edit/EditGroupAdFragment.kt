@@ -144,7 +144,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         dailyBudget?.textFieldInput?.setText(data)
     }
 
-    fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
+    fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateNameV2) {
         if (data.errors.isEmpty()) {
             txtGroupName?.setError(false)
             validation1 = true
@@ -298,8 +298,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             if (currentAutoBidState.isNotEmpty()) {
                 setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
                 actionEnable()
-            } else {
-                viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
             }
         })
     }

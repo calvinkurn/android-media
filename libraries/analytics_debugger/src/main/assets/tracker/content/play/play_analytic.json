@@ -15,6 +15,17 @@
       "theme": ".*"
     },
     {
+      "event": "clickTopAds",
+      "eventAction": "swipe channel",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - .* - \\d+",
+      "trackerId": "6663",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
       "businessUnit": "play",
       "eventCategory": "groupchat room",
       "currentSite": ".*",
@@ -23,6 +34,16 @@
       "eventAction": "swipe channel",
       "eventLabel": ".+",
       "sessionIris": ".*"
+    },
+    {
+      "event": "openScreen",
+      "trackerId": "13881",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "(true|false)",
+      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true/false)",
+      "sessionIris": ".*",
+      "userId": ".*"
     },
     {
       "eventAction": "leave room",
@@ -113,13 +134,6 @@
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+",
-      "sessionIris": ".*"
-    },
-    {
-      "eventAction": "click watch mode option",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
       "sessionIris": ".*"
     },
     {
@@ -214,6 +228,9 @@
     },
     {
       "eventAction": "view product",
+      "userId": ".*",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false)",
@@ -224,9 +241,10 @@
           "item_name": ".*",
           "item_brand": ".*",
           "item_category": ".*",
-          "price": ".*",
+          "price": "\\d+\\..*",
           "item_variant": ".*",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension40": "/groupchat - bottom sheet"
         }
       ],
       "item_list": "/groupchat - bottom sheet"

@@ -35,6 +35,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartItems
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartSimplifiedData
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
@@ -82,6 +83,7 @@ class AddToCartNonVariantTestHelper(
         `Then verify mini cart is refreshed`()
         `Then verify add to cart tracking is called`(addToCartQty, cartId, productItemDataViewToATC)
         `Then assert route to login page event is null`()
+        `Then assert update toolbar notification true`()
     }
 
     fun `Given view already created`() {
@@ -128,6 +130,11 @@ class AddToCartNonVariantTestHelper(
 
         val errorMessageLiveData = baseViewModel.errorATCMessageLiveData.value ?: ""
         assertThat(errorMessageLiveData, shouldBe(expectedErrorMessage))
+    }
+
+    fun `Then assert update toolbar notification true`() {
+        baseViewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     private fun `Then assert product item quantity`(
@@ -350,6 +357,7 @@ class AddToCartNonVariantTestHelper(
                 productInVisitable,
         )
         `Then verify increase cart quantity tracking is called`(productIdToATC)
+        `Then assert update toolbar notification true`()
     }
 
     private fun `Then verify increase cart quantity tracking is called`(productIdToATC: String) {
@@ -456,6 +464,7 @@ class AddToCartNonVariantTestHelper(
             expectedSuccessDeleteCartMessage = deleteCartMessage,
         )
         `Then verify delete cart tracking is called`(productId)
+        `Then assert update toolbar notification true`()
     }
 
     fun `Given view setup to delete`(productIdToDelete: String) {
@@ -654,6 +663,7 @@ class AddToCartNonVariantTestHelper(
         `Then verify mini cart is refreshed`(exactly = 2)
         `Then assert route to login page event is null`()
         `Then verify add to cart recom item tracking`(recommendationItemForATC)
+        `Then assert update toolbar notification true`()
     }
 
     private fun `Then assert recommendation item quantity`(recommendationItemForATC: RecommendationItem, addToCartQty: Int) {
@@ -751,6 +761,7 @@ class AddToCartNonVariantTestHelper(
                 updatedQuantity,
                 productInMiniCart.cartId
         )
+        `Then assert update toolbar notification true`()
         //TODO:: Tracking decrease quantity
 //        `Then verify decrease cart quantity tracking is called`(productIdToATC)
     }
@@ -814,6 +825,7 @@ class AddToCartNonVariantTestHelper(
                 updatedQty,
                 productInMiniCart.cartId,
         )
+        `Then assert update toolbar notification true`()
         //TODO:: Tracking increase quantity
 //        `Then verify increase cart quantity tracking is called`(productIdToATC)
     }
@@ -883,6 +895,8 @@ class AddToCartNonVariantTestHelper(
                 expectedQuantity = 0,
                 expectedRefreshMiniCartCount = 2,
         )
+
+        `Then assert update toolbar notification true`()
     }
 
     private fun `Then assert delete cart recom item behavior`(cartIdParam: String, expectedSuccessMessage: String, expectedErrorMessage: String, recommendationItemForATC: RecommendationItem, expectedQuantity: Int, expectedRefreshMiniCartCount: Int) {
