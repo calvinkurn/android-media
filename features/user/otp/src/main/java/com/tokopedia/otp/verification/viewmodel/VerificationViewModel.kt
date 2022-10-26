@@ -453,7 +453,7 @@ open class VerificationViewModel @Inject constructor(
         return newMap
     }
 
-    private fun createCheckPinV2Param(userId: String, msisdn: String, email: String): PinStatusParam {
+    fun createCheckPinV2Param(userId: String, msisdn: String, email: String): PinStatusParam {
         var id = ""
         var type = ""
         if(userId.isNotEmpty() && userId != "0") {
