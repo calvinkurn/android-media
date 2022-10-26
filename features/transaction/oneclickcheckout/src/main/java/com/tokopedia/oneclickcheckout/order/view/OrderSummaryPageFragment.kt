@@ -212,7 +212,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             REQUEST_CODE_LINK_ACCOUNT -> onResultFromLinkAccount(resultCode, data)
             REQUEST_CODE_WALLET_ACTIVATION -> refresh()
             REQUEST_CODE_ADD_ON -> onResultFromAddOn(resultCode, data)
-            REQUEST_CODE_UPLOAD_PRESCRIPTION -> onUploadPrescriptionResult(data)
+            REQUEST_CODE_UPLOAD_PRESCRIPTION -> onResultFromUploadPrescription(data)
         }
     }
 
@@ -499,10 +499,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 if ((it.uploadedImageCount ?: 0) > 0) {
                     it.uploadImageText = requireActivity().getString(
-                        com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_title_text
+                        com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_attached_title_text
                     )
                     it.descriptionText = requireActivity().getString(
-                        com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_count_text,
+                        com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_count_text,
                         it.uploadedImageCount
                     )
                     it.leftIconUrl = UploadPrescriptionViewHolder.EPharmacyCountImageUrl
@@ -1658,7 +1658,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onUploadPrescriptionResult(data: Intent?) {
+    private fun onResultFromUploadPrescription(data: Intent?) {
         if (data != null &&
             data.extras != null &&
             data.extras!!.containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) &&
