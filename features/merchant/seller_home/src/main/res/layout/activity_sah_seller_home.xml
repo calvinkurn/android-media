@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:buttonColor="@color/Unify_N500"
-        app:buttonsHeight="@dimen/shc_dimen_56dp"
+        app:buttonsHeight="56dp"
         app:offscreenPageLimit="4"
         app:setViewPagerSwipeable="false"
         tools:layout_height="56dp" />
