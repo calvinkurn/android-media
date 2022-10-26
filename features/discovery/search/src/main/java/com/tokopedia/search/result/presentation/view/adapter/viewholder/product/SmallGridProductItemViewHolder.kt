@@ -68,6 +68,10 @@ class SmallGridProductItemViewHolder(
             productItemData,
             createImageProductViewHintListener(productItemData)
         )
+
+        productCardView.setAddToCartOnClickListener {
+            productListener.onAddToCartClick(productItemData)
+        }
     }
 
     private fun ProductItemDataView.getProductImage(): String {
