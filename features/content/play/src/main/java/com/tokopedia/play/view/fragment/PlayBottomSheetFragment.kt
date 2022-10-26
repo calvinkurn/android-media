@@ -232,6 +232,9 @@ class PlayBottomSheetFragment @Inject constructor(
         closeVariantSheet()
     }
 
+    /**
+     * TODO = Change To Product Cart Type not Action
+     */
     override fun onActionClicked(variant: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         playViewModel.submitAction(
             if (action == ProductAction.Buy) BuyProductVariantAction(variant.id, sectionInfo)
@@ -327,6 +330,9 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.onHideProductSheet()
     }
 
+    /**
+     * TODO = Change To Product Cart Type not Action
+     */
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
             showVariantSheet(action, product)

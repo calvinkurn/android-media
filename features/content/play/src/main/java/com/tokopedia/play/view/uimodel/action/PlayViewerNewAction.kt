@@ -85,6 +85,8 @@ data class BuyProductAction(val sectionInfo: ProductSectionUiModel.Section, val 
 data class BuyProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
 data class AtcProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
 data class AtcProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
+data class OCCProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
+data class OCCProductVariantAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
 data class SelectVariantOptionAction(val option: VariantOptionWithAttribute) : PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
