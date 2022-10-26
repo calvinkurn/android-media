@@ -5,8 +5,11 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.data.ChatGearChatList
 import com.tokopedia.topchat.chatsetting.data.ChatGearChatListResponse
 import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingDividerUiModel
+import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingSellerUiModel
 import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingTitleUiModel
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
+import com.tokopedia.topchat.common.util.BubbleSettings
+import com.tokopedia.topchat.common.util.Utils.isBubbleChatEnabled
 import javax.inject.Inject
 
 class ChatSettingMapper @Inject constructor() {
@@ -29,6 +32,15 @@ class ChatSettingMapper @Inject constructor() {
             visitables.add(ChatSettingTitleUiModel(R.string.title_topchat_as_seller, R.drawable.ic_topchat_shop_green))
         }
         if (visitables.addAll(gearChat.listSeller)) {
+            if (isBubbleChatEnabled()) {
+                visitables.add(ChatSettingSellerUiModel(
+                    alias = BubbleSettings.TITLE,
+                    description = BubbleSettings.DESCRIPTION,
+                    label = BubbleSettings.LABEL,
+                    //todo will update after reivin added the bubble applink
+                    link = ""
+                ))
+            }
             visitables.add(ChatSettingDividerUiModel())
         }
 
@@ -40,5 +52,4 @@ class ChatSettingMapper @Inject constructor() {
     private fun isNeedSectionTitle(gearChat: ChatGearChatList): Boolean {
         return gearChat.listBuyer.isNotEmpty() && gearChat.listSeller.isNotEmpty()
     }
-
 }
