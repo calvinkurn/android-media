@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.RatesValidation;
 
 import java.util.List;
 
@@ -40,12 +38,6 @@ public class RatesDetailData implements Parcelable {
     @SerializedName("pre_order")
     @Expose
     private PreOrder preOrder;
-//    @SerializedName("rates_validation")
-//    @Expose
-//    private RatesValidation ratesValidation;
-//    @SerializedName("additional_delivery_data")
-//    @Expose
-//    private AdditionalDeliveryData additionalDeliveryData;
 
     public RatesDetailData() {
     }
@@ -58,8 +50,6 @@ public class RatesDetailData implements Parcelable {
         info = in.readParcelable(InfoRatesDetailData.class.getClassLoader());
         error = in.readParcelable(ErrorRatesDetailData.class.getClassLoader());
         preOrder = in.readParcelable(PreOrder.class.getClassLoader());
-//        ratesValidation = in.readParcelable(RatesValidation.class.getClassLoader());
-//        additionalDeliveryData = in.readParcelable(AdditionalDeliveryData.class.getClassLoader());
     }
 
     @Override
@@ -71,8 +61,6 @@ public class RatesDetailData implements Parcelable {
         dest.writeParcelable(info, flags);
         dest.writeParcelable(error, flags);
         dest.writeParcelable(preOrder, flags);
-//        dest.writeParcelable(ratesValidation, flags);
-//        dest.writeParcelable(additionalDeliveryData, flags);
     }
 
     @Override
@@ -151,20 +139,4 @@ public class RatesDetailData implements Parcelable {
     public void setListPromoStacking(List<PromoStacking> listPromoStacking) {
         this.listPromoStacking = listPromoStacking;
     }
-
-//    public RatesValidation getRatesValidation() {
-//        return ratesValidation;
-//    }
-//
-//    public void setRatesValidation(RatesValidation ratesValidation) {
-//        this.ratesValidation = ratesValidation;
-//    }
-//
-//    public AdditionalDeliveryData getAdditionalDeliveryData() {
-//        return additionalDeliveryData;
-//    }
-//
-//    public void setAdditionalDeliveryData(AdditionalDeliveryData additionalDeliveryData) {
-//        this.additionalDeliveryData = additionalDeliveryData;
-//    }
 }
