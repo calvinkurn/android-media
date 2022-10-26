@@ -241,6 +241,7 @@ class FeedPlusAdapter(
         if (shopRecomWidget != null) remove(shopRecomWidget)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateShopRecomWidget(newModel: ShopRecomWidgetViewModel) {
         val newList = list.map {
             if (it is ShopRecomWidgetViewModel) newModel
