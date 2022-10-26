@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
+import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -127,21 +128,19 @@ class BannerComponentViewHolder(itemView: View,
         if (isAutoScroll) {
             scrollTo(currentPagePosition)
 
-            channelModel?.let {
-                val size = channelModel?.channelGrids?.size?:0
-                if (currentPagePosition == (size-1) ) {
-                    currentPagePosition = 0
-                } else {
-                    currentPagePosition++
-                }
+            val size = channelModel?.channelGrids?.size?:0
+            if (currentPagePosition == (size-1) ) {
+                currentPagePosition = 0
+            } else {
+                currentPagePosition++
             }
         }
     }
 
     private fun resumeAutoScroll() {
         if (autoScrollState == STATE_PAUSED) {
-            autoScrollLauncher()
             autoScrollState = STATE_RUNNING
+            autoScrollLauncher()
         }
     }
 
@@ -189,6 +188,7 @@ class BannerComponentViewHolder(itemView: View,
                 when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
                         onPageDragStateChanged(false)
+                        resumeAutoScroll()
                     }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         onPageDragStateChanged(true)
@@ -270,7 +270,7 @@ class BannerComponentViewHolder(itemView: View,
         private const val INTERVAL = 5000
         private const val STATE_RUNNING = 0
         private const val STATE_PAUSED = 1
-        private const val INITIAL_PAGE_POSITION = 0
+        private const val INITIAL_PAGE_POSITION = 1
         private const val MARGIN_ZERO = 0
     }
 }
