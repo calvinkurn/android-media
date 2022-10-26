@@ -759,10 +759,32 @@ class AddProductViewModelTest {
     }
 
     @Test
+    fun `when there is no active tabs expect zero active product count`() {
+        val tabs = listOf(
+            Tab(
+                id = "Test",
+                value = 100,
+                name = "Test"
+            )
+        )
+        val expectedResult = Int.ZERO
+        val actualResult = mViewModel.getTotalActiveProductCount(tabs)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
     fun `when product list size is less than total active product count expect load more to be available`() {
         val productListSize = 90
         val totalActiveProductCount = 100
         val actualResult = mViewModel.isLoadMoreAvailable(productListSize, totalActiveProductCount)
         assertTrue(actualResult)
+    }
+
+    @Test
+    fun `when product list size is more than total active product count expect load more to be unavailable`() {
+        val productListSize = 100
+        val totalActiveProductCount = 100
+        val actualResult = mViewModel.isLoadMoreAvailable(productListSize, totalActiveProductCount)
+        assertFalse(actualResult)
     }
 }
