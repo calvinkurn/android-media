@@ -21,7 +21,7 @@ object ProductManageTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EventTracking(
                 ProductManageDataLayer.EVENT_NAME,
-                ProductManageDataLayer.EVENT_CATEGORY,
+                EVENT_CATEGORY,
                 action,
                 label
             ).dataTracking
@@ -68,74 +68,40 @@ object ProductManageTracking {
         )
     }
 
-    private fun eventClickNotifyMeIcon(
-        action: String,
-        category: String,
-        label: String
+    fun eventClickNotifyMeIcon(
+        productId: String, parentId: String = "0"
     ) {
+        val label = arrayOf(productId, parentId).joinToString(" - ")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EventTracking(
                 ProductManageDataLayer.EVENT_NAME_CLICK_PG,
-                category,
-                action,
+                EVENT_CATEGORY_PRODUCT_LIST_PAGE,
+                ProductManageDataLayer.EVENT_ACTION_CLICK_OOS_NOTIFY_ME,
                 label
             ).dataTracking.customDimension("36711")
         )
     }
 
-    private fun eventClickAturStockNotifyMe(
-        action: String,
-        category: String,
-        label: String
-    ) {
+    fun eventClickAturStockNotifyMe(productId: String, parentId: String = "0") {
+        val label = arrayOf(productId, parentId).joinToString(" - ")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EventTracking(
                 ProductManageDataLayer.EVENT_NAME_CLICK_PG,
-                category,
-                action,
+                EVENT_CATEGORY_PRODUCT_LIST_PAGE,
+                ProductManageDataLayer.EVENT_ACTION_CLICK_ATUR_STOCK_OOS_NOTIFY_ME,
                 label
             ).dataTracking.customDimension("36712")
         )
     }
 
-    private fun eventClickFilterNotifyMe(
-        action: String,
-        category: String,
-        label: String
-    ) {
+    fun eventClickFilterNotifyMe() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EventTracking(
                 ProductManageDataLayer.EVENT_NAME_CLICK_PG,
-                category,
-                action,
-                label
+                EVENT_CATEGORY_PRODUCT_LIST_PAGE,
+                ProductManageDataLayer.EVENT_ACTION_CLICK_FILTER_NOTIFY_ME,
+                ""
             ).dataTracking.customDimension("36718")
-        )
-    }
-
-    fun eventClickFilterNotifyMe() {
-        eventClickNotifyMeIcon(
-            ProductManageDataLayer.EVENT_ACTION_CLICK_FILTER_NOTIFY_ME,
-            EVENT_CATEGORY_PRODUCT_LIST_PAGE,
-            ""
-        )
-    }
-
-    fun eventClickAturStockNotifyMe(productId: String, parentId: String = "0") {
-        val label = arrayOf(productId, parentId).joinToString(" - ")
-        eventClickNotifyMeIcon(
-            ProductManageDataLayer.EVENT_ACTION_CLICK_ATUR_STOCK_OOS_NOTIFY_ME,
-            EVENT_CATEGORY_PRODUCT_LIST_PAGE,
-            label
-        )
-    }
-
-    fun eventClickNotifyMeIcon(productId: String, parentId: String = "0") {
-        val label = arrayOf(productId, parentId).joinToString(" - ")
-        eventClickNotifyMeIcon(
-            ProductManageDataLayer.EVENT_ACTION_CLICK_OOS_NOTIFY_ME,
-            EVENT_CATEGORY_PRODUCT_LIST_PAGE,
-            label
         )
     }
 
