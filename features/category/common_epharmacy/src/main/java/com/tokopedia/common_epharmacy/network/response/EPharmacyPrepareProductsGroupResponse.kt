@@ -24,6 +24,8 @@ data class EPharmacyPrepareProductsGroupResponse(
                 val consultationData: ConsultationData?,
                 @SerializedName("consultation_source")
                 val consultationSource: ConsultationSource?,
+                @SerializedName("cta")
+                val cta: CTAButton?,
                 @SerializedName("epharmacy_group_id")
                 val epharmacyGroupId: String?,
                 @SerializedName("number_prescription_images")
@@ -33,7 +35,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                 @SerializedName("prescription_source")
                 val prescriptionSource: List<String?>?,
                 @SerializedName("products_info")
-                val productsInfo: List<ProductsInfo?>?
+                val shopInfo: List<ProductsInfo?>?
             ) {
                 data class ConsultationData(
                     @SerializedName("consultation_status")
@@ -110,6 +112,15 @@ data class EPharmacyPrepareProductsGroupResponse(
                     }
                 }
 
+                data class CTAButton(
+                    @SerializedName("text")
+                    val text: String?,
+                    @SerializedName("applink")
+                    val appLink: String?,
+                    @SerializedName("icon")
+                    val icon: String?,
+                )
+
                 data class PrescriptionImage(
                     @SerializedName("expired_at")
                     val expiredAt: String?,
@@ -135,7 +146,9 @@ data class EPharmacyPrepareProductsGroupResponse(
                     @SerializedName("shop_name")
                     val shopName: String?,
                     @SerializedName("shop_type")
-                    val shopType: String?
+                    val shopType: String?,
+                    @SerializedName("order_name")
+                    val orderName: String?
                 ) {
                     data class Product(
                         @SerializedName("is_ethical_drug")
@@ -151,7 +164,9 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("product_total_weight_fmt")
                         val productTotalWeightFmt: String?,
                         @SerializedName("quantity")
-                        val quantity: Int?
+                        val quantity: Int?,
+                        @SerializedName("quantity_string")
+                        val quantityString: String?
                     )
                 }
             }
