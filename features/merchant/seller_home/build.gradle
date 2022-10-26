@@ -141,7 +141,6 @@ dependencies {
     }
 
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
-    implementation project(rootProject.ext.features.watch)
 }
 
 project.ext {
