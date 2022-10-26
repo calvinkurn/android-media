@@ -8,7 +8,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
 
 
     private fun MutableList<TickerData>.addNotifyMeTicker(isShowTickerNotifyMe: Boolean) {
-        if (isShowTickerNotifyMe){
+        if (isShowTickerNotifyMe) {
             add(
                 TickerData(
                     title = resourceProvider.getTickerNotifyMeTitle(),
@@ -30,6 +30,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             )
         )
     }
+
     private fun MutableList<TickerData>.addMultiLocationTicker(multiLocationSeller: Boolean) {
         if (multiLocationSeller) {
             add(

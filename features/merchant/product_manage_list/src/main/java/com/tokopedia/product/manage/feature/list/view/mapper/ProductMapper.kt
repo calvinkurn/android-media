@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.feature.list.view.mapper
 import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -41,12 +40,12 @@ object ProductMapper {
                 title = it.name,
                 imageUrl = picture?.urlThumbnail,
                 minPrice = PriceUiModel(
-                        price = minPrice.toString(),
-                        priceFormatted = minPrice?.getCurrencyFormatted()
+                    price = minPrice.toString(),
+                    priceFormatted = minPrice?.getCurrencyFormatted()
                 ),
                 maxPrice = PriceUiModel(
-                        price = maxPrice.toString(),
-                        priceFormatted = maxPrice?.getCurrencyFormatted()
+                    price = maxPrice.toString(),
+                    priceFormatted = maxPrice?.getCurrencyFormatted()
                 ),
                 status = mapProductStatus(it),
                 stock = it.stock,
@@ -98,22 +97,22 @@ object ProductMapper {
         val inActiveFilterCount = inActiveProductFilter?.value.toIntOrZero()
         val violationFilterCount = violationProductFilter?.value.toIntOrZero()
 
-        if(activeFilterCount > 0) {
+        if (activeFilterCount > 0) {
             val activeFilter = Active(activeFilterCount)
             productFilters.add(activeFilter)
         }
 
-        if(inActiveFilterCount > 0) {
+        if (inActiveFilterCount > 0) {
             val inActiveFilter = InActive(inActiveFilterCount)
             productFilters.add(inActiveFilter)
         }
 
-        if(violationFilterCount > 0) {
+        if (violationFilterCount > 0) {
             val violationFilter = Violation(violationFilterCount)
             productFilters.add(violationFilter)
         }
 
-        return if(this?.value == null) {
+        return if (this?.value == null) {
             ShowFilterTab(productFilters)
         } else {
             UpdateFilterTab(productFilters)

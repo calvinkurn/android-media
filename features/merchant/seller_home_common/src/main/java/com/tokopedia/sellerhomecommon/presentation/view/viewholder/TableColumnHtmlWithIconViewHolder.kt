@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.databinding.ShcItemTableColumnHtmlBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcItemTableColumnHtmlWithIconBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.utils.SpannableTouchListener
@@ -84,7 +83,7 @@ class TableColumnHtmlWithIconViewHolder(
                         SpannableTouchListener(spannable)
                     },
                     onUrlClicked = { url, _ ->
-                        listener.onHyperlinkClicked(url,String.EMPTY,element.meta)
+                        listener.onHyperlinkClicked(url, String.EMPTY, element.meta)
                         Uri.parse(url).let { uri ->
                             if (isAppLink(uri)) {
                                 RouteManager.route(context, url)
@@ -94,7 +93,8 @@ class TableColumnHtmlWithIconViewHolder(
                                 }
                             }
                         }
-                    })
+                    }
+                )
                 setTextColor(textColorInt)
             }
         }

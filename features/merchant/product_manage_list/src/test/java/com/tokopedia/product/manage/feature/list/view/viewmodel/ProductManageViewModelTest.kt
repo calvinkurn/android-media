@@ -2077,7 +2077,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 )
             )
             val expectedResult =
-                GetVariantResult(productName, 0,productVariants, selections, emptyList())
+                GetVariantResult(productName, 0, productVariants, selections, emptyList())
             val expectedSuccessResult = Success(expectedResult)
 
             verifyGetVariantsCalled()
@@ -2796,11 +2796,11 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     private fun onGetTickerData_thenReturn(tickerData: List<TickerData>) {
         every {
-            tickerStaticDataProvider.getTickers(any(),any())
+            tickerStaticDataProvider.getTickers(any(), any())
         } returns tickerData
     }
 
-    private fun onGetIsShowNotifyMeTicker(isShow:Boolean) {
+    private fun onGetIsShowNotifyMeTicker(isShow: Boolean) {
         every {
             remoteConfigImpl.getBoolean(ENABLE_TICKER_NOTIFY_ME)
         } returns isShow

@@ -60,13 +60,13 @@ class ProductViewHolder(
 
         setOnClickListeners(product)
 
-        impressionView(product)
+        impressionView()
 
     }
 
-    private fun impressionView(product: ProductUiModel){
+    private fun impressionView() {
         val impressHolder = ImpressHolder()
-        if (adapterPosition.orZero() == Int.ZERO){
+        if (adapterPosition.orZero() == Int.ZERO) {
             binding?.imageNotifyMeBuyer?.addOnImpressionListener(impressHolder) {
                 listener.onImpressionNotifyMe()
             }
@@ -77,7 +77,7 @@ class ProductViewHolder(
         } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
             && GlobalConfig.isSellerApp()
         ) {
-            if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()){
+            if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()) {
                 listener.onImpressionMoreOption()
             }
         }
@@ -96,7 +96,7 @@ class ProductViewHolder(
     private fun showProductTicker(product: ProductUiModel) {
         binding?.tickerProductManageViolation?.showWithCondition(
             product.isPending()
-                    || product.isSuspendLevelTwoUntilFour()
+                || product.isSuspendLevelTwoUntilFour()
         )
         if (product.isPending()) {
             binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_violation_ticker_message))
@@ -139,7 +139,7 @@ class ProductViewHolder(
             binding?.btnContactCS?.run {
                 showWithCondition(
                     product.isViolation() || product.isPending()
-                            || product.isSuspendLevelTwoUntilFour()
+                        || product.isSuspendLevelTwoUntilFour()
                 )
                 when {
                     product.isViolation() -> {
@@ -176,10 +176,10 @@ class ProductViewHolder(
             ?.showWithCondition((product.isEmptyStock && product.isNotViolation() && !product.haveNotifyMeOOS) || product.isSuspend())
         binding?.clImage
             ?.showWithCondition(
-                binding?.imageStockInformation?.isVisible.orFalse()
-                        || binding?.imageStockReminder?.isVisible.orFalse()
-                        || binding?.imageStockAlertActive?.isVisible.orFalse()
-                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+                binding?.imageStockInformation?.isVisible.orFalse() ||
+                    binding?.imageStockReminder?.isVisible.orFalse() ||
+                    binding?.imageStockAlertActive?.isVisible.orFalse() ||
+                    binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
@@ -188,10 +188,10 @@ class ProductViewHolder(
             ?.showWithCondition(product.haveNotifyMeOOS)
         binding?.clImage
             ?.showWithCondition(
-                binding?.imageStockInformation?.isVisible.orFalse()
-                        || binding?.imageStockReminder?.isVisible.orFalse()
-                        || binding?.imageStockAlertActive?.isVisible.orFalse()
-                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+                binding?.imageStockInformation?.isVisible.orFalse() ||
+                    binding?.imageStockReminder?.isVisible.orFalse() ||
+                    binding?.imageStockAlertActive?.isVisible.orFalse() ||
+                    binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
@@ -205,15 +205,15 @@ class ProductViewHolder(
         binding?.imageStockReminder
             ?.showWithCondition(
                 product.hasStockAlert && !product.stockAlertActive
-                        && !binding?.imageStockInformation?.isVisible.orTrue()
-                        && !product.haveNotifyMeOOS
+                    && !binding?.imageStockInformation?.isVisible.orTrue()
+                    && !product.haveNotifyMeOOS
             )
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
-                        || binding?.imageStockReminder?.isVisible.orFalse()
-                        || binding?.imageStockAlertActive?.isVisible.orFalse()
-                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+                    || binding?.imageStockReminder?.isVisible.orFalse()
+                    || binding?.imageStockAlertActive?.isVisible.orFalse()
+                    || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
@@ -221,16 +221,16 @@ class ProductViewHolder(
         binding?.imageStockAlertActive
             ?.showWithCondition(
                 product.stockAlertActive
-                        && !binding?.imageStockInformation?.isVisible.orTrue()
-                        && !product.haveNotifyMeOOS
+                    && !binding?.imageStockInformation?.isVisible.orTrue()
+                    && !product.haveNotifyMeOOS
 
             )
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
-                        || binding?.imageStockReminder?.isVisible.orFalse()
-                        || binding?.imageStockAlertActive?.isVisible.orFalse()
-                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+                    || binding?.imageStockReminder?.isVisible.orFalse()
+                    || binding?.imageStockAlertActive?.isVisible.orFalse()
+                    || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 

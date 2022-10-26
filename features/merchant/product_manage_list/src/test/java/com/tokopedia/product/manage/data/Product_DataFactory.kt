@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.data
 
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -117,5 +116,6 @@ fun createProductUiModel(
         haveNotifyMeOOS,
         notifyMeOOSCount,
         notifyMeOOSWording,
-        isEmptyStock)
+        isEmptyStock
+    )
 }

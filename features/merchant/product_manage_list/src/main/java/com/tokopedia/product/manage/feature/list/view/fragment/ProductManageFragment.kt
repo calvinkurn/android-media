@@ -180,7 +180,6 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import android.text.TextPaint
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -237,7 +236,6 @@ open class ProductManageFragment :
     private var haveSetReminder = -1
     private var isShowCoachMarkNotifyMe = false
     private var isShowCoachFlagStockReminder = false
-    private var isShowCoachMenuOption = false
 
     private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(childFragmentManager) }
 
@@ -301,10 +299,10 @@ open class ProductManageFragment :
                     val currentNotifyMe =
                         layoutManager.findViewByPosition(Int.ZERO)
                             ?.findViewById<ImageUnify>(R.id.imageNotifyMeBuyer)
-                    if (coachMarkNotifyMe?.isDismissed == false && (Int.ZERO !in firstVisibleIndex..lastVisibleIndex ||
-                            (currentNotifyMe != null && getVisiblePercent(
-                                currentNotifyMe
-                            ) == -1))
+                    if (coachMarkNotifyMe?.isDismissed == false && (Int.ZERO !in
+                            firstVisibleIndex..lastVisibleIndex || (currentNotifyMe != null &&
+                            getVisiblePercent(currentNotifyMe) == -1)
+                            )
                     ) {
                         coachMarkNotifyMe?.dismissCoachMark()
                     }
@@ -341,10 +339,13 @@ open class ProductManageFragment :
                                         currentPositionStockReminderCoachMark
                                     )
                                         ?.findViewById<IconUnify>(R.id.imageStockReminder)
-                                if (coachMarkStockReminder?.isDismissed == false && (currentPositionStockReminderCoachMark !in firstVisibleIndex..lastVisibleIndex ||
+                                if (coachMarkStockReminder?.isDismissed == false &&
+                                    (currentPositionStockReminderCoachMark !in
+                                        firstVisibleIndex..lastVisibleIndex ||
                                         (currentProductStockReminder != null && getVisiblePercent(
                                             currentProductStockReminder
-                                        ) == -1))
+                                        ) == -1)
+                                        )
                                 ) {
                                     coachMarkStockReminder?.dismissCoachMark()
 
@@ -1927,7 +1928,6 @@ open class ProductManageFragment :
     }
 
     override fun onClickNotifyMeBuyerInformation(product: ProductUiModel) {
-
         val notifyMeInfoBottomSheet =
             NotifyMeBuyerInformationBottomSheet.createInstance(product.notifyMeOOSWording)
         notifyMeInfoBottomSheet.setOnClickEditProductStock {
@@ -3332,7 +3332,6 @@ open class ProductManageFragment :
         haveSetReminder =
             getProductWithStockReminder(adapter.data.filterIsInstance<ProductUiModel>())
 
-
         val visibleStockReminder = if (haveSetReminder != -1) {
             val itemReminder = productManageLayoutManager?.findViewByPosition(haveSetReminder)
                 ?.findViewById<IconUnify>(R.id.imageStockReminder)
@@ -3445,12 +3444,6 @@ open class ProductManageFragment :
     private fun getProductWithStockReminder(data: List<ProductUiModel>): Int {
         return data.indexOfFirst {
             it.hasStockAlert && !it.stockAlertActive
-        }
-    }
-
-    private fun getProductWithNotifyMe(data: List<ProductUiModel>): Int {
-        return data.indexOfFirst {
-            it.haveNotifyMeOOS
         }
     }
 
