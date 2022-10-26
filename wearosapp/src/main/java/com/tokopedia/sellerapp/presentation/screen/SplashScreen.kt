@@ -27,7 +27,7 @@ import com.tokopedia.sellerapp.util.NumberConstant.ANIMATION_SPLASH_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.DELAY_SPLASH_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.START_LOGO_ALPHA_TARGET
 import com.tokopedia.sellerapp.util.NumberConstant.STOP_LOGO_ALPHA_TARGET
-import com.tokopedia.tkpd.R
+import com.tokopedia.sellerapp.R
 import kotlinx.coroutines.delay
 
 @Composable

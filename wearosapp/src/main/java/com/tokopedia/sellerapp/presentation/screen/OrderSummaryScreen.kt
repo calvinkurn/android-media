@@ -17,7 +17,7 @@ import com.tokopedia.sellerapp.presentation.theme.NestLightNN0
 import com.tokopedia.sellerapp.presentation.theme.NestLightNN1000
 import com.tokopedia.sellerapp.presentation.theme.TextBlueColor
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
-import com.tokopedia.tkpd.R
+import com.tokopedia.sellerapp.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_1
 

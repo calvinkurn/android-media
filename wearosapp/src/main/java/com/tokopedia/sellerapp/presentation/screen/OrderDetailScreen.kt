@@ -63,7 +63,7 @@ import com.tokopedia.sellerapp.util.NumberConstant.MAX_LINES_1
 import com.tokopedia.sellerapp.util.NumberConstant.SHIMMERING_DROP_OFF
 import com.tokopedia.sellerapp.util.NumberConstant.SHIMMERING_TILT
 import com.tokopedia.sellerapp.util.MenuHelper.getDataKeyByOrderStatus
-import com.tokopedia.tkpd.R
+import com.tokopedia.sellerapp.R
 
 @Composable
 fun NewOrderDetailScreen(
@@ -257,7 +257,7 @@ fun NewOrderDetailMoreProducts(totalProductLeft: Int) {
     NewOrderDetailText(
         fontSize = NEST_FONT_SIZE_LVL4,
         text = stringResource(
-            id = com.tokopedia.tkpd.R.string.order_detail_product_left_format,
+            id = com.tokopedia.sellerapp.R.string.order_detail_product_left_format,
             totalProductLeft.toString()
         ),
         color = TextGrayColor,
