@@ -7,6 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
@@ -101,7 +102,6 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         }
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     private fun getPendingIntent(
         applinks: String,
         bundle: Bundle
@@ -111,8 +111,16 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
             context,
             REQUEST_BUBBLE,
             bubbleChatIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            flagUpdateCurrent()
         )
+    }
+
+    private fun flagUpdateCurrent(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
     }
 
     private fun createBubbleChatIntent(
