@@ -5,53 +5,53 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.
 
 data class Shop(
     @SerializedName("shop_alert_message")
-        val shopAlertMessage: String = "",
+    val shopAlertMessage: String = "",
     @SerializedName("shop_id")
-        val shopId: String = "",
+    val shopId: String = "",
     @SerializedName("shop_name")
-        val shopName: String = "",
+    val shopName: String = "",
     @SerializedName("shop_image")
-        val shopImage: String = "",
+    val shopImage: String = "",
     @SerializedName("shop_url")
-        val shopUrl: String = "",
+    val shopUrl: String = "",
     @SerializedName("shop_status")
-        val shopStatus: Int = 0,
+    val shopStatus: Int = 0,
     @SerializedName("postal_code")
-        val postalCode: String = "",
+    val postalCode: String = "",
     @SerializedName("latitude")
-        val latitude: String = "",
+    val latitude: String = "",
     @SerializedName("longitude")
-        val longitude: String = "",
+    val longitude: String = "",
     @SerializedName("district_name")
-        val districtName: String = "",
+    val districtName: String = "",
     @SerializedName("district_id")
-        val districtId: String = "",
+    val districtId: String = "",
     @SerializedName("origin")
-        val origin: Int = 0,
+    val origin: Int = 0,
     @SerializedName("address_street")
-        val addressStreet: String = "",
+    val addressStreet: String = "",
     @SerializedName("city_name")
-        val cityName: String = "",
+    val cityName: String = "",
     @SerializedName("shop_type_info")
 
-        // Temporary field to determine value of shop type to be sent as dimension81
-        // Need to remove in the future when implementing tracking for PM Pro
-        val shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
+    // Temporary field to determine value of shop type to be sent as dimension81
+    // Need to remove in the future when implementing tracking for PM Pro
+    val shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
     @SerializedName("is_gold")
-        val isGold: Int = 0,
+    val isGold: Int = 0,
     @SerializedName("is_official")
-        val isOfficial: Int = 0,
+    val isOfficial: Int = 0,
 
     @SerializedName("shop_ticker")
-        val shopTicker: String = "",
+    val shopTicker: String = "",
     @SerializedName("maximum_weight_wording")
-        val maximumWeightWording: String = "",
+    val maximumWeightWording: String = "",
     @SerializedName("maximum_shipping_weight")
-        val maximumShippingWeight: Double = 0.0,
+    val maximumShippingWeight: Double = 0.0,
     @SerializedName("is_tokonow")
-        val isTokoNow: Boolean = false,
+    val isTokoNow: Boolean = false,
     @SerializedName("shop_shipments")
-        val shopShipments: List<ShopShipment> = emptyList(),
+    val shopShipments: List<ShopShipment> = emptyList(),
     @SerializedName("enabler_data")
-        val enabler: EpharmacyEnablerResponse = EpharmacyEnablerResponse()
+    val enabler: EpharmacyEnablerResponse = EpharmacyEnablerResponse()
 )

@@ -6,42 +6,42 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.
 
 data class Shop(
     @SuppressLint("Invalid Data Type")
-        @SerializedName("shop_id")
-        val shopId: Long = 0,
+    @SerializedName("shop_id")
+    val shopId: Long = 0,
     @SerializedName("shop_name")
-        val shopName: String = "",
+    val shopName: String = "",
     @SerializedName("shop_image")
-        val shopImage: String = "",
+    val shopImage: String = "",
     @SerializedName("shop_url")
-        val shopUrl: String = "",
+    val shopUrl: String = "",
     @SerializedName("shop_status")
-        val shopStatus: Int = 0,
+    val shopStatus: Int = 0,
     @SerializedName("postal_code")
-        val postalCode: String = "",
+    val postalCode: String = "",
     @SerializedName("latitude")
-        val latitude: String = "",
+    val latitude: String = "",
     @SerializedName("longitude")
-        val longitude: String = "",
+    val longitude: String = "",
     @SerializedName("district_id")
-        val districtId: String = "",
+    val districtId: String = "",
     @SerializedName("district_name")
-        val districtName: String = "",
+    val districtName: String = "",
     @SerializedName("origin")
-        val origin: Int = 0,
+    val origin: Int = 0,
     @SerializedName("address_street")
-        val addressStreet: String = "",
+    val addressStreet: String = "",
     @SerializedName("province_id")
-        val provinceId: String = "",
+    val provinceId: String = "",
     @SerializedName("city_id")
-        val cityId: String = "",
+    val cityId: String = "",
     @SerializedName("city_name")
-        val cityName: String = "",
+    val cityName: String = "",
     @SerializedName("shop_alert_message")
-        val shopAlertMessage: String = "",
+    val shopAlertMessage: String = "",
     @SerializedName("shop_type_info")
-        val shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
+    val shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
     @SerializedName("is_tokonow")
-        val isTokoNow: Boolean = false,
+    val isTokoNow: Boolean = false,
     @SerializedName("shop_ticker_title")
     val shopTickerTitle: String = "",
     @SerializedName("shop_ticker")

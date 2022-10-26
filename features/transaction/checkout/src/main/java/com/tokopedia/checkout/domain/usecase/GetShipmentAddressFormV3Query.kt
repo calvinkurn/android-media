@@ -189,6 +189,10 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                       badge_svg
                       title
                     }
+                    enabler_data {
+                      label_name
+                      show_label
+                    }
                   }
                   shop_shipments {
                     ship_id
