@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.common.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
@@ -138,7 +137,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             startTimer()
         } else if (currentState == R.id.startWithValue) {
             setEditTextPadding()
-            setEditTextWhenStartingWithValueAnimation()
         }
     }
 
@@ -212,15 +210,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         root.transitionToEnd()
         cancelTimer()
         onClickListener(counter)
-    }
-
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextWhenStartingWithValueAnimation() {
-        editText.setOnTouchListener { _, motionEvent ->
-            if (motionEvent.action == KeyEvent.ACTION_DOWN) {
-                expandAnimationWhenStartingWithValue()
-            }
-            true
-        }
     }
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextPadding() {

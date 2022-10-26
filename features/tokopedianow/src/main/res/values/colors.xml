@@ -24,4 +24,5 @@
     <color name="tokopedianow_product_card_dms_rating_color">#FFC400</color>
     <color name="tokopedianow_quantity_editor_dms_edit_text_focus_text_color">#212121</color>
     <color name="tokopedianow_quantity_editor_dms_edit_text_not_focus_text_color">#00AA5B</color>
+    <color name="tokopedianow_product_card_dms_progress_bar_label_text_color">#808FA1</color>
 </resources>

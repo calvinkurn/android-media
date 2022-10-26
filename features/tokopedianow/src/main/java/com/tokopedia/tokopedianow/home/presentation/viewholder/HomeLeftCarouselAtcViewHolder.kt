@@ -39,7 +39,7 @@ class HomeLeftCarouselAtcViewHolder(
         private const val IMAGE_ALPHA = "image_alpha"
 
         private const val FIRST_VISIBLE_ITEM_POSITION = 0
-        private const val NO_SCROLLED_POSITION = 0
+        private const val NO_SCROLLED = 0
         private const val IMAGE_PARALLAX_ALPHA = 0.80f
 
         @LayoutRes
@@ -84,8 +84,8 @@ class HomeLeftCarouselAtcViewHolder(
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             binding?.apply {
+                calculateParallaxImage(dx)
                 saveInstanceStateToLayoutManager(recyclerView)
-                calculateParallaxImage()
             }
         }
     }
@@ -148,9 +148,9 @@ class HomeLeftCarouselAtcViewHolder(
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRecyclerView(
         element: HomeLeftCarouselAtcUiModel
     ) {
-        restoreInstanceStateToLayoutManager()
         rvProduct.adapter = adapter
         adapter.submitList(element.productList)
+        restoreInstanceStateToLayoutManager()
     }
 
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.hitLeftCarouselImpressionTracker(
@@ -164,9 +164,9 @@ class HomeLeftCarouselAtcViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.calculateParallaxImage() {
+    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.calculateParallaxImage(dx: Int) {
         launch {
-            if (layoutManager.findFirstVisibleItemPosition() == FIRST_VISIBLE_ITEM_POSITION) {
+            if (layoutManager.findFirstVisibleItemPosition() == FIRST_VISIBLE_ITEM_POSITION && dx != NO_SCROLLED) {
                 layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())?.apply {
                     val distanceLeftFirstItem = left
                     val expectedPosition = 0.067f
@@ -177,8 +177,6 @@ class HomeLeftCarouselAtcViewHolder(
                     val alpha = (abs(distanceLeftFirstItem).toFloat() / itemSize * IMAGE_PARALLAX_ALPHA)
                     parallaxImageView.alpha = alpha
                 }
-            } else {
-                parallaxBackground.translationX = NO_SCROLLED_POSITION.toFloat()
             }
         }
     }

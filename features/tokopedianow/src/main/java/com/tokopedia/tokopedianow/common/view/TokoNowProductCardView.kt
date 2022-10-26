@@ -271,11 +271,20 @@ class TokoNowProductCardView @JvmOverloads constructor(
             )
             progressTypography.showIfWithBlock(isFlashSale) {
                 text = progressBarLabel
-                if (progressBarLabelColor.isNotBlank()) {
-                    setTextColorCompat(
-                        resourceId = com.tokopedia.unifycomponents.R.color.Unify_RN500
-                    )
+                val colorRes = if (progressBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                } else {
+                    R.color.tokopedianow_product_card_dms_progress_bar_label_text_color
                 }
+                setTextColor(
+                    safeParseColor(
+                        color = progressBarLabelColor,
+                        defaultColor = ContextCompat.getColor(
+                            context,
+                            colorRes
+                        )
+                    )
+                )
             }
             adjustFireIcon(progressBarLabel)
         }
