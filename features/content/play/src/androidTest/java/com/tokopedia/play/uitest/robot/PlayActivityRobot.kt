@@ -13,8 +13,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
-import com.tokopedia.play.test.espresso.clickOnViewChild
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.espresso.clickOnViewChild
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
@@ -27,6 +27,7 @@ import org.hamcrest.CoreMatchers.not
  */
 class PlayActivityRobot(
     channelId: String,
+    initialDelay: Long = 1000,
 ) {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -40,7 +41,7 @@ class PlayActivityRobot(
     init {
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        delay(1000)
+        delay(initialDelay)
     }
 
     fun openProductBottomSheet() = chainable {

@@ -103,6 +103,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODU
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SCORE
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_ALBUM
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW
@@ -566,6 +567,10 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))
 
+            add(DFP({
+                it.startsWith(INTERNAL_MEDIA_EDITOR)
+            }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
+
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
             add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.checkout_module_title_activity_shipping_address))
@@ -787,7 +792,16 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Tokomember dashboard
             add(DFP({ it.startsWith(TOKOMEMBER) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_LIST) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_LIST) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_CREATION) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_CREATION) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_EXTENSION) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
 
+            // Media
+            add(DFP({
+                it.startsWith(INTERNAL_MEDIA_EDITOR)
+            }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
         }
     }
 

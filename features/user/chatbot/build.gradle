@@ -6,9 +6,19 @@ repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
-
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 
 android {
+
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -18,17 +28,8 @@ android {
         animationsDisabled = true
     }
 
-}
-
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://maven-hansel.tokopedia.com/maven' }
-    }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -73,7 +74,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
-    
+
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

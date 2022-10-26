@@ -1,12 +1,15 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import android.graphics.Color
+import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataSetModel
+import com.tokopedia.sellerhomecommon.domain.model.TableRowMeta
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableHeaderUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
@@ -93,16 +96,18 @@ class TableMapper @Inject constructor(
                     val width = headers[j].width
                     val rowColumn: TableRowsUiModel = when (col.type) {
                         COLUMN_TEXT -> TableRowsUiModel.RowColumnText(
-                            col.value,
-                            width,
+                            valueStr = col.value,
+                            width = width,
+                            meta = getTableRowMeta(col.meta),
                             isLeftAlign = firstTextColumn == col
                         )
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
                         else -> TableRowsUiModel.RowColumnHtml(
-                            col.value,
-                            width,
+                            valueStr = col.value,
+                            width = width,
+                            meta = getTableRowMeta(col.meta),
                             isLeftAlign = firstTextColumn == col,
-                            getColorFromHtml(col.value)
+                            colorInt = getColorFromHtml(col.value)
                         ) //it's COLUMN_HTML
                     }
                     rows.add(rowColumn)
@@ -122,6 +127,15 @@ class TableMapper @Inject constructor(
         }
 
         return tablePages
+    }
+
+    private fun getTableRowMeta(meta: String): TableRowsUiModel.Meta {
+        return try {
+            val metaModel = Gson().fromJson(meta, TableRowMeta::class.java)
+            TableRowsUiModel.Meta(flag = metaModel.flag)
+        } catch (e: Exception) {
+            TableRowsUiModel.Meta(flag = String.EMPTY)
+        }
     }
 
     private fun getHeaders(headers: List<HeaderModel>): List<TableHeaderUiModel> {

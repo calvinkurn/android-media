@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.contactus.createticket.model.ImageUpload;
 import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
+import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.ArrayList;
 

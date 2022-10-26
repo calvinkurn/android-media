@@ -11,6 +11,7 @@ const val DATE_FORMAT = "yyyy-MM-dd"
 const val HOUR_MIN_FORMAT = "HH:mm"
 const val DD_FORMAT = "dd"
 const val SIMPLE_DATE_FORMAT_Z = "yyyy-MM-dd HH:mm:ss Z"
+const val ISO_8601_UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 const val SIMPLE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
 const val UTC = "UTC"
 val locale = Locale("in", "ID")
@@ -198,6 +199,7 @@ object TmDateUtil {
         }
     }
 
+
     fun setDateFromDetails(time: String): String {
         // 2022-09-11T19:00:00Z00 >> Input
         // Min, 11 Sep 2022 >> Output
@@ -230,6 +232,13 @@ object TmDateUtil {
             calendar.time = it
         }
         return calendar
+    }
+
+
+    fun getDateFromISO(time:String?) : Date?{
+        if(time.isNullOrEmpty() || !time.contains("T")) return null
+        val sdf = SimpleDateFormat(ISO_8601_UTC_DATE_FORMAT, locale)
+        return sdf.parse(time)
     }
 
 }
