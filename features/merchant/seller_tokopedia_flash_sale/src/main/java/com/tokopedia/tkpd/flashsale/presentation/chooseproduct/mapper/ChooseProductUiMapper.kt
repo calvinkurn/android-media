@@ -75,7 +75,7 @@ object ChooseProductUiMapper {
         selectedProductIds: List<Long>,
         selectedProductList: List<ChooseProductItem>
     ): Boolean {
-        val productValidation = productCount < maxProduct && selectedProductList.isNotEmpty()
+        val productValidation = productCount <= maxProduct && selectedProductList.isNotEmpty()
         val criteriaValidation = criteriaList.validateMax()
         val hasPartialSelected = selectedProductIds.isNotEmpty()
         return if (!criteriaValidation && hasPartialSelected) {
