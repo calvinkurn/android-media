@@ -31,6 +31,18 @@ private fun ImagePolicyResponse.generateToPDP(
             ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_ID -> {
                 imagePolicy.toRequestParam(data.productId)
             }
+            ImageGeneratorConstants.ImageGeneratorKeys.NEW_PRODUCT_PRICE -> {
+                imagePolicy.toRequestParam(data.newProductPrice.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.HAS_CAMPAIGN -> {
+                imagePolicy.toRequestParam(data.hasCampaign.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_DISCOUNT -> {
+                imagePolicy.toRequestParam(data.campaignDiscount.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_NAME_PDP-> {
+                imagePolicy.toRequestParam(data.campaignName)
+            }
             else -> {
                 imagePolicy.toRequestParam("")
             }

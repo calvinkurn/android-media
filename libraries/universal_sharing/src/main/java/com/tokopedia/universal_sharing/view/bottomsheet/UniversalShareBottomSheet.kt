@@ -1007,13 +1007,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     fun executeShareOptionClick(shareModel: ShareModel) {
         if (getImageFromMedia) {
             when (sourceId) {
-                ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
+                ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP -> {
                     executePdpContextualImage(shareModel)
                 }
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
-                    imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
+                    imageGeneratorDataArray?.let { executeImageGeneratorUseCase(it, shareModel) }
                 }
             }
 
@@ -1030,7 +1030,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         lifecycleScope.launch {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+            executeImageGeneratorUseCase(listOfParams, shareModel)
         }
     }
 
@@ -1154,7 +1154,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorDataArray?.add(ImageGeneratorRequestData(key, value))
     }
 
-    private fun executeImageGeneratorUseCase(sourceId: String, args: ArrayList<ImageGeneratorRequestData>,
+    private fun executeImageGeneratorUseCase(args: ArrayList<ImageGeneratorRequestData>,
                                              shareModel: ShareModel) {
         loaderUnify?.visibility = View.VISIBLE
         gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
@@ -1166,7 +1166,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 val mediaImageUrl = response.imageUrl
 
                 /* for A/B Testing on PDP Page */
-                if (sourceId == ImageGeneratorConstants.ImageGeneratorSourceId.PDP) {
+                if (sourceId == ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP) {
                     setAbTestContextual(shareModel, response.sourceId)
                 }
                 SharingUtil.saveImageFromURLToStorage(context, mediaImageUrl) {
@@ -1185,7 +1185,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
      */
     private fun setAbTestContextual(shareModel: ShareModel, sourceId: String) {
         if (getImageFromMedia) {
-            shareModel.campaign?.replace(KEY_CONTEXTUAL_IMAGE, sourceId)
+            shareModel.campaign = shareModel.campaign?.replace(KEY_CONTEXTUAL_IMAGE, sourceId)
         }
     }
 

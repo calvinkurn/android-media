@@ -603,7 +603,12 @@ object DynamicProductDetailMapper {
             productImageUrl = product.data.getProductImageUrl() ?: "",
             productPrice = product.data.price.value.toLong(),
             productRating = product.basic.stats.rating,
-            productTitle = MethodChecker.fromHtml(product.getProductName).toString()
+            productTitle = MethodChecker.fromHtml(product.getProductName).toString(),
+            hasCampaign = product.data.campaign.activeAndHasId,
+            campaignName = product.data.campaign.campaignTypeName,
+            campaignDiscount = product.data.campaign.percentageAmount.toInt(),
+            newProductPrice = product.data.campaign.discountedPrice.toInt()
+
         )
     }
 
