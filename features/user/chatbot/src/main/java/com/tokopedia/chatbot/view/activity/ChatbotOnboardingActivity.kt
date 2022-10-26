@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.databinding.ActivityChatbotOnboardingBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
@@ -41,12 +39,9 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         initInjector()
         setUpListeners()
         checkVideoUploadOnboardingStatus()
-        if(false) {
-            val ratioY = calculateRatiosForGuideline()
-            setUpReplyBubbleGuideline(ratioY)
-            checkReplyBubbleOnboardingStatus()
-        }
-        supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chatbot_avatar))
+        val ratioY = calculateRatiosForGuideline()
+        setUpReplyBubbleGuideline(ratioY)
+        checkReplyBubbleOnboardingStatus()
     }
 
     /**
@@ -137,6 +132,11 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
      * on the coachmarks
      * */
     override fun onBackPressed() = Unit
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
+    }
 
     companion object {
         private const val X_COORDINATE = "x-coordinate"

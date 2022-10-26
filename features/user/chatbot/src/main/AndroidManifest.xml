@@ -23,7 +23,7 @@
         <activity android:name=".view.activity.ChatbotVideoActivity"/>
         <activity
             android:name=".view.activity.ChatbotOnboardingActivity"
-            android:theme="@style/Theme.AppCompat.Translucent2">
+            android:theme="@style/Theme.AppCompat.TranslucentOnboarding">
         </activity>
 
         <activity
