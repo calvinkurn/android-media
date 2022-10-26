@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -18,6 +19,10 @@ class ProductAnalyticHelper(
     @TrackingField
     private val impressedProducts = mutableListOf<Pair<PlayProductUiModel.Product, Int>>()
 
+    //For bottom sheet products
+    @TrackingField
+    private val impressedBottomSheet = mutableListOf<ProductSheetAdapter.Item.Product>()
+
     @TrackingField
     private val impressedVouchers = mutableListOf<MerchantVoucherUiModel>()
 
@@ -33,6 +38,13 @@ class ProductAnalyticHelper(
             )
         }
         sectionInfo = section
+    }
+
+    fun trackImpressedProductsBottomSheet(
+        products : List<ProductSheetAdapter.Item.Product>
+    ) {
+        if (products.isEmpty()) return
+        impressedBottomSheet.addAll(products)
     }
 
     fun trackImpressedVouchers(vouchers: List<MerchantVoucherUiModel>) {
@@ -53,7 +65,9 @@ class ProductAnalyticHelper(
     }
 
     fun sendImpressedBottomSheet(partner: PartnerType){
-        if(partner == PartnerType.TokoNow) else clearProducts()
+        if(partner == PartnerType.TokoNow) newAnalytic.impressProductBottomSheetNow(impressedBottomSheet)
+        else analytic.impressBottomSheetProduct(impressedBottomSheet)
+        impressedBottomSheet.clear()
     }
 
     private fun sendImpressedPrivateVoucher() {

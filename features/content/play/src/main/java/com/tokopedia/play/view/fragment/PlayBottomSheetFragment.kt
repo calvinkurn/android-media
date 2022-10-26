@@ -192,15 +192,10 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onProductImpressed(
         view: ProductSheetViewComponent,
-        product: PlayProductUiModel.Product,
-        sectionInfo: ProductSectionUiModel.Section,
-        position: Int
+        products: List<ProductSheetAdapter.Item.Product>
     ) {
-        if (playViewModel.bottomInsets.isProductSheetsShown) {
-            if(sectionInfo.config.type == ProductSectionType.TokoNow) {
-                newAnalytic.impressProductBottomSheetNow(product, position)
-            } else analytic.impressBottomSheetProduct(product, sectionInfo, position)
-        }
+        productAnalyticHelper.trackImpressedProductsBottomSheet(products)
+        productAnalyticHelper.sendImpressedBottomSheet(playViewModel.latestCompleteChannelData.partnerInfo.type)
     }
 
     private fun onProductCountChanged() {
@@ -477,7 +472,9 @@ class PlayBottomSheetFragment @Inject constructor(
             }
 
             it[BottomInsetsType.ProductSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) productSheetView.showWithHeight(state.estimatedInsetsHeight)
+                if (state is BottomInsetsState.Shown) {
+                    productSheetView.showWithHeight(state.estimatedInsetsHeight)
+                }
                 else productSheetView.hide()
             }
 

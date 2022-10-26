@@ -1,11 +1,12 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -176,15 +177,17 @@ class PlayAnalytic(
     }
 
     fun impressBottomSheetProduct(
-        product: PlayProductUiModel.Product,
-        sectionInfo: ProductSectionUiModel.Section,
-        position: Int,
+        products: List<ProductSheetAdapter.Item.Product>
     ) {
-        val (eventAction, eventLabel) = when(sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
-            else -> Pair("view product", "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${product.isPinned}")
+        if (products.isEmpty()) return
+        val section = products.firstOrNull()?.section?.config?.type ?: ProductSectionType.Unknown
+
+        val (eventAction, eventLabel) = when(section) {
+            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = products.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.firstOrNull()?.section?.id.orEmpty()))
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = products.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.firstOrNull()?.section?.id.orEmpty()))
+            else -> Pair("view product", "$mChannelId - ${products.firstOrNull()?.product?.id.orEmpty()} - ${mChannelType.value} - product in bottom sheet - is pinned product ${products.firstOrNull()?.product?.isPinned.orFalse()}")
         }
+
         trackingQueue.putEETracking(
             event = EventModel(
                 "productView",
@@ -196,7 +199,9 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        add(convertProductToHashMapWithList(product, position, "bottom sheet"))
+                        products.map { it.product }.forEachIndexed { index: Int, product: PlayProductUiModel.Product ->
+                            add(convertProductToHashMapWithList(product, index, "bottom sheet"))
+                        }
                     }
                 )
             ),
