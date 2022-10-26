@@ -96,7 +96,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun getGroupBookingChannel(channelId: String) {
         try {
-            chatChannelUseCase.getGroupBookingChannel(channelId, onSuccess = {
+            chatChannelUseCase.getRemoteGroupBookingChannel(channelId, onSuccess = {
                 _channelDetail.postValue(Success(it))
             }, onError = {
                 _channelDetail.postValue(Fail(it))

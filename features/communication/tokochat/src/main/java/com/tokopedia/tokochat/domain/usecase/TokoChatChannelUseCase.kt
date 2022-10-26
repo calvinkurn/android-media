@@ -27,12 +27,12 @@ class TokoChatChannelUseCase @Inject constructor(
         return repository.getConversationRepository().isChatConnected()
     }
 
-    fun getGroupBookingChannel(
+    fun getRemoteGroupBookingChannel(
         channelId: String,
         onSuccess: (channel: GroupBookingChannelDetails) -> Unit,
         onError: (error: ConversationsNetworkError) -> Unit
     ) {
-        repository.getConversationRepository().getLocalGroupBookingChannelDetails(
+        repository.getConversationRepository().getRemoteGroupBookingChannelDetails(
             channelId = channelId,
             onSuccess = onSuccess,
             onError = onError

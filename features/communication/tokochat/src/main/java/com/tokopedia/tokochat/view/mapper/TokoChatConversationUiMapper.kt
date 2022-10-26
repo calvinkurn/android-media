@@ -38,6 +38,24 @@ class TokoChatConversationUiMapper @Inject constructor(
         val resultList = arrayListOf<Any>()
         var lastHeaderDate: TokoChatHeaderDateUiModel? = null
         list.forEach {
+            // Get current header from time
+            val headerUiModel = it.mapToHeaderDateUiModel()
+            // If the last recorded header is null, put the value
+            if (lastHeaderDate == null) {
+                lastHeaderDate = headerUiModel
+            }
+
+            /** If the header date is different
+             * ex: last -> 4 Oct, Current -> 6 Oct
+             * Then render the header and replace the last header
+             */
+            if (it.shouldShowHeaderDate(lastHeaderDate)) {
+                lastHeaderDate?.let { date ->
+                    resultList.add(date)
+                }
+                lastHeaderDate = headerUiModel
+            }
+
             when (it.customType) {
                 ConversationsConstants.ADMIN_MESSAGE -> {
                     resultList.add(it.mapToTickerUiModel())
@@ -68,24 +86,11 @@ class TokoChatConversationUiMapper @Inject constructor(
                     resultList.add(it.mapToMessageBubbleUiModel(userId))
                 }
             }
+        }
 
-            // Get current header from time
-            val headerUiModel = it.mapToHeaderDateUiModel()
-            // If the last recorded header is null, put the value
-            if (lastHeaderDate == null) {
-                lastHeaderDate = headerUiModel
-            }
-
-            /** If the header date is different
-             * ex: last -> 4 Oct, Current -> 6 Oct
-             * Then render the header and replace the last header
-             */
-            if (it.shouldShowHeaderDate(lastHeaderDate, it == list.last())) {
-                lastHeaderDate?.let { date ->
-                    resultList.add(date)
-                }
-                lastHeaderDate = headerUiModel
-            }
+        // Add last header date
+        lastHeaderDate?.let {
+            resultList.add(it)
         }
 
         firstTicker?.let {
@@ -122,13 +127,9 @@ class TokoChatConversationUiMapper @Inject constructor(
     }
 
     private fun ConversationsMessage.shouldShowHeaderDate(
-        lastHeaderDate: TokoChatHeaderDateUiModel?,
-        isLastItem: Boolean
+        lastHeaderDate: TokoChatHeaderDateUiModel?
     ): Boolean {
-       return (
-           !sameDay(this.createdTimestamp, lastHeaderDate?.dateTimestamp?: 0)
-               || isLastItem
-       )
+       return !sameDay(this.createdTimestamp, lastHeaderDate?.dateTimestamp?: 0)
     }
 
     private fun sameDay(messageTime: Long, previousMessageTime: Long): Boolean {
