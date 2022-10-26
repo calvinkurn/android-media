@@ -2,8 +2,6 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
 import com.tokopedia.logisticcart.shipping.model.*
 import javax.inject.Inject
 
@@ -20,8 +18,10 @@ class ShippingCourierConverter @Inject constructor() {
         }
     }
 
-    fun convertToCourierItemData(shippingCourierUiModel: ShippingCourierUiModel?,
-                                 shippingRecommendationData: ShippingRecommendationData? = null): CourierItemData {
+    fun convertToCourierItemData(
+        shippingCourierUiModel: ShippingCourierUiModel?,
+        shippingRecommendationData: ShippingRecommendationData? = null
+    ): CourierItemData {
         val courierItemData = CourierItemData()
         shippingCourierUiModel?.let {
             courierItemData.shipperId = it.productData.shipperId
@@ -143,7 +143,7 @@ class ShippingCourierConverter @Inject constructor() {
     private fun AdditionalDeliveryData.convertToScheduleDeliveryUiModel(
         scheduleDate: String? = null,
         timeslotId: Long? = null
-    ) : ScheduleDeliveryUiModel {
+    ): ScheduleDeliveryUiModel {
 
         return ScheduleDeliveryUiModel(
             isSelected = recommendAdditionalShipper,

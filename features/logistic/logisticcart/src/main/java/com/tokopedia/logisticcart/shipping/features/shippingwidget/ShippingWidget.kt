@@ -434,7 +434,8 @@ class ShippingWidget : ConstraintLayout {
         return if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
             // Change duration to promo title after promo is applied
             val htmlLinkHelper = HtmlLinkHelper(
-                context, selectedCourierItemData.freeShippingChosenCourierTitle
+                context,
+                selectedCourierItemData.freeShippingChosenCourierTitle
             )
             htmlLinkHelper.spannedString
         } else {
@@ -447,9 +448,12 @@ class ShippingWidget : ConstraintLayout {
             val title = selectedCourierItemData.name + " (" + price + ")"
 
             if (isScheduleDeliveryWidget) {
-                HtmlLinkHelper(context, StringBuilder().apply {
-                    appendHtmlBoldText(title)
-                }.toString()).spannedString
+                HtmlLinkHelper(
+                    context,
+                    StringBuilder().apply {
+                        appendHtmlBoldText(title)
+                    }.toString()
+                ).spannedString
             } else {
                 title
             }
@@ -464,7 +468,7 @@ class ShippingWidget : ConstraintLayout {
 
     private fun getSingleShippingLabelEta(
         selectedCourierItemData: CourierItemData
-    ) : String? {
+    ): String? {
         return if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText?.isNotEmpty() == true) {
             selectedCourierItemData.etaText
         } else {

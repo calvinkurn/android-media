@@ -57,7 +57,8 @@ data class ScheduleDeliveryUiModel(
     }
 
     private fun getSelectedDeliveryServices(
-        scheduleDate: String, timeslotId: Long,
+        scheduleDate: String,
+        timeslotId: Long,
         callback: (scheduleDate: String, deliveryProduct: DeliveryProduct) -> Unit
     ) {
         val deliveryService = deliveryServices.find { it.id == scheduleDate }

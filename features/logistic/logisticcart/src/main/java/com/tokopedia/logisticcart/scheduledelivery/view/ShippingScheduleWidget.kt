@@ -266,7 +266,8 @@ class ShippingScheduleWidget : ConstraintLayout {
     }
 
     private fun ItemShipmentNowTimeOptionBinding.setLabel(
-        label: CharSequence?, showLabel: Boolean
+        label: CharSequence?,
+        showLabel: Boolean
     ) {
         if (label?.isNotBlank() == true && showLabel) {
             tvLabelShipment.apply {
@@ -293,7 +294,7 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     companion object {
         const val HTML_BOLD_FORMAT = "<b>%s</b>"
-        private const val HTML_STRIKETHROUGH_FORMAT =  "<s>%s</s>"
+        private const val HTML_STRIKETHROUGH_FORMAT = "<s>%s</s>"
         private const val DELAY_SHOWING_COACHMARK: Long = 300
     }
 }
