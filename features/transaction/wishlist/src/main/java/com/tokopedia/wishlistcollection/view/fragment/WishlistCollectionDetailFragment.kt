@@ -119,11 +119,13 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLI
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
+import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistCollectionSettings
+import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -141,9 +143,9 @@ import com.tokopedia.wishlist.R as Rv2
 @Keep
 class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener,
     CoroutineScope, BottomSheetUpdateWishlistCollectionName.ActionListener,
-    BottomSheetWishlistCollectionSettings.ActionListener,
     BottomSheetWishlistCollectionAdapter.ActionListener,
-    BottomSheetAddCollectionWishlist.ActionListener, ActionListenerFromPdp {
+    BottomSheetAddCollectionWishlist.ActionListener, ActionListenerFromPdp,
+    ActionListenerBottomSheetMenu {
     private var binding by autoClearedNullable<FragmentWishlistCollectionDetailBinding>()
     private lateinit var collectionItemsAdapter: WishlistV2Adapter
     private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
@@ -179,6 +181,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
     private var collectionId = ""
     private var collectionName = ""
+    private var listSettingButtons = emptyList<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.Setting.Button>()
     private var collectionType = 0
     private var countDelete = 1
     private var toolbarTitle = ""
@@ -187,6 +190,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
     private var isAturMode = false
+    private var bottomSheetCollectionSettings = BottomSheetWishlistCollectionSettings()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -269,6 +273,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val TYPE_COLLECTION_SHARE = "2"
         private const val TYPE_COLLECTION_PUBLIC_SELF = 3
         private const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
+        private const val EDIT_WISHLIST_COLLECTION_REQUEST_CODE = 1888
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -589,6 +594,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             hideGearIcon()
                         }
                         setupIconToolbar()
+                        listSettingButtons = collectionDetail.setting.buttons
                     }
                 }
                 is Fail -> {
@@ -2531,8 +2537,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun onCollectionSettingsClicked(collectionId: String, collectionName: String) {
-        val bottomSheetCollectionSettings =
-            BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId)
+        bottomSheetCollectionSettings =
+            BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId, listSettingButtons)
         bottomSheetCollectionSettings.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCollectionSettings.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetCollectionSettings.show(childFragmentManager)
@@ -2793,7 +2799,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
-        } else if (requestCode == REQUEST_CODE_GO_TO_PDP || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST && data != null) {
+        } else if (requestCode == REQUEST_CODE_GO_TO_PDP
+            || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST
+            || requestCode == EDIT_WISHLIST_COLLECTION_REQUEST_CODE
+            && data != null) {
             doRefresh()
             val isSuccess = data?.getBooleanExtra(
                 ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
@@ -2881,18 +2890,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
-
-    override fun onChangeCollectionName(collectionId: String, collectionName: String) {
-        showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
-    }
-
-    override fun onManageCollectionItems() {
-        turnOnBulkDeleteMode(false)
-    }
-
-    override fun onDeleteCollectionItem(collectionId: String, collectionName: String) {
-        showDialogDeleteCollection(collectionId, collectionName)
-    }
 
     private fun showDialogDeleteCollection(collectionId: String, collectionName: String) {
         val dialog =
@@ -3008,5 +3005,29 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onFailedSaveToNewCollection(errorMessage: String?) {
         errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
+    }
+
+    override fun onEditCollection(collectionId: String, collectionName: String, actionText: String) {
+        bottomSheetCollectionSettings.dismiss()
+        val intent = Intent(context, WishlistCollectionEditActivity::class.java)
+        intent.putExtra(WishlistCollectionConsts.COLLECTION_ID, collectionId)
+        intent.putExtra(WishlistCollectionConsts.COLLECTION_NAME, collectionName)
+        startActivityForResult(intent, EDIT_WISHLIST_COLLECTION_REQUEST_CODE)
+    }
+
+    override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {
+        bottomSheetCollectionSettings.dismiss()
+        showDialogDeleteCollection(collectionId, collectionName)
+        WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(actionText)
+    }
+
+    override fun onShareCollection(collectionId: String, actionText: String) {
+        // used in WishlistCollectionFragment
+    }
+
+    override fun onManageItemsInCollection(actionText: String) {
+        bottomSheetCollectionSettings.dismiss()
+        turnOnBulkDeleteMode(false)
+        WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(actionText)
     }
 }

@@ -28,6 +28,7 @@ object WishlistCollectionConsts {
     const val ACTION_KEBAB_UPDATE_COLLECTION = "UPDATE_COLLECTION"
     const val ACTION_KEBAB_SHARE_COLLECTION = "SHARE_COLLECTION"
     const val ACTION_KEBAB_DELETE_COLLECTION = "DELETE_COLLECTION"
+    const val ACTION_KEBAB_MANAGE_ITEMS_IN_COLLECTION = "MANAGE_ITEMS_IN_COLLECTION"
 
     const val COLLECTION_NAME = "collection_name"
     const val COLLECTION_ID = "collection_id"

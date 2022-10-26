@@ -15,11 +15,12 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionKebabMenuItemAdapter
+import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 
 class BottomSheetKebabMenuWishlistCollection: BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetKebabMenuWishlistCollectionBinding>()
-    private var actionListener: ActionListener? = null
+    private var actionListener: ActionListenerBottomSheetMenu? = null
     private val collectionKebabItemAdapter = BottomSheetWishlistCollectionKebabMenuItemAdapter()
 
     companion object {
@@ -85,12 +86,6 @@ class BottomSheetKebabMenuWishlistCollection: BottomSheetUnify() {
 
     fun show(fm: FragmentManager) {
         show(fm, TAG)
-    }
-
-    interface ActionListener {
-        fun onEditCollection(collectionId: String, collectionName: String)
-        fun onDeleteCollection(collectionId: String, collectionName: String)
-        fun onShareCollection(collectionId: String)
     }
 
     fun setListener(fragment: WishlistCollectionFragment) {

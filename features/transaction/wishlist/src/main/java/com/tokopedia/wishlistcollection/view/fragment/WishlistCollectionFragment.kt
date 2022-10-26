@@ -74,6 +74,7 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCol
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
+import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import javax.inject.Inject
@@ -81,9 +82,8 @@ import kotlin.math.roundToInt
 
 @Keep
 class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
-    BottomSheetKebabMenuWishlistCollection.ActionListener, ActionListenerFromCollectionPage,
-    BottomSheetUpdateWishlistCollectionName.ActionListener,
-    BottomSheetOnboardingWishlistCollection.ActionListener {
+    ActionListenerFromCollectionPage, BottomSheetUpdateWishlistCollectionName.ActionListener,
+    BottomSheetOnboardingWishlistCollection.ActionListener, ActionListenerBottomSheetMenu {
     private var onlyAllCollection: Boolean = false
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
@@ -640,7 +640,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         startActivityForResult(intentCollectionDetail, REQUEST_CODE_COLLECTION_DETAIL)
     }
 
-    override fun onEditCollection(collectionId: String, collectionName: String) {
+    override fun onEditCollection(collectionId: String, collectionName: String, actionText: String) {
         bottomSheetKebabMenu.dismiss()
         val intent = Intent(context, WishlistCollectionEditActivity::class.java)
         intent.putExtra(COLLECTION_ID, collectionId)
@@ -648,14 +648,18 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         startActivityForResult(intent, EDIT_WISHLIST_COLLECTION_REQUEST_CODE)
     }
 
-    override fun onDeleteCollection(collectionId: String, collectionName: String) {
+    override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {
         bottomSheetKebabMenu.dismiss()
         showDialogDeleteCollection(collectionId, collectionName)
     }
 
-    override fun onShareCollection(collectionId: String) {
+    override fun onShareCollection(collectionId: String, actionText: String) {
         bottomSheetKebabMenu.dismiss()
         collectionViewModel.getWishlistCollectionSharingData(collectionId.toLongOrZero())
+    }
+
+    override fun onManageItemsInCollection(actionText: String) {
+        // used in WishlistCollectionDetail
     }
 
     override fun onSuccessCreateNewCollection(dataCreate: CreateWishlistCollectionResponse.CreateWishlistCollection.DataCreate, newCollectionName: String) {

@@ -5,13 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.wishlist.databinding.BottomsheetKebabMenuWishlistCollectionItemBinding
 import com.tokopedia.wishlistcollection.data.model.BottomSheetKebabActionItemData
-import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionKebabMenuItemViewHolder
-import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollection
+import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 
 class BottomSheetWishlistCollectionKebabMenuItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val listAction = arrayListOf<BottomSheetKebabActionItemData>()
-    private var _actionListener: BottomSheetKebabMenuWishlistCollection.ActionListener? = null
+    private var _actionListener: ActionListenerBottomSheetMenu? = null
     var _collectionId: String = ""
     var _collectionName: String = ""
 
@@ -38,7 +37,7 @@ class BottomSheetWishlistCollectionKebabMenuItemAdapter : RecyclerView.Adapter<R
         notifyDataSetChanged()
     }
 
-    fun setActionListener(actionListener: BottomSheetKebabMenuWishlistCollection.ActionListener?) {
+    fun setActionListener(actionListener: ActionListenerBottomSheetMenu?) {
         this._actionListener = actionListener
     }
 }
