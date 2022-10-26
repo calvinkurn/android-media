@@ -85,7 +85,9 @@ class GetScheduleDeliveryUseCase @Inject constructor(
                             available = true,
                             hidden = false,
                             recommend = true,
-                            promoCode = ""
+                            promoCode = "",
+                            insurancePrice = 100.0,
+                            validationMetadata = "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}"
                         ),
                         DeliveryProduct(
                             title = "Tiba 16:00 - 18:00",
@@ -101,7 +103,10 @@ class GetScheduleDeliveryUseCase @Inject constructor(
                             available = true,
                             hidden = false,
                             recommend = false,
-                            promoText = "Kuota gratis ongkirmu habis"
+                            promoCode = "",
+                            promoText = "Kuota gratis ongkirmu habis",
+                            insurancePrice = 1000.0,
+                            validationMetadata = "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}"
                         )
                     )
                 )
