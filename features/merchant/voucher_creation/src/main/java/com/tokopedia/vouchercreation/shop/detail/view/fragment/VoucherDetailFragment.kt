@@ -566,7 +566,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                 ogImageUrl = shareModel.ogImgUrl
             }
-            deepLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
+            deepLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
         })
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
@@ -588,7 +588,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
             shareModel.channel.orEmpty(),
             voucher.id.toString(),
             VoucherCreationAnalyticConstant.Values.TRACKER_ID_CLICK_CHANNEL_SHARE,
-            VoucherCreationAnalyticConstant.Values.IMAGE_TYPE_SHARE
+            UniversalShareBottomSheet.Companion.KEY_CONTEXTUAL_IMAGE
         )
     }
 
