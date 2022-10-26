@@ -102,13 +102,6 @@ class ChatMessageUnifyViewHolder(
             hide(fxChat?.checkMark)
             hide(header)
         }
-        impressReadMessage(msg)
-    }
-
-    private fun impressReadMessage(msg: MessageUiModel) {
-        itemView.addOnImpressionListener(msg.impressHolder) {
-            commonListener.impressReadMessageForBubbles(msg.replyId)
-        }
     }
 
     private fun bindTextColor(msg: MessageUiModel) {

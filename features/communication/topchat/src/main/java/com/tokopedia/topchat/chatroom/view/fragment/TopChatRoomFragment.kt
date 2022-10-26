@@ -51,6 +51,7 @@ import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
@@ -75,6 +76,8 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -188,6 +191,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.trackSuccessDoB
 import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.topchat.common.util.Utils.isFromBubble
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
@@ -290,7 +294,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var isTickerNotShownYet = true
 
     /*
-    * Bubble Flag
+      * Bubble Chat Flag
      */
     private var isFromBubble = false
 
@@ -567,6 +571,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onResume() {
         super.onResume()
+        this.isFromBubble = activity?.isFromBubble() == true
         if (isFromBubble) {
             TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
         }
@@ -688,7 +693,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this,
             (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
-            it.isFromBubble = isFromBubble
+            it.isFromBubble = activity?.isFromBubble() == true
             topchatViewState = it
         }
     }
@@ -774,9 +779,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             getParamString(ApplinkConst.Chat.SEARCH_CREATE_TIME, arguments, savedInstanceState)
         searchQuery =
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
-
-        isFromBubble =
-            getParamString(Constant.EXTRA_IS_FROM_BUBBLE, arguments, savedInstanceState) == Constant.EXTRA_BUBBLE_SOURCE
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
@@ -1040,6 +1042,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
+
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventViewReadMsgFromBubble(chatBubble?.replyId.orEmpty())
+        }
 
         renderTickerReminder(chatBubble)
     }
@@ -1930,13 +1936,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    /*
-     * Impress Message Chat from Bubbles
-     */
-    override fun impressReadMessageForBubbles(replyId: String) {
-        TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
-    }
-
     private fun goToMvcPage(applink: String) {
         //If seller in MA, show toaster
         if (!GlobalConfig.isSellerApp() && isSeller()) {
@@ -1972,7 +1971,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (::viewModel.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
-            finishActivity()
+            if (isFromBubble) {
+                return false
+            } else {
+                finishActivity()
+            }
         }
         return true
     }
@@ -2901,6 +2904,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         onSuccessGetExistingChatFirstTime(
                             result.data.chatroomViewModel, result.data.chatReplies
                         )
+
+                        if (isFromBubble) {
+                            val replyId = (result.data.chatroomViewModel
+                                .listChat.getOrNull(Int.ZERO) as? BaseChatUiModel)?.replyId.orEmpty()
+                            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+                        }
                     } else {
                         onSuccessResetChatToFirstPage(
                             result.data.chatroomViewModel, result.data.chatReplies

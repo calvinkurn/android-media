@@ -4,11 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.config.GlobalConfig
-import java.lang.IllegalArgumentException
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 object BubblesUtils {
 
@@ -22,6 +20,7 @@ object BubblesUtils {
             Glide.with(context)
                 .asBitmap()
                 .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .submit(imageWidth, imageHeight)
                 .get(BITMAP_TIMEOUT, TimeUnit.SECONDS)
         } catch (e: Exception) {
