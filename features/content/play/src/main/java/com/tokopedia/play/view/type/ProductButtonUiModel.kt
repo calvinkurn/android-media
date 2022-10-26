@@ -24,7 +24,7 @@ data class ProductButtonUiModel(
     }
 }
 
-fun ProductButtonUiModel?.orDefault() = ProductButtonUiModel.Default
+fun ProductButtonUiModel?.orDefault() = this ?: ProductButtonUiModel.Default
 
 enum class ProductButtonColor(val value: String) {
     PRIMARY_BUTTON("primary"),

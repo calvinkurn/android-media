@@ -147,11 +147,14 @@ class ProductBottomSheetCardView(
         text = button.text
 
         //Setup Icon if any, for now its only for ATC
+        val iconColor = if(button.color == ProductButtonColor.DISABLED_BUTTON)
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN100
+                        else com.tokopedia.unifyprinciples.R.color.Unify_G500
+
         when (button.type) {
             ProductButtonType.ATC ->
                 setDrawable(
-                    getIconUnifyDrawable(context, IconUnify.ADD, ContextCompat.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN100)))
+                    getIconUnifyDrawable(context, IconUnify.ADD, ContextCompat.getColor(context, iconColor)))
         }
 
         //Setup Color, default?
