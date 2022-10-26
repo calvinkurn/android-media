@@ -3,7 +3,10 @@ package com.tokopedia.epharmacy.component.viewholder
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
@@ -14,10 +17,11 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.math.BigDecimal
 
-class EPharmacyAttachmentViewHolder(view: View) : AbstractViewHolder<EPharmacyAttachmentDataModel>(view) {
+class EPharmacyAttachmentViewHolder(val view: View) : AbstractViewHolder<EPharmacyAttachmentDataModel>(view) {
 
     private val orderName = view.findViewById<Typography>(R.id.orderName)
     private val productText = view.findViewById<Typography>(R.id.product_name)
@@ -32,6 +36,7 @@ class EPharmacyAttachmentViewHolder(view: View) : AbstractViewHolder<EPharmacyAt
     private val chatDokterUploadLayout = view.findViewById<LinearLayout>(R.id.chat_dokter_upload_layout)
     private val chatDokterUploadText = view.findViewById<Typography>(R.id.upload_prescription_text)
     private val chatDokterUploadIcon = view.findViewById<ImageUnify>(R.id.upload_icon)
+    private var childAccordionView: View? = null
 
     companion object {
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
@@ -39,6 +44,7 @@ class EPharmacyAttachmentViewHolder(view: View) : AbstractViewHolder<EPharmacyAt
         private const val DIGIT_AFTER_COMMA = 2
         private const val LABEL_KILOGRAM = " kg"
         private const val LABEL_GRAM = " gr"
+        val LAYOUT_ACCORDION = R.layout.epharmacy_accordion_expanded_layout
     }
 
     override fun bind(element: EPharmacyAttachmentDataModel) {
@@ -72,6 +78,26 @@ class EPharmacyAttachmentViewHolder(view: View) : AbstractViewHolder<EPharmacyAt
 
         if(!dataModel.shopInfo?.products.isNullOrEmpty()){
             productAccordionView.show()
+            childAccordionView = View.inflate(view.context, LAYOUT_ACCORDION, null)
+            childAccordionView?.findViewById<RecyclerView>(R.id.accordion_expandable_rv)?.apply {
+                //adapter = getAccordionAdapter(specList)
+                //layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+            }
+            addAccordionData("Accordion Title")
+        }
+    }
+
+    private fun addAccordionData(title : String, isExpanded : Boolean = false) {
+        productAccordionView.apply {
+            childAccordionView?.let {
+                val accordionUnifyData = AccordionDataUnify(
+                    title = title,
+                    expandableView = it,
+                    isExpanded = isExpanded
+                )
+                accordionUnifyData.setContentPadding(8.toPx(), 0.toPx(), 8.toPx(), 16.toPx())
+                addGroup(accordionUnifyData)
+            }
         }
     }
 

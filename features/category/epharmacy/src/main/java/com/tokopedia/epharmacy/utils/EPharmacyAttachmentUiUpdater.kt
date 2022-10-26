@@ -1,0 +1,19 @@
+package com.tokopedia.epharmacy.utils
+
+import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyStaticInfoDataModel
+
+class EPharmacyAttachmentUiUpdater(var mapOfData: MutableMap<String, BaseEPharmacyDataModel>) {
+
+    init {
+    }
+
+    fun updateModel(model: BaseEPharmacyDataModel){
+        updateData(model.type(),model)
+    }
+
+    private fun updateData(key: String, baseCatalogDataModel: BaseEPharmacyDataModel) {
+        mapOfData[key] = baseCatalogDataModel
+    }
+}

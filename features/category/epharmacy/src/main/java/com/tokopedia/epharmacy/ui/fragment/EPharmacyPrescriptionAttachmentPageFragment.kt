@@ -57,7 +57,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         viewModelProvider.get(EPharmacyPrescriptionAttachmentViewModel::class.java)
     }
 
-    private var ePharmacyUiUpdater: EPharmacyUiUpdater = EPharmacyUiUpdater(mutableMapOf())
+    private var ePharmacyAttachmentUiUpdater: EPharmacyAttachmentUiUpdater = EPharmacyAttachmentUiUpdater(mutableMapOf())
 
     private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(this) }
 
@@ -78,7 +78,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.epharmacy_upload_prescription_fragment, container, false)
+        return inflater.inflate(R.layout.epharmacy_prescription_attachment_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -186,14 +186,14 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
                     }
                 }
             }else {
-                ePharmacyUiUpdater.updateModel(component)
+                ePharmacyAttachmentUiUpdater.updateModel(component)
             }
         }
         updateUi()
     }
 
     private fun updateUi() {
-        val newData = ePharmacyUiUpdater.mapOfData.values.toList()
+        val newData = ePharmacyAttachmentUiUpdater.mapOfData.values.toList()
         submitList(newData)
     }
 

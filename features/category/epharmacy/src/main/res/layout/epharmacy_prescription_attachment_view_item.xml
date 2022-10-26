@@ -56,8 +56,9 @@
     
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/enabler_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="4dp"
         app:layout_constraintStart_toEndOf="@id/partner_title"
         app:layout_constraintTop_toTopOf="@id/partner_title"
         />
