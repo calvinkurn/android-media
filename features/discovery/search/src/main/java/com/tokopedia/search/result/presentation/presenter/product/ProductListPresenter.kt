@@ -4,6 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
@@ -23,6 +26,8 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -61,7 +66,6 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
-import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -83,10 +87,12 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -150,6 +156,9 @@ class ProductListPresenter @Inject constructor(
     private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val suggestionPresenter: SuggestionPresenter,
+    private val tickerPresenter: TickerPresenter,
+    private val safeSearchPresenter: SafeSearchPresenter,
+    private val addToCartUseCase: AddToCartUseCase,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -157,7 +166,9 @@ class ProductListPresenter @Inject constructor(
     DynamicFilterModelProvider,
     LastFilterPresenter by lastFilterPresenterDelegate,
     InspirationListAtcPresenter by inspirationListAtcPresenterDelegate,
-    BroadMatchPresenter by broadMatchDelegate {
+    BroadMatchPresenter by broadMatchDelegate,
+    TickerPresenter by tickerPresenter,
+    SafeSearchPresenter by safeSearchPresenter {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -169,10 +180,8 @@ class ProductListPresenter @Inject constructor(
             SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
             SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
             SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
         )
-        private val showInspirationCarouselLayoutWithVideo =
-            showInspirationCarouselLayout +
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
         private const val QUICK_FILTER_MINIMUM_SIZE = 2
@@ -229,38 +238,11 @@ class ProductListPresenter @Inject constructor(
         chooseAddressDelegate.updateChooseAddress()
     }
 
-    //region AB Test booleans
-    private val isABTestVideoWidget: Boolean by lazy {
-        getABTestVideoWidget()
-    }
-
-    private fun getABTestVideoWidget() : Boolean {
-        return try {
-            val abTestVideoWidget = view.abTestRemoteConfig?.getString(
-                RollenceKey.SEARCH_VIDEO_WIDGET,
-                ""
-            )
-            RollenceKey.SEARCH_VIDEO_WIDGET_VARIANT == abTestVideoWidget
-        } catch (e: Exception) {
-            false
-        }
-    }
-    //endregion
-
     override val userId: String
         get() = getUserId(userSession)
 
     override val isUserLoggedIn: Boolean
         get() = userSession.isLoggedIn
-
-    //region Ticker
-    override var isTickerHasDismissed = false
-        private set
-
-    override fun onPriceFilterTickerDismissed() {
-        isTickerHasDismissed = true
-    }
-    //endregion
 
     //region Load Data / Load More / Recommendations
     override fun clearData() {
@@ -448,7 +430,8 @@ class ProductListPresenter @Inject constructor(
         val list = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProductModel.getProductListType()
+            searchProductModel.getProductListType(),
+            searchProductModel.isShowButtonAtc,
         ).toMutableList()
         productList.addAll(list)
 
@@ -472,6 +455,7 @@ class ProductListPresenter @Inject constructor(
         productDataView: ProductDataView,
         searchParameter: Map<String, Any>,
         productListType: String,
+        showButtonAtc: Boolean,
     ): List<Visitable<*>> {
         return if (isHideProductAds(productDataView))
             productDataView.productList
@@ -484,6 +468,7 @@ class ProductListPresenter @Inject constructor(
                 productListType,
                 externalReference,
                 productDataView.keywordIntention,
+                showButtonAtc,
             )
     }
 
@@ -950,6 +935,7 @@ class ProductListPresenter @Inject constructor(
             productDataView,
             searchParameter,
             searchProductModel.getProductListType(),
+            searchProductModel.isShowButtonAtc,
         ).toMutableList()
         list.addAll(productList)
 
@@ -1191,7 +1177,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
-        return !isABTestVideoWidget && isVideoLayout() && isFirstOptionHasNoProducts()
+        return isVideoLayout() && isFirstOptionHasNoProducts()
     }
     private fun InspirationCarouselDataView.isInvalidProductBundleLayout() : Boolean {
         return isBundleLayout()
@@ -1205,26 +1191,18 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun shouldShowInspirationCarousel(layout: String): Boolean {
-        val validInspirationCarouselLayout = if(!isABTestVideoWidget) {
-            showInspirationCarouselLayout
-        } else {
-            showInspirationCarouselLayoutWithVideo
-        }
-        return validInspirationCarouselLayout.contains(layout)
+        return showInspirationCarouselLayout.contains(layout)
     }
 
     private fun constructInspirationCarouselVisitableList(data: InspirationCarouselDataView) =
         when {
             data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
-            data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
+            data.isVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
             data.isBundleLayout() -> convertInspirationCarouselToInspirationProductBundle(data)
             data.isListAtcLayout() ->
                 inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
             else -> listOf(data)
         }
-    private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
-        return isABTestVideoWidget && isVideoLayout()
-    }
     private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
         return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
                 && isFirstOptionHasNoProducts()
@@ -1781,8 +1759,7 @@ class ProductListPresenter @Inject constructor(
     override fun onProductClick(item: ProductItemDataView?, adapterPosition: Int) {
         if (isViewNotAttached || item == null) return
 
-        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
-        else getViewToTrackOnClickOrganicProduct(item)
+        trackProductClick(item)
 
         sameSessionRecommendationPresenterDelegate.requestSameSessionRecommendation(
             item,
@@ -1794,14 +1771,19 @@ class ProductListPresenter @Inject constructor(
         view.routeToProductDetail(item, adapterPosition)
     }
 
+    override fun trackProductClick(item: ProductItemDataView) {
+        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
+        else getViewToTrackOnClickOrganicProduct(item)
+    }
+
     private fun getViewToTrackOnClickTopAdsProduct(item: ProductItemDataView) {
         topAdsUrlHitter.hitClickUrl(
-                view.className,
-                item.topadsClickUrl,
-                item.productID,
-                item.productName,
-                item.imageUrl,
-                SearchConstant.TopAdsComponent.TOP_ADS
+            view.className,
+            item.topadsClickUrl,
+            item.productID,
+            item.productName,
+            item.imageUrl,
+            SearchConstant.TopAdsComponent.TOP_ADS
         )
 
         view.sendTopAdsGTMTrackingProductClick(item)
@@ -1810,16 +1792,65 @@ class ProductListPresenter @Inject constructor(
     private fun getViewToTrackOnClickOrganicProduct(item: ProductItemDataView) {
         if (item.isOrganicAds) {
             topAdsUrlHitter.hitClickUrl(
-                    view.className,
-                    item.topadsClickUrl,
-                    item.productID,
-                    item.productName,
-                    item.imageUrl,
-                    SearchConstant.TopAdsComponent.ORGANIC_ADS
+                view.className,
+                item.topadsClickUrl,
+                item.productID,
+                item.productName,
+                item.imageUrl,
+                SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
         }
 
         view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
+    }
+
+    override fun onProductAddToCart(item: ProductItemDataView) {
+        if (item.shouldOpenVariantBottomSheet()) {
+            view.openVariantBottomSheet(item)
+        } else {
+            executeAtcCommon(item)
+        }
+    }
+
+    private fun executeAtcCommon(data: ProductItemDataView) {
+        val requestParams = data.createAddToCartRequestParams()
+
+        addToCartUseCase.setParams(requestParams)
+        addToCartUseCase.execute(
+            {
+                onAddToCartUseCaseSuccess(it, data)
+            },
+            ::onAddToCartUseCaseFailed
+        )
+    }
+
+    private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
+        return AddToCartRequestParams(
+            productId = productID.toLongOrZero(),
+            shopId = shopID.toIntOrZero(),
+            quantity = minOrder,
+            productName = productName,
+            price = price,
+            userId = if (userSession.isLoggedIn) userSession.userId else "0"
+        )
+    }
+
+    private fun onAddToCartUseCaseSuccess(
+        addToCartDataModel: AddToCartDataModel?,
+        productItemDataView: ProductItemDataView,
+    ) {
+        view.updateSearchBarNotification()
+
+        val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
+        view.openAddToCartToaster(message, true)
+
+        trackProductClick(productItemDataView)
+        view.sendGTMTrackingProductATC(productItemDataView, addToCartDataModel?.data?.cartId)
+    }
+
+    private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
+        val message = throwable?.message ?: ""
+        view.openAddToCartToaster(message, false)
     }
 
     override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {
@@ -2168,6 +2199,7 @@ class ProductListPresenter @Inject constructor(
         getLocalSearchRecommendationUseCase.get()?.unsubscribe()
         getInspirationCarouselChipsUseCase.get()?.unsubscribe()
         saveLastFilterUseCase.get()?.unsubscribe()
+        onSafeSearchViewDestroyed()
         if (compositeSubscription?.isUnsubscribed == true) unsubscribeCompositeSubscription()
     }
 

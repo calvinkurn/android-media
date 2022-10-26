@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.registerinitial.tracker
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents.intending
@@ -53,8 +52,7 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
 
     private fun checkRegisterGoogle() {
         intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, Intent()))
-        Thread.sleep(1000)
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         onView(ViewMatchers.withId(R.id.socmed_btn))
             .perform(click())

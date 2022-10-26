@@ -26,32 +26,28 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
         private const val DEFAULT_USER_ID = "0"
     }
 
-    @Suppress("LateinitUsage")
-    override lateinit var productAddedToCart: InspirationCarouselDataView.Option.Product
-        private set
-
     override fun onListAtcItemAddToCart(
         product: InspirationCarouselDataView.Option.Product,
         type: String,
     ) {
-        productAddedToCart = product
-
         if (product.shouldOpenVariantBottomSheet()) {
             inspirationListAtcView.trackAddToCartVariant(product)
 
             inspirationListAtcView.openVariantBottomSheet(product, type)
         } else {
-            executeAtcCommon(::onAddToCartUseCaseSuccess, ::onAddToCartUseCaseFailed, product)
+            executeAtcCommon(product)
         }
     }
 
-    private fun onAddToCartUseCaseSuccess(addToCartDataModel: AddToCartDataModel?) {
+    private fun onAddToCartUseCaseSuccess(
+        addToCartDataModel: AddToCartDataModel?,
+        product: InspirationCarouselDataView.Option.Product,
+    ) {
         inspirationListAtcView.updateSearchBarNotification()
 
         val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
         inspirationListAtcView.openAddToCartToaster(message, true)
 
-        val product = productAddedToCart
         val cartId = addToCartDataModel?.data?.cartId ?: ""
         val quantity = addToCartDataModel?.data?.quantity ?: 0
 
@@ -72,16 +68,16 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
     }
 
     private fun executeAtcCommon(
-        onAddToCartUseCaseSuccess: (addToCartDataModel: AddToCartDataModel?) -> Unit,
-        onAddToCartUseCaseFailed: (Throwable) -> Unit,
         product: InspirationCarouselDataView.Option.Product,
     ) {
         val requestParams = product.createAddToCartRequestParams()
 
         addToCartUseCase.setParams(requestParams)
-        addToCartUseCase.execute(onAddToCartUseCaseSuccess, onAddToCartUseCaseFailed)
+        addToCartUseCase.execute(
+            { onAddToCartUseCaseSuccess(it, product) },
+            ::onAddToCartUseCaseFailed
+        )
     }
-
 
     private fun InspirationCarouselDataView.Option.Product.createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
