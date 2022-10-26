@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.common.feature.variant.data.mapper
 
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ShopParam

@@ -47,7 +47,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
             createProductVariant(name = "Hijau | S", combination = listOf(1, 0))
         )
-        val expectedResult = GetVariantResult(productName,Int.ZERO, productVariants, selections, emptyList())
+        val expectedResult = GetVariantResult(productName, Int.ZERO, productVariants, selections, emptyList())
 
         viewModel.getProductVariantsResult
             .verifyValueEquals(expectedResult)

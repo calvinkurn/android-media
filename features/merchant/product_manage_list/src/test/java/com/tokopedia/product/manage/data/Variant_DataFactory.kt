@@ -11,7 +11,6 @@ import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
 import com.tokopedia.product.manage.common.feature.variant.data.model.Variant
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 fun createProductVariantResponse(

@@ -119,7 +119,7 @@ class TableMapper @Inject constructor(
                                 meta = getTableRowMeta(col.meta),
                                 isLeftAlign = firstTextColumn == col,
                                 getColorFromHtml(col.value)
-                            ) //it's COLUMN_HTML WITH ICON
+                            ) // it's COLUMN_HTML WITH ICON
                     }
                     rows.add(rowColumn)
                 }
