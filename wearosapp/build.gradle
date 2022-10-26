@@ -39,10 +39,6 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
     }
-    project.ext {
-        defaultVersionCode = 000000001;
-        defaultVersionName = "0.1";
-    }
     compileSdkVersion 32
     useLibrary 'org.apache.http.legacy'
     lintOptions {
