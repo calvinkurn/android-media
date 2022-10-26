@@ -350,11 +350,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun saveState(outState: Bundle) {
         outState.putParcelable(KEY_CONFIG, _configInfo.value)
         outState.putBoolean(KEY_IS_LIVE_STREAM_ENDED, isLiveStreamEnded)
+        outState.putParcelable(KEY_AUTHOR, hydraConfigStore.getAuthor())
     }
 
     fun restoreState(savedInstanceState: Bundle) {
         _configInfo.value = savedInstanceState.getParcelable(KEY_CONFIG)
         isLiveStreamEnded = savedInstanceState.getBoolean(KEY_IS_LIVE_STREAM_ENDED)
+        hydraConfigStore.setAuthor(savedInstanceState.getParcelable(KEY_AUTHOR) ?: ContentAccountUiModel.Empty)
     }
 
     fun setIsLiveStreamEnded() {
@@ -1688,6 +1690,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val KEY_TITLE = "title"
         private const val KEY_CONFIG = "config_ui_model"
         private const val KEY_IS_LIVE_STREAM_ENDED = "key_is_live_stream_ended"
+        private const val KEY_AUTHOR = "key_author"
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
