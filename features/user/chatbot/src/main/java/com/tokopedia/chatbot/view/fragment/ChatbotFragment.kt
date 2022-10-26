@@ -171,8 +171,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 /**
@@ -1702,11 +1700,6 @@ class ChatbotFragment :
         }
     }
 
-    override fun replyBubbleStateHandler(state: Boolean) {
-        replyBubbleEnabled = state
-        checkReplyBubbleOnboardingStatus()
-    }
-
     var hasBeenShown = false
     private fun checkReplyBubbleOnboardingStatus() {
         //        hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
@@ -1779,16 +1772,16 @@ class ChatbotFragment :
 //                )
 //            }
 //        }
-        recyclerView?.let {
-            if (!hasBeenShown) {
-                replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                    it,
-                    chatbotAdapter,
-                    getBindingView().composeArea.replyBox,
-                    context
-                )
-            }
-        }
+//        recyclerView?.let {
+//            if (!hasBeenShown) {
+//                replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+//                    it,
+//                    chatbotAdapter,
+//                    getBindingView().composeArea.replyBox,
+//                    context
+//                )
+//            }
+//        }
     }
 
     override fun visibilityReplyBubble(state: Boolean) {
@@ -1822,11 +1815,6 @@ class ChatbotFragment :
             override fun loadMoreDown() {
                 showBottomLoading()
                 presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
-            }
-
-            override fun onScrolled() {
-                replyBubbleOnBoarding.dismiss()
-                videoUploadOnBoarding.dismiss()
             }
 
         }.also {
@@ -2037,8 +2025,8 @@ class ChatbotFragment :
     override fun sessionChangeStateHandler(state: Boolean) {
         isConnectedToAgent = state
         replyBubbleEnabled = state
-//        checkReplyBubbleOnboardingStatus()
-//        checkVideoUploadOnboardingStatus()
+        checkReplyBubbleOnboardingStatus()
+        checkVideoUploadOnboardingStatus()
         createAttachmentMenus()
     }
 

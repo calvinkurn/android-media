@@ -21,11 +21,7 @@ abstract class RecyclerViewScrollListener(
 
     abstract fun loadMoreDown()
 
-    abstract fun onScrolled()
-
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-
-        onScrolled()
         val totalItem = layoutManager?.itemCount ?: return
 
         val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
