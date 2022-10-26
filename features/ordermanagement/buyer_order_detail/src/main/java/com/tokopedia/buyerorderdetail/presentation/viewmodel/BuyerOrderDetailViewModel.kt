@@ -39,6 +39,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.PaymentInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.usecase.coroutines.Fail
@@ -87,7 +88,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     val multiAtcResult: LiveData<MultiATCState>
         get() = _multiAtcResult
 
-    private val buyerOrderDetailDataRequestParams = MutableSharedFlow<GetBuyerOrderDetailDataParams>()
+    private val buyerOrderDetailDataRequestParams = MutableSharedFlow<GetBuyerOrderDetailDataParams>(replay = Int.ONE)
     private val buyerOrderDetailDataRequestState = buyerOrderDetailDataRequestParams.flatMapLatest(
         ::doGetBuyerOrderDetailData
     ).toShareFlow()
@@ -285,7 +286,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private fun <T> Flow<T>.toShareFlow() = shareIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
-        replay = 1
+        replay = Int.ONE
     )
 
     private suspend fun doGetBuyerOrderDetailData(params: GetBuyerOrderDetailDataParams): Flow<GetBuyerOrderDetailDataRequestState> {
