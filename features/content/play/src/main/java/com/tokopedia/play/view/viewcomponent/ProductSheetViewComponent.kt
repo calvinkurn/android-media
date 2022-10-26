@@ -365,12 +365,12 @@ class ProductSheetViewComponent(
     }
 
     private fun getVisibleProducts(): List<ProductSheetAdapter.Item.Product> {
-        val products = productAdapter.getItems()
+        val products = productAdapter.getItems().filterIsInstance<ProductSheetAdapter.Item.Product>()
         if (products.isNotEmpty()) {
             val startPosition = linearLayoutManager.findFirstVisibleItemPosition()
             val endPosition = linearLayoutManager.findLastVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) {
-                return (startPosition..endPosition).filterIsInstance<ProductSheetAdapter.Item.Product>()
+                return (startPosition..endPosition).flatMap { products }
             }
         }
         return emptyList()
