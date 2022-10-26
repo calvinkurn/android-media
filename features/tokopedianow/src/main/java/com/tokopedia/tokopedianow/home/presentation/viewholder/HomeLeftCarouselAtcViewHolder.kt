@@ -41,6 +41,7 @@ class HomeLeftCarouselAtcViewHolder(
         private const val FIRST_VISIBLE_ITEM_POSITION = 0
         private const val NO_SCROLLED = 0
         private const val IMAGE_PARALLAX_ALPHA = 0.80f
+        private const val EXPECTED_IMAGE_PARALLAX_POSITION = 0.067f
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_atc
@@ -169,8 +170,7 @@ class HomeLeftCarouselAtcViewHolder(
             if (layoutManager.findFirstVisibleItemPosition() == FIRST_VISIBLE_ITEM_POSITION && dx != NO_SCROLLED) {
                 layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())?.apply {
                     val distanceLeftFirstItem = left
-                    val expectedPosition = 0.067f
-                    val translateX = distanceLeftFirstItem * expectedPosition
+                    val translateX = distanceLeftFirstItem * EXPECTED_IMAGE_PARALLAX_POSITION
                     parallaxImageView.translationX = translateX
 
                     val itemSize = width.toFloat()
@@ -206,8 +206,8 @@ class HomeLeftCarouselAtcViewHolder(
                     adapterPosition = layoutPosition
                 )
                 rvProduct.layoutManager?.onRestoreInstanceState(scrollState)
-
-                parallaxImageView.translationX = getParallaxState()[IMAGE_TRANSLATION_X].orZero()
+                parallaxImageView.translationX = tokoNowView.getParallaxState()[IMAGE_TRANSLATION_X]
+                    ?: (rvProduct.paddingStart.toFloat() * EXPECTED_IMAGE_PARALLAX_POSITION)
                 parallaxImageView.alpha = tokoNowView.getParallaxState()[IMAGE_ALPHA] ?: 1f
             }
         }
