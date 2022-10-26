@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
@@ -53,6 +54,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
     private val setChannelTagsUseCase: SetChannelTagsUseCase,
     private val getChannelUseCase: GetChannelUseCase,
+    private val hydraConfigStore: HydraConfigStore,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -274,7 +276,10 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                         )
                     )
                 }
-                addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
+                addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(
+                    hydraConfigStore.getAuthorType(),
+                    reportChannelSummary.channel.metrics
+                ))
             }.toList()
 
             _trafficMetric.value = NetworkResult.Success(metrics)

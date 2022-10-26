@@ -97,16 +97,27 @@ class PlayBroadcastUiMapper @Inject constructor(
 
         )
 
-    override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> =
-        mutableListOf(
-            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
-            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
-            TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
-            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
-        )
+    override fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel> =
+        if (authorType == TYPE_SHOP) {
+            mutableListOf(
+                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
+                TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
+                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
+            )
+        } else {
+            mutableListOf(
+                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
+                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
+            )
+        }
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
         totalView.totalViewFmt
