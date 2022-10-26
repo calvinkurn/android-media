@@ -20,7 +20,7 @@ class NotifyMeBuyerInformationBottomSheet : BottomSheetUnify() {
 
     companion object {
         private val TAG: String = NotifyMeBuyerInformationBottomSheet::class.java.simpleName
-        private val KEY_WORDING_NOTIFY_ME = "wordingNotifyMe"
+        private const val KEY_WORDING_NOTIFY_ME = "wordingNotifyMe"
 
         fun createInstance(wordingNotifyMe: String): NotifyMeBuyerInformationBottomSheet {
             return NotifyMeBuyerInformationBottomSheet().apply {

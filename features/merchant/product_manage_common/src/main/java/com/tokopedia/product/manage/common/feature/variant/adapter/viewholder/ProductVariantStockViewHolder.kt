@@ -254,7 +254,7 @@ class ProductVariantStockViewHolder(
         return object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val input = s?.toString().orEmpty()
-                var stock: Int
+                val stock: Int
                 if (input.isNotEmpty()) {
                     stock = binding?.quantityEditorStock?.getValue().orZero()
                     toggleQuantityEditorBtn(stock, variant.maxStock)

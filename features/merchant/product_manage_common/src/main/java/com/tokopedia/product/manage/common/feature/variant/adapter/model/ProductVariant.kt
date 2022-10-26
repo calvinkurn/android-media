@@ -26,10 +26,10 @@ data class ProductVariant(
     val stockAlertStatus: Int,
     val stockAlertCount: Int,
     val isBelowStockAlert: Boolean
-): Visitable<ProductVariantAdapterFactory> {
+) : Visitable<ProductVariantAdapterFactory> {
 
     companion object {
-        private val HAVE_STOCK_ALERT = 2
+        private const val HAVE_STOCK_ALERT = 2
     }
 
     override fun type(typeFactory: ProductVariantAdapterFactory): Int {
