@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderStatusCode
+import com.tokopedia.buyerorderdetail.common.extension.combine
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
@@ -52,10 +53,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -89,7 +90,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
         get() = _multiAtcResult
 
     private val buyerOrderDetailDataRequestParams = MutableSharedFlow<GetBuyerOrderDetailDataParams>()
-    private val buyerOrderDetailDataRequestState = MutableSharedFlow<GetBuyerOrderDetailDataRequestState>()
+    private val buyerOrderDetailDataRequestState = buyerOrderDetailDataRequestParams.flatMapLatest(
+        ::doGetBuyerOrderDetailData
+    ).toShareFlow()
     private val singleAtcRequestStates = MutableStateFlow<Map<String, AddToCartSingleRequestState>>(mapOf())
     private val actionButtonsUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapActionButtonsUiState
@@ -117,25 +120,16 @@ class BuyerOrderDetailViewModel @Inject constructor(
     ).toStateFlow(OrderInsuranceUiState.Loading)
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
-        actionButtonsUiState, orderStatusUiState, paymentInfoUiState, productListUiState,
-        shipmentInfoUiState, pGRecommendationWidgetUiState, orderResolutionTicketStatusUiState,
-        orderInsuranceUiState
-    ) { flows ->
-        mapBuyerOrderDetailUiState(
-            flows[0] as ActionButtonsUiState, // please make sure that flow[1] is ActionButtonsUiState after editing the flow source
-            flows[1] as OrderStatusUiState, // please make sure that flow[1] is OrderStatusUiState after editing the flow source
-            flows[2] as PaymentInfoUiState, // please make sure that flow[1] is PaymentInfoUiState after editing the flow source
-            flows[3] as ProductListUiState, // please make sure that flow[1] is ProductListUiState after editing the flow source
-            flows[4] as ShipmentInfoUiState, // please make sure that flow[1] is ShipmentInfoUiState after editing the flow source
-            flows[5] as PGRecommendationWidgetUiState, // please make sure that flow[1] is PGRecommendationWidgetUiState after editing the flow source
-            flows[6] as OrderResolutionTicketStatusUiState, // please make sure that flow[1] is OrderResolutionTicketStatusUiState after editing the flow source
-            flows[7] as OrderInsuranceUiState, // please make sure that flow[1] is OrderInsuranceUiState after editing the flow source
-        )
-    }.toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
-
-    init {
-        observeGetBuyerOrderDetailDataParams()
-    }
+        actionButtonsUiState,
+        orderStatusUiState,
+        paymentInfoUiState,
+        productListUiState,
+        shipmentInfoUiState,
+        pGRecommendationWidgetUiState,
+        orderResolutionTicketStatusUiState,
+        orderInsuranceUiState,
+        ::mapBuyerOrderDetailUiState
+    ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 
     fun getBuyerOrderDetailData(
         orderId: String,
@@ -292,14 +286,14 @@ class BuyerOrderDetailViewModel @Inject constructor(
         initialValue = initialValue
     )
 
-    private fun observeGetBuyerOrderDetailDataParams() {
-        viewModelScope.launch {
-            buyerOrderDetailDataRequestParams.collectLatest(::doGetBuyerOrderDetailData)
-        }
-    }
+    private fun <T> Flow<T>.toShareFlow() = shareIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
+        replay = 1
+    )
 
-    private suspend fun doGetBuyerOrderDetailData(params: GetBuyerOrderDetailDataParams) {
-        buyerOrderDetailDataRequestState.emitAll(getBuyerOrderDetailDataUseCase.get()(params))
+    private suspend fun doGetBuyerOrderDetailData(params: GetBuyerOrderDetailDataParams): Flow<GetBuyerOrderDetailDataRequestState> {
+        return getBuyerOrderDetailDataUseCase.get().invoke(params)
     }
 
     private fun mapActionButtonsUiState(
