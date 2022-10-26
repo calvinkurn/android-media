@@ -41,9 +41,9 @@ object RollenceKey {
     const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
     const val WISHLIST_COLLECTION = "WL_collection_andro"
 
-    // Video Carousel Widget
-    const val SEARCH_VIDEO_WIDGET = "VideoWidget"
-    const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
+    // SRP Video Sneak Peek Autoplay
+    const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
+    const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT = "experiment_variant"
 
     // Typo Correction
     const val SEARCH_TYPO_CORRECTION_ADS = "typo_correction_ads2"
@@ -67,6 +67,9 @@ object RollenceKey {
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
+
+    //Play
+    const val SWIPE_LIVE_ROOM = "play_sc"
 
     object PdpToolbar {
         const val key = "pdp_dyn_container"
