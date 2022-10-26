@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.databinding.ItemGlobalBundlingBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -31,8 +32,12 @@ class GlobalBundlingViewHolder(
         if (!element.shouldRefresh) return
 
         setupBundleWidgetListener(element)
+        initBundlingWidget(element.data)
 
-        val data = element.data
+        element.shouldRefresh = false
+    }
+
+    private fun initBundlingWidget(data: GlobalBundling) {
 
         val widgetType = if (data.widgetType == -1) {
             GlobalBundlingDataModel.DEFAULT_WIDGET_TYPE
@@ -49,8 +54,6 @@ class GlobalBundlingViewHolder(
             setTitleText(data.title)
             getBundleData(param)
         }
-
-        element.shouldRefresh = false
     }
 
     private fun setupBundleWidgetListener(element: GlobalBundlingDataModel) {
@@ -86,11 +89,10 @@ class GlobalBundlingViewHolder(
                 selectedBundle: BundleDetailUiModel,
                 productDetails: List<BundleProductUiModel>
             ) {
-                listener.onClickCheckBundling(
+                listener.onClickActionButtonBundling(
                     selectedBundle.bundleId,
                     BUNDLE_TYPE_MULTIPLE,
-                    componentTrackDataModel,
-                    false
+                    componentTrackDataModel
                 )
             }
 
@@ -98,11 +100,10 @@ class GlobalBundlingViewHolder(
                 selectedBundle: BundleDetailUiModel,
                 bundleProducts: BundleProductUiModel
             ) {
-                listener.onClickCheckBundling(
+                listener.onClickActionButtonBundling(
                     selectedBundle.bundleId,
                     BUNDLE_TYPE_SINGLE,
-                    componentTrackDataModel,
-                    false
+                    componentTrackDataModel
                 )
             }
 

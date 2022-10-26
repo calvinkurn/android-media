@@ -383,8 +383,13 @@ interface DynamicProductDetailListener {
     fun onClickCheckBundling(
         bundleId: String,
         bundleType: String,
-        componentTrackDataModel: ComponentTrackDataModel,
-        openBundling: Boolean = true
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onClickActionButtonBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
     )
 
     fun onClickProductInBundling(
