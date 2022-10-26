@@ -13,7 +13,18 @@ data class ProductButtonUiModel(
     val text: String,
     val color: ProductButtonColor,
     val type: ProductButtonType,
-)
+) {
+    companion object {
+        val Default: ProductButtonUiModel
+            get() = ProductButtonUiModel(
+                text = "Beli",
+                color = ProductButtonColor.PRIMARY_BUTTON,
+                type = ProductButtonType.GCR,
+            )
+    }
+}
+
+fun ProductButtonUiModel?.orDefault() = ProductButtonUiModel.Default
 
 enum class ProductButtonColor(val value: String) {
     PRIMARY_BUTTON("primary"),

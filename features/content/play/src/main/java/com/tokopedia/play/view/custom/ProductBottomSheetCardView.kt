@@ -86,34 +86,15 @@ class ProductBottomSheetCardView(
 
         when (item.stock) {
             OutOfStock -> {
-                binding.btnProductAtc.show()
-                binding.btnProductBuy.show()
-                binding.btnProductAtc.setDrawable(
-                    getIconUnifyDrawable(context, IconUnify.ADD, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
-                )
-                binding.btnProductBuy.isEnabled = false
-                binding.btnProductAtc.isEnabled = false
-
                 binding.shadowOutOfStock.show()
                 binding.labelOutOfStock.show()
             }
 
             is StockAvailable -> {
-                binding.btnProductAtc.show()
-                binding.btnProductBuy.show()
-                binding.btnProductBuy.isEnabled = true
-                binding.btnProductAtc.isEnabled = true
-                binding.btnProductAtc.setDrawable(
-                    getIconUnifyDrawable(context, IconUnify.ADD, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                )
-
                 binding.shadowOutOfStock.hide()
                 binding.labelOutOfStock.hide()
             }
             is ComingSoon ->{
-                binding.btnProductAtc.hide()
-                binding.btnProductBuy.hide()
-
                 binding.shadowOutOfStock.hide()
                 binding.labelOutOfStock.hide()
             }
@@ -128,6 +109,12 @@ class ProductBottomSheetCardView(
         setOnClickListener {
             if (!item.applink.isNullOrEmpty()) mListener?.onClicked(this, item, section)
         }
+
+        //Buttons
+        binding.btnProductAtc.showWithCondition(item.buttonUiModels.isNotEmpty())
+        binding.btnProductBuy.showWithCondition(item.buttonUiModels.isNotEmpty())
+        binding.btnProductBuy.generateButton(item.buttonUiModels.firstOrNull().orDefault())
+        binding.btnProductAtc.generateButton(item.buttonUiModels.lastOrNull().orDefault())
     }
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
