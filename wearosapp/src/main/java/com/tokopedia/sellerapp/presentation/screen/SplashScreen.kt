@@ -1,3 +1,4 @@
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -39,7 +40,9 @@ fun SplashScreen(
     var startAnimation by remember { mutableStateOf(false) }
     val ifPhoneHasApp = sharedViewModel.ifPhoneHasApp.collectAsState()
 
-    sharedViewModel.checkIfPhoneHasApp()
+    if (Build.VERSION.SDK_INT <= 25) {
+        sharedViewModel.checkIfPhoneHasApp()
+    }
 
     val offState by animateDpAsState(
         targetValue = if (startAnimation) DP_0 else DP_100,

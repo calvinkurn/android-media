@@ -28,7 +28,7 @@ def getTkpdVersionName() {
 }
 
 def getTkpdVersionCode() {
-    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : 1422128000;
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : 1422128001;
 }
 
 kapt {
@@ -69,7 +69,7 @@ android {
         }
     }
     defaultConfig {
-        minSdkVersion 25
+        minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.sellerapp"
