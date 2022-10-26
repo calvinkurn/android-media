@@ -1,8 +1,9 @@
 package com.tokopedia.chatbot.view.activity
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -30,22 +31,21 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     private var _viewBinding: ActivityChatbotOnboardingBinding? = null
     private fun getBindingView() = _viewBinding!!
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _viewBinding = ActivityChatbotOnboardingBinding.inflate(layoutInflater)
         setContentView(_viewBinding!!.root)
-        Log.d("ChatbotOnBoarding", "onCreate: called ")
         initInjector()
         setUpListeners()
         checkVideoUploadOnboardingStatus()
         val ratioY = calculateRatiosForGuideline()
         setUpReplyBubbleGuideline(ratioY)
         checkReplyBubbleOnboardingStatus()
+        window.statusBarColor = Color.TRANSPARENT
     }
 
     /**
-     * Getting the x and y coordinates for ChatbotFragment , calculate the ratioY and align the
+     * Getting the x and y coordinates from ChatbotFragment , calculate the ratioY and align the
      * guideline accordingly. The guideline will change the position of the reply_bubble_holder view
      * which is used to show the pointer on the coachmark
      * */
@@ -54,18 +54,15 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val height = displayMetrics.heightPixels
         val width = displayMetrics.widthPixels
-        Log.d("EREN", "height : $height width : $width")
-        val givenX = intent.getIntExtra(X_COORDINATE, 0)
-        val givenY = intent.getIntExtra(Y_COORDINATE, 0)
-        Log.d("EREN", "onCreate: givenX: $givenX givenY: $givenY")
+        val givenX = intent.getIntExtra(X_COORDINATE, DIMEN_DEFAULT)
+        val givenY = intent.getIntExtra(Y_COORDINATE, DIMEN_DEFAULT)
         val ratioX: Float = (givenX.toFloat() / width.toFloat())
         val ratioY: Float = (givenY.toFloat() / height.toFloat())
-        Log.d("EREN", "onCreate: ratioX: $ratioX ratioY: $ratioY")
         return ratioY
     }
 
     private fun setUpReplyBubbleGuideline(ratioY: Float) {
-        if (ratioY == 0F)
+        if (ratioY == ZERO_RATIO)
             return
         val params = getBindingView().guidelineReplyBubble.layoutParams as ConstraintLayout.LayoutParams
         params.guidePercent = ratioY
@@ -80,7 +77,7 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     private fun checkVideoUploadOnboardingStatus() {
         val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
         videoBubbleOnBoardingDismissed = hasBeenShown
-        if (!false) {
+        if (!hasBeenShown) {
             videoUploadOnBoarding.showVideoBubbleOnBoarding(
                 getBindingView().containerView,
                 this
@@ -91,9 +88,9 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     private fun checkReplyBubbleOnboardingStatus() {
         val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
         replyBubbleOnboardingDismissed = hasBeenShown
-        if (!false) {
+        if (!hasBeenShown) {
             replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                getBindingView()?.replyBubbleHolder,
+                getBindingView().replyBubbleHolder,
                 this
             )
         }
@@ -109,10 +106,10 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         chatbotComponent.inject(this)
     }
 
-    override fun getNewFragment(): Fragment? = null
-
     private fun checkToCloseOnboardingActivity() {
         if (replyBubbleOnboardingDismissed && videoBubbleOnBoardingDismissed) {
+            val intent = Intent(this, ChatbotActivity::class.java)
+            startActivity(intent)
             finish()
         }
     }
@@ -133,6 +130,10 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
      * */
     override fun onBackPressed() = Unit
 
+    override fun getNewFragment(): Fragment? {
+        return null
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _viewBinding = null
@@ -141,5 +142,7 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     companion object {
         private const val X_COORDINATE = "x-coordinate"
         private const val Y_COORDINATE = "y-coordinate"
+        private const val ZERO_RATIO = 0F
+        private const val DIMEN_DEFAULT = 0
     }
 }

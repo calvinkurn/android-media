@@ -642,20 +642,17 @@ class ChatbotFragment :
     }
 
     private fun goToOnboardingActivity() {
-
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
         val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
 
-//        if(hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
-//            return
-//        }
-        if (true || true) {
-
-            val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
-            intent.putExtra(X_COORDINATE, xForReplyBubbleOnboarding)
-            intent.putExtra(Y_COORDINATE, yForReplyBubbleOnboarding)
-            startActivity(intent)
+        if (hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
+            return
         }
+
+        val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
+        intent.putExtra(X_COORDINATE, xForReplyBubbleOnboarding)
+        intent.putExtra(Y_COORDINATE, yForReplyBubbleOnboarding)
+        startActivity(intent)
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
