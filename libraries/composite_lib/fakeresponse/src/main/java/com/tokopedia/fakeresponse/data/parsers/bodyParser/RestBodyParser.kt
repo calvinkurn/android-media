@@ -11,7 +11,7 @@ class RestBodyParser(restDao: RestDao) : BodyParser {
     val useCase = GetResultFromRestDaoUseCase(repository)
 
     fun getFakeResponse(httpUrl: HttpUrl, method: String): String? {
-        val fullUrl = httpUrl.uri().toString()
+        val fullUrl = httpUrl.toUri().toString()
         val fakeResponse = getFakeResponseFromDb(fullUrl, method)
         return fakeResponse
     }

@@ -66,7 +66,7 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
     private var selectedDiscountType = DiscountType.NONE
     private var selectedMinimumPurchaseType = MinimumPurchaseType.NOMINAL
     private var onCouponSaved: (CouponSettings) -> Unit = {}
-    private lateinit var numberFormatter: DecimalFormat
+    private var numberFormatter: DecimalFormat? = null
     private var couponSettings: CouponSettings? = null
 
     @Inject
@@ -207,12 +207,12 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
 
     private fun setupTextAreaListener() {
         numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
-        numberFormatter.applyPattern(DECIMAL_FORMAT_PATTERN)
+        numberFormatter?.applyPattern(DECIMAL_FORMAT_PATTERN)
         setupTextAreaCashbackListener(numberFormatter)
         setupTextAreaFreeShippingListener(numberFormatter)
     }
 
-    private fun setupTextAreaFreeShippingListener(numberFormatter: DecimalFormat) {
+    private fun setupTextAreaFreeShippingListener(numberFormatter: DecimalFormat?) {
         with(binding) {
 
             textAreaDiscountAmount.textAreaInput.addTextChangedListener(
@@ -309,7 +309,7 @@ class CouponSettingFragment private constructor(): BaseDaggerFragment() {
         }
     }
 
-    private fun setupTextAreaCashbackListener(numberFormatter: DecimalFormat) {
+    private fun setupTextAreaCashbackListener(numberFormatter: DecimalFormat?) {
         with(binding) {
             textAreaFreeShippingDiscountAmount.textAreaInput.addTextChangedListener(
                 NumberThousandSeparatorTextWatcher(

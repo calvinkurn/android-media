@@ -1,7 +1,6 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.CacheType;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestCacheStrategy;

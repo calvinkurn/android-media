@@ -9,6 +9,7 @@ import android.widget.RadioGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
@@ -102,14 +103,14 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
             it.addTextChangedListener(object : NumberTextWatcher(it, "0") {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    currentBudget = abs(number.toInt()).toString().removeCommaRawString().toInt()
+                    currentBudget = abs(number.toInt()).toString().removeCommaRawString().toIntOrZero()
                     val result = number.toInt()
                     dailyBudget?.textFieldInput?.setText((Constants.MULTIPLIER * result).toString())
                     when {
                         minBid == "0" || maxBid == "0" -> {
                             return
                         }
-                        result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
+                        result % (Constants.MULTIPLY_CONST.toIntOrZero()) != 0 -> {
                             validation2 = false
                             setMessageErrorField(getString(com.tokopedia.topads.common.R.string.topads_common_50_multiply_error),
                                 Constants.MULTIPLY_CONST, true)
