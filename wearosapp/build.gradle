@@ -24,11 +24,11 @@ buildscript {
 }
 
 def getTkpdVersionName() {
-    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+    return project.hasProperty('versionName') ? versionName : "2.128";
 }
 
 def getTkpdVersionCode() {
-    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : 1422128002;
 }
 
 kapt {
@@ -38,6 +38,10 @@ kapt {
 android {
     packagingOptions {
         exclude 'META-INF/**'
+    }
+    project.ext {
+        defaultVersionCode = 000000001;
+        defaultVersionName = "0.1";
     }
     compileSdkVersion 32
     useLibrary 'org.apache.http.legacy'
@@ -65,10 +69,10 @@ android {
         }
     }
     defaultConfig {
-        minSdkVersion 25
+        minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        applicationId "com.tokopedia.tkpd"
+        applicationId "com.tokopedia.sellerapp"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true

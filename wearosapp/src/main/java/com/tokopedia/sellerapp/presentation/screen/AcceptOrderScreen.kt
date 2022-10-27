@@ -42,7 +42,7 @@ fun AcceptOrderScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = painterResource(id = com.tokopedia.tkpd.R.drawable.ic_check_success_accept_order),
+                        painter = painterResource(id = com.tokopedia.sellerapp.R.drawable.ic_check_success_accept_order),
                         contentDescription = "ImageCheckAcceptOrder",
                         modifier = Modifier
                             .width(36.dp)

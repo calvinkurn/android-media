@@ -112,7 +112,7 @@ fun createItemMoreOrder(
         val totalOrderLeft = orderLeft
         UnifyTypographyCompose(
             text = stringResource(
-                id = com.tokopedia.tkpd.R.string.order_list_order_left_format,
+                id = com.tokopedia.sellerapp.R.string.order_list_order_left_format,
                 totalOrderLeft.toString()
             ),
             typographyConfig = { typography, context ->
@@ -142,7 +142,7 @@ fun createItemOpenOnPhone(scalingLazyListScope: ScalingLazyListScope) {
                 horizontalArrangement = Arrangement.Center,
             ) {
                 UnifyTypographyCompose(
-                    text = stringResource(id = com.tokopedia.tkpd.R.string.order_list_text_open_on_phone),
+                    text = stringResource(id = com.tokopedia.sellerapp.R.string.order_list_text_open_on_phone),
                     typographyConfig = { typography, context ->
                         typography.setTextColor(context.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
                         typography.setType(Typography.DISPLAY_2)
@@ -178,7 +178,7 @@ fun createItemButtonAcceptAllOrder(
                 horizontalArrangement = Arrangement.Center
             ) {
                 UnifyTypographyCompose(
-                    text = stringResource(id = com.tokopedia.tkpd.R.string.order_list_text_accept_all_order),
+                    text = stringResource(id = com.tokopedia.sellerapp.R.string.order_list_text_accept_all_order),
                     typographyConfig = { typography, context ->
                         typography.setTextColor(context.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
                         typography.setType(Typography.DISPLAY_2)
@@ -205,7 +205,7 @@ private fun redirectToAcceptOrderScreen(
 fun createItemActionText(scalingLazyListScope: ScalingLazyListScope) {
     scalingLazyListScope.item {
         UnifyTypographyCompose(
-            text = stringResource(id = com.tokopedia.tkpd.R.string.order_list_footer_title),
+            text = stringResource(id = com.tokopedia.sellerapp.R.string.order_list_footer_title),
             typographyConfig = { typography, _ ->
                 typography.setTextColor(TextGrayColor.toArgb())
                 typography.setType(Typography.DISPLAY_2)
@@ -224,7 +224,7 @@ private fun createItemTotalNewOrder(
     scalingLazyListScope.item {
         UnifyTypographyCompose(
             text = stringResource(
-                com.tokopedia.tkpd.R.string.order_list_text_title,
+                com.tokopedia.sellerapp.R.string.order_list_text_title,
                 title,
                 orderCount
             ),
@@ -239,9 +239,9 @@ private fun createItemTotalNewOrder(
 
 private fun getDueDateStringRes(orderType: String): Int {
     return if (orderType == DATAKEY_NEW_ORDER) {
-        com.tokopedia.tkpd.R.string.new_order_list_text_due_response
+        com.tokopedia.sellerapp.R.string.new_order_list_text_due_response
     } else {
-        com.tokopedia.tkpd.R.string.ready_to_shop_order_list_text_due_response
+        com.tokopedia.sellerapp.R.string.ready_to_shop_order_list_text_due_response
     }
 }
 
@@ -292,7 +292,7 @@ fun createItemsNewOrderList(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         val painter =
-                            painterResource(id = com.tokopedia.tkpd.R.drawable.ic_order_list_due_date)
+                            painterResource(id = com.tokopedia.sellerapp.R.drawable.ic_order_list_due_date)
                         Icon(
                             modifier = Modifier.size(13.dp),
                             painter = painter,

@@ -307,3 +307,12 @@ data class Header(
 	@SerializedName("process_time")
 	val processTime: Double? = null
 )
+
+data class CouponItem(
+    var coupon: VouchersItem,
+    var layout: LayoutType = LayoutType.SHOW_CARD
+)
+
+enum class LayoutType{
+    SHOW_CARD, LOADER
+}

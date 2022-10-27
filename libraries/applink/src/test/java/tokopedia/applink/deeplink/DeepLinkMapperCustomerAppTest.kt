@@ -34,7 +34,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 204
+        const val SIZE_MAPPER = 205
     }
 
     override fun setup() {
@@ -1408,7 +1408,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check notification troubleshooter appLink then should return tokopedia internal notification troubleshooter in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/push-notification-troubleshooter"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/push-notification-troubleshooter"
         assertEqualsDeepLinkMapper(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, expectedDeepLink)
     }
 
@@ -2315,7 +2315,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check TELEPHONY_MASKING customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/telephony-masking"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/telephony-masking"
         assertEqualsDeepLinkMapper(ApplinkConst.TELEPHONY_MASKING + "/abc/def", expectedDeepLink)
     }
 

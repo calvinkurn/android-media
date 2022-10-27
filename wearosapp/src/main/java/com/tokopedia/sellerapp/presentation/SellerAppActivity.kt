@@ -28,7 +28,7 @@ import com.tokopedia.sellerapp.presentation.screen.getMessageBasedOnState
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MessageConstant
-import com.tokopedia.tkpd.R
+import com.tokopedia.sellerapp.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

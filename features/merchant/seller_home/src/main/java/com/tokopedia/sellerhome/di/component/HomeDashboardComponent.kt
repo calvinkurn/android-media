@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.di.module.SellerHomeUseCaseModule
 import com.tokopedia.sellerhome.di.module.SellerHomeViewModelModule
+import com.tokopedia.sellerhome.di.module.SellerHomeWearModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
@@ -18,7 +19,8 @@ import dagger.Component
     modules = [
         SellerHomeModule::class,
         SellerHomeUseCaseModule::class,
-        SellerHomeViewModelModule::class
+        SellerHomeViewModelModule::class,
+        SellerHomeWearModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

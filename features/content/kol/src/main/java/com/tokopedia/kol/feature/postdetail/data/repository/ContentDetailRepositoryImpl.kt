@@ -3,8 +3,11 @@ package com.tokopedia.kol.feature.postdetail.data.repository
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
+import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
@@ -41,6 +44,8 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val submitReportContentUseCase: SubmitReportContentUseCase,
     private val trackVisitChannelUseCase: FeedBroadcastTrackerUseCase,
     private val trackViewerUseCase: FeedXTrackViewerUseCase,
+    private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
+    private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
     private val mapper: ContentDetailMapper,
 ) : ContentDetailRepository {
 
@@ -185,5 +190,22 @@ class ContentDetailRepositoryImpl @Inject constructor(
             trackViewerUseCase.executeOnBackground()
             mapper.mapVisitChannel(rowNumber)
         }
+    }
+
+    override suspend fun checkUpcomingCampaign(campaignId: Long): Boolean {
+        return withContext(dispatcher.io) {
+            val response = checkUpcomingCampaignReminderUseCase.apply {
+                setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId))
+            }.executeOnBackground()
+            return@withContext response.response.isAvailable
+        }
+    }
+
+    override suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: FeedASGCUpcomingReminderStatus): Pair<Boolean, String> {
+        return withContext(dispatcher.io) {
+            val response = postUpcomingCampaignReminderUseCase.apply {
+                setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
+            }.executeOnBackground()
+            return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message) }
     }
 }

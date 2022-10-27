@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.tkpd">
+    package="com.tokopedia.sellerapp">
 
-    <uses-sdk tools:overrideLibrary="com.tokopedia.core" />
+    <uses-sdk tools:overrideLibrary="com.tokopedia.core,androidx.wear.remote.interactions,androidx.wear.phone.interactions,androidx.wear.compose.material,androidx.wear.compose.navigation,androidx.wear.compose.foundation" />
+
     <uses-feature android:name="android.hardware.type.watch" />
 
     <uses-permission android:name="android.permission.INTERNET" />

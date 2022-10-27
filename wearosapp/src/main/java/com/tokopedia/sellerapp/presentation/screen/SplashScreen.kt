@@ -1,3 +1,4 @@
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -27,7 +28,7 @@ import com.tokopedia.sellerapp.util.NumberConstant.ANIMATION_SPLASH_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.DELAY_SPLASH_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.START_LOGO_ALPHA_TARGET
 import com.tokopedia.sellerapp.util.NumberConstant.STOP_LOGO_ALPHA_TARGET
-import com.tokopedia.tkpd.R
+import com.tokopedia.sellerapp.R
 import kotlinx.coroutines.delay
 
 @Composable
@@ -39,7 +40,9 @@ fun SplashScreen(
     var startAnimation by remember { mutableStateOf(false) }
     val ifPhoneHasApp = sharedViewModel.ifPhoneHasApp.collectAsState()
 
-    sharedViewModel.checkIfPhoneHasApp()
+    if (Build.VERSION.SDK_INT <= 25) {
+        sharedViewModel.checkIfPhoneHasApp()
+    }
 
     val offState by animateDpAsState(
         targetValue = if (startAnimation) DP_0 else DP_100,
