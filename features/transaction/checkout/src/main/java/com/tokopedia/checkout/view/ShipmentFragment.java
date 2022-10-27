@@ -31,6 +31,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
@@ -235,6 +236,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
     public static String EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string";
+
+    private static final String PREFERENCE_NAME_CHECKOUT = "checkout_page";
+    private static final String KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark";
 
     private static final long TOASTER_THROTTLE = 2000;
 
@@ -609,11 +613,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
 
-        boolean shouldTriggerEpharmacyCoachmark = false;
+        boolean hasEpharmacyWidget = false;
         if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() != null
                 && uploadPrescriptionUiModel.getShowImageUpload()) {
             shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel);
-            shouldTriggerEpharmacyCoachmark = true;
+            hasEpharmacyWidget = true;
         }
 
         if (shipmentDonationModel != null) {
@@ -681,7 +685,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop();
-        } else if (shouldTriggerEpharmacyCoachmark) {
+        } else if (hasEpharmacyWidget) {
             triggerEpharmacyCoachmark(shipmentCartItemModelList);
         }
     }
@@ -690,7 +694,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         delayScrollToCoachmarkEpharmacySubscription = Observable.just(shipmentCartItemModelList)
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(shipmentCartItemModelList1 -> {
                     for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList1) {
                         if (shipmentCartItemModel.getSupportMiniConsul()) {
@@ -699,6 +702,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                     return false;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
@@ -712,20 +716,26 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                     @Override
                     public void onNext(Boolean needToShowCoachmark) {
-                        if (!isUnsubscribed() && needToShowCoachmark) {
+                        if (!isUnsubscribed() && ShipmentFragment.this.getActivityContext() != null) {
                             shipmentPresenter.fetchEpharmacyData();
-                            int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
-                            rvShipment.scrollToPosition(uploadPrescriptionPosition);
-                            rvShipment.post(() -> {
-                                RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(uploadPrescriptionPosition);
-                                if (viewHolder instanceof UploadPrescriptionViewHolder) {
-                                    CoachMark2Item item = new CoachMark2Item(viewHolder.itemView, "Pesanan obat kerasmu butuh resep", "Yuk, upload resepmu. Kalau belum punya, chat dokter buat dapetin resep digital juga bisa~", CoachMark2.POSITION_TOP);
-                                    ArrayList<CoachMark2Item> list = new ArrayList<>();
-                                    list.add(item);
-                                    CoachMark2 coachMark = new CoachMark2(requireContext());
-                                    coachMark.showCoachMark(list, null, 0);
+                            if (needToShowCoachmark) {
+                                SharedPreferences sharedPreferences = ShipmentFragment.this.getActivityContext().getSharedPreferences(PREFERENCE_NAME_CHECKOUT, Context.MODE_PRIVATE);
+                                if (!sharedPreferences.getBoolean(KEY_PREFERENCE_COACHMARK_EPHARMACY, false)) {
+                                    int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
+                                    rvShipment.scrollToPosition(uploadPrescriptionPosition);
+                                    rvShipment.post(() -> {
+                                        RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(uploadPrescriptionPosition);
+                                        if (viewHolder instanceof UploadPrescriptionViewHolder) {
+                                            CoachMark2Item item = new CoachMark2Item(viewHolder.itemView, ShipmentFragment.this.getActivityContext().getString(R.string.checkout_epharmacy_coachmark_title), ShipmentFragment.this.getActivityContext().getString(R.string.checkout_epharmacy_coachmark_description), CoachMark2.POSITION_TOP);
+                                            ArrayList<CoachMark2Item> list = new ArrayList<>();
+                                            list.add(item);
+                                            CoachMark2 coachMark = new CoachMark2(requireContext());
+                                            coachMark.showCoachMark(list, null, 0);
+                                            sharedPreferences.edit().putBoolean(KEY_PREFERENCE_COACHMARK_EPHARMACY, true).apply();
+                                        }
+                                    });
                                 }
-                            });
+                            }
                         }
                     }
                 });
