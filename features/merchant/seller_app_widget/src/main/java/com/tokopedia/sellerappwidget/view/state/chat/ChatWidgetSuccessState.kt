@@ -52,8 +52,8 @@ object ChatWidgetSuccessState {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
-            val itemPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val itemPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
             } else {
                 PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             }

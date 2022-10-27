@@ -190,6 +190,7 @@ class OrderAppWidget : AppWidgetProvider() {
     private fun onOrderItemClick(context: Context, intent: Intent) {
         val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)
         val orderItem: OrderItemUiModel? = bundle?.getParcelable(Const.Extra.ORDER_ITEM)
+        println("AppWidgetOrder : orderItem -> $orderItem")
         val orderId = orderItem?.orderId ?: "0"
         val orderDetailIntent =
             RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL, orderId).apply {
@@ -199,6 +200,7 @@ class OrderAppWidget : AppWidgetProvider() {
         AppWidgetTracking.getInstance(context)
             .sendEventClickItemOrderWidget()
 
+        println("orderDetailIntent : ${orderDetailIntent.data}")
         context.startActivity(orderDetailIntent)
     }
 
