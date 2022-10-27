@@ -49,7 +49,6 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
                 setTextViewText(R.id.tvSawOrderItemProductName, item.product?.productName.orEmpty())
                 setTextViewText(R.id.tvSawOrderItemDeadlineText, deadLineText)
 
-                println("AppWidgetOrder : item -> $item")
                 //handle on item click
                 val fillIntent = Intent().apply {
                     putExtra(Const.Extra.BUNDLE, Bundle().apply {
