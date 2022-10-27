@@ -64,10 +64,8 @@ public class HomePageTracking {
     public static final String IDR = "IDR";
     public static final String IMPRESSIONS = "impressions";
     public static final String EVENT_LEGO_BANNER_IMPRESSION = "home banner impression";
-    public static final String EVENT_LEGO_BANNER = "lego banner gif impression";
 
     public static final String LIST = "list";
-    public static final String PROMOTIONS_NAME = "/ - p1 - lego banner gif - %s";
     public static final String EVENT_CLICK_TICKER = "clickTicker";
     public static final String EVENT_CATEGORY_TICKER_HOMEPAGE = "ticker homepage";
     public static final String EVENT_ACTION_CLICK_TICKER = "click ticker";
@@ -490,35 +488,6 @@ public class HomePageTracking {
             }
         }
         return list;
-    }
-
-    /**
-     * Position always 1 cause just 1 gif dc
-     * @param channel
-     * @return
-     */
-    public static HashMap<String, Object> getEnhanceImpressionPromoGifBannerDC(DynamicHomeChannel.Channels channel){
-        return (HashMap<String, Object>) DataLayer.mapOf(
-                EVENT, PROMO_VIEW_IRIS,
-                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                EVENT_ACTION, EVENT_LEGO_BANNER,
-                EVENT_LABEL, "",
-                CHANNEL_ID, channel.getId(),
-                ECOMMERCE, DataLayer.mapOf(
-                        PROMO_VIEW, DataLayer.mapOf(
-                                PROMOTIONS, DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                FIELD_ID, channel.getBanner().getId(),
-                                                FIELD_NAME, String.format(PROMOTIONS_NAME, channel.getHeader().getName()),
-                                                FIELD_CREATIVE, channel.getBanner().getAttribution(),
-                                                FIELD_CREATIVE_URL, channel.getBanner().getImageUrl(),
-                                                FIELD_POSITION, String.valueOf(1)
-                                        )
-                                )
-                        )
-
-                )
-        );
     }
 
     public static HashMap<String, Object> getIrisEnhanceImpressionSpotlightHomePage(
