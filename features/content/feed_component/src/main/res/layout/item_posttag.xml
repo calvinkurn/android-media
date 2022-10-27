@@ -28,7 +28,7 @@
         android:layout_height="64dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
