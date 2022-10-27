@@ -27,6 +27,8 @@ object DeviceInfo {
     const val X_86 = "x86"
     var cacheAdsId = ""
 
+    var scope = CoroutineScope(Dispatchers.IO)
+
     @JvmStatic
     fun isRooted(): Boolean {
         return checkRootMethod1() || checkRootMethod2() || checkRootMethod3()
@@ -300,9 +302,11 @@ object DeviceInfo {
     }
 
     private fun setCacheAdsId(context: Context, adsId: String) {
-        val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
-        sp.edit().putString(KEY_ADVERTISINGID, adsId).apply()
-        cacheAdsId = adsId
+        scope.launch {
+            val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
+            sp.edit().putString(KEY_ADVERTISINGID, adsId).commit()
+            cacheAdsId = adsId
+        }
     }
 
     @JvmStatic

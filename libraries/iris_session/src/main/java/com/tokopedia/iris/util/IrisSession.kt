@@ -3,6 +3,9 @@ package com.tokopedia.iris.util
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.util.Base64
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.util.*
 
@@ -22,6 +25,8 @@ class IrisSession(val context: Context) : Session {
     private var lastTrackingActivity: Long = 0L
     // variable to hold last time Iris Session is accessed (from shared Preference)
     private var lastTrackingActivityPref: Long = 0L
+
+    private var scope = CoroutineScope(Dispatchers.IO)
 
     companion object {
         const val THRESHOLD_EXPIRED_IF_NO_ACTIVITY = 1_800_000L //30 minutes
@@ -106,26 +111,32 @@ class IrisSession(val context: Context) : Session {
     }
 
     private fun setPrefSessionId(id: String) {
-        editor.putString(KEY_SESSION_ID, id)
-        editor.apply()
+        scope.launch {
+            editor.putString(KEY_SESSION_ID, id)
+            editor.commit()
+        }
     }
 
     /**
      * Update timestamp of last tracking activity
      */
     private fun setPrefTrackingTimeStamp(timestamp: Long) {
-        lastTrackingActivity = timestamp
-        if (timestamp - lastTrackingActivityPref > THRESHOLD_UPDATE_LAST_ACTIVITY) {
-            lastTrackingActivityPref = timestamp
-            editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
-            editor.apply()
+        scope.launch {
+            lastTrackingActivity = timestamp
+            if (timestamp - lastTrackingActivityPref > THRESHOLD_UPDATE_LAST_ACTIVITY) {
+                lastTrackingActivityPref = timestamp
+                editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
+                editor.commit()
+            }
         }
     }
 
     private fun setInitialVisit(initialVisit: Long) {
-        this.initialVisit = initialVisit
-        timestampOfDayChanged = generateNextDayGMT7(initialVisit)
-        editor.putLong(KEY_INITIAL_VISIT, initialVisit)
-        editor.apply()
+        scope.launch {
+            this@IrisSession.initialVisit = initialVisit
+            timestampOfDayChanged = generateNextDayGMT7(initialVisit)
+            editor.putLong(KEY_INITIAL_VISIT, initialVisit)
+            editor.commit()
+        }
     }
 }
