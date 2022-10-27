@@ -379,13 +379,13 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                                 shopId = shopId,
                                 source = MvcSource.DEFAULT
                             )
-//                            mvcWidget.show()
+                            mvcWidget.show()
                         } else {
-//                            mvcWidget.hide()
+                            mvcWidget.hide()
                         }
                     }
                     is Fail -> {
-//                        mvcWidget.hide()
+                        mvcWidget.hide()
                     }
                 }
             }
