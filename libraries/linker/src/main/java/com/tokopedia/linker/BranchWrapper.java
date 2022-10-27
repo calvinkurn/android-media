@@ -166,16 +166,12 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private String getBranchUrl(LinkerDeeplinkRequest linkerDeeplinkRequest) {
-        String branchUrl = "";
         try {
-            branchUrl = linkerDeeplinkRequest != null  && linkerDeeplinkRequest.getDataObj() instanceof LinkerDeeplinkData
+            return linkerDeeplinkRequest != null  && linkerDeeplinkRequest.getDataObj() instanceof LinkerDeeplinkData
                     ? ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable().toString() : "";
-            Log.e("BranchWrapper", "Success parsing referrable");
         } catch(Exception e) {
-            Log.e("BranchWrapper", "Fail parsing referrable $e");
-            branchUrl = "";
+            return "";
         }
-        return branchUrl;
     }
 
     private void handleDeferredDeeplinkFDL(LinkerDeeplinkRequest linkerDeeplinkRequest) {
