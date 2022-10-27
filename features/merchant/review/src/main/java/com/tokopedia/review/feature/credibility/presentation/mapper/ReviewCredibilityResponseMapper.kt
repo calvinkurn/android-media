@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.credibility.presentation.mapper
 
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityLabel
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityStat
@@ -9,8 +10,12 @@ import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredi
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityHeaderUiModel
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityStatisticBoxUiModel
 import com.tokopedia.reviewcommon.uimodel.StringRes
+import com.tokopedia.webview.KEY_ALLOW_OVERRIDE
+
 
 object ReviewCredibilityResponseMapper {
+
+    private const val PREFIX_HTTP = "http"
 
     private fun toReviewCredibilityAchievementUiModel(
         label: ReviewerCredibilityLabel
@@ -56,6 +61,16 @@ object ReviewCredibilityResponseMapper {
         )
     }
 
+    private fun mapProfileButtonUrl(buttonProfileLink: String?): String {
+        return buttonProfileLink?.let {
+            if (it.startsWith(PREFIX_HTTP)) {
+                "${ApplinkConst.WEBVIEW}?${KEY_ALLOW_OVERRIDE}=false&url=$it"
+            } else {
+                it
+            }
+        }.orEmpty()
+    }
+
     fun toReviewCredibilityHeaderUiModel(
         response: ReviewerCredibilityStatsWrapper
     ): ReviewCredibilityHeaderUiModel {
@@ -64,7 +79,7 @@ object ReviewCredibilityResponseMapper {
             reviewerName = response.userProfile?.firstName.orEmpty(),
             reviewerJoinDate = response.userProfile?.joinDate.orEmpty(),
             reviewerProfileButtonText = response.userProfile?.buttonProfileText.orEmpty(),
-            reviewerProfileButtonUrl = response.userProfile?.buttonProfileLink.orEmpty()
+            reviewerProfileButtonUrl = mapProfileButtonUrl(response.userProfile?.buttonProfileLink)
         )
     }
 
