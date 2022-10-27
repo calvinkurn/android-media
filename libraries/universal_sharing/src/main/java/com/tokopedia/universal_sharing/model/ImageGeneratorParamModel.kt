@@ -12,34 +12,45 @@ data class PdpParamModel(
 ) : ImageGeneratorParamModel()
 
 data class ShopPageParamModel(
-    val shopProfileImgUrl: String = "",
-    val isProfileImageExist: Boolean = false,
-    val shopName: String = "",
-    val shopBadge: String = "",
-    val shopLocation: String = "",
-    val info1Type: String,
-    val info1Value: String = "",
-    val info1Label: String = "",
-    val info2Type: String = "",
-    val info2Value: String = "",
-    val info2Label: String = "",
-    val info3Type: String = "",
-    val info3Value: String = "",
-    val info3Label: String = "",
-    val productCount: Int = 0,
-    val productImage1: String = "",
-    val productPrice1: Long = 0,
-    val productImage2: String = "",
-    val productPrice2: Long = 0,
-    val productImage3: String = "",
-    val productPrice3: Long = 0,
-    val productImage4: String = "",
-    val productPrice4: Long = 0,
-    val productImage5: String = "",
-    val productPrice5: Long = 0,
-    val productImage6: String = "",
-    val productPrice6: Long = 0,
-): ImageGeneratorParamModel()
+    var shopProfileImgUrl: String = "",
+    var isProfileImageExist: Boolean = true,
+    var shopName: String = "",
+    var shopBadge: String = "",
+    var shopLocation: String = "",
+    var info1Type: String = "",
+    var info1Value: String = "",
+    var info1Label: String = "",
+    var info2Type: String = "",
+    var info2Value: String = "",
+    var info2Label: String = "",
+    var info3Type: String = "",
+    var info3Value: String = "",
+    var info3Label: String = "",
+    var productCount: Int = 0,
+    var productImage1: String = "",
+    var productPrice1: Long = 0,
+    var productImage2: String = "",
+    var productPrice2: Long = 0,
+    var productImage3: String = "",
+    var productPrice3: Long = 0,
+    var productImage4: String = "",
+    var productPrice4: Long = 0,
+    var productImage5: String = "",
+    var productPrice5: Long = 0,
+    var productImage6: String = "",
+    var productPrice6: Long = 0,
+): ImageGeneratorParamModel() {
+    enum class ShopInfoType(val typeName: String = "") {
+        SHOP_PERFORMANCE("shop_performance"),
+        BADGE_TEXT("badge_text_value"),
+        IMAGE_ONLY("image_only")
+    }
+    enum class ShopInfoName(val infoName: String = "", val infoNameValue: String = "") {
+        SHOP_RATING("shop_rating", "rating"),
+        FREE_SHIPPING("bebas_ongkir", "bo"),
+        FREE_TEXT(infoNameValue = "free-text")
+    }
+}
 
 enum class BoTypeImageGeneratorParam(val value: String) {
     NONE("none"),
