@@ -48,14 +48,9 @@ import java.util.*
 
 private const val DATE_TIME_PICKER_TAG = "date_time_picker_tag"
 private const val DATE_TIME_MINUTE_INTERVAL = 30
-private const val FIRST_IMAGE_URL = 0
-private const val SECOND_IMAGE_URL = 1
-private const val THIRD_IMAGE_URL = 2
 private const val DISCOUNT_TYPE_NOMINAL = "idr"
 private const val THOUSAND = 1_000f
 private const val MILLION = 1_000_000f
-private const val PRODUCT_COUNT_2 = 2
-private const val PRODUCT_COUNT_3 = 3
 
 fun View.showErrorToaster(errorMessage: String) {
     Toaster.make(this,
@@ -295,19 +290,6 @@ fun VoucherUiModel.addParamImageGenerator(universalShareBottomSheet: UniversalSh
             key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_COUNT,
             value = "0"
         )
-    }
-}
-
-fun convertToSocmedType(shareModel: ShareModel): Int {
-    return when (shareModel) {
-        is ShareModel.CopyLink -> SocmedType.COPY_LINK
-        is ShareModel.Facebook -> SocmedType.FACEBOOK
-        is ShareModel.Instagram -> SocmedType.INSTAGRAM
-        is ShareModel.Whatsapp -> SocmedType.WHATSAPP
-        is ShareModel.Line -> SocmedType.LINE
-        is ShareModel.Twitter -> SocmedType.TWITTER
-        is ShareModel.Others -> SocmedType.LAINNYA
-        else -> -1
     }
 }
 

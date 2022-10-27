@@ -1187,18 +1187,10 @@ class VoucherListFragment :
             when (it) {
                 is Success -> {
                     val voucherList = it.data
-//                    voucherList.map { voucherUiModel ->
-//                        voucherUiModel.showNewBc = true
-//                    }
-
-                    /* Changes temporarily */
-                    val temporarilyList = voucherList.map { voucherUiModel ->
-                        /* Changes temporarily */
-                        val newModel = voucherUiModel.copy(status = VoucherStatusConst.ONGOING)
-                        newModel.showNewBc = true
-                        newModel
+                    voucherList.map { voucherUiModel ->
+                        voucherUiModel.showNewBc = true
                     }
-                    setOnSuccessGetVoucherList(temporarilyList)
+                    setOnSuccessGetVoucherList(voucherList)
                     binding?.rvVoucherList?.setOnLayoutListenerReady()
                 }
                 is Fail -> setOnErrorGetVoucherList(it.throwable)
