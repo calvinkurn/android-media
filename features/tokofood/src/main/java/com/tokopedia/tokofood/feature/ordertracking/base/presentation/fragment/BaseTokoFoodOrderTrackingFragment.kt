@@ -199,7 +199,10 @@ class BaseTokoFoodOrderTrackingFragment :
         )
         val tokoChatAppLink = UriUtil.buildUriAppendParam(ApplinkConst.TOKO_CHAT, tokoChatParams)
         context?.let {
-            RouteManager.route(it, tokoChatAppLink)
+            val intent = RouteManager.getIntent(it, tokoChatAppLink).apply {
+                putExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, true)
+            }
+            startActivity(intent)
         }
     }
 

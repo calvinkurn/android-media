@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -41,6 +42,7 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
         setupFragmentFactory()
         super.onCreate(savedInstanceState)
         setupViewBinding()
+        setBackgroundColor()
         setupTokoChatHeader()
     }
 
@@ -62,11 +64,17 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
         setContentView(viewBinding?.root)
     }
 
-    private fun getChatHeaderLayout() = R.layout.tokochat_item_header
+    private fun getTokoChatHeaderLayout() = R.layout.tokochat_item_header
+
+    private fun setBackgroundColor() {
+        viewBinding?.tokochatLayoutChatroomFragment?.setBackgroundColor(
+            MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        )
+    }
 
     protected open fun setupTokoChatHeader() {
         val mInflater = LayoutInflater.from(this)
-        headerCustomView = mInflater.inflate(getChatHeaderLayout(), null)
+        headerCustomView = mInflater.inflate(getTokoChatHeaderLayout(), null)
         headerShimmering = headerCustomView?.findViewById(R.id.tokochat_layout_header_shimmering)
         photoHeaderContainer = headerCustomView?.findViewById(R.id.tokochat_layout_header_photo_container)
         headerContainer = headerCustomView?.findViewById(R.id.tokochat_layout_header_container)

@@ -742,5 +742,8 @@ public interface ApplinkConst {
         String ORDER_CHAT_TYPE_DRIVER = "driver";
         String ORDER_CHAT_TYPE_SHOP = "shopper";
         String ORDER_CHAT_TYPE_MERCHANT = "merchant";
+
+        //bundle params
+        String IS_FROM_TOKOFOOD_POST_PURCHASE = "isFromTokoFoodPostPurchase";
     }
 }
