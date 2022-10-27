@@ -9,23 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.*
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.watch.databinding.ActivityTokopediaWatchBinding
-import com.tokopedia.watch.di.component.DaggerTokopediaWatchComponent
-import com.tokopedia.watch.listenerservice.DataLayerServiceListener
 import com.tokopedia.watch.util.CapabilityConstant.CAPABILITY_WEAR_APP
 import kotlinx.android.synthetic.main.activity_tokopedia_watch.*
 import kotlinx.coroutines.*
@@ -36,7 +26,6 @@ import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 class TokopediaWatchActivity : AppCompatActivity(),
     DataClient.OnDataChangedListener{
