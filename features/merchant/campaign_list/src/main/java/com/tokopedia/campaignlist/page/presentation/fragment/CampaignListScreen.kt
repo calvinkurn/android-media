@@ -421,7 +421,7 @@ fun CampaignListPageDarkPreview() {
 
 }
 
-@Preview
+@Preview(name = "Campaign Item")
 @Composable
 fun CampaignItemPreview() {
     val campaign = ActiveCampaign(
