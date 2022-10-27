@@ -30,6 +30,12 @@ class TdnCarouselAdapter(
 ) : RecyclerView.Adapter<TdnCarouselAdapter.TdnCarouselViewHolder>() {
 
     private val shopAdsProductItemList = arrayListOf<TopAdsImageViewModel>()
+    private var recyclerView:RecyclerView?= null
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TdnCarouselViewHolder {
         val view: View = LayoutInflater.from(parent.context)
@@ -138,6 +144,7 @@ class TdnCarouselAdapter(
                             isFirstResource: Boolean
                         ): Boolean {
                             recordImpression(imageData, onTdnBannerImpressed)
+                            recyclerView?.smoothScrollBy(Int.ONE,Int.ONE)
                             Timber.d("TDN Banner is loaded successfully")
 
                             tdnShimmer.hide()
