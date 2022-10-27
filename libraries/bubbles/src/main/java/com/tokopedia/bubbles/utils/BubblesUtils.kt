@@ -20,7 +20,7 @@ object BubblesUtils {
             Glide.with(context)
                 .asBitmap()
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .submit(imageWidth, imageHeight)
                 .get(BITMAP_TIMEOUT, TimeUnit.SECONDS)
         } catch (e: Exception) {
