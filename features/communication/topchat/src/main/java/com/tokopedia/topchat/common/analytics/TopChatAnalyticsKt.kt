@@ -851,6 +851,104 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun clickChangeStockFromBubble(productId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_CHANGE_STOCK_CTA,
+                label = productId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37523,
+            )
+        )
+    }
+
+    fun clickSaveStockFromBubble(productId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_SAVE_STOCK,
+                label = productId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37692,
+            )
+        )
+    }
+
+    fun clickLongHoldMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_LONG_HOLD_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37693,
+            )
+        )
+    }
+
+    fun clickReplySelectedMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_REPLY_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37698,
+            )
+        )
+    }
+
+    fun clickDeleteSelectedMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_DELETE_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37699,
+            )
+        )
+    }
+
+    fun clickCopySelectedMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_COPY_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37700,
+            )
+        )
+    }
+
+    fun clickConfirmDeleteSelectedMessageFromBubble(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_CONFIRM_DELETE_SELECTED_MESSAGE,
+                label = replyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37701,
+            )
+        )
+    }
+
     fun eventClickHeaderMenuBubble(shopId: String?) {
         val bubbleEvent = createBubbleEvent(
             Event.CLICK_COMMUNICATION,
@@ -1001,6 +1099,13 @@ object TopChatAnalyticsKt {
         const val CLICK_ADD_ATTACHMENT_PRODUCT = "click add attachment - product"
         const val CLICK_ADD_ATTACHMENT_IMAGE = "click add attachment - image"
         const val CLICK_ADD_ATTACHMENT_INVOICE = "click add attachment - invoice"
+        const val CLICK_CHANGE_STOCK_CTA = "click ubah stok CTA"
+        const val CLICK_SAVE_STOCK = "click simpan stok"
+        const val CLICK_LONG_HOLD_SELECTED_MESSAGE = "long hold on selected message"
+        const val CLICK_REPLY_SELECTED_MESSAGE = "click reply on selected message"
+        const val CLICK_DELETE_SELECTED_MESSAGE = "click delete on selected message"
+        const val CLICK_COPY_SELECTED_MESSAGE = "click salin on selected message"
+        const val CLICK_CONFIRM_DELETE_SELECTED_MESSAGE = "click confirm delete selected message"
         const val CLICK_HEADER_THREE_BULLETS = "click header three bullets"
         const val CLICK_SETTINGS_MENU_CHOICES = "click settings menu choices"
         const val CLICK_NEW_NOTIFICATION_BUBBLE_CHAT = "click on new notification bubble chat"
@@ -1015,6 +1120,13 @@ object TopChatAnalyticsKt {
         const val TRACKER_ID_37520 = "37520"
         const val TRACKER_ID_37521 = "37521"
         const val TRACKER_ID_37522 = "37522"
+        const val TRACKER_ID_37523 = "37523"
+        const val TRACKER_ID_37692 = "37692"
+        const val TRACKER_ID_37693 = "37693"
+        const val TRACKER_ID_37698 = "37698"
+        const val TRACKER_ID_37699 = "37699"
+        const val TRACKER_ID_37700 = "37700"
+        const val TRACKER_ID_37701 = "37701"
         const val TRACKER_ID_37704 = "37704"
         const val TRACKER_ID_37705 = "37705"
         const val TRACKER_ID_37707 = "37707"
