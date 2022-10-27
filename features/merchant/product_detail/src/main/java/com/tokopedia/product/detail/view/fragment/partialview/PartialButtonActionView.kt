@@ -444,6 +444,12 @@ class PartialButtonActionView private constructor(
                 btnTopAds.text = context.getString(R.string.promote_topads)
             }
 
+            shopModeratedManageButton()
+        }
+    }
+
+    private fun shopModeratedManageButton(){
+        with(binding){
             if (isShopModerate) {
                 btnTopAds.isEnabled = false
                 btnEditProduct.isEnabled = false
@@ -456,7 +462,6 @@ class PartialButtonActionView private constructor(
                 textShopModerated.gone()
                 btnEditProduct.setOnClickListener { buttonListener.editProductButtonClicked() }
             }
-
         }
     }
 
