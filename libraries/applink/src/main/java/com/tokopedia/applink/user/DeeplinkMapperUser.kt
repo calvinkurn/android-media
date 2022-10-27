@@ -36,7 +36,6 @@ object DeeplinkMapperUser {
         }
     }
 
-    // add kyc deeplink mapper if needed
     fun getKycInternalApplink(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         val projectId = uri.getQueryParameter(PARAM_PROJECT_ID).orEmpty()
