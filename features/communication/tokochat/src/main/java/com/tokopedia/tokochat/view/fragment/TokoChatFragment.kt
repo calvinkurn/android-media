@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
@@ -77,6 +78,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     private var source: String = ""
     private var tkpdOrderId: String = ""
     private var firstTimeOpen = true
+    private var isFromTokoFoodPostPurchase = false
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
 
@@ -137,6 +139,12 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             ApplinkConst.TokoChat.ORDER_ID_TKPD,
             arguments,
             savedInstanceState
+        )
+        isFromTokoFoodPostPurchase = getParamBoolean(
+            ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE,
+            arguments,
+            savedInstanceState,
+            false
         )
     }
 
@@ -549,9 +557,13 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     }
 
     override fun onTransactionWidgetClicked(appLink: String) {
-        if (appLink.isNotBlank()) {
-            context?.let {
-                RouteManager.route(it, appLink)
+        if (isFromTokoFoodPostPurchase) {
+            activity?.finish()
+        } else {
+            if (appLink.isNotBlank()) {
+                context?.let {
+                    RouteManager.route(it, appLink)
+                }
             }
         }
     }
