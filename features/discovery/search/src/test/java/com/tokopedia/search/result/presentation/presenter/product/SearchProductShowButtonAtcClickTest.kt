@@ -198,6 +198,7 @@ internal class SearchProductShowButtonAtcClickTest: ProductListPresenterTestFixt
 
     private fun `Then Verify TopAds Url Hit`(clickedProductAtc: ProductItemDataView) {
         verify {
+            productListPresenter.trackProductTopAdsClick(clickedProductAtc)
             topAdsUrlHitter.hitClickUrl(
                 productListView.className,
                 clickedProductAtc.topadsClickUrl,

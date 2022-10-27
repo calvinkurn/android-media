@@ -35,7 +35,6 @@ class InspirationListAtcListenerDelegate @Inject constructor(
                 getSearchParameter()
             )
         inspirationListAtcView.trackItemClick(trackingData)
-        if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
         openApplink(context, product.applink)
     }
 
@@ -49,6 +48,5 @@ class InspirationListAtcListenerDelegate @Inject constructor(
         type: String,
     ) {
         inspirationListAtcPresenter.onListAtcItemAddToCart(product, type)
-        if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
     }
 }

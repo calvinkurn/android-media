@@ -117,6 +117,7 @@ interface ProductListSectionContract {
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
         fun trackProductClick(item: ProductItemDataView)
+        fun trackProductTopAdsClick(item: ProductItemDataView)
         fun onProductAddToCart(item: ProductItemDataView)
         val quickFilterList: List<Filter>
         fun getProductCount(mapParameter: Map<String, String>?)
