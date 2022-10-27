@@ -24,6 +24,7 @@ import retrofit2.Retrofit
         FeedPlusModule::class,
         FeedComponentModule::class,
         ViewModelModule::class,
+        FeedComponentViewModelModule::class,
         PlayWidgetModule::class,
         FeedFloatingButtonManagerModule::class,
         FeedComponentViewModelModule::class

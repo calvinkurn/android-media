@@ -23,12 +23,12 @@
         tools:visibility="visible" />
 
     <com.tokopedia.mvcwidget.views.MvcView
-        android:id="@+id/merchantVoucherWidgetPostTag"
+        android:id="@+id/merchant_voucher_widget_post_tag"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
