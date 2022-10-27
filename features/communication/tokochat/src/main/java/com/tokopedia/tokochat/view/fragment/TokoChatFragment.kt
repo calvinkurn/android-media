@@ -246,10 +246,10 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             viewModel.updateOrderTransactionStatus.collect {
                 when (it) {
                     is Success -> {
+                        setShowTransactionWidget(it.data.tokochatOrderProgress)
                         if (it.data.tokochatOrderProgress.state !in listOf(OrderStatusType.CANCELLED, OrderStatusType.COMPLETED)) {
                             viewModel.updateOrderStatusParam(Pair(tkpdOrderId, source))
                         }
-                        setShowTransactionWidget(it.data.tokochatOrderProgress)
                     }
                     is Fail -> {
                         logExceptionTokoChat(
@@ -268,10 +268,10 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         observe(viewModel.orderTransactionStatus) {
             when (it) {
                 is Success -> {
+                    setShowTransactionWidget(it.data.tokochatOrderProgress)
                     if (it.data.tokochatOrderProgress.state !in listOf(OrderStatusType.CANCELLED, OrderStatusType.COMPLETED)) {
                         viewModel.updateOrderStatusParam(Pair(tkpdOrderId, source))
                     }
-                    setShowTransactionWidget(it.data.tokochatOrderProgress)
                 }
                 is Fail -> {
                     logExceptionTokoChat(
