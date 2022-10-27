@@ -349,15 +349,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        icon
                        isVisible
                     }
-                    ... on pdpDataShopAdditional {
-                      icon
-                      title
-                      applink
-                      link
-                      linkText
-                      subtitle
-                      label
-                    }
                   }
                 }
               }

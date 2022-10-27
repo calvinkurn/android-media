@@ -37,17 +37,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -197,6 +196,7 @@ import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_NOT_ADS
+import com.tokopedia.product.detail.tracking.ShopAdditionalTracking
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -278,12 +278,12 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
+import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 
 /**
  * Separator Rule
@@ -1088,20 +1088,43 @@ open class DynamicProductDetailFragment :
         onImpressComponent(componentTrackDataModel)
     }
 
-    override fun onShopAdditionalSeeMore() {
-        context?.let {
-            val uspUrl = viewModel.p2Data.value?.uspImageUrl.orEmpty()
-            val tag = "bottom_sheet_unique_selling_point"
+    /**
+     * [ProductShopAdditionalViewHolder]
+     */
+    override fun onLearnButtonShopAdditionalClicked() {
+        val ctx = context ?: return
+        val uspUrl = viewModel.p2Data.value?.uspImageUrl.orEmpty()
+        val tag = "bottom_sheet_unique_selling_point"
 
-            if (uspUrl.isNotBlank()) {
-                showImmediately(childFragmentManager, tag) {
-                    ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(
-                        context = it,
-                        uspTokoCabangImgUrl = uspUrl
-                    )
-                }
+        if (uspUrl.isNotBlank()) {
+            showImmediately(childFragmentManager, tag) {
+                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(
+                    context = ctx,
+                    uspTokoCabangImgUrl = uspUrl
+                )
             }
         }
+    }
+
+    override fun onLearnButtonShopAdditionalClickedTracking(
+        componentTrackDataModel: ComponentTrackDataModel,
+        eventLabel: String
+    ) {
+        ShopAdditionalTracking.clickSeeMoreButton(
+            component = componentTrackDataModel,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            userId = viewModel.userId,
+            eventLabel = eventLabel
+        )
+    }
+
+    override fun onImpressShopAdditional(componentTrackDataModel: ComponentTrackDataModel) {
+        ShopAdditionalTracking.onImpression(
+            trackingQueue = trackingQueue,
+            componentTrackDataModel = componentTrackDataModel,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            userId = viewModel.userId
+        )
     }
 
     /**

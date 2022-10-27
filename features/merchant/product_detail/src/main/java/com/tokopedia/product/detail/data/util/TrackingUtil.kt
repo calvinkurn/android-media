@@ -7,13 +7,13 @@ import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.ITEM_CATEGORY_BUILDER
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.KEY_UNDEFINED
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.tracking.TrackingConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ticker.Ticker
 import org.json.JSONArray
@@ -38,13 +38,14 @@ object TrackingUtil {
             productInfo: DynamicProductInfoP1?,
             componentTrackDataModel: ComponentTrackDataModel,
             userId: String,
-            lcaWarehouseId: String,
+            lcaWarehouseId: String = "",
             customAction: String = "",
             customCreativeName: String = "",
             customItemName: String = "",
             customLabel: String = "",
             customPromoCode: String = "",
-            customItemId: String = ""
+            customItemId: String = "",
+            trackedId: String = ""
     ): HashMap<String, Any>? {
         val productId = productInfo?.basic?.productID ?: ""
         val shopId = productInfo?.basic?.shopID ?: ""
@@ -61,6 +62,7 @@ object TrackingUtil {
                 ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
                 ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
                 ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
+                TrackingConstant.Hit.TRACKER_ID, trackedId,
                 "categoryId", "productId : $productId",
                 ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(

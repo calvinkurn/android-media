@@ -1,14 +1,12 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicShopAdditionalBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicShopAdditionalContentBinding
@@ -23,7 +21,7 @@ import com.tokopedia.unifycomponents.Label
 class ProductShopAdditionalViewHolder(
     val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductShopAdditionalDataModel>(view) {
+) : ProductDetailPageViewHolder<ProductShopAdditionalDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_shop_additional
@@ -42,9 +40,9 @@ class ProductShopAdditionalViewHolder(
     override fun bind(element: ProductShopAdditionalDataModel) {
         if (!element.isLoading) {
             prepareRenderContent()
-            impressComponent(element)
-            setWidgetContent(element)
-            setupAppLink(element)
+            impressComponent(element = element)
+            setWidgetContent(element = element)
+            setupAppLink(element = element)
         }
     }
 
@@ -53,13 +51,10 @@ class ProductShopAdditionalViewHolder(
     }
 
     private fun impressComponent(element: ProductShopAdditionalDataModel) {
-        /*if (element.title.isNotEmpty() && element.icon.isNotEmpty()) {
-            val componentTrack = getComponentTrackData(element)
-            itemView.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(componentTrack)
-                listener.showCustomInfoCoachMark(element.name, binding.customImage)
-            }
-        }*/
+        val componentTrack = getComponentTrackData(element)
+        itemView.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressShopAdditional(componentTrackDataModel = componentTrack)
+        }
     }
 
     /**
@@ -72,7 +67,11 @@ class ProductShopAdditionalViewHolder(
             shopAdditionalActionLabel.text = element.linkText
 
             shopAdditionalActionLabel.setOnClickListener {
-                listener.onShopAdditionalSeeMore()
+                listener.onLearnButtonShopAdditionalClicked()
+                listener.onLearnButtonShopAdditionalClickedTracking(
+                    componentTrackDataModel = getComponentTrackData(element = element),
+                    eventLabel = getEventLabel(element = element)
+                )
             }
         }
     }
@@ -81,22 +80,22 @@ class ProductShopAdditionalViewHolder(
      * render widget and set content with condition
      */
     private fun setWidgetContent(element: ProductShopAdditionalDataModel) = with(contentBinding) {
-        shopAdditionalImage.shouldShowWithAction(element.icon.isNotBlank()) {
+        shopAdditionalImage.shouldShowWithAction(shouldShow = element.icon.isNotBlank()) {
             shopAdditionalImage.loadIcon(element.icon)
         }
 
-        shopAdditionalDescription.shouldShowWithAction(element.description.isNotEmpty()) {
+        shopAdditionalDescription.shouldShowWithAction(shouldShow = element.description.isNotEmpty()) {
             shopAdditionalDescription.text = element.description.parseAsHtmlLink(
                 context = context,
                 replaceNewLine = false
             )
         }
 
-        shopAdditionalTitle.shouldShowWithAction(element.title.isNotEmpty()) {
+        shopAdditionalTitle.shouldShowWithAction(shouldShow = element.title.isNotEmpty()) {
             shopAdditionalTitle.text = element.title
         }
 
-        shopAdditionalScrollviewLabel.shouldShowWithAction(element.labels.isNotEmpty()) {
+        shopAdditionalScrollviewLabel.shouldShowWithAction(shouldShow = element.labels.isNotEmpty()) {
             shopAdditionalContainerLabel.removeAllViews()
 
             element.labels.forEach {
@@ -111,11 +110,8 @@ class ProductShopAdditionalViewHolder(
         setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
     }
 
-    private fun getComponentTrackData(
-        element: ProductShopAdditionalDataModel?
-    ) = ComponentTrackDataModel(
-        componentType = element?.type.orEmpty(),
-        componentName = element?.name.orEmpty(),
-        adapterPosition = bindingAdapterPosition + Int.ONE
-    )
+    private fun getEventLabel(element: ProductShopAdditionalDataModel): String {
+        val labels = element.labels.joinToString(" ")
+        return "title:${element.title};subtitle:${element.description};label:$labels;"
+    }
 }

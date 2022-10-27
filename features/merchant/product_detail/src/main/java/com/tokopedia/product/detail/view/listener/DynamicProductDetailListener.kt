@@ -168,9 +168,14 @@ interface DynamicProductDetailListener {
     )
 
     /**
-     * [ProductShopAdditionalDataModel]
+     * [ProductShopAdditionalViewHolder]
      */
-    fun onShopAdditionalSeeMore()
+    fun onLearnButtonShopAdditionalClicked()
+    fun onLearnButtonShopAdditionalClickedTracking(
+        componentTrackDataModel: ComponentTrackDataModel,
+        eventLabel: String
+    )
+    fun onImpressShopAdditional(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecommendationAnnotationChipViewHolder
