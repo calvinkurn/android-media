@@ -80,6 +80,12 @@ private fun ImagePolicyResponse.generateToWishlist(
             ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE_5 -> {
                 imagePolicy.toRequestParam(data.productPrice5.toString())
             }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_6 -> {
+                imagePolicy.toRequestParam(data.productImage6)
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE_6 -> {
+                imagePolicy.toRequestParam(data.productPrice6.toString())
+            }
             ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM -> {
                 imagePolicy.toRequestParam(data.platform)
             }
