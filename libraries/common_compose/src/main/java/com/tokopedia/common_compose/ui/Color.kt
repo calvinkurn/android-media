@@ -21,9 +21,15 @@ interface TokopediaColor {
     val GN100: Color
     val GN400: Color
     val GN500: Color
+    val YN50: Color
     val YN100: Color
+    val YN200: Color
+    val YN400: Color
     val YN500: Color
+    val RN50: Color
     val RN100: Color
+    val RN200: Color
+    val RN400: Color
     val RN500: Color
 }
 
@@ -46,9 +52,15 @@ data class NestColor(
     override val GN400: Color,
     override val GN500: Color,
     override val YN100: Color,
+    override val YN50: Color,
+    override val YN200: Color,
+    override val YN400: Color,
     override val YN500: Color,
+    override val RN50: Color,
     override val RN100: Color,
-    override val RN500: Color
+    override val RN500: Color,
+    override val RN200: Color,
+    override val RN400: Color
 ) : TokopediaColor
 
 internal val LocalColors = staticCompositionLocalOf<TokopediaColor> {
@@ -70,9 +82,15 @@ internal val LocalColors = staticCompositionLocalOf<TokopediaColor> {
         GN100 = NestGN100,
         GN400 = NestGN400,
         GN500 = NestGN500,
+        YN50 = NestYN50,
         YN100 = NestYN100,
+        YN200 = NestYN200,
+        YN400 = NestYN400,
         YN500 = NestYN500,
+        RN50 =  NestRN50,
         RN100 = NestRN100,
+        RN200 = NestRN200,
+        RN400 = NestRN400,
         RN500 = NestRN500
     )
 }
@@ -121,13 +139,25 @@ val NestNN950 = Color(0xFF212121)
 val NestNN950Dark = Color(0xFFDCE4ED)
 
 
+val NestYN50 = Color(0xFFFFFAE6)
+val NestYN50Dark = Color(0xFF511904)
 val NestYN100 = Color(0xFFFFF1BA)
 val NestYN100Dark = Color(0xFFB33D09)
+val NestYN200 = Color(0xFFFFDD7F)
+val NestYN200Dark = Color(0xFFD64E0B)
+val NestYN400 = Color(0xFFFFA617)
+val NestYN400Dark = Color(0xFFFF820D)
 val NestYN500 = Color(0xFFFF7F17)
 val NestYN500Dark = Color(0xFFFFA617)
 
+val NestRN50 = Color(0xFFFFF5F6)
+val NestRN50Dark = Color(0xFF4D171F)
 val NestRN100 = Color(0xFFFFDBE2)
 val NestRN100Dark = Color(0xFF862430)
+val NestRN200 = Color(0xFFFFB2C2)
+val NestRN200Dark = Color(0xFFB02E3E)
+val NestRN400 = Color(0xFFFF7182)
+val NestRN400Dark = Color(0xFFF24E62)
 val NestRN500 = Color(0xFFF94D63)
 val NestRN500Dark = Color(0xFFFF6577)
 
@@ -151,9 +181,15 @@ fun populateColor(darkTheme: Boolean) : TokopediaColor {
             GN100 = NestGN100Dark,
             GN400 = NestGN400Dark,
             GN500 = NestGN500Dark,
+            YN50 = NestYN50Dark,
             YN100 = NestYN100Dark,
+            YN200 = NestYN200Dark,
+            YN400 = NestYN400Dark,
             YN500 = NestYN500Dark,
+            RN50 =  NestRN50Dark,
             RN100 = NestRN100Dark,
+            RN200 = NestRN200Dark,
+            RN400 = NestRN400Dark,
             RN500 = NestRN500Dark
         )
     } else {
@@ -175,9 +211,15 @@ fun populateColor(darkTheme: Boolean) : TokopediaColor {
             GN100 = NestGN100,
             GN400 = NestGN400,
             GN500 = NestGN500,
+            YN50 = NestYN50,
             YN100 = NestYN100,
+            YN200 = NestYN200,
+            YN400 = NestYN400,
             YN500 = NestYN500,
+            RN50 =  NestRN50,
             RN100 = NestRN100,
+            RN200 = NestRN200,
+            RN400 = NestRN400,
             RN500 = NestRN500
         )
     }
