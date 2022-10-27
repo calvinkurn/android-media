@@ -28,7 +28,7 @@ def getTkpdVersionName() {
 }
 
 def getTkpdVersionCode() {
-    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : 1422128001;
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : 1422128002;
 }
 
 kapt {
