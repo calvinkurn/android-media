@@ -65,6 +65,7 @@ import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.view.listener.ChatListTickerListener
 import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
@@ -357,14 +358,35 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             }
         }
 
-        chatItemListViewModel.chatListTicker.observe(viewLifecycleOwner) {
-            if (it is Success && it.data.tickerBuyer.enable) {
-                val tickerChatLisBuyer = ChatListTickerUiModel(
-                    it.data.tickerBuyer.message,
-                    it.data.tickerBuyer.tickerType
-                )
-                adapter?.addElement(Int.ZERO, tickerChatLisBuyer)
+        chatItemListViewModel.chatListTicker.observe(viewLifecycleOwner) { result ->
+            if (result is Success) {
+                val tickerChatListIndex = adapter?.list?.indexOfFirst { it -> it is ChatListTickerUiModel }
+
+                if (tickerChatListIndex == RecyclerView.NO_POSITION) {
+                    setChatListTickerBuyer(result.data)
+                    setChatListTickerSeller(result.data)
+                }
             }
+        }
+    }
+
+    private fun setChatListTickerBuyer(result: ChatListTickerResponse.ChatListTicker) {
+        if (result.tickerBuyer.enable && !isTabSeller()) {
+            val tickerChatListBuyer = ChatListTickerUiModel(
+                result.tickerBuyer.message,
+                result.tickerBuyer.tickerType
+            )
+            adapter?.addElement(Int.ZERO, tickerChatListBuyer)
+        }
+    }
+
+    private fun setChatListTickerSeller(result: ChatListTickerResponse.ChatListTicker) {
+        if (result.tickerSeller.enable && isTabSeller()) {
+            val tickerChatListSeller = ChatListTickerUiModel(
+                result.tickerSeller.message,
+                result.tickerSeller.tickerType
+            )
+            adapter?.addElement(Int.ZERO, tickerChatListSeller)
         }
     }
 
