@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
@@ -120,9 +121,9 @@ public class BranchWrapper implements WrapperInterface {
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
         BranchHelperValidation helper = new BranchHelperValidation();
+        String branchUrl = getBranchUrl(linkerDeeplinkRequest);
         checkBranchLinkUTMParams(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity());
-        String branchUrl = linkerDeeplinkRequest != null  && linkerDeeplinkRequest.getDataObj() instanceof LinkerDeeplinkData
-                ? ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable().toString() : "";        handleDeferredDeeplinkFDL(linkerDeeplinkRequest);
+        handleDeferredDeeplinkFDL(linkerDeeplinkRequest);
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -164,17 +165,29 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
+    private String getBranchUrl(LinkerDeeplinkRequest linkerDeeplinkRequest) {
+        String branchUrl = "";
+        try {
+            branchUrl = linkerDeeplinkRequest != null  && linkerDeeplinkRequest.getDataObj() instanceof LinkerDeeplinkData
+                    ? ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable().toString() : "";
+            Log.e("BranchWrapper", "Success parsing referrable");
+        } catch(Exception e) {
+            Log.e("BranchWrapper", "Fail parsing referrable $e");
+            branchUrl = "";
+        }
+        return branchUrl;
+    }
+
     private void handleDeferredDeeplinkFDL(LinkerDeeplinkRequest linkerDeeplinkRequest) {
         new FirebaseDLWrapper().getFirebaseDynamicLink(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity(), ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity().getIntent());
     }
 
     private Branch.BranchReferralInitListener getBranchCallback(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         BranchHelperValidation helper = new BranchHelperValidation();
+        String branchUrl = getBranchUrl(linkerDeeplinkRequest);
         return new Branch.BranchReferralInitListener() {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
-                String branchUrl = linkerDeeplinkRequest != null  && linkerDeeplinkRequest.getDataObj() instanceof LinkerDeeplinkData
-                        ? ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable().toString() : "";
                 if (error == null) {
                     String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
                     String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
