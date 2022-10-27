@@ -3814,7 +3814,7 @@ open class DynamicProductDetailFragment :
             )
         resultIntent.putExtra(ProductDetailConstant.WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
         resultIntent.putExtra("product_id", productId)
-        resultIntent.putExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_NEED_REFRESH, true)
+        resultIntent.putExtra(BOOLEAN_EXTRA_NEED_REFRESH, true)
         activity?.let { it.setResult(Activity.RESULT_OK, resultIntent) }
     }
 
