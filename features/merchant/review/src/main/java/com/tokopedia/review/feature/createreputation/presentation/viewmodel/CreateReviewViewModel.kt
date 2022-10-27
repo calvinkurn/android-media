@@ -79,6 +79,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
@@ -128,6 +130,7 @@ class CreateReviewViewModel @Inject constructor(
         private const val REVIEW_TOPICS_PEEK_ANIMATION_RUN_INTERVAL_DAYS = 1L
         private const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
         private const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
+        private const val ANONYMOUS_CHANGE_DEBOUNCE_DURATION = 500L
 
         private const val SAVED_STATE_RATING = "savedStateRating"
         private const val SAVED_STATE_REVIEW_TEXT = "savedStateReviewText"
@@ -366,6 +369,7 @@ class CreateReviewViewModel @Inject constructor(
         observeShouldLoadIncentiveOvo()
         observeShouldLoadReviewTemplates()
         observeShouldLoadBadRatingCategories()
+        observeShouldShowAnonymousToaster()
     }
 
     // region extensions
@@ -1033,6 +1037,15 @@ class CreateReviewViewModel @Inject constructor(
             }.collectLatest { if (it) getBadRatingCategories() }
         }
     }
+
+    private fun observeShouldShowAnonymousToaster() {
+        launch {
+            anonymous
+                .debounce(ANONYMOUS_CHANGE_DEBOUNCE_DURATION)
+                .filter { isAnonymous -> isAnonymous }
+                .collectLatest { enqueueAnonymousToaster() }
+        }
+    }
     // endregion state observer
 
     private suspend fun cancelInvalidUploadJobs(uris: List<String>) {
@@ -1284,6 +1297,17 @@ class CreateReviewViewModel @Inject constructor(
                 actionText = StringRes(R.string.review_oke),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_ERROR
+            )
+        )
+    }
+
+    private fun enqueueAnonymousToaster() {
+        _toasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.review_create_anonymous_toaster),
+                actionText = StringRes(R.string.review_oke),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
             )
         )
     }
