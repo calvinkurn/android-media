@@ -3,7 +3,6 @@ package com.tokopedia.common_compose.principles
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -37,12 +36,14 @@ fun NestLabel(
         shape = RoundedCornerShape(4.dp),
         color = backgroundColor
     ) {
-        Text(
+        NestTypography(
             text = labelText.toString(),
             modifier = Modifier.padding(horizontal = 4.dp, vertical = 3.dp),
-            color = textColor,
-            fontSize = 10.sp,
-            fontWeight = FontWeight.Bold
+            textStyle = NestTheme.typography.paragraph3.copy(
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color = textColor
+            )
         )
     }
 
