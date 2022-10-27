@@ -1,5 +1,7 @@
 package com.tokopedia.pms.analytics
 
+import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.CreditCardPaymentModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -51,11 +53,24 @@ class PmsAnalytics @Inject constructor(
             is PmsEvents.InvokeChangeAccountDetailsEvent -> prepareCommonMap(
                 ACTION_CLICK_CHANGE_BANK_DETAIL
             )
-            is PmsEvents.CompletePayment -> prepareCommonMap(
+            is PmsEvents.CompletePayment -> prepareCompletePaymentAnalytics(
                 ACTION_COMPLETE_PAYMENT,
-                event.gatewayName
+                event.basePaymentModel
             )
         }
+    }
+
+    private fun prepareCompletePaymentAnalytics(action: String, basePaymentModel: BasePaymentModel)
+    {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME,
+            getCategoryName(),
+            action,
+            basePaymentModel.gatewayName
+        )
+        if(basePaymentModel is  CreditCardPaymentModel)
+            map[KEY_PAYMENT_ID] = basePaymentModel.transactionId
+        sendAnalytics(map)
     }
 
     private fun prepareCommonMap(action: String, label: String? = "") {
@@ -79,6 +94,7 @@ class PmsAnalytics @Inject constructor(
         private fun getCategoryName(): String = "pms page"
 
         const val KEY_USER_ID = "userId"
+        const val KEY_PAYMENT_ID = "paymentId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
 

@@ -41,7 +41,7 @@ open class GiftBoxGlowingView @JvmOverloads constructor(
 
     init {
         blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
-        shadowColor = ContextCompat.getColor(context, R.color.gf_glowing_green)
+        shadowColor = ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gamification_dms_glowing_green)
         val bottomPadding = context.resources.getDimension(R.dimen.gami_direct_view_bottom_margin)
         yOffsetBottomLeft = - bottomPadding
         yOffsetBottomRight = yOffsetBottomLeft
