@@ -24,6 +24,7 @@ class ChatListTickerViewHolder(view: View,
     override fun bind(element: ChatListTickerUiModel) {
         binding?.chatListTicker?.run {
             tickerType = element.tickerType
+            closeButtonVisibility = View.GONE
             setHtmlDescription(element.message)
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
