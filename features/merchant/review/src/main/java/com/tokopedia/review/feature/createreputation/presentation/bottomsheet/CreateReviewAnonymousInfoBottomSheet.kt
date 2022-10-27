@@ -14,7 +14,7 @@ class CreateReviewAnonymousInfoBottomSheet : BottomSheetUnify() {
     companion object {
         const val TAG = "CreateReviewAnonymousInfoBottomSheet"
 
-        private const val ILLUSTRATION_URL = "https://upload.wikimedia.org/wikipedia/en/thumb/3/33/Patrick_Star.svg/1200px-Patrick_Star.svg.png"
+        private const val ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/review/illustration_review_anonymous_info_bottom_sheet.png"
     }
 
     private var binding by viewBinding(BottomsheetCreateReviewAnonymousInfoBinding::bind)
