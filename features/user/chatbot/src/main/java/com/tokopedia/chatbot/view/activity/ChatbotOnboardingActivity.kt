@@ -24,7 +24,6 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
 
-    //TODO change them
     var replyBubbleOnboardingDismissed: Boolean = true
     var videoBubbleOnBoardingDismissed: Boolean = true
 

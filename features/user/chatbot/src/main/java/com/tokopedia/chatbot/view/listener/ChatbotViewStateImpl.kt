@@ -102,7 +102,7 @@ class ChatbotViewStateImpl(
     }
 
     override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
-   //     scrollToBottom()
+        scrollToBottom()
         updateHeader(chatroomViewModel) {}
         checkShowQuickReply(chatroomViewModel)
     }
