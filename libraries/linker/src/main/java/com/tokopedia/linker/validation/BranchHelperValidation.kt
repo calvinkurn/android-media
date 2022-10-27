@@ -288,6 +288,7 @@ class BranchHelperValidation {
     fun sendBranchSuccessDataLogs(referringParams: JSONObject?, branchUrl: String) {
         val messageMap = HashMap<String, String>()
         messageMap[BRANCH_URL] = branchUrl
+        messageMap[BRANCH_LOG_TYPE] = BRANCH_FLOW_ON_CLICK_LINK
         if (referringParams != null) {
             messageMap[BRANCH_SUCCESS_DATA] = referringParams.toString();
         } else {
