@@ -1187,7 +1187,7 @@ class VoucherListFragment :
             when (it) {
                 is Success -> {
                     val voucherList = it.data
-                    voucherList.map { voucherUiModel ->
+                    voucherList.forEach { voucherUiModel ->
                         voucherUiModel.showNewBc = true
                     }
                     setOnSuccessGetVoucherList(voucherList)
