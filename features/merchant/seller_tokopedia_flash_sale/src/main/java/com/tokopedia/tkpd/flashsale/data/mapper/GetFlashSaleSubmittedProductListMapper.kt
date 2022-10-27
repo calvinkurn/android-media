@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleSubmittedProductListResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProduct
@@ -106,13 +107,13 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
 
     private fun GetFlashSaleSubmittedProductListResponse.Product.toProductStockStatus(): ProductStockStatus {
         return if (isParentProduct) {
-            if (isMultiwarehouse) {
+            if (countLocation > Int.ONE) {
                 ProductStockStatus.MULTI_VARIANT_MULTI_LOCATION
             } else {
                 ProductStockStatus.MULTI_VARIANT_SINGLE_LOCATION
             }
         } else {
-            if (isMultiwarehouse) {
+            if (countLocation > Int.ONE) {
                 ProductStockStatus.SINGLE_VARIANT_MULTI_LOCATION
             } else {
                 ProductStockStatus.SINGLE_VARIANT_SINGLE_LOCATION
