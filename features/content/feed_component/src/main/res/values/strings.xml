@@ -213,6 +213,7 @@
     <string name="feed_asgc_reminder_activate_rs_message" tools:ignore="UnusedResources">Yay, kamu akan diingatkan sebelum Rilisan Spesial dimulai.</string>
     <string name="feed_asgc_reminder_deactivate_message" tools:ignore="UnusedResources">Pengingat telah dibatalkan.</string>
 
+    <string name="feed_fab_create_live">Buat Live</string>
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
 
