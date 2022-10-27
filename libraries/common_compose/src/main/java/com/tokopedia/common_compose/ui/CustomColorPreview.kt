@@ -1,9 +1,14 @@
 package com.tokopedia.common_compose.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestTypography
 
 /**
@@ -16,12 +21,18 @@ import com.tokopedia.common_compose.principles.NestTypography
 @Composable
 fun CustomColorDarkPreview() {
     NestTheme(customColor = CustomPdpColor()) {
-        NestTypography(
-            text = "Flash Sale",
-            textStyle = NestTheme.typography.display3.copy(
-                color = pdpColor.cardBackground
+        Card(
+            modifier = Modifier.tag("card"),
+            contentColor = pdpColor.cardBackground
+        ) {
+            NestTypography(
+                modifier = Modifier.padding(8.dp),
+                text = "Flash Sale",
+                textStyle = NestTheme.typography.display3.copy(
+                    color = pdpColor.highLight
+                )
             )
-        )
+        }
     }
 }
 
@@ -29,17 +40,25 @@ fun CustomColorDarkPreview() {
 @Composable
 fun CustomColorLightPreview() {
     NestTheme(customColor = CustomPdpColor()) {
-        NestTypography(
-            text = "Flash Sale",
-            textStyle = NestTheme.typography.display3.copy(
-                color = pdpColor.cardBackground
+        Card(
+            modifier = Modifier.tag("card"),
+            contentColor = pdpColor.cardBackground
+        ) {
+            NestTypography(
+                modifier = Modifier.padding(8.dp),
+                text = "Flash Sale",
+                textStyle = NestTheme.typography.display3.copy(
+                    color = pdpColor.highLight
+                )
             )
-        )
+        }
     }
 }
 
 interface PdpColor {
     val cardBackground: Color
+    val highLight: Color
+        get() = NestGN.light._500
 }
 
 class CustomPdpColor(
@@ -49,11 +68,11 @@ class CustomPdpColor(
 
 class PdpDarkColor(
     override val cardBackground: Color = NestBN.light._100
-): PdpColor
+) : PdpColor
 
 class PdpLightColor(
     override val cardBackground: Color = NestRN.light._500
-): PdpColor
+) : PdpColor
 
 val pdpColor: PdpColor
     @Composable
