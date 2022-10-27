@@ -187,8 +187,8 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                     intent.setDataAndType(resultUri, "image/*")
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                    val pIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+                    val pIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, PendingIntent.FLAG_MUTABLE)
                     } else {
                         PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0)
                     }

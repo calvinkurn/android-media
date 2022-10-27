@@ -314,7 +314,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             } else {
                 if (userSession.isLoggedIn) {
                     it.intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         PendingIntent.getActivity(it, 0, it.intent, PendingIntent.FLAG_MUTABLE)
                     } else {
                         PendingIntent.getActivity(it, 0, it.intent, 0)
