@@ -5,13 +5,9 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedAuthInterceptor
 import com.tokopedia.feedplus.data.api.FeedUrl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -129,12 +125,8 @@ class FeedPlusModule {
 
     @Provides
     @FeedPlusScope
-    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
-
-    @Provides
-    @FeedPlusScope
-    fun provideMainDispatcher(dispatchers: CoroutineDispatchers): CoroutineDispatcher {
-        return dispatchers.main
+    fun provideMainDispatcher(): CoroutineDispatcher {
+        return Main
     }
 
     @FeedPlusScope
