@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -24,11 +23,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
-import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isCouponSheetsShown
-import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.extensions.isProductSheetsShown
-import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
+import com.tokopedia.play.extensions.*
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
@@ -37,15 +32,7 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.action.AtcProductAction
-import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
-import com.tokopedia.play.view.uimodel.action.BuyProductAction
-import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
-import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
-import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
-import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
-import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
-import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.event.*
@@ -166,7 +153,8 @@ class PlayBottomSheetFragment @Inject constructor(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section
     ) {
-        shouldCheckProductVariant(product, sectionInfo, ProductAction.Buy)
+        val action = product.buttonUiModels.lastOrNull().orDefault().type.toAction
+        shouldCheckProductVariant(product, sectionInfo, action)
     }
 
     override fun onAtcButtonClicked(
@@ -174,7 +162,8 @@ class PlayBottomSheetFragment @Inject constructor(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section
     ) {
-        shouldCheckProductVariant(product, sectionInfo, ProductAction.AddToCart)
+        val action = product.buttonUiModels.firstOrNull().orDefault().type.toAction
+        shouldCheckProductVariant(product, sectionInfo, action)
     }
 
     override fun onProductCardClicked(
@@ -237,8 +226,11 @@ class PlayBottomSheetFragment @Inject constructor(
      */
     override fun onActionClicked(variant: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         playViewModel.submitAction(
-            if (action == ProductAction.Buy) BuyProductVariantAction(variant.id, sectionInfo)
-            else AtcProductVariantAction(variant.id, sectionInfo)
+            when (action) {
+                ProductAction.Buy -> BuyProductVariantAction(variant.id, sectionInfo)
+                ProductAction.AddToCart -> AtcProductVariantAction(variant.id, sectionInfo)
+                ProductAction.OCC -> OCCProductVariantAction(variant.id, sectionInfo)
+            }
         )
     }
 
@@ -297,12 +289,11 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     fun showVariantSheet(
-        action: ProductAction,
         product: PlayProductUiModel.Product,
     ) {
         val button = product.buttonUiModels.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
-        variantSheetView.setAction(action, button)
-        playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
+        variantSheetView.setAction(button)
+        playViewModel.onShowVariantSheet(variantSheetMaxHeight)
     }
 
     /**
@@ -331,18 +322,18 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.onHideProductSheet()
     }
 
-    /**
-     * TODO = Change To Product Cart Type not Action
-     */
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
-            showVariantSheet(action, product)
+            showVariantSheet(product)
             analytic.clickActionProductWithVariant(product.id, action)
         }
 
         playViewModel.submitAction(
-            if (action == ProductAction.Buy) BuyProductAction(sectionInfo, product)
-            else AtcProductAction(sectionInfo, product)
+            when (action) {
+                ProductAction.Buy -> BuyProductAction(sectionInfo, product)
+                ProductAction.AddToCart -> AtcProductAction(sectionInfo, product)
+                ProductAction.OCC -> OCCProductAction(sectionInfo, product)
+            }
         )
     }
 
@@ -679,6 +670,9 @@ class PlayBottomSheetFragment @Inject constructor(
                                     getString(R.string.play_product_upcoming_reminder_error)
                                 },
                             )
+                        }
+                        is OCCSuccessEvent -> {
+                            RouteManager.route(requireContext(),ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT, event.product.id)
                         }
                         else -> {}
                     }

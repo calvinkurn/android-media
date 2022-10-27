@@ -236,7 +236,7 @@ class PlayFragment @Inject constructor(
     }
 
     fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
-        fragmentBottomSheetView.openVariantBottomSheet(action, product)
+        fragmentBottomSheetView.openVariantBottomSheet(product)
     }
 
     fun onFirstTopBoundsCalculated() {

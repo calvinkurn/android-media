@@ -85,6 +85,13 @@ data class AtcSuccessEvent(
     val sectionInfo: ProductSectionUiModel.Section?,
     val isProductFeatured: Boolean,
 ) : PlayViewerNewUiEvent()
+data class OCCSuccessEvent(
+    val product: PlayProductUiModel.Product,
+    val isVariant: Boolean,
+    val cartId: String,
+    val sectionInfo: ProductSectionUiModel.Section?,
+    val isProductFeatured: Boolean,
+) : PlayViewerNewUiEvent()
 
 //---------------------
 

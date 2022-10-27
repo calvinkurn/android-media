@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
-import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import java.util.concurrent.atomic.AtomicBoolean
@@ -46,9 +45,9 @@ class FragmentBottomSheetViewComponent(
         }
     }
 
-    fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
+    fun openVariantBottomSheet(product: PlayProductUiModel.Product) {
         getOrCreateFragment()
-            .showVariantSheet(action, product)
+            .showVariantSheet(product)
     }
 
     private fun getFragment(): PlayBottomSheetFragment? {

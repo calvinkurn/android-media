@@ -1883,20 +1883,29 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             is ProductCarouselUiComponent.Event.OnBuyClicked -> {
                 //TODO("Temporary, maybe best to combine bottom sheet into this fragment")
+                val action = event.product.buttonUiModels.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
                 if (event.product.isVariantAvailable) {
                     playFragment.openVariantBottomSheet(
-                        ProductAction.Buy,
+                        action.type.toAction,
                         event.product
                     )
                 }
 
                 playViewModel.submitAction(
-                    PlayViewerNewAction.BuyProduct(
-                        event.product,
-                        isProductFeatured = true,
-                    ),
+                    if (action.type == ProductButtonType.OCC) {
+                        PlayViewerNewAction.OCCProduct(
+                            event.product,
+                            isProductFeatured = true,
+                        )
+                    } else {
+                        PlayViewerNewAction.BuyProduct(
+                            event.product,
+                            isProductFeatured = true,
+                        )
+                    }
                 )
             }
+            // ATC is always the first button no need to change
             is ProductCarouselUiComponent.Event.OnAtcClicked -> {
                 if (event.product.isVariantAvailable) {
                     playFragment.openVariantBottomSheet(

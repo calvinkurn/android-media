@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.extensions.generateButton
+import com.tokopedia.play.extensions.toAction
 import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.ui.variantsheet.adapter.VariantLabelAdapter
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantItemDecoration
@@ -144,11 +145,11 @@ class VariantSheetViewComponent(
         show()
     }
 
-    fun setAction(action: ProductAction, button: ProductButtonUiModel) {
+    fun setAction(button: ProductButtonUiModel) {
         btnAction.text = button.text
         btnAction.generateButton(button.color)
 
-        mAction = action
+        mAction = button.type.toAction
     }
 
     fun setVariantSheet(model: VariantUiModel) {

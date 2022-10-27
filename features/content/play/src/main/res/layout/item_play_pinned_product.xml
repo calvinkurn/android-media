@@ -175,7 +175,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_atc"
             app:layout_constraintBottom_toBottomOf="@id/btn_atc"
-            tools:unifyButtonSize="small"
+            app:unifyButtonSize="small"
             tools:unifyButtonVariant="filled"
             />
 

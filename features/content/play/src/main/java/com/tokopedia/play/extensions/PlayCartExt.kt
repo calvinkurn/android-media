@@ -1,5 +1,6 @@
 package com.tokopedia.play.extensions
 
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ProductButtonColor
 import com.tokopedia.play.view.type.ProductButtonType
 import com.tokopedia.unifycomponents.UnifyButton
@@ -40,4 +41,12 @@ fun String.getCartAppLink(type: ProductButtonType, productId: String = "") : Str
         ProductButtonType.GCR -> ""
         ProductButtonType.OCC -> ""
         else -> ""
+    }
+
+val ProductButtonType.toAction : ProductAction
+    get() = when (this) {
+        ProductButtonType.ATC -> ProductAction.AddToCart
+        ProductButtonType.GCR -> ProductAction.Buy
+        ProductButtonType.OCC -> ProductAction.OCC
+        else -> ProductAction.AddToCart
     }

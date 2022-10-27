@@ -654,7 +654,7 @@ class PlayViewModel @AssistedInject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowVariantSheet(estimatedProductSheetHeight: Int, product: PlayProductUiModel.Product, action: ProductAction) {
+    fun onShowVariantSheet(estimatedProductSheetHeight: Int) {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
         insetsMap[BottomInsetsType.VariantSheet] =
@@ -917,6 +917,11 @@ class PlayViewModel @AssistedInject constructor(
                 action = ProductAction.AddToCart,
                 isProductFeatured = action.isProductFeatured,
             )
+            is PlayViewerNewAction.OCCProduct -> handleBuyProduct(
+                product = action.product,
+                action = ProductAction.OCC,
+                isProductFeatured = action.isProductFeatured,
+            )
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
@@ -954,7 +959,14 @@ class PlayViewModel @AssistedInject constructor(
                 ProductAction.AddToCart,
                 isProductFeatured = false
             )
+            is OCCProductAction -> handleBuyProduct(
+                action.sectionInfo,
+                action.product,
+                ProductAction.OCC,
+                isProductFeatured = false
+            )
             is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
+            is OCCProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.OCC)
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
@@ -2316,10 +2328,10 @@ class PlayViewModel @AssistedInject constructor(
             needLogin {
                 addProductToCart(product) { cartId ->
                     _uiEvent.emit(
-                        if (action == ProductAction.Buy) {
-                            BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
-                        } else {
-                            AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        when (action){
+                            ProductAction.Buy -> BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                            ProductAction.OCC -> OCCSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                            else -> AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
                         }
                     )
                 }
@@ -2338,8 +2350,23 @@ class PlayViewModel @AssistedInject constructor(
 
         addProductToCart(selectedVariant.data.variantDetail) { cartId ->
             _uiEvent.emit(
-                if (action == ProductAction.Buy) {
-                    BuySuccessEvent(
+                when (action) {
+                    ProductAction.Buy -> BuySuccessEvent(
+                        selectedVariant.data.variantDetail,
+                        true,
+                        cartId,
+                        selectedVariant.data.sectionInfo,
+                        selectedVariant.data.isFeatured,
+                    )
+                    ProductAction.AddToCart ->
+                        AtcSuccessEvent(
+                            selectedVariant.data.variantDetail,
+                            true,
+                            cartId,
+                            selectedVariant.data.sectionInfo,
+                            selectedVariant.data.isFeatured,
+                        )
+                    ProductAction.OCC -> OCCSuccessEvent(
                         selectedVariant.data.variantDetail,
                         true,
                         cartId,
@@ -2347,13 +2374,6 @@ class PlayViewModel @AssistedInject constructor(
                         selectedVariant.data.isFeatured,
                     )
                 }
-                else AtcSuccessEvent(
-                    selectedVariant.data.variantDetail,
-                    true,
-                    cartId,
-                    selectedVariant.data.sectionInfo,
-                    selectedVariant.data.isFeatured,
-                )
             )
         }
     }
