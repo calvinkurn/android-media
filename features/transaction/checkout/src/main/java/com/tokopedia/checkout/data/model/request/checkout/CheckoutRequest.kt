@@ -368,8 +368,7 @@ object CheckoutRequestMapper {
         if(shopProductCheckoutRequest.needPrescription && prescriptionIds != null && prescriptionIds.isNotEmpty()){
             orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, prescriptionIds.toString()))
         }
-        // TODO: add validation if schedule delivery exist or any other validation
-        orderMetadata.add(OrderMetadata(SCHEDULE_DELIVERY_META_DATA_KEY, Gson().toJson(shopProductCheckoutRequest.scheduleDelivery)))
+        orderMetadata.add(OrderMetadata(SCHEDULE_DELIVERY_META_DATA_KEY, shopProductCheckoutRequest.validationMetadata))
         return orderMetadata
     }
 }

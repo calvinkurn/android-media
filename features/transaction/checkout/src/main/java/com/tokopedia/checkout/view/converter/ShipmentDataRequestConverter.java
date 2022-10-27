@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.converter;
 
 import com.google.gson.Gson;
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.ScheduleDelivery;
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
@@ -80,7 +79,7 @@ public class ShipmentDataRequestConverter {
         shopProductCheckout.setCartString(shipmentCartItemModel.getCartString());
         shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
         shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
-        shopProductCheckout.setScheduleDelivery(new ScheduleDelivery());
+        shopProductCheckout.setValidationMetadata("");
         if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
             shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
         }
@@ -126,14 +125,7 @@ public class ShipmentDataRequestConverter {
                 shopProductCheckout.setCartString(shipmentCartItemModel.getCartString());
                 shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
                 shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
-
-                ScheduleDelivery scheduleDelivery = new ScheduleDelivery();
-                // TODO: 10/10/22 add is scheduled delivery radio button checked validation
-                scheduleDelivery.setTimeslotId(shipmentCartItemModel.getTimeslotId());
-                scheduleDelivery.setScheduleDate(shipmentCartItemModel.getScheduleDate());
-                scheduleDelivery.setShippingPrice(courierItemData.getSelectedShipper().getShippingRate());
-
-                shopProductCheckout.setScheduleDelivery(scheduleDelivery);
+                shopProductCheckout.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
 
                 ArrayList<String> promoCodes = new ArrayList<>();
                 List<PromoRequest> promoRequests = new ArrayList<>();
