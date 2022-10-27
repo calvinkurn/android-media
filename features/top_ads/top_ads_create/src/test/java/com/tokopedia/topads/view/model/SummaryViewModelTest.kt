@@ -105,7 +105,7 @@ class SummaryViewModelTest {
     @Test
     fun `validateGroup success`() {
         val expected = ResponseGroupValidateName()
-        var actual: ResponseGroupValidateName.TopAdsGroupValidateName? = null
+        var actual: ResponseGroupValidateName.TopAdsGroupValidateNameV2? = null
 
         every {
             validGroupUseCase.execute(captureLambda(), any())
@@ -114,13 +114,13 @@ class SummaryViewModelTest {
         }
 
         viewModel.validateGroup("name") { actual = it }
-        verify { validGroupUseCase.setParams(any()) }
+        verify { validGroupUseCase.setParams(any(), any()) }
         Assert.assertEquals(expected.topAdsGroupValidateName, actual)
     }
 
     @Test
     fun `validateGroup error`() {
-        var actual: ResponseGroupValidateName.TopAdsGroupValidateName? = null
+        var actual: ResponseGroupValidateName.TopAdsGroupValidateNameV2? = null
 
         every {
             validGroupUseCase.execute(any(), captureLambda())

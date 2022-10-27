@@ -25,4 +25,6 @@ interface InspirationListAtcView {
     fun updateSearchBarNotification()
 
     fun trackAdsClick(product: InspirationCarouselDataView.Option.Product)
+
+    fun trackAdsImpress(product: InspirationCarouselDataView.Option.Product)
 }

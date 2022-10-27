@@ -3,6 +3,7 @@ package com.tokopedia.play.viewmodel.play
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.R
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.fake.FakePlayWebSocket
 import com.tokopedia.play.model.*
@@ -498,7 +499,7 @@ class PlayViewModelWebSocketTest {
             event.last().isEqualTo(
                 ShowCoachMarkWinnerEvent(
                     PlayUserWinnerStatusSocketResponse.loserTitle,
-                    PlayUserWinnerStatusSocketResponse.loserText
+                    UiString.Text(PlayUserWinnerStatusSocketResponse.loserText),
                 )
             )
         }
@@ -639,7 +640,138 @@ class PlayViewModelWebSocketTest {
     }
 
     @Test
-    fun `when quiz is ongoing, user join the game, show leaderboard`() {
+    fun `when quiz is ongoing, user join the game whether they a winner or not show coachmark`() {
+        val model = uiModelBuilder.buildQuiz(
+            id = "1", listOfChoices =
+            listOf(
+                modelBuilder.buildQuizChoices(
+                    id = "12",
+                    text = "25 June",
+                    type = PlayQuizOptionState.Default('a')
+                ),
+                modelBuilder.buildQuizChoices(
+                    id = "13",
+                    text = "26 June",
+                    type = PlayQuizOptionState.Default('b')
+                ),
+                modelBuilder.buildQuizChoices(
+                    id = "14",
+                    text = "27 June",
+                    type = PlayQuizOptionState.Default('c')
+                )
+            ),
+            status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
+        )
+
+        coEvery { repo.getCurrentInteractive(any()) } returns model
+
+        coEvery { repo.answerQuiz(any(), any()) } returns "12"
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = fakePlayWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            it.setUserId("1")
+            it.setLoggedIn(true)
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(
+                    PlayViewerNewAction.ClickQuizOptionAction(
+                        modelBuilder.buildQuizChoices(
+                            id = "12",
+                            text = "25 June",
+                            type = PlayQuizOptionState.Default('a')
+                        )
+                    )
+                )
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
+
+            event.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
+        }
+    }
+
+    @Test
+    fun `when quiz is ongoing, user join the game that has a reward, user the loser - wrong answer`() {
+        val model = uiModelBuilder.buildQuiz(
+            id = "1", listOfChoices =
+            listOf(
+                modelBuilder.buildQuizChoices(
+                    id = "12",
+                    text = "25 June",
+                    type = PlayQuizOptionState.Default('a')
+                ),
+                modelBuilder.buildQuizChoices(
+                    id = "13",
+                    text = "26 June",
+                    type = PlayQuizOptionState.Default('b')
+                ),
+                modelBuilder.buildQuizChoices(
+                    id = "14",
+                    text = "27 June",
+                    type = PlayQuizOptionState.Default('c')
+                )
+            ),
+            status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
+        )
+
+        coEvery { repo.getCurrentInteractive(any()) } returns model
+
+        coEvery { repo.answerQuiz(any(), any()) } returns "12"
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = fakePlayWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            it.setUserId("9")
+            it.setLoggedIn(true)
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(
+                    PlayViewerNewAction.ClickQuizOptionAction(
+                        modelBuilder.buildQuizChoices(
+                            id = "14",
+                            text = "27 June",
+                            type = PlayQuizOptionState.Default('a')
+                        )
+                    )
+                )
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
+
+            event.last().assertEqualTo(
+                ShowCoachMarkWinnerEvent(
+                    "",
+                    UiString.Resource(R.string.play_quiz_finished),
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `when quiz is ongoing, user join the game that has no  reward just show leaderboard`() {
         val model = uiModelBuilder.buildQuiz(
             id = "1", listOfChoices =
             listOf(

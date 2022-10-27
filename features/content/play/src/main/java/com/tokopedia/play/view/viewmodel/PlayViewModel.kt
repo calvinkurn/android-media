@@ -1291,12 +1291,22 @@ class PlayViewModel @AssistedInject constructor(
         this._partnerInfo.value = partnerInfo
     }
 
+    private var coachmarkJob: Job? = null
+
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        val userId = userSession.userId
-        if (!playPreference.isOnboardingShown(userId) && !videoMetaInfo.videoPlayer.isYouTube) {
-            viewModelScope.launch(dispatchers.main) {
+        val isShown = playPreference.isCoachMark(userId = userId)
+
+        playAnalytic.screenWithSwipeCoachMark(isShown = isShown, channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
+
+        coachmarkJob?.cancel()
+
+        if (isShown && !videoMetaInfo.videoPlayer.isYouTube) {
+            coachmarkJob = viewModelScope.launch(dispatchers.computation) {
                 delay(ONBOARDING_DELAY)
-                _observableOnboarding.value = Event(Unit)
+
+                withContext(dispatchers.main) {
+                    _observableOnboarding.value = Event(Unit)
+                }
             }
         }
     }
@@ -1857,29 +1867,23 @@ class PlayViewModel @AssistedInject constructor(
                     isPlaying = false,
                 )
             }
-
-            val interactiveType = _interactive.value.interactive
-
-            showLeaderBoard(interactiveId = interactiveType.id)
-
-            /**
-             * _interactive.value = InteractiveStateUiModel.Empty (resetting interactive) is available on
-             * processWinnerStatus() / showLeaderBoard() if we use both there's a case when the delay is still on but the socket
-             * is coming, seller create another quiz it'll ruin the current flow.
-             *
-             * if winner status still didn't come after delay, just showLeaderBoard
-             * */
+            showLeaderBoard(_interactive.value.interactive.id)
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
     }
 
-    private fun showLeaderBoard(interactiveId: String){
+    private suspend fun showLeaderBoard(interactiveId: String){
         if (repo.hasProcessedWinner(interactiveId)) return
 
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
+
+        _uiEvent.emit(
+            ShowCoachMarkWinnerEvent("", UiString.Resource(R.string.play_quiz_finished))
+        )
+
         repo.setHasProcessedWinner(interactiveId)
 
         _interactive.value = InteractiveStateUiModel.Empty
@@ -1904,7 +1908,7 @@ class PlayViewModel @AssistedInject constructor(
                     ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
                 }
                 else {
-                    ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
+                    ShowCoachMarkWinnerEvent(status.loserTitle, UiString.Text(status.loserText))
                 }
             )
             repo.setHasProcessedWinner(interactive.id)
