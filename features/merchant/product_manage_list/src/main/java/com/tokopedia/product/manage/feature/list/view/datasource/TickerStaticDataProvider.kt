@@ -1,10 +1,8 @@
 package com.tokopedia.product.manage.feature.list.view.datasource
 
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.ShopInfo
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo.Companion.ON_MODERATED_PERMANENTLY
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo.Companion.ON_MODERATED_STAGE
-import com.tokopedia.product.manage.feature.list.view.model.ShopStatusUIModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import javax.inject.Inject
