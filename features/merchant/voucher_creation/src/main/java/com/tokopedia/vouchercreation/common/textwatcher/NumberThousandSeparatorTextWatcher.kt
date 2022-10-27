@@ -8,7 +8,7 @@ import java.text.DecimalFormat
 
 class NumberThousandSeparatorTextWatcher(
     private val view: EditText,
-    private val decimalFormatter: DecimalFormat,
+    private val decimalFormatter: DecimalFormat?,
     private val afterTextChangedAction: (Int, String) -> Unit
 ) : TextWatcher {
 
@@ -22,8 +22,8 @@ class NumberThousandSeparatorTextWatcher(
 
             try {
                 val number = s.toString().digitsOnlyInt()
-                val formattedNumber = decimalFormatter.format(number)
-                afterTextChangedAction(number, formattedNumber)
+                val formattedNumber = decimalFormatter?.format(number)
+                afterTextChangedAction(number, formattedNumber.orEmpty())
 
             }  catch (e: Exception) {
                 e.printStackTrace()

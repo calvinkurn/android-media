@@ -63,6 +63,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
+    implementation projectOrAar(rootProject.ext.features.feedComponent)
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
@@ -98,6 +100,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.fragmentKtx
 
     implementation rootProject.ext.networkDependencies.glide
 
@@ -137,7 +140,7 @@ dependencies {
         exclude group: 'com.google.android.gms'
         exclude group: 'com.google.firebase'
     }
-    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 }
 
 project.ext {

@@ -38,7 +38,6 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
-import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
@@ -62,7 +61,6 @@ class ChatbotViewStateImpl(
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
     private lateinit var rvQuickReply: RecyclerView
-    private lateinit var reasonBottomSheet: ReasonBottomSheet
     private lateinit var chatMenuBtn: ImageView
 
     override fun initView() {
@@ -260,27 +258,6 @@ class ChatbotViewStateImpl(
         if (adapter.data[indexToUpdate] is ChatRatingUiModel) {
             (adapter.data[indexToUpdate] as ChatRatingUiModel).ratingStatus = rating
             adapter.notifyItemChanged(indexToUpdate)
-        }
-    }
-
-    private fun showReasonBottomSheet(
-        element: SendRatingPojo,
-        activity: Activity,
-        onClickReasonRating: (String) -> Unit
-    ) {
-        if (!::reasonBottomSheet.isInitialized) {
-            reasonBottomSheet = ReasonBottomSheet.createInstance(
-                activity,
-                element.postRatingV2.data.listReason,
-                onClickReasonRating
-            )
-        }
-        reasonBottomSheet.show()
-    }
-
-    override fun onClickReasonRating() {
-        if (::reasonBottomSheet.isInitialized) {
-            reasonBottomSheet.dismiss()
         }
     }
 
