@@ -91,6 +91,12 @@
     <string name="success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
     <string name="subtitle_phone_setting_profile">Nomor HP</string>
 
+    <!-- NEW ADD PHONE-->
+    <string name="new_add_phone_title">Tambah nomor HP dulu, yuk!</string>
+    <string name="new_add_phone_subtitle">Nomor HP akan memperkuat keamanan &amp; akses masuk ke akunmu.</string>
+    <string name="new_add_phone_label_filed">Nomor HP</string>
+    <string name="new_add_phone_label_button">Tambah Nomor HP</string>
+
     <!-- CHANGE PIN -->
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
 
