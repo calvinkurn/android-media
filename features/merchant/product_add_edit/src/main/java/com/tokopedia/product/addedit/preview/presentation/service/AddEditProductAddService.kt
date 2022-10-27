@@ -105,7 +105,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             override fun getSuccessIntent(): PendingIntent {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+                    PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 } else {
                     PendingIntent.getActivity(context, 0, intent, 0)
                 }
