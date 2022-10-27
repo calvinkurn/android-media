@@ -67,7 +67,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int?, userID: String?) {
         if (banners.isNotEmpty()) {
             banners.forEachIndexed { index, banner ->
-                val componentName = banner.parentComponentName ?: EMPTY_STRING
                 val map = createGeneralEvent(
                     eventName = EVENT_PROMO_VIEW,
                     eventAction = IMPRESSION_DYNAMIC_BANNER,
@@ -81,7 +80,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 banner.let {
                     val bannerID = if(it.id.isNullOrEmpty()) 0 else it.id
                     hashMap[KEY_ID] = "${bannerID}_0"
-                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}"
+                    hashMap[KEY_NAME] = it.gtmItemName?.replace("#POSITION",(banner.positionForParentItem + 1).toString()).toString()
                     hashMap[KEY_CREATIVE] = it.creativeName ?: EMPTY_STRING
                     hashMap[KEY_POSITION] = componentPosition?.plus(1)?:index+1
                 }
@@ -101,7 +100,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackPromoBannerImpression(banners: List<DataItem>) {
         if (banners.isNotEmpty()) {
             banners.forEachIndexed { index, banner ->
-                val componentName = banner.componentPromoName ?: EMPTY_STRING
                 val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
                         eventAction = ACTION_VIEW_COUPON_BANNER)
                 map[KEY_EVENT_CATEGORY] = VALUE_DISCOVERY_PAGE
@@ -112,7 +110,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 val hashMap = HashMap<String, Any>()
                 banner.let {
                     hashMap[KEY_ID] = "${it.id ?: 0} - ${it.code}"
-                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - $componentName"
+                    hashMap[KEY_NAME] = it.gtmItemName?.replace("#POSITION",(banner.positionForParentItem + 1).toString()).toString()
                     hashMap[KEY_CREATIVE] = "${it.creativeName ?: EMPTY_STRING} - ${it.name}"
                     hashMap[KEY_POSITION] = index+1
                 }
@@ -142,7 +140,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             val bannerID = if(it.id.isNullOrEmpty()) 0 else it.id
             list.add(mapOf(
                     KEY_ID to "${bannerID}_0",
-                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}",
+                    KEY_NAME to it.gtmItemName?.replace("#POSITION",(banner.positionForParentItem + 1).toString()).toString(),
                     KEY_CREATIVE to it.creativeName.toString(),
                     KEY_POSITION to bannerPosition + 1
             ))
@@ -172,7 +170,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         banner.let {
             list.add(mapOf(
                     KEY_ID to "${it.id.toString()} - ${it.code ?: EMPTY_STRING}",
-                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - $componentName",
+                    KEY_NAME to it.gtmItemName?.replace("#POSITION",(banner.positionForParentItem + 1).toString()).toString(),
                     KEY_CREATIVE to it.creativeName.toString(),
                     KEY_POSITION to bannerPosition + 1
             ))
