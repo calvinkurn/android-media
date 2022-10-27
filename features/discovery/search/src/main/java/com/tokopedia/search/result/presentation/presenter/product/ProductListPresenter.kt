@@ -1766,6 +1766,7 @@ class ProductListPresenter @Inject constructor(
             adapterPosition,
             dimension90,
             externalReference,
+            chooseAddressDelegate.getChooseAddressParams(),
         )
 
         view.routeToProductDetail(item, adapterPosition)
