@@ -98,7 +98,7 @@ open class ChatStreams @AssistedInject constructor(
     }
 
     companion object {
-        private const val MAX_CHAT = 30
+        private const val MAX_CHAT = 100
         private const val DELAY_PER_STREAM = 500L
     }
 }
