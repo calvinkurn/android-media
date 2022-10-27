@@ -1,10 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.model
 
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.ShopInfo
-import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
-import com.tokopedia.product.manage.common.feature.getstatusshop.data.response.ShopStatusResponse
 
 data class ShopStatusUIModel(
     val shopStatus: String,
@@ -16,7 +13,6 @@ data class ShopStatusUIModel(
         const val ON_MODERATED_STAGE = 3
         const val ON_MODERATED_PERMANENTLY = 5
 
-
         fun mapperShopStatusResponse(shopInfo: ShopInfo?): ShopStatusUIModel {
             return ShopStatusUIModel(
                 shopStatus = shopInfo?.statusInfo?.shopStatus.orEmpty(),
@@ -26,7 +22,6 @@ data class ShopStatusUIModel(
             )
         }
     }
-
 
     fun isOnModerationMode(): Boolean {
         val status = shopStatus.toIntOrZero()

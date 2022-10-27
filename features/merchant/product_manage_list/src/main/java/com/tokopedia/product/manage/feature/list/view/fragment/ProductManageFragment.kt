@@ -416,7 +416,6 @@ open class ProductManageFragment :
     private var progressDialog: ProgressDialog? = null
     private var optionsMenu: Menu? = null
 
-
     private var tickerPagerAdapter: TickerPagerAdapter? = null
 
     private val ticker: Ticker?
@@ -3336,7 +3335,8 @@ open class ProductManageFragment :
                     )
                 }?.let { color ->
                     iconMenuAddProduct.setColorFilter(
-                        color, PorterDuff.Mode.SRC_ATOP
+                        color,
+                        PorterDuff.Mode.SRC_ATOP
                     )
                 }
 
@@ -3353,7 +3353,6 @@ open class ProductManageFragment :
             }
         }
     }
-
 
     companion object {
         private const val BOTTOM_SHEET_TAG = "BottomSheetTag"

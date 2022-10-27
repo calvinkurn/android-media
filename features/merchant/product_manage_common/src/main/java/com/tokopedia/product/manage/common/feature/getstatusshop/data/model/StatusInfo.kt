@@ -21,6 +21,6 @@ data class StatusInfo(
 
     fun isOnModerationMode(): Boolean {
         val status = shopStatus.toIntOrZero()
-        return status == ON_MODERATED_STAGE || status ==  ON_MODERATED_PERMANENTLY
+        return status == ON_MODERATED_STAGE || status == ON_MODERATED_PERMANENTLY
     }
 }

@@ -21,7 +21,6 @@ class GetStatusShopUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): StatusInfo {
-
         val gqlRequest = GraphqlRequest(
             GetShopStatusGqlQuery(),
             ShopStatusResponse::class.java,
