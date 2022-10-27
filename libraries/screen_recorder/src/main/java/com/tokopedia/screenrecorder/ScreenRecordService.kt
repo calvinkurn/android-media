@@ -227,8 +227,8 @@ class ScreenRecordService : Service(), CoroutineScope {
     private fun buildPendingIntent(action: String): PendingIntent? {
         val i = Intent(applicationContext, javaClass)
         i.action = action
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getService(applicationContext, 0, i,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getService(applicationContext, 0, i,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
         } else {
             PendingIntent.getService(applicationContext, 0, i, 0)
         }
