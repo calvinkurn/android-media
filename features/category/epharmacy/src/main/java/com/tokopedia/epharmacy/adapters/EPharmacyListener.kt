@@ -1,5 +1,6 @@
 package com.tokopedia.epharmacy.adapters
 
+import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 
 interface EPharmacyListener {
@@ -15,5 +16,11 @@ interface EPharmacyListener {
     fun onPrescriptionImageClick(adapterPosition: Int, image: PrescriptionImage){}
 
     fun onCameraClick(){}
+
+    /**
+     * Attachment Accordion
+     */
+
+    fun onInteractAccordion(adapterPosition: Int, isExpanded: Boolean, modelKey: String){}
 
 }

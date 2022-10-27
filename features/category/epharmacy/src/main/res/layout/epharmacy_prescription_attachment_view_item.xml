@@ -15,7 +15,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_6"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         tools:text="Pesanan"
+        tools:visibility="visible"
+        android:visibility="gone"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -29,6 +32,8 @@
         app:typographyWeight="bold"
         android:layout_marginTop="8dp"
         tools:text="Apotek Century Meruya Raden Saleh"
+        tools:visibility="visible"
+        android:visibility="gone"
         />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -39,6 +44,8 @@
         app:layout_constraintBottom_toBottomOf="@id/shop_name"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
+        tools:visibility="visible"
+        android:visibility="gone"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -52,6 +59,8 @@
         android:textColor="@color/Unify_N700_68"
         app:typographyType="display_3"
         android:text="@string/epharmacy_partner_resmi"
+        tools:visibility="visible"
+        android:visibility="gone"
         />
     
     <com.tokopedia.unifycomponents.ImageUnify
@@ -61,6 +70,8 @@
         android:layout_marginStart="4dp"
         app:layout_constraintStart_toEndOf="@id/partner_title"
         app:layout_constraintTop_toTopOf="@id/partner_title"
+        tools:visibility="visible"
+        android:visibility="gone"
         />
 
     <com.tokopedia.unifycomponents.CardUnify2
@@ -110,25 +121,17 @@
         android:textColor="@color/Unify_NN600"
         />
 
-    <com.tokopedia.accordion.AccordionUnify
+
+    <include
         android:id="@+id/product_accordion_view"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        layout="@layout/epharmacy_accordion_products_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_image_card"
         tools:visibility="visible"
         android:visibility="gone"
-        />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider_products"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_accordion_view"
-        android:layout_marginTop="12dp"
         />
 
     <include
@@ -137,7 +140,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_products"
+        app:layout_constraintTop_toBottomOf="@id/product_accordion_view"
         layout="@layout/epharmacy_chat_upload_widget"
         tools:visibility="visible"
         android:visibility="gone"
@@ -150,6 +153,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/chat_dokter_upload_layout"
+        tools:visibility="visible"
+        android:visibility="gone"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

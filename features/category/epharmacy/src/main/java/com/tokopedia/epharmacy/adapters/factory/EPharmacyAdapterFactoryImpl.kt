@@ -38,13 +38,28 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
             EPharmacyStaticInfoViewHolder.LAYOUT -> EPharmacyStaticInfoViewHolder(view)
             EPharmacyPrescriptionViewHolder.LAYOUT -> EPharmacyPrescriptionViewHolder(view, ePharmacyListener)
             EPharmacyProductViewHolder.LAYOUT -> EPharmacyProductViewHolder(view)
-            EPharmacyAttachmentViewHolder.LAYOUT -> EPharmacyAttachmentViewHolder(view)
+            EPharmacyAttachmentViewHolder.LAYOUT -> EPharmacyAttachmentViewHolder(view,ePharmacyListener)
             else -> super.createViewHolder(view,type)
         }
     }
 }
 
 class EPharmacyDetailDiffUtil: DiffUtil.ItemCallback<BaseEPharmacyDataModel>() {
+
+    override fun areItemsTheSame(oldItem: BaseEPharmacyDataModel, newItem: BaseEPharmacyDataModel): Boolean {
+        return oldItem.name() == newItem.name()
+    }
+
+    override fun areContentsTheSame(oldItem: BaseEPharmacyDataModel, newItem: BaseEPharmacyDataModel): Boolean {
+        return oldItem.equalsWith(newItem)
+    }
+
+    override fun getChangePayload(oldItem: BaseEPharmacyDataModel, newItem: BaseEPharmacyDataModel): Any? {
+        return oldItem.getChangePayload(newItem)
+    }
+}
+
+class EPharmacyAttachmentDetailDiffUtil: DiffUtil.ItemCallback<BaseEPharmacyDataModel>() {
 
     override fun areItemsTheSame(oldItem: BaseEPharmacyDataModel, newItem: BaseEPharmacyDataModel): Boolean {
         return oldItem.name() == newItem.name()

@@ -13,10 +13,10 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactoryImpl
-import com.tokopedia.epharmacy.adapters.factory.EPharmacyDetailDiffUtil
+import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUtil
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
@@ -67,7 +67,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
 
     private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseEPharmacyDataModel> = AsyncDifferConfig.Builder(
-            EPharmacyDetailDiffUtil()
+            EPharmacyAttachmentDetailDiffUtil()
         )
             .build()
         EPharmacyAdapter(asyncDifferConfig, ePharmacyAdapterFactory)
@@ -179,15 +179,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
     private fun onSuccessGroupData(it: Success<EPharmacyDataModel>) {
         ePharmacyLoader?.hide()
         it.data.listOfComponents.forEach { component ->
-            if(component.name() == PRESCRIPTION_COMPONENT){
-                (component as? EPharmacyPrescriptionDataModel)?.let { presComponent ->
-                    presComponent.prescriptions?.let {
-                        //uploadPrescriptionViewModel.onSuccessGetPrescriptionImages(it)
-                    }
-                }
-            }else {
-                ePharmacyAttachmentUiUpdater.updateModel(component)
-            }
+            ePharmacyAttachmentUiUpdater.updateModel(component)
         }
         updateUi()
     }
@@ -213,12 +205,17 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         ePharmacyAdapter.submitList(visitableList)
     }
 
+    override fun onInteractAccordion(adapterPosition: Int, isExpanded: Boolean, modelKey: String) {
+        super.onInteractAccordion(adapterPosition, isExpanded, modelKey)
+        (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel).productsIsExpanded = !isExpanded
+        updateUi()
+    }
+
     override fun getScreenName() = EPHARMACY_SCREEN_NAME
 
     override fun initInjector() = getComponent(EPharmacyComponent::class.java).inject(this)
 
     companion object {
-        const val DELAY_IN_MILLS_FOR_SNACKBAR_VIEW = 2000L
         @JvmStatic
         fun newInstance(bundle: Bundle): EPharmacyPrescriptionAttachmentPageFragment {
             val fragment = EPharmacyPrescriptionAttachmentPageFragment()

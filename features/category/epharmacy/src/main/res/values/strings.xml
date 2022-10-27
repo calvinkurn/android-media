@@ -19,6 +19,7 @@
 
     <string name="epharmacy_prescription_attachment_page_title">Lampirkan resep dokter</string>
     <string name="epharmacy_partner_resmi">Partner resmi</string>
+    <string name="epharmacy_tampilkan_lebih_sedikit">Tampilkan lebih sedikit</string>
 
     <string name="epharmacy_toko_ini_adalah_partner_resmi">Toko ini adalah partner resmi</string>
 </resources>

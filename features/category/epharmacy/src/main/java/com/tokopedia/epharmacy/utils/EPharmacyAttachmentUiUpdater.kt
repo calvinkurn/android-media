@@ -10,7 +10,7 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: MutableMap<String, BaseEPharma
     }
 
     fun updateModel(model: BaseEPharmacyDataModel){
-        updateData(model.type(),model)
+        updateData(model.name(),model)
     }
 
     private fun updateData(key: String, baseCatalogDataModel: BaseEPharmacyDataModel) {
