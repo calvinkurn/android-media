@@ -13,8 +13,8 @@ import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
-import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSEImpl
 import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
+import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSEImpl
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -90,8 +90,9 @@ class SellerHomeModule {
     @SellerHomeScope
     @Provides
     fun provideSellerHomeSSE(
-        dispatchers: CoroutineDispatchers
+        dispatchers: CoroutineDispatchers,
+        userSession: UserSessionInterface
     ): SellerHomeWidgetSSE {
-        return SellerHomeWidgetSSEImpl(dispatchers)
+        return SellerHomeWidgetSSEImpl(dispatchers, userSession)
     }
 }
