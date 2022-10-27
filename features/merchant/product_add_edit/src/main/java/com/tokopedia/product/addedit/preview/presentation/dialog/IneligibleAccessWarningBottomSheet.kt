@@ -13,16 +13,17 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val DEFAULT_IMAGE_URL = "https://images.tokopedia.net/img/android/product-service/add-edit-product/Group.png"
+        private const val DEFAULT_IMAGE_URL =
+            "https://images.tokopedia.net/img/android/product-service/add-edit-product/Group.png"
 
         @JvmStatic
         fun newInstance() = IneligibleAccessWarningBottomSheet()
     }
 
     private var binding by autoClearedNullable<BottomsheetIneligibleAccessWarningBinding>()
-    private var onButtonBackClicked : () -> Unit = {}
-    private var onButtonLearningProblem : () -> Unit = {}
-    private var dismissListener : () -> Unit = {}
+    private var onButtonBackClicked: () -> Unit = {}
+    private var onButtonLearningProblem: () -> Unit = {}
+    private var dismissListener: () -> Unit = {}
 
     init {
         clearContentPadding = true
@@ -70,15 +71,15 @@ class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun setOnButtonBackClicked(onButtonClicked : () -> Unit = {}) {
+    fun setOnButtonBackClicked(onButtonClicked: () -> Unit = {}) {
         this.onButtonBackClicked = onButtonClicked
     }
 
-    fun setOnButtonLearningProblemClicked(onButtonClicked : () -> Unit = {}) {
+    fun setOnButtonLearningProblemClicked(onButtonClicked: () -> Unit = {}) {
         this.onButtonLearningProblem = onButtonClicked
     }
 
-    fun setDismissListener(onDismissListener : () -> Unit = {}){
+    fun setDismissListener(onDismissListener: () -> Unit = {}) {
         this.dismissListener = onDismissListener
     }
 }

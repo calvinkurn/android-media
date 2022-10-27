@@ -487,10 +487,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         })
     }
 
-    fun validateShopIsOnModerated(shopId: Int){
+    fun validateShopIsOnModerated(shopId: Int) {
         launchCatchError(block = {
-            getStatusShopUseCase.params =GetStatusShopUseCase.createRequestParams(shopId)
-            val shopStatus = withContext(dispatcher.io){
+            getStatusShopUseCase.params = GetStatusShopUseCase.createRequestParams(shopId)
+            val shopStatus = withContext(dispatcher.io) {
                 getStatusShopUseCase.executeOnBackground()
             }
             mIsOnModerationMode.value = Success(shopStatus.isOnModerationMode())
