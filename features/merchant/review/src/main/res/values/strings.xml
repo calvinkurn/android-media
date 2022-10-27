@@ -94,7 +94,6 @@
     <string name="txt_btn_submit_review">Kirim</string>
     <string name="review_create_fail_toaster">Ulasan tidak terkirim. Cek koneksi internet kamu &amp; coba lagi, ya. Kode Error: (%1$s)</string>
     <string name="review_create_success_toaster">Terima kasih %s sudah bantu pembeli lain lewat ulasanmu</string>
-    <string name="review_create_anonymous_toaster">Namamu akan disembunyikan di ulasan ini</string>
     <string name="review_create_worst_title">Apa yang bikin kamu kecewa?</string>
     <string name="review_create_negative_title">Apa yang kamu nggak suka?</string>
     <string name="review_create_neutral_title">Apa yang harus diperbaiki?</string>
