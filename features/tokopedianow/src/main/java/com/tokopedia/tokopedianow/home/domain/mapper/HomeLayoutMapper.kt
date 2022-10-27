@@ -242,7 +242,11 @@ object HomeLayoutMapper {
                     sharingUrlParam = data.sharingUrlParam,
                     userStatus = data.userStatus,
                     maxReward = data.maxReward,
-                    isSender = data.isSender
+                    isSender = data.isSender,
+                    type = data.type,
+                    applink = data.applink,
+                    url = data.url,
+                    textButton = data.textButton
                 ),
                 state = HomeLayoutItemState.LOADED
             )

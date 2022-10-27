@@ -31,6 +31,12 @@ internal object GetReferralSenderHome: GqlQueryInterface {
                 textDescription
                 sharingURL
             }
+            actionButton {
+                text
+                url
+                appLink
+                type
+            }
           }
         }
         """.trimIndent()

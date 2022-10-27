@@ -66,7 +66,6 @@ class HomeSharingWidgetViewHolder(
         binding?.apply {
             iuCloseSharing.hide()
         }
-
         if (element.isSender) {
             setSenderData(element)
         } else {
@@ -82,7 +81,7 @@ class HomeSharingWidgetViewHolder(
                 stringRes = R.string.tokopedianow_home_referral_widget_desc_sender,
                 referral = element
             )
-            btnSharing.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
+            btnSharing.text = element.textButton
             iuSharing.loadImage(IMG_SHARING_REFERRAL_SENDER)
             ivBgImageLeft.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_left))
             ivBgImageRight.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_right))

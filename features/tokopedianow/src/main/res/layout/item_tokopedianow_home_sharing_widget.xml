@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    android:id="@+id/cv_sharing_education"
+<androidx.cardview.widget.CardView android:id="@+id/cv_sharing_education"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="0dp"
@@ -10,7 +9,8 @@
     app:cardCornerRadius="10dp"
     app:cardElevation="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/iv_bg_image_top"
@@ -39,8 +39,9 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginTop="27dp"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="24dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -49,24 +50,25 @@
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="11dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             android:translationZ="1dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_sharing"
-            app:layout_constraintEnd_toStartOf="@+id/iu_close_sharing"
-            app:layout_constraintStart_toEndOf="@+id/iu_sharing"
+            app:layout_constraintStart_toStartOf="@+id/iu_close_sharing"
+            app:layout_constraintEnd_toStartOf="@+id/iu_sharing"
             app:layout_constraintTop_toTopOf="@+id/iu_sharing"
-            app:typographyType="display_3" />
+            app:typographyType="display_3"
+            tools:text="asdasdasdasdas"/>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_sharing"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:translationZ="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -79,8 +81,8 @@
             app:unifyButtonSize="small"
             android:text="@string/tokopedianow_home_sharing_education_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iu_sharing" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iu_sharing" />
 
         <ImageView
             android:id="@+id/iv_bg_image_left"

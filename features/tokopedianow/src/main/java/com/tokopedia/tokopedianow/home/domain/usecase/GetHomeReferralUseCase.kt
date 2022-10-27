@@ -43,6 +43,7 @@ class GetHomeReferralUseCase @Inject constructor(
 
         if(gamiReferralSenderHome.resultStatus.code == SUCCESS_CODE) {
             val metaData = gamiReferralSenderHome.sharingMetaData
+            val action = gamiReferralSenderHome.actionButton
             val reward = gamiReferralSenderHome.reward
             return HomeReferralDataModel(
                 ogImage = metaData.ogImage,
@@ -53,7 +54,11 @@ class GetHomeReferralUseCase @Inject constructor(
                 userStatus = status.toString(),
                 maxReward = reward.maxReward,
                 isSender = true,
-                isEligible = true
+                isEligible = true,
+                type = action.type,
+                applink = action.appLink,
+                url = action.url,
+                textButton = action.text
             )
         } else {
             throw MessageErrorException(gamiReferralSenderHome.resultStatus.reason)

@@ -16,7 +16,10 @@ data class GetReferralSenderHomeResponse(
         val reward: Reward,
         @Expose
         @SerializedName("sharingMetadata")
-        val sharingMetaData: SharingMetadata
+        val sharingMetaData: SharingMetadata,
+        @Expose
+        @SerializedName("actionButton")
+        val actionButton: ActionButton
     ) {
         data class ResultStatus(
             @Expose
@@ -49,6 +52,20 @@ data class GetReferralSenderHomeResponse(
             @Expose
             @SerializedName("sharingURL")
             val sharingUrl: String
+        )
+        data class ActionButton(
+            @Expose
+            @SerializedName("text")
+            val text: String,
+            @Expose
+            @SerializedName("url")
+            val url: String,
+            @Expose
+            @SerializedName("appLink")
+            val appLink: String,
+            @Expose
+            @SerializedName("type")
+            val type: String
         )
     }
 }
