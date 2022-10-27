@@ -15,9 +15,11 @@ interface NestColor {
     val PN: ColorPalette
     val BN: ColorPalette
     val TN: ColorPalette
+    val Static: StaticColor get() = StaticColor
+    val Custom: Any?
 }
 
-class NestLightColor(
+class NestLightColor internal constructor(
     override val NN: ColorPalette = NestNN.light,
     override val GN: ColorPalette = NestGN.light,
     override val RN: ColorPalette = NestRN.light,
@@ -25,21 +27,23 @@ class NestLightColor(
     override val PN: ColorPalette = NestPN.light,
     override val BN: ColorPalette = NestBN.light,
     override val TN: ColorPalette = NestTN.light,
-): NestColor
+    override val Custom: Any? = null
+) : NestColor
 
-class NestDarkColor(
+class NestDarkColor internal constructor(
     override val NN: ColorPalette = NestNN.dark,
     override val GN: ColorPalette = NestGN.dark,
     override val RN: ColorPalette = NestRN.dark,
     override val YN: ColorPalette = NestYN.dark,
     override val PN: ColorPalette = NestPN.dark,
     override val BN: ColorPalette = NestBN.dark,
-    override val TN: ColorPalette = NestTN.dark
-): NestColor
+    override val TN: ColorPalette = NestTN.dark,
+    override val Custom: Any? = null
+) : NestColor
 
-interface ColorMode {
-    val light: ColorPalette
-    val dark: ColorPalette
+interface ColorMode<T> {
+    val light: T
+    val dark: T
 }
 
 interface ColorPalette {
@@ -68,7 +72,12 @@ abstract class DarkColorPalette : ColorPalette {
     override val _1000: Color = Color(0xFFFFFFFF)
 }
 
-object NestNN: ColorMode {
+object StaticColor {
+    val blank: Color = Color(0xFF000000)
+    val white: Color = Color(0xFFFFFFFF)
+}
+
+object NestNN : ColorMode<ColorPalette> {
 
     override val light: ColorPalette = object : LightColorPalette() {
         override val _50: Color = Color(0xFFF0F3F7)
@@ -99,7 +108,7 @@ object NestNN: ColorMode {
     }
 }
 
-object NestGN: ColorMode {
+object NestGN : ColorMode<ColorPalette> {
 
     override val light: ColorPalette = object : LightColorPalette() {
         override val _50: Color = Color(0xFFECFEF4)
@@ -130,7 +139,7 @@ object NestGN: ColorMode {
     }
 }
 
-object NestRN: ColorMode {
+object NestRN : ColorMode<ColorPalette> {
 
     override val light: ColorPalette = object : LightColorPalette() {
         override val _50: Color = Color(0xFFFFF5F6)
@@ -161,7 +170,7 @@ object NestRN: ColorMode {
     }
 }
 
-object NestYN: ColorMode {
+object NestYN : ColorMode<ColorPalette> {
 
     override val light: ColorPalette = object : LightColorPalette() {
         override val _50: Color = Color(0xFFFFFAE6)
@@ -192,7 +201,7 @@ object NestYN: ColorMode {
     }
 }
 
-object NestPN: ColorMode {
+object NestPN : ColorMode<ColorPalette> {
 
     override val light: ColorPalette = object : LightColorPalette() {
         override val _50: Color = Color(0xFFFBF4FF)
@@ -223,7 +232,7 @@ object NestPN: ColorMode {
     }
 }
 
-object NestBN: ColorMode {
+object NestBN : ColorMode<ColorPalette> {
 
     override val light: ColorPalette = object : LightColorPalette() {
         override val _50: Color = Color(0xFFEBFFFE)
@@ -254,7 +263,7 @@ object NestBN: ColorMode {
     }
 }
 
-object NestTN: ColorMode {
+object NestTN : ColorMode<ColorPalette> {
 
     override val light: ColorPalette = object : LightColorPalette() {
         override val _50: Color = Color(0xFFEDFFF9)

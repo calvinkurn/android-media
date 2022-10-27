@@ -35,19 +35,19 @@ private val NestThemeDark = darkColors(
 private val LightElevation = Elevations()
 private val DarkElevation = Elevations(card = 1.dp)
 
-
 @Composable
 fun NestTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    customColor: ColorMode<*>? = null,
     content: @Composable () -> Unit
 ) {
-    val themeColors = if (darkTheme) {
-        NestThemeDark
-    } else {
-        NestThemeLight
-    }
+    val themeColors = if (darkTheme) NestThemeDark else NestThemeLight
     val elevation = if (darkTheme) DarkElevation else LightElevation
-    val colors = if (darkTheme) NestDarkColor() else NestLightColor()
+    val colors: NestColor = if (darkTheme) {
+        NestDarkColor(Custom = customColor?.dark)
+    } else {
+        NestLightColor(Custom = customColor?.light)
+    }
 
     AdaptiveStatusBarColor(darkTheme = darkTheme, themeColors = themeColors)
 
