@@ -45,7 +45,7 @@ class PlayChatHistoryTest {
     private val mockWebsocket = FakePlayWebSocket(mockDispatchers)
     private val mockChatStreams = FakeChatStreams(
         CoroutineScope(mockDispatchers.main),
-        dispatchers = CoroutineTestDispatchers
+        dispatchers = mockDispatchers
     )
     private val mockChatManager = FakeChatManager(mockChatStreams)
     private val mockChatStreamsFactory = object : ChatStreams.Factory {
