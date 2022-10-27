@@ -26,8 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="16dp"
             android:layout_marginStart="12dp"
             android:orientation="horizontal"
             android:visibility="gone">
@@ -181,7 +179,7 @@
         android:layout_marginBottom="16dp"
         android:background="@color/green_text"
         android:visibility="visible"
-        app:cardCornerRadius="@dimen/dp_22"
+        app:cardCornerRadius="22dp"
         app:cardElevation="4dp"
         app:contentPaddingBottom="8dp"
         app:contentPaddingLeft="16dp"
@@ -197,7 +195,7 @@
             app:typographyWeight="bold"
             android:gravity="center"
             android:text="@string/filter"
-            android:textColor="@color/contact_us_text_field_color" />
+            android:textColor="@color/Unify_NN950" />
     </androidx.cardview.widget.CardView>
 
     <FrameLayout
