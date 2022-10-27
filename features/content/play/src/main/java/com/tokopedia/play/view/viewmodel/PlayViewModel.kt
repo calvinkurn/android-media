@@ -1023,7 +1023,7 @@ class PlayViewModel @AssistedInject constructor(
 
         updateTagItems()
         updateChannelStatus()
-        updateChatHistory()
+        updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         sendInitialLog()
     }
@@ -1183,13 +1183,15 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     /**
-     * Updating chat history
+     * Updating chat history for live channel only
      */
-    private fun updateChatHistory() {
+    private fun updateLiveChannelChatHistory(channelData: PlayChannelData) {
         viewModelScope.launchCatchError(block = {
-            chatStreams.setWaitingForHistory()
-            val response = repo.getChatHistory(channelId)
-            chatStreams.addHistoryChat(response.chatList.reversed())
+            if(channelData.channelDetail.channelInfo.channelType.isLive) {
+                chatStreams.setWaitingForHistory()
+                val response = repo.getChatHistory(channelId)
+                chatStreams.addHistoryChat(response.chatList.reversed())
+            }
         }) { }
     }
 

@@ -52,9 +52,17 @@ class PlayChatHistoryTest {
     }
 
     /** Mock Response */
-    private val mockChannelData = channelDataBuilder.buildChannelData(
+    private val mockLiveChannelData = channelDataBuilder.buildChannelData(
         channelDetail = channelInfoBuilder.buildChannelDetail(
             channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+        ),
+        videoMetaInfo = videoBuilder.buildVideoMeta(
+            videoPlayer = videoBuilder.buildCompleteGeneralVideoPlayer(),
+        )
+    )
+    private val mockVODChannelData = channelDataBuilder.buildChannelData(
+        channelDetail = channelInfoBuilder.buildChannelDetail(
+            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.VOD),
         ),
         videoMetaInfo = videoBuilder.buildVideoMeta(
             videoPlayer = videoBuilder.buildCompleteGeneralVideoPlayer(),
@@ -74,14 +82,30 @@ class PlayChatHistoryTest {
     }
 
     @Test
+    fun `playChatHistory_channelNotLive_notHitChatHistory`() {
+        createPlayViewModelRobot(
+            repo = mockRepo,
+            dispatchers = mockDispatchers,
+            chatStreamsFactory = mockChatStreamsFactory,
+        ).use {
+            it.createPage(mockVODChannelData)
+            it.focusPage(mockVODChannelData)
+
+            val chats = it.recordChatState { }
+
+            chats.assertEqualTo(emptyList())
+        }
+    }
+
+    @Test
     fun `playChatHistory_noNewChat_applyChatHistory`() {
         createPlayViewModelRobot(
             repo = mockRepo,
             dispatchers = mockDispatchers,
             chatStreamsFactory = mockChatStreamsFactory,
         ).use {
-            it.createPage(mockChannelData)
-            it.focusPage(mockChannelData)
+            it.createPage(mockLiveChannelData)
+            it.focusPage(mockLiveChannelData)
 
             val chats = it.recordChatState { }
 
@@ -101,8 +125,8 @@ class PlayChatHistoryTest {
             chatStreamsFactory = mockChatStreamsFactory,
             playChannelWebSocket = mockWebsocket,
         ).use {
-            it.createPage(mockChannelData)
-            it.focusPage(mockChannelData)
+            it.createPage(mockLiveChannelData)
+            it.focusPage(mockLiveChannelData)
 
             val chats = it.recordChatState { }
 
@@ -124,8 +148,8 @@ class PlayChatHistoryTest {
              */
             coEvery { mockRepo.getChatHistory(any()) } returns mockChatHistoryEmptyResponse
 
-            it.createPage(mockChannelData)
-            it.focusPage(mockChannelData)
+            it.createPage(mockLiveChannelData)
+            it.focusPage(mockLiveChannelData)
 
             mockWebsocket.fakeReceivedMessage(mockSendChat1)
             mockWebsocket.fakeReceivedMessage(mockSendChat2)
@@ -141,7 +165,7 @@ class PlayChatHistoryTest {
              */
             coEvery { mockRepo.getChatHistory(any()) } returns mockChatHistoryResponse
 
-            it.focusPage(mockChannelData)
+            it.focusPage(mockLiveChannelData)
 
             val chatsAfter = it.recordChatState { }
 
@@ -162,8 +186,8 @@ class PlayChatHistoryTest {
              */
             coEvery { mockRepo.getChatHistory(any()) } returns mockChatHistoryEmptyResponse
 
-            it.createPage(mockChannelData)
-            it.focusPage(mockChannelData)
+            it.createPage(mockLiveChannelData)
+            it.focusPage(mockLiveChannelData)
 
             mockWebsocket.fakeReceivedMessage(mockSendChat1)
             mockWebsocket.fakeReceivedMessage(mockSendChat2)
@@ -179,7 +203,7 @@ class PlayChatHistoryTest {
              */
             coEvery { mockRepo.getChatHistory(any()) } throws mockException
 
-            it.focusPage(mockChannelData)
+            it.focusPage(mockLiveChannelData)
 
             val chatsAfter = it.recordChatState { }
 
