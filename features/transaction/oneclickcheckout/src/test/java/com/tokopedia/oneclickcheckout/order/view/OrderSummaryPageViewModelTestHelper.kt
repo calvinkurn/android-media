@@ -22,6 +22,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -171,5 +172,13 @@ class OrderSummaryPageViewModelTestHelper {
     val paymentFeeDetails = listOf(
         OrderPaymentFee(fee = 500.0),
         OrderPaymentFee(fee = 1000.0)
+    )
+
+    val imageUploadDataModel = ImageUploadDataModel(
+        showImageUpload = true,
+        text = "",
+        leftIconUrl = "",
+        checkoutId = "",
+        frontEndValidation = true
     )
 }

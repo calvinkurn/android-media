@@ -16,7 +16,6 @@ import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -231,7 +230,7 @@ class ShipmentPresenterCheckoutTest {
 
         val mockContext = mockk<Activity>()
         val errorMessage = "error"
-        every { mockContext.getString(R.string.default_request_error_unknown_short) } returns errorMessage
+        every { mockContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short) } returns errorMessage
         every { mockContext.getString(R.string.message_error_checkout_empty) } returns errorMessage
         every { view.activityContext } returns mockContext
 
