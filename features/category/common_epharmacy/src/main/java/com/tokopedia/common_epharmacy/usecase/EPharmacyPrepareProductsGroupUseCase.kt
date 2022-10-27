@@ -45,18 +45,12 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                                 ),
                                 numberPrescriptionImages = 0,
                                 prescriptionImages = listOf(
-                                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage(
-                                        expiredAt = null,
-                                        prescriptionId = "1",
-                                        rejectReason = null,
-                                        status = null
-                                    )
                                 ),
                                 consultationData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
-                                    consultationString = "",
-                                    tokoConsultationId = "",
-                                    partnerConsultationId = "",
-                                    consultationStatus = 0,
+                                    consultationString = "{\"toko_consultation_id\":\"123\",\"partner_consultation_id\":\"456\"}",
+                                    tokoConsultationId = "123",
+                                    partnerConsultationId = "456",
+                                    consultationStatus = 2,
                                     doctorDetails = null,
                                     endTime = null,
                                     medicalRecommendation = null,
