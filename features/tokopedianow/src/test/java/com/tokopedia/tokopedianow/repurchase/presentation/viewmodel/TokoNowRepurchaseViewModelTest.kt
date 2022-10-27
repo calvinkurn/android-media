@@ -506,6 +506,9 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.miniCartAdd
             .verifySuccessEquals(Success(AddToCartDataModel()))
+
+        viewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     @Test
@@ -675,6 +678,9 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.miniCartRemove
             .verifySuccessEquals(Success(Pair(productId, "")))
+
+        viewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     @Test
@@ -757,6 +763,9 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.miniCartUpdate
             .verifySuccessEquals(Success(updateCartResponse))
+
+        viewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     @Test

@@ -147,7 +147,7 @@ public abstract class BaseNotificationFactory {
                     context,
                     notificationId,
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    PendingIntent.FLAG_IMMUTABLE
             );
         }
 
@@ -158,7 +158,11 @@ public abstract class BaseNotificationFactory {
         Intent intent = new Intent(context, DismissBroadcastReceiver.class);
         intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
         intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
-        return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        }else{
+            return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+        }
     }
 
     protected Boolean isAllowBell() {
