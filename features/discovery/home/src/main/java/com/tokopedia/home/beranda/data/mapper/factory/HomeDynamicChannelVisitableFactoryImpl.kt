@@ -99,12 +99,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
                     createDynamicChannel(channel)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage
-                    )
-                }
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> {
                     createDynamicChannel(
                             channel = channel,
@@ -400,7 +394,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channel.promoName = String.format(PROMO_NAME_LEGO_4_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE)  {
                 channel.promoName = String.format(PROMO_NAME_LEGO_2_IMAGE, position.toString(), channel.header.name)
-            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_ORGANIC) {
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO) {
                 channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
                 channel.setPosition(position)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {

@@ -2356,11 +2356,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             channel.id, channel.grids, position
                     )
             )
-            DynamicChannelViewHolder.TYPE_ORGANIC -> putEEToIris(
-                    HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
-                            channel.id, channel.grids, channel.header.name
-                    )
-            )
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                     getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
