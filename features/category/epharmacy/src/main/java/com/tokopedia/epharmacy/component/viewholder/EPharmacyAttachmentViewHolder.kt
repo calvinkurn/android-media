@@ -3,7 +3,6 @@ package com.tokopedia.epharmacy.component.viewholder
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.accordion.AccordionDataUnify
@@ -11,10 +10,8 @@ import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
@@ -83,7 +80,7 @@ class EPharmacyAttachmentViewHolder(val view: View) : AbstractViewHolder<EPharma
                 //adapter = getAccordionAdapter(specList)
                 //layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
             }
-            addAccordionData("Accordion Title")
+            addAccordionData("Tampilkan lebih sedikit")
         }
     }
 
@@ -114,25 +111,5 @@ class EPharmacyAttachmentViewHolder(val view: View) : AbstractViewHolder<EPharma
 
     private fun renderDivider(dataModel: EPharmacyAttachmentDataModel){
         divider.show()
-    }
-
-    private fun getFormattedWeight(weight: Double, qty: Int): String {
-        val weighTotalFormatted: String
-        var weightTotal = weight * qty
-        if (weightTotal >= KILOGRAM_DIVIDER) {
-            var bigDecimal = BigDecimal(weightTotal / KILOGRAM_DIVIDER)
-            bigDecimal = bigDecimal.setScale(
-                DIGIT_AFTER_COMMA,
-                BigDecimal.ROUND_HALF_UP
-            )
-            weightTotal = bigDecimal.toDouble()
-            weighTotalFormatted =
-                "$weightTotal $LABEL_KILOGRAM"
-        } else {
-            weighTotalFormatted = weightTotal.toInt()
-                .toString() + LABEL_GRAM
-        }
-        return weighTotalFormatted.replace(".0 ", "")
-            .replace("  ", " ")
     }
 }
