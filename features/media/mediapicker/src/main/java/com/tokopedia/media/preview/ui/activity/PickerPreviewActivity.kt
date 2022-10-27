@@ -40,15 +40,10 @@ import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
-
 import androidx.core.content.ContextCompat
 
-
-
-
-open class PickerPreviewActivity : BaseActivity()
-    , NavToolbarComponent.Listener
-    , DrawerSelectionWidget.Listener {
+open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
+    DrawerSelectionWidget.Listener {
 
     @Inject
     lateinit var param: ParamCacheManager
