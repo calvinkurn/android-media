@@ -12,8 +12,6 @@ import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import timber.log.Timber
-import kotlin.math.log
 
 class BranchHelperValidation {
     val VALUE_IDR = "IDR"
@@ -276,5 +274,34 @@ class BranchHelperValidation {
 
     private fun logging(messageMap: Map<String, String>){
         ServerLogger.log(Priority.P2, "BRANCH_VALIDATION", messageMap)
+    }
+
+    fun sendBranchErrorDataLogs(errorCode: Int?, errorMsg: String?, branchUrl: String?) {
+        val messageMap: MutableMap<String, String> = HashMap()
+        messageMap[BRANCH_LOG_TYPE] = BRANCH_FLOW_ON_CLICK_LINK
+        messageMap[BRANCH_ERROR_DATA_MESSAGE] = errorMsg ?: "Empty error response"
+        messageMap[BRANCH_ERROR_DATA_CODE] = errorCode.toString()
+        messageMap[BRANCH_URL] = branchUrl.toString()
+        logging(messageMap)
+    }
+
+    fun sendBranchSuccessDataLogs(referringParams: JSONObject?, branchUrl: String) {
+        val messageMap = HashMap<String, String>()
+        messageMap[BRANCH_URL] = branchUrl
+        if (referringParams != null) {
+            messageMap[BRANCH_SUCCESS_DATA] = referringParams.toString();
+        } else {
+            messageMap[BRANCH_SUCCESS_DATA] = "Empty Success Response";
+        }
+        logging(messageMap);
+    }
+
+    companion object {
+        private val BRANCH_SUCCESS_DATA = "branch_success_data"
+        private val BRANCH_ERROR_DATA_MESSAGE = "branch_error_message"
+        private val BRANCH_ERROR_DATA_CODE = "branch_error_code"
+        private val BRANCH_URL = "branch_url"
+        private val BRANCH_FLOW_ON_CLICK_LINK = "on_click_link"
+        private val BRANCH_LOG_TYPE = "branch_log_type"
     }
 }

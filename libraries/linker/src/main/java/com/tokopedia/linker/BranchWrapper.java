@@ -119,12 +119,17 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
+        BranchHelperValidation helper = new BranchHelperValidation();
         checkBranchLinkUTMParams(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity());
         handleDeferredDeeplinkFDL(linkerDeeplinkRequest);
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
                         LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_INIT_FAILED, null));
+            } else {
+                helper.sendBranchErrorDataLogs(null, String.format("check deeplink %s and callback %s",
+                        linkerDeeplinkRequest.toString(), linkerDeeplinkRequest.getDefferedDeeplinkCallback().toString()),
+                        ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable().toString());
             }
         } else {
             try {
@@ -143,12 +148,17 @@ public class BranchWrapper implements WrapperInterface {
                         Branch.sessionBuilder(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity()).withCallback(getBranchCallback(linkerDeeplinkRequest, context)).
                                 withData(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable()).init();
                     }
+                } else {
+                    helper.sendBranchErrorDataLogs(null, String.format("check deeplink %s and linker data %s",
+                            linkerDeeplinkRequest.toString(), linkerDeeplinkRequest.getDataObj().toString()),
+                            ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable().toString());
                 }
             } catch (Exception e) {
                 if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                     linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
                             LinkerUtils.createLinkerError(LinkerConstants.ERROR_SOMETHING_WENT_WRONG, null));
                 }
+                helper.sendBranchErrorDataLogs(null, e.getMessage(), ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable().toString());
             }
         }
     }
@@ -158,10 +168,12 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private Branch.BranchReferralInitListener getBranchCallback(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
+        BranchHelperValidation helper = new BranchHelperValidation();
         return new Branch.BranchReferralInitListener() {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
                 if (error == null) {
+                    helper.sendBranchSuccessDataLogs(referringParams, ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable().toString());
                     String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
                     String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
 
@@ -185,6 +197,7 @@ public class BranchWrapper implements WrapperInterface {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
                                 LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
                     }
+                    helper.sendBranchErrorDataLogs(error.getErrorCode(), error.getMessage(), ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable().toString());
                 }
                 //this method always call after needSkipDeeplinkFromNonBranch()
                 updateFirstOpenCache(context);
