@@ -24,17 +24,8 @@ class FakeChatStreams(
          */
     }
 
-    override fun setWaitingForHistory() {
-        super.setWaitingForHistory()
-        onIntercept?.invoke()
-    }
-
     override fun addChat(chat: PlayChatUiModel) {
         super.addChat(chat)
         sendPendingChats()
-    }
-
-    fun interceptWaitingForHistory(onIntercept: () -> Unit) {
-        this.onIntercept = onIntercept
     }
 }

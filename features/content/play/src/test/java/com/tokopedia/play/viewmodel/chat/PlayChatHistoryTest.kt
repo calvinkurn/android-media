@@ -3,10 +3,12 @@ package com.tokopedia.play.viewmodel.chat
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.fake.FakePlayWebSocket
+import com.tokopedia.play.fake.chat.FakeChatManager
 import com.tokopedia.play.fake.chat.FakeChatStreams
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.websocket.response.PlayChatSocketResponse
@@ -45,9 +47,16 @@ class PlayChatHistoryTest {
         CoroutineScope(mockDispatchers.main),
         dispatchers = CoroutineTestDispatchers
     )
+    private val mockChatManager = FakeChatManager(mockChatStreams)
     private val mockChatStreamsFactory = object : ChatStreams.Factory {
         override fun create(scope: CoroutineScope): ChatStreams {
             return mockChatStreams
+        }
+    }
+
+    private val mockChatManagerFactory = object : ChatManager.Factory {
+        override fun create(chatStreams: ChatStreams): ChatManager {
+            return mockChatManager
         }
     }
 
@@ -86,6 +95,7 @@ class PlayChatHistoryTest {
         createPlayViewModelRobot(
             repo = mockRepo,
             dispatchers = mockDispatchers,
+            chatManagerFactory = mockChatManagerFactory,
             chatStreamsFactory = mockChatStreamsFactory,
         ).use {
             it.createPage(mockVODChannelData)
@@ -102,6 +112,7 @@ class PlayChatHistoryTest {
         createPlayViewModelRobot(
             repo = mockRepo,
             dispatchers = mockDispatchers,
+            chatManagerFactory = mockChatManagerFactory,
             chatStreamsFactory = mockChatStreamsFactory,
         ).use {
             it.createPage(mockLiveChannelData)
@@ -115,13 +126,14 @@ class PlayChatHistoryTest {
 
     @Test
     fun `playChatHistory_newChatBeforeHistory_dontApplyHistory`() {
-        mockChatStreams.interceptWaitingForHistory {
+        mockChatManager.interceptWaitingForHistory {
             mockWebsocket.fakeReceivedMessage(mockSendChat1)
         }
 
         createPlayViewModelRobot(
             repo = mockRepo,
             dispatchers = mockDispatchers,
+            chatManagerFactory = mockChatManagerFactory,
             chatStreamsFactory = mockChatStreamsFactory,
             playChannelWebSocket = mockWebsocket,
         ).use {
@@ -140,6 +152,7 @@ class PlayChatHistoryTest {
         createPlayViewModelRobot(
             repo = mockRepo,
             dispatchers = mockDispatchers,
+            chatManagerFactory = mockChatManagerFactory,
             chatStreamsFactory = mockChatStreamsFactory,
             playChannelWebSocket = mockWebsocket,
         ).use {
@@ -178,6 +191,7 @@ class PlayChatHistoryTest {
         createPlayViewModelRobot(
             repo = mockRepo,
             dispatchers = mockDispatchers,
+            chatManagerFactory = mockChatManagerFactory,
             chatStreamsFactory = mockChatStreamsFactory,
             playChannelWebSocket = mockWebsocket,
         ).use {
