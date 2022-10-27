@@ -381,7 +381,7 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
         val params = UpdateWishlistCollectionParams(
             id = _collectionId.toLongOrZero(),
             name = newCollectionName.ifEmpty { _existingCollectionName },
-            access = newAccessId.toLong()
+            access = if (newAccessId == 0) _existingAccessId.toLong() else newAccessId.toLong()
         )
         wishlistCollectionEditViewModel.updateAccessWishlistCollection(params)
     }
