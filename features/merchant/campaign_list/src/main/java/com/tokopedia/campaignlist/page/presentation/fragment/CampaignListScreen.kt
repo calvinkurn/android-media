@@ -1,5 +1,6 @@
 package com.tokopedia.campaignlist.page.presentation.fragment
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -342,6 +345,82 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
     }
 }
 
+@Composable
+fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: Int) {
+    val nestLabelType = when (campaignStatusId) {
+        ONGOING_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREEN
+        UPCOMING_STATUS_ID.toIntOrZero(), UPCOMING_IN_NEAR_TIME_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_ORANGE
+        AVAILABLE_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREY
+        else -> NestLabelType.HIGHLIGHT_LIGHT_RED
+    }
+    NestLabel(modifier = modifier, labelText = campaignStatus, nestLabelType = nestLabelType)
+}
+
+@Preview(name = "Campaign List Page")
+@Composable
+fun CampaignListPagePreview() {
+    NestTheme {
+        val campaigns = listOf(
+            ActiveCampaign(
+                campaignName = "Flash Sale 9.9",
+                campaignStatus = "Dibatalkan",
+                startDate = "09-09-2020",
+                endDate = "10-09-2020",
+                startTime = "00:00",
+                endTime = "23:59",
+                productQty = "9",
+                campaignType = "Rilisan Spesial"
+            )
+        )
+        val state = remember { mutableStateOf(CampaignListViewModel.UiState(campaigns = campaigns)) }
+        CampaignListScreen(
+            uiState = state,
+            onTapCampaignStatusFilter = {},
+            onTapCampaignTypeFilter = {},
+            onTapShareCampaignButton = {},
+            onClearFilter = {},
+            onSearchBarKeywordSubmit = {},
+            onSearchbarCleared = {},
+            onTickerDismissed = {},
+            onToolbarBackIconPressed = {}
+        )
+    }
+
+}
+
+
+@Preview(name = "Campaign List Page [Dark]", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun CampaignListPageDarkPreview() {
+    NestTheme {
+        val campaigns = listOf(
+            ActiveCampaign(
+                campaignName = "Flash Sale 9.9",
+                campaignStatus = "Dibatalkan",
+                startDate = "09-09-2020",
+                endDate = "10-09-2020",
+                startTime = "00:00",
+                endTime = "23:59",
+                productQty = "9",
+                campaignType = "Rilisan Spesial"
+            )
+        )
+        val state = remember { mutableStateOf(CampaignListViewModel.UiState(campaigns = campaigns)) }
+        CampaignListScreen(
+            uiState = state,
+            onTapCampaignStatusFilter = {},
+            onTapCampaignTypeFilter = {},
+            onTapShareCampaignButton = {},
+            onClearFilter = {},
+            onSearchBarKeywordSubmit = {},
+            onSearchbarCleared = {},
+            onTickerDismissed = {},
+            onToolbarBackIconPressed = {}
+        )
+    }
+
+}
+
 @Preview
 @Composable
 fun CampaignItemPreview() {
@@ -359,13 +438,3 @@ fun CampaignItemPreview() {
     CampaignItem(campaign, {})
 }
 
-@Composable
-fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: Int) {
-    val nestLabelType = when (campaignStatusId) {
-        ONGOING_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREEN
-        UPCOMING_STATUS_ID.toIntOrZero(), UPCOMING_IN_NEAR_TIME_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_ORANGE
-        AVAILABLE_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREY
-        else -> NestLabelType.HIGHLIGHT_LIGHT_RED
-    }
-    NestLabel(modifier = modifier, labelText = campaignStatus, nestLabelType = nestLabelType)
-}
