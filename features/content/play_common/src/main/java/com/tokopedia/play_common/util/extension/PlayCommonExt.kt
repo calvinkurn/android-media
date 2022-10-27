@@ -182,7 +182,12 @@ suspend inline fun View.awaitPreDraw() = suspendCancellableCoroutine<Unit> { con
             return true
         }
     }
-    cont.invokeOnCancellation { vto.removeOnPreDrawListener(listener) }
+    cont.invokeOnCancellation {
+        when {
+            vto.isAlive -> vto.removeOnPreDrawListener(listener)
+            else -> viewTreeObserver.removeOnPreDrawListener(listener)
+        }
+    }
     vto.addOnPreDrawListener(listener)
 }
 

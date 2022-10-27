@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.DataModel
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.InfiniteListResult
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmMemberListAdapter
@@ -29,10 +30,13 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
 
     private var tmMemberListRv : RecyclerView? = null
     private var flipper: ViewFlipper? = null
-    private var shopId:Int = 0
+    private var shopId:Int? = null
 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
+
+    @Inject
+    lateinit var tmTracker: TmTracker
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -64,7 +68,10 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initUI()
         observeViewModel()
-        tmMemberViewModel.getInitialMemberList(shopId)
+        shopId?.let {
+            tmMemberViewModel.getInitialMemberList(it)
+            tmTracker.viewMemberList(it.toString())
+        }
     }
 
     override fun getScreenName() = ""
@@ -120,7 +127,7 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
                 val totalCount = recyclerView.adapter?.itemCount.toZeroIfNull()
                 val hasNext = tmMemberViewModel.hasMorePages.orFalse()
                 if(lastVisiblePos!=RecyclerView.NO_POSITION && totalCount - lastVisiblePos <= 4 && hasNext){
-                    tmMemberViewModel.getMoreMembers(shopId)
+                   if(shopId!=null) tmMemberViewModel.getMoreMembers(shopId!!)
                 }
                 else if(!hasNext) removeRvScrollListener()
             }
