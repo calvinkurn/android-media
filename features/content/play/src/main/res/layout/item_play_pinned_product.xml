@@ -162,7 +162,7 @@
             tools:text="@string/play_product_pinned_atc"
             app:layout_constraintStart_toStartOf="@id/tv_price"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:unifyButtonSize="small"
+            app:unifyButtonSize="small"
             tools:unifyButtonVariant="ghost"
             />
 
