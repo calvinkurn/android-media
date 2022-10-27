@@ -1852,7 +1852,7 @@ class AddEditProductPreviewFragment :
 
     private fun routeToArticle(){
         val encodedUrl = URLEncoder.encode(URL_ARTICLE_SELLER_EDU, "UTF-8")
-        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        val route = String.format(getString(R.string.format_web_page), ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(activity ?: return, route)
     }
 }

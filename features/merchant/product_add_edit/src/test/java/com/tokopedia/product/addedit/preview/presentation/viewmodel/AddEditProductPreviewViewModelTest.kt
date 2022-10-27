@@ -468,7 +468,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When validate shop location should be false`() = runBlocking {
+    fun `When validate shop location should be false`() = runBlocking {
 
         onGetShopInfoLocation_thenReturn_false()
 
