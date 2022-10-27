@@ -13,11 +13,9 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSe
 import com.tokopedia.tokopoints.view.model.section.TokopointsSection
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.recommwidget.RewardsRecommUsecase
-import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.ErrorMessage
-import com.tokopedia.tokopoints.view.util.Loading
-import com.tokopedia.tokopoints.view.util.Resources
+import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
+import junit.framework.Assert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -80,6 +78,26 @@ class TokoPointsHomeViewModelTest {
         verify(ordering = Ordering.ORDERED) {
             tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
         }
+    }
+
+    @Test
+    fun `getTokoPointDetail null pointer error`(){
+        val tokenData = mockk<LuckyEggEntity> {
+            every { resultStatus.code } returns CommonConstant.CouponRedemptionCode.SUCCESS
+        }
+        coEvery { repository.getTokoPointDetailData() } returns mockk {
+            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
+                every { tokopediaRewardTopSection } returns null
+            }
+            every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
+                every { sectionContent } returns TokopointsSection()
+            }
+            every { getData<TokenDetailOuter>(TokenDetailOuter::class.java) } returns mockk {
+                every { tokenDetail } returns tokenData
+            }
+        }
+        viewModel.getTokoPointDetail()
+        Assert.assertEquals((viewModel.tokopointDetailLiveData.value as ErrorMessage).data,"error in data")
     }
 
     @Test
