@@ -378,8 +378,6 @@ public interface ShipmentContract {
 
         void releaseBooking();
 
-        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId);
-
         void fetchEpharmacyData();
 
         void setPrescriptionIds(ArrayList<String> prescriptionIds);

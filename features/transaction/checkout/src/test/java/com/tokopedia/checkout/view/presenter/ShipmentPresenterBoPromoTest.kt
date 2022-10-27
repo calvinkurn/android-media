@@ -6,7 +6,6 @@ import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -112,9 +111,6 @@ class ShipmentPresenterBoPromoTest {
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     @MockK(relaxed = true)
@@ -154,7 +150,6 @@ class ShipmentPresenterBoPromoTest {
             checkoutAnalytics,
             shipmentDataConverter,
             releaseBookingUseCase,
-            prescriptionIdsUseCase,
             epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,

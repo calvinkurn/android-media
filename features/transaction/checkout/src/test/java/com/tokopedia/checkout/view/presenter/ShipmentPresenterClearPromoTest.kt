@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -111,9 +110,6 @@ class ShipmentPresenterClearPromoTest {
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -143,7 +139,6 @@ class ShipmentPresenterClearPromoTest {
             checkoutAnalytics,
             shipmentDataConverter,
             releaseBookingUseCase,
-            prescriptionIdsUseCase,
             epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,

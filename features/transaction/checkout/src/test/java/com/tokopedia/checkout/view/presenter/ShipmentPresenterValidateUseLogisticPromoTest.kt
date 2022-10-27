@@ -5,7 +5,6 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -106,9 +105,6 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -138,7 +134,6 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             checkoutAnalytics,
             shipmentDataConverter,
             releaseBookingUseCase,
-            prescriptionIdsUseCase,
             epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,

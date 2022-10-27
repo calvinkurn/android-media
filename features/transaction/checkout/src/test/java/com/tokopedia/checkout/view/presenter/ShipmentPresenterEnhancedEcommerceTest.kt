@@ -8,7 +8,6 @@ import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckou
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -108,9 +107,6 @@ class ShipmentPresenterEnhancedEcommerceTest {
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
     @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     @MockK
@@ -143,7 +139,6 @@ class ShipmentPresenterEnhancedEcommerceTest {
             checkoutAnalytics,
             shipmentDataConverter,
             releaseBookingUseCase,
-            prescriptionIdsUseCase,
             epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,
@@ -164,7 +159,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData =
@@ -185,7 +180,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData =
@@ -206,7 +201,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData =
@@ -229,7 +224,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData =
@@ -250,7 +245,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData =
@@ -285,7 +280,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData =
@@ -320,7 +315,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             }
         )
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData =

@@ -12,7 +12,6 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase.Companion.CHECKOUT_MUTATION
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -48,11 +47,13 @@ import dagger.Provides
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Named
 
-@Module(includes = [
-    PeopleAddressNetworkModule::class,
-    PurchasePlatformNetworkModule::class,
-    PurchasePlatformBaseModule::class
-])
+@Module(
+    includes = [
+        PeopleAddressNetworkModule::class,
+        PurchasePlatformNetworkModule::class,
+        PurchasePlatformBaseModule::class
+    ]
+)
 class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
@@ -89,28 +90,28 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    fun provideShipmentPresenter(compositeSubscription: CompositeSubscription,
-                                 checkoutGqlUseCase: CheckoutGqlUseCase,
-                                 getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase,
-                                 editAddressUseCase: EditAddressUseCase,
-                                 changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
-                                 saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
-                                 ratesUseCase: GetRatesUseCase,
-                                 ratesApiUseCase: GetRatesApiUseCase,
-                                 stateConverter: RatesResponseStateConverter,
-                                 clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
-                                 shippingCourierConverter: ShippingCourierConverter,
-                                 userSessionInterface: UserSessionInterface,
-                                 analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
-                                 checkoutAnalytics: CheckoutAnalyticsCourierSelection,
-                                 shipmentDataConverter: ShipmentDataConverter,
-                                 releaseBookingUseCase: ReleaseBookingUseCase,
-                                 prescriptionIdsUseCase: GetPrescriptionIdsUseCase,
-                                 epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
-                                 validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
-                                 gson: Gson,
-                                 executorSchedulers: ExecutorSchedulers,
-                                 eligibleForAddressUseCase: EligibleForAddressUseCase
+    fun provideShipmentPresenter(
+        compositeSubscription: CompositeSubscription,
+        checkoutGqlUseCase: CheckoutGqlUseCase,
+        getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase,
+        editAddressUseCase: EditAddressUseCase,
+        changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
+        saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
+        ratesUseCase: GetRatesUseCase,
+        ratesApiUseCase: GetRatesApiUseCase,
+        stateConverter: RatesResponseStateConverter,
+        clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
+        shippingCourierConverter: ShippingCourierConverter,
+        userSessionInterface: UserSessionInterface,
+        analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
+        checkoutAnalytics: CheckoutAnalyticsCourierSelection,
+        shipmentDataConverter: ShipmentDataConverter,
+        releaseBookingUseCase: ReleaseBookingUseCase,
+        epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
+        validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
+        gson: Gson,
+        executorSchedulers: ExecutorSchedulers,
+        eligibleForAddressUseCase: EligibleForAddressUseCase
     ): ShipmentContract.Presenter {
         return ShipmentPresenter(
             compositeSubscription,
@@ -121,7 +122,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
             clearCacheAutoApplyStackUseCase,
             stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
             analyticsPurchaseProtection, checkoutAnalytics,
-            shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+            shipmentDataConverter, releaseBookingUseCase,
             epharmacyUseCase, validateUsePromoRevampUseCase, gson,
             executorSchedulers, eligibleForAddressUseCase
         )

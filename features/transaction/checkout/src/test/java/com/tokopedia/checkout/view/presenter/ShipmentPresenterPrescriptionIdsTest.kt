@@ -2,10 +2,8 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -17,6 +15,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -26,16 +25,14 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldVa
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
-import io.mockk.verify
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 class ShipmentPresenterPrescriptionIdsTest {
+
     @MockK
     private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
 
@@ -94,9 +91,6 @@ class ShipmentPresenterPrescriptionIdsTest {
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -104,10 +98,6 @@ class ShipmentPresenterPrescriptionIdsTest {
     private lateinit var presenter: ShipmentPresenter
 
     private var gson = Gson()
-
-    companion object {
-        const val CHECKOUT_ID = "100"
-    }
 
     @Before
     fun before() {
@@ -130,7 +120,6 @@ class ShipmentPresenterPrescriptionIdsTest {
             checkoutAnalytics,
             shipmentDataConverter,
             releaseBookingUseCase,
-            prescriptionIdsUseCase,
             epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,
@@ -141,89 +130,79 @@ class ShipmentPresenterPrescriptionIdsTest {
     }
 
     @Test
-    fun `WHEN upload prescription then should hit upload prescription use case with checkout id`() {
+    fun `WHEN set prescription ids THEN should set upload prescription image count`() {
         // Given
-        every {
-            prescriptionIdsUseCase.execute(any())
-        } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
-        presenter.setUploadPrescriptionData(
-            UploadPrescriptionUiModel(
-                false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
-            )
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel()
         )
+        val prescriptions = arrayListOf("123", "456")
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.fetchPrescriptionIds(true, CHECKOUT_ID)
+        presenter.setPrescriptionIds(prescriptions)
 
         // Then
-        verify { prescriptionIdsUseCase.execute(CHECKOUT_ID) }
-        verify(exactly = 1) { view.updatePrescriptionIds(any()) }
+        assertEquals(prescriptions.size, presenter.uploadPrescriptionUiModel.uploadedImageCount)
     }
 
     @Test
-    fun `GIVEN no checkout item WHEN upload prescription THEN should not hit upload prescription use case`() {
+    fun `Given null shipment cart data WHEN set prescription ids THEN should not set upload prescription image count`() {
         // Given
-        every {
-            prescriptionIdsUseCase.execute(any())
-        } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
-        presenter.setUploadPrescriptionData(null)
+        presenter.shipmentCartItemModelList
+        val prescriptions = arrayListOf("123", "456")
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.fetchPrescriptionIds(true, "")
+        presenter.setPrescriptionIds(prescriptions)
 
         // Then
-        verify(inverse = true) { prescriptionIdsUseCase.execute(any()) }
+        assertEquals(0, presenter.uploadPrescriptionUiModel.uploadedImageCount)
     }
 
     @Test
-    fun `GIVEN upload false item WHEN upload prescription THEN should not hit upload prescription use case`() {
+    fun `Given null upload prescription model WHEN set prescription ids THEN should not set upload prescription image count`() {
         // Given
-        every {
-            prescriptionIdsUseCase.execute(any())
-        } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
-        presenter.setUploadPrescriptionData(null)
+        presenter.shipmentCartItemModelList
+        val prescriptions = arrayListOf("123", "456")
 
         // When
-        presenter.fetchPrescriptionIds(false, CHECKOUT_ID)
+        presenter.setPrescriptionIds(prescriptions)
 
         // Then
-        verify(inverse = true) { prescriptionIdsUseCase.execute(any()) }
+        assertEquals(null, presenter.uploadPrescriptionUiModel)
     }
 
     @Test
-    fun `GIVEN error item WHEN upload prescription THEN should not hit upload prescription use case`() {
+    fun `WHEN set prescription ids THEN should set prescription ids to each cart with ethical products and not error`() {
         // Given
-        every { prescriptionIdsUseCase.execute(any()) } returns Observable.error(Throwable())
-        presenter.setUploadPrescriptionData(
-            UploadPrescriptionUiModel(
-                false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
-            )
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                isError = true,
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                isError = true,
+                hasEthicalProducts = false
+            ),
+            ShipmentCartItemModel(
+                isError = false,
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                isError = false,
+                hasEthicalProducts = false
+            ),
         )
+        val prescriptions = arrayListOf("123", "456")
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.fetchPrescriptionIds(true, CHECKOUT_ID)
+        presenter.setPrescriptionIds(prescriptions)
 
         // Then
-        verify { prescriptionIdsUseCase.execute(CHECKOUT_ID) }
-        verify(exactly = 0) { view.updatePrescriptionIds(any()) }
-    }
-
-    @Test
-    fun `CHECK upload prescription data initialization`() {
-        // Given
-        every {
-            prescriptionIdsUseCase.execute(any())
-        } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
-        presenter.setUploadPrescriptionData(
-            UploadPrescriptionUiModel(
-                false, "", "",
-                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
-            )
-        )
-
-        // Then
-        assert(presenter.uploadPrescriptionUiModel != null)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[0].prescriptionIds)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[1].prescriptionIds)
+        assertEquals(prescriptions, presenter.shipmentCartItemModelList[2].prescriptionIds)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[3].prescriptionIds)
     }
 }

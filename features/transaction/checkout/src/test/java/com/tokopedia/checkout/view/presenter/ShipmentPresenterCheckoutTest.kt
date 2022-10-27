@@ -16,7 +16,6 @@ import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -131,9 +130,6 @@ class ShipmentPresenterCheckoutTest {
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     @MockK(relaxed = true)
@@ -169,7 +165,6 @@ class ShipmentPresenterCheckoutTest {
             checkoutAnalytics,
             shipmentDataConverter,
             releaseBookingUseCase,
-            prescriptionIdsUseCase,
             epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,
@@ -398,7 +393,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.promos?.isNotEmpty() == true)
@@ -414,7 +409,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 1, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 1, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.isDonation == 1)
@@ -434,7 +429,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.egoldData?.isEgold == true)
@@ -456,7 +451,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.cornerData?.isTokopediaCorner == true)
@@ -471,7 +466,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val checkoutParams =
@@ -490,7 +485,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val checkoutParams =
@@ -509,7 +504,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         val mockContext = mockk<Activity>()
         mockkObject(FingerPrintUtil)
@@ -549,7 +544,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         val mockContext = mockk<Activity>()
         mockkObject(FingerPrintUtil)
@@ -1000,7 +995,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, listCrossSellModel, "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, listCrossSellModel, "")
 
         // Then
         assert(checkoutRequest.crossSell?.listItem?.isNotEmpty() == true)
@@ -1067,7 +1062,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isNotEmpty())
@@ -1136,7 +1131,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isEmpty())
@@ -1201,7 +1196,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isEmpty())
@@ -1266,7 +1261,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isEmpty())
@@ -1285,7 +1280,7 @@ class ShipmentPresenterCheckoutTest {
 
         // When
         val checkoutRequest =
-            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
+            presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.featureType == FEATURE_TYPE_TOKONOW_PRODUCT)
