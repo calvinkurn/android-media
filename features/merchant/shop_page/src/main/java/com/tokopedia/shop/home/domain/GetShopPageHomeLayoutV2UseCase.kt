@@ -164,6 +164,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       totalNotifyWording
                       totalProduct
                       totalProductWording
+                      voucherWording
                       dynamicRule {
                         dynamicRoleData {
                           ruleName

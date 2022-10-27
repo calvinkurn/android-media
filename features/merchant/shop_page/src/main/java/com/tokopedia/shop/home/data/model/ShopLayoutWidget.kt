@@ -110,6 +110,8 @@ data class ShopLayoutWidget(
                 val totalProduct: Int = 0,
                 @SerializedName("totalProductWording")
                 val totalProductWording: String = "",
+                @SerializedName("voucherWording")
+                val voucherWording: String = "",
                 @SerializedName("dynamicRule")
                 val dynamicRule: DynamicRule = DynamicRule(),
                 @SerializedName("banners")
@@ -274,7 +276,9 @@ data class ShopLayoutWidget(
             ){
                 data class DynamicRoleData(
                         @SerializedName("ruleID")
-                        val ruleID: String = ""
+                        val ruleID: String = "",
+                        @SerializedName("isActive")
+                        val isActive: Boolean = false
                 )
             }
         }

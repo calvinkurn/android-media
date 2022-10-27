@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
@@ -583,6 +584,7 @@ object ShopPageHomeMapper {
                 it.timeCounter,
                 it.totalNotify,
                 it.totalNotifyWording,
+                it.voucherWording,
                 mapToDynamicRule(it.dynamicRule),
                 mapCampaignListBanner(it.listBanner),
                 mapCampaignListProduct(it.statusCampaign, it.listProduct),
@@ -621,7 +623,8 @@ object ShopPageHomeMapper {
         return ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
             dynamicRule.descriptionHeader,
             ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
-                dynamicRule.dynamicRoleData.firstOrNull()?.ruleID.orEmpty()
+                ruleID = dynamicRule.dynamicRoleData.firstOrNull()?.ruleID.orEmpty(),
+                isActive = dynamicRule.dynamicRoleData.firstOrNull()?.isActive.orFalse()
             )
         )
     }

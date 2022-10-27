@@ -30,6 +30,7 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
             val timeCounter: String = "",
             var totalNotify: Int = 0,
             val totalNotifyWording: String = "",
+            val voucherWording: String = "",
             val dynamicRule: DynamicRule = DynamicRule(),
             val bannerList: List<BannerItem> = listOf(),
             val productList: List<ShopHomeProductUiModel> = listOf(),
@@ -51,7 +52,8 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
                 val dynamicRoleData: DynamicRoleData = DynamicRoleData()
         ) {
             data class DynamicRoleData(
-                    val ruleID: String = ""
+                    val ruleID: String = "",
+                    val isActive: Boolean = false
             )
         }
     }
