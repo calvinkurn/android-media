@@ -43,6 +43,7 @@ import com.tokopedia.common_compose.principles.NestSortFilter
 import com.tokopedia.common_compose.principles.NestTicker
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.principles.SortFilter
+import com.tokopedia.common_compose.principles.TickerStyle
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
@@ -168,8 +169,10 @@ private fun PageSortFilter(
 private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Unit) {
     NestTicker(
         modifier = modifier.fillMaxWidth(),
-        text = stringResource(id = R.string.another_campaign_type_wording),
-        onDismissed = onDismissed
+        title = "",
+        description = stringResource(id = R.string.another_campaign_type_wording),
+        onDismissed = onDismissed,
+        style = TickerStyle.Announcement
     )
 }
 
