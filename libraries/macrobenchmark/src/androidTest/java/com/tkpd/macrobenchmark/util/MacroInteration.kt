@@ -42,4 +42,19 @@ object MacroInteration {
         recycler.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
         device.waitForIdle(IDLE_DURATION)
     }
+
+    fun interactColumnInCompose(contentDescription:String) {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val device = UiDevice.getInstance(instrumentation)
+        val column = device.findObject(By.desc(contentDescription))
+        column.setGestureMargin(device.displayWidth / 5)
+    }
+
+    fun waitforColumnInCompose(contentDescription:String){
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val device = UiDevice.getInstance(instrumentation)
+        val column = device.findObject(By.desc(contentDescription))
+        column.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
+        device.waitForIdle(IDLE_DURATION)
+    }
 }

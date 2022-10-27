@@ -115,7 +115,7 @@ object MacroIntent {
 
     object ProductReport {
 
-        const val PACKAGE_NAME = "com.tokopedia.report"
+        const val COLUMN_TAG = "product_report_column"
 
         fun getStartupIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")

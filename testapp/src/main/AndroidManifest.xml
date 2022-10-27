@@ -20,6 +20,9 @@
         android:resizeableActivity="true"
         android:requestLegacyExternalStorage="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <profileable
+            android:shell="true"
+            tools:targetApi="q" />
         <activity
             android:name=".MainActivity">
             <intent-filter>
