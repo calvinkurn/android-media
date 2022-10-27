@@ -15,7 +15,6 @@ import javax.inject.Inject
 
 class HomePageBannerRepository @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<HomeBannerData>,
-        private val homeRoomDataSource: HomeRoomDataSource,
         private val isUsingV2: Boolean
 ) : UseCase<HomeBannerData>(), HomeRepository<HomeBannerData> {
     private val params = RequestParams.create()

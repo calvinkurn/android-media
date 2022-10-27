@@ -309,10 +309,10 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetHomePageBannerUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource, remoteConfig: RemoteConfig): HomePageBannerRepository {
+    fun provideGetHomePageBannerUseCase(graphqlRepository: GraphqlRepository, remoteConfig: RemoteConfig): HomePageBannerRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeBannerData>(graphqlRepository)
         val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
-        return HomePageBannerRepository(useCase, homeRoomDataSource, isUsingV2)
+        return HomePageBannerRepository(useCase, isUsingV2)
     }
 
     @Provides
