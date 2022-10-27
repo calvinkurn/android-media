@@ -106,9 +106,6 @@ dependencies {
     //Compose
     implementation rootProject.ext.composeDependencies.composeConstraint
 
-    // viewModels delegate and ViewTreeSavedStateRegistryOwners
-    implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
-
     //Macrobenchmark
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
