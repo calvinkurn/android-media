@@ -113,7 +113,7 @@ class PlayViewModel @AssistedInject constructor(
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
     private val playLog: PlayLog,
-    chatManager: ChatManager.Factory,
+    chatManagerFactory: ChatManager.Factory,
     chatStreamsFactory: ChatStreams.Factory,
     private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon,
 ) : ViewModel() {
@@ -350,7 +350,7 @@ class PlayViewModel @AssistedInject constructor(
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
-    private val chatManager = chatManager.create(
+    private val chatManager = chatManagerFactory.create(
         chatStreamsFactory.create(viewModelScope)
     )
 
@@ -1193,7 +1193,6 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             if(channelData.channelDetail.channelInfo.channelType.isLive) {
                 chatManager.setWaitingForHistory()
-                delay(5000)
                 val response = repo.getChatHistory(channelId)
                 chatManager.addHistoryChat(response.chatList.reversed())
             }

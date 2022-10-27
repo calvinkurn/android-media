@@ -124,6 +124,7 @@ class PlayViewerIdGenerator {
                 castPlayerHelper = mockk(relaxed = true),
                 playShareExperience = mockk(relaxed = true),
                 playLog = mockk(relaxed = true),
+                chatManagerFactory = mockk(relaxed = true),
                 chatStreamsFactory = mockk(relaxed = true),
                 liveRoomMetricsCommon = mockk(relaxed = true),
             )
