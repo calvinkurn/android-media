@@ -22,10 +22,10 @@ public class BaseMainApplication extends MultiDexApplication {
     public BaseAppComponent getBaseAppComponent(){
         if (baseAppComponent == null) {
             DaggerBaseAppComponent.Builder daggerBuilder = DaggerBaseAppComponent.builder()
-                    .tokoChatConfigComponent(getTokoChatConnection().getTokoChatConfigComponent())
                     .appModule(new AppModule(this));
             baseAppComponent = daggerBuilder.build();
         }
+        initTokoChatConnection();
         return baseAppComponent;
     }
 
@@ -39,15 +39,14 @@ public class BaseMainApplication extends MultiDexApplication {
         SplitCompat.install(this);
     }
 
-    public TokoChatConnection getTokoChatConnection() {
+    private void initTokoChatConnection() {
         if (tokoChatConnection == null) {
-            initTokoChatConnection();
+            tokoChatConnection = new TokoChatConnection();
+            tokoChatConnection.init(getApplicationContext());
         }
-        return tokoChatConnection;
     }
 
-    private void initTokoChatConnection() {
-        tokoChatConnection = TokoChatConnection.INSTANCE;
-        tokoChatConnection.init(getApplicationContext());
+    public TokoChatConnection getTokoChatConnection() {
+        return tokoChatConnection;
     }
 }

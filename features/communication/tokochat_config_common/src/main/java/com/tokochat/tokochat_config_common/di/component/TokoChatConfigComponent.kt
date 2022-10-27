@@ -9,7 +9,7 @@ import com.tokochat.tokochat_config_common.di.module.TokoChatConfigModule
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigNetworkModule
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
-import com.tokochat.tokochat_config_common.repository.courier.TokoChatCourierClientProvider
+import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import dagger.Component
 import retrofit2.Retrofit
 
@@ -37,4 +37,6 @@ interface TokoChatConfigComponent {
 
     @TokoChatQualifier
     fun getTokoChatRepository(): TokoChatRepository
+
+    fun inject(tokoChatConnection: TokoChatConnection)
 }

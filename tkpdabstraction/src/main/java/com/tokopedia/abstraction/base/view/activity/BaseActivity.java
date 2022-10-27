@@ -16,10 +16,6 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.gojek.conversations.ConversationsRepository;
-import com.gojek.courier.AppEvent;
-import com.gojek.courier.CourierConnection;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -345,24 +341,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     protected void removeTokoChat() {
-        try {
-            if (getApplication() instanceof BaseMainApplication) {
-                CourierConnection courierConnection = ((BaseMainApplication) getApplication())
-                        .getTokoChatConnection()
-                        .getCourierConnection();
-
-                if (courierConnection != null) {
-                    courierConnection.handleAppEvent(AppEvent.AppLogout.INSTANCE);
-                }
-            }
-            new Thread(() -> {
-                if (ConversationsRepository.Companion.getInstance() != null) {
-                    ConversationsRepository.Companion.getInstance().resetConversationsData();
-                    ConversationsRepository.Companion.destroy();
-                }
-            }).start();
-        } catch (Throwable ex) {
-            ex.printStackTrace();
+        if (getApplication() instanceof BaseMainApplication) {
+            ((BaseMainApplication) getApplication()).getTokoChatConnection().disconnect();
         }
     }
 }
