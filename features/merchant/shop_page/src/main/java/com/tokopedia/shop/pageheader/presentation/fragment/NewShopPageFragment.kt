@@ -305,7 +305,7 @@ class NewShopPageFragment :
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
 
         private const val DELAY_MINI_CART_RESUME = 1000L
-        private const val IDR_CURRENCY_TO_RAW_STRING_REGEX = "[Rp,.]"
+        private const val IDR_CURRENCY_TO_RAW_STRING_REGEX = "[Rp, .]"
         private const val PRODUCT_LIST_INDEX_ZERO = 0
         private const val PRODUCT_LIST_INDEX_ONE = 1
         private const val PRODUCT_LIST_INDEX_TWO = 2
