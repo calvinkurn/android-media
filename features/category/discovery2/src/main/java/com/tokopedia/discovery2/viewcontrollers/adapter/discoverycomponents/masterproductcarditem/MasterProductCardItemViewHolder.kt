@@ -80,7 +80,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun openVariantSheet() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(masterProductCardItemViewModel.components)
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(
+            masterProductCardItemViewModel.components,
+            ""
+        )
         masterProductCardItemViewModel.getProductDataItem()?.let { dataItem ->
             (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId?:"")
         }
@@ -267,10 +270,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun handleATC(quantity: Int, isGeneralCartATC: Boolean) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
-        if (!isGeneralCartATC)
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(
-                masterProductCardItemViewModel.components
-            )
         if (masterProductCardItemViewModel.isUserLoggedIn()) {
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                 productItem.productId?.let { productId ->

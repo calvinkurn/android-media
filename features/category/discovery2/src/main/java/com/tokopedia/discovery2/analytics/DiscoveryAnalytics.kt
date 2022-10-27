@@ -766,7 +766,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         }
     }
 
-    override fun trackEventProductATCTokonow(componentsItems: ComponentsItem) {
+    override fun trackEventProductATCTokonow(componentsItems: ComponentsItem, cartId: String) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
         val login = if (userSession.isLoggedIn) LOGIN else NON_LOGIN
@@ -782,7 +782,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[DIMENSION38] = ""
             productMap[DIMENSION40] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
-//            productMap[DIMENSION45] = cartID
+            productMap[DIMENSION45] = cartId
             productMap[DIMENSION83] = getProductDime83(it)
             productMap[DIMENSION84] = ""
             productMap[DIMENSION90] = sourceIdentifier
