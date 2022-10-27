@@ -57,7 +57,7 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         val givenY = intent.getIntExtra(Y_COORDINATE, DIMEN_DEFAULT)
         val ratioX: Float = (givenX.toFloat() / width.toFloat())
         val ratioY: Float = (givenY.toFloat() / height.toFloat())
-        return ratioY
+        return ratioY + RATIO_CONSTANT
     }
 
     private fun setUpReplyBubbleGuideline(ratioY: Float) {
@@ -143,5 +143,6 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         private const val Y_COORDINATE = "y-coordinate"
         private const val ZERO_RATIO = 0F
         private const val DIMEN_DEFAULT = 0
+        private const val RATIO_CONSTANT = 0.05F
     }
 }
