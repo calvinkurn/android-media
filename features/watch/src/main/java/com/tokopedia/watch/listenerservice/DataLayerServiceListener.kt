@@ -153,17 +153,39 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 doAcceptOrderResponse?.data?.batchId.orEmpty()
             )
 
-            val orderListDataAsyncData = asyncCatchError(block = {
-                getOrderListUseCase.get().createObservable(RequestParams()).toBlocking().first()
+            val newOrderListDataAsyncData = asyncCatchError(block = {
+                getOrderListUseCase.get().createObservable(
+                    RequestParams().apply {
+                        putObject(GetOrderListUseCase.PARAM_STATUS_LIST, ORDER_STATUS_NEW_ORDER)
+                    },
+                ).toBlocking().first()
             }){
                 null
             }.await()
+
+            val readyToShipOrderListDataAsyncData = asyncCatchError(block = {
+                getOrderListUseCase.get().createObservable(
+                    RequestParams().apply {
+                        putObject(GetOrderListUseCase.PARAM_STATUS_LIST, ORDER_STATUS_READY_TO_SHIP)
+                    },
+                ).toBlocking().first()
+            }){
+                null
+            }.await()
+
             val orderSummaryAsyncData = asyncCatchError(block = {
                 getSummaryUseCase.get().createObservable(RequestParams()).toBlocking().first()
             }){
                 null
             }.await()
-            orderListDataAsyncData?.let { orderListData ->
+
+            newOrderListDataAsyncData?.let { orderListData ->
+                sendMessageToWatch(
+                    GET_ORDER_LIST_PATH,
+                    Gson().toJson(orderListData)
+                )
+            }
+            readyToShipOrderListDataAsyncData?.let { orderListData ->
                 sendMessageToWatch(
                     GET_ORDER_LIST_PATH,
                     Gson().toJson(orderListData)
