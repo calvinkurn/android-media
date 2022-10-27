@@ -364,7 +364,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             recyclerView?.post {
                 resetWidgetImpressionHolder()
                 showRebateCoachMark()
-                showUnificationWidgetCoachMark()
             }
         }
     }
@@ -466,8 +465,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun sendCarouselCtaClickEvent(dataKey: String) {
         SellerHomeTracking.sendClickCarouselCtaEvent(dataKey)
     }
-
-    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
 
     override fun sendDescriptionImpressionEvent(model: DescriptionWidgetUiModel) {
         SellerHomeTracking.sendImpressionDescriptionEvent(model.dataKey)
@@ -731,7 +728,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         isEmpty: Boolean
     ) {
         val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
-        SellerHomeTracking.sendUnificationTableItemClickEvent(element.dataKey, selectedTab, text, meta, isEmpty)
+        SellerHomeTracking.sendUnificationTableItemClickEvent(
+            element.dataKey,
+            selectedTab,
+            text,
+            meta,
+            isEmpty
+        )
     }
 
     override fun showUnificationWidgetCoachMark(anchor: View) {

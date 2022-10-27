@@ -4,8 +4,10 @@ import android.content.Context
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.di.qualifier.SearchContext
@@ -14,6 +16,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationLi
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
+import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheetLauncher
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
@@ -34,6 +37,7 @@ class InspirationListAtcViewDelegate @Inject constructor(
     private val trackingQueue: TrackingQueue,
     private val searchNavigationListener: SearchNavigationListener?,
     private val topAdsUrlHitter: TopAdsUrlHitter,
+    private val atcVariantLauncher: AddToCartVariantBottomSheetLauncher,
     searchParameterProvider: SearchParameterProvider,
     classNameProvider: ClassNameProvider,
     @SearchContext
@@ -87,20 +91,24 @@ class InspirationListAtcViewDelegate @Inject constructor(
         product: InspirationCarouselDataView.Option.Product,
         type: String
     ) {
-        context?.let {
-            AtcVariantHelper.goToAtcVariant(
-                it,
-                productId = product.id,
-                pageSource = VariantPageSource.SRP_PAGESOURCE,
-                shopId = product.shopId,
-                trackerCdListName = SearchTracking.getInspirationCarouselUnificationListName(
-                    type,
-                    product.componentId,
-                ),
-                startActivitResult = { intent, reqCode ->
-                    getFragment().startActivityForResult(intent, reqCode)
-                }
+        atcVariantLauncher.launch(
+            productId = product.id,
+            shopId = product.shopId,
+            trackerCDListName = SearchTracking.getInspirationCarouselUnificationListName(
+                type,
+                product.componentId,
             )
+        ) {
+            val trackingData =
+                InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
+                    product,
+                    getSearchParameter(),
+                    it.cartId,
+                    product.minOrder.toIntOrZero(),
+                )
+
+            trackItemClick(trackingData)
+            trackAddToCart(trackingData)
         }
     }
 
