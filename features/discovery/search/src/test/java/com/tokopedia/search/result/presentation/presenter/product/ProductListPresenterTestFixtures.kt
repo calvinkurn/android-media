@@ -180,6 +180,7 @@ internal open class ProductListPresenterTestFixtures {
             suggestionPresenter,
             tickerPresenter,
             safeSearchPresenter,
+            addToCartUseCase,
         )
         productListPresenter.attachView(productListView)
     }
@@ -218,6 +219,7 @@ internal open class ProductListPresenterTestFixtures {
                     expectedOrganicProductPosition,
                     "",
                     searchProductModel.getProductListType(),
+                    searchProductModel.isShowButtonAtc,
                 )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
@@ -253,6 +255,7 @@ internal open class ProductListPresenterTestFixtures {
         position: Int,
         expectedPageTitle: String = "",
         productListType: String = "",
+        isShowButtonAtc: Boolean = false,
     ) {
         val productItem = this as ProductItemDataView
 
@@ -277,6 +280,8 @@ internal open class ProductListPresenterTestFixtures {
         productItem.minOrder shouldBe organicProduct.minOrder
         productItem.pageTitle shouldBe expectedPageTitle
         productItem.productListType shouldBe productListType
+        productItem.showButtonAtc shouldBe isShowButtonAtc
+        productItem.parentId shouldBe organicProduct.parentId
     }
 
     @Suppress("UNCHECKED_CAST")

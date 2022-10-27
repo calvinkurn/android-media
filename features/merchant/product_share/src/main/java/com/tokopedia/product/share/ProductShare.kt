@@ -473,6 +473,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     productData.productImageUrl ?: "",
                     "", productImgList
                 )
+                universalShareBottomSheet = this
             }
         }
         onImpressShareWidget(
