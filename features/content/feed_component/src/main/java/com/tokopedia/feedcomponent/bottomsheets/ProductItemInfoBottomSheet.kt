@@ -118,13 +118,13 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                             shopId = shopId,
                             source = MvcSource.DEFAULT
                         )
-                        binding?.merchantVoucherWidgetPostTag?.show()
+//                        binding?.merchantVoucherWidgetPostTag?.show()
                     } else {
-                        binding?.merchantVoucherWidgetPostTag?.hide()
+//                        binding?.merchantVoucherWidgetPostTag?.hide()
                     }
                 }
                 is Fail -> {
-                    binding?.merchantVoucherWidgetPostTag?.hide()
+//                    binding?.merchantVoucherWidgetPostTag?.hide()
                 }
             }
         }
