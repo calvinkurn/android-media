@@ -139,7 +139,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                     @SerializedName("partner_logo_url")
                     val partnerLogoUrl: String?,
                     @SerializedName("products")
-                    val products: List<Product?>?,
+                    val products: ArrayList<Product?>?,
                     @SerializedName("shop_id")
                     val shopId: String?,
                     @SerializedName("shop_location")
