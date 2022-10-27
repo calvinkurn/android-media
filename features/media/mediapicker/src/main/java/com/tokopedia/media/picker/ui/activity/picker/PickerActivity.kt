@@ -39,21 +39,23 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.utils.VideoDurationRetriever
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
 import javax.inject.Inject
 
-open class PickerActivity : BaseActivity()
-    , PermissionFragment.Listener
-    , NavToolbarComponent.Listener
-    , PickerActivityContract
-    , BottomNavComponent.Listener {
+open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
+    NavToolbarComponent.Listener, PickerActivityContract, BottomNavComponent.Listener {
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var pickerAnalytics: PickerAnalytics
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var param: ParamCacheManager
+    @Inject
+    lateinit var pickerAnalytics: PickerAnalytics
 
     private val hasPermissionGranted: Boolean by permissionGranted()
 
@@ -147,12 +149,19 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
+        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM) ?: PickerParam()
 
         onPageSourceNotFound(pickerParam)
 
-        if(pickerParam.isEditorEnabled()){
-            editorParam = intent?.getParcelableExtra(EXTRA_EDITOR_PARAM)?: EditorParam()
+        if (pickerParam.isEditorEnabled()) {
+            val isEditorAllowed =
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ROLLANCE_KEY) == EDITOR_ROLLANCE_KEY
+
+            if (!isEditorAllowed) {
+                pickerParam.withoutEditor()
+            } else {
+                editorParam = intent?.getParcelableExtra(EXTRA_EDITOR_PARAM) ?: EditorParam()
+            }
         }
 
         // get data from uri query parameter
@@ -527,6 +536,8 @@ open class PickerActivity : BaseActivity()
 
         private const val BYTES_TO_MB = 1000000
         private const val MILLIS_TO_SEC = 1000
+
+        private const val EDITOR_ROLLANCE_KEY = "android_editor"
     }
 
 }

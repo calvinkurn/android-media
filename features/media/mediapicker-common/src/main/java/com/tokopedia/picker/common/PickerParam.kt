@@ -79,6 +79,7 @@ data class PickerParam(
     fun maxImageResolution(value: Int) = apply { maxImageResolution = value }
     fun minStorageThreshold(value: Long) = apply { minStorageThreshold = value }
     fun withEditor(value: Boolean) = apply { withEditor = value }
+    fun withoutEditor() = apply { withEditor = false }
     fun includeAnimationGif(value: Boolean) = apply { isIncludeAnimation = value }
     fun includeMedias(value: List<File>) = apply { includeMedias = value }
     fun excludeMedias(value: List<File>) = apply { excludedMedias = value }
