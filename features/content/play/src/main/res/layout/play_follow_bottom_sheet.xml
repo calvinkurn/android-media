@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_parent_follow_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:clickable="true"
+    android:focusable="true"
+    app:behavior_hideable="true"
+    app:behavior_skipCollapsed="true"
+    tools:ignore="SpeakableTextPresentCheck"
+    tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
+
+    <include layout="@layout/bottom_sheet_header" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_user_kebab_menu_sheet_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_header">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_icon"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_placeholder="@color/play_dms_partner_icon_placeholder"
+            app:unify_image_type="circle" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_badge"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_placeholder="@color/play_dms_partner_icon_placeholder" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_partner_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="1"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_follow"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/iv_badge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="@dimen/spacing_lvl3"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rockbros Indonesia Rockbros Indonesia Rockbros Indonesia Rockbros Indonesia" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_follow"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:minWidth="@dimen/play_follow_button_width"
+            android:text="@string/play_follow"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/tv_partner_name"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_follow_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:layout_constraintEnd_toEndOf="@+id/cl_user_kebab_menu_sheet_content"
+        app:layout_constraintStart_toStartOf="@+id/cl_user_kebab_menu_sheet_content"
+        app:layout_constraintTop_toBottomOf="@+id/cl_user_kebab_menu_sheet_content"
+        app:typographyType="paragraph_2"
+        tools:text="Yuk, follow kreator supaya kamu nggak ketinggalan update seru dari mereka!" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tv_follow_desc"
+        app:layout_constraintStart_toStartOf="@+id/tv_follow_desc"
+        app:layout_constraintTop_toBottomOf="@+id/tv_follow_desc"
+        tools:text="Follow" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
