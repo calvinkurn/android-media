@@ -18,6 +18,7 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.tokochat.domain.response.extension.TokoChatImageResult
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
@@ -30,6 +31,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
@@ -251,11 +253,18 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getImageUrl(imageId: String) {
+    fun getImageWithId(
+        imageId: String,
+        channelId: String,
+        onSuccess: (TokoChatImageResult, ResponseBody) -> Unit
+    ) {
         launchCatchError(block = {
-            val result = getImageUrlUseCase(imageId)
-            Log.d("IMAGE-RESULT", result.toString())
-        }, onError = {
+            val imageUrlResponse = getImageUrlUseCase(
+                TokoChatGetImageUrlUseCase.Param(imageId, channelId)
+            )
+            val imageResult = getImageUrlUseCase.getImage(imageUrlResponse.data.url)
+            onSuccess(imageUrlResponse, imageResult)
+         }, onError = {
             _error.value = it
         })
     }

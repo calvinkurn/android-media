@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
@@ -18,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,6 +28,7 @@ import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
+import com.tokopedia.tokochat.util.TokoChatViewUtil.loadByteArrayImage
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
@@ -36,11 +39,14 @@ import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
+import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -51,7 +57,8 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
     TokoChatReplyTextListener,
-    TokochatReminderTickerListener {
+    TokochatReminderTickerListener,
+    TokoChatImageAttachmentListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -64,7 +71,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     private var source: String = ""
     private var firstTimeOpen = true
 
-    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
+    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this, this)
 
     override fun getScreenName(): String = TAG
 
@@ -372,7 +379,6 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         viewModel.getGroupBookingChannel(channelId)
         removeShimmering()
         observeChatHistory()
-        viewModel.getImageUrl("35ad96b3-9380-4980-a63d-d17c7f1e71c0")
     }
 
     override fun onLoadMore() {
@@ -451,6 +457,21 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         adapter.removeItem(element)
         if (position == adapter.itemCount) {
             mapper.setFirstTicker(null)
+        }
+    }
+
+    override fun loadImage(
+        imageView: ImageView,
+        element: TokoChatImageBubbleUiModel,
+        loader: LoaderUnify?
+    ) {
+        viewModel.getImageWithId(element.imageId, channelId) { imageResult, responseBody ->
+            element.updateImageUrl(imageResult.data.url)
+            context?.let { ctx ->
+                loadByteArrayImage(ctx, imageView, responseBody.byteStream()) {
+                    loader?.hide()
+                }
+            }
         }
     }
 

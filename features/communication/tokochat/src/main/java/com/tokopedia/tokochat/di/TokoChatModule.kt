@@ -12,8 +12,9 @@ import com.tokopedia.tokochat.util.TokoChatCourierStateObservable
 import com.tokopedia.tokochat.data.repository.courier.TokoChatBabbleCourierImpl
 import com.tokopedia.tokochat.data.repository.courier.TokoChatCourierClientProvider
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
+import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
-import com.tokopedia.tokochat.di.TokoChatNetworkModule.RETROFIT_NAME
+import com.tokopedia.tokochat.di.TokoChatNetworkModule.RETROFIT_TOKOCHAT
 import com.tokopedia.tokochat.util.TokoChatCourierRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,12 +35,14 @@ object TokoChatModule {
     @TokoChatScope
     @Provides
     fun provideTokoChatRepository(
-        @Named(RETROFIT_NAME) retrofit: Retrofit,
+        @Named(RETROFIT_TOKOCHAT) retrofit: Retrofit,
         @ApplicationContext context: Context,
         babbleCourierClient: BabbleCourierClient,
-        tokoChatImageApi: TokoChatImageApi
+        tokoChatImageApi: TokoChatImageApi,
+        tokoChatDownloadImageApi: TokoChatDownloadImageApi
     ): TokoChatRepository {
-        return TokoChatRepository(retrofit, context, babbleCourierClient, tokoChatImageApi)
+        return TokoChatRepository(
+            retrofit, context, babbleCourierClient, tokoChatImageApi, tokoChatDownloadImageApi)
     }
 
     @TokoChatScope
@@ -58,7 +61,7 @@ object TokoChatModule {
     fun provideTokoChatCourierConnection(
         @ApplicationContext context: Context,
         gson: Gson,
-        @Named(RETROFIT_NAME) retrofit: Retrofit,
+        @Named(RETROFIT_TOKOCHAT) retrofit: Retrofit,
         userSession: UserSessionInterface,
         courierRemoteConfig: CourierRemoteConfig
     ): CourierConnection {

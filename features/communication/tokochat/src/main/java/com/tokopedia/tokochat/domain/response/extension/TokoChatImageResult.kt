@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class TokoChatImageResult(
     @SerializedName("data")
-    var data: String = "",
+    var data: TokoChatImageData = TokoChatImageData(),
 
     @SerializedName("success")
     var success: Boolean = false,
 
     @SerializedName("error")
-    var error: String = ""
+    var error: List<TokoChatImageError> = listOf()
 )

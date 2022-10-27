@@ -7,15 +7,18 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemImageBubbleBinding
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatImageBubbleViewHolderBinder.generateLeftBg
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatImageBubbleViewHolderBinder.generateRightBg
+import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class TokoChatImageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) {
+class TokoChatImageBubbleViewHolder(
+    itemView: View,
+    private val tokoChatImageAttachmentListener: TokoChatImageAttachmentListener
+): BaseViewHolder(itemView) {
 
     private val binding: TokochatItemImageBubbleBinding? by viewBinding()
 
@@ -29,16 +32,8 @@ class TokoChatImageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) {
     }
 
     private fun bindImage(element: TokoChatImageBubbleUiModel) {
-        binding?.tokochatImageBubble?.loadImage(element.imageUrl) {
-            setPlaceHolder(R.drawable.tokochat_bg_image_bubble)
-            this.listener(
-                onSuccess = { bitmap, mediaDataSource ->
-                    binding?.tokochatLoaderImageBubble?.hide()
-                },
-                onError = {
-                    binding?.tokochatLoaderImageBubble?.hide()
-                }
-            )
+        binding?.tokochatImageBubble?.let {
+            tokoChatImageAttachmentListener.loadImage(it, element, binding?.tokochatLoaderImageBubble)
         }
     }
 

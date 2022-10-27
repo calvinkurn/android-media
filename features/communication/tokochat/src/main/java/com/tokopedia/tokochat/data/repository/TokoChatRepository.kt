@@ -10,8 +10,10 @@ import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.conversations.logging.ConversationsLogger
 import com.gojek.conversations.utils.ConversationsConstants
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import com.tokopedia.tokochat.domain.response.extension.TokoChatImageResult
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import javax.inject.Inject
 
@@ -19,7 +21,8 @@ class TokoChatRepository @Inject constructor(
     private val retrofit: Retrofit,
     @ApplicationContext private val context: Context,
     private val babbleCourier: BabbleCourierClient,
-    private val tokoChatImageApi: TokoChatImageApi
+    private val tokoChatImageApi: TokoChatImageApi,
+    private val tokoChatDownloadImageApi: TokoChatDownloadImageApi
 ): ConversationsLogger.ILog, ConversationsAnalyticsTracker {
 
     private var conversationRepository: ConversationsRepository? = null
@@ -51,8 +54,12 @@ class TokoChatRepository @Inject constructor(
         )
     }
 
-    suspend fun getImageUrl(imageId: String): TokoChatImageResult {
-        return tokoChatImageApi.getImageUrl(imageId)
+    suspend fun getImageUrl(imageId: String, channelId: String): TokoChatImageResult {
+        return tokoChatImageApi.getImageUrl(imageId, channelId)
+    }
+
+    suspend fun getImage(url: String): ResponseBody {
+        return tokoChatDownloadImageApi.getImage(url)
     }
 
     override fun trackEvent(name: String, properties: Map<String, Any>) {

@@ -6,10 +6,12 @@ import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatImageBubbleDe
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatMessageBubbleDelegate
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatReminderTickerDelegate
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatShimmerDelegate
+import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
 
 open class TokoChatBaseAdapter(
-    reminderTickerListener: TokochatReminderTickerListener
+    reminderTickerListener: TokochatReminderTickerListener,
+    imageAttachmentListener: TokoChatImageAttachmentListener
 ): BaseCommonAdapter() {
 
     init {
@@ -17,6 +19,6 @@ open class TokoChatBaseAdapter(
         delegatesManager.addDelegate(TokoChatReminderTickerDelegate(reminderTickerListener))
         delegatesManager.addDelegate(TokoChatMessageBubbleDelegate())
         delegatesManager.addDelegate(TokoChatHeaderDateDelegate())
-        delegatesManager.addDelegate(TokoChatImageBubbleDelegate())
+        delegatesManager.addDelegate(TokoChatImageBubbleDelegate(imageAttachmentListener))
     }
 }

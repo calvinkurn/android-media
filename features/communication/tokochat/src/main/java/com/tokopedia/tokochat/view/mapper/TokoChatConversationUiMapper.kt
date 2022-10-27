@@ -62,7 +62,7 @@ class TokoChatConversationUiMapper @Inject constructor(
                 }
                 ConversationsConstants.EXTENSION_MESSAGE -> {
                     val extensionData = convertToExtensionData(it.messageData)
-                    when (extensionData?.messageId) {
+                    when (extensionData?.id) {
                         PICTURE -> {
                             resultList.add(it.mapToImageUiModel(extensionData, userId))
                         }
@@ -170,7 +170,7 @@ class TokoChatConversationUiMapper @Inject constructor(
         userId: String
     ): TokoChatImageBubbleUiModel {
         return TokoChatImageBubbleUiModel.Builder()
-            .withImageUrl(data.extensionPayload?.id?: "")
+            .withImageId(data.extensionPayload?.id?: "")
             .withMessageId(this.messageId)
             .withFromUserId(this.messageSender?.userId ?: "")
             .withMessageTime(this.createdTimestamp)
