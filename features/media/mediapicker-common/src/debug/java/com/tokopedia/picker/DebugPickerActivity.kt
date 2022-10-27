@@ -7,7 +7,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
-import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
 import com.tokopedia.picker.common.EXTRA_PICKER_PARAM
 import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
 import com.tokopedia.picker.common.EditorParam
@@ -16,6 +15,7 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.R
 import com.tokopedia.picker.common.databinding.ActivityPickerDebugBinding
+import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
@@ -41,11 +41,32 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
 
                 val pickerJson = binding?.pickerConfig?.text?: ""
                 val fromPickerJson = Gson().fromJson(pickerJson.toString(), PickerParam::class.java).apply {
-                    if (binding?.editorCheckbox?.isChecked == true) {
+                    if (isEditorEnabled()) {
                         withEditor {
-                            ratioList = fromEditorJson.ratioList
-                            editorToolsList = fromEditorJson.editorToolsList
-                            autoCropRatio = fromEditorJson.autoCropRatio
+                            resetRatioList()
+                            fromEditorJson.ratioList().forEach {
+                                when(it){
+                                    ImageRatioType.RATIO_1_1 -> ratioListAdd1to1()
+                                    ImageRatioType.RATIO_3_4 -> ratioListAdd3to4()
+                                    ImageRatioType.RATIO_2_1 -> ratioListAdd2to1()
+                                }
+                            }
+
+                            fromEditorJson.editorToolsList().apply {
+                                if (contains(EditorToolType.REMOVE_BACKGROUND)) {
+                                    withRemoveBackground()
+                                }
+
+                                if (contains(EditorToolType.WATERMARK)) {
+                                    withWatermark()
+                                }
+                            }
+
+                            when(fromEditorJson.autoCropRatio()){
+                            ImageRatioType.RATIO_1_1 -> autoCrop1to1()
+                            ImageRatioType.RATIO_3_4 -> autoCrop3to4()
+                            ImageRatioType.RATIO_2_1 -> autoCrop2to1()
+                        }
                         }
                     }
                 }
@@ -111,7 +132,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
         val editorConfigJson = gson.toJson(EditorParam().apply {
             withRemoveBackground()
             withWatermark()
-            autoCropRatio = ImageRatioType.RATIO_1_1
+            autoCrop1to1()
         })
 
         binding?.pickerConfig?.setText(pickerConfigJson)
