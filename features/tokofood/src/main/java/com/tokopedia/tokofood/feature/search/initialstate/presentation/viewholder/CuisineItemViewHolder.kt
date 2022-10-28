@@ -22,7 +22,7 @@ class CuisineItemViewHolder(
     private val binding = CuisineItemInitialStateBinding.bind(itemView)
 
     override fun bind(element: CuisineItemUiModel) {
-        bindImpressionCuisineListener(element, adapterPosition)
+        bindImpressionCuisineListener(element, bindingAdapterPosition)
         setCuisineImage(element.imageUrl)
         setCuisineTitle(element.title)
         setCuisineAction(element)

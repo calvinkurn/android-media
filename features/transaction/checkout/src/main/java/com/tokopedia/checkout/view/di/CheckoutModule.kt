@@ -102,7 +102,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                  gson: Gson,
                                  executorSchedulers: ExecutorSchedulers,
-                                 eligibleForAddressUseCase: EligibleForAddressUseCase): ShipmentContract.Presenter {
+                                 eligibleForAddressUseCase: EligibleForAddressUseCase
+    ): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutGqlUseCase, getShipmentAddressFormV3UseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,

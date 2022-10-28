@@ -15,5 +15,5 @@ class ShippingRecommendationData(
     var preOrderModel: PreOrderModel? = null,
     var errorMessage: String? = null,
     var errorId: String? = null,
-    var additionalDeliveryData: AdditionalDeliveryData? = null,
+    var additionalDeliveryData: AdditionalDeliveryData? = null
 ) : Parcelable

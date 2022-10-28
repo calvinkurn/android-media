@@ -2,6 +2,7 @@ package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.play.R
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
@@ -13,6 +14,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.websocket.response.PlayUserWinnerStatusSocketResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -224,7 +226,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Default('a')))
         )
         coEvery { repo.getCurrentInteractive(any()) } returns model
@@ -284,7 +285,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Default('a')))
         )
 
@@ -360,7 +360,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Other(false)),
                 modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Other(true)),
@@ -386,8 +385,9 @@ class PlayLiveInitialInteractiveTest {
             }
         }
     }
+
     @Test
-    fun `given has finished channel quiz, has reward and user is the winner, show winning dialog`() {
+    fun `given has finished channel quiz, whether user is winner or not show coachmark`() {
         val socketFlow = MutableStateFlow<WebSocketAction>(
             WebSocketAction.NewMessage(
                 socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
@@ -402,7 +402,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(
                     text = "25 June",
@@ -444,7 +443,7 @@ class PlayLiveInitialInteractiveTest {
                     )
                 )
             }
-            event.last().assertInstanceOf<ShowWinningDialogEvent>()
+            event.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
         }
     }
     @Test
@@ -463,7 +462,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(
                     text = "25 June",
@@ -508,8 +506,8 @@ class PlayLiveInitialInteractiveTest {
             }
             event.last().assertEqualTo(
                 ShowCoachMarkWinnerEvent(
-                    PlayUserWinnerStatusSocketResponse.loserTitle,
-                    PlayUserWinnerStatusSocketResponse.loserText,
+                    "",
+                    UiString.Resource(R.string.play_quiz_finished),
                 )
             )
         }
@@ -530,7 +528,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(
                     text = "25 June",

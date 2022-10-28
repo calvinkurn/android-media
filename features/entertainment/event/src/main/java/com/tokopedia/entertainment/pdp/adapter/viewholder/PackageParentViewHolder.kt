@@ -44,6 +44,8 @@ class PackageParentViewHolder(
                         val adapter = rvTicketItem.adapter
                         adapter?.notifyItemChanged(i)
                     }
+                } else {
+                    onBindItemTicketListener.onCollapseAccordion()
                 }
                 onBindItemTicketListener.resetPackage()
             }

@@ -10,4 +10,6 @@ class ValidationMetadata(
     val timeslot_id: Long = 0L,
     @SerializedName("schedule_date")
     val scheduleDate: String = "",
+    @SerializedName("shipping_price")
+    val shippingPrice: Double = 0.0
 ) : Parcelable

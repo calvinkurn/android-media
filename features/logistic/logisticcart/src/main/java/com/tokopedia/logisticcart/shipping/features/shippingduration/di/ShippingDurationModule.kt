@@ -28,10 +28,8 @@ class ShippingDurationModule {
     fun provideShippingDurationPresenter(
             ratesUseCase: GetRatesUseCase,
             ratesApiUseCase: GetRatesApiUseCase,
-            stateConverter: RatesResponseStateConverter,
-            shippingCourierConverter: ShippingCourierConverter): ShippingDurationContract.Presenter {
-        return ShippingDurationPresenter(ratesUseCase, ratesApiUseCase, stateConverter,
-                shippingCourierConverter)
+            stateConverter: RatesResponseStateConverter): ShippingDurationContract.Presenter {
+        return ShippingDurationPresenter(ratesUseCase, ratesApiUseCase, stateConverter)
     }
 
     @Provides

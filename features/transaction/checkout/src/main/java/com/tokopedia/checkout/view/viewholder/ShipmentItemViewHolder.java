@@ -42,10 +42,8 @@ import com.tokopedia.logisticCommon.data.constant.InsuranceConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel;
-import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
@@ -806,7 +804,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llShippingOptionsContainer.setVisibility(View.VISIBLE);
         shippingWidget.showContainerShippingExperience();
 
-        if (shipmentCartItemModel.isDisableChangeCourier()) {
+        if (shipmentCartItemModel.isShowScheduleDelivery()) {
+            // Show Schedule delivery widget
+            shippingWidget.renderScheduleDeliveryWidget(shipmentCartItemModel, selectedCourierItemData);
+        } else if (shipmentCartItemModel.isDisableChangeCourier()) {
             // Is single shipping only
             shippingWidget.renderSingleShippingCourier(shipmentCartItemModel, selectedCourierItemData);
         } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
@@ -860,6 +861,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     @Override
     public void onViewErrorInCourierSection(@NonNull String logPromoDesc) {
         mActionListener.onViewErrorInCourierSection(logPromoDesc);
+    }
+
+    @Override
+    public void onChangeScheduleDelivery(@NonNull ScheduleDeliveryUiModel scheduleDeliveryUiModel) {
+        int position = getAdapterPosition();
+        if (position != RecyclerView.NO_POSITION) {
+            mActionListener.onChangeScheduleDelivery(scheduleDeliveryUiModel, position);
+        }
     }
 
     private void renderFreeShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {

@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.favoriteshop.FavoriteShopData
 import com.tokopedia.homenav.mainnav.data.pojo.favoriteshop.FavoriteShops
 import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetUserShopFollowQuery
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,32 +21,7 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
 ): UseCase<Pair<List<NavFavoriteShopModel>, Boolean>>(){
 
     init {
-        val query = "query GetUserShopFollow(\$userID: Int, \$perPage: Int){\n" +
-                "              userShopFollow(input:{userID:\$userID, perPage:\$perPage}){\n" +
-                "                result {\n" +
-                "                  userShopFollowDetail{\n" +
-                "                    shopID\n" +
-                "                    shopName\n" +
-                "                    location\n" +
-                "                    logo\n" +
-                "                    badge{\n" +
-                "                      title\n" +
-                "                      imageURL\n" +
-                "                    }\n" +
-                "                    reputation{\n" +
-                "                      score\n" +
-                "                      tooltip\n" +
-                "                      reputationScore\n" +
-                "                      minBadgeScore\n" +
-                "                      badge\n" +
-                "                      badgeLevel\n" +
-                "                    }\n" +
-                "                  }\n" +
-                "                  haveNext\n" +
-                "                }\n" +
-                "              }\n" +
-                "            }"
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(GetUserShopFollowQuery())
         graphqlUseCase.setRequestParams(generateParam(userId = userSession.userId.toInt()))
         graphqlUseCase.setTypeClass(FavoriteShopData::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())

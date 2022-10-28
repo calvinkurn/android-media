@@ -60,4 +60,7 @@
 
     <string name="label_out_of_date">HABIS</string>
     <string name="bottomsheet_schedule_slot_title">Pilih Jadwal Pengiriman</string>
+    <string name="label_choose_delivery_time">Pilih Waktu Pengiriman</string>
+    <string name="title_coachmark_option_schedule_delivery">Bisa atur kapan pesanan tiba sesuai kebutuhan 😄</string>
+    <string name="description_coachmark_option_schedule_delivery">Tersedia khusus pesanan Tokopedia NOW!</string>
 </resources>
