@@ -25,21 +25,20 @@
         android:id="@+id/add_button"
         android:layout_width="46dp"
         android:layout_height="46dp"
-        android:padding="16dp"
+        android:padding="12dp"
         android:contentDescription="@string/tokopedianow_content_description_quantity_editor_view_add"
         android:src="@drawable/iconunify_add"
         android:tint="@color/tokopedianow_product_card_dms_button_stroke_plus_minus_cursor_color"
         android:translationZ="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="TouchTargetSizeCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/sub_button"
         android:layout_width="46dp"
         android:layout_height="46dp"
-        android:padding="16dp"
+        android:padding="12dp"
         android:contentDescription="@string/tokopedianow_content_description_quantity_editor_view_sub"
         android:src="@drawable/iconunify_remove"
         android:tint="@color/tokopedianow_product_card_dms_button_stroke_plus_minus_cursor_color"
