@@ -28,6 +28,8 @@ import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.media.loader.utils.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import javax.inject.Inject
 
 /**
@@ -114,6 +116,11 @@ class TwoFactorFragment: BaseDaggerFragment() {
     }
 
     private fun renderPhoneView(){
+        if (isImprove2FA()) {
+            goToNewAddPhone()
+            return
+        }
+
         context?.run {
             activePageListener?.currentPage(ADD_PHONE_NUMBER_PAGE)
 
@@ -171,11 +178,20 @@ class TwoFactorFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun goToNewAddPhone() {
+        context?.run {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.NEW_ADD_PHONE)
+            startActivityForResult(intent, ADD_PHONE_REQ_CODE)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode){
             ADD_PIN_REQ_CODE -> {
                 if(resultCode == Activity.RESULT_OK) {
                     renderSuccessPin()
+                } else {
+                    renderPinView()
                 }
             }
             ADD_PHONE_REQ_CODE -> {
@@ -190,12 +206,17 @@ class TwoFactorFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun isImprove2FA(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLENCE_IMPROVE_2FA).isNotEmpty()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
     companion object {
+        private const val ROLLENCE_IMPROVE_2FA = "improve_2fa"
         const val RESULT_POJO_KEY = "modelKey"
         const val IS_FROM_2FA = "is_from_2fa_checker"
 
