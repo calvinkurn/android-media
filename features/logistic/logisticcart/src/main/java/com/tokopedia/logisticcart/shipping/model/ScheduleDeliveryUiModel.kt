@@ -56,7 +56,7 @@ data class ScheduleDeliveryUiModel(
         timeslotId: Long,
         callback: (selectedScheduleDate: String, selectedDeliveryProduct: DeliveryProduct, isSelectedProduct: Boolean) -> Unit
     ) {
-        if (scheduleDate != null && timeslotId != null) {
+        if (scheduleDate != "" && timeslotId != 0L) {
             val deliveryService = deliveryServices.find { it.id == scheduleDate }
             val deliveryProduct = deliveryService?.deliveryProducts?.find {
                 it.id == timeslotId && it.available
