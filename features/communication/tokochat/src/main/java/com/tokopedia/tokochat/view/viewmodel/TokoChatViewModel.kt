@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
+import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
@@ -247,6 +248,15 @@ class TokoChatViewModel @Inject constructor(
     fun getMemberLeft(): MutableLiveData<String> {
         return try {
             chatChannelUseCase.getMemberLeftLiveData()
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+            MutableLiveData()
+        }
+    }
+
+    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
+        return try {
+            chatChannelUseCase.getLiveChannel(channelId)
         } catch (throwable: Throwable) {
             _error.value = throwable
             MutableLiveData()

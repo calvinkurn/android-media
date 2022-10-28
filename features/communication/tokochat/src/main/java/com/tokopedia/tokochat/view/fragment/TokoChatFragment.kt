@@ -87,10 +87,6 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         super.initViews(view, savedInstanceState)
         setDataFromArguments()
         setupBackground()
-        setupReplySection(
-            true,
-            getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
-        )
         initializeChatProfile()
         initGroupBooking(savedInstanceState)
     }
@@ -285,6 +281,29 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         }
     }
 
+    private fun observeLiveChannel() {
+        observe(viewModel.getLiveChannel(channelId)) {
+            it?.let { channel ->
+                // Show bottom sheet if channel expires
+                if (channel.expiresAt < System.currentTimeMillis()) {
+
+                } else {
+                    // Check if channel is read only
+                    if (channel.readOnly || (channel.readModeStartsAt?: 0) < System.currentTimeMillis()) {
+                        // Hide reply component
+                        setupReplySection(
+                            false,
+                            getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
+                        )
+                    } else {
+                        // Show reply component
+                        setupReplySection(true)
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupToolbarData(headerUiModel: TokoChatHeaderUiModel) {
         getTokoChatHeader()?.run {
             val userTitle = findViewById<Typography>(R.id.tokochat_text_user_title)
@@ -321,7 +340,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         bottomSheetMaskingPhoneNumber.show(childFragmentManager)
     }
 
-    private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String) {
+    private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String = "") {
         baseBinding?.tokochatReplyBox?.run {
             shouldShowWithAction(isShowReplySection) {
                 this.initLayout(this@TokoChatFragment, this@TokoChatFragment)
@@ -379,6 +398,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         viewModel.getGroupBookingChannel(channelId)
         removeShimmering()
         observeChatHistory()
+        observeLiveChannel()
     }
 
     override fun onLoadMore() {

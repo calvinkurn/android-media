@@ -1,7 +1,9 @@
 package com.tokopedia.tokochat.domain.usecase
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.network.data.OrderChatType
+import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
@@ -41,5 +43,9 @@ class TokoChatChannelUseCase @Inject constructor(
 
     fun getMemberLeftLiveData(): MutableLiveData<String> {
         return repository.getConversationRepository().getMemberLeftLiveDataCallback()
+    }
+
+    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
+        return repository.getConversationRepository().getLiveChannel(channelId)
     }
 }
