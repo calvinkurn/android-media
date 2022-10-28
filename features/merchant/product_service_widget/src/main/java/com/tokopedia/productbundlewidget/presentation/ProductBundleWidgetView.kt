@@ -21,13 +21,14 @@ import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 import com.tokopedia.productbundlewidget.model.*
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     companion object {
-        private const val PADDING_START_ADJUSTMENT_RV = 16
+        private const val PADDING_START_ADJUSTMENT_RV = 6
     }
 
     @Inject
@@ -131,7 +132,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     private fun adjustPadding(rvBundles: RecyclerView) {
         tfTitle?.setMargin(paddingStart, paddingTop, paddingEnd, 0)
-        rvBundles.setPadding(paddingStart - PADDING_START_ADJUSTMENT_RV, 0, paddingEnd, paddingBottom)
+        rvBundles.setPadding(paddingStart - PADDING_START_ADJUSTMENT_RV.toPx(), 0, paddingEnd, paddingBottom)
         setPadding(0,0,0,0)
     }
 
