@@ -7,6 +7,9 @@ import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
@@ -18,8 +21,6 @@ import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessag
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
-import com.tokopedia.play.broadcaster.type.PriceUnknown
-import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
@@ -28,13 +29,9 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.view.state.Selectable
-import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.*
-import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import kotlin.random.Random
 
@@ -42,49 +39,6 @@ import kotlin.random.Random
  * Created by jegul on 21/09/20
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
-
-    @Suppress("MagicNumber")
-    override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> {
-        return List(6) {
-            EtalaseContentUiModel(
-                    id = (it + 1L).toString(),
-                    name = "Etalase ${it + 1}",
-                    productMap = mutableMapOf(),
-                    totalProduct = (it + 1) * 100,
-                    stillHasProduct = false
-            )
-        }
-    }
-
-    @Suppress("MagicNumber")
-    override fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ): List<ProductContentUiModel> {
-        return List(6) {
-            ProductContentUiModel(
-                    id = (12345L + it).toString(),
-                    name = "Product ${it + 1}",
-                    imageUrl = when (it) {
-                        1 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/oyhemtbkghuegy9gpo0i/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        2 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        3 -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/rofxpoxehp6wznvzb1jk/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                    },
-                    originalImageUrl = when (it) {
-                        1 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/oyhemtbkghuegy9gpo0i/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        2 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        3 -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/rofxpoxehp6wznvzb1jk/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                    },
-                    isSelectedHandler = { false },
-                    stock = StockAvailable((it % 2) * 10),
-                    isSelectable = { Selectable },
-                    price = PriceUnknown
-            )
-        }
-    }
 
     @Suppress("MagicNumber")
     override fun mapSearchSuggestionList(keyword: String, productsResponse: GetProductsByEtalaseResponse.GetProductListData): List<SearchSuggestionUiModel> {
@@ -122,8 +76,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         )
     }
 
-    override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> {
-        return listOf(
+    override fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel> {
+        return if (authorType == TYPE_SHOP) {
+            listOf(
                 TrafficMetricUiModel(TrafficMetricType.GameParticipants, "2000"),
                 TrafficMetricUiModel(TrafficMetricType.TotalViews, "2328"),
                 TrafficMetricUiModel(TrafficMetricType.VideoLikes, "1800"),
@@ -131,7 +86,17 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 TrafficMetricUiModel(TrafficMetricType.ProductVisit, "1042"),
                 TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, "320"),
                 TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, "200")
-        )
+            )
+        } else {
+            listOf(
+                TrafficMetricUiModel(TrafficMetricType.GameParticipants, "2000"),
+                TrafficMetricUiModel(TrafficMetricType.TotalViews, "2328"),
+                TrafficMetricUiModel(TrafficMetricType.VideoLikes, "1800"),
+                TrafficMetricUiModel(TrafficMetricType.ProductVisit, "1042"),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, "320"),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, "200")
+            )
+        }
     }
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel {
@@ -262,9 +227,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     )
 
     @Suppress("MagicNumber")
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+    override fun mapInteractiveConfig(authorType: String, response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
         giveawayConfig = GiveawayConfigUiModel(
-            isActive = true,
+            isActive = authorType == TYPE_SHOP,
             nameGuidelineHeader = "Mau kasih hadiah apa?",
             nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
             timeGuidelineHeader = "Kapan game-nya mulai?",
@@ -274,6 +239,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         ),
         quizConfig = QuizConfigUiModel(
             isActive = true,
+            isGiftActive = authorType == TYPE_SHOP,
             maxTitleLength = 30,
             maxChoicesCount = 3,
             minChoicesCount = 2,
@@ -492,6 +458,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         videoBufferTimestamp = 0,
         audioBufferTimestamp = 0,
     )
+
+    override fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel> {
+        return emptyList()
+    }
 
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
