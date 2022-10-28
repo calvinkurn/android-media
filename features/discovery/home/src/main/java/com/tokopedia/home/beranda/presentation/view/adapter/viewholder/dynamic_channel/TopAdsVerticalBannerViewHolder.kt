@@ -22,6 +22,10 @@ class TopAdsVerticalBannerViewHolder constructor(
 
     private var binding: ItemHomeVerticalTopAdsBannerBinding? by viewBinding()
 
+    override fun bind(element: HomeTopAdsVerticalBannerDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun bind(element: HomeTopAdsVerticalBannerDataModel) {
 
         binding?.dynamicChannelHeader?.setChannel(
