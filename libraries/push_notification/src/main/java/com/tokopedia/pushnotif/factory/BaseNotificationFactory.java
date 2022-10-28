@@ -135,7 +135,7 @@ public abstract class BaseNotificationFactory {
         bundle.putInt(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
         bundle.putInt(Constant.EXTRA_NOTIFICATION_ID, notificationId);
         intent.putExtras(bundle);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             resultPendingIntent = PendingIntent.getActivity(
                     context,
                     0,
@@ -147,7 +147,7 @@ public abstract class BaseNotificationFactory {
                     context,
                     notificationId,
                     intent,
-                    PendingIntent.FLAG_IMMUTABLE
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE
             );
         }
 
