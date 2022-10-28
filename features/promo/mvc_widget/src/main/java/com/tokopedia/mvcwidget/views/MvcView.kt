@@ -49,13 +49,14 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     init {
         View.inflate(context, R.layout.mvc_entry_view, this)
-        setClicks()
 
         imageChevron = this.findViewById(R.id.image_chevron)
         mvcContainer = this.findViewById(R.id.mvc_container)
         mvcTextContainerFirst = this.findViewById(R.id.mvc_text_container_first)
         mvcTextContainerSecond = this.findViewById(R.id.mvc_text_container_second)
         imageCouponBackground = this.findViewById(R.id.image_coupon_bg)
+
+        setClicks()
 
         mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst), WeakReference(mvcTextContainerSecond))
         mvcAnimationHandler.checkToCancelTimer()
