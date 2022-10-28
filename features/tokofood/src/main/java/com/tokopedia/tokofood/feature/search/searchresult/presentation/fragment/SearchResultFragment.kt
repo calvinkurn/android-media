@@ -791,11 +791,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun showDetailFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
         if (!isAdded) return
         if (sortFilterBottomSheet == null) {
-            sortFilterBottomSheet = SortFilterBottomSheet().apply {
-                context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_title)?.let { bottomSheetTitle ->
-                    setTitle(bottomSheetTitle)
-                }
-            }
+            sortFilterBottomSheet = SortFilterBottomSheet()
         }
         hideKeyboard()
         sortFilterBottomSheet?.show(
