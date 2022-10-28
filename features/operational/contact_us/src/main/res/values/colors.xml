@@ -76,5 +76,8 @@
     <color name="contact_us_dms_detail_background_dark">#FFFFFF</color>
     <color name="contact_us_dms_detail_edit_text_bg">#0AF4F5F7</color>
     <color name="contact_us_dms_detail_hint_bg">#7031353B</color>
+    <color name="contact_us_dms_no_ticket_text">#60000000</color>
+
+    <color name="contact_us_dms_no_ticket_view">#1e000000</color>
 
 </resources>
