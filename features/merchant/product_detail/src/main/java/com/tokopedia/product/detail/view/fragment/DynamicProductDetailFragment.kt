@@ -5212,7 +5212,10 @@ open class DynamicProductDetailFragment :
     ) {
         val productInfoP1 = viewModel.getDynamicProductInfoP1
         DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
-            bundleId, bundleType, productInfoP1, componentTrackDataModel
+            bundleId,
+            bundleType,
+            productInfoP1,
+            componentTrackDataModel
         )
     }
 
