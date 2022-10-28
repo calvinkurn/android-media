@@ -64,13 +64,10 @@ class OngoingDelegateAdapter(
 
         private fun setRejectReason(item: OngoingItem) {
             binding.run {
-                val isNeedToShowLocationCount = item.countLocation > Int.ONE
-                val isNeedToShowVariantCount = item.isParentProduct
-
-                if (!isNeedToShowLocationCount && !isNeedToShowVariantCount) {
-                    tpgRejectionReason.setRejectReason(item)
-                } else {
+                if (item.isMultiwarehouse && !item.isParentProduct) {
                     tpgRejectionReason.gone()
+                } else {
+                    tpgRejectionReason.setRejectReason(item)
                 }
             }
         }
