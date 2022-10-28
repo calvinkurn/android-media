@@ -122,6 +122,14 @@ class OfficialStoreTracking(context: Context) {
         private const val VALUE_SLIDER_BANNER = "slider banner"
         private const val VALUE_PRODUCT_IMPRESSION = "$IMPRESSION product"
         private const val VALUE_PRODUCT_CLICK = "$CLICK product"
+
+        private const val KEY_TRACKER_ID = "trackerId"
+        private const val VALUE_TRACKER_ID_CLICK_BANNER = "4695"
+        private const val VALUE_TRACKER_ID_IMPRESSION_BANNER = "4696"
+        private const val VALUE_TRACKER_ID_VIEW_ALL_BANNER = "4697"
+        private const val VALUE_TRACKER_ID_VIEW_ALL_FEATURED_BRAND = "4698"
+        private const val VALUE_TRACKER_ID_CLICK_FEATURED_BRAND = "4699"
+        private const val VALUE_TRACKER_ID_IMPRESSION_FEATURED_BRAND = "4700"
     }
 
     fun sendScreen(categoryName: String) {
@@ -202,6 +210,7 @@ class OfficialStoreTracking(context: Context) {
                     putString(ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER))
                 }
             )
+            putString(KEY_TRACKER_ID, VALUE_TRACKER_ID_CLICK_BANNER)
             putParcelableArrayList(BaseTrackerConst.Promotion.KEY, promotions)
         }
         tracker.sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
@@ -226,17 +235,19 @@ class OfficialStoreTracking(context: Context) {
                 .appendUserId(userId)
                 .appendBusinessUnit(VALUE_BUSINESS_UNIT_DEFAULT)
                 .appendCurrentSite(VALUE_CURRENT_SITE_DEFAULT)
+                .appendCustomKeyValue(KEY_TRACKER_ID, VALUE_TRACKER_ID_IMPRESSION_BANNER)
         }.build() as HashMap<String, Any>
         trackingQueue.putEETracking(trackerBuilder)
     }
 
     fun eventClickAllBanner(categoryName: String) {
-        tracker.sendGeneralEvent(
-                TrackAppUtils
-                        .gtmData(CLICK_OS_MICROSITE,
-                            "$OS_MICROSITE$categoryName",
-                            FORMAT_CLICK_VIEW_ALL.format(VALUE_SLIDER_BANNER),
-                            FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, "", categoryName)))
+        val track = TrackAppUtils
+            .gtmData(CLICK_OS_MICROSITE,
+                "$OS_MICROSITE$categoryName",
+                FORMAT_CLICK_VIEW_ALL.format(VALUE_SLIDER_BANNER),
+                FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, "", categoryName))
+        track[KEY_TRACKER_ID] = VALUE_TRACKER_ID_VIEW_ALL_BANNER
+        tracker.sendGeneralEvent(track)
     }
 
     fun eventClickAllShop(categoryName: String) {
@@ -343,6 +354,7 @@ class OfficialStoreTracking(context: Context) {
             )
         trackerClickAllFeaturedBrand[FIELD_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_DEFAULT
         trackerClickAllFeaturedBrand[FIELD_CURRENT_SITE] = VALUE_CURRENT_SITE_DEFAULT
+        trackerClickAllFeaturedBrand[KEY_TRACKER_ID] = VALUE_TRACKER_ID_VIEW_ALL_FEATURED_BRAND
         tracker.sendGeneralEvent(trackerClickAllFeaturedBrand)
     }
 
@@ -386,7 +398,8 @@ class OfficialStoreTracking(context: Context) {
             ),
             FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
             FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
-            USER_ID, userId
+            USER_ID, userId,
+            KEY_TRACKER_ID, VALUE_TRACKER_ID_CLICK_FEATURED_BRAND
         )
         tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
@@ -431,7 +444,8 @@ class OfficialStoreTracking(context: Context) {
                 )
             ),
             FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
-            FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT
+            FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
+            KEY_TRACKER_ID, VALUE_TRACKER_ID_IMPRESSION_FEATURED_BRAND
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }

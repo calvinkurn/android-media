@@ -44,7 +44,8 @@
       "eventLabel": "slider banner - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "4696"
     },
     {
       "eventCategory": "os microsite",
@@ -61,7 +62,8 @@
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "clientId": ".*"
+      "clientId": ".*",
+      "trackerId": "4695"
     },
     {
       "event": "clickHomepage",
@@ -69,7 +71,8 @@
       "eventCategory": "os microsite",
       "eventLabel": "slider banner - .* - .*",
       "businessUnit": "home & browse",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "trackerId": "4697"
     },
     {
       "eventCategory": ".*",
@@ -301,7 +304,8 @@
       "userId": ".*",
       "eventAction": "impression banner - popular brands",
       "sessionIris": ".*",
-      "eventLabel": "popular brands - .* - .* - .* - .*"
+      "eventLabel": "popular brands - .* - .* - .* - .*",
+      "trackerId": "4700"
     },
     {
       "promotions": [
@@ -319,7 +323,8 @@
       "userId": ".*",
       "eventAction": "click banner - popular brands",
       "sessionIris": ".*",
-      "eventLabel": "popular brands - .* - .* - .* - .*"
+      "eventLabel": "popular brands - .* - .* - .* - .*",
+      "trackerId": "4699"
     },
     {
       "businessUnit": "home & browse",
@@ -328,7 +333,8 @@
       "event": "clickHomepage",
       "eventAction": "click view all - popular brands",
       "sessionIris": ".*",
-      "eventLabel": "popular brands - .* - .* - .* - .*"
+      "eventLabel": "popular brands - .* - .* - .* - .*",
+      "trackerId": "4698"
     }
   ]
 }
