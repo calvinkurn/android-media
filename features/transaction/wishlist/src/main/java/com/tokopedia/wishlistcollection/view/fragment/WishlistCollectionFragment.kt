@@ -806,7 +806,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         dialog?.setSecondaryCTAText(getString(R.string.wishlist_cancel_manage_label))
         dialog?.setSecondaryCTAClickListener {
             dialog.dismiss()
-            // WishlistV2Analytics.clickBatalOnPopUpMultipleWishlistProduct()
         }
         dialog?.show()
     }

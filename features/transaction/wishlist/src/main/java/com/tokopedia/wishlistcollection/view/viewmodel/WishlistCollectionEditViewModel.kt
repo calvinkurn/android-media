@@ -9,9 +9,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionByIdResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.data.response.UpdateWishlistCollectionResponse
+import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionByIdUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionNamesUseCase
 import com.tokopedia.wishlistcollection.domain.UpdateWishlistCollectionUseCase
@@ -22,7 +24,8 @@ class WishlistCollectionEditViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val getWishlistCollectionNamesUseCase: GetWishlistCollectionNamesUseCase,
     private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase,
-    private val getWishlistCollectionByIdUseCase: GetWishlistCollectionByIdUseCase
+    private val getWishlistCollectionByIdUseCase: GetWishlistCollectionByIdUseCase,
+    private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collectionNames = MutableLiveData<Result<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames>>()
@@ -36,6 +39,11 @@ class WishlistCollectionEditViewModel @Inject constructor(
     private val _getWishlistCollectionByIdResult = MutableLiveData<Result<GetWishlistCollectionByIdResponse.GetWishlistCollectionById>>()
     val getWishlistCollectionByIdResult: LiveData<Result<GetWishlistCollectionByIdResponse.GetWishlistCollectionById>>
         get() = _getWishlistCollectionByIdResult
+
+    private val _deleteCollectionResult =
+        MutableLiveData<Result<DeleteWishlistCollectionResponse.DeleteWishlistCollection>>()
+    val deleteCollectionResult: LiveData<Result<DeleteWishlistCollectionResponse.DeleteWishlistCollection>>
+        get() = _deleteCollectionResult
 
     fun getWishlistCollectionNames() {
         launchCatchError(block = {
@@ -73,6 +81,19 @@ class WishlistCollectionEditViewModel @Inject constructor(
             }
         }, onError = {
             _getWishlistCollectionByIdResult.value = Fail(it)
+        })
+    }
+
+    fun deleteWishlistCollection(collectionId: String) {
+        launchCatchError(block = {
+            val result = deleteWishlistCollectionUseCase(collectionId)
+            if (result.deleteWishlistCollection.status == WishlistV2CommonConsts.OK && result.deleteWishlistCollection.errorMessage.isEmpty()) {
+                _deleteCollectionResult.value = Success(result.deleteWishlistCollection)
+            } else {
+                _deleteCollectionResult.value = Fail(Throwable())
+            }
+        }, onError = {
+            _deleteCollectionResult.value = Fail(it)
         })
     }
 }
