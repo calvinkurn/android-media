@@ -11,7 +11,11 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
  */
 class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHandler, private val tracking: OfficialStoreTracking?): FeaturedBrandListener {
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int, applink: String) {
-        tracking?.eventClickAllFeaturedBrandOS(dcEventHandler.getOSCategory()?.title ?: "")
+        tracking?.eventClickAllFeaturedBrandOS(
+            dcEventHandler.getOSCategory()?.title ?: "",
+            channelModel.id,
+            channelModel.channelHeader.name
+        )
         dcEventHandler.goToApplink(applink)
     }
 
@@ -26,7 +30,8 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
             creativeName = channelGrid.attribution,
             userId = dcEventHandler.getUserId(),
             headerName = channelModel.channelHeader.name,
-            bannerId =  bannerId
+            bannerId =  bannerId,
+            channelId = channelModel.id
         )
     }
 
@@ -41,7 +46,8 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
             creativeName = channelGrid.attribution,
             userId = dcEventHandler.getUserId(),
             headerName = channelModel.channelHeader.name,
-            bannerId =  bannerId
+            bannerId =  bannerId,
+            channelId = channelModel.id
         )
 
         dcEventHandler.goToApplink(applink)

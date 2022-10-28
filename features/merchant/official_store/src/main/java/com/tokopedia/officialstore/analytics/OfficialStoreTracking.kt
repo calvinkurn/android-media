@@ -47,10 +47,8 @@ class OfficialStoreTracking(context: Context) {
         private const val EVENT_ACTION = "eventAction"
         private const val EVENT_LABEL = "eventLabel"
         private const val EVENT_ATTRIBUTION = "attribution"
-        private const val EVENT_LABEL_POPULAR_BRANDS = "%s - %s - %s"
         private const val IMPRESSION_BANNER = "impression banner"
         private const val EVENT_POPULAR_BRANDS = "%s - %s"
-        private const val PROMOTIONS_ID_POPULAR_BRANDS = "%s_%s"
         private const val PROMOTIONS = "promotions"
         private const val PROMOTIONS_NAME_POPULAR_BRANDS = "%s%s - %s - %s"
         private const val CLICK_BANNER = "click banner"
@@ -112,7 +110,9 @@ class OfficialStoreTracking(context: Context) {
         const val FORMAT_DASH_TWO_VALUES = "%s - %s"
         const val FORMAT_DASH_THREE_VALUES = "%s - %s - %s"
         const val FORMAT_DASH_FOUR_VALUES = "%s - %s - %s - %s"
+        const val FORMAT_DASH_FIVE_VALUES = "%s - %s - %s - %s"
         const val FORMAT_UNDERSCORE_TWO_VALUES = "%s_%s"
+        const val FORMAT_UNDERSCORE_THREE_VALUES = "%s_%s_%s"
         const val FORMAT_ITEM_NAME = "${SLASH_OFFICIAL_STORE}/%s - %s"
         const val FORMAT_ITEM_NAME_FOUR_VALUES = "${SLASH_OFFICIAL_STORE}/%s - %s - %s - %s"
         const val FORMAT_ITEM_LIST = "${SLASH_OFFICIAL_STORE}/%s - %s - %s"
@@ -189,7 +189,7 @@ class OfficialStoreTracking(context: Context) {
             putString(EVENT, Event.SELECT_CONTENT)
             putString(EVENT_CATEGORY, OS_MICROSITE_SINGLE)
             putString(EVENT_ACTION, FORMAT_DASH_TWO_VALUES.format(CLICK_BANNER, VALUE_SLIDER_BANNER))
-            putString(EVENT_LABEL, FORMAT_DASH_TWO_VALUES.format(VALUE_SLIDER_BANNER, categoryName))
+            putString(EVENT_LABEL, FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, bannerItem.bannerId, categoryName))
             putString(USER_ID, userId)
             putString(FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT)
             putString(FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT)
@@ -213,7 +213,7 @@ class OfficialStoreTracking(context: Context) {
                 event = PROMO_VIEW,
                 eventCategory = OS_MICROSITE_SINGLE,
                 eventAction = FORMAT_DASH_TWO_VALUES.format(IMPRESSION_BANNER, VALUE_SLIDER_BANNER),
-                eventLabel = FORMAT_DASH_TWO_VALUES.format(VALUE_SLIDER_BANNER, categoryName),
+                eventLabel = FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, bannerItem.bannerId, categoryName),
                 promotions = listOf(BaseTrackerConst.Promotion(
                     creative = bannerItem.title,
                     position = bannerPosition.toString(),
@@ -233,9 +233,9 @@ class OfficialStoreTracking(context: Context) {
         tracker.sendGeneralEvent(
                 TrackAppUtils
                         .gtmData(CLICK_OS_MICROSITE,
-                                "$OS_MICROSITE$categoryName",
-                                "banner - $CLICK",
-                                "$CLICK view all"))
+                            "$OS_MICROSITE$categoryName",
+                            "$CLICK $VIEW_ALL $VALUE_SLIDER_BANNER",
+                            FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, "", categoryName)))
     }
 
     fun eventClickAllShop(categoryName: String) {
@@ -325,15 +325,20 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    fun eventClickAllFeaturedBrandOS(categoryName: String) {
-        val eventAction = EVENT_POPULAR_BRANDS.format(ALL_BRANDS, CLICK)
-        val eventLabelFirstFormat = "$CLICK $VIEW_ALL"
+    fun eventClickAllFeaturedBrandOS(categoryName: String, channelId: String, headerName: String) {
+        val eventAction = "$CLICK $VIEW_ALL $POPULAR_BRANDS"
         val trackerClickAllFeaturedBrand = TrackAppUtils
             .gtmData(
                 CLICK_HOMEPAGE,
                 OS_MICROSITE_SINGLE,
                 eventAction,
-                EVENT_POPULAR_BRANDS.format(eventLabelFirstFormat, categoryName)
+                FORMAT_DASH_FIVE_VALUES.format(
+                    POPULAR_BRANDS,
+                    channelId,
+                    headerName,
+                    "",
+                    categoryName
+                )
             )
         trackerClickAllFeaturedBrand[FIELD_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_DEFAULT
         trackerClickAllFeaturedBrand[FIELD_CURRENT_SITE] = VALUE_CURRENT_SITE_DEFAULT
@@ -347,18 +352,25 @@ class OfficialStoreTracking(context: Context) {
         creativeName: String,
         headerName: String,
         bannerId: String,
-        userId: String
+        userId: String,
+        channelId: String
     ) {
         val data = DataLayer.mapOf(
             EVENT, PROMO_CLICK,
             EVENT_CATEGORY, OS_MICROSITE_SINGLE,
             EVENT_ACTION, EVENT_POPULAR_BRANDS.format(CLICK_BANNER, POPULAR_BRANDS),
-            EVENT_LABEL, EVENT_LABEL_POPULAR_BRANDS.format(POPULAR_BRANDS, shopId, categoryName),
+            EVENT_LABEL, FORMAT_DASH_FIVE_VALUES.format(
+                POPULAR_BRANDS,
+                channelId,
+                headerName,
+                "",
+                categoryName
+            ),
             ECOMMERCE, DataLayer.mapOf(
                 PROMO_CLICK, DataLayer.mapOf(
                     PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
-                            FIELD_PRODUCT_ID, PROMOTIONS_ID_POPULAR_BRANDS.format(bannerId, shopId),
+                            FIELD_PRODUCT_ID, FORMAT_UNDERSCORE_THREE_VALUES.format(bannerId, channelId, shopId),
                             FIELD_PRODUCT_NAME, PROMOTIONS_NAME_POPULAR_BRANDS.format(
                                 SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY,
                                 categoryName,
@@ -385,19 +397,26 @@ class OfficialStoreTracking(context: Context) {
         creativeName: String,
         userId: String,
         headerName: String,
-        bannerId: String
+        bannerId: String,
+        channelId: String
     ) {
         val data = DataLayer.mapOf(
             EVENT, PROMO_VIEW,
             EVENT_CATEGORY, OS_MICROSITE_SINGLE,
             EVENT_ACTION, EVENT_POPULAR_BRANDS.format(IMPRESSION_BANNER, POPULAR_BRANDS),
-            EVENT_LABEL, EVENT_LABEL_POPULAR_BRANDS.format(POPULAR_BRANDS, shopId, categoryName),
+            EVENT_LABEL, FORMAT_DASH_FIVE_VALUES.format(
+                POPULAR_BRANDS,
+                channelId,
+                headerName,
+                "",
+                categoryName
+            ),
             USER_ID, userId,
             ECOMMERCE, DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
                     PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
-                            FIELD_PRODUCT_ID, PROMOTIONS_ID_POPULAR_BRANDS.format(bannerId, shopId),
+                            FIELD_PRODUCT_ID, FORMAT_UNDERSCORE_THREE_VALUES.format(bannerId, channelId, shopId),
                             FIELD_PRODUCT_NAME, PROMOTIONS_NAME_POPULAR_BRANDS.format(
                                 SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY,
                                 categoryName,

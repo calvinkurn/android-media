@@ -41,7 +41,7 @@
         "item_id": ".*",
         "item_name": "/official-store/.* - slider banner"
       }],
-      "eventLabel": "slider banner - .*",
+      "eventLabel": "slider banner - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "userId": ".*"
@@ -57,11 +57,19 @@
         "item_id": ".*",
         "item_name": "/official-store/.* - slider banner"
       }],
-      "eventLabel": "slider banner - .*",
+      "eventLabel": "slider banner - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
       "clientId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all - slider banner",
+      "eventCategory": "os microsite",
+      "eventLabel": "slider banner - .* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace"
     },
     {
       "eventCategory": ".*",
@@ -282,7 +290,7 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*",
+          "item_id": ".*_.*_.*",
           "item_name": "/official-store/.* - popular brands - .*"
         }
       ],
@@ -293,14 +301,14 @@
       "userId": ".*",
       "eventAction": "impression banner - popular brands",
       "sessionIris": ".*",
-      "eventLabel": "popular brands - .* - .*"
+      "eventLabel": "popular brands - .* - .* - .* - .*"
     },
     {
       "promotions": [
         {
           "creative_name": ".* reference: row 18",
           "creative_slot": ".*",
-          "item_id": ".*_.*",
+          "item_id": ".*_.*_.*",
           "item_name": "/official-store/.* - popular brands - .*"
         }
       ],
@@ -311,16 +319,16 @@
       "userId": ".*",
       "eventAction": "click banner - popular brands",
       "sessionIris": ".*",
-      "eventLabel": "popular brands - .* - .*"
+      "eventLabel": "popular brands - .* - .* - .* - .*"
     },
     {
       "businessUnit": "home & browse",
       "eventCategory": "os microsite",
       "currentSite": "tokopediamarketplace",
       "event": "clickHomepage",
-      "eventAction": "all brands - click",
+      "eventAction": "click view all - popular brands",
       "sessionIris": ".*",
-      "eventLabel": "click view all - .*"
+      "eventLabel": "popular brands - .* - .* - .* - .*"
     }
   ]
 }
