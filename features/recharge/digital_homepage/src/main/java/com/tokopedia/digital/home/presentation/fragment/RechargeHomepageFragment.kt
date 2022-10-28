@@ -156,15 +156,6 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView() {
-        if (platformId == RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID) {
-            val layoutParams =
-                binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.topToTop = ConstraintSet.UNSET
-            layoutParams.topToBottom = binding.digitalHomepageToolbar.id
-            binding.swipeRefreshLayout.layoutParams = layoutParams
-            binding.swipeRefreshLayout.requestLayout()
-        }
-
         binding.recyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
@@ -184,6 +175,15 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                 calculateToolbarView(binding.recyclerView.computeVerticalScrollOffset())
             }
         })
+    }
+
+    private fun setupTopRecyclerview() {
+        val layoutParams =
+            binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.topToTop = ConstraintSet.UNSET
+        layoutParams.topToBottom = binding.digitalHomepageToolbar.id
+        binding.swipeRefreshLayout.layoutParams = layoutParams
+        binding.swipeRefreshLayout.requestLayout()
     }
 
     private fun hideStatusBar() {
@@ -555,6 +555,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         if (searchBarType != SEARCH_BAR_TYPE_SOLID){
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         } else {
+            setupTopRecyclerview()
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
     }
