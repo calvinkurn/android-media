@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
@@ -352,7 +353,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     lateinit var viewModel: Lazy<HomeRevampViewModel>
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
-    private lateinit var root: FrameLayout
+    private lateinit var root: ConstraintLayout
     private lateinit var refreshLayout: LottieSwipeRefreshLayout
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
@@ -363,7 +364,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var navToolbar: NavToolbar? = null
-    private var homeSnackbar: Snackbar? = null
+//    private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
@@ -545,7 +546,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
-        val view = inflater.inflate(R.layout.fragment_home_revamp, container, false)
+        val view = inflater.inflate(R.layout.fragment_home_revamp_2, container, false)
         BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
             PAGE_NAME_FPI_HOME, this, object : OnFrameListener {
@@ -609,7 +610,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)
         }
-        homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
+//        homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
         fetchRemoteConfig()
         setupStatusBar()
         setupHomeRecyclerView()
@@ -2271,7 +2272,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
-        val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
+        val params = floatingEggButtonFragment.view?.layoutParams as ConstraintLayout.LayoutParams
         if (stickyLoginView?.isShowing() == true) {
             stickyLoginView?.height?.let { params.setMargins(DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, it) }
             val positionEgg = IntArray(POSITION_ARRAY_CONTAINER_SIZE)
