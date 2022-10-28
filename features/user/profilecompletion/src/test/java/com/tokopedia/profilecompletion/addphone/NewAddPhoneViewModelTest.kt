@@ -228,8 +228,10 @@ class NewAddPhoneViewModelTest {
 
         // Then
         val result = viewModel.userPhoneUpdate.getOrAwaitValue()
+        val isLoading = viewModel.userUpdateLoading.getOrAwaitValue()
         assertTrue(result is Success)
         assertEquals(expected, result)
+        assertFalse(isLoading)
         coVerify(exactly = 1) {
             userSessionInterface.setIsMSISDNVerified(true)
             userSessionInterface.phoneNumber = phone
@@ -260,9 +262,11 @@ class NewAddPhoneViewModelTest {
 
         // Then
         val result = viewModel.userPhoneUpdate.getOrAwaitValue()
+        val isLoading = viewModel.userUpdateLoading.getOrAwaitValue()
         assertTrue(result is Fail)
         assertTrue(result.throwable is MessageErrorException)
         assertSame(expected.throwable.message, result.throwable.message)
+        assertFalse(isLoading)
     }
 
     @Test
@@ -283,8 +287,10 @@ class NewAddPhoneViewModelTest {
 
         // Then
         val result = viewModel.userPhoneUpdate.getOrAwaitValue()
+        val isLoading = viewModel.userUpdateLoading.getOrAwaitValue()
         assertTrue(result is Fail)
         assertEquals(expected, result)
+        assertFalse(isLoading)
     }
 
 }
