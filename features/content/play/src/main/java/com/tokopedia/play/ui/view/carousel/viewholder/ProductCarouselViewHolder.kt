@@ -80,21 +80,16 @@ class ProductCarouselViewHolder private constructor() {
         }
 
         fun bind(item: PlayProductUiModel.Product) {
-            val buttons = listOf(
-                ProductButtonUiModel(text = "Beli Langsung", color = ProductButtonColor.PRIMARY_BUTTON, type = ProductButtonType.OCC),
-                ProductButtonUiModel(text = "Keranjang", color = ProductButtonColor.SECONDARY_BUTTON, type = ProductButtonType.ATC)
-            )
-
             binding.imgProduct.loadImage(item.imageUrl)
             binding.tvName.text = item.title
             binding.labelOos.showWithCondition(item.stock == OutOfStock)
             binding.viewOverlayOos.showWithCondition(item.stock == OutOfStock)
 
             //Buttons
-            binding.btnAtc.showWithCondition(buttons.isNotEmpty())
-            binding.btnBuy.showWithCondition(buttons.isNotEmpty())
-            binding.btnAtc.configButton(buttons.find { it.type == ProductButtonType.ATC }.orDefault())
-            binding.btnBuy.configButton(buttons.find { it.type != ProductButtonType.ATC }.orDefault())
+            binding.btnAtc.showWithCondition(item.buttons.isNotEmpty())
+            binding.btnBuy.showWithCondition(item.buttons.isNotEmpty())
+            binding.btnAtc.configButton(item.buttons.find { it.type == ProductButtonType.ATC }.orDefault())
+            binding.btnBuy.configButton(item.buttons.find { it.type != ProductButtonType.ATC }.orDefault())
 
             when (item.price) {
                 is DiscountedPrice -> {
