@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -1925,10 +1926,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         )
 
         activity?.let {
-            val intent = if (wishlistItem.url.isNotEmpty()) {
-                RouteManager.getIntent(it, DeeplinkMapperWishlist.mapPdpAppLinkFromHttp(wishlistItem.url, wishlistItem.id))
+            val intent: Intent
+            if (wishlistItem.url.isNotEmpty()) {
+                intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+                intent.data = Uri.parse(wishlistItem.url)
             } else {
-                RouteManager.getIntent(
+                intent = RouteManager.getIntent(
                     it,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     wishlistItem.id
