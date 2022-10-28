@@ -176,7 +176,10 @@ data class ChannelDetailsWithRecomResponse(
         val hasFollowButton: Boolean = false,
 
         @SerializedName("empty_bottom_sheet")
-        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet()
+        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet(),
+
+        @SerializedName("pop_up")
+        val popupConfig: PopupConfig = PopupConfig(),
     )
 
     data class FreezeData(
@@ -267,5 +270,16 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("image_url")
         val imageUrl: String = "",
+    )
+
+    data class PopupConfig(
+        @SerializedName("is_enabled")
+        val isEnabled: Boolean = false,
+
+        @SerializedName("duration_to_pop_up")
+        val duration: Int = 0,
+
+        @SerializedName("copy_text_bottomsheet")
+        val copyText: String = "",
     )
 }
