@@ -117,7 +117,7 @@ public interface ApplinkConst {
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
-    String WISHLIST_HOME = "tokopedia://wishlisthome";
+    String WISHLIST_COLLECTION_DETAIL = "tokopedia://wishlist/collection/{collection_id}";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
@@ -295,6 +295,7 @@ public interface ApplinkConst {
     String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
     String PURCHASE_HISTORY = "tokopedia://buyer/history";
     String PURCHASE_ONGOING = "tokopedia://buyer/ongoing-order";
+    String TOKOPEDIA_PLUS_ORDER = "tokopedia://plus/order";
 
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
@@ -531,6 +532,11 @@ public interface ApplinkConst {
         String SELLER_SHOP_FLASH_SALE = "sellerapp://shop-flash-sale";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
         String TOKOMEMBER = "sellerapp://tokomember";
+        String TOKOMEMBER_PROGRAM_LIST = "sellerapp://tokomember/program-list";
+        String TOKOMEMBER_COUPON_LIST = "sellerapp://tokomember/coupon-list";
+        String TOKOMEMBER_PROGRAM_CREATION = "sellerapp://tokomember/program-creation";
+        String TOKOMEMBER_COUPON_CREATION = "sellerapp://tokomember/coupon-creation";
+        String TOKOMEMBER_PROGRAM_EXTENSION = "sellerapp://tokomember/program-extension/{program_id}";
         String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
@@ -544,15 +550,22 @@ public interface ApplinkConst {
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
         String REPURCHASE = "tokopedia://now/repurchase-page";
+        String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
+        String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";
+        String RECIPE_HOME = "tokopedia://now/recipe";
+        String RECIPE_SEARCH = "tokopedia://now/recipe/search";
+        String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
     }
 
     interface TokoFood {
+        String GOFOOD = "tokopedia://gofood";
         String MAIN_PATH = "tokopedia://food";
         String HOME = "tokopedia://food/home";
         String CATEGORY = "tokopedia://food/category";
         String MERCHANT = "tokopedia://food/merchant/{merchantId}?product_id={product_id}";
         String POST_PURCHASE = "tokopedia://food/postpurchase/{orderId}";
         String TOKOFOOD_ORDER = "tokopedia://food/order";
+        String SEARCH = "tokopedia://food/search";
     }
 
     interface TokoMart {
@@ -619,6 +632,12 @@ public interface ApplinkConst {
 
         // chat source page
         String SOURCE_CHAT_SEARCH = "chat_search";
+    }
+
+    interface Tokomember{
+        String MAIN_PATH = "sellerapp://tokomember";
+        String PROGRAM_EXTENSION = "/tokomember/program-extension";
+        String COUPON_DETAIL = "/tokomember/coupon-detail";
     }
 
     interface AttachInvoice {
@@ -724,6 +743,10 @@ public interface ApplinkConst {
 
         String VALUE_CAMERA_PAGE = "0"; // camera page
         String VALUE_GALLERY_PAGE = "1"; // gallery page
+    }
+
+    interface MediaEditor {
+        String MEDIA_EDITOR = "tokopedia://media-editor";
     }
 
     interface GeneralInfo {

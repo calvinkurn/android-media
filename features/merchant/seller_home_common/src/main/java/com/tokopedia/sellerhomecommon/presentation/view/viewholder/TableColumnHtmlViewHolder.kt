@@ -64,7 +64,7 @@ class TableColumnHtmlViewHolder(
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_96
             )
             element.colorInt = textColorInt
-            tvTableColumnHtml?.run {
+            tvTableColumnHtml.run {
                 setClickableUrlHtml(
                     element.valueStr,
                     applyCustomStyling = {
@@ -77,8 +77,8 @@ class TableColumnHtmlViewHolder(
                     onTouchListener = { spannable ->
                         SpannableTouchListener(spannable)
                     },
-                    onUrlClicked = { url ->
-                        listener.onHyperlinkClicked(url)
+                    onUrlClicked = { url, text ->
+                        listener.onHyperlinkClicked(url, text, element.meta)
                         Uri.parse(url).let { uri ->
                             if (isAppLink(uri)) {
                                 RouteManager.route(context, url)
@@ -143,6 +143,6 @@ class TableColumnHtmlViewHolder(
     }
 
     interface Listener {
-        fun onHyperlinkClicked(url: String)
+        fun onHyperlinkClicked(url: String, text: String, meta: TableRowsUiModel.Meta)
     }
 }

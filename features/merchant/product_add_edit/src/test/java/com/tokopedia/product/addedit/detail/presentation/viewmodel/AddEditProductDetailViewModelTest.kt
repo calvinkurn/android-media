@@ -38,6 +38,8 @@ import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.shop.common.constant.ShopStatusLevelDef
+import com.tokopedia.shop.common.constant.ShopStatusLevelDef.Companion.LEVEL_GOLD
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse.GetIMSMeta
@@ -100,6 +102,12 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
+
+    @RelaxedMockK
+    lateinit var getShopInfoUseCase: GetShopInfoUseCase
+
+    @RelaxedMockK
+    lateinit var getDefaultCommissionRulesUseCase: GetDefaultCommissionRulesUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -180,6 +188,8 @@ class AddEditProductDetailViewModelTest {
                 getEditProductPriceSuggestionUseCase,
                 getProductTitleValidationUseCase,
                 getMaxStockThresholdUseCase,
+                getShopInfoUseCase,
+                getDefaultCommissionRulesUseCase,
                 userSession)
     }
 
@@ -2044,6 +2054,143 @@ class AddEditProductDetailViewModelTest {
     fun `when price suggestion max limit is not zero expect isPriceSuggestionRangeIsEmpty false`() {
         val isRangeEmpty = viewModel.isPriceSuggestionRangeIsEmpty(DOUBLE_ZERO, 1000.0)
         assertFalse(isRangeEmpty)
+    }
+
+    @Test
+    fun `when successful transactions is less than 100 and shop type is regular merchant expect no service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(99, ShopStatusLevelDef.LEVEL_REGULAR)
+        assertTrue(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when successful transactions is less than 100 and shop type is official store expect no service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(99, ShopStatusLevelDef.LEVEL_OFFICIAL_STORE)
+        assertTrue(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when successful transactions is 100 and shop type is regular merchant expect no service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(100, ShopStatusLevelDef.LEVEL_REGULAR)
+        assertTrue(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when successful transactions is more than 100 and shop type is regular merchant expect service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(101, ShopStatusLevelDef.LEVEL_REGULAR)
+        assertFalse(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when successful transactions is 100 and shop type is not regular merchant expect service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(100, LEVEL_GOLD)
+        assertFalse(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when shop type is not regular merchant expect legit commission rate from commission rule`() {
+        val commissionRules = listOf(
+            CommissionRule(shopType = 1, commissionRate = 2.5),
+            CommissionRule(shopType = 2, commissionRate = 3.5)
+        )
+        val shopType = 1
+        val expectedResult = 2.5
+        val actualResult = viewModel.getCommissionRate(commissionRules, shopType)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when commission rules is empty expect zero commission rate`() {
+        val commissionRules = listOf<CommissionRule>()
+        val shopType = 1
+        val expectedResult = 0.0
+        val actualResult = viewModel.getCommissionRate(commissionRules, shopType)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when shop tier is zero expect getting the commission rate from shop tier 999 - CE version`() {
+        val commissionRules = listOf(
+            CommissionRule(shopType = 999, commissionRate = 2.5),
+            CommissionRule(shopType = 2, commissionRate = 3.5)
+        )
+        val shopType = 0
+        val expectedResult = 2.5
+        val actualResult = viewModel.getCommissionRate(commissionRules, shopType)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `getShopInfo should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            getShopInfoUseCase.executeOnBackground()
+                .shopInfoById
+        } returns ShopInfoById(
+            result = listOf(
+                TokoShopInfoData(
+                    shopStats = StatsData("100"),
+                    goldOSData = GoldOSData(1)
+                )
+            )
+        )
+        viewModel.getShopInfo(1)
+        val result = viewModel.shopInfo.getOrAwaitValue()
+        coVerify {
+            getShopInfoUseCase.executeOnBackground()
+        }
+        assertEquals("100", result.shopInfoById.result.first().shopStats.totalTxSuccess)
+    }
+
+    @Test
+    fun `getShopInfo should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+        val expectedErrorMessage = "error happen"
+        coEvery {
+            getShopInfoUseCase.executeOnBackground()
+        } throws MessageErrorException(expectedErrorMessage)
+        viewModel.getShopInfo(1)
+        val resultErrorMessage = viewModel.shopInfoError.getOrAwaitValue()
+        assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
+    }
+
+    @Test
+    fun `getCommissionInfo should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            getDefaultCommissionRulesUseCase.executeOnBackground()
+        } returns GetDefaultCommissionRulesResponse(
+            GetDefaultCommissionRules(
+                categoryRate = listOf(
+                    CategoryRate(
+                        listOf(
+                            CommissionRule(shopType = 1, commissionRate = 2.5)
+                        )
+                    )
+                )
+            )
+        )
+        viewModel.getCommissionInfo(1)
+        val result = viewModel.commissionInfo.getOrAwaitValue()
+        coVerify {
+            getDefaultCommissionRulesUseCase.executeOnBackground()
+        }
+        assertEquals(2.5, result.getDefaultCommissionRules.categoryRate.first().commissionRules.first().commissionRate)
+    }
+
+    @Test
+    fun `getCommissionInfo should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+        val expectedErrorMessage = "error happen"
+        coEvery {
+            getDefaultCommissionRulesUseCase.executeOnBackground()
+        } throws MessageErrorException(expectedErrorMessage)
+        viewModel.getCommissionInfo(1)
+        val resultErrorMessage = viewModel.commissionInfoError.getOrAwaitValue()
+        assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
+    }
+
+    @Test
+    fun `get commission info variables in viewmodel should have expected default values`() {
+        assertFalse(viewModel.isSavingPriceAdjustment)
+        assertFalse(viewModel.isPriceSuggestionRangeEmpty)
+        assertFalse(viewModel.isFreeOfServiceFee)
+        assertEquals(0,viewModel.shopTier)
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(

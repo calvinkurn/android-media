@@ -1099,6 +1099,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.miniCartAdd
             .verifySuccessEquals(Success(AddToCartDataModel()))
+
+        viewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     @Test
@@ -1177,6 +1180,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.miniCartRemove
             .verifySuccessEquals(Success(Pair(productId, "")))
+
+        viewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     @Test
@@ -1224,6 +1230,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.miniCartUpdate
             .verifySuccessEquals(expected)
+
+        viewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     @Test

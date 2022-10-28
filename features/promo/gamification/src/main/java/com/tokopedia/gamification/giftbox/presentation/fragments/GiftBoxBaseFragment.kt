@@ -134,8 +134,9 @@ open class GiftBoxBaseFragment : Fragment() {
             (activity as AppCompatActivity).supportActionBar?.title = ""
             tvToolbarTitle.text = activity?.getString(R.string.gami_gift_60_toolbar_title)
         }
-        ImageViewCompat.setImageTintList(imageToolbarIcon, ColorStateList.valueOf(ContextCompat.getColor(imageToolbarIcon.context, android.R.color.white)))
-        tvToolbarTitle.setTextColor(ContextCompat.getColor(tvToolbarTitle.context, android.R.color.white))
+        val colorWhiteUnify = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        ImageViewCompat.setImageTintList(imageToolbarIcon, ColorStateList.valueOf(ContextCompat.getColor(imageToolbarIcon.context, colorWhiteUnify)))
+        tvToolbarTitle.setTextColor(ContextCompat.getColor(tvToolbarTitle.context, colorWhiteUnify))
     }
 
     fun getScreenDimens() {

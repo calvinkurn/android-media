@@ -15,7 +15,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_telephony_masking"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>

@@ -78,10 +78,6 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 cashback
                 isTopads
                 ratingAverage
-                freeOngkir {
-                  isActive
-                  imageUrl
-                }
                 recommendationType
                 productViewCountFormatted
                 isOutOfStock
