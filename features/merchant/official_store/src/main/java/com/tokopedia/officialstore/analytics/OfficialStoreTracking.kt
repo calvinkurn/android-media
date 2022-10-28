@@ -116,7 +116,8 @@ class OfficialStoreTracking(context: Context) {
         const val FORMAT_ITEM_NAME = "${SLASH_OFFICIAL_STORE}/%s - %s"
         const val FORMAT_ITEM_NAME_FOUR_VALUES = "${SLASH_OFFICIAL_STORE}/%s - %s - %s - %s"
         const val FORMAT_ITEM_LIST = "${SLASH_OFFICIAL_STORE}/%s - %s - %s"
-        const val FORMAT_CLICK_VIEW_ALL = "click view all on %s"
+        const val FORMAT_CLICK_VIEW_ALL = "click view all - %s"
+        const val FORMAT_CLICK_VIEW_ALL_ON = "click view all on %s"
         const val FORMAT_CLICK_VIEW_ALL_CARD = "click view all card on %s"
         private const val VALUE_SLIDER_BANNER = "slider banner"
         private const val VALUE_PRODUCT_IMPRESSION = "$IMPRESSION product"
@@ -234,7 +235,7 @@ class OfficialStoreTracking(context: Context) {
                 TrackAppUtils
                         .gtmData(CLICK_OS_MICROSITE,
                             "$OS_MICROSITE$categoryName",
-                            "$CLICK $VIEW_ALL $VALUE_SLIDER_BANNER",
+                            FORMAT_CLICK_VIEW_ALL.format(VALUE_SLIDER_BANNER),
                             FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, "", categoryName)))
     }
 
@@ -326,7 +327,7 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickAllFeaturedBrandOS(categoryName: String, channelId: String, headerName: String) {
-        val eventAction = "$CLICK $VIEW_ALL $POPULAR_BRANDS"
+        val eventAction = FORMAT_CLICK_VIEW_ALL.format(POPULAR_BRANDS)
         val trackerClickAllFeaturedBrand = TrackAppUtils
             .gtmData(
                 CLICK_HOMEPAGE,
@@ -1095,7 +1096,7 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> FORMAT_DASH_THREE_VALUES.format(channel.id, channel.channelHeader.name, categoryName)
             else -> ""
         }
-        val eventActionValue = FORMAT_CLICK_VIEW_ALL.format(valueDynamicMix)
+        val eventActionValue = FORMAT_CLICK_VIEW_ALL_ON.format(valueDynamicMix)
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_HOMEPAGE,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
