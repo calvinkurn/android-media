@@ -36,7 +36,6 @@ class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs
 
             layoutParams = LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, size))
             setPadding(0, 26f.toDpInt(), 0, 0)
-//            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
             val density = context.resources.displayMetrics.density
 //            val circle = ShapeDrawable(OvalShape())
@@ -50,12 +49,13 @@ class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs
     init {
         context.theme.obtainStyledAttributes(attrs, R.styleable.LottieSwipeRefreshLayout, defStyle, 0).let { style ->
             val layout = LinearLayout(context)
-//            layout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            layout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 //            layout.background = ColorDrawable(resources.getColor(R.color.GeneralDarkBlue))
 //            background = ColorDrawable(resources.getColor(R.color.GeneralDarkBlue))
             animationFile = style.getResourceId(R.styleable.LottieSwipeRefreshLayout_lottie_rawRes, -1)
-//            addView(layout)
-            addView(lottieAnimationView)
+            addView(layout)
+            layout.addView(lottieAnimationView)
+//            addView()
             style.recycle()
         }
 

@@ -2629,14 +2629,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun changeStatusBarToDark() {
-        mainParentStatusBarListener?.requestStatusBarDark()
-        navToolbar?.setMargin(0, -4, 0, 0)
+//        mainParentStatusBarListener?.requestStatusBarDark()
+//        navToolbar?.setMargin(0, -4, 0, 0)
     }
 
     override fun changeStatusBarToLight() {
-        if (isLightThemeStatusBar) {
-            mainParentStatusBarListener?.requestStatusBarLight()
-        }
-        navToolbar?.setMargin(0, 0, 0, 0)
+//        if (isLightThemeStatusBar) {
+//            mainParentStatusBarListener?.requestStatusBarLight()
+//        }
+//        navToolbar?.setMargin(0, 0, 0, 0)
     }
 }

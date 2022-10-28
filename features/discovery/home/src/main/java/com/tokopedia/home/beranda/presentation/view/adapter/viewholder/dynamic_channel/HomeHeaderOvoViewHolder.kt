@@ -38,7 +38,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     override fun bind(element: HomeHeaderDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
-        renderEmptySpace()
+//        renderEmptySpace()
         element.headerDataModel?.let {
             renderBalanceLayout(
                 it.homeBalanceModel,

@@ -36,7 +36,6 @@
             android:id="@+id/root"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Unify_Background"
             android:descendantFocusability="blocksDescendants"
             app:layout_type="content">
 
@@ -88,7 +87,7 @@
         android:visibility="invisible"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
-        app:layout_constraintTop_toBottomOf="@id/status_bar_bg"
+        app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="true"
         app:toolbarBackButton="none"
         app:toolbarContentType="typeSearchbar"

@@ -154,7 +154,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     private fun layoutTopView() {
         val topView = topChildView.view
         val topViewAttr = topChildView.positionAttr
-        topView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+//        topView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
         val lp = topView.layoutParams as LayoutParams
         if (lp.width == ViewGroup.LayoutParams.MATCH_PARENT) {
