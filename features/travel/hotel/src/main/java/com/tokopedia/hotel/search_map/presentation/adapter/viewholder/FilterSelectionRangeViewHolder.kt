@@ -30,9 +30,9 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
             hotel_filter_selection_range_title.text = filter.displayName
 
 
-            hotel_filter_selection_range_seekbar.backgroundRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300)
+            hotel_filter_selection_range_seekbar.activeBackgroundRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300)
             hotel_filter_selection_range_seekbar.activeRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
-            hotel_filter_selection_range_seekbar.knobColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            hotel_filter_selection_range_seekbar.activeKnobColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
 
             val selectedValue =  filter.optionSelected.firstOrNull() ?: "0"
 
