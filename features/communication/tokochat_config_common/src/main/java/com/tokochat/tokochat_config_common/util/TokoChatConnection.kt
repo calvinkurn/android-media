@@ -9,7 +9,7 @@ import com.tokochat.tokochat_config_common.di.component.DaggerTokoChatConfigComp
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
 
-class TokoChatConnection {
+object TokoChatConnection {
 
     var tokoChatConfigComponent: TokoChatConfigComponent? = null
     var courierConnection: CourierConnection? = null
@@ -18,7 +18,6 @@ class TokoChatConnection {
         tokoChatConfigComponent = DaggerTokoChatConfigComponent.builder()
             .tokoChatConfigContextModule(TokoChatConfigContextModule(context.applicationContext))
             .build()
-        tokoChatConfigComponent?.inject(this)
 
         // Initialize Courier Connection
         courierConnection = tokoChatConfigComponent?.getCourierConnection()

@@ -41,7 +41,7 @@ public class BaseMainApplication extends MultiDexApplication {
 
     private void initTokoChatConnection() {
         if (tokoChatConnection == null) {
-            tokoChatConnection = new TokoChatConnection();
+            tokoChatConnection = TokoChatConnection.INSTANCE;
             tokoChatConnection.init(getApplicationContext());
         }
     }

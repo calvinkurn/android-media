@@ -37,6 +37,4 @@ interface TokoChatConfigComponent {
 
     @TokoChatQualifier
     fun getTokoChatRepository(): TokoChatRepository
-
-    fun inject(tokoChatConnection: TokoChatConnection)
 }
