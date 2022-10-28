@@ -371,8 +371,8 @@ class TokoNowHomeViewModel @Inject constructor(
         @TokoNowLayoutType type: String
     ) {
         val miniCartItem = getMiniCartItem(productId)
-
         when {
+            miniCartItem == null && quantity.isZero() -> updateAddToCartQuantity(productId, quantity, type)
             miniCartItem == null -> addItemToCart(productId, shopId, quantity, type)
             quantity.isZero() -> removeItemCart(miniCartItem, type)
             else -> updateItemCart(miniCartItem, quantity, type)

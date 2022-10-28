@@ -2,22 +2,19 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.graphics.Rect
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselAtcProductCardAdapter
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselAtcProductCardTypeFactoryImpl
+import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardAdapter
+import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardTypeFactoryImpl
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselAtcProductCardDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
@@ -53,7 +50,7 @@ class HomeLeftCarouselAtcViewHolder(
 
     private val adapter by lazy {
         HomeLeftCarouselAtcProductCardAdapter(
-            baseListAdapterTypeFactory = HomeLeftCarouselAtcProductCardTypeFactoryImpl(
+            typeFactory = HomeLeftCarouselAtcProductCardTypeFactoryImpl(
                 productCardListener = homeLeftCarouselAtcCallback,
                 productCardSeeMoreListener = homeLeftCarouselAtcCallback
             ),
@@ -68,17 +65,7 @@ class HomeLeftCarouselAtcViewHolder(
             rect: Rect,
             immediate: Boolean,
             focusedChildVisible: Boolean
-        ): Boolean {
-            return if ((child as? ViewGroup)?.focusedChild is CardView) {
-                false
-            } else super.requestChildRectangleOnScreen(
-                parent,
-                child,
-                rect,
-                immediate,
-                focusedChildVisible
-            )
-        }
+        ): Boolean = false
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
@@ -95,6 +82,7 @@ class HomeLeftCarouselAtcViewHolder(
         binding?.apply {
             rvProduct.addOnScrollListener(scrollListener)
             rvProduct.layoutManager = layoutManager
+            rvProduct.itemAnimator = null
         }
     }
 
@@ -150,7 +138,7 @@ class HomeLeftCarouselAtcViewHolder(
         element: HomeLeftCarouselAtcUiModel
     ) {
         rvProduct.adapter = adapter
-        adapter.submitList(element.productList)
+        adapter.submitList(ArrayList(element.productList))
         restoreInstanceStateToLayoutManager()
     }
 

@@ -21,10 +21,6 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     private var binding: ItemTokopedianowHomeLeftCarouselAtcProductCardBinding? by viewBinding()
 
-    init {
-        setIsRecyclable(false)
-    }
-
     override fun bind(element: HomeLeftCarouselAtcProductCardUiModel) {
         binding?.productCard?.apply {
             setData(

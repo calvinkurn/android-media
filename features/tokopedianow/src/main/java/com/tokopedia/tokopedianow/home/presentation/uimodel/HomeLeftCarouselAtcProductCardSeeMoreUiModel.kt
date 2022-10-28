@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselAtcProductCardTypeFactory
+import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardTypeFactory
 
 data class HomeLeftCarouselAtcProductCardSeeMoreUiModel (
     val channelId: String = "",

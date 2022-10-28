@@ -4,40 +4,17 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 
-class HomeLeftCarouselAtcProductCardDiffer: DiffUtil.Callback() {
-    private var oldList: List<Visitable<*>> = emptyList()
-    private var newList: List<Visitable<*>> = emptyList()
+class HomeLeftCarouselAtcProductCardDiffer: DiffUtil.ItemCallback<Visitable<*>>() {
 
-    /**
-     * @see areItemsTheSame
-     *
-     * This differ based on keyword of items
-     **/
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-
+    override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
         return if (oldItem is HomeLeftCarouselAtcProductCardUiModel && newItem is HomeLeftCarouselAtcProductCardUiModel) {
-            oldItem.id == newItem.id
+            oldItem.id == newItem.id && oldItem.productCardModel.orderQuantity == newItem.productCardModel.orderQuantity
         } else {
-            false
+            oldItem == newItem
         }
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
-    }
-
-    override fun getOldListSize() = oldList.size
-
-    override fun getNewListSize() = newList.size
-
-    fun create(
-        oldList: List<Visitable<*>>,
-        newList: List<Visitable<*>>
-    ): HomeLeftCarouselAtcProductCardDiffer {
-        this.oldList = oldList
-        this.newList = newList
-        return this
+    override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
+        return oldItem.equals(newItem)
     }
 }
