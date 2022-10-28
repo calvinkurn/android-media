@@ -611,6 +611,7 @@ class ChatbotFragment :
         dateIndicatorContainer = getBindingView().dateIndicatorContainer
         sendButton = getBindingView().composeArea.sendBut
         guideline = getBindingView().composeArea.guidelineReplyBubble
+        attachmentMenuRecyclerView = getBindingView().rvAttachmentMenu
 
         setUpFloatingInvoiceListeners()
 
