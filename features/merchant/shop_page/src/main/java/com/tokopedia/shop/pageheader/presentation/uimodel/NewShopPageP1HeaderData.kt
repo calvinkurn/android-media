@@ -6,6 +6,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 data class NewShopPageP1HeaderData(
         val isOfficial: Boolean = false,
         val isGoldMerchant: Boolean = false,
+        val pmTier: Int = 0,
         val shopHomeType: String = "",
         val shopName: String = "",
         val shopAvatar: String = "",

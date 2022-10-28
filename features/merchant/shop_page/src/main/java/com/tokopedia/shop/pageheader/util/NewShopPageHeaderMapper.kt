@@ -39,6 +39,7 @@ object NewShopPageHeaderMapper {
         return NewShopPageP1HeaderData(
                 shopInfoOsData.data.isOfficial,
                 shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
+                shopInfoGoldData.data.powerMerchant.pmTier,
                 shopPageHomeTypeData.shopHomeType,
                 shopName,
                 shopAvatar,
@@ -70,6 +71,7 @@ object NewShopPageHeaderMapper {
         return NewShopPageP1HeaderData(
             shopInfoOsData.data.isOfficial,
             shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
+            shopInfoGoldData.data.powerMerchant.pmTier,
             "",
             shopName,
             shopAvatar,

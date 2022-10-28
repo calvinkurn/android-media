@@ -1573,6 +1573,7 @@ class NewShopPageFragment :
             shopId = this@NewShopPageFragment.shopId
             isOfficial = shopPageP1Data.isOfficial
             isGoldMerchant = shopPageP1Data.isGoldMerchant
+            pmTier = shopPageP1Data.pmTier
             shopHomeType = shopPageP1Data.shopHomeType.takeIf { !isForceNotShowingTab }
                     ?: ShopHomeType.NONE
             shopName = MethodChecker.fromHtml(shopPageP1Data.shopName).toString()
@@ -3003,17 +3004,29 @@ class NewShopPageFragment :
         val shopPageParamModel = ShopPageParamModel(
             shopProfileImgUrl = shopPageHeaderDataModel?.avatar.orEmpty(),
             shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
-            shopBadge = shopPageHeaderDataModel?.shopBadge.orEmpty(),
             shopLocation = shopPageHeaderDataModel?.location.orEmpty(),
             productCount = initialProductListSize
         )
+
+        // shop type / badge
+        val shopType = when {
+            shopPageHeaderDataModel?.isOfficial == true -> ShopPageParamModel.ShopTier.OFFICIAL_STORE.tierId
+            shopPageHeaderDataModel?.isGoldMerchant == true -> {
+                if (shopPageHeaderDataModel?.pmTier == Int.ZERO) ShopPageParamModel.ShopTier.POWER_MERCHANT.tierId
+                else ShopPageParamModel.ShopTier.POWER_MERCHANT_PRO.tierId
+            }
+            else -> ShopPageParamModel.ShopTier.REGULAR.tierId
+        }
+        shopPageParamModel.shopBadge = shopType
 
         // shop performance info params
         if (shopPageHeaderWidgetList.isNotEmpty()) {
             val performanceWidget = shopPageHeaderWidgetList.filter { it.type == ShopPageParamModel.ShopInfoType.SHOP_PERFORMANCE.typeName }
             var totalShopInfo = Int.ZERO
             performanceWidget.first().components.forEach {
-                if (totalShopInfo == IMG_GENERATOR_SHOP_INFO_MAX_SIZE) return@forEach
+                if (totalShopInfo >= IMG_GENERATOR_SHOP_INFO_MAX_SIZE) {
+                    return@forEach
+                }
                 var shopInfoType = ""
                 var shopInfoLabel = ""
                 var shopInfoValue = ""
@@ -3030,10 +3043,11 @@ class NewShopPageFragment :
                     }
                     ShopPageParamModel.ShopInfoType.IMAGE_ONLY.typeName -> {
                         if (it.name == ShopPageParamModel.ShopInfoName.FREE_SHIPPING.infoName) {
-                            shopPageParamModel.info2Type = ShopPageParamModel.ShopInfoName.FREE_SHIPPING.infoNameValue
+                            shopInfoType = ShopPageParamModel.ShopInfoName.FREE_SHIPPING.infoNameValue
                         }
                     }
                 }
+                totalShopInfo++
                 when (totalShopInfo) {
                     IMG_GENERATOR_SHOP_INFO_1 -> {
                         // assign first shop info type
@@ -3054,49 +3068,41 @@ class NewShopPageFragment :
                         shopPageParamModel.info3Label = shopInfoLabel
                     }
                 }
-                totalShopInfo++
             }
         }
 
         // shop products params
         if (initialProductListSize.isMoreThanZero()) {
-            // initial product list is not empty, then create full param
             val isHasOneProduct = initialProductListSize >= PRODUCT_LIST_INDEX_ONE
             val isHasTwoProducts = initialProductListSize >= PRODUCT_LIST_INDEX_TWO
             val isHasThreeProducts = initialProductListSize >= PRODUCT_LIST_INDEX_THREE
-            val isHasSixProducts = initialProductListSize == PRODUCT_LIST_IMG_GENERATOR_MAX_SIZE
+            val isHasSixProducts = initialProductListSize >= PRODUCT_LIST_IMG_GENERATOR_MAX_SIZE
             when {
-                isHasOneProduct -> {
-                    val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
-                    val productImage1 = productOne.primaryImage.original
-                    val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
-                    shopPageParamModel.productImage1 = productImage1
-                    shopPageParamModel.productPrice1 = productPrice1
-                }
-                isHasTwoProducts -> {
-                    val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
-                    val productImage2 = productTwo.primaryImage.original
-                    val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
-                    shopPageParamModel.productImage2 = productImage2
-                    shopPageParamModel.productPrice2 = productPrice2
-                }
-                isHasThreeProducts -> {
-                    val productThree = initialProductListData[PRODUCT_LIST_INDEX_TWO]
-                    val productImage3 = productThree.primaryImage.original
-                    val productPrice3 = extractIdrPriceToRawValue(productThree.price.textIdr)
-                    shopPageParamModel.productImage3 = productImage3
-                    shopPageParamModel.productPrice3 = productPrice3
-                }
                 isHasSixProducts -> {
+                    val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
+                    val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
+                    val productThree = initialProductListData[PRODUCT_LIST_INDEX_TWO]
                     val productFour = initialProductListData[PRODUCT_LIST_INDEX_THREE]
                     val productFive = initialProductListData[PRODUCT_LIST_INDEX_FOUR]
                     val productSix = initialProductListData[PRODUCT_LIST_INDEX_FIVE]
+                    val productImage1 = productOne.primaryImage.original
+                    val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
+                    val productImage2 = productTwo.primaryImage.original
+                    val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
+                    val productImage3 = productThree.primaryImage.original
+                    val productPrice3 = extractIdrPriceToRawValue(productThree.price.textIdr)
                     val productImage4 = productFour.primaryImage.original
                     val productPrice4 = extractIdrPriceToRawValue(productFour.price.textIdr)
                     val productImage5 = productFive.primaryImage.original
                     val productPrice5 = extractIdrPriceToRawValue(productFive.price.textIdr)
                     val productImage6 = productSix.primaryImage.original
                     val productPrice6 = extractIdrPriceToRawValue(productSix.price.textIdr)
+                    shopPageParamModel.productImage1 = productImage1
+                    shopPageParamModel.productPrice1 = productPrice1
+                    shopPageParamModel.productImage2 = productImage2
+                    shopPageParamModel.productPrice2 = productPrice2
+                    shopPageParamModel.productImage3 = productImage3
+                    shopPageParamModel.productPrice3 = productPrice3
                     shopPageParamModel.productImage4 = productImage4
                     shopPageParamModel.productPrice4 = productPrice4
                     shopPageParamModel.productImage5 = productImage5
@@ -3104,6 +3110,43 @@ class NewShopPageFragment :
                     shopPageParamModel.productImage6 = productImage6
                     shopPageParamModel.productPrice6 = productPrice6
                 }
+                isHasThreeProducts -> {
+                    val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
+                    val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
+                    val productThree = initialProductListData[PRODUCT_LIST_INDEX_TWO]
+                    val productImage1 = productOne.primaryImage.original
+                    val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
+                    val productImage2 = productTwo.primaryImage.original
+                    val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
+                    val productImage3 = productThree.primaryImage.original
+                    val productPrice3 = extractIdrPriceToRawValue(productThree.price.textIdr)
+                    shopPageParamModel.productImage1 = productImage1
+                    shopPageParamModel.productPrice1 = productPrice1
+                    shopPageParamModel.productImage2 = productImage2
+                    shopPageParamModel.productPrice2 = productPrice2
+                    shopPageParamModel.productImage3 = productImage3
+                    shopPageParamModel.productPrice3 = productPrice3
+                }
+                isHasTwoProducts -> {
+                    val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
+                    val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
+                    val productImage1 = productOne.primaryImage.original
+                    val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
+                    val productImage2 = productTwo.primaryImage.original
+                    val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
+                    shopPageParamModel.productImage1 = productImage1
+                    shopPageParamModel.productPrice1 = productPrice1
+                    shopPageParamModel.productImage2 = productImage2
+                    shopPageParamModel.productPrice2 = productPrice2
+                }
+                isHasOneProduct -> {
+                    val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
+                    val productImage1 = productOne.primaryImage.original
+                    val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
+                    shopPageParamModel.productImage1 = productImage1
+                    shopPageParamModel.productPrice1 = productPrice1
+                }
+
             }
         }
         universalShareBottomSheet?.setImageGeneratorParam(shopPageParamModel)

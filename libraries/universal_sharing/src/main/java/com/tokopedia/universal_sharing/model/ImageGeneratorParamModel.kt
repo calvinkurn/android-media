@@ -50,6 +50,12 @@ data class ShopPageParamModel(
         FREE_SHIPPING("bebas_ongkir", "bo"),
         FREE_TEXT(infoNameValue = "free-text")
     }
+    enum class ShopTier(val tierId: String) {
+        OFFICIAL_STORE("os"),
+        POWER_MERCHANT("pm"),
+        POWER_MERCHANT_PRO("pro"),
+        REGULAR("regular")
+    }
 }
 
 enum class BoTypeImageGeneratorParam(val value: String) {
