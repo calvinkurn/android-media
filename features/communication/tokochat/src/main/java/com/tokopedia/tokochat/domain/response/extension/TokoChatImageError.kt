@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class TokoChatImageError (
     @SerializedName("code")
-    var code: String = "",
+    var code: String? = "",
 
     @SerializedName("message")
-    var message: String = "",
+    var message: String? = "",
 
     @SerializedName("message_title")
-    var messageTitle: String = ""
+    var messageTitle: String? = ""
 )

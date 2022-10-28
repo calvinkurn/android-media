@@ -348,8 +348,10 @@ class TokoChatViewModel @Inject constructor(
             val imageUrlResponse = getImageUrlUseCase(
                 TokoChatGetImageUseCase.Param(imageId, channelId)
             )
-            val imageResult = getImageUrlUseCase.getImage(imageUrlResponse.data.url)
-            onSuccess(imageUrlResponse, imageResult)
+            imageUrlResponse.data?.url?.let {
+                val imageResult = getImageUrlUseCase.getImage(it)
+                onSuccess(imageUrlResponse, imageResult)
+            }
         }, onError = {
             _error.value = it
         })

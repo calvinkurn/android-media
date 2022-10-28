@@ -614,7 +614,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         loader: LoaderUnify?
     ) {
         viewModel.getImageWithId(element.imageId, channelId) { imageResult, responseBody ->
-            element.updateImageUrl(imageResult.data.url)
+            element.updateImageUrl(imageResult.data?.url?: "")
             context?.let { ctx ->
                 loadByteArrayImage(ctx, imageView, responseBody.byteStream()) {
                     loader?.hide()
