@@ -75,7 +75,6 @@ class GlobalBundlingViewHolder(
                 selectedProduct: BundleProductUiModel,
                 bundleName: String
             ) {
-
                 listener.onImpressionProductBundling(
                     selectedBundle.bundleId,
                     BUNDLE_TYPE_SINGLE,
