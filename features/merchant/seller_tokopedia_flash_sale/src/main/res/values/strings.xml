@@ -291,4 +291,7 @@
     <string name="stfs_desc_ineligible_access">Pelajari dulu agar tokomu bisa pakai Flash Sale Tokopedia, yuk!</string>
     <string name="stfs_btn_go_to_learn_voucher_text">Pelajari Flash Sale Tokopedia</string>
 
+    <!--Accessibility: ImageView Content Description-->
+    <string name="stfs_content_description_scroll_up">Scroll up</string>
+
 </resources>
