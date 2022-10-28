@@ -27,8 +27,8 @@ import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceMonitoringListener
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.DEFAULT
 import com.tokopedia.mvcwidget.trackers.Tracker.Constants.MERCHANT_COUPONLIST_SCREEN_NAME
 import com.tokopedia.promoui.common.dpToPx
-import kotlinx.android.synthetic.main.mvc_layout_multishop_merchat_coupon_list.*
-import kotlinx.android.synthetic.main.mvc_notfound_error.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.mvcwidget.databinding.MvcLayoutMultishopMerchatCouponListBinding
 import javax.inject.Inject
 
 class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringListener,
@@ -48,6 +48,8 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
     private var statusBarBgView: View? = null
     private var serverErrorView: GlobalError? = null
     private var viewContainer: ViewFlipper? = null
+
+    private var binding by autoClearedNullable<MvcLayoutMultishopMerchatCouponListBinding>()
 
     override fun getScreenName(): String {
         return MERCHANT_COUPONLIST_SCREEN_NAME
@@ -196,12 +198,12 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
 
     fun showLoader() {
         viewContainer?.displayedChild = CONTAINER_LOADER
-        swipe_refresh_layout?.isRefreshing = false
+        binding?.swipeRefreshLayout?.isRefreshing = false
     }
 
     fun hideLoader() {
-        container?.displayedChild = CONTAINER_DATA
-        swipe_refresh_layout?.isRefreshing = false
+        binding?.container?.displayedChild = CONTAINER_DATA
+        binding?.swipeRefreshLayout?.isRefreshing = false
     }
 
     companion object {
@@ -221,7 +223,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
     override fun onRetryPageLoad(pageNumber: Int) {}
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-        swipe_refresh_layout.isRefreshing = false
+        binding?.swipeRefreshLayout?.isRefreshing = false
     }
 
     override fun onStartPageLoad(pageNumber: Int) {}
@@ -232,14 +234,14 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
 
     override fun onError(pageNumber: Int) {
         if (pageNumber == 1) {
-            container.displayedChild = CONTAINER_ERROR
+            binding?.container?.displayedChild = CONTAINER_ERROR
         }
-        swipe_refresh_layout.isRefreshing = false
+        binding?.swipeRefreshLayout?.isRefreshing = false
     }
 
     private fun showEmptyView() {
-        container?.displayedChild = CONTAINER_EMPTY
-        btnError.setOnClickListener {
+        binding?.container?.displayedChild = CONTAINER_EMPTY
+        binding?.errorLayout?.btnError?.setOnClickListener {
             onFragmentBackPressed()
         }
     }

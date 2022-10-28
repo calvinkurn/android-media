@@ -47,7 +47,7 @@
             android:gravity="center"
             android:layout_height="match_parent" />
 
-        <include layout="@layout/mvc_notfound_error" />
+        <include android:id="@+id/errorLayout" layout="@layout/mvc_notfound_error" />
     </ViewFlipper>
 
     <com.google.android.material.appbar.AppBarLayout
