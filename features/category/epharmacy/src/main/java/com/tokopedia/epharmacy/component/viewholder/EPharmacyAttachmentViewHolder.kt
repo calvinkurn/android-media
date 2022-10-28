@@ -46,7 +46,6 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
 
     override fun bind(element: EPharmacyAttachmentDataModel?) {
         dataModel = element
-        // TODO check with dataModel = null explicitly
         renderGroupData()
     }
 
