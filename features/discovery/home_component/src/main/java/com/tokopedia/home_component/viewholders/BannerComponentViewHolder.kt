@@ -125,23 +125,21 @@ class BannerComponentViewHolder(itemView: View,
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
         if (isAutoScroll) {
-            scrollTo(currentPagePosition)
-
-            channelModel?.let {
-                val size = channelModel?.channelGrids?.size?:0
-                if (currentPagePosition == (size-1) ) {
-                    currentPagePosition = 0
-                } else {
-                    currentPagePosition++
-                }
+            val size = channelModel?.channelGrids?.size?:0
+            val nextPagePosition = if (currentPagePosition >= (size-1) ) {
+                0
+            } else {
+                currentPagePosition+1
             }
+
+            scrollTo(nextPagePosition)
         }
     }
 
     private fun resumeAutoScroll() {
         if (autoScrollState == STATE_PAUSED) {
-            autoScrollLauncher()
             autoScrollState = STATE_RUNNING
+            autoScrollLauncher()
         }
     }
 
@@ -189,6 +187,8 @@ class BannerComponentViewHolder(itemView: View,
                 when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
                         onPageDragStateChanged(false)
+                        currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                        resumeAutoScroll()
                     }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         onPageDragStateChanged(true)

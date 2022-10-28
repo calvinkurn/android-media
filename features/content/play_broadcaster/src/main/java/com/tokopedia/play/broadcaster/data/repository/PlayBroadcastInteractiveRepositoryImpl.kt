@@ -43,13 +43,14 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : PlayBroadcastInteractiveRepository {
 
-    override suspend fun getInteractiveConfig(): InteractiveConfigUiModel =
+    override suspend fun getInteractiveConfig(authorId: String, authorType: String): InteractiveConfigUiModel =
         withContext(dispatchers.io) {
             val response = getInteractiveConfigUseCase.apply {
+                //TODO change this with authorId after BE team confirm
                 setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
             }.executeOnBackground()
 
-            return@withContext mapper.mapInteractiveConfig(response)
+            return@withContext mapper.mapInteractiveConfig(authorType, response)
         }
 
     override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel =
@@ -75,6 +76,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         title: String,
         durationInMs: Long
     ): InteractiveSessionUiModel = withContext(dispatchers.io) {
+        //TODO change this with authorId after BE team confirm
         val response = createInteractiveSessionUseCase.execute(
             userSession.shopId,
             channelId,

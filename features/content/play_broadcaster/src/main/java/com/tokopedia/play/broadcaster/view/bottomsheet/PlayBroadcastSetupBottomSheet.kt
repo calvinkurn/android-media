@@ -150,6 +150,10 @@ class PlayBroadcastSetupBottomSheet :
                         return mDataSource?.getProductList().orEmpty()
                     }
 
+                    override fun getAuthorId(): String {
+                        return mDataSource?.getAuthorId().orEmpty()
+                    }
+
                     override fun getChannelId(): String {
                         return mDataSource?.getChannelId().orEmpty()
                     }
@@ -232,6 +236,7 @@ class PlayBroadcastSetupBottomSheet :
 
     interface DataSource {
         fun getProductList(): List<ProductUiModel>
+        fun getAuthorId(): String
         fun getChannelId(): String
     }
 

@@ -2104,7 +2104,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         postTagItem: FeedXProduct,
         adClickUrl: String
     ) {
-        if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
+        if (positionInFeed in 0 until adapter.getlist().size && adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
             val card = item.feedXCard
             val campaignStatus = getTrackerLabelSuffixForCampaignSaleTracker(card)
@@ -2120,7 +2120,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
         }
 
-        if (adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
+        if (positionInFeed in 0 until adapter.getlist().size && adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
             val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
             val isFollowed = item.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed
             val id = item.cpmModel?.data?.get(0)?.id ?: ""
@@ -3732,7 +3732,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         mediaType: String
     ) {
 
-        if (adapter.getlist().size > positionInFeed && adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
+        if (positionInFeed in 0 until adapter.getlist().size && adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
             val card = item.feedXCard
             if (card.tags.isNotEmpty())
@@ -3749,7 +3749,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
         }
 
-        if (adapter.getlist().size > positionInFeed && adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
+        if (positionInFeed in 0 until adapter.getlist().size && adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
             val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
             if (item.feedXCard.tags.isNotEmpty())
                 feedAnalytics.eventClickBSitem(
