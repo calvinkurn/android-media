@@ -137,7 +137,7 @@ rm -f $unstagedFilename
 # If the list of files is not empty then run checks on them
 if [ ! -z "$filesToCheck" ]
 then
-	tools/ktlint --format $filesToCheck
+	tools/ktlint --format --disabled_rules=package-name,no-wildcard-imports $filesToCheck
 	if [ $? -ne 0 ]; then exit 1; fi
 	# If we haven't exited because of an error it means we were able to
 	# fix issues with autocorrect. However, we need to add the changes in
