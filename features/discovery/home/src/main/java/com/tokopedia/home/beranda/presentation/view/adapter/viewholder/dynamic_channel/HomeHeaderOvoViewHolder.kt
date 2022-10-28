@@ -51,9 +51,9 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderHeader() {
-        if (containerHeaderImage == null) {
-            containerHeaderImage = getParentLayout(binding?.containerSuperGraphicHeader)
-        }
+//        if (containerHeaderImage == null) {
+//            containerHeaderImage = getParentLayout(binding?.containerSuperGraphicHeader)
+//        }
         if (headerTopRounded == null) {
             headerTopRounded = getParentLayout(binding?.headerTopRounded)
         }

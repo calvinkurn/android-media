@@ -6,31 +6,22 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ViewStub
-        android:id="@+id/container_super_graphic_header"
-        android:inflatedId="@+id/container_super_graphic_header"
-        android:layout="@layout/view_stub_header_image"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <ViewStub
         android:id="@+id/header_top_rounded"
         android:inflatedId="@+id/header_top_rounded"
         android:layout="@layout/view_stub_rounded_header"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/container_super_graphic_header" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <FrameLayout
-        android:id="@+id/view_empty"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+<!--    <FrameLayout-->
+<!--        android:id="@+id/view_empty"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"/>-->
 
     <ViewStub
         android:id="@+id/view_choose_address"
@@ -54,7 +45,6 @@
         android:layout="@layout/view_stub_balance_widget_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/view_empty"
         app:layout_constraintTop_toBottomOf="@+id/view_choose_address"
         app:layout_constraintBottom_toTopOf="@id/header_top_rounded"
         app:layout_constraintLeft_toLeftOf="parent"
