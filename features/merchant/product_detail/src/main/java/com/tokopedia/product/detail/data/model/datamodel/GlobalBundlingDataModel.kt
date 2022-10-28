@@ -24,7 +24,8 @@ data class GlobalBundlingDataModel(
     override fun type(typeFactory: DynamicProductDetailAdapterFactory) = typeFactory.type(this)
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return newData == this
+        return newData is GlobalBundlingDataModel &&
+            newData.data == this.data
     }
 }
 
