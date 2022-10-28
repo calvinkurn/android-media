@@ -47,6 +47,7 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.bottomsheet.PlayFollowBottomSheet
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayFullscreenManager
@@ -994,6 +995,9 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     HideCoachMarkWinnerEvent -> {
                         interactiveResultView?.hideCoachMark()
+                    }
+                    ShowPopUp -> {
+                        PlayFollowBottomSheet.getOrCreate(childFragmentManager).show(childFragmentManager, PlayFollowBottomSheet.TAG)
                     }
                 }
             }

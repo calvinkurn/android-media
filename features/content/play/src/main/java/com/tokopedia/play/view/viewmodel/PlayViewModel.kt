@@ -1026,6 +1026,7 @@ class PlayViewModel @AssistedInject constructor(
 
         updateChannelInfo(channelData)
         sendInitialLog()
+        showPopUp()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -2602,6 +2603,14 @@ class PlayViewModel @AssistedInject constructor(
     private fun sendInitialLog(){
         playLog.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
         playLog.sendAll(channelId, videoPlayer)
+    }
+
+    private fun showPopUp () {
+        //logic show / no
+        viewModelScope.launch(dispatchers.computation) {
+            delay(60000) // 1minute
+            _uiEvent.emit(ShowPopUp)
+        }
     }
 
     private fun CoroutineScope.launch(

@@ -117,3 +117,5 @@ object OpenUserReportEvent : PlayViewerNewUiEvent()
  */
 data class ChangeCampaignReminderSuccess(val isReminded: Boolean, val message: String) : PlayViewerNewUiEvent()
 data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiEvent()
+
+object ShowPopUp: PlayViewerNewUiEvent()

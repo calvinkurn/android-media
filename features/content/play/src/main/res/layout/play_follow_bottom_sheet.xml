@@ -16,7 +16,7 @@
     <include layout="@layout/bottom_sheet_header" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_user_kebab_menu_sheet_content"
+        android:id="@+id/cl_follow_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
@@ -56,10 +56,10 @@
             android:ellipsize="end"
             android:lines="1"
             android:maxLines="1"
-            android:textColor="@color/Unify_Static_White"
+            android:textColor="@color/Unify_NN950"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_follow"
+            app:layout_constraintEnd_toStartOf="@id/btn_chevron"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/iv_badge"
             app:layout_constraintTop_toTopOf="parent"
@@ -69,7 +69,7 @@
             tools:text="Rockbros Indonesia Rockbros Indonesia Rockbros Indonesia Rockbros Indonesia" />
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/btn_follow"
+            android:id="@+id/btn_chevron"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:minWidth="@dimen/play_follow_button_width"
@@ -77,8 +77,6 @@
             app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@id/tv_partner_name"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -88,23 +86,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
-        app:layout_constraintEnd_toEndOf="@+id/cl_user_kebab_menu_sheet_content"
-        app:layout_constraintStart_toStartOf="@+id/cl_user_kebab_menu_sheet_content"
-        app:layout_constraintTop_toBottomOf="@+id/cl_user_kebab_menu_sheet_content"
-        app:typographyType="paragraph_2"
-        tools:text="Yuk, follow kreator supaya kamu nggak ketinggalan update seru dari mereka!" />
+        android:text="Yuk, follow kreator supaya kamu nggak ketinggalan update seru dari mereka!"
+        app:layout_constraintEnd_toEndOf="@+id/cl_follow_container"
+        app:layout_constraintStart_toStartOf="@+id/cl_follow_container"
+        app:layout_constraintTop_toBottomOf="@+id/cl_follow_container"
+        app:typographyType="paragraph_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/button2"
+        android:id="@+id/btn_follow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_24"
+        android:text="Follow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tv_follow_desc"
         app:layout_constraintStart_toStartOf="@+id/tv_follow_desc"
-        app:layout_constraintTop_toBottomOf="@+id/tv_follow_desc"
-        tools:text="Follow" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_follow_desc" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
