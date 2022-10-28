@@ -1,9 +1,12 @@
 package com.tokopedia.sellerhomecommon.sse
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhomecommon.sse.model.WidgetSSEModel
 import com.tokopedia.sse.OkSse
 import com.tokopedia.sse.ServerSentEvent
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,10 +26,12 @@ class SellerHomeWidgetSSEImpl(
 ) : SellerHomeWidgetSSE {
 
     companion object {
-        private const val URL =
+        private val URL = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            "https://sse-staging.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+        } else {
             "https://sse.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+        }
         private const val DATA_KEY_SEPARATOR = ","
-        private const val HEADER_ORIGIN = "Origin"
         private const val HEADER_AUTHORIZATION = "Accounts-Authorization"
         private const val HEADER_X_DEVICE = "X-Device"
         private const val BEARER = "Bearer %s"
@@ -41,10 +46,12 @@ class SellerHomeWidgetSSEImpl(
 
         val dataKey = dataKeys.joinToString(DATA_KEY_SEPARATOR)
         val url = String.format(URL, page, dataKey)
+        val authorization = String.format(BEARER, userSession.accessToken)
+        val xDevice = String.format(ANDROID_VERSION, GlobalConfig.VERSION_NAME)
 
         val request = Request.Builder().get().url(url)
-            .addHeader("Authority", "sse.tokopedia.com")
-            .addHeader(HEADER_AUTHORIZATION, "Bearer ${userSession.accessToken}")
+            .addHeader(HEADER_X_DEVICE, xDevice)
+            .addHeader(HEADER_AUTHORIZATION, authorization)
             .build()
 
         close()
