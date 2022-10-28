@@ -121,7 +121,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
             val binding = ContentRechargeHomepageLastItemBinding.bind(itemView)
             with(binding.cardViewRechargeHomepageLastItem){
                 title = element.items.title
-                ctaIconContainerView.setOnClickListener {
+                setCta(""){
                     RouteManager.route(itemView.context, element.items.applink)
                 }
             }
