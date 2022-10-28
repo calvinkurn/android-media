@@ -20,6 +20,11 @@ class OngoingDelegateAdapter(
     OngoingItem::class.java
 ) {
 
+    companion object {
+        private const val STATUS_ACCEPTED = "Produk Diterima"
+        private const val STATUS_REJECTED = "Produk Ditolak"
+    }
+
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemProductOngoingBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -52,10 +57,35 @@ class OngoingDelegateAdapter(
                 tpgSubsidy.setSubsidy(item)
                 tpgProductSold.setSoldCount(item)
                 tpgVariantStockLocation.setStock(item)
-                if (item.isMultiwarehouse && !item.isParentProduct) {
-                    tpgRejectionReason.gone()
-                } else {
+            }
+            setRejectReason(item)
+            setStatusIcon(item)
+        }
+
+        private fun setRejectReason(item: OngoingItem) {
+            binding.run {
+                val isNeedToShowLocationCount = item.countLocation > Int.ONE
+                val isNeedToShowVariantCount = item.isParentProduct
+
+                if (!isNeedToShowLocationCount && !isNeedToShowVariantCount) {
                     tpgRejectionReason.setRejectReason(item)
+                } else {
+                    tpgRejectionReason.gone()
+                }
+            }
+        }
+
+        private fun setStatusIcon(item: OngoingItem) {
+            binding.run {
+                when(item.statusText) {
+                    STATUS_ACCEPTED -> {
+                        iconInfo.visible()
+                        iconWarning.invisible()
+                    }
+                    STATUS_REJECTED -> {
+                        iconInfo.invisible()
+                        iconWarning.visible()
+                    }
                 }
             }
         }
