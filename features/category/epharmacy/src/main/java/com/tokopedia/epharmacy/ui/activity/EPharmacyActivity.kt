@@ -34,27 +34,14 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     private var orderId = DEFAULT_ZERO_VALUE
     private var checkoutId = ""
     private var entryPoint = ""
-    private var pageType = PAGE_TYPE_UPLOAD_RESEP_DOKTER
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
-        extractPageType()
         if(!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_EPHARMACY_UPLOAD_PAGE, true)) {
             this.finish()
         }
         super.onCreate(savedInstanceState)
-        redirectActivity()
         setPageTitle()
-    }
-
-    private fun redirectActivity() {
-        if(pageType == PAGE_TYPE_EDUCATION){
-            startActivity(Intent(this,EPharmacyMiniConsultationTransparentActivity::class.java).apply {
-                putExtra(ENABLER_NAME,"Halodoc")
-                putExtra(DATA_TYPE,"obat_keras_info")
-            })
-            finish()
-        }
     }
 
     private fun setPageTitle() {
@@ -75,24 +62,6 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
             putString(EXTRA_CHECKOUT_ID_STRING, checkoutId)
             putString(EXTRA_ENTRY_POINT_STRING, entryPoint)
         })
-    }
-
-    private fun extractPageType() {
-        val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
-        val firstSegment =
-            if (pathSegments.size > 0) pathSegments[0] ?: PAGE_TYPE_UPLOAD_RESEP_DOKTER
-            else  PAGE_TYPE_UPLOAD_RESEP_DOKTER
-        pageType = when (firstSegment) {
-            PAGE_TYPE_PRESCRIPTION_ATTACHMENT -> {
-                PAGE_TYPE_PRESCRIPTION_ATTACHMENT
-            }
-            PAGE_TYPE_EDUCATION -> {
-                PAGE_TYPE_EDUCATION
-            }
-            else -> {
-                PAGE_TYPE_UPLOAD_RESEP_DOKTER
-            }
-        }
     }
 
     private fun extractOrderId() {
@@ -153,11 +122,5 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
             .setUserId(userSession.userId)
             .build()
             .send()
-    }
-
-    companion object {
-        const val PAGE_TYPE_UPLOAD_RESEP_DOKTER = "upload"
-        const val PAGE_TYPE_PRESCRIPTION_ATTACHMENT = "attach-prescription"
-        const val PAGE_TYPE_EDUCATION = "edu"
     }
 }

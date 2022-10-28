@@ -18,15 +18,15 @@ import com.tokopedia.epharmacy.ui.adapter.EpharmacyMiniConsultationStepsAdapter
 import com.tokopedia.epharmacy.utils.DATA_TYPE
 import com.tokopedia.epharmacy.utils.ENABLER_NAME
 import com.tokopedia.epharmacy.viewmodel.MiniConsultationMasterBsViewModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
@@ -107,7 +107,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
     private fun requestParams(): GetMiniConsultationBottomSheetParams {
         val dataType = arguments?.getString(DATA_TYPE)
         val enabler = arguments?.getString(ENABLER_NAME)
-        return if(dataType != null && enabler != null) {
+        return if(!dataType.isNullOrBlank() && !enabler.isNullOrBlank()) {
             GetMiniConsultationBottomSheetParams(
                 dataType = dataType,GetMiniConsultationBottomSheetParams.Params(
                 enablerName = enabler
@@ -165,7 +165,23 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
 
 
     private fun onFailMiniConsultationData(miniConsultationMasterResponseFail: Fail) {
+        binding?.parentShimmerView?.hide()
+        when (miniConsultationMasterResponseFail.throwable) {
+            is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
+            is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
+            else -> setGlobalErrors(GlobalError.SERVER_ERROR)
+        }
+    }
 
+    private fun setGlobalErrors(errorType: Int) {
+        binding?.globalError?.run {
+            setType(errorType)
+            visible()
+            setActionClickListener {
+                gone()
+                viewModel?.getEPharmacyMiniConsultationDetail(requestParams())
+            }
+        }
     }
 
     private fun closeBottomSheet(){
