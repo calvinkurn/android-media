@@ -56,7 +56,6 @@ class GlobalBundlingViewHolder(
     }
 
     private fun setupBundleWidgetListener(element: GlobalBundlingDataModel) {
-
         val componentTrackDataModel = getComponentTrackData(element)
 
         val listener = object : ProductBundleWidgetListener {
