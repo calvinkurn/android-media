@@ -256,4 +256,69 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
             )
         }
     }
+
+    @Test
+    fun `checkout without prescriptions ensure that prescription ids order metadata param not exist`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
+
+        // When
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        // Then
+        assertEquals(true, isOnSuccessCalled)
+        assertEquals(OccGlobalEvent.Loading, orderSummaryPageViewModel.globalEvent.value)
+        coVerify(exactly = 1) {
+            checkoutOccUseCase.executeSuspend(
+                match {
+                    it.carts.data[0].shopProducts[0].orderMetadata.firstOrNull() { orderMetadata ->
+                        orderMetadata.key == OrderMetadata.PRESCRIPTION_IDS_METADATA
+                    } == null
+                }
+            )
+        }
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventClickBayarSuccess(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
+        verify(inverse = true) {
+            orderSummaryAnalytics.eventPPClickBayar(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }
+    }
 }
