@@ -108,7 +108,7 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setPromoInfo(promo: String, additionalData: AdditionalData) {
-        if (promo.isNullOrEmpty()){
+        if (promo.isBlank()){
             promoRibbon?.hide()
             ivMerchantDiskon?.hide()
             tvMerchantDiskon?.hide()
