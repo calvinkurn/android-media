@@ -9,6 +9,7 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
@@ -23,8 +24,6 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         get() = _binding!!
 
     private lateinit var playViewModel: PlayViewModel
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +58,9 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
 
         binding.clFollowContainer.setOnClickListener {
             playViewModel.latestCompleteChannelData.partnerInfo.appLink
+        }
+        binding.clFollowContainer.setOnClickListener {
+            playViewModel.submitAction((PlayViewerNewAction.Follow))
         }
     }
 

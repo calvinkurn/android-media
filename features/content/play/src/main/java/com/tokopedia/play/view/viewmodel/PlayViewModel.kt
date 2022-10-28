@@ -2608,7 +2608,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun showPopUp () {
         //logic show / no
         viewModelScope.launch(dispatchers.computation) {
-            delay(60000) // 1minute
+            delay(6000) // 1minute
             _uiEvent.emit(ShowPopUp)
         }
     }
