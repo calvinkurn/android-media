@@ -15,6 +15,8 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.GetMiniConsultationBottomSheetParams
 import com.tokopedia.epharmacy.network.response.EPharmacyMiniConsultationMasterResponse
 import com.tokopedia.epharmacy.ui.adapter.EpharmacyMiniConsultationStepsAdapter
+import com.tokopedia.epharmacy.utils.DATA_TYPE
+import com.tokopedia.epharmacy.utils.ENABLER_NAME
 import com.tokopedia.epharmacy.viewmodel.MiniConsultationMasterBsViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -35,8 +37,6 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
     }
 
     companion object {
-        private const val DATA_TYPE = "data_type"
-        private const val ENABLER_NAME = "enabler_name"
         fun newInstance(dataType: String, enabler: String
         ): MiniConsultationMasterBottomSheetInfo {
             return MiniConsultationMasterBottomSheetInfo().apply {
@@ -109,8 +109,9 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         val enabler = arguments?.getString(ENABLER_NAME)
         return if(dataType != null && enabler != null) {
             GetMiniConsultationBottomSheetParams(
-                dataType = dataType,
+                dataType = dataType,GetMiniConsultationBottomSheetParams.Params(
                 enablerName = enabler
+                )
             )
         }
         else{

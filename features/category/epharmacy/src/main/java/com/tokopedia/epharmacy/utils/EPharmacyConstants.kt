@@ -42,3 +42,6 @@ const val MAX_MEDIA_SIZE_PICKER = 4_000_000L
 
 const val ENTRY_POINT_ORDER = "Order"
 const val ENTRY_POINT_CHECKOUT = "Checkout"
+
+const val DATA_TYPE = "data_type"
+const val ENABLER_NAME = "enabler_name"

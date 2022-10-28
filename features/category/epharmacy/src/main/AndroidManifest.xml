@@ -22,7 +22,7 @@
 
         <activity
             android:name=".ui.activity.EPharmacyMiniConsultationTransparentActivity"
-            android:theme="@style/AppTheme.Translucent"
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:exported="false">
