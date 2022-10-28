@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class TrackingQueueActivityLifecycleCallback(val context: Context) : Application.ActivityLifecycleCallbacks {
@@ -12,31 +13,32 @@ class TrackingQueueActivityLifecycleCallback(val context: Context) : Application
         TrackingQueue(context)
     }
 
-    override fun onActivityCreated(p0: Activity, p1: Bundle?) {
+    override fun onActivityCreated(activity: Activity, p1: Bundle?) {
         //no op
     }
 
-    override fun onActivityStarted(p0: Activity) {
+    override fun onActivityStarted(activity: Activity) {
         //no op
     }
 
-    override fun onActivityResumed(p0: Activity) {
+    override fun onActivityResumed(activity: Activity) {
         //no op
     }
 
-    override fun onActivityPaused(p0: Activity) {
+    override fun onActivityPaused(activity: Activity) {
+        //send all tracking when onPaused
         trackingQueue.sendAll()
     }
 
-    override fun onActivityStopped(p0: Activity) {
+    override fun onActivityStopped(activity: Activity) {
         //no op
     }
 
-    override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
+    override fun onActivitySaveInstanceState(activity: Activity, p1: Bundle) {
         //no op
     }
 
-    override fun onActivityDestroyed(p0: Activity) {
+    override fun onActivityDestroyed(activity: Activity) {
         //no op
     }
 

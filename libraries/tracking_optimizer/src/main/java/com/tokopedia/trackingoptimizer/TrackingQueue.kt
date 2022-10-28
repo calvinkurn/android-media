@@ -1,6 +1,7 @@
 package com.tokopedia.trackingoptimizer
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
@@ -102,7 +103,9 @@ class TrackingQueue(val context: Context) : CoroutineScope {
 
     /**
      * send all tracking in DB to router.
-     * call this function when onPause()
+     * no longer need to call this function when onPause()
+     * because this method is called within an ActivityLifeCycleCallbacks
+     * validation is added, to start the service only if tracking queue is available
      */
     fun sendAll() {
         //send all tracking in db to gtm
