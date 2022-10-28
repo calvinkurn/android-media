@@ -63,16 +63,19 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val DELAY = 1000L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
+        private const val IMAGE_PRODUCT_INELIGIBLE_URL =
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/surprised_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
-            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/empty_cdp_product_list_Illustration.png"
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/empty_cdp_product_list_Illustration_1.png"
         private const val FINISHED_HEADER_IMAGE_BANNER_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/finished_campaign_banner.png"
 
         @JvmStatic
-        fun newInstance(flashSaleId: Long): CampaignDetailFragment {
+        fun newInstance(flashSaleId: Long, totalSubmittedProduct: Long = 0): CampaignDetailFragment {
             val fragment = CampaignDetailFragment()
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
+            bundle.putLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT, totalSubmittedProduct)
             fragment.arguments = bundle
             return fragment
         }
@@ -113,6 +116,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         } else {
             arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
         }
+    }
+
+    private val totalSubmittedProduct by lazy {
+        arguments?.getLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT).orZero()
     }
 
     //coachmark
@@ -274,7 +281,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                             getString(
                                 R.string.stfs_success_delete_product_message,
                                 selectedProductCount
-                            )
+                            ),
+                            getString(R.string.stfs_oke_label)
                         )
                     }
                 } else {
@@ -334,6 +342,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupView(flashSale: FlashSale) {
+        showProductSubmissionResultToaster(flashSale.name)
         setupHeader(flashSale)
         when (flashSale.tabName) {
             FlashSaleListPageTab.UPCOMING -> setupUpcoming(flashSale)
@@ -351,6 +360,23 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 setupPaging()
                 loadSubmittedProductListData(Int.ZERO)
                 setupFinished(flashSale)
+            }
+        }
+    }
+
+    private fun showProductSubmissionResultToaster(flashSaleName: String) {
+        if (totalSubmittedProduct.isMoreThanZero()) {
+            doOnDelayFinished(DELAY) {
+                binding?.run {
+                    cardBottomButtonGroup.showToaster(
+                        getString(
+                            R.string.stfs_manage_product_list_success_product_submitted,
+                            totalSubmittedProduct,
+                            flashSaleName
+                        ),
+                        getString(R.string.stfs_oke_label)
+                    )
+                }
             }
         }
     }
@@ -1018,7 +1044,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     com.tokopedia.unifyprinciples.R.color.Unify_RN50
                 )
             )
-            imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
+//            imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_INELIGIBLE_URL)
             tpgCardMidTitle.text =
                 getString(R.string.stft_flash_sale_performace_card_title_label_rejected)
             tpgCardMidDesctiption.text =
@@ -1220,7 +1246,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     com.tokopedia.unifyprinciples.R.color.Unify_RN50
                 )
             )
-            imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
+            imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_INELIGIBLE_URL)
         }
     }
 

@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper
 
 import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
@@ -11,7 +10,7 @@ import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseC
 
 object ChooseProductUiMapper {
 
-    private const val MAX_PRODUCT_SELECTION = 40
+    private const val MAX_PRODUCT_SELECTION = 20
 
     private fun List<CriteriaSelection>.validateMax(): Boolean {
         return !any { it.selectionCount >= it.selectionCountMax }
