@@ -57,7 +57,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         viewModelProvider.get(EPharmacyPrescriptionAttachmentViewModel::class.java)
     }
 
-    private var ePharmacyAttachmentUiUpdater: EPharmacyAttachmentUiUpdater = EPharmacyAttachmentUiUpdater(mutableMapOf())
+    private var ePharmacyAttachmentUiUpdater: EPharmacyAttachmentUiUpdater = EPharmacyAttachmentUiUpdater(
+        linkedMapOf()
+    )
 
     private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(this) }
 
@@ -207,7 +209,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
 
     override fun onInteractAccordion(adapterPosition: Int, isExpanded: Boolean, modelKey: String) {
         super.onInteractAccordion(adapterPosition, isExpanded, modelKey)
-        (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel).productsIsExpanded = !isExpanded
+        val copy = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel).copy()
+        copy.productsIsExpanded = !isExpanded
+        ePharmacyAttachmentUiUpdater.updateModel(copy)
         updateUi()
     }
 

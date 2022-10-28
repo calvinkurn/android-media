@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyAttachmentDataModel>(view) {
+class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyAttachmentDataModel?>(view) {
 
     private val orderName = view.findViewById<Typography>(R.id.orderName)
     private val productText = view.findViewById<Typography>(R.id.product_name)
@@ -42,52 +42,68 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
     }
 
-    override fun bind(element: EPharmacyAttachmentDataModel) {
-        renderGroupData(element)
+    private var dataModel : EPharmacyAttachmentDataModel? = null
+
+    override fun bind(element: EPharmacyAttachmentDataModel?) {
+        dataModel = element
+        // TODO check with dataModel = null explicitly
+        renderGroupData()
     }
 
-    private fun renderGroupData(dataModel: EPharmacyAttachmentDataModel) {
-        renderPartnerData(dataModel)
-        renderShopData(dataModel)
-        renderProductsData(dataModel)
-        renderButton(dataModel)
-        renderDivider(dataModel)
+    private fun renderGroupData() {
+        renderPartnerData()
+        renderShopData()
+        renderProductsData()
+        renderButton()
+        renderDivider()
     }
 
-    private fun renderPartnerData(dataModel: EPharmacyAttachmentDataModel) {
-        orderName.displayTextOrHide(dataModel.orderName ?: "")
+    private fun renderPartnerData() {
+        orderName.displayTextOrHide(dataModel?.orderName ?: "")
         enablerImage.show()
         partnerTitle.show()
-        enablerImage.loadImage(dataModel.partnerLogo)
+        enablerImage.loadImage(dataModel?.partnerLogo)
     }
 
-    private fun renderShopData(dataModel: EPharmacyAttachmentDataModel) {
-        shopNameText.displayTextOrHide(dataModel.shopInfo?.shopName ?: "")
+    private fun renderShopData() {
+        shopNameText.displayTextOrHide(dataModel?.shopInfo?.shopName ?: "")
         shopIcon.show()
-        shopIcon.loadImage(dataModel.shopInfo?.shopLogoUrl)
+        shopIcon.loadImage(dataModel?.shopInfo?.shopLogoUrl)
     }
 
-    private fun renderProductsData(dataModel: EPharmacyAttachmentDataModel) {
-        dataModel.shopInfo?.products?.firstOrNull()?.let {  firstProduct ->
+    private fun renderProductsData() {
+        dataModel?.shopInfo?.products?.firstOrNull()?.let {  firstProduct ->
             productText.text = firstProduct.name
             productQuantity.text = firstProduct.quantityString
             productImageUnify.loadImage(firstProduct.productImage)
         }
 
-        if(!dataModel.shopInfo?.products.isNullOrEmpty() && dataModel.shopInfo?.products?.size ?: 0 > 1){
+        if(!dataModel?.shopInfo?.products.isNullOrEmpty() && dataModel?.shopInfo?.products?.size ?: 0 > 1){
             productAccordionView.show()
             if(productAccordionRV.adapter == null){
-                productAccordionRV.adapter = dataModel.shopInfo?.products?.let { products ->
+                productAccordionRV.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+                productAccordionRV.adapter = dataModel?.shopInfo?.products?.let { products ->
                     getAttachmentAccordionAdapter(
                         products
                     )
                 }
-                productAccordionRV.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
                 productAccordionView.setOnClickListener {
-                    ePharmacyListener?.onInteractAccordion(bindingAdapterPosition,dataModel.productsIsExpanded, "${dataModel.epharmacyGroupId},${dataModel.shopInfo?.shopId}")
+                    ePharmacyListener?.onInteractAccordion(bindingAdapterPosition,dataModel?.productsIsExpanded ?: false, "${dataModel?.epharmacyGroupId},${dataModel?.shopInfo?.shopId ?: ""}")
+                }
+            }else {
+                dataModel?.shopInfo?.products?.let { products ->
+                    // TODO OPTIMIZE
+                    val productSubList = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>()
+                    products.forEachIndexed { index, product ->
+                        if(index != 0){ productSubList.add(product) }
+                    }
+                    (productAccordionRV.adapter as EPharmacyAttachmentProductAccordionAdapter).setData(
+                        productSubList
+                    )
                 }
             }
-            if(dataModel.productsIsExpanded){
+
+            if(dataModel?.productsIsExpanded == true){
                 productAccordionRV.show()
                 productAccordionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null)
             }else{
@@ -103,18 +119,16 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         // TODO OPTIMIZE
         val productSubList = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>()
         products.forEachIndexed { index, product ->
-            if(index != 0){
-                productSubList.add(product)
-            }
+            if(index != 0){ productSubList.add(product) }
         }
         return EPharmacyAttachmentProductAccordionAdapter(productSubList)
     }
 
-    private fun renderButton(dataModel: EPharmacyAttachmentDataModel) {
-        if(dataModel.uploadWidget){
+    private fun renderButton() {
+        if(dataModel?.uploadWidget == true){
             chatDokterUploadLayout.show()
-            chatDokterUploadText.text = dataModel.uploadWidgetText
-            chatDokterUploadIcon.loadImage(dataModel.uploadWidgetIcon)
+            chatDokterUploadText.text = dataModel?.uploadWidgetText
+            chatDokterUploadIcon.loadImage(dataModel?.uploadWidgetIcon)
             chatDokterUploadLayout.setOnClickListener {
 
             }
@@ -123,7 +137,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         }
     }
 
-    private fun renderDivider(dataModel: EPharmacyAttachmentDataModel){
+    private fun renderDivider(){
         divider.show()
     }
 }

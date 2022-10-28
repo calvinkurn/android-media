@@ -28,14 +28,10 @@ data class EPharmacyAttachmentDataModel(val name : String = "", val type : Strin
     }
 
     override fun equalsWith(newData: BaseEPharmacyDataModel): Boolean {
-        return this != newData
+        return this == newData
     }
 
     override fun getChangePayload(newData: BaseEPharmacyDataModel): Bundle? {
         return null
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return "${this.epharmacyGroupId},${this.shopInfo?.shopId.toString()},${this.productsIsExpanded}" == "${(other as EPharmacyAttachmentDataModel).epharmacyGroupId},${other.shopInfo?.shopId.toString()},${other.productsIsExpanded}"
     }
 }

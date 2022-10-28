@@ -9,6 +9,11 @@ import com.tokopedia.epharmacy.component.viewholder.EPharmacyProductsAccordionIt
 class EPharmacyAttachmentProductAccordionAdapter(var products : ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>):
     RecyclerView.Adapter<EPharmacyProductsAccordionItemViewHolder>() {
 
+    fun setData(productList: ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>) {
+        products = productList
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EPharmacyProductsAccordionItemViewHolder {
         return EPharmacyProductsAccordionItemViewHolder(LayoutInflater.from(parent.context).inflate(com.tokopedia.epharmacy.R.layout.epharmacy_prescription_attachment_view_item, parent, false))
     }

@@ -57,7 +57,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                 group?.shopInfo?.forEachIndexed { index, info ->
                     if(info?.products?.isNullOrEmpty() != true){
                         val ePharmacyGroupData = EPharmacyAttachmentDataModel(
-                            "${group.epharmacyGroupId},${info?.shopId.toString()}",GROUP_COMPONENT,
+                            "${group.epharmacyGroupId},${info?.shopId  ?: ""}",GROUP_COMPONENT,
                             info?.orderName,
                             group.epharmacyGroupId,
                             group.consultationSource?.enablerName,
