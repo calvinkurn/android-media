@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ContentRechargeHomepageLastItemBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsBinding
@@ -72,8 +73,9 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel) {
             val binding = ViewRechargeHomeMyBillsItemBinding.bind(itemView)
 
-            binding.ivProductIcon.loadImage(element.item.mediaUrl)
-            binding.tvMainPrice.text = element.item.attributes.pricePrefix
+            binding.ivProductIcon.loadImage(element.item.attributes.iconUrl)
+            binding.tvMainPrice.text = element.item.label2
+            binding.tvMainPrice.setTextColor(element.item.attributes.titleColor)
 
             renderProductInfo(binding, element.item)
             renderExpiredInfo(binding, element.item)
@@ -85,9 +87,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         ){
             with(binding){
                 tvProductDetailName.text = element.title
-                tvProductDetailNumber.text = element.subtitle
-                tvProductDetailName.setTextColor(element.attributes.titleColor)
-                tvProductDetailNumber.setTextColor(element.attributes.subtitleColor)
+                tvProductDetailNumber.text = element.content
             }
         }
 
@@ -120,7 +120,10 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel) {
             val binding = ContentRechargeHomepageLastItemBinding.bind(itemView)
             with(binding.cardViewRechargeHomepageLastItem){
-                ctaView.text = element.items.title
+                title = element.items.title
+                ctaIconContainerView.setOnClickListener {
+                    RouteManager.route(itemView.context, element.items.applink)
+                }
             }
         }
     }
