@@ -18,8 +18,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.extensions.generateButton
-import com.tokopedia.play.extensions.toAction
 import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.ui.variantsheet.adapter.VariantLabelAdapter
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantItemDecoration

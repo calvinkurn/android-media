@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayPinnedProductBinding
-import com.tokopedia.play.extensions.generateButton
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
@@ -66,7 +65,7 @@ class ProductCarouselViewHolder private constructor() {
          */
         private fun UnifyButton.configButton(button: ProductButtonUiModel){
             //Setup Text
-            text = if(button.type == ProductButtonType.ATC) "+" else button.text
+            text = button.text
 
             //Setup Icon if any, for now its only for ATC
             val iconType = if(button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON)

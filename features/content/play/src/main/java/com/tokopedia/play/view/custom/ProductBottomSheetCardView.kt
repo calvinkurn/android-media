@@ -6,23 +6,18 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewProductBottomSheetCardBinding
-import com.tokopedia.play.extensions.generateButton
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by kenny.hadisaputra on 19/08/22
@@ -116,12 +111,8 @@ class ProductBottomSheetCardView(
         //Buttons
         binding.btnProductAtc.showWithCondition(item.buttonUiModels.isNotEmpty())
         binding.btnProductBuy.showWithCondition(item.buttonUiModels.isNotEmpty())
-        binding.btnProductAtc.text = if (item.buttonUiModels.firstOrNull()
-                .orDefault().type == ProductButtonType.ATC) "+ ${item.buttonUiModels.firstOrNull().orDefault().text}"
-        else item.buttonUiModels.firstOrNull().orDefault().text
-        binding.btnProductBuy.text = if (item.buttonUiModels.lastOrNull()
-                .orDefault().type == ProductButtonType.ATC) "+ ${item.buttonUiModels.lastOrNull().orDefault().text}"
-        else item.buttonUiModels.lastOrNull().orDefault().text
+        binding.btnProductAtc.text = item.buttonUiModels.firstOrNull().orDefault().text
+        binding.btnProductBuy.text = item.buttonUiModels.lastOrNull().orDefault().text
         binding.btnProductAtc.generateButton(item.buttonUiModels.firstOrNull().orDefault().color)
         binding.btnProductBuy.generateButton(item.buttonUiModels.lastOrNull().orDefault().color)
     }

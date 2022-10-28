@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.type
 
+import com.tokopedia.unifycomponents.UnifyButton
+
 /**
  * @author by astidhiyaa on 25/10/22
  */
@@ -68,3 +70,36 @@ enum class ProductButtonType(val value: String) {
         }
     }
 }
+
+fun UnifyButton.generateButton(color: ProductButtonColor){
+    when (color) {
+        ProductButtonColor.PRIMARY_BUTTON -> {
+            buttonVariant = UnifyButton.Variant.FILLED
+            buttonType = UnifyButton.Type.MAIN
+            isEnabled = true
+        }
+        ProductButtonColor.SECONDARY_BUTTON -> {
+            buttonVariant = UnifyButton.Variant.GHOST
+            buttonType = UnifyButton.Type.MAIN
+            isEnabled = true
+        }
+        ProductButtonColor.PRIMARY_DISABLED_BUTTON -> {
+            buttonVariant = UnifyButton.Variant.FILLED
+            buttonType = UnifyButton.Type.MAIN
+            isEnabled = false
+        }
+        ProductButtonColor.SECONDARY_DISABLED_BUTTON -> {
+            buttonVariant = UnifyButton.Variant.GHOST
+            buttonType = UnifyButton.Type.MAIN
+            isEnabled = false
+        }
+    }
+}
+
+val ProductButtonType.toAction : ProductAction
+    get() = when (this) {
+        ProductButtonType.ATC -> ProductAction.AddToCart
+        ProductButtonType.GCR -> ProductAction.Buy
+        ProductButtonType.OCC -> ProductAction.OCC
+        else -> ProductAction.AddToCart
+    }
