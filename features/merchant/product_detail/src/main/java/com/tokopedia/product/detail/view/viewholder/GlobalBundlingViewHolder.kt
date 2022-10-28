@@ -28,7 +28,6 @@ class GlobalBundlingViewHolder(
     val binding = ItemGlobalBundlingBinding.bind(view)
 
     override fun bind(element: GlobalBundlingDataModel) {
-
         if (!element.shouldRefresh) return
 
         setupBundleWidgetListener(element)
