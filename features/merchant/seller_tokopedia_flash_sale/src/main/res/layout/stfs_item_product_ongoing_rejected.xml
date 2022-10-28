@@ -105,6 +105,20 @@
         app:layout_constraintStart_toEndOf="@+id/tpg_variant_stock_location"
         app:layout_constraintTop_toTopOf="@+id/tpg_variant_stock_location" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_warning"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="4dp"
+        app:icon_color_light_enable="@color/Red_R500"
+        app:icon_color_night_enable="@color/Red_R500"
+        app:icon_name="WARNING"
+        app:icon_enable_state="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_variant_stock_location"
+        app:layout_constraintStart_toEndOf="@+id/tpg_variant_stock_location"
+        app:layout_constraintTop_toTopOf="@+id/tpg_variant_stock_location" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_product_sold"
         android:layout_width="wrap_content"
