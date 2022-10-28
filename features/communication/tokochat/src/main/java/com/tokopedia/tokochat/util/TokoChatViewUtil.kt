@@ -23,6 +23,7 @@ object TokoChatViewUtil {
             Glide.with(context)
                 .asBitmap()
                 .load(inputStream.readBytes())
+                .centerInside()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .listener(getRequestListenerByteArray(inputStream, onFinishLoading))
                 .into(imageView)
