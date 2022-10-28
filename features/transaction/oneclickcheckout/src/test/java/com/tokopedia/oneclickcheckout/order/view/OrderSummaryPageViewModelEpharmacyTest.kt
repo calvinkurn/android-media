@@ -227,11 +227,13 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         assertEquals(true, isOnSuccessCalled)
         assertEquals(OccGlobalEvent.Loading, orderSummaryPageViewModel.globalEvent.value)
         coVerify(exactly = 1) {
-            checkoutOccUseCase.executeSuspend(match { it ->
-                it.carts.data[0].shopProducts[0].orderMetadata.firstOrNull() {
-                    it.key == OrderMetadata.PRESCRIPTION_IDS_METADATA
-                }?.value == orderSummaryPageViewModel.uploadPrescriptionUiModel.value.prescriptionIds.toString()
-            })
+            checkoutOccUseCase.executeSuspend(
+                match {
+                    it.carts.data[0].shopProducts[0].orderMetadata.firstOrNull() { orderMetadata ->
+                        orderMetadata.key == OrderMetadata.PRESCRIPTION_IDS_METADATA
+                    }?.value == orderSummaryPageViewModel.uploadPrescriptionUiModel.value.prescriptionIds.toString()
+                }
+            )
         }
         verify(exactly = 1) {
             orderSummaryAnalytics.eventClickBayarSuccess(

@@ -203,7 +203,7 @@ class OrderSummaryPageViewModelTestHelper {
             uploadImageText = imageUploadDataModel.text,
             leftIconUrl = imageUploadDataModel.leftIconUrl,
             checkoutId = imageUploadDataModel.checkoutId,
-            prescriptionIds = PrescriptionMapper.mapPrescriptionResponse(prescriptionIdsResponse).prescriptionIds ,
+            prescriptionIds = PrescriptionMapper.mapPrescriptionResponse(prescriptionIdsResponse).prescriptionIds,
             uploadedImageCount = PrescriptionMapper.mapPrescriptionResponse(prescriptionIdsResponse).prescriptionIds.size,
             isError = false,
             frontEndValidation = imageUploadDataModel.frontEndValidation,
