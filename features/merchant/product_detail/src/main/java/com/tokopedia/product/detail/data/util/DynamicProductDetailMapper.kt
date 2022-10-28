@@ -694,7 +694,7 @@ object DynamicProductDetailMapper {
         )
     }
 
-    private fun generateGlobalBundlingData(bundlingData: ComponentData): GlobalBundling{
+    private fun generateGlobalBundlingData(bundlingData: ComponentData): GlobalBundling {
         return GlobalBundling(
             title = bundlingData.title,
             widgetType = bundlingData.widgetType,
