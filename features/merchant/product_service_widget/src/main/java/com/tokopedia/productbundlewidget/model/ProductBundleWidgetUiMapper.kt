@@ -2,6 +2,7 @@ package com.tokopedia.productbundlewidget.model
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_STATUS_ACTIVE
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -20,7 +21,11 @@ import javax.inject.Inject
 class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun groupAndMap(bundleInfo: List<BundleInfo>): List<BundleUiModel> {
-        val groupedBundle = bundleInfo.groupBy { it.groupID }
+        val groupedBundle = bundleInfo
+            .filter {
+                it.status == PRODUCT_BUNDLE_STATUS_ACTIVE
+            }
+            .groupBy { it.groupID }
         return groupedBundle.groupBundleToBundleUi()
     }
 
