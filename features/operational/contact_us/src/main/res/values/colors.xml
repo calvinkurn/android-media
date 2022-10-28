@@ -72,6 +72,9 @@
     <color name="contact_us_dms_chatbot_entry">#f531353b</color>
     <color name="contact_us_dms_complain_text">#AD31353B</color>
     <color name="contact_us_dms_complain_bg">#03AC0E</color>
-
+    <color name="contact_us_dms_ticket_bg">#EAEAEA</color>
+    <color name="contact_us_dms_detail_background_dark">#FFFFFF</color>
+    <color name="contact_us_dms_detail_edit_text_bg">#0AF4F5F7</color>
+    <color name="contact_us_dms_detail_hint_bg">#7031353B</color>
 
 </resources>
