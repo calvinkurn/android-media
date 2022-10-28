@@ -229,21 +229,4 @@ class ProductCardCarouselViewModelTest {
         assert(viewModel.getProductCarouselItemsListData().value?.size == 3)
     }
 
-    @Test
-    fun `test for setProductsList if list is non-null`() {
-        val componentsItemNew = ComponentsItem(id = "1")
-        val list = ArrayList<ComponentsItem>()
-        list.add(componentsItemNew)
-
-        every {  viewModel.getProductList() } returns list
-        coEvery { componentsItem.name } returns "product_card_carousel"
-        coEvery { productCardsUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, 10) } returns true
-
-        viewModel.fetchProductCarouselData()
-
-        assert(viewModel.syncData.value == true)
-
-    }
-
-
 }
