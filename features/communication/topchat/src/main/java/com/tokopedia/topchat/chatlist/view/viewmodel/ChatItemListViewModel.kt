@@ -419,7 +419,7 @@ class ChatItemListViewModel @Inject constructor(
 
     fun saveTickerPref(prefName: String) {
         sharedPref.edit()
-            .putBoolean(BUBBLE_TICKER_PREF_NAME, false)
+            .putBoolean(prefName, false)
             .apply()
     }
 
