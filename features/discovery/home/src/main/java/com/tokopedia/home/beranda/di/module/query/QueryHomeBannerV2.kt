@@ -15,20 +15,14 @@ internal object QueryHomeBannerV2 {
         "      type\n" +
         "      title\n" +
         "      applink\n" +
-        "      message\n" +
         "      persona\n" +
         "      brandID\n" +
         "      imageUrl\n" +
-        "      startTime\n" +
         "      promoCode\n" +
-        "      backColor\n" +
-        "      expireTime\n" +
-        "      slideIndex\n" +
         "      categoryID\n" +
         "      creativeName\n" +
         "      campaignCode\n" +
         "      topadsViewUrl\n" +
-        "      pgCampaignType\n" +
         "      categoryPersona\n" +
         "      galaxyAttribution\n" +
         "    }\n" +

@@ -37,19 +37,6 @@ data class BannerSlidesModel(
         @SerializedName("campaignCode")
         val campaignCode: String = "",
         var position: Int = -1,
-        // Newly added fields on banner v2 query
-        @SerializedName("message")
-        val message: String = "",
-        @SerializedName("startTime")
-        val startTime: String = "",
-        @SerializedName("expireTime")
-        val expireTime: String = "",
-        @SerializedName("backColor")
-        val backColor: String = "",
-        @SerializedName("slideIndex")
-        val slideIndex: Int = -1,
-        @SerializedName("pgCampaignType")
-        val pgCampaignType: String = "",
 ): ImpressHolder() {
 
     companion object{
