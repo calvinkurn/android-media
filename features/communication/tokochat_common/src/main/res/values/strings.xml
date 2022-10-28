@@ -15,4 +15,8 @@
     <string name="tokochat_masking_phone_number_title">Nomor HP kamu akan disamarkan</string>
     <string name="tokochat_masking_phone_number_desc">Demi menjaga privasi, nomor HP-mu nggak bisa dilihat oleh driver. Pulsamu akan terpakai untuk panggilan ini.</string>
     <string name="tokochat_driver_call_button_text">Oke, Telepon</string>
+
+    <string name="tokochat_localload_transaction_widget_title">Oops, status pesanan gagal ditampilkan</string>
+    <string name="tokochat_localload_transaction_widget_desc">Klik ikon di samping untuk refresh.</string>
+
 </resources>
