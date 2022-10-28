@@ -153,7 +153,7 @@ class PlayBottomSheetFragment @Inject constructor(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section
     ) {
-        val action = product.buttonUiModels.lastOrNull().orDefault().type.toAction
+        val action = product.buttons.lastOrNull().orDefault().type.toAction
         shouldCheckProductVariant(product, sectionInfo, action)
     }
 
@@ -162,7 +162,7 @@ class PlayBottomSheetFragment @Inject constructor(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section
     ) {
-        val action = product.buttonUiModels.firstOrNull().orDefault().type.toAction
+        val action = product.buttons.firstOrNull().orDefault().type.toAction
         shouldCheckProductVariant(product, sectionInfo, action)
     }
 
@@ -291,7 +291,7 @@ class PlayBottomSheetFragment @Inject constructor(
     fun showVariantSheet(
         product: PlayProductUiModel.Product,
     ) {
-        val button = product.buttonUiModels.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
+        val button = product.buttons.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
         variantSheetView.setAction(button)
         playViewModel.onShowVariantSheet(variantSheetMaxHeight)
     }

@@ -80,7 +80,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             isTokoNow = input.isTokoNow,
             isPinned = input.isPinned,
             isRilisanSpesial = sectionType == ProductSectionType.Active || sectionType == ProductSectionType.Upcoming,
-            buttonUiModels = mapButtons(input.buttons),
+            buttons = mapButtons(input.buttons),
         )
     }
 
