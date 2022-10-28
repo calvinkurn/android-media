@@ -18,6 +18,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     private lateinit var shopName: String
     private lateinit var saleType: String
     private lateinit var saleStatus: String
+    private lateinit var contentSlotValue: String
     private lateinit var postType: String
     private var isFollowed: Boolean = false
 
@@ -31,6 +32,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         const val PARAM_SHOP_NAME = "shop_name"
         const val PARAM_SALE_TYPE = "sale_type"
         const val PARAM_SALE_STATUS = "sale_status"
+        const val PARAM_CONTENT_SLOT_VALUE = "content_slot_value"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +58,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         shopName = intent.getStringExtra(PARAM_SHOP_NAME).orEmpty()
         saleType = intent.getStringExtra(PARAM_SALE_TYPE).orEmpty()
         saleStatus = intent.getStringExtra(PARAM_SALE_STATUS).orEmpty()
+        contentSlotValue = intent.getStringExtra(PARAM_CONTENT_SLOT_VALUE).orEmpty()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -66,6 +69,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         bundle.putString(PARAM_POST_TYPE, postType)
         bundle.putString(PARAM_SHOP_NAME, shopName)
         bundle.putString(PARAM_SALE_STATUS, saleStatus)
+        bundle.putString(PARAM_CONTENT_SLOT_VALUE, contentSlotValue)
         bundle.putString(PARAM_SALE_TYPE, saleType)
         bundle.putBoolean(PARAM_IS_FOLLOWED, isFollowed)
         return FeedPlusDetailFragment.createInstance(bundle)

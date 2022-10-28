@@ -24,20 +24,18 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.analytics.tracker.FeedTrackerData
 import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
-import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedDetailAnalytics.Companion.feedDetailAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
@@ -48,9 +46,8 @@ import com.tokopedia.feedplus.view.presenter.FeedDetailViewModel
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
@@ -61,10 +58,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.R as feedComponentR
 
 /**
  * A simple [Fragment] subclass.
@@ -90,6 +87,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private var postType: String = ""
     private var saleType: String = ""
     private var saleStatus: String = ""
+    private var contentSlotValue: String = ""
     private var isFollowed: Boolean = false
     private var productList = mutableListOf<FeedXProduct>()
     private var activityId: String = ""
@@ -246,6 +244,13 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             arguments?.run {
                 getString(FeedPlusDetailActivity.PARAM_SALE_STATUS)?.let {
                     saleStatus = it
+                }
+            }
+        }
+        if (contentSlotValue.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_CONTENT_SLOT_VALUE)?.let {
+                    contentSlotValue = it
                 }
             }
         }
@@ -421,12 +426,21 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     ) {
         val finalID = if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId
         feedAnalytics.eventClickBottomSheetMenu(
-            finalID,
-            item.postType,
-            item.isFollowed,
-            item.shopId,
-            "",
-            trackerId = if (isFollowed) "17990" else ""
+            FeedTrackerData(
+                postId = finalID,
+                media = FeedXMedia(),
+                postType = item.postType,
+                isFollowed = item.isFollowed,
+                shopId = item.shopId,
+                mediaType = "",
+                positionInFeed = item.positionInFeed,
+                contentSlotValue = contentSlotValue,
+                trackerId = "",
+                campaignStatus = item.saleStatus,
+                product = item.product,
+                productId = item.product.id,
+                mediaIndex = 0
+            )
         )
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
@@ -469,7 +483,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             }
             else ""
         addToWishList(
-            item.postId.toString(),
+            item.postId,
             item.id,
             item.postType,
             item.isFollowed,
@@ -604,10 +618,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             shopId: String,
             playChannelId: String,
             productItemPostion: Int = 0,
-            campaignStatusValue: String = ""
-    ) {
-        val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
+            campaignStatusValue: String = "") {
 
+        val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
         if (campaignStatusValue.isEmpty())
             feedAnalytics.eventAddToWishlistClicked(
                 finalId,
@@ -615,14 +628,16 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 type,
                 isFollowed,
                 shopId,
-                ""
+                "",
+                contentScore = contentSlotValue
             )
         else
             feedAnalytics.sendClickAddToWishlistAsgcProductDetail(
                 postId,
                 shopId,
                 productId,
-                campaignStatusValue
+                campaignStatusValue,
+                contentSlotValue
             )
 
         context?.let {
