@@ -12,6 +12,7 @@ import com.tokopedia.home.databinding.ItemHomeVerticalTopAdsBannerBinding
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.utils.TdnHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -46,12 +47,15 @@ class TopAdsVerticalBannerViewHolder constructor(
         }
 
         if (!tdnBannerList.isNullOrEmpty()) {
+            binding?.topadsBanner?.show()
+            binding?.dynamicChannelHeader?.show()
             binding?.topadsBanner?.renderTdnBanner(tdnBannerList.first(), onTdnBannerClicked = {
                 if (it.isNotEmpty()) RouteManager.route(binding?.topadsBanner?.context, it)
             })
             setChannelDivider(element.channel)
         } else {
-            binding?.root?.hide()
+            binding?.topadsBanner?.hide()
+            binding?.dynamicChannelHeader?.hide()
         }
     }
 
