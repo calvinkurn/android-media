@@ -46,7 +46,8 @@ class WishlistCollectionItemViewHolder(
                     actionListener?.onKebabMenuClicked(
                         item.dataObject.id,
                         item.dataObject.name,
-                        item.dataObject.actions
+                        item.dataObject.actions,
+                        item.dataObject.indicator.title
                     )
                 }
             }

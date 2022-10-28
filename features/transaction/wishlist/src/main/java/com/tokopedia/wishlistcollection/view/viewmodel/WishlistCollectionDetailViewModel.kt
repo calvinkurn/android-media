@@ -275,7 +275,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
         launchCatchError(block = {
             val result = updateWishlistCollectionUseCase(updateWishlistCollectionParams)
-            if (result.updateWishlistCollection.status == WishlistV2CommonConsts.OK && result.updateWishlistCollection.errorMessage.isEmpty()) {
+            if (result.updateWishlistCollection.status == WishlistV2CommonConsts.OK && result.updateWishlistCollection.data.success) {
                 _updateWishlistCollectionResult.value = Success(result.updateWishlistCollection)
             } else {
                 _updateWishlistCollectionResult.value = Fail(Throwable())

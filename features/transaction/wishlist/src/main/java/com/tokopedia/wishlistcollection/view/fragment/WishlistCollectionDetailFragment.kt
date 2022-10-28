@@ -103,7 +103,6 @@ import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.*
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
@@ -725,7 +724,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         wishlistCollectionDetailViewModel.updateWishlistCollectionResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    if (result.data.data.success && result.data.status == OK && result.data.errorMessage.isEmpty()) {
+                    if (result.data.data.success && result.data.status == OK) {
                         getCollectionSharingData()
                     } else if (result.data.errorMessage.isNotEmpty()) {
                         showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
@@ -3019,7 +3018,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(actionText)
     }
 
-    override fun onShareCollection(collectionId: String, actionText: String) {
+    override fun onShareCollection(
+        collectionId: String,
+        collectionName: String,
+        actionText: String,
+        _collectionIndicatorTitle: String
+    ) {
         // used in WishlistCollectionFragment
     }
 

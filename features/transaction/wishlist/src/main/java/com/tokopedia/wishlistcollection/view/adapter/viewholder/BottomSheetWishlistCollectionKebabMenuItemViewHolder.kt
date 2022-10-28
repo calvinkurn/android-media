@@ -15,7 +15,8 @@ class BottomSheetWishlistCollectionKebabMenuItemViewHolder(private val binding: 
     fun bind(
         actionItem: BottomSheetKebabActionItemData,
         _collectionId: String,
-        _collectionName: String
+        _collectionName: String,
+        _collectionIndicatorTitle: String
     ) {
         binding.run {
             labelKebabMenu.text = actionItem.text
@@ -33,7 +34,7 @@ class BottomSheetWishlistCollectionKebabMenuItemViewHolder(private val binding: 
                 binding.run {
                     iconKebabMenu.setImage(IconUnify.SHARE_MOBILE)
                     root.setOnClickListener {
-                        listener?.onShareCollection(_collectionId, actionItem.text)
+                        listener?.onShareCollection(_collectionId, _collectionName, actionItem.text, _collectionIndicatorTitle)
                     }
                 }
             }

@@ -13,6 +13,7 @@ class BottomSheetWishlistCollectionKebabMenuItemAdapter : RecyclerView.Adapter<R
     private var _actionListener: ActionListenerBottomSheetMenu? = null
     var _collectionId: String = ""
     var _collectionName: String = ""
+    var _collectionIndicatorTitle: String = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = BottomsheetKebabMenuWishlistCollectionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -22,7 +23,7 @@ class BottomSheetWishlistCollectionKebabMenuItemAdapter : RecyclerView.Adapter<R
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is BottomSheetWishlistCollectionKebabMenuItemViewHolder -> {
-                holder.bind(listAction[position], _collectionId, _collectionName)
+                holder.bind(listAction[position], _collectionId, _collectionName, _collectionIndicatorTitle)
             }
         }
     }

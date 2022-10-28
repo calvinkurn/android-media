@@ -96,8 +96,16 @@ data class GetWishlistCollectionResponse(
 						val id: String = "",
 
 						@SerializedName("actions")
-						val actions: List<Action> = emptyList()
-					)
+						val actions: List<Action> = emptyList(),
+
+                        @SerializedName("indicator")
+                        val indicator: Indicator = Indicator(),
+					) {
+                        data class Indicator(
+                            @SerializedName("title")
+                            val title: String = ""
+                        )
+                    }
 
 					data class Placeholder(
 						@SerializedName("image_url")
@@ -158,6 +166,6 @@ data class GetWishlistCollectionResponse(
                         @SerializedName("url")
                         val url: String = ""
                     ) : Parcelable
-            }
+                }
 		    }
 	    }

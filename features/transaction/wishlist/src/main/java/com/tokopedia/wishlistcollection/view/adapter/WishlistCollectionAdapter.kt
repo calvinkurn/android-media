@@ -41,7 +41,12 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     interface ActionListener {
         fun onCloseTicker()
-        fun onKebabMenuClicked(collectionId: String, collectionName: String, actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>)
+        fun onKebabMenuClicked(
+            collectionId: String,
+            collectionName: String,
+            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+            collectionIndicatorTitle: String
+        )
         fun onCreateNewCollectionClicked()
         fun onCollectionItemClicked(id: String)
         fun onCreateCollectionItemBind(allCollectionView: View, createCollectionView: View)

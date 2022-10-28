@@ -55,6 +55,7 @@ import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
+import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
@@ -101,6 +102,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private var currRecommendationListPage = 1
     private var hitCountDeletion = false
     private var isOnProgressDeleteWishlist = false
+    private var _collectionIdShared = ""
     private val handler = Handler(Looper.getMainLooper())
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
@@ -151,6 +153,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         private const val COACHMARK_WISHLIST = "coachmark-wishlist"
         private const val WISHLIST_PAGE = "wishlist page"
         private const val EDIT_WISHLIST_COLLECTION_REQUEST_CODE = 188
+        private const val TYPE_COLLECTION_SHARE = "2"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -205,6 +208,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         observingDeleteWishlistCollection()
         observingDeleteProgress()
         observeGetCollectionSharingData()
+        observeUpdateAccessWishlistCollection()
     }
 
     private fun prepareLayout() {
@@ -574,6 +578,27 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
+    private fun observeUpdateAccessWishlistCollection() {
+        collectionViewModel.updateWishlistCollectionResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.data.success && result.data.status == OK) {
+                        collectionViewModel.getWishlistCollectionSharingData(_collectionIdShared.toLongOrZero())
+                    } else if (result.data.errorMessage.isNotEmpty()) {
+                        showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
+                    } else {
+                        context?.getString(R.string.wishlist_v2_common_error_msg)
+                            ?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
     private fun finishRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = false
@@ -589,9 +614,10 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     override fun onKebabMenuClicked(
         collectionId: String,
         collectionName: String,
-        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+        collectionIndicatorTitle: String
     ) {
-        showBottomSheetKebabMenu(collectionId, collectionName, actions)
+        showBottomSheetKebabMenu(collectionId, collectionName, actions, collectionIndicatorTitle)
         WishlistCollectionAnalytics.sendClickThreeDotsOnCollectionFolderEvent()
     }
 
@@ -610,10 +636,11 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private fun showBottomSheetKebabMenu(
         collectionId: String,
         collectionName: String,
-        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+        collectionIndicatorTitle: String
     ) {
         bottomSheetKebabMenu =
-            BottomSheetKebabMenuWishlistCollection.newInstance(collectionName, collectionId, actions)
+            BottomSheetKebabMenuWishlistCollection.newInstance(collectionName, collectionId, actions, collectionIndicatorTitle)
         bottomSheetKebabMenu.setListener(this@WishlistCollectionFragment)
         if (bottomSheetKebabMenu.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetKebabMenu.show(childFragmentManager)
@@ -653,9 +680,45 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         showDialogDeleteCollection(collectionId, collectionName)
     }
 
-    override fun onShareCollection(collectionId: String, actionText: String) {
+    override fun onShareCollection(
+        collectionId: String,
+        collectionName: String,
+        actionText: String,
+        _collectionIndicatorTitle: String
+    ) {
+        _collectionIdShared = collectionId
         bottomSheetKebabMenu.dismiss()
-        collectionViewModel.getWishlistCollectionSharingData(collectionId.toLongOrZero())
+        if (_collectionIndicatorTitle.isEmpty()) {
+            showDialogSharePermission(collectionId, collectionName)
+        } else {
+            collectionViewModel.getWishlistCollectionSharingData(collectionId.toLongOrZero())
+        }
+    }
+
+    private fun showDialogSharePermission(collectionId: String, collectionName: String) {
+        val dialog =
+            context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(getString(R.string.sharing_collection_confirmation_title))
+        dialog?.setDescription(getString(R.string.sharing_collection_confirmation_desc))
+        dialog?.setPrimaryCTAText(getString(R.string.sharing_collection_primary_button))
+        dialog?.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            updateCollectionAccess(collectionId, collectionName)
+        }
+        dialog?.setSecondaryCTAText(getString(R.string.wishlist_cancel_manage_label))
+        dialog?.setSecondaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog?.show()
+    }
+
+    private fun updateCollectionAccess(collectionId: String, collectionName: String) {
+        val params = UpdateWishlistCollectionParams(
+            id = collectionId.toLongOrZero(),
+            name = collectionName,
+            access = TYPE_COLLECTION_SHARE.toLongOrZero()
+        )
+        collectionViewModel.updateAccessWishlistCollection(params)
     }
 
     override fun onManageItemsInCollection(actionText: String) {
