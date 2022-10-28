@@ -3,6 +3,8 @@ package com.tokopedia.minicart.common.data.response.minicartlist
 import com.google.gson.annotations.SerializedName
 
 data class Product(
+        @SerializedName("cart_id")
+        val cartId: String = "",
         @SerializedName("product_id")
         val productId: String = "",
         @SerializedName("product_weight")
@@ -52,5 +54,9 @@ data class Product(
         @SerializedName("product_tracker_data")
         val productTrackerData: ProductTrackerData = ProductTrackerData(),
         @SerializedName("product_cashback")
-        val productCashback: String = ""
+        val productCashback: String = "",
+        @SerializedName("selected_unavailable_action_link")
+        val selectedUnavailableActionLink: String = "",
+        @SerializedName("free_shipping_general")
+        val freeShippingGeneral: FreeShippingGeneral = FreeShippingGeneral()
 )

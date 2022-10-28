@@ -53,8 +53,9 @@ import kotlin.math.abs
 class MixLeftComponentViewHolder (itemView: View,
                                   val mixLeftComponentListener: MixLeftComponentListener?,
                                   val homeComponentListener: HomeComponentListener?,
-                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null)
-    : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
+                                  private val cardInteraction: Boolean = false
+) : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
     private lateinit var adapter: MixLeftAdapter
 
@@ -79,6 +80,8 @@ class MixLeftComponentViewHolder (itemView: View,
         val LAYOUT = R.layout.global_dc_mix_left
         val RECYCLER_VIEW_ID = R.id.rv_product
         private const val FPM_MIX_LEFT = "home_mix_left"
+        private const val DISTANCE_LEFT_RATIO = 0.2f
+        private const val ITEM_WIDTH_RATIO = 0.80f
     }
 
     override fun bind(element: MixLeftDataModel) {
@@ -92,7 +95,7 @@ class MixLeftComponentViewHolder (itemView: View,
 
         itemView.addOnImpressionListener(element.channelModel)  {
             if (!isCacheData)
-                mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
+                mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, element.channelModel.verticalPosition)
         }
     }
 
@@ -102,11 +105,11 @@ class MixLeftComponentViewHolder (itemView: View,
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         if (!isCacheData)
-            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, adapterPosition, position)
+            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, channelModel.verticalPosition, position)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, adapterPosition, position, applink)
+        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, channelModel.verticalPosition, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -133,6 +136,7 @@ class MixLeftComponentViewHolder (itemView: View,
         containerMixLeft = itemView.findViewById(R.id.container_mixleft)
     }
 
+    @SuppressLint("ResourcePackage")
     private fun setupBackground(channel: ChannelModel) {
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
@@ -149,7 +153,7 @@ class MixLeftComponentViewHolder (itemView: View,
 
             image.addOnImpressionListener(channel){
                 if (!isCacheData)
-                    mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
+                    mixLeftComponentListener?.onImageBannerImpressed(channel, channel.verticalPosition)
             }
             parallaxBackground.setBackgroundColor(
                     ContextCompat.getColor(itemView.context, R.color.transparent)
@@ -177,9 +181,9 @@ class MixLeftComponentViewHolder (itemView: View,
         recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, channel.channelBanner.applink))
+        listData.add(CarouselEmptyCardDataModel(channel, channel.verticalPosition, this, channel.channelBanner.applink))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
 
@@ -227,12 +231,12 @@ class MixLeftComponentViewHolder (itemView: View,
                     val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                     firstView?.let {
                         val distanceFromLeft = it.left
-                        val translateX = distanceFromLeft * 0.2f
+                        val translateX = distanceFromLeft * DISTANCE_LEFT_RATIO
                         if (translateX <= 0) {
                             image.translationX = translateX
                             if (distanceFromLeft <= 0) {
                                 val itemSize = it.width.toFloat()
-                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * ITEM_WIDTH_RATIO)
                                 image.alpha = 1 - alpha
                             }
                         } else {
@@ -249,7 +253,7 @@ class MixLeftComponentViewHolder (itemView: View,
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ChannelModelMapper.mapToProductCardModel(element),
+                    ChannelModelMapper.mapToProductCardModel(element, cardInteraction),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
@@ -287,7 +291,7 @@ class MixLeftComponentViewHolder (itemView: View,
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                homeComponentListener?.onChannelExpired(channelModel, element.channelModel.verticalPosition, element)
             }
         })
     }

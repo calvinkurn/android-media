@@ -92,7 +92,7 @@ class RecommendationHeaderView: FrameLayout {
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
                     if (data.titleColor.isNotEmpty()) Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -116,7 +116,7 @@ class RecommendationHeaderView: FrameLayout {
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
                     if (data.titleColor.isNotEmpty()) Color.parseColor(data.titleColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelSubtitle?.visibility = View.GONE
@@ -139,7 +139,7 @@ class RecommendationHeaderView: FrameLayout {
             }
 
             handleSubtitlePosition(channelSubtitleName, data, channelTitleContainer)
-            seeAllButton?.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+            seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
 
             seeAllButton?.show()
             seeAllButton?.setOnClickListener {
@@ -268,7 +268,7 @@ class RecommendationHeaderView: FrameLayout {
 
             titleContainer.setPadding(
                     titleContainer.paddingLeft,
-                    convertDpToPixel(10f, titleContainer.context),
+                    convertDpToPixel(TITLE_TOP_PADDING, titleContainer.context),
                     titleContainer.paddingRight,
                     titleContainer.paddingBottom)
         }
@@ -285,5 +285,9 @@ class RecommendationHeaderView: FrameLayout {
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
         return viewStub?.parent == null
+    }
+
+    companion object {
+        private const val TITLE_TOP_PADDING = 10f
     }
 }

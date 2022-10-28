@@ -11,22 +11,18 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
+import com.tokopedia.shop_widget.common.util.DateHelper
 import com.tokopedia.shop_widget.common.util.StatusCampaign
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.isDarkMode
 import java.util.Calendar
 import java.util.Date
-import java.util.concurrent.TimeUnit
 
 
 class DynamicHeaderCustomView: FrameLayout {
-
-    companion object {
-        private const val INVALID_TIMER_COUNTER = 0
-    }
 
     private var listener: HeaderCustomViewListener? = null
     private var itemView: View?
@@ -53,7 +49,7 @@ class DynamicHeaderCustomView: FrameLayout {
     private fun handleHeaderComponent(model: DynamicHeaderUiModel) {
         setupUi()
         handleTitle(model.title)
-        handleSubtitle(model.subTitle, model.statusCampaign, model.timerCounter)
+        handleSubtitle(model.subTitle, model.statusCampaign, model.endDate)
         handleSeeAllAppLink(model.ctaText, model.ctaTextLink)
     }
 
@@ -75,10 +71,10 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleSubtitle(subtitle: String, statusCampaign: String, timerCounter: String) {
-        if (subtitle.isNotBlank() && timerCounter.toLongOrZero() > INVALID_TIMER_COUNTER) {
+    private fun handleSubtitle(subtitle: String, statusCampaign: String, endDate: String) {
+        if (subtitle.isNotBlank()) {
             tpSubtitle?.text = subtitle
-            handleCountDownTimer(statusCampaign, timerCounter)
+            handleCountDownTimer(statusCampaign, endDate)
         } else {
             tusCountDown?.gone()
             tpSubtitle?.gone()
@@ -102,25 +98,30 @@ class DynamicHeaderCustomView: FrameLayout {
         }
     }
 
-    private fun handleCountDownTimer(statusCampaign: String, timerCounter: String) {
+    private fun handleCountDownTimer(statusCampaign: String, endDate: String) {
         try {
             tusCountDown?.apply {
                 isShowClockIcon = false
                 timerFormat = TimerUnifySingle.FORMAT_AUTO
+                timerVariant = if (itemView?.context?.isDarkMode() == true) {
+                    TimerUnifySingle.VARIANT_ALTERNATE
+                } else {
+                    TimerUnifySingle.VARIANT_MAIN
+                }
                 onFinish = {
                     listener?.onTimerFinish()
                 }
             }
-            checkStatusCampaign( statusCampaign, timerCounter)
+            checkStatusCampaign(statusCampaign, endDate)
         } catch (e: Throwable) {
             tusCountDown?.gone()
             tpSubtitle?.gone()
         }
     }
 
-    private fun checkStatusCampaign(statusCampaign: String, timerCounter: String) {
+    private fun checkStatusCampaign(statusCampaign: String, endDate: String) {
         when {
-            isStatusCampaignOngoing(statusCampaign) -> setStatusCampaignOngoing(timerCounter)
+            isStatusCampaignOngoing(statusCampaign) -> setStatusCampaignOngoing(endDate)
             else -> setStatusCampaignFinished()
         }
     }
@@ -130,9 +131,10 @@ class DynamicHeaderCustomView: FrameLayout {
         tpSubtitle?.gone()
     }
 
-    private fun setStatusCampaignOngoing(timerCounter: String) {
+    private fun setStatusCampaignOngoing(endDate: String) {
         val calendar = Calendar.getInstance()
-        calendar.time = Date(TimeUnit.SECONDS.toMillis(timerCounter.toLongOrZero()) + System.currentTimeMillis())
+        val actualEndDate = DateHelper.getDateFromString(endDate).time
+        calendar.time = Date(actualEndDate)
         tusCountDown?.targetDate = calendar
     }
 

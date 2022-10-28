@@ -11,10 +11,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcBroadcastVoucherBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 
 class BroadCastVoucherBottomSheet : BottomSheetUnify() {
@@ -37,15 +37,11 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
         private const val VOUCHER = "voucher"
     }
 
+    private var binding by autoClearedNullable<BottomsheetMvcBroadcastVoucherBinding>()
+
     private val voucherUiModel by lazy {
         arguments?.getParcelable<VoucherUiModel?>(VOUCHER)
     }
-
-    private var tkpdVoucherView: ImageUnify? = null
-    private var voucherPeriodInfoView: Typography? = null
-    private var broadCastButton: View? = null
-    private var socialMediaShareButton: View? = null
-    private var freeTextView: Typography? = null
 
     private var onShareClickAction: (VoucherUiModel) -> Unit = {}
     private var onBroadCastClickAction: (VoucherUiModel) -> Unit = {}
@@ -55,7 +51,7 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initBottomSheet(container)
+        initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -64,59 +60,55 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
         setupView(view)
     }
 
-    private fun initBottomSheet(container: ViewGroup?) {
-        val child = LayoutInflater.from(context)
-            .inflate(R.layout.bottomsheet_mvc_broadcast_voucher, container, false)
-        setChild(child)
+    private fun initBottomSheet() {
+        binding = BottomsheetMvcBroadcastVoucherBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
     }
 
     private fun setupView(view: View) {
-        // load tokopedia voucher image
-        tkpdVoucherView = view.findViewById(R.id.iu_tkpd_voucher)
-        tkpdVoucherView?.loadImage(TPD_VOUCHER_IMAGE_URL)
-        // voucher period info setup
-        voucherPeriodInfoView = view.findViewById(R.id.tgp_voucher_period_info)
-        voucherUiModel?.let { uiModel ->
-            val startDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, DATE_FORMAT)
-            val endDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, DATE_FORMAT)
-            val startHour = String.format(
-                context?.getString(R.string.mvc_hour_wib).toBlankOrString(),
-                DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, HOUR_FORMAT)
-            )
-            val endHour = String.format(
-                context?.getString(R.string.mvc_hour_wib).toBlankOrString(),
-                DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, HOUR_FORMAT)
-            )
-            val startPeriod = "$startDate, $startHour"
-            val endPeriod = "$endDate, $endHour"
-            val voucherPeriod = "$startPeriod - $endPeriod"
-            val voucherPeriodInfo = String.format(
-                context?.getString(R.string.mvc_voucher_period_info).toBlankOrString(),
-                uiModel.name,
-                voucherPeriod
-            )
-            voucherPeriodInfoView?.text = voucherPeriodInfo
-        }
+        binding?.apply {
+            // load tokopedia voucher image
+            iuTkpdVoucher.loadImage(TPD_VOUCHER_IMAGE_URL)
+            // voucher period info setup
+            voucherUiModel?.let { uiModel ->
+                val startDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, DATE_FORMAT)
+                val endDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, DATE_FORMAT)
+                val startHour = String.format(
+                    context?.getString(R.string.mvc_hour_wib).toBlankOrString(),
+                    DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, HOUR_FORMAT)
+                )
+                val endHour = String.format(
+                    context?.getString(R.string.mvc_hour_wib).toBlankOrString(),
+                    DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, HOUR_FORMAT)
+                )
+                val startPeriod = "$startDate, $startHour"
+                val endPeriod = "$endDate, $endHour"
+                val voucherPeriod = "$startPeriod - $endPeriod"
+                val voucherPeriodInfo = String.format(
+                    context?.getString(R.string.mvc_voucher_period_info).toBlankOrString(),
+                    uiModel.name,
+                    voucherPeriod
+                )
+                tgpVoucherPeriodInfo.text = voucherPeriodInfo
+            }
 
-        // broad cast button setup
-        broadCastButton = view.findViewById(R.id.broadcast_button)
-        broadCastButton?.setOnClickListener {
-            voucherUiModel?.run(onBroadCastClickAction)
-        }
+            // broad cast button setup
+            broadcastButton.setOnClickListener {
+                voucherUiModel?.run(onBroadCastClickAction)
+            }
 
-        // free text view setup
-        freeTextView = view.findViewById(R.id.tgp_free)
-        voucherUiModel?.run {
-            if (isFreeIconVisible) freeTextView?.show()
-            else freeTextView?.hide()
-        }
+            // free text view setup
+            voucherUiModel?.run {
+                if (isFreeIconVisible) tgpFree.show()
+                else tgpFree.hide()
+            }
 
-        // social media button setup
-        socialMediaShareButton = view.findViewById(R.id.social_media_share_button)
-        val isPublic = voucherUiModel?.isPublic ?: false
-        if (isPublic) socialMediaShareButton?.hide()
-        socialMediaShareButton?.setOnClickListener {
-            voucherUiModel?.run(onShareClickAction)
+            // social media button setup
+            val isPublic = voucherUiModel?.isPublic ?: false
+            if (isPublic) socialMediaShareButton.hide()
+            socialMediaShareButton.setOnClickListener {
+                voucherUiModel?.run(onShareClickAction)
+            }
         }
     }
 

@@ -1,14 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerSomListOrderPlusRibbon"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="@id/cardSomOrder"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_som_list_ribbon_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            app:unify_image_corner_radius="0"
+            tools:srcCompat="@drawable/ic_som_list_order_plus_ribbon" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/icSomListOrderPlusRibbon"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="14dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_ic_som_list_order_plus_ribbon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:loader_type="rect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardSomOrder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        app:layout_constraintTop_toTopOf="@id/containerSomListOrderPlusRibbon">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container"
@@ -25,13 +66,22 @@
             <View
                 android:id="@+id/somOrderListIndicator"
                 android:layout_width="4dp"
-                android:layout_height="@dimen/layout_lvl0"
+                android:layout_height="0dp"
                 android:layout_marginTop="5.5dp"
                 android:layout_marginBottom="1dp"
                 android:background="@drawable/ic_order_status_indicator"
-                app:layout_constraintBottom_toBottomOf="@id/tvSomListBuyerName"
+                app:layout_constraintBottom_toBottomOf="@id/barrier_bottom_indicator"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tvSomListOrderStatus" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_bottom_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="tvSomListOrderStatus,tvSomListInvoice,tvSomListBuyerName,layout_som_list_deadline"
+                tools:layout_constraintTop_toBottomOf="@id/tvSomListBuyerName"
+                tools:layout_height="1dp" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/checkBoxSomListMultiSelect"
@@ -45,25 +95,32 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListOrderStatus"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:paddingTop="@dimen/spacing_lvl1"
-                android:paddingBottom="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_N700_96"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintEnd_toStartOf="@id/tvSomListResponseLabel"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toEndOf="@id/checkBoxSomListMultiSelect"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_6"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
                 tools:text="Pesanan Baru" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListInvoice"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_68"
-                app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toStartOf="@id/layout_som_list_deadline"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="@id/tvSomListOrderStatus"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListOrderStatus"
                 app:typographyType="small"
@@ -71,11 +128,13 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListBuyerName"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="1dp"
-                android:textColor="@color/Unify_N700_68"
-                app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toStartOf="@id/layout_som_list_deadline"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="@id/tvSomListOrderStatus"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListInvoice"
                 app:typographyType="small"
@@ -86,66 +145,74 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:paddingBottom="@dimen/spacing_lvl2"
+                android:paddingBottom="4dp"
                 android:text="@string/som_list_response_before_label"
-                android:textColor="@color/Unify_N700_68"
-                app:layout_constraintBottom_toTopOf="@id/tvSomListDeadline"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toTopOf="@id/layout_som_list_deadline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tvSomListOrderStatus"
                 app:layout_constraintTop_toTopOf="@id/tvSomListOrderStatus"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:typographyType="small" />
 
-            <ImageView
-                android:id="@+id/icDeadline"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/layout_lvl0"
-                android:background="@drawable/bg_due_response_icon"
-                android:contentDescription="Ikon tenggat waktu"
-                android:paddingStart="@dimen/spacing_lvl2"
-                android:paddingTop="@dimen/spacing_lvl2"
-                android:paddingEnd="@dimen/layout_lvl0"
-                android:paddingBottom="@dimen/spacing_lvl2"
-                app:layout_constraintBottom_toBottomOf="@id/tvSomListDeadline"
-                app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
-                app:layout_constraintTop_toTopOf="@id/tvSomListDeadline"
-                app:srcCompat="@drawable/ic_somlist_deadline" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvSomListDeadline"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_som_list_deadline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl1"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:background="@drawable/bg_due_response_text"
-                android:gravity="center_vertical"
-                android:padding="@dimen/spacing_lvl2"
-                android:textColor="@color/Unify_N0"
                 app:layout_constraintBottom_toBottomOf="@id/tvSomListBuyerName"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvSomListBuyerName"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListResponseLabel"
-                app:typographyType="small"
-                app:typographyWeight="bold"
-                tools:text="Sep 15; 14.40" />
+                tools:background="@drawable/bg_order_deadline">
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/icDeadline"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginVertical="2dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:contentDescription="Ikon tenggat waktu"
+                    app:icon_color_light_enable="@color/Unify_Static_White"
+                    app:icon_color_night_enable="@color/Unify_Static_White"
+                    app:icon_name="CLOCK"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvSomListDeadline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="2dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/Unify_Static_White"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="small"
+                    app:typographyWeight="bold"
+                    tools:text="Sep 15; 14.40" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginStart="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:background="@color/Unify_N75"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListBuyerName" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/tickerSomListOrder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
                 app:closeButtonVisibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/divider"
                 app:tickerShapeType="loose" />
@@ -161,46 +228,48 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListProductName"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="9dp"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintBottom_toTopOf="@id/tvSomListProductVariant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
                 app:layout_constraintTop_toTopOf="@id/ivSomListProduct"
                 app:layout_constraintVertical_chainStyle="packed"
-                app:typographyType="heading_6"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
                 tools:text="Air Jorda Gym Red Satin Original" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListProductVariant"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="9dp"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toTopOf="@id/tvSomListProductExtra"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListProductName"
-                app:typographyType="heading_6"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
                 tools:text="(Red)" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListProductExtra"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="9dp"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="@id/ivSomListProduct"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
@@ -210,10 +279,10 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icSomListCourier"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="@dimen/layout_lvl2"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_marginStart="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginTop="8dp"
                 app:icon_enable_state="true"
                 app:icon_name="COURIER"
                 app:layout_constraintEnd_toStartOf="@id/tvSomListCourierValue"
@@ -222,28 +291,28 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListCourierValue"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
                 android:layout_marginBottom="1.5dp"
                 android:ellipsize="end"
                 android:lines="1"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintBottom_toBottomOf="@id/icSomListCourier"
                 app:layout_constraintEnd_toStartOf="@id/btnQuickAction"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@id/icSomListCourier"
                 app:layout_constraintTop_toTopOf="@id/icSomListCourier"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 tools:text="Reguler - JNE" />
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icSomListDestination"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="@dimen/layout_lvl2"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_marginStart="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginTop="4dp"
                 app:icon_enable_state="true"
                 app:icon_name="LOCATION"
                 app:layout_constraintStart_toStartOf="parent"
@@ -251,17 +320,17 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListDestinationValue"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintBottom_toBottomOf="@id/icSomListDestination"
                 app:layout_constraintEnd_toStartOf="@id/btnQuickAction"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@id/icSomListDestination"
                 app:layout_constraintTop_toTopOf="@id/icSomListDestination"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 tools:text="D.I. Aceh" />
 
             <com.tokopedia.unifycomponents.UnifyButton
@@ -278,4 +347,4 @@
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

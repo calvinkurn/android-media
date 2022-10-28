@@ -1,0 +1,15 @@
+{
+  "readme": "Revamped Buyer Order Detail - click on secondary action button \"Lihat Bukti Pengiriman\"",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickPG",
+      "eventAction": "click on secondary button - lihat bukti pengiriman",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "\\d{1,} - \\d{1,}",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

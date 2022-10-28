@@ -81,6 +81,7 @@ object AccountConstants {
         const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION = "impression - product recommendation"
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENT_SITE = "currentSite"
+        const val TRACKER_ID = "trackerId"
         const val IDR = "IDR"
         const val IMPRESSIONS = "impressions"
         const val DATA_NAME = "name"
@@ -146,7 +147,6 @@ object AccountConstants {
     }
 
     object Query {
-        const val NEW_QUERY_BUYER_ACCOUNT_HOME = "new_query_buyer_account_home"
         const val QUERY_USER_REWARDSHORCUT = "query_user_rewardshortcut"
     }
 }

@@ -8,6 +8,8 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
@@ -17,18 +19,20 @@ import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
+import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
@@ -60,13 +64,10 @@ abstract class BasePdpViewModelTest {
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
 
     @RelaxedMockK
-    lateinit var removeWishlistUseCase: RemoveWishListUseCase
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
 
     @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
-
-    @RelaxedMockK
-    lateinit var getRecommendationUseCase: GetRecommendationUseCase
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @RelaxedMockK
     lateinit var trackAffiliateUseCase: TrackAffiliateUseCase
@@ -116,6 +117,15 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var remoteConfigInstance: FirebaseRemoteConfigImpl
 
+    @RelaxedMockK
+    lateinit var getProductRecommendationUseCase: GetProductRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var getRecommendationUseCase: GetRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
+
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -125,7 +135,9 @@ abstract class BasePdpViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         mockkStatic(RemoteConfigInstance::class)
+        mockkStatic(GlobalConfig::class)
         mockkObject(ProductDetailServerLogger)
+        mockkStatic(TrackApp::class)
 
         spykViewModel = spyk(viewModel)
     }
@@ -139,17 +151,17 @@ abstract class BasePdpViewModelTest {
         createViewModel()
     }
 
-    private fun createViewModel(): DynamicProductDetailViewModel {
+    fun createViewModel(): DynamicProductDetailViewModel {
         return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider,
                 { getPdpLayoutUseCase },
                 { getProductInfoP2LoginUseCase },
                 { getProductInfoP2OtherUseCase },
                 { getP2DataAndMiniCartUseCase },
                 { toggleFavoriteUseCase },
-                { removeWishlistUseCase },
-                { addWishListUseCase },
+                { deleteWishlistV2UseCase },
+                { addToWishlistV2UseCase },
+                { getProductRecommendationUseCase },
                 { getRecommendationUseCase },
-                { getRecommendationFilterChips },
                 { trackAffiliateUseCase },
                 { updateCartCounterUseCase },
                 { addToCartUseCase },
@@ -164,7 +176,8 @@ abstract class BasePdpViewModelTest {
                 { getTopadsIsAdsUseCase },
                 playWidgetTools,
                 remoteConfigInstance,
-                userSessionInterface
+                userSessionInterface,
+                { affiliateCookieHelper }
         )
     }
 }

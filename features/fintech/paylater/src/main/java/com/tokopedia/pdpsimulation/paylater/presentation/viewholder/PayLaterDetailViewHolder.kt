@@ -14,6 +14,7 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
@@ -40,19 +41,24 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     private fun setUpRecommendation(element: Detail) {
         if (element.recommendationDetail?.flag == true) {
 
-            itemView.clDetailParent.background =
-                MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_gradient)
+            itemView.clDetailParent.background =if (itemView.context.isDarkMode()) {
+                MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_dark_gradient)
+            }else{
+                MethodChecker.getDrawable(context, R.drawable.bg_paylater_recommended_light_gradient)
+            }
             itemView.clPartnerCard.background = MethodChecker.getDrawable(
                 context,
                 R.drawable.bg_paylater_card_border_recommendation
             )
             itemView.tvRecommendationTitle.visible()
             itemView.tvRecommendationTitle.text = element.recommendationDetail.text
+            itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_SHADOW
 
         } else {
 
             itemView.clDetailParent.background = null
             itemView.clPartnerCard.background = null
+            itemView.payLaterPartnerCard.cardType = CardUnify.TYPE_BORDER
 
             itemView.tvRecommendationTitle.gone()
         }
@@ -78,10 +84,12 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             itemView.payLaterActionCta.gone()
             itemView.llBenefits.gone()
             itemView.payLaterStatusTicker.visible()
+            itemView.disableTitleDetail()
             itemView.payLaterStatusTicker.setHtmlDescription(element.paylaterDisableDetail.header.orEmpty())
         } else {
             itemView.payLaterActionCta.visible()
             itemView.payLaterStatusTicker.gone()
+            itemView.enableTitleDetail()
             setPayLaterBenefits(element)
         }
     }
@@ -92,7 +100,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         element.benefits?.forEach {
             val typography = Typography(itemView.context)
             typography.text = it
-            typography.setType(Typography.BODY_3)
+            typography.setType(Typography.DISPLAY_3)
             typography.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
@@ -121,9 +129,11 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
                 element.installment_per_month_ceil
                     ?: 0, false
             )
-            if (element.tenure != 1)
+            if (element.tenure != 1) {
+                tvTenureMultiplier.visible()
                 tvTenureMultiplier.text =
                     context.getString(R.string.paylater_x_tenure, element.tenure)
+            }
             else {
                 tvTenureMultiplier.gone()
                 tvInstallmentAmount.text = element.optionalTenureHeader
@@ -153,4 +163,25 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             linkingStatus = detail.linkingStatus ?: ""
             action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
         }
+}
+
+private fun View.disableTitleDetail() {
+
+    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
+        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.partnerTenureInfo.isEnabled = false
+}
+private fun View.enableTitleDetail() {
+    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
+        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+    this.partnerTenureInfo.isEnabled = true
+
 }

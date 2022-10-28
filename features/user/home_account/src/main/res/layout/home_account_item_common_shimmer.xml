@@ -6,18 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderTextView"
         android:layout_width="@dimen/home_account_dp_80"
-        app:corners="8"
-
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         android:layout_height="@dimen/home_account_shimmer_text_title_height"
         android:layout_marginLeft="@dimen/home_account_dp_16"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        app:corners="8"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         android:layout_width="@dimen/home_account_shimmer_text_title_width_regular"
         android:layout_height="@dimen/home_account_shimmer_text_title_height_bold"
         android:layout_marginTop="@dimen/home_account_dp_8"

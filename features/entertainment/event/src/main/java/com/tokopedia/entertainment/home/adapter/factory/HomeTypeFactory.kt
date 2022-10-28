@@ -13,4 +13,5 @@ interface HomeTypeFactory: AdapterTypeFactory {
     fun type(model: EventGridModel): Int
     fun type(model: EventLocationModel): Int
     fun type(model: LoadingHomeModel): Int
+    fun type(model: TickerModel): Int
 }

@@ -25,13 +25,14 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
  * ade.hadian@tokopedia.com
  */
 
-class PinOnboardingActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
+class PinOnboardingActivity : BaseSimpleActivity(),
+    HasComponent<ProfileCompletionSettingComponent> {
 
     override fun getComponent(): ProfileCompletionSettingComponent {
         return DaggerProfileCompletionSettingComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +66,14 @@ class PinOnboardingActivity : BaseSimpleActivity(), HasComponent<ProfileCompleti
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this@PinOnboardingActivity, com.tokopedia.unifyprinciples.R.color.Unify_Background)))
+            setBackgroundDrawable(
+                ColorDrawable(
+                    MethodChecker.getColor(
+                        this@PinOnboardingActivity,
+                        com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    )
+                )
+            )
         }
     }
 
@@ -75,13 +83,13 @@ class PinOnboardingActivity : BaseSimpleActivity(), HasComponent<ProfileCompleti
             setWindowFlag(true)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            window.statusBarColor =
+                MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -96,7 +104,8 @@ class PinOnboardingActivity : BaseSimpleActivity(), HasComponent<ProfileCompleti
         if (on) {
             winParams.flags = winParams.flags or WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
         } else {
-            winParams.flags = winParams.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS.inv()
+            winParams.flags =
+                winParams.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS.inv()
         }
         window.attributes = winParams
     }

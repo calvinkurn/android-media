@@ -11,7 +11,7 @@ public class LocationType extends BaseItem implements Parcelable {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
 
     @SerializedName("name")
     @Expose
@@ -31,7 +31,7 @@ public class LocationType extends BaseItem implements Parcelable {
 
     @SerializedName("type_id")
     @Expose
-    private int typeId;
+    private String typeId;
 
     @SerializedName("status")
     @Expose
@@ -42,21 +42,21 @@ public class LocationType extends BaseItem implements Parcelable {
     private String customText;
 
     protected LocationType(Parcel in) {
-        this.id = in.readInt();
+        this.id = in.readString();
         this.name = in.readString();
         this.displayName = in.readString();
         this.searchRadius = in.readString();
         this.icon = in.readString();
-        this.typeId = in.readInt();
+        this.typeId = in.readString();
         this.status = in.readString();
         this.customText = in.readString();
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -92,11 +92,11 @@ public class LocationType extends BaseItem implements Parcelable {
         this.icon = icon;
     }
 
-    public int getTypeId() {
+    public String getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(int typeId) {
+    public void setTypeId(String typeId) {
         this.typeId = typeId;
     }
 
@@ -135,12 +135,12 @@ public class LocationType extends BaseItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeString(displayName);
         dest.writeString(searchRadius);
         dest.writeString(icon);
-        dest.writeInt(typeId);
+        dest.writeString(typeId);
         dest.writeString(status);
         dest.writeString(customText);
     }

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.di.DaggerVoucherGameDetailComponent
@@ -31,6 +32,18 @@ class VoucherGameDetailActivity : BaseVoucherGameActivity(), HasComponent<Vouche
         return DaggerVoucherGameDetailComponent.builder()
                 .voucherGameComponent(getVoucherGameComponent())
                 .build()
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.vg_activity
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar_voucher_game
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view_voucher_game
     }
 
     override fun shouldShowOptionMenu(): Boolean { return true }

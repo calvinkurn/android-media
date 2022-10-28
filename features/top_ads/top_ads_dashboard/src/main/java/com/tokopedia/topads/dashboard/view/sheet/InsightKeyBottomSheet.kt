@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
@@ -11,7 +12,6 @@ import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsIns
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightSheetScreen2
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightSheetScreen3
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_insight_bottom_sheet.*
 
 /**
  * Created by Pika on 21/7/20.
@@ -19,7 +19,8 @@ import kotlinx.android.synthetic.main.topads_insight_bottom_sheet.*
 
 class InsightKeyBottomSheet : BottomSheetUnify() {
 
-    private var contentView: View? = null
+    private var viewPagerBottomSheet: ViewPager? = null
+
     private lateinit var adapter: TopAdsDashboardBasePagerAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,17 +43,20 @@ class InsightKeyBottomSheet : BottomSheetUnify() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.topads_insight_bottom_sheet, null)
+        val contentView = View.inflate(context, R.layout.topads_insight_bottom_sheet, null)
         contentView?.height?.div(2)?.let { height ->
             customPeekHeight = height
         }
         setChild(contentView)
+        viewPagerBottomSheet = contentView.findViewById(R.id.viewPagerBottomSheet)
         context?.getString(R.string.topads_dash_insight_sheet_info_title)?.let { setTitle(it) }
     }
 

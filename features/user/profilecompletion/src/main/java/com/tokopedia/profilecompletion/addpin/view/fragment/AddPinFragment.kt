@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
@@ -30,6 +29,7 @@ import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.ProfileCompletionUtils.removeErrorCode
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.ImageUnify
@@ -49,10 +49,13 @@ open class AddPinFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var loadingDialog: LoadingDialog
 
@@ -62,20 +65,18 @@ open class AddPinFragment : BaseDaggerFragment() {
     private var isConfirmPin = false
     private var isSkipOtp: Boolean = false
     private var validateToken: String = ""
-    private var pin = ""
+
+    private var initialPin = ""
 
     private var inputPin: PinUnify? = null
     private var methodIcon: ImageUnify? = null
     private var mainView: View? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        val view = inflater.inflate(R.layout.fragment_add_pin, container, false)
-        inputPin = view.findViewById(R.id.pin)
-        methodIcon = view.findViewById(R.id.method_icon)
-        mainView = view.findViewById(R.id.container)
-        return view
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_add_pin, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +86,11 @@ open class AddPinFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        inputPin = view.findViewById(R.id.pin)
+        methodIcon = view.findViewById(R.id.method_icon)
+        mainView = view.findViewById(R.id.container)
+
         initVar()
         displayInitPin()
 
@@ -98,7 +104,9 @@ open class AddPinFragment : BaseDaggerFragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s?.length == PIN_LENGTH) {
                     if (isConfirmPin) {
-                        if (s.toString() == pin) {
+                        if (s.toString() == initialPin) {
+                            initialPin = s.toString()
+
                             if (isSkipOtp) {
                                 addChangePinViewModel.checkSkipOtpPin(validateToken)
                             } else {
@@ -110,7 +118,7 @@ open class AddPinFragment : BaseDaggerFragment() {
                             displayErrorPin(errorMessage)
                         }
                     } else {
-                        addChangePinViewModel.checkPin(s.toString())
+                        checkPinMediator(s.toString())
                     }
                 } else {
                     hideErrorPin()
@@ -119,6 +127,10 @@ open class AddPinFragment : BaseDaggerFragment() {
         })
 
         initObserver()
+    }
+
+    private fun checkPinMediator(pin: String) {
+        addChangePinViewModel.checkPinV2(pin)
     }
 
     override fun onStart() {
@@ -137,8 +149,8 @@ open class AddPinFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String =
-            if (!isConfirmPin) TrackingPinConstant.Screen.SCREEN_POPUP_PIN_INPUT
-            else TrackingPinConstant.Screen.SCREEN_POPUP_PIN_CONFIRMATION
+        if (!isConfirmPin) TrackingPinConstant.Screen.SCREEN_POPUP_PIN_INPUT
+        else TrackingPinConstant.Screen.SCREEN_POPUP_PIN_CONFIRMATION
 
     override fun initInjector() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
@@ -147,7 +159,14 @@ open class AddPinFragment : BaseDaggerFragment() {
     private fun initObserver() {
         addChangePinViewModel.addPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessAddPin(it.data)
+                is Success -> onSuccessAddPin(it.data.success)
+                is Fail -> onErrorAddPin(it.throwable)
+            }
+        })
+
+        addChangePinViewModel.mutatePin.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessAddPin(it.data.success)
                 is Fail -> onErrorAddPin(it.throwable)
             }
         })
@@ -155,6 +174,13 @@ open class AddPinFragment : BaseDaggerFragment() {
         addChangePinViewModel.checkPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessCheckPin(it.data)
+                is Fail -> onErrorCheckPin(it.throwable)
+            }
+        })
+
+        addChangePinViewModel.checkPinV2Response.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessCheckPinV2(it.data)
                 is Fail -> onErrorCheckPin(it.throwable)
             }
         })
@@ -168,12 +194,13 @@ open class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun initVar() {
-        isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false) ?: false
+        isSkipOtp =
+            arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false) ?: false
         validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "").toString()
     }
 
     private fun goToVerificationActivity() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
@@ -185,13 +212,17 @@ open class AddPinFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
     }
 
-    open fun onSuccessAddPin(addChangePinData: AddChangePinData) {
+    open fun onSuccessAddPin(isSuccess: Boolean) {
         dismissLoading()
-        if (addChangePinData.success) {
+        if (isSuccess) {
             trackingPinUtil.trackSuccessInputConfirmationPin()
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
+            val intent =
+                RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
+            intent.putExtra(
+                ApplinkConstInternalGlobal.PARAM_SOURCE,
+                PinCompleteFragment.SOURCE_ADD_PIN
+            )
             startActivity(intent)
             activity?.finish()
         }
@@ -211,10 +242,24 @@ open class AddPinFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun onSuccessCheckPinV2(checkPinV2Data: CheckPinV2Data) {
+        when {
+            checkPinV2Data.valid -> {
+                trackingPinUtil.trackSuccessInputCreatePin()
+                displayConfirmPin()
+                trackingPinUtil.trackScreen(screenName)
+            }
+            checkPinV2Data.errorMessage.isNotEmpty() -> {
+                trackingPinUtil.trackFailedInputCreatePin(checkPinV2Data.errorMessage)
+                displayErrorPin(checkPinV2Data.errorMessage)
+            }
+        }
+    }
+
     private fun onSuccessSkipOtp(skipOtpPinData: SkipOtpPinData) {
         if (skipOtpPinData.skipOtp && skipOtpPinData.validateToken.isNotEmpty()) {
             showLoading()
-            addChangePinViewModel.addPin(skipOtpPinData.validateToken)
+            addPinMediator(skipOtpPinData.validateToken)
         } else {
             goToVerificationActivity()
         }
@@ -248,13 +293,14 @@ open class AddPinFragment : BaseDaggerFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == REQUEST_CODE_COTP_PHONE_VERIFICATION &&
-            resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_COTP_PHONE_VERIFICATION &&
+            resultCode == Activity.RESULT_OK
+        ) {
             data?.extras?.run {
                 val uuid = this.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                if(uuid.isNotEmpty()) {
+                if (uuid.isNotEmpty()) {
                     showLoading()
-                    addChangePinViewModel.addPin(uuid)
+                    addPinMediator(uuid)
                 }
             }
         } else {
@@ -268,7 +314,7 @@ open class AddPinFragment : BaseDaggerFragment() {
         inputPin?.pinDescription = getString(R.string.desc_create_pin)
         inputPin?.pinMessage = getString(R.string.message_create_pin)
         isConfirmPin = false
-        pin = ""
+        initialPin = ""
     }
 
     private fun displayConfirmPin() {
@@ -276,7 +322,8 @@ open class AddPinFragment : BaseDaggerFragment() {
         inputPin?.pinTitle = getString(R.string.confirm_create_pin)
         inputPin?.pinDescription = getString(R.string.subtitle_confirm_create_pin)
         isConfirmPin = true
-        if (inputPin?.pinTextField?.text.toString().isNotEmpty()) pin = inputPin?.pinTextField?.text.toString()
+        if (inputPin?.pinTextField?.text.toString().isNotEmpty())
+            initialPin = inputPin?.pinTextField?.text.toString()
         inputPin?.value = ""
         inputPin?.pinMessage = ""
     }
@@ -307,7 +354,7 @@ open class AddPinFragment : BaseDaggerFragment() {
             view.post {
                 if (view.requestFocus() && context != null) {
                     val systemService = context?.getSystemService(Context.INPUT_METHOD_SERVICE)
-                    if(systemService != null && systemService is InputMethodManager) {
+                    if (systemService != null && systemService is InputMethodManager) {
                         systemService.showSoftInput(view, InputMethodManager.SHOW_FORCED)
                     }
                 }
@@ -331,12 +378,8 @@ open class AddPinFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        addChangePinViewModel.addPinResponse.removeObservers(this)
-        addChangePinViewModel.checkPinResponse.removeObservers(this)
-        addChangePinViewModel.validatePinResponse.removeObservers(this)
-        addChangePinViewModel.flush()
+    private fun addPinMediator(validateToken: String) {
+        addChangePinViewModel.addPinV2(validateToken)
     }
 
     companion object {

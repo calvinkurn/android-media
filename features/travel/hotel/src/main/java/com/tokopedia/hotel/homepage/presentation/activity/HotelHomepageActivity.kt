@@ -11,6 +11,7 @@ import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.homepage.di.DaggerHotelHomepageComponent
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageComponent> {
 
@@ -21,10 +22,6 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var adult: Int = 1
     private var searchId: String = ""
     private var searchType: String = ""
-
-    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
-
-    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
@@ -39,8 +36,8 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
 
                 checkIn = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
                 checkOut = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
-                room = uri.getQueryParameter(PARAM_ROOM)?.toInt() ?: 0
-                adult = uri.getQueryParameter(PARAM_ADULT)?.toInt() ?: 0
+                room = uri.getQueryParameter(PARAM_ROOM)?.toIntSafely() ?: 0
+                adult = uri.getQueryParameter(PARAM_ADULT)?.toIntSafely() ?: 0
 
                 name = name.replace(SPACE_ENCODED, " ")
             }

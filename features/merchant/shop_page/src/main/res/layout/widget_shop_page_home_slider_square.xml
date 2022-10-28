@@ -9,7 +9,6 @@
     android:clipToPadding="false"
     android:paddingLeft="4dp"
     android:paddingRight="4dp"
-    android:layout_marginTop="16dp"
     android:layout_marginBottom="8dp"
     android:clipChildren="false">
 
@@ -19,6 +18,7 @@
         android:layout_height="wrap_content"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:textColor="@color/Unify_N700"
         android:ellipsize="end"

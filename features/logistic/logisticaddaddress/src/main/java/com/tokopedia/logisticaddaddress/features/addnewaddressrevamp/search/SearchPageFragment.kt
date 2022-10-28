@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextUtils
@@ -18,35 +19,55 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_PINPOINT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_KOTA_KECAMATAN
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.GPS_REQUEST
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
-import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRANTED
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_NOT_DEFINED
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
@@ -78,14 +99,20 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var currentKotaKecamatan: String? = ""
     private var currentLat: Double = DEFAULT_LAT
     private var currentLong: Double = DEFAULT_LONG
+    private var permissionState: Int = PERMISSION_NOT_DEFINED
     private var isPolygon: Boolean = false
     private var distrcitId: Long? = null
+
+    private var isEdit: Boolean = false
+    private var source: String = ""
+    private var isAccessAppPermissionFromSettings: Boolean = false
+
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION)
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
-    private var binding by autoCleared<FragmentSearchAddressBinding>()
+    private var binding by autoClearedNullable<FragmentSearchAddressBinding>()
 
     override fun getScreenName(): String = ""
 
@@ -93,9 +120,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         getComponent(AddNewAddressRevampComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSearchAddressBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,6 +134,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON)
             distrcitId = it.getLong(EXTRA_DISTRICT_ID)
+            isEdit = it.getBoolean(EXTRA_IS_EDIT, false)
+            source = it.getString(PARAM_SOURCE, "")
         }
         if (saveDataModel != null) {
             saveDataModel?.let {
@@ -138,6 +167,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             } else if (requestCode == REQUEST_ADDRESS_FORM_PAGE) {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 newAddress?.let { finishActivity(it, false) }
+            } else if (requestCode == GPS_REQUEST) {
+                bottomSheetLocUndefined?.dismiss()
+                if (allPermissionsGranted()) {
+                    binding?.loaderCurrentLocation?.visibility = View.VISIBLE
+                    Handler().postDelayed({ getLocation() }, GPS_DELAY)
+                }
             }
         } else {
             showInitialLoadMessage()
@@ -156,72 +191,106 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        var isAllowed = false
-        for (permission in permissions) {
-            if (!isPermissionAccessed) {
-                if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
-                    //no-op
+        if (activity != null && context != null) {
+            permissionState = AddNewAddressUtils.getPermissionStateFromResult(requireActivity(), requireContext(), permissions)
+        }
+        when (permissionState) {
+            PERMISSION_GRANTED -> {
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
+                }
+                if (AddNewAddressUtils.isGpsEnabled(context)) {
+                    getLocation()
                 } else {
-                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
-                        isAllowed = true
-                        getLocation()
-                        isPermissionAccessed = true
-                    } else {
-                        showBottomSheetLocUndefined(true)
-                    }
+                    showBottomSheetLocUndefined(false)
                 }
             }
-        }
-
-        if (isAllowed) {
-            AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
-        } else {
-            AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+            PERMISSION_DENIED -> {
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+                }
+            }
+            PERMISSION_DONT_ASK_AGAIN -> {
+                showBottomSheetLocUndefined(true)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+                }
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        getLastLocationClient()
+        if (isAccessAppPermissionFromSettings) {
+            isAccessAppPermissionFromSettings = false
+            if (allPermissionsGranted()) {
+                bottomSheetLocUndefined?.dismiss()
+                permissionState = PERMISSION_GRANTED
+                if (AddNewAddressUtils.isGpsEnabled(context)) {
+                    getLocation()
+                } else {
+                    showBottomSheetLocUndefined(false)
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         compositeSubs.clear()
+        stopLocationUpdate()
+    }
+
+    private fun stopLocationUpdate() {
+        fusedLocationClient?.removeLocationUpdates(locationCallback)
     }
 
     private fun initView() {
         autoCompleteAdapter = AutoCompleteListAdapter(this)
-        binding.rvAddressList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.rvAddressList.adapter = autoCompleteAdapter
-
+        binding?.let {
+            it.rvAddressList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            it.rvAddressList.adapter = autoCompleteAdapter
+            if (isEdit) {
+                it.tvMessageSearch.visibility = View.GONE
+                it.tvSearchCurrentLocation.text = getString(R.string.tv_discom_current_location_text)
+            }
+        }
     }
 
     private fun showInitialLoadMessage() {
-        binding.searchPageInput.searchBarPlaceholder = getString(R.string.txt_hint_search)
-        binding.searchPageInput.searchBarTextField.setText("")
-        binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
-        binding.tvMessageSearch.setOnClickListener {
+        binding?.searchPageInput?.searchBarPlaceholder = getString(R.string.txt_hint_search)
+        binding?.searchPageInput?.searchBarTextField?.setText("")
+        binding?.tvMessageSearch?.text = getString(R.string.txt_message_initial_load)
+        binding?.tvMessageSearch?.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
             Intent(context, AddressFormActivity::class.java).apply {
                 putExtra(EXTRA_IS_POSITIVE_FLOW, false)
                 putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
                 putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+                putExtra(PARAM_SOURCE, source)
                 startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
             }
         }
     }
 
     private fun setSearchView() {
-        binding.searchPageInput.searchBarTextField.run {
+        binding?.searchPageInput?.searchBarTextField?.run {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    }
                 }
             }
 
             setOnClickListener {
-                AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                } else {
+                    EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                }
             }
 
             addTextChangedListener(object: TextWatcher {
@@ -233,11 +302,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    binding.tvMessageSearch.text = getString(R.string.txt_message_ana_negative)
-                    if (TextUtils.isEmpty(binding.searchPageInput.searchBarTextField.text.toString())) {
+                    binding?.tvMessageSearch?.text = getString(R.string.txt_message_ana_negative)
+                    if (TextUtils.isEmpty(binding?.searchPageInput?.searchBarTextField?.text.toString())) {
                         hideListLocation()
                     } else {
-                        loadAutoComplete(binding.searchPageInput.searchBarTextField.text.toString())
+                        loadAutoComplete(binding?.searchPageInput?.searchBarTextField?.text.toString())
                     }
                 }
 
@@ -248,18 +317,28 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
-        binding.rlSearchCurrentLocation.setOnClickListener {
-            AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
-            if (AddNewAddressUtils.isGpsEnabled(context)) {
-                if (allPermissionsGranted()) {
-                    hasRequestedLocation = true
+        binding?.rlSearchCurrentLocation?.setOnClickListener {
+            if (!isEdit) {
+                AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            } else {
+                EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            }
+            if (allPermissionsGranted()) {
+                permissionState = PERMISSION_GRANTED
+                if (AddNewAddressUtils.isGpsEnabled(context)) {
                     getLocation()
                 } else {
-                    hasRequestedLocation = false
-                    requestPermissionLocation()
+                    showBottomSheetLocUndefined(false)
                 }
             } else {
-                requestPermissionLocation()
+                when(permissionState) {
+                    PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
+                        requestPermissionLocation()
+                    }
+                    PERMISSION_DONT_ASK_AGAIN -> {
+                        showBottomSheetLocUndefined(true)
+                    }
+                }
             }
         }
     }
@@ -273,7 +352,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
                 isPermissionAccessed = false
-                AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
+                }
                 dismiss()
             }
             setChild(viewBinding.root)
@@ -294,7 +375,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             tvLocUndefined.text = getString(R.string.txt_location_not_detected)
             tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
-                AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
+                }
                 if (!isDontAskAgain) {
                     goToSettingLocationDevice()
                 } else {
@@ -306,15 +389,14 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     private fun goToSettingLocationDevice() {
-        if (context?.let { turnGPSOn(it) } == false) {
-            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-        }
+       context?.let { turnGPSOn(it) }
     }
 
     private fun goToSettingLocationApps() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
         intent.data = uri
+        isAccessAppPermissionFromSettings = true
         activity?.startActivityForResult(intent, RESULT_PERMISSION_CODE)
     }
 
@@ -325,8 +407,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 10 * 1000
-        locationRequest.fastestInterval = 2 * 1000
+        locationRequest.interval = LOCATION_REQUEST_INTERVAL
+        locationRequest.fastestInterval = LOCATION_REQUEST_FASTEST_INTERVAL
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val mLocationSettingsRequest = builder.build()
         builder.setAlwaysShow(true)
@@ -348,7 +430,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                                 // Show the dialog by calling startResolutionForResult(), and check the
                                 // result in onActivityResult().
                                 val rae = e as ResolvableApiException
-                                rae.startResolutionForResult(context, GPS_REQUEST)
+                                startIntentSenderForResult(rae.resolution.intentSender, GPS_REQUEST, null, 0, 0, 0, null)
                             } catch (sie: IntentSender.SendIntentException) {
                                 sie.printStackTrace()
                             }
@@ -372,8 +454,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 is Fail -> {
                     Timber.d(it.throwable)
                     hideListLocation()
-                    binding.layoutEmptyState.visibility = View.VISIBLE
-                    binding.ivEmptyState.setImageUrl(LOCATION_NOT_FOUND)
+                    binding?.layoutEmptyState?.visibility = View.VISIBLE
+                    binding?.ivEmptyState?.setImageUrl(LOCATION_NOT_FOUND)
                 }
             }
         })
@@ -389,14 +471,14 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun loadListLocation(suggestedPlace: Place) {
         if (suggestedPlace.data.isNotEmpty()) {
-            binding.rvAddressList.visibility = View.VISIBLE
-            binding.layoutEmptyState.visibility = View.GONE
+            binding?.rvAddressList?.visibility = View.VISIBLE
+            binding?.layoutEmptyState?.visibility = View.GONE
             autoCompleteAdapter.setData(suggestedPlace.data)
         }
     }
 
     private fun hideListLocation() {
-        binding.rvAddressList.visibility = View.GONE
+        binding?.rvAddressList?.visibility = View.GONE
     }
 
     private fun requestPermissionLocation() {
@@ -414,53 +496,48 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        if (AddNewAddressUtils.isGpsEnabled(context)) {
-            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                isPermissionAccessed = false
-                if (data != null) {
-                    currentLat = data.latitude
-                    currentLong = data.longitude
-                    goToPinpointPage(null, data.latitude, data.longitude,
-                        isFromAddressForm = false,
-                        isPositiveFlow = true
-                    )
-                } else {
-                    fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
-                        createLocationCallback(), null)
-                }
-
+        binding?.loaderCurrentLocation?.visibility = View.VISIBLE
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+            isPermissionAccessed = false
+            if (data != null) {
+                binding?.loaderCurrentLocation?.visibility = View.GONE
+                currentLat = data.latitude
+                currentLong = data.longitude
+                goToPinpointPage(null, data.latitude, data.longitude,
+                    isFromAddressForm = false,
+                    isPositiveFlow = true
+                )
+            } else {
+                fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
+                    locationCallback, null)
             }
-        } else {
-            showBottomSheetLocUndefined(false)
+
         }
     }
 
-    private fun getLastLocationClient() {
-        if (AddNewAddressUtils.isGpsEnabled(context) && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                isPermissionAccessed = false
-                if (data != null) {
-                    currentLat = data.latitude
-                    currentLong = data.longitude
-                }
-            }
-        }
-    }
-
-    private fun createLocationCallback(): LocationCallback {
-        return object : LocationCallback() {
+    private val locationCallback : LocationCallback =
+        object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (!hasRequestedLocation) {
                     //send to maps
                     hasRequestedLocation = true
                 }
+                stopLocationUpdate()
+                binding?.loaderCurrentLocation?.visibility = View.GONE
+                currentLat = locationResult.lastLocation.latitude
+                currentLong = locationResult.lastLocation.longitude
+                goToPinpointPage(null, locationResult.lastLocation.latitude, locationResult.lastLocation.longitude,
+                    isFromAddressForm = false,
+                    isPositiveFlow = true)
             }
         }
-    }
-
 
     override fun onItemClicked(placeId: String) {
-        AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
+        if (!isEdit) {
+            AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
+        } else {
+            EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+        }
         isPolygon = false
         if (!isPositiveFlow && isFromPinpoint) goToPinpointPage(placeId, null, null,
             isFromAddressForm = true,
@@ -477,8 +554,25 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
+        bundle.putString(PARAM_SOURCE, source)
         distrcitId?.let { bundle.putLong(EXTRA_DISTRICT_ID, it) }
-        startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
+        if (!isEdit) {
+            startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
+        } else {
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_PLACE_ID, placeId)
+                    latitude?.let { putExtra(EXTRA_LAT, it) }
+                    longitude?.let { putExtra(EXTRA_LONG, it) }
+                    putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+                    putExtra(EXTRA_IS_POLYGON, isPolygon)
+                    distrcitId?.let { putExtra(EXTRA_DISTRICT_ID, it) }
+                    putExtra(EXTRA_IS_EDIT, isEdit)
+                })
+                finish()
+            }
+        }
     }
 
     companion object {
@@ -488,6 +582,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         private const val REQUEST_PINPOINT_PAGE = 1998
         private const val REQUEST_CODE_PERMISSION = 9876
 
+        private const val LOCATION_REQUEST_INTERVAL = 10000L
+        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
+        private const val GPS_DELAY = 1000L
         private const val DEFAULT_LONG = 0.0
         private const val DEFAULT_LAT = 0.0
 
@@ -500,6 +597,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
                     putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
                     putLong(EXTRA_DISTRICT_ID, bundle.getLong(EXTRA_DISTRICT_ID))
+                    putBoolean(EXTRA_IS_EDIT, bundle.getBoolean(EXTRA_IS_EDIT))
+                    putString(PARAM_SOURCE, bundle.getString(PARAM_SOURCE, ""))
                 }
             }
         }

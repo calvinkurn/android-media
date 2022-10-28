@@ -19,9 +19,8 @@ data class HomeDynamicChannelModel(
         var isCache: Boolean = false,
         val isFirstPage: Boolean = false,
         var homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
-        var topadsNextPageToken: String = "",
-        var flowCompleted: Boolean = true,
-        val isBeautyFest: Int = HomeRevampFragment.BEAUTY_FEST_NOT_SET
+        var topadsPage: String = "0",
+        var flowCompleted: Boolean = true
 ) {
     private var _list: MutableList<Visitable<*>> = list.toMutableList()
 

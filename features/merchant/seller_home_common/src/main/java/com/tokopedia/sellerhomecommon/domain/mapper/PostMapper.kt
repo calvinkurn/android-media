@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
-import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.PostItemDataModel
@@ -14,53 +16,43 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 21/05/20
  */
 
-class PostMapper @Inject constructor() :
+class PostMapper @Inject constructor(
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetPostDataResponse, List<PostListDataUiModel>> {
 
     companion object {
-        private const val MAX_ITEM_PER_PAGE = 3
+        const val MAX_ITEM_PER_PAGE = 3
     }
+
+    private var dataKeys: List<DataKeyModel> = emptyList()
 
     override fun mapRemoteDataToUiData(
         response: GetPostDataResponse,
         isFromCache: Boolean
     ): List<PostListDataUiModel> {
-        return response.getPostWidgetData?.data.orEmpty().map {
+        return response.getPostWidgetData.data.mapIndexed { i, post ->
+            val maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ITEM_PER_PAGE
             PostListDataUiModel(
-                dataKey = it.dataKey.orEmpty(),
-                postPagers = getPostPagers(it.list.orEmpty(), it.emphasizeType, MAX_ITEM_PER_PAGE),
+                dataKey = post.dataKey,
+                postPagers = getPostPagers(post.list, post.emphasizeType, maxDisplay),
                 cta = PostCtaDataUiModel(
-                    text = it.cta?.text.orEmpty(),
-                    appLink = it.cta?.appLink.orEmpty()
+                    text = post.cta.text,
+                    appLink = post.cta.appLink
                 ),
-                error = it.error.orEmpty(),
+                error = post.error,
                 isFromCache = isFromCache,
-                showWidget = it.showWidget.orFalse(),
-                emphasizeType = it.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED
+                showWidget = post.showWidget,
+                emphasizeType = post.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED,
+                lastUpdated = getLastUpdatedMillis(post.dataKey, isFromCache),
+                widgetDataSign = post.widgetDataSign
             )
         }
     }
 
-    fun mapRemoteDataToUiData(
-        response: GetPostDataResponse,
-        isFromCache: Boolean,
-        dataKeys: List<DataKeyModel>
-    ): List<PostListDataUiModel> {
-        return response.getPostWidgetData?.data.orEmpty().mapIndexed { i, post ->
-            val maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ITEM_PER_PAGE
-            PostListDataUiModel(
-                dataKey = post.dataKey.orEmpty(),
-                postPagers = getPostPagers(post.list.orEmpty(), post.emphasizeType, maxDisplay),
-                cta = PostCtaDataUiModel(
-                    text = post.cta?.text.orEmpty(),
-                    appLink = post.cta?.appLink.orEmpty()
-                ),
-                error = post.error.orEmpty(),
-                isFromCache = isFromCache,
-                showWidget = post.showWidget.orFalse(),
-                emphasizeType = post.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED
-            )
-        }
+    fun setDataKeys(dataKeys: List<DataKeyModel>) {
+        this.dataKeys = dataKeys
     }
 
     private fun getPostPagers(
@@ -68,7 +60,7 @@ class PostMapper @Inject constructor() :
         emphasizeType: Int?,
         maxDisplay: Int
     ): List<PostListPagerUiModel> {
-        val maxItemPerPage = if (maxDisplay == 0) {
+        val maxItemPerPage = if (maxDisplay == Int.ZERO) {
             MAX_ITEM_PER_PAGE
         } else {
             maxDisplay
@@ -88,25 +80,26 @@ class PostMapper @Inject constructor() :
                 when (emphasizeType) {
                     PostListDataUiModel.TEXT_EMPHASIZED -> {
                         PostItemUiModel.PostTextEmphasizedUiModel(
-                            title = postItem.title.orEmpty(),
-                            appLink = postItem.appLink.orEmpty(),
-                            url = postItem.url.orEmpty(),
-                            featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
-                            subtitle = postItem.subtitle.orEmpty(),
+                            title = postItem.title,
+                            appLink = postItem.appLink,
+                            url = postItem.url,
+                            featuredMediaUrl = postItem.featuredMediaURL,
+                            subtitle = postItem.subtitle,
                             textEmphasizeType = PostListDataUiModel.TEXT_EMPHASIZED,
-                            stateText = postItem.stateText.orEmpty(),
-                            stateMediaUrl = postItem.stateMediaUrl.orEmpty(),
-                            shouldShowUnderLine = index != postList.size.minus(1),
-                            isPinned = postItem.isPinned
+                            stateText = postItem.stateText,
+                            stateMediaUrl = postItem.stateMediaUrl,
+                            shouldShowUnderLine = index != postList.size.minus(Int.ONE),
+                            isPinned = postItem.isPinned,
+                            postItemId = postItem.postItemID
                         )
                     }
                     else -> {
                         PostItemUiModel.PostImageEmphasizedUiModel(
-                            title = postItem.title.orEmpty(),
-                            appLink = postItem.appLink.orEmpty(),
-                            url = postItem.url.orEmpty(),
-                            featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
-                            subtitle = postItem.subtitle.orEmpty(),
+                            title = postItem.title,
+                            appLink = postItem.appLink,
+                            url = postItem.url,
+                            featuredMediaUrl = postItem.featuredMediaURL,
+                            subtitle = postItem.subtitle,
                             textEmphasizeType = PostListDataUiModel.IMAGE_EMPHASIZED,
                             isPinned = postItem.isPinned
                         )

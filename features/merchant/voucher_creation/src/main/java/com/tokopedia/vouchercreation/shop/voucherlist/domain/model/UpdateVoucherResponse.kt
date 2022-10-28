@@ -22,7 +22,7 @@ data class UpdateVoucherSuccessData(
         @SerializedName("redirect_url")
         val redirectUrl: String = "",
         @SerializedName("voucher_id")
-        val voucherId: Int = 0,
+        val voucherId: String = "",
         @SerializedName("status")
         val status: String = "") {
 

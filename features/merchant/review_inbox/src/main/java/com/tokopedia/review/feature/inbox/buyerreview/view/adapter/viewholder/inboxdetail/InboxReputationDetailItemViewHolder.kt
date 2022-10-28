@@ -10,7 +10,6 @@ import android.widget.RatingBar
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -24,22 +23,24 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.util.TimeConverter
-import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ImageUploadAdapter
-import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ImageUploadAdapter.ProductImageListener
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageAttachmentUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
 
 /**
  * @author by nisie on 8/19/17.
  */
 class InboxReputationDetailItemViewHolder(
     itemView: View,
+    reviewMediaThumbnailRecycledViewPool: RecyclerView.RecycledViewPool,
     private val viewListener: InboxReputationDetail.View
 ) : AbstractViewHolder<InboxReputationDetailItemUiModel>(itemView) {
 
@@ -66,12 +67,11 @@ class InboxReputationDetailItemViewHolder(
     private val viewReview: View? = itemView.findViewById(R.id.review_layout)
     private val reviewerName: Typography? = itemView.findViewById(R.id.reviewer_name)
     private val reviewTime: Typography? = itemView.findViewById(R.id.review_time)
-    private val reviewAttachment: RecyclerView? = itemView.findViewById(R.id.product_review_image)
+    private val reviewAttachment: ReviewMediaThumbnail? = itemView.findViewById(R.id.product_review_image)
     private val reviewOverflow: IconUnify? = itemView.findViewById(R.id.review_overflow)
     private val review: Typography? = itemView.findViewById(R.id.review)
     private val reviewStar: RatingBar? = itemView.findViewById(R.id.product_rating)
     private val giveReview: View? = itemView.findViewById(R.id.add_review_layout)
-    private val adapter: ImageUploadAdapter = ImageUploadAdapter.createAdapter(itemView.context)
     private val replyReviewLayout: View? = itemView.findViewById(R.id.reply_review_layout)
     private val seeReplyLayout: View? = itemView.findViewById(R.id.see_reply_layout)
     private val seeReplyText: Typography? = seeReplyLayout?.findViewById(R.id.see_reply_button)
@@ -85,14 +85,11 @@ class InboxReputationDetailItemViewHolder(
     private val sellerAddReplyEditText: EditText?
     private val sendReplyButton: ImageView?
 
+    private var element: InboxReputationDetailItemUiModel? = null
+
     init {
-        adapter.setCanUpload(false)
-        adapter.setListener(onImageClicked())
-        reviewAttachment?.layoutManager = LinearLayoutManager(
-            itemView.context,
-            LinearLayoutManager.HORIZONTAL, false
-        )
-        reviewAttachment?.adapter = adapter
+        reviewAttachment?.setListener(ReviewMediaThumbnailListener())
+        reviewAttachment?.setRecycledViewPool(reviewMediaThumbnailRecycledViewPool)
         sellerReplyTime = itemView.findViewById<View>(R.id.seller_reply_time) as Typography
         sellerReply = itemView.findViewById<View>(R.id.seller_reply) as Typography
         replyOverflow = itemView.findViewById<View>(R.id.reply_overflow) as? IconUnify
@@ -121,27 +118,8 @@ class InboxReputationDetailItemViewHolder(
         })
     }
 
-    private fun onImageClicked(): ProductImageListener {
-        return object : ProductImageListener {
-            override fun onUploadClicked(position: Int): View.OnClickListener {
-                return View.OnClickListener { }
-            }
-
-            override fun onImageClicked(
-                position: Int,
-                imageUpload: ImageUpload?
-            ): View.OnClickListener {
-                return View.OnClickListener {
-                    viewListener.goToPreviewImage(
-                        position,
-                        adapter.list
-                    )
-                }
-            }
-        }
-    }
-
     override fun bind(element: InboxReputationDetailItemUiModel) {
+        this.element = element
         when {
             element.isProductDeleted -> setDeletedProduct()
             element.isProductBanned -> setBannedProduct()
@@ -194,8 +172,7 @@ class InboxReputationDetailItemViewHolder(
             }
         }
         showOrHideGiveReviewLayout(element)
-        adapter.addList(convertToAdapterViewModel(element.reviewAttachment))
-        adapter.notifyDataSetChanged()
+        reviewAttachment?.setData(element.reviewMediaThumbnailUiModel)
         sendReplyButton?.setOnClickListener {
             viewListener.onSendReplyReview(
                 element,
@@ -203,6 +180,12 @@ class InboxReputationDetailItemViewHolder(
             )
             KeyboardHandler.DropKeyboard(itemView.context, sellerAddReplyEditText)
         }
+    }
+
+    private fun onImageClicked(
+        position: Int, preloadedDetailedReviewMedia: ProductrevGetReviewMedia
+    ) {
+        viewListener.goToPreviewImage(position, preloadedDetailedReviewMedia)
     }
 
     private fun setDeletedProduct() {
@@ -431,5 +414,13 @@ class InboxReputationDetailItemViewHolder(
                 )
             )
         )
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            element?.let {
+                onImageClicked(position, it.preloadedDetailedReviewMedia)
+            }
+        }
     }
 }

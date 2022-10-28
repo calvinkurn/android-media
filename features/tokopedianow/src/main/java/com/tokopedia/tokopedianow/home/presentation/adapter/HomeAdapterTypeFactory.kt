@@ -7,27 +7,90 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
-import com.tokopedia.home_component.viewholders.*
-import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
+import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
+import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
+import com.tokopedia.home_component.viewholders.DynamicLegoBannerSixAutoViewHolder
+import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.viewholders.FeaturedBrandViewHolder
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
+import com.tokopedia.home_component.viewholders.Lego4AutoBannerViewHolder
+import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
+import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
+import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
+import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
+import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
+import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
+import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
+import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.Lego4AutoDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.home_component.visitable.QuestWidgetModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRepurchaseTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorTypeFactory
-import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.viewholder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
-import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEmptyStateUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestAllClaimedWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
-import com.tokopedia.tokopedianow.home.presentation.viewholder.*
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEmptyStateViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLoadingStateViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomePlayWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProgressBarViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestAllClaimedWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.HomeSharingEducationListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestTitleViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSwitcherViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -37,14 +100,16 @@ class HomeAdapterTypeFactory(
     private val bannerComponentListener: BannerComponentListener? = null,
     private val homeProductRecomListener: HomeProductRecomListener? = null,
     private val tokoNowProductCardListener: TokoNowProductCardListener? = null,
-    private val homeSharingEducationListener: HomeSharingEducationListener? = null,
+    private val homeSharingEducationListener: HomeSharingListener? = null,
     private val homeEducationalInformationListener: HomeEducationalInformationListener? = null,
     private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener? = null,
     private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocListener? = null,
     private val homeQuestSequenceWidgetListener : HomeQuestSequenceWidgetListener? = null,
-    private val mixLeftComponentListener: MixLeftComponentListener? = null,
     private val dynamicLegoBannerCallback: DynamicLegoBannerCallback? = null,
-    private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null
+    private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
+    private val homeLeftCarouselAtcListener: HomeLeftCarouselAtcCallback? = null,
+    private val homeLeftCarouselListener: MixLeftComponentListener? = null,
+    private val playWidgetCoordinator: PlayWidgetCoordinator? = null
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -63,11 +128,11 @@ class HomeAdapterTypeFactory(
     // endregion
 
     // region TokoNow Home Component
+    override fun type(uiModel: HomeSharingWidgetUiModel): Int = HomeSharingWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
     override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
     override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
-    override fun type(uiModel: HomeSharingEducationWidgetUiModel): Int = HomeSharingEducationWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int = HomeEducationalInformationWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeProgressBarUiModel): Int = HomeProgressBarViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestSequenceWidgetUiModel): Int = HomeQuestSequenceWidgetViewHolder.LAYOUT
@@ -75,6 +140,8 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeQuestTitleUiModel): Int = HomeQuestTitleViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestAllClaimedWidgetUiModel): Int = HomeQuestAllClaimedWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeSwitcherUiModel): Int = HomeSwitcherViewHolder.LAYOUT
+    override fun type(uiModel: HomeLeftCarouselAtcUiModel): Int = HomeLeftCarouselAtcViewHolder.LAYOUT
+    override fun type(uiModel: HomePlayWidgetUiModel): Int = HomePlayWidgetViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -109,7 +176,7 @@ class HomeAdapterTypeFactory(
             HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
-            HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(view, homeSharingEducationListener)
+            HomeSharingWidgetViewHolder.LAYOUT -> HomeSharingWidgetViewHolder(view, homeSharingEducationListener)
             HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, homeEducationalInformationListener)
             HomeProgressBarViewHolder.LAYOUT -> HomeProgressBarViewHolder(view)
             HomeQuestSequenceWidgetViewHolder.LAYOUT -> HomeQuestSequenceWidgetViewHolder(view, homeQuestSequenceWidgetListener)
@@ -117,6 +184,8 @@ class HomeAdapterTypeFactory(
             HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
+            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, tokoNowView)
+            HomePlayWidgetViewHolder.LAYOUT -> HomePlayWidgetViewHolder(createPlayWidgetViewHolder(view))
             // endregion
 
             // region Global Home Component
@@ -127,10 +196,14 @@ class HomeAdapterTypeFactory(
                 BannerComponentViewHolder(view, bannerComponentListener, null)
             }
             MixLeftComponentViewHolder.LAYOUT -> {
-                MixLeftComponentViewHolder(view, mixLeftComponentListener, null)
+                MixLeftComponentViewHolder(view, homeLeftCarouselListener, null)
             }
             // endregion
             else -> super.createViewHolder(view, type)
         }
+    }
+
+    private fun createPlayWidgetViewHolder(view: View): PlayWidgetViewHolder? {
+        return playWidgetCoordinator?.let { PlayWidgetViewHolder(view, it) }
     }
 }

@@ -2,8 +2,8 @@ package com.tokopedia.notifcenter.service
 
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.JobIntentService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
@@ -11,7 +11,7 @@ import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.domain.NotificationMarkAsSeenUseCase
 import javax.inject.Inject
 
-class MarkAsSeenService : JobIntentService() {
+class MarkAsSeenService : JobIntentServiceX() {
 
     @Inject
     lateinit var markAsSeenUseCase: NotificationMarkAsSeenUseCase

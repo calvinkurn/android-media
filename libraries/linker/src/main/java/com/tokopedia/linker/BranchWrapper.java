@@ -446,6 +446,9 @@ public class BranchWrapper implements WrapperInterface {
 
         if (LinkerData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.PRODUCT_INFO, data.getId());
+            if(!TextUtils.isEmpty(data.getAdditionalQueryParam())){
+                deeplinkPath = appendQueryParams(deeplinkPath, data.getAdditionalQueryParam());
+            }
         } else if (LinkerData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.SHOP, data.getId());//"shop/" + data.getId();
         } else if (LinkerData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
@@ -460,6 +463,14 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.PLAY, data.getId());
         } else if (LinkerData.MERCHANT_VOUCHER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.NOW_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.NOW, data.getId());
+        } else if (LinkerData.NOW_RECIPE_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.NOW_RECIPE, data.getId());
+        } else if (LinkerData.FOOD_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.WEBVIEW_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.WEBVIEW, data.getId());
         } else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.REFERRAL_WELCOME, data.getId());
             if (userData != null) {
@@ -502,6 +513,8 @@ public class BranchWrapper implements WrapperInterface {
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
             }
             deeplinkPath = data.getDeepLink();
+        }else if (LinkerData.USER_PROFILE_SOCIAL.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.USER_PROFILE_SOCIAL, data.getId());
         } else if (LinkerData.FEED_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getDeepLink())){
             deeplinkPath = data.getDeepLink();
         }
@@ -743,5 +756,17 @@ public class BranchWrapper implements WrapperInterface {
     private Boolean isFDLActivated(Context context) {
         return ((LinkerRouter) context.getApplicationContext()).
                 getBooleanRemoteConfig(LinkerConstants.FIREBASE_KEY_FDL_ENABLE, false);
+    }
+
+    private String appendQueryParams(String sourceString, String additionalQueryParams){
+        if(!TextUtils.isEmpty(sourceString) && !TextUtils.isEmpty(additionalQueryParams)){
+            if(!sourceString.contains(LinkerConstants.QUERY_INITIATOR)){
+                return sourceString+LinkerConstants.QUERY_INITIATOR+additionalQueryParams;
+            }
+            else {
+                return sourceString+LinkerConstants.QUERY_PARAM_SEGREGATOR+additionalQueryParams;
+            }
+        }
+        return sourceString;
     }
 }

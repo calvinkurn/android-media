@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.analytics
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -21,10 +20,9 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
@@ -32,17 +30,16 @@ import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.core.AllOf.allOf
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
 
@@ -52,16 +49,13 @@ class ProductDetailActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val gtmLogDBSource = GtmLogDBSource(targetContext)
-
     @get:Rule
     var activityRule: ActivityTestRule<ProductDetailActivity> = IntentsTestRule(ProductDetailActivity::class.java,
             false,
             false)
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule(isFromNetwork = true,
-            sendValidationResult = true)
+    var cassavaRule = CassavaTestRule()
 
     private val idlingResource by lazy {
         ProductDetailNetworkIdlingResource(object : ProductIdlingInterface {
@@ -78,12 +72,30 @@ class ProductDetailActivityTest {
         })
     }
 
+    private val idlingResourceVariant by lazy {
+        ProductDetailNetworkIdlingResource(object : ProductIdlingInterface {
+            override fun getName(): String = "variantFinish"
+
+            override fun idleState(): Boolean {
+                val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                val variantPosition = fragment.productAdapter?.currentList?.indexOfFirst {
+                    it is VariantDataModel
+                } ?: return false
+
+                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductVariantViewHolder
+                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rvContainerVariant)
+
+                return vhContainer?.findViewHolderForAdapterPosition(0) != null
+            }
+        })
+    }
+
     @Before
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
         clearLogin()
-        gtmLogDBSource.deleteAll().toBlocking().first()
 
+        fakeLogin()
         val intent = ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         activityRule.launchActivity(intent)
 
@@ -93,25 +105,8 @@ class ProductDetailActivityTest {
 
     @After
     fun finish() {
-        IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource)
-    }
-
-    /**
-     * view product page
-     * impression - modular component
-     */
-    @Test
-    fun tracker_journey_id_56() {
-        actionTest {
-            fakeLogin()
-
-        } assertTest {
-            waitForTrackerSent()
-            performClose(activityRule)
-
-            assertThanos("56")
-            finishTest()
-        }
+        IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource,
+                idlingResource)
     }
 
     @Test
@@ -121,10 +116,10 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickBuyNow()
         } assertTest {
+            assertIsLoggedIn(true)
             waitForTrackerSent()
             performClose(activityRule)
-            validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
-            finishTest()
+            validate(cassavaRule, BUTTON_BUY_LOGIN_PATH)
         }
     }
 
@@ -135,11 +130,11 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickAddToCart()
         } assertTest {
+            assertIsLoggedIn(true)
             if (addToCartBottomSheetIsVisible() == true) {
                 performClose(activityRule)
                 waitForTrackerSent()
-                validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
-                finishTest()
+                validate(cassavaRule, ADD_TO_CART_LOGIN_PATH)
             } else {
                 performClose(activityRule)
             }
@@ -149,26 +144,30 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickBuyIsNonLogin() {
         actionTest {
+            clearLogin()
+            Thread.sleep(500L)
             clickVariantTest()
             clickBuyNow()
         } assertTest {
+            assertIsLoggedIn(false)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
-            finishTest()
+            validate(cassavaRule, BUTTON_BUY_NON_LOGIN_PATH)
         }
     }
 
     @Test
     fun validateClickAddToCartIsNonLogin() {
         actionTest {
+            clearLogin()
+            Thread.sleep(500L)
             clickVariantTest()
             clickAddToCart()
         } assertTest {
+            assertIsLoggedIn(false)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, ADD_TO_CART_NON_LOGIN_PATH)
-            finishTest()
+            validate(cassavaRule, ADD_TO_CART_NON_LOGIN_PATH)
         }
     }
 
@@ -179,8 +178,7 @@ class ProductDetailActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, GUIDE_ON_SIZE_CHART_PATH)
-            finishTest()
+            validate(cassavaRule, GUIDE_ON_SIZE_CHART_PATH)
         }
     }
 
@@ -190,10 +188,10 @@ class ProductDetailActivityTest {
             fakeLogin()
             clickTabDiscussion()
         } assertTest {
+            assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, DISCUSSION_PRODUCT_TAB_PATH)
-            finishTest()
+            validate(cassavaRule, DISCUSSION_PRODUCT_TAB_PATH)
         }
     }
 
@@ -203,24 +201,42 @@ class ProductDetailActivityTest {
             fakeLogin()
             clickSeeAllDiscussion()
         } assertTest {
+            assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, SEE_ALL_ON_LATEST_DISCUSSION_PATH)
-            finishTest()
+            validate(cassavaRule, SEE_ALL_ON_LATEST_DISCUSSION_PATH)
         }
     }
 
     @Test
     fun validateClickThreadDetail() {
         actionTest {
-            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+            fakeLogin()
             clickThreadDetailDiscussion()
         } assertTest {
+            assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, THREAD_DETAIL_ON_DISCUSSION_PATH)
-            finishTest()
+            validate(cassavaRule, THREAD_DETAIL_ON_DISCUSSION_PATH)
         }
+    }
+
+    private fun waitVariantToLoad() {
+        IdlingRegistry.getInstance().register(idlingResourceVariant)
+
+        onView(withId(R.id.rv_pdp)).perform(
+                RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                        hasDescendant(allOf(withId(R.id.rvContainerVariant))),
+                        scrollTo()
+                )
+        )
+
+        onView(
+                allOf(withId(R.id.rvContainerVariant))
+        ).check(
+                matches(isDisplayed())
+        )
+        IdlingRegistry.getInstance().unregister(idlingResourceVariant)
     }
 
     private fun clickSeeAllDiscussion() {
@@ -247,18 +263,7 @@ class ProductDetailActivityTest {
         IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
         IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
         IdlingRegistry.getInstance().register(idlingResource)
-
-    }
-
-    private fun getPositionViewHolderByName(name: String): Int {
-        val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
-        return fragment.productAdapter?.currentList?.indexOfFirst {
-            it.name() == name
-        } ?: 0
-    }
-
-    private fun finishTest() {
-        gtmLogDBSource.deleteAll().subscribe()
+        waitVariantToLoad()
     }
 
     private fun addToCartBottomSheetIsVisible(): Boolean? {
@@ -267,20 +272,56 @@ class ProductDetailActivityTest {
     }
 
     private fun clickVariantTest() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
-        val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variantImgContainer)))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(1, clickChildViewWithId(R.id.containerChipVariant)))
+        onView(withId(R.id.rv_pdp)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(allOf(withId(R.id.rvContainerVariant))),
+                scrollTo()
+            )
+        )
+        val viewInteraction = onView(
+            allOf(withId(R.id.rvContainerVariant))
+        ).check(
+            matches(isDisplayed())
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(
+                0, clickChildViewWithId(
+                    com.tokopedia.variant_common.R.id.variantImgContainer
+                )
+            )
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(
+                1, clickChildViewWithId(
+                    com.tokopedia.variant_common.R.id.containerChipVariant
+                )
+            )
+        )
     }
 
     private fun clickSeeGuideSizeChart() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
-        val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(1, clickChildViewWithId(R.id.txtVariantGuideline)))
+        onView(withId(R.id.rv_pdp)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(allOf(withId(R.id.rvContainerVariant))),
+                scrollTo()
+            )
+        )
+        val viewInteraction = onView(
+            allOf(withId(R.id.rvContainerVariant))
+        ).check(
+            matches(isDisplayed())
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(
+                1, clickChildViewWithId(
+                    com.tokopedia.variant_common.R.id.txtVariantGuideline
+                )
+            )
+        )
     }
 
     private fun waitForTrackerSent() {
-        Thread.sleep(4000L)
+        Thread.sleep(500L)
     }
 
     private fun fakeLogin() {
@@ -295,8 +336,9 @@ class ProductDetailActivityTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun assertThanos(trackerId:String) {
-        assertThat(cassavaTestRule.validate(trackerId), hasAllSuccess())
+    private fun assertIsLoggedIn(actualIsLoggedIn: Boolean) {
+        val userSession = UserSession(targetContext)
+        Assert.assertEquals(userSession.isLoggedIn, actualIsLoggedIn)
     }
 
     companion object {

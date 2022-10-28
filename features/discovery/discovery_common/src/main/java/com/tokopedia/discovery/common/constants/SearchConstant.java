@@ -9,35 +9,15 @@ public interface SearchConstant {
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     String SEARCH_RESULT_PAGE = "search result page";
-    String SEARCH_RESULT_TRACE = "search_result_trace";
-    String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
-    String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
-    String SEARCH_RESULT_PLT_RENDER_METRICS = "search_result_plt_render_metrics";
 
     String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
+
+    String AB_TEST_REMOTE_CONFIG = "ab_test_remote_config";
 
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
     int CPM_TEMPLATE_ID = 4;
     int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
-
-    interface RecyclerView {
-        int VIEW_LIST = 3;
-        int VIEW_PRODUCT_BIG_GRID = 12;
-        int VIEW_PRODUCT_SMALL_GRID = 13;
-    }
-
-    enum ViewType {
-        LIST, SMALL_GRID, BIG_GRID
-    }
-
-    interface DefaultViewType {
-        int SMALL_GRID = 1;
-        int LIST = 2;
-        String VIEW_TYPE_NAME_SMALL_GRID = "grid 2";
-        String VIEW_TYPE_NAME_BIG_GRID = "grid 1";
-        String VIEW_TYPE_NAME_LIST = "list";
-    }
 
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
@@ -82,9 +62,11 @@ public interface SearchConstant {
     interface SearchProduct {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
+        String SEARCH_PRODUCT_TOPADS_USE_CASE = "search_product_topads_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
         String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
+        String SEARCH_SAME_SESSION_RECOMMENDATION_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
         String SEARCH_PRODUCT_PARAMS = "params";
         String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
         String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
@@ -179,10 +161,16 @@ public interface SearchConstant {
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
         String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
+        String LAYOUT_INSPIRATION_CAROUSEL_VIDEO = "video";
+        String LAYOUT_INSPIRATION_CAROUSEL_BUNDLE = "bundle";
         String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
+        String LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC = "product_list_atc";
         String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
         String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
+        String TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING = "single_bundling";
+        String TYPE_INSPIRATION_CAROUSEL_MULTIPLE_BUNDLING = "multiple_bundling";
+        String TYPE_SAME_SESSION_RECOMMENDATION = "same_session";
     }
 
     interface TopAdsComponent {
@@ -214,5 +202,10 @@ public interface SearchConstant {
         String ACTION_DELETE = "delete";
         String INPUT_PARAMS = "input_params";
         String SAVE_LAST_FILTER_USE_CASE = "save_last_filter_use_case";
+    }
+
+    interface ProductListType {
+        String VAR_LONG_IMG = "var_long_img";
+        String VAR_REPOSITION = "var_reposition";
     }
 }

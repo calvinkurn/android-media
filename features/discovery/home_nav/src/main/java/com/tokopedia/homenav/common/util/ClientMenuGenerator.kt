@@ -3,13 +3,12 @@ package com.tokopedia.homenav.common.util
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -38,6 +37,9 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val IDENTIFIER_TITLE_MY_ACTIVITY = 100
         const val IDENTIFIER_TITLE_ALL_CATEGORIES = 101
         const val IDENTIFIER_TITLE_HELP_CENTER = 102
+        const val IDENTIFIER_TITLE_WISHLIST = 103
+        const val IDENTIFIER_TITLE_FAVORITE_SHOP = 104
+        const val IDENTIFIER_TITLE_ORDER_HISTORY = 105
     }
 
 
@@ -65,13 +67,30 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         return HomeNavTickerDataModel()
     }
 
-    fun getSectionTitle(identifier: Int): HomeNavTitleDataModel {
+    fun getSectionTitle(identifier: Int, isMePageUsingRollenceVariant: Boolean = false): HomeNavTitleDataModel {
         return HomeNavTitleDataModel(
                 identifier = identifier,
                 title = when (identifier) {
                     IDENTIFIER_TITLE_MY_ACTIVITY -> context.getString(R.string.title_transaction_section)
-                    IDENTIFIER_TITLE_ALL_CATEGORIES -> context.getString(R.string.title_category_section)
+                    IDENTIFIER_TITLE_ALL_CATEGORIES -> if (isMePageUsingRollenceVariant) context.getString(
+                        R.string.title_category_section
+                    ) else context.getString(com.tokopedia.homenav.R.string.title_all_category_section)
                     IDENTIFIER_TITLE_HELP_CENTER -> context.getString(R.string.title_helpcenter_section)
+                    IDENTIFIER_TITLE_WISHLIST -> context.getString(R.string.title_wishlist_section)
+                    IDENTIFIER_TITLE_FAVORITE_SHOP -> context.getString(R.string.title_favorite_shop_section)
+                    IDENTIFIER_TITLE_ORDER_HISTORY -> context.getString(R.string.menu_transaction_menu_all_transaction)
+                    else -> ""
+                },
+                actionIconId = when(identifier){
+                    IDENTIFIER_TITLE_WISHLIST,
+                    IDENTIFIER_TITLE_FAVORITE_SHOP,
+                    IDENTIFIER_TITLE_ORDER_HISTORY -> IconUnify.CHEVRON_RIGHT
+                    else -> null
+                },
+                applink = when(identifier){
+                    IDENTIFIER_TITLE_WISHLIST -> ApplinkConst.NEW_WISHLIST
+                    IDENTIFIER_TITLE_FAVORITE_SHOP -> ApplinkConst.FAVORITE
+                    IDENTIFIER_TITLE_ORDER_HISTORY -> ApplinkConst.PURCHASE_ORDER
                     else -> ""
                 }
         )
@@ -223,17 +242,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
     }
 
     private fun getReputationApplink(): String {
-        val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
-        return if (useNewInbox) {
-            Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
-                appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
-                appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_BUYER)
-                appendQueryParameter(ApplinkConst.Inbox.PARAM_SOURCE, PAGE_SOURCE)
-            }.build().toString()
-        } else {
-            Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(PAGE_SOURCE_KEY, PAGE_SOURCE).build().toString()
-        }
+        return Uri.parse(ApplinkConst.REPUTATION).buildUpon()
+            .appendQueryParameter(PAGE_SOURCE_KEY, PAGE_SOURCE)
+            .build().toString()
     }
 }

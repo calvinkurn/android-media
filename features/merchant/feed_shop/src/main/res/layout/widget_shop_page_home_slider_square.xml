@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:clipToPadding="false"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="8dp"
+    android:clipChildren="false">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgHeaderSliderSquare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/Unify_N700"
+        android:ellipsize="end"
+        android:singleLine="true"
+        tools:text="Title" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCarouselShopPageHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:clipChildren="false" />
+
+</LinearLayout>

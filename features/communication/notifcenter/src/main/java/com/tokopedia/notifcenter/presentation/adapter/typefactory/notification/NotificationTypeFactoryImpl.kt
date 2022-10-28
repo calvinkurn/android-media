@@ -12,9 +12,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
+import com.tokopedia.notifcenter.data.model.NotifTopAdsHeadline
 import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.NotificationShopAdsViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
@@ -29,6 +31,10 @@ class NotificationTypeFactoryImpl constructor(
 
     override fun type(sectionTitleUiModel: SectionTitleUiModel): Int {
         return SectionTitleViewHolder.LAYOUT
+    }
+
+    override fun type(notifTopAdsHeadline: NotifTopAdsHeadline): Int {
+        return NotificationShopAdsViewHolder.LAYOUT
     }
 
     override fun type(recommendationTitleUiModel: RecommendationTitleUiModel): Int {
@@ -92,7 +98,7 @@ class NotificationTypeFactoryImpl constructor(
                 item.isTypeDefault() -> NormalNotificationViewHolder.LAYOUT
                 item.isTypeSingleProduct() -> SingleProductNotificationViewHolder.LAYOUT
                 item.isCarouselProduct() -> CarouselProductNotificationViewHolder.LAYOUT
-                item.isBanner() -> BannerNotificationTitleViewHolder.LAYOUT
+                item.isBanner() -> BannerNotificationViewHolder.LAYOUT
                 else -> NormalNotificationViewHolder.LAYOUT
             }
         }
@@ -131,6 +137,7 @@ class NotificationTypeFactoryImpl constructor(
 
     override fun createViewHolder(view: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
+            NotificationShopAdsViewHolder.LAYOUT -> NotificationShopAdsViewHolder(view)
             NotificationErrorViewHolder.LAYOUT -> NotificationErrorViewHolder(
                     view, notificationListener
             )
@@ -149,7 +156,7 @@ class NotificationTypeFactoryImpl constructor(
             LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(
                     view, loadMoreListener
             )
-            BannerNotificationTitleViewHolder.LAYOUT -> BannerNotificationTitleViewHolder(
+            BannerNotificationViewHolder.LAYOUT -> BannerNotificationViewHolder(
                     view, notificationListener
             )
             SingleProductNotificationViewHolder.LAYOUT -> SingleProductNotificationViewHolder(

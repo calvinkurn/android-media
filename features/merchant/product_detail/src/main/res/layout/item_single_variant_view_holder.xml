@@ -10,7 +10,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/single_variant_top_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -23,33 +23,38 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/single_variant_top_separator"
-        app:typographyType="heading_5"
+        app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_variant_identifier_title"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBaseline_toBaselineOf="@id/txt_choose_variant_label"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_choose_variant_label"
+        app:layout_constraintEnd_toStartOf="@id/single_variant_check_all"
         app:layout_constraintStart_toEndOf="@+id/txt_choose_variant_label"
-        app:layout_constraintTop_toTopOf="@+id/txt_choose_variant_label"
-        app:typographyType="body_2"
+        app:typographyType="display_3"
         tools:text="variant_choose_label"
         tools:visibility="visible" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:layout_width="24dp"
-        android:layout_height="0dp"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/single_variant_check_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:icon_name="CHEVRON_RIGHT"
-        app:layout_constraintTop_toTopOf="@+id/txt_choose_variant_label"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_GN500"
+        android:text="@string/lihat_semua"
         app:layout_constraintBottom_toBottomOf="@+id/txt_choose_variant_label"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_choose_variant_label" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_single_variant"

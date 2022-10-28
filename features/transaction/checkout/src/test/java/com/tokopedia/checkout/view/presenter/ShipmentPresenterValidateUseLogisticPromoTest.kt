@@ -16,6 +16,8 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -25,8 +27,14 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
+import io.mockk.mockkObject
+import io.mockk.verifySequence
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -91,6 +99,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @MockK
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
+    @MockK
+    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -106,7 +117,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
@@ -115,6 +126,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseSuccess_ShouldUpdateTickerAndButtonPromo() {
         // Given
         val promoUiModel = PromoUiModel(
+                globalSuccess = true,
                 voucherOrderUiModels = listOf(
                         PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
                 )
@@ -122,13 +134,14 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
 
         // Then
         verifySequence {
@@ -139,18 +152,63 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     }
 
     @Test
-    fun validateUseRedState_ShouldShowErrorAndResetCourier() {
+    fun validateUseNoState_ShouldShowErrorAndResetCourier() {
         // Given
         val errorMessage = "error"
         val cartString = "cart123"
+        val promoCode = "promoCode123"
         val promoUiModel = PromoUiModel(
+                globalSuccess = true,
                 voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString+"2", code = promoCode, messageUiModel = MessageUiModel(state = "green", text = errorMessage)),
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "merchant", uniqueId = cartString, code = promoCode+"m", messageUiModel = MessageUiModel(state = "green", text = errorMessage)),
                 )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
+                        promoUiModel = promoUiModel
+                )
+        )
+
+        val shipmentCartItemModel = ShipmentCartItemModel().apply {
+            this.cartString = cartString
+        }
+        val shipmentCartItemModel2 = ShipmentCartItemModel().apply {
+            this.cartString = cartString + "2"
+        }
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel2, shipmentCartItemModel)
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode)
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.resetCourier(shipmentCartItemModel)
+            view.updateButtonPromoCheckout(promoUiModel, true)
+        }
+    }
+
+    @Test
+    fun validateUseRedState_ShouldShowErrorAndResetCourier() {
+        // Given
+        val errorMessage = "error"
+        val cartString = "cart123"
+        val promoCode = "promoCode123"
+        val promoUiModel = PromoUiModel(
+                globalSuccess = true,
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, code = promoCode, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
+                )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -162,7 +220,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode)
 
         // Then
         verifySequence {
@@ -175,6 +233,52 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     }
 
     @Test
+    fun validateUseRedStateOnAnotherPromo_ShouldUpdateTickerAndButtonPromo_AndKeepLastValidateUseRequest() {
+        // Given
+        val errorMessage = "error"
+        val cartString = "cart123"
+        val promoUiModel = PromoUiModel(
+                globalSuccess = true,
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "green")),
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "global", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
+                )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "OK",
+                        errorCode = "200",
+                        promoUiModel = promoUiModel
+                )
+        )
+
+        val shipmentCartItemModel = ShipmentCartItemModel().apply {
+            this.cartString = cartString
+        }
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+
+        // When
+        val cartPosition = 0
+        val validateUsePromoRequest = ValidateUsePromoRequest(
+                orders = listOf(
+                        OrdersItem(
+                                codes = arrayListOf("logisticpromo", "globalpromo")
+                        )
+                )
+        )
+        presenter.setLatValidateUseRequest(validateUsePromoRequest)
+        presenter.doValidateUseLogisticPromo(cartPosition, "", validateUsePromoRequest, "")
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.updateButtonPromoCheckout(promoUiModel, true)
+        }
+        assertEquals(validateUsePromoRequest, presenter.lastValidateUseRequest)
+    }
+
+    @Test
     fun validateUseError_ShouldShowErrorAndResetCourier() {
         // Given
         val errorMessage = "error"
@@ -182,7 +286,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
 
         // Then
         verifySequence {
@@ -202,7 +306,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
 
         // Then
         verifySequence {
@@ -232,13 +336,39 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
 
         // Then
         verifySequence {
             view.setStateLoadingCourierStateAtIndex(cartPosition, true)
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
+            view.resetCourier(cartPosition)
+        }
+    }
+
+    @Test
+    fun `WHEN validate use failed without error message THEN should show default BO error message`() {
+        // Given
+        val cartPosition = 1
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "ERROR",
+                        message = emptyList()
+                )
+        )
+        every { checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(any()) } just Runs
+        mockkObject(PromoRevampAnalytics)
+        every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
+
+        // When
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO)
             view.resetCourier(cartPosition)
         }
     }

@@ -13,54 +13,66 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/leftFirst"
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="@dimen/gamification_shimmer_w"
         android:layout_marginStart="10dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/leftSecond"
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="@+id/leftFirst"
         app:layout_constraintStart_toStartOf="@+id/leftFirst"
         app:layout_constraintTop_toBottomOf="@id/leftFirst" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/leftThird"
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="@+id/leftSecond"
         app:layout_constraintStart_toStartOf="@+id/leftSecond"
         app:layout_constraintTop_toBottomOf="@id/leftSecond" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/rightFirst"
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="@dimen/gamification_shimmer_w"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/rightSecond"
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="@+id/rightFirst"
         app:layout_constraintStart_toStartOf="@+id/rightFirst"
         app:layout_constraintTop_toBottomOf="@id/rightFirst" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="@+id/rightSecond"
         app:layout_constraintStart_toStartOf="@+id/rightSecond"
         app:layout_constraintTop_toBottomOf="@id/rightSecond" />

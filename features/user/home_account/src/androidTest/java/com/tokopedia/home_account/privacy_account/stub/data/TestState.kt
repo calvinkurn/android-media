@@ -1,0 +1,10 @@
+package com.tokopedia.home_account.privacy_account.stub.data
+
+enum class TestState {
+    GET_PRIVACY_ACCOUNT_ENABLED,
+    GET_PRIVACY_ACCOUNT_DISABLED,
+    SET_CONSENT_SOCIAL_NETWORK_SUCCESS,
+    SET_CONSENT_SOCIAL_NETWORK_FAILED,
+    ACCOUNT_LINKED,
+    ACCOUNT_NOT_LINKED
+}

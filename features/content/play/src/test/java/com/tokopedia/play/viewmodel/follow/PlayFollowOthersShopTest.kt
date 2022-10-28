@@ -8,10 +8,11 @@ import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.*
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
-import com.tokopedia.play.view.uimodel.action.ClickFollowAction
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -77,11 +78,11 @@ class PlayFollowOthersShopTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
-                partner.status.isEqualTo(
-                    PlayPartnerFollowStatus.Followable(isFollowing = true)
+                partner.status.assertEqualTo(
+                    PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.Followed)
                 )
             }
         }
@@ -102,11 +103,11 @@ class PlayFollowOthersShopTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
-                partner.status.isEqualTo(
-                        PlayPartnerFollowStatus.Followable(isFollowing = false)
+                partner.status.assertEqualTo(
+                        PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
                 )
             }
         }
@@ -126,17 +127,100 @@ class PlayFollowOthersShopTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhenExpectEvent {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify { event ->
             withState {
-                partner.status.isEqualTo(
-                        PlayPartnerFollowStatus.Followable(isFollowing = false)
+                partner.status.assertEqualTo(
+                        PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
                 )
             }
 
             event.isEqualToIgnoringFields(
                     OpenPageEvent(applink = ApplinkConst.LOGIN),
                     OpenPageEvent::requestCode
+            )
+        }
+    }
+
+    /**
+     * Interactive
+     */
+
+    @Test
+    fun `interactive - given user is logged in and has not followed shop, when click follow, the shop should be followed`() {
+        val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
+        coEvery { mockPartnerRepo.postFollowStatus(any(), any()) } returns true
+
+        givenPlayViewModelRobot(
+            repo = mockPartnerRepo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+        ) {
+            setLoggedIn(true)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            submitAction(PlayViewerNewAction.FollowInteractive)
+        } thenVerify {
+            withState {
+                partner.status.assertEqualTo(
+                    PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.Followed)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `interactive - given user is logged in and has followed shop, when click follow, the shop should be unfollowed`() {
+        val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns true
+        coEvery { mockPartnerRepo.postFollowStatus(any(), any()) } returns false
+
+        givenPlayViewModelRobot(
+            repo = mockPartnerRepo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+        ) {
+            setLoggedIn(true)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            submitAction(PlayViewerNewAction.FollowInteractive)
+        } thenVerify {
+            withState {
+                partner.status.assertEqualTo(
+                    PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `interactive - given user is not logged in, when click follow, the shop should stay unfollowed and open login page`() {
+        val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
+
+        givenPlayViewModelRobot(
+            repo = mockPartnerRepo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+        ) {
+            setLoggedIn(false)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhenExpectEvent {
+            submitAction(PlayViewerNewAction.FollowInteractive)
+        } thenVerify { event ->
+            withState {
+                partner.status.assertEqualTo(
+                    PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
+                )
+            }
+
+            event.isEqualToIgnoringFields(
+                OpenPageEvent(applink = ApplinkConst.LOGIN),
+                OpenPageEvent::requestCode
             )
         }
     }

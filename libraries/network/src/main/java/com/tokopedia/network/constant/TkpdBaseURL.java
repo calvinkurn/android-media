@@ -14,7 +14,7 @@ public class TkpdBaseURL {
     public static String BASE_CONTACT_US = TokopediaUrl.Companion.getInstance().getWEB() + "contact-us";
 
     public static String TOKOPOINT_API_DOMAIN = TokopediaUrl.Companion.getInstance().getGW() + "tokopoints/api/";
-    public static String PROMO_API_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB() + "promo/";
+    public static String PROMO_API_DOMAIN = TokopediaUrl.Companion.getInstance().getAPI() + "promo/";
 
     public static class Product {
         public static final String V4_ACTION_PRODUCT = "v4/action/product/";

@@ -39,8 +39,8 @@ import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialog
 import com.tokopedia.otp.silentverification.view.fragment.SilentVerificationFragment.Companion.RESULT_DELETE_METHOD
 import com.tokopedia.otp.verification.common.VerificationPref
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
+import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant.OtpMode.SILENT_VERIFICATION
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
@@ -255,7 +255,14 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     open fun getVerificationMethod() {
         showLoading()
         val otpType = otpData.otpType.toString()
-        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
+        if (otpType == OtpConstant.OtpType.PHONE_REGISTER_MANDATORY.toString()) {
+            viewmodel.getVerificationMethodPhoneRegisterMandatory(
+                otpType = otpType,
+                msisdn = otpData.msisdn,
+                email = otpData.email,
+                validateToken = otpData.accessToken
+            )
+        } else if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
                 && otpData.userIdEnc.isNotEmpty()) {
             viewmodel.getVerificationMethod2FA(
                     otpType = otpType,
@@ -341,7 +348,9 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         return { throwable ->
             throwable.printStackTrace()
             hideLoading()
-            val message = ErrorHandler.getErrorMessage(context, throwable)
+            val message = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().apply {
+                className = VerificationMethodFragment::class.java.name
+            }.build())
             NetworkErrorHelper.showEmptyState(context, viewBound.containerView, message) {
                 getVerificationMethod()
             }

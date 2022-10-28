@@ -10,18 +10,27 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliatePromotionBSViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        var affiliateGenerateLinkUseCase: AffiliateGenerateLinkUseCase
+    private val userSessionInterface: UserSessionInterface,
+    var affiliateGenerateLinkUseCase: AffiliateGenerateLinkUseCase
 ) : BaseViewModel() {
-    private var generateLinkData = MutableLiveData<AffiliateGenerateLinkData.AffiliateGenerateLink.Data?>()
+    private var generateLinkData =
+        MutableLiveData<AffiliateGenerateLinkData.AffiliateGenerateLink.Data?>()
     private var errorMessage = MutableLiveData<String>()
     private var loading = MutableLiveData<Boolean>()
 
-    fun affiliateGenerateLink(id: Int?, url: String?, identifier: String?) {
+    fun affiliateGenerateLink(
+        id: Int?,
+        pageType: String,
+        itemId: String, url: String?, identifier: String?, type: String
+    ) {
         loading.value = true
         launchCatchError(block = {
             loading.value = false
-            generateLinkData.value = affiliateGenerateLinkUseCase.affiliateGenerateLink(id, url, identifier)
+            generateLinkData.value = affiliateGenerateLinkUseCase.affiliateGenerateLink(
+                id,
+                pageType,
+                itemId, url, identifier, type
+            )
         }, onError = {
             loading.value = false
             errorMessage.value = it.localizedMessage
@@ -31,6 +40,7 @@ class AffiliatePromotionBSViewModel @Inject constructor(
 
     fun getErrorMessage(): LiveData<String> = errorMessage
     fun loading(): LiveData<Boolean> = loading
-    fun generateLinkData(): LiveData<AffiliateGenerateLinkData.AffiliateGenerateLink.Data?> = generateLinkData
+    fun generateLinkData(): LiveData<AffiliateGenerateLinkData.AffiliateGenerateLink.Data?> =
+        generateLinkData
 
 }

@@ -5,4 +5,7 @@
 
     <color name="play_dms_bg_cover_image_setup">#4D40454C</color>
     <color name="play_dms_bg_choose_cover">#40454C</color>
+
+    <!-- Quiz -->
+    <color name="play_dms_bro_quiz_gift_text">#DCE4ED</color>
 </resources>

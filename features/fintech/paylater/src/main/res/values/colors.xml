@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="paylater_dms_gradient_light_start">#00EBFFFE</color>
+    <color name="paylater_dms_gradient_light_end">#BFEBFFFE</color>
+    <color name="paylater_dms_gradient_dark_start">#001D2025</color>
+    <color name="paylater_dms_gradient_dark_end">#FF012838</color>
+
+</resources>

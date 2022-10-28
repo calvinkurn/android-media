@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.filter.common.data.SavedOption
+import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Test

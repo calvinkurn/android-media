@@ -12,5 +12,5 @@
         android:clickable="false"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         app:icon_name="CALENDAR"
-        app:icon_color_light_enable="@color/stc_calendar_icon_dms"/>
+        app:icon_color_light_enable="@color/stc_dms_calendar_icon"/>
 </LinearLayout>

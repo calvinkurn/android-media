@@ -49,6 +49,7 @@ class SearchApiConst {
         const val OFFICIAL = "official"
         const val KEYWORD = "keyword"
         const val HINT = "hint"
+        const val PLACEHOLDER = "placeholder"
         const val ACTIVE_TAB = "st"
         const val ORIGIN_FILTER = "origin_filter" // which page filter params come from
         const val TOKEN = "token"
@@ -62,6 +63,7 @@ class SearchApiConst {
         const val FIRST_INSTALL = "first_install"
         const val SRP_PAGE_TITLE = "srp_page_title"
         const val SRP_PAGE_ID = "srp_page_id"
+        const val SRP_EXT_REF = "srp_ext_ref"
         const val USER_LAT = "user_lat"
         const val USER_LONG = "user_long"
         const val USER_CITY_ID = "user_cityId"
@@ -75,6 +77,15 @@ class SearchApiConst {
         const val SRP_COMPONENT_ID = "srp_component_id"
         const val TYPO = "typo"
         const val IS_FULFILLMENT = "is_fulfillment"
+        const val GIFTING = "gift"
+        const val IS_TYPO_CORRECTED = "is_typo_corrected"
+        const val FROM = "from"
+        const val PAGE_SOURCE = "page_source"
+        const val PRICING = "pricing"
+        const val PRODUCT_ID = "product_id"
+        const val SHOW_ADULT = "show_adult"
+        const val SHOW_ADULT_ENABLED = "true"
+        const val DEFAULT_VALUE_OF_SHOW_ADULT = "false"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"
@@ -99,6 +110,7 @@ class SearchApiConst {
         const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE = "sort"
         const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE = "filter"
         const val DEFAULT_VALUE_OF_NAVSOURCE_TOKONOW = "tokonow"
+        const val DEFAULT_VALUE_OF_NAVSOURCE_TOKOCABANG = "tokocabang"
         const val HOME = "home"
     }
 }

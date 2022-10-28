@@ -9,14 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.talk.BuildConfig
 import com.tokopedia.talk.R
@@ -78,6 +78,13 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         binding = FragmentReportTalkBinding.inflate(inflater, container, false)
@@ -108,7 +115,6 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     override fun onClickOption(talkReportOptionUiModel: TalkReportOptionUiModel) {
         reportTalkAdapter.setChecked(talkReportOptionUiModel)
         checkEnableSendButton()
-
     }
 
     private fun setupView() {
@@ -128,10 +134,27 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         binding.optionRv.adapter = reportTalkAdapter
 
         binding.sendButton.setOnClickListener {
-            reportTalk(talkId, commentId, binding.reason.text.toString(), reportTalkAdapter.getSelectedOption())
+            reportTalk(talkId, commentId, binding.reason.editText.text.toString(), reportTalkAdapter.getSelectedOption())
         }
+        setupToolbar()
+        setupReasonTextField()
+    }
 
-        binding.reason.addTextChangedListener(object : TextWatcher {
+    private fun setupToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                binding.headerReportTalk
+                binding.headerReportTalk.run {
+                    title = getString(R.string.title_report_talk)
+                    setNavigationOnClickListener { onBackPressed() }
+                }
+            }
+        }
+    }
+
+    private fun setupReasonTextField() {
+        binding.reason.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
@@ -145,12 +168,10 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
 
             }
         })
-
         binding.reason.setOnClickListener {
             reportTalkAdapter.setChecked(reportTalkAdapter.getItem(2))
         }
-
-        binding.reason.setOnEditorActionListener { v, actionId, event ->
+        binding.reason.editText.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.hideSoftKeyboard(activity)
                 true
@@ -158,12 +179,11 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
                 false
             }
         }
-
-
+        binding.reason.labelText.gone()
     }
 
     private fun checkEnableSendButton() {
-        binding.reason.text?.let {
+        binding.reason.editText.text?.let {
             if (reportTalkAdapter.getItem(2).isChecked && it.isBlank()) {
                 disableSendButton()
             } else {
@@ -181,23 +201,23 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     }
 
 
-    private fun showLoadingFull() {
-        binding.progressBar.show()
-        binding.mainView.hide()
-        binding.sendButton.hide()
+    private fun showLoadingSendReport() {
+        binding.sendButton.isLoading = true
+        reportTalkAdapter.disableOptions()
+        binding.reason.isEnabled = false
     }
 
-    private fun hideLoadingFull() {
-        binding.progressBar.hide()
-        binding.mainView.show()
-        binding.sendButton.show()
+    private fun hideLoadingSendReport() {
+        binding.sendButton.isLoading = false
+        reportTalkAdapter.enableOptions()
+        binding.reason.isEnabled = true
     }
 
     private fun onErrorReportTalk(throwable: Throwable) {
         logToCrashlytics(throwable)
         val message = ErrorHandler.getErrorMessage(context, throwable)
         NetworkErrorHelper.createSnackbarWithAction(activity, message) {
-            reportTalk(talkId, commentId, binding.reason.text.toString(),
+            reportTalk(talkId, commentId, binding.reason.editText.text.toString(),
                     reportTalkAdapter.getSelectedOption())
         }.showRetrySnackbar()
     }
@@ -210,7 +230,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         } else {
             viewModel.reportComment(commentId, otherReason, selectedOption.position)
         }
-        showLoadingFull()
+        showLoadingSendReport()
     }
 
     private fun onSuccessReportTalk() {
@@ -232,14 +252,14 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
 
     private fun observeLiveDatas() {
         viewModel.reportCommentResult.observe(viewLifecycleOwner, Observer {
-            hideLoadingFull()
+            hideLoadingSendReport()
             when(it) {
                 is Success -> onSuccessReportTalk()
                 is Fail -> onErrorReportTalk(it.throwable)
             }
         })
         viewModel.reportTalkResult.observe(viewLifecycleOwner, Observer {
-            hideLoadingFull()
+            hideLoadingSendReport()
             when(it) {
                 is Success -> onSuccessReportTalk()
                 is Fail -> onErrorReportTalk(it.throwable)

@@ -20,17 +20,23 @@ class HomeTopadsImageRepository @Inject constructor(
         private const val TOP_ADS_BANNER_DIMEN_ID = 3
         private const val TOP_ADS_COUNT = 1
         private const val TOP_ADS_HOME_SOURCE = "1"
+        private const val TOP_ADS_PAGE_DEFAULT = "1"
+
+        const val TOP_ADS_PAGE = "topadsPage"
     }
 
     override suspend fun getRemoteData(bundle: Bundle): ArrayList<TopAdsImageViewModel> {
+        val page = bundle.getString(TOP_ADS_PAGE, TOP_ADS_PAGE_DEFAULT)
         val results = topAdsImageViewUseCase.get().getImageData(
                 topAdsImageViewUseCase.get().getQueryMap(
-                        "",
-                        TOP_ADS_HOME_SOURCE,
-                        "",
-                        TOP_ADS_COUNT,
-                        TOP_ADS_BANNER_DIMEN_ID,
-                        "")
+                        query = "",
+                        source = TOP_ADS_HOME_SOURCE,
+                        pageToken = "",
+                        adsCount = TOP_ADS_COUNT,
+                        dimenId = TOP_ADS_BANNER_DIMEN_ID,
+                        depId = "",
+                        page = page
+                )
         )
         return results
     }

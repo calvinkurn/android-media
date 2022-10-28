@@ -6,19 +6,20 @@
     android:layout_height="wrap_content"
     android:visibility="gone">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_txt_1"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:visibility="visible"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toStartOf="@+id/separator_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/separator_1"
-        android:layout_width="@dimen/dp_1"
+        android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -28,21 +29,22 @@
         app:layout_constraintStart_toEndOf="@+id/loader_txt_1"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_txt_2"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:visibility="visible"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toStartOf="@+id/separator_2"
         app:layout_constraintStart_toEndOf="@+id/separator_1"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/separator_2"
-        android:layout_width="@dimen/dp_1"
+        android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -52,13 +54,14 @@
         app:layout_constraintStart_toEndOf="@+id/loader_txt_2"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_txt_3"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginLeft="8dp"
         android:visibility="visible"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/separator_2"
         app:layout_constraintTop_toTopOf="parent"

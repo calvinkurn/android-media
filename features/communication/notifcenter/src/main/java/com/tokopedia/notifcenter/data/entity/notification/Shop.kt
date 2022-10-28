@@ -9,7 +9,7 @@ data class Shop(
     @SerializedName("free_shipping_icon")
     val freeShippingIcon: String = "",
     @SerializedName("id")
-    val id: Long = 0,
+    val id: String = "",
     @SerializedName("is_gold")
     val isGold: Boolean = false,
     @SerializedName("is_official")

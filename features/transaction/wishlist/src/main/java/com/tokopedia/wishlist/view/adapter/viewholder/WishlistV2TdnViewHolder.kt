@@ -2,7 +2,6 @@ package com.tokopedia.wishlist.view.adapter.viewholder
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -17,11 +16,13 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
     RecyclerView.ViewHolder(binding.root) {
 
     private companion object {
-        private const val PADDING_TOPADS = 18
         private const val RADIUS_TOPADS = 24
     }
 
-    fun bind(item: WishlistV2TypeLayoutData, adapterPosition: Int, isShowCheckbox: Boolean) {
+    fun bind(
+        item: WishlistV2TypeLayoutData,
+        adapterPosition: Int,
+        isShowCheckbox: Boolean) {
         if (isShowCheckbox) {
             binding.root.gone()
             val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
@@ -42,7 +43,6 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                     setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                         override fun onTopAdsImageViewClicked(applink: String?) {
                             actionListener?.onBannerTopAdsClick(item.dataObject, adapterPosition)
-                            RouteManager.route(itemView.context, applink)
                         }
                     })
 

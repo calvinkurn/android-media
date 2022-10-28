@@ -1,0 +1,11 @@
+{
+  "data": {
+    "productrevGetPostSubmitBottomSheet": {
+      "type": "thanks_toaster",
+      "title": "",
+      "description": "Terima kasih, @Name. Ulasanmu akan membantu penjual & calon pembeli lain!",
+      "imageURL": "",
+      "buttonList": []
+    }
+  }
+}

@@ -1,0 +1,228 @@
+{
+  "rechargeCatalogMenuDetail": {
+    "catalog": {
+      "id": 290,
+      "name": "pdp2022_paket_data",
+      "label": "Paket Data",
+      "icon": ""
+    },
+    "user_perso": {
+      "prefill": "087855812080",
+      "user_type": "new user",
+      "loyalty_status": "new user"
+    },
+    "recommendations": [
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png",
+        "title": "Data 25.000",
+        "clientNumber": "081211111111",
+        "appLink": "tokopedia://digital/form?category_id\u003d2\u0026menu_id\u003d2\u0026operator_id\u003d12\u0026product_id\u003d316\u0026template\u003dtelcopre",
+        "webLink": "https://pulsa.tokopedia.com/paket-data/?category_id\u003d2\u0026operator_id\u003d12\u0026product_id\u003d316\u0026client_number\u003d081211111111",
+        "productPrice": 25000,
+        "type": "",
+        "categoryId": 2,
+        "productId": 316,
+        "isATC": false,
+        "description": "",
+        "operatorID": 12
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png",
+        "title": "Xtra Combo VIP Double Youtube 10GB+20GB",
+        "clientNumber": "081911111111",
+        "appLink": "tokopedia://digital/form?category_id\u003d2\u0026menu_id\u003d2\u0026operator_id\u003d5\u0026product_id\u003d2700\u0026template\u003dtelcopre",
+        "webLink": "https://pulsa.tokopedia.com/paket-data/?category_id\u003d2\u0026operator_id\u003d5\u0026product_id\u003d2700\u0026client_number\u003d081911111111",
+        "productPrice": 99000,
+        "type": "",
+        "categoryId": 2,
+        "productId": 2700,
+        "isATC": false,
+        "description": "",
+        "operatorID": 5
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png",
+        "title": "Data Hingga 12GB (Zona)",
+        "clientNumber": "0811111111111",
+        "appLink": "tokopedia://digital/form?category_id\u003d2\u0026menu_id\u003d2\u0026operator_id\u003d12\u0026product_id\u003d9944\u0026template\u003dtelcopre",
+        "webLink": "https://pulsa.tokopedia.com/paket-data/?category_id\u003d2\u0026operator_id\u003d12\u0026product_id\u003d9944\u0026client_number\u003d0811111111111",
+        "productPrice": 105000,
+        "type": "",
+        "categoryId": 2,
+        "productId": 9944,
+        "isATC": false,
+        "description": "",
+        "operatorID": 12
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png",
+        "title": "Data 25.000",
+        "clientNumber": "08121111111",
+        "appLink": "tokopedia://digital/form?category_id\u003d2\u0026menu_id\u003d2\u0026operator_id\u003d12\u0026product_id\u003d316\u0026template\u003dtelcopre",
+        "webLink": "https://pulsa.tokopedia.com/paket-data/?category_id\u003d2\u0026operator_id\u003d12\u0026product_id\u003d316\u0026client_number\u003d08121111111",
+        "productPrice": 25000,
+        "type": "",
+        "categoryId": 2,
+        "productId": 316,
+        "isATC": false,
+        "description": "",
+        "operatorID": 12
+      }
+    ],
+    "promos": [
+      {
+        "id": 5033,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2021/12/7/eda6e968-4ae4-4015-88c6-7b849afbf1a1.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-13",
+        "status": 1,
+        "title": "Khusus Pengguna Baru. Top Up Apa Saja, Cashback s.d 50rb.",
+        "subtitle": "Kode Promo: {COBATOPUP}",
+        "promo_code": "COBATOPUP"
+      },
+      {
+        "id": 2476,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/26/42484317/42484317_9716befc-4764-43e8-a2eb-44a0fede33fc.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-8/",
+        "status": 1,
+        "title": "Bayar Tagihan sampai Hiburan Dapat Kupon Belanja Fashion",
+        "subtitle": "kode promo : {FASHDG}",
+        "promo_code": "FASHDG"
+      },
+      {
+        "id": 6140,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-xl-2",
+        "status": 1,
+        "title": "Pengguna Baru, beli Paket Data XL/Axis 20rb ke atas, cashback s.d.10rb",
+        "subtitle": "Kode Promo: {COBAAXISXL}",
+        "promo_code": "COBAAXISXL"
+      },
+      {
+        "id": 6074,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/paket-data/",
+        "status": 1,
+        "title": "Bayar Tagihan tiap Selasa, Diskon Rp30rb dengan Kartu Kredit CIMB Niaga",
+        "subtitle": "Kode promo: {CIMBBTS30}",
+        "promo_code": "CIMBBTS30"
+      },
+      {
+        "id": 2739,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/12/8/34631992/34631992_c28f7d1c-3e77-41ae-b384-5a9fcf7b21a9.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-diskon-5/",
+        "status": 1,
+        "title": "[INDOTAGIHAN] Bayar tagihan, diskon Rp35rb. Khusus pembayaran Indodana.",
+        "subtitle": "Kode Promo: {INDOTAGIHAN}",
+        "promo_code": "INDOTAGIHAN"
+      },
+      {
+        "id": 2420,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/2/1/ec7fd00a-d1fa-4793-9e72-99cfc54ebf85.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-indosat-2",
+        "status": 1,
+        "title": "Beli produk promo Indosat, ada tambahan cashback.",
+        "subtitle": "Kode Promo: {CBINDOSAT}",
+        "promo_code": "CBINDOSAT"
+      },
+      {
+        "id": 2810,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/15/66931192/66931192_39d3a19b-f32f-4f6a-96c8-50cb5890b74c.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-commonwealth",
+        "status": 1,
+        "title": "Diskon 5% hingga Rp250.000 dengan Debit Commonwealth",
+        "subtitle": "Kode promo: {COMMON50}",
+        "promo_code": "COMMON50"
+      },
+      {
+        "id": 4013,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/5/c756f11d-4b5a-46aa-aff7-27e2ac315753.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-digibank",
+        "status": 1,
+        "title": "Khusus hari Rabu, Diskon Rp500rb dengan Kartu Kredit Digital digibank by DBS",
+        "subtitle": "Kode promo: {DIGIDG500}",
+        "promo_code": "DIGIDG500"
+      },
+      {
+        "id": 4012,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-digibank",
+        "status": 1,
+        "title": "Khusus hari Rabu, Diskon Rp175rb dengan Kartu Kredit Digital digibank by DBS",
+        "subtitle": "Kode promo: {DIGIDG175}",
+        "promo_code": "DIGIDG175"
+      },
+      {
+        "id": 4011,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-digibank",
+        "status": 1,
+        "title": "Khusus hari Rabu, Diskon Rp50rb dengan Kartu Kredit Digital digibank by DBS",
+        "subtitle": "Kode promo: {DIGIDG50}",
+        "promo_code": "DIGIDG50"
+      },
+      {
+        "id": 3048,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-dbs/",
+        "status": 1,
+        "title": "Hari Rabu, Diskon 350rb dgn Kartu Kredit digibank DBS (min. 6jt)",
+        "subtitle": "Kode promo: {DIGIDG350}",
+        "promo_code": "DIGIDG350"
+      },
+      {
+        "id": 3047,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-dbs/",
+        "status": 1,
+        "title": "Hari Rabu, Diskon 100rb dgn Kartu Kredit digibank DBS (min. 3jt)",
+        "subtitle": "Kode promo: {DIGIDG100}",
+        "promo_code": "DIGIDG100"
+      },
+      {
+        "id": 3046,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-dbs/",
+        "status": 1,
+        "title": "Hari Rabu, Diskon 25rb dgn Kartu Kredit digibank DBS (min. 750rb)",
+        "subtitle": "Kode promo: {DIGIDG25}",
+        "promo_code": "DIGIDG25"
+      },
+      {
+        "id": 5535,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/20/598749dc-6b4d-4d05-8eec-802a0e9794f3.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-hsbc-5/",
+        "status": 1,
+        "title": "Cashback Rp25rb dengan Kartu Kredit HSBC (min. 500rb)",
+        "subtitle": "Kode Promo: {HSBCDG25}",
+        "promo_code": "HSBCDG25"
+      },
+      {
+        "id": 2556,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/17/6b85ad05-17f1-46d7-b4cd-71b749338064.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-citi/",
+        "status": 1,
+        "title": "Diskon Rp25.000 dengan Debit/Kartu Kredit Citibank (min. 500rb)",
+        "subtitle": "Kode promo: {CITIDG25}",
+        "promo_code": "CITIDG25"
+      }
+    ],
+    "tickers": [],
+    "banners": [],
+    "express_checkout": false
+  }
+}

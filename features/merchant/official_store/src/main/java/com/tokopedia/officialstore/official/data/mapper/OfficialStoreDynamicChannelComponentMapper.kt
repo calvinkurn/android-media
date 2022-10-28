@@ -16,6 +16,14 @@ object OfficialStoreDynamicChannelComponentMapper {
                 widgetParam = channel.widgetParam,
                 contextualInfo = channel.contextualInfo,
                 verticalPosition = verticalPosition,
+                channelViewAllCard = ChannelViewAllCard(
+                        id = channel.viewAllCard.id,
+                        contentType = channel.viewAllCard.contentType,
+                        description = channel.viewAllCard.description,
+                        title = channel.viewAllCard.title,
+                        imageUrl = channel.viewAllCard.imageUrl,
+                        gradientColor = channel.viewAllCard.gradientColor
+                ),
                 channelHeader = ChannelHeader(
                         channel.header?.id.toString(),
                         channel.header?.name?:"",
@@ -57,7 +65,8 @@ object OfficialStoreDynamicChannelComponentMapper {
                         persona = channel.persona,
                         brandId = channel.brandId,
                         categoryPersona = channel.categoryPersona,
-                        campaignId = channel.campaignID.toString()
+                        campaignId = channel.campaignID.toString(),
+                        campaignType = channel.campaignType
                 ),
                 channelGrids = channel.grids.map {
                     ChannelGrid(
@@ -87,9 +96,23 @@ object OfficialStoreDynamicChannelComponentMapper {
                                         url = label.imageUrl
                                 )
                             },
+                            shop =  ChannelShop(
+                                    id = it.shop?.shopId?: "",
+                                    shopName = it.shop?.name?: "",
+                                    shopApplink = it.shop?.applink?: "",
+                                    shopLocation = it.shop?.city?:"",
+                                    shopProfileUrl = it.shop?.imageUrl?:"",
+                                    shopUrl = it.shop?.url?:"",
+                                    ),
+                            badges = it.badges?.map { badge ->
+                                ChannelGridBadges(
+                                        imageUrl = badge.imageUrl
+                                )
+                            } ?: listOf(),
                             backColor = it.backColor,
                             productImageUrl = it.productImageUrl,
-                            benefit = ChannelBenefit(it.benefit.type, it.benefit.value)
+                            benefit = ChannelBenefit(it.benefit.type, it.benefit.value),
+                            expiredTime = it.expiredTime?: ""
                     )
                 }
         )

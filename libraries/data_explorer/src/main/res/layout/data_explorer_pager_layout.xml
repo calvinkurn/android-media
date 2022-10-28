@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/unify_space_8">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/arrowBack"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            app:icon_name="CHEVRON_LEFT"
+            app:layout_constraintEnd_toStartOf="@+id/currentPageNumber"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/currentPageNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:text="1"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintBottom_toBottomOf="@id/arrowBack"
+            app:layout_constraintEnd_toStartOf="@+id/arrowForward"
+            app:layout_constraintTop_toTopOf="@+id/arrowBack"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/arrowForward"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            android:layout_marginStart="@dimen/unify_space_16"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/arrowBack" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/goToPageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            android:text="@string/data_explorer_select_page_text"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintBottom_toBottomOf="@id/arrowForward"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/arrowForward"
+            app:typographyType="heading_4" />
+
+        <EditText
+            android:id="@+id/pageNumberEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/goToPageText"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="@dimen/unify_font_14"
+            android:text="@string/data_explorer_page_number_initial_text"
+            android:textColor="@color/Unify_N700_96"
+            />
+
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/arrowGo"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintStart_toEndOf="@+id/pageNumberEditText"
+            app:layout_constraintTop_toTopOf="@id/arrowForward" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

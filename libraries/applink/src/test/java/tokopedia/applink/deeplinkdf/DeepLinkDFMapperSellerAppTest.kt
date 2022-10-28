@@ -154,24 +154,6 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check internal content create post appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/create_post/"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
-    }
-
-    @Test
-    fun `check internal content draft post appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/draft/"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
-    }
-
-    @Test
-    fun `check shop post edit appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/content-shop/12345/edit"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
-    }
-
-    @Test
     fun `check play broadcaster appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://play-broadcaster"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
@@ -263,6 +245,18 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check merchant statistic dashboard appLink then should return DF_BASE in sellerapp`() {
         val appLink = "${ApplinkConstInternalMechant.INTERNAL_MERCHANT}/statistic_dashboard"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+    }
+
+    @Test
+    fun `check admin invitation internal appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-admin/invitation-page"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+    }
+
+    @Test
+    fun `check admin accepted internal appLink then should return DF_BASE_SELLER_APP in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-admin/accepted-page"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 

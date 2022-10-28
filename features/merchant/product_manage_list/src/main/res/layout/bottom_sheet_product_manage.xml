@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/menuList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

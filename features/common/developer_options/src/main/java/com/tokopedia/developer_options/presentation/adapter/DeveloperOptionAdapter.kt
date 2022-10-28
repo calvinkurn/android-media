@@ -20,12 +20,14 @@ class DeveloperOptionAdapter(
      * Keyword you need while searching something
      **/
     companion object {
+        const val KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION = "Enable Developer Options on Notification"
         const val KEYWORD_PRODUCT_DETAIL_DEV = "Product Detail Dev"
         const val KEYWORD_ACCESS_TOKEN = "Access Token"
         const val KEYWORD_SYSTEM_APPS = "System Apps"
         const val KEYWORD_NON_SYSTEM_APPS = "Non System Apps"
         const val KEYWORD_RESET_ONBOARDING = "Reset OnBoarding"
         const val KEYWORD_FORCE_CRASH = "Force Crash"
+        const val KEYWORD_FORCE_LOGOUT = "Force Logout"
         const val KEYWORD_SEND_FIREBASE_EXCEPTION = "Send Firebase Exception"
         const val KEYWORD_OPEN_SCREEN_RECORDER = "Open Screen Recorder"
         const val KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION = "Enable Network Log on Notification"
@@ -57,6 +59,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
         const val KEYWORD_FAKE_RESPONSE_ACTIVITY = "Fake Response Activity"
+        const val KEYWORD_DATA_EXPLORER_ACTIVITY = "Data Explrorer Activity"
         const val KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER = "Home and Navigation Revamp Switcher"
         const val KEYWORD_NEW_NAVIGATION = "New Navigation"
         const val KEYWORD_ALWAYS_OS_EXPERIMENT = "Always OS Experiment"
@@ -81,6 +84,9 @@ class DeveloperOptionAdapter(
         const val KEYWORD_SHOW_APPLINK_ON_TOAST = "Show Applink on Toast and Copy the Link to Clipboard"
         const val KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING = "Play - Web Socket and SSE Logging"
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
+        const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
+        const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
+        const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
     }
 
     /**
@@ -89,6 +95,7 @@ class DeveloperOptionAdapter(
      * Variable contains UiModels that you want to show in RecyclerView, put keyword as param
      **/
     private val defaultItems = mutableListOf(
+        DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
         AppAuthSecretUiModel(listOf(KEYWORD_APP_AUTH_SECRET)),
@@ -97,9 +104,11 @@ class DeveloperOptionAdapter(
             KEYWORD_NON_SYSTEM_APPS)
         ),
         ResetOnBoardingUiModel(listOf(KEYWORD_RESET_ONBOARDING)),
+        ForceLogoutUiModel(listOf(KEYWORD_FORCE_LOGOUT)),
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
+        TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
         ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),
         NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
         ViewNetworkLogUiModel(listOf(KEYWORD_VIEW_NETWORK_LOG)),
@@ -136,6 +145,7 @@ class DeveloperOptionAdapter(
             KEYWORD_STAGING, KEYWORD_LIVE)
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
+        DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
         TranslatorUiModel(listOf(
             KEYWORD_API_KEY_SETTING,
             KEYWORD_VISIT_BELOW_FOR_API_KEY,
@@ -164,7 +174,11 @@ class DeveloperOptionAdapter(
         PlayWebSocketSseLoggingUiModel(listOf(
             KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING,
             KEYWORD_VIEW_SSE_LOGGING
-        ))
+        )),
+        ConvertResourceIdUiModel(
+            listOf(KEYWORD_CONVERT_RESOURCE_ID)
+        ),
+        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST))
     )
 
     init {

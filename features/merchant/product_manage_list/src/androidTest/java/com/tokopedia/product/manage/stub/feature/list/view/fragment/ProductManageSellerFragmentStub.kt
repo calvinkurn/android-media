@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.stub.feature.list.view.fragment
 import android.os.Bundle
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
 import com.tokopedia.product.manage.stub.feature.list.di.ProductManageListComponentStub
+import com.tokopedia.product.manage.stub.feature.suspend.view.SuspendReasonBottomSheetStub
 import java.util.ArrayList
 
 class ProductManageSellerFragmentStub: ProductManageSellerFragment() {
@@ -26,4 +27,7 @@ class ProductManageSellerFragmentStub: ProductManageSellerFragment() {
         getComponent(ProductManageListComponentStub::class.java).inject(this)
     }
 
+    override fun showSuspendReasonBottomSheet(productId: String) {
+        SuspendReasonBottomSheetStub.createInstance(productId, this).show(childFragmentManager)
+    }
 }

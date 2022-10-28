@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/error_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:paddingTop="40dp"
+        android:visibility="gone"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintBottom_toTopOf="@id/home_global_error"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/home_global_error"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:paddingTop="16dp"
+        app:globalerrors_type="SERVER_ERROR"
+        app:layout_constraintBottom_toTopOf="@id/session_id"
+        app:layout_constraintTop_toBottomOf="@id/error_image_view" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/session_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_global_error"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Session ID: \n21efac9f-dda9-45a2-8bf1-bd73297b707c" />
+</androidx.constraintlayout.widget.ConstraintLayout>

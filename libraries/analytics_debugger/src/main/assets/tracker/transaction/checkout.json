@@ -16,6 +16,7 @@
     {
       "eventCategory": "courier selection",
       "checkout_step": "2",
+      "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
       "event": "checkout_progress",
       "eventAction": "view checkout page",
@@ -23,7 +24,9 @@
       "items": [
         {
           "dimension81": ".*",
+          "shop_type": ".*",
           "dimension80": ".*",
+          "shop_name": ".*",
           "item_category": ".*",
           "dimension10": ".*",
           "dimension54": ".*",
@@ -34,8 +37,9 @@
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension14": ".*",
           "dimension58": "true|false",
-          "dimension57": "true|false",
+          "dimension67": "true|false",
           "dimension79": "\\d+",
+          "shop_id": "\\d+",
           "item_variant": ".*",
           "dimension16": ".*",
           "dimension38": ".*",
@@ -55,11 +59,14 @@
         }
       ],
       "eventLabel": "success",
-      "checkout_option": "checkout page loaded"
+      "checkout_option": "checkout page loaded",
+      "userId": ".+",
+      "promoFlag": "true|false"
     },
     {
       "eventCategory": "courier selection",
       "checkout_step": "3",
+      "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
       "event": "checkout_progress",
       "eventAction": "click all courier selected",
@@ -67,7 +74,9 @@
       "items": [
         {
           "dimension81": ".*",
+          "shop_type": ".*",
           "dimension80": ".*",
+          "shop_name": ".*",
           "item_category": ".*",
           "dimension10": ".*",
           "dimension54": ".*",
@@ -78,8 +87,9 @@
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension14": ".*",
           "dimension58": "true|false",
-          "dimension57": "true|false",
+          "dimension67": "true|false",
           "dimension79": "\\d+",
+          "shop_id": "\\d+",
           "item_variant": ".*",
           "dimension16": ".*",
           "dimension38": ".*",
@@ -99,11 +109,14 @@
         }
       ],
       "eventLabel": "",
-      "checkout_option": "data validation"
+      "checkout_option": "data validation",
+      "userId": ".+",
+      "promoFlag": "true|false"
     },
     {
       "eventCategory": "courier selection",
       "checkout_step": "4",
+      "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
       "payment_id": "\\d+",
       "event": "checkout_progress",
@@ -112,7 +125,9 @@
       "items": [
         {
           "dimension81": ".*",
+          "shop_type": ".*",
           "dimension80": ".*",
+          "shop_name": ".*",
           "item_category": ".*",
           "dimension10": ".*",
           "dimension54": ".*",
@@ -123,8 +138,9 @@
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension14": ".*",
           "dimension58": "true|false",
-          "dimension57": "true|false",
+          "dimension67": "true|false",
           "dimension79": "\\d+",
+          "shop_id": "\\d+",
           "item_variant": ".*",
           "dimension16": ".*",
           "dimension38": ".*",
@@ -144,7 +160,9 @@
         }
       ],
       "eventLabel": "success",
-      "checkout_option": "click_payment option button"
+      "checkout_option": "click_payment option button",
+      "userId": ".+",
+      "promoFlag": "true|false"
     }
   ],
   "readme": "Checkout Page Tracking"

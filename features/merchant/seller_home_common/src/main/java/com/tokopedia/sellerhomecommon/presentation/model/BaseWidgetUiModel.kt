@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
@@ -27,6 +28,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     var isFromCache: Boolean
     var isNeedToBeRemoved: Boolean
     var emptyState: WidgetEmptyStateUiModel
+    var showLoadingState: Boolean
 
     fun copyWidget(): BaseWidgetUiModel<T>
 
@@ -37,8 +39,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
                 && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
     }
 
-    fun isEmpty(): Boolean = data == null || data?.shouldRemove() == true
-
+    fun isEmpty(): Boolean = data == null || data?.isWidgetEmpty().orFalse()
 }
 
 data class WidgetEmptyStateUiModel(

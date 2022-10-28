@@ -9,5 +9,5 @@ data class AutoExtend(
         val status: String = "",
         @SerializedName("tkpd_product_id")
         @Expose
-        val tkpdProductId: Int = 0
+        val tkpdProductId: String = ""
 )

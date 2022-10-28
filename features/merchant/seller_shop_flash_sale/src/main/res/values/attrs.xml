@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SpinnerView">
+        <attr name="spinner_placeholder_text" format="string" />
+        <attr name="spinner_title_text" format="string" />
+        <attr name="spinner_message" format="string" />
+    </declare-styleable>
+    <declare-styleable name="TextFieldLabelView">
+        <attr name="tfl_placeholder_text" format="string" />
+        <attr name="tfl_prepend_text" format="string" />
+        <attr name="tfl_append_text" format="string" />
+        <attr name="tfl_enable_editing" format="boolean" />
+    </declare-styleable>
+</resources>

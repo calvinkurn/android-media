@@ -7,6 +7,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams.Companion.SOURCE_FINTECH
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
@@ -15,6 +16,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActiv
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.model.Variant
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -30,7 +32,7 @@ class PayLaterActivationViewModel @Inject constructor(
 ) :
     BaseViewModel(dispatcher) {
 
-    var gatewayToChipMap: MutableMap<Int, CheckoutData> = HashMap()
+    var gatewayToChipMap: MutableMap<String, CheckoutData> = HashMap()
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
@@ -51,22 +53,7 @@ class PayLaterActivationViewModel @Inject constructor(
     var selectedTenureSelected = "0"
     var selectedGatewayCode = ""
     var occRedirectionUrl = ""
-
-    fun setProductId(productId: String) {
-        selectedProductId = productId
-    }
-
-    fun setGatewayId(gatewayId: String) {
-        selectedGatewayId = gatewayId
-    }
-
-    fun setTenure(tenure: String) {
-        selectedTenureSelected = tenure
-    }
-
-    fun setGatewayCode(gatewayCode: String) {
-        selectedGatewayCode = gatewayCode
-    }
+    var variantName = ""
 
 
     fun getProductDetail(productId: String) {
@@ -85,15 +72,35 @@ class PayLaterActivationViewModel @Inject constructor(
             if (it.pictures?.size == 0 || it.productName.isNullOrEmpty() || ((it.campaingnDetail?.discountedPrice?.equals(
                     0.0
                 ) == true) && it.price?.equals(0.0) == true)
-            )
+            ) {
                 onFailProductDetail(IllegalStateException("Data invalid"))
-            it.campaingnDetail?.discountedPrice?.let { campaignPrice ->
-                setProductPrice(campaignPrice, it)
+            } else {
+                it.campaingnDetail?.discountedPrice?.let { campaignPrice ->
+                    setProductPrice(campaignPrice, it)
+                }
+                it.shopDetail?.shopId?.let { shopID ->
+                    shopId = shopID
+                }
+                setVariantName(it.variant)
+                _productDetailLiveData.value = Success(it)
             }
-            it.shopDetail?.shopId?.let { shopID ->
-                shopId = shopID
+        }
+    }
+
+    private fun setVariantName(data: Variant?) {
+        data?.let { variant ->
+            if (variant.products.isNotEmpty() && variant.selections.isNotEmpty()) {
+                var combination = -1
+                for (i in variant.products.indices) {
+                    if (selectedProductId == variant.products[i].productID) {
+                        combination = variant.products[i].combination.firstOrNull() ?: -1
+                        break
+                    }
+                }
+                if (combination != -1) {
+                    variantName = variant.selections[0].options[combination]?.value ?: ""
+                }
             }
-            _productDetailLiveData.value = Success(it)
         }
     }
 
@@ -154,17 +161,18 @@ class PayLaterActivationViewModel @Inject constructor(
                         AddToCartOccMultiCartParam(
                             productId = productId,
                             shopId = it,
-                            quantity = productQuantity.toString()
+                            quantity = productQuantity.toString(),
                         )
-                    )
+                    ),
+                    source = SOURCE_FINTECH
                 )
             )
             addToCartUseCase.execute(
-                onSuccess = {
-                    onSuccessAddToCartForCheckout(it)
+                onSuccess = { addToCartOccMultiDataModel ->
+                    onSuccessAddToCartForCheckout(addToCartOccMultiDataModel)
                 },
-                onError = {
-                    onErrorAddToCartForCheckout(it)
+                onError = { throwable ->
+                    onErrorAddToCartForCheckout(throwable)
                 }
             )
         }
@@ -184,10 +192,12 @@ class PayLaterActivationViewModel @Inject constructor(
             )
         else {
             occRedirectionUrl =
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
-                    gatewayToChipMap[selectedGatewayId.toInt()]?.paymentGatewayCode ?: "",
+                UriUtil.buildUri(
+                    ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
+                    gatewayToChipMap[selectedGatewayId]?.paymentGatewayCode ?: "",
                     selectedTenureSelected,
-                    "fintech")
+                    "fintech"
+                )
             _addToCartLiveData.value = Success(addToCartOcc)
 
         }

@@ -7,7 +7,7 @@ import com.tokopedia.otp.stub.common.di.OtpComponentStub
 import com.tokopedia.otp.stub.verification.view.fragment.*
 import com.tokopedia.otp.verification.base.VerificationTest
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment

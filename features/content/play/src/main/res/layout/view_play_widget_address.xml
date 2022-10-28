@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_play_widget_address">
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_address_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/play_dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:padding="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_change_address"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Lokasimu belum tersedia.Lokasimu belum tersedia.Lokasimu belum tersedia." />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_change_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/play_dp_12"
+        android:text="@string/play_change_address_widget_wording"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_address_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_address_desc"
+        app:unifyButtonSize="micro"
+        app:unifyButtonVariant="ghost" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

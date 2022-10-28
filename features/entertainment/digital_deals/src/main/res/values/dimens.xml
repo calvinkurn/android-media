@@ -9,9 +9,7 @@
     <dimen name="image_width_deal">166dp</dimen>
     <dimen name="image_width_brand_deals_card">50dp</dimen>
     <dimen name="image_width_24">24dp</dimen>
-    <dimen name="banner_height_deals">120dp</dimen>
     <dimen name="border_width">1px</dimen>
     <dimen name="dp_3">3dp</dimen>
-    <dimen name="dp_100">100dp</dimen>
 
 </resources>

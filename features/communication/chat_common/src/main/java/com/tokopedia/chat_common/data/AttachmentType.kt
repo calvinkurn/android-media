@@ -9,6 +9,7 @@ class AttachmentType {
         //COMMON
         const val TYPE_IMAGE_ANNOUNCEMENT = "1"
         const val TYPE_IMAGE_UPLOAD = "2"
+        const val TYPE_IMAGE_UPLOAD_SECURE = "26"
         const val TYPE_PRODUCT_ATTACHMENT = "3"
         const val TYPE_VOUCHER_ATTACHMENT = 11
         const val TYPE_STICKER = 21
@@ -19,6 +20,7 @@ class AttachmentType {
         const val TYPE_IMAGE_CAROUSEL = "991"
         const val TYPE_MESSAGE = "0"
         const val TYPE_CTA_HEADER_MSG = "27"
+        const val TYPE_PRODUCT_BUNDLING = "32"
 
         //CHATBOT
         const val TYPE_INVOICES_SELECTION = "6"
@@ -27,7 +29,6 @@ class AttachmentType {
         const val TYPE_CHAT_BALLOON_ACTION = "9"
         const val TYPE_QUICK_REPLY_SEND = "10"
         const val TYPE_VOUCHER = "11"
-        const val TYPE_QUOTATION = "19"
 
         const val TYPE_CHAT_RATING = "-1"
     }

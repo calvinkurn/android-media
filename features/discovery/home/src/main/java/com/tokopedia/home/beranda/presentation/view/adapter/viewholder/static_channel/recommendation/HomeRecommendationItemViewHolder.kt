@@ -15,7 +15,7 @@ import com.tokopedia.smart_recycler_helper.SmartListener
  * Created by Lukas on 2019-07-15
  */
 
-class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder<HomeRecommendationItemDataModel>(itemView) {
+class HomeRecommendationItemViewHolder(itemView: View, private val cardInteraction: Boolean = false) : SmartAbstractViewHolder<HomeRecommendationItemDataModel>(itemView) {
 
     companion object{
         @LayoutRes
@@ -53,7 +53,8 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
                                     imageUrl = element.product.freeOngkirInformation.imageUrl
                             ),
                             labelGroupList = productCardModelLabelGroupList,
-                            hasThreeDots = true
+                            hasThreeDots = true,
+                            cardInteraction = cardInteraction
                     )
             )
             setImageProductViewHintListener(element, object: ViewHintListener {

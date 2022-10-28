@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.storage.interactive
 
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import javax.inject.Inject
 
@@ -8,15 +9,38 @@ import javax.inject.Inject
  */
 class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage {
 
+    private val joinedSet = mutableSetOf<String>()
+    private val hasProcessedWinnerSet = mutableSetOf<String>()
+
     private val interactiveStatusMap = mutableMapOf<String, InteractiveStatus>()
 
     /**
      * Detail resembles the detail when inputted
      */
-    private val interactiveDetailMap = mutableMapOf<String, PlayCurrentInteractiveModel>()
+    private val interactiveDetailMap = mutableMapOf<String, InteractiveUiModel>()
+
+    override fun save(model: InteractiveUiModel) {
+        interactiveDetailMap[model.id] = model
+    }
+
+    override fun setJoined(id: String) {
+        joinedSet.add(id)
+    }
+
+    override fun hasJoined(id: String): Boolean {
+        return joinedSet.contains(id)
+    }
+
+    override fun setHasProcessedWinner(interactiveId: String) {
+        hasProcessedWinnerSet.add(interactiveId)
+    }
+
+    override fun hasProcessedWinner(interactiveId: String): Boolean {
+        return hasProcessedWinnerSet.contains(interactiveId)
+    }
 
     override fun setDetail(interactiveId: String, model: PlayCurrentInteractiveModel) {
-        interactiveDetailMap[interactiveId] = model
+//        interactiveDetailMap[interactiveId] = model
     }
 
     override fun setActive(interactiveId: String) {
@@ -29,30 +53,13 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
         }
     }
 
-    override fun setFinished(interactiveId: String) {
-        if (interactiveStatusMap.containsKey(interactiveId)) {
-            val currentStatus = interactiveStatusMap[interactiveId]!!
-            interactiveStatusMap[interactiveId] = currentStatus.copy(isActive = false)
-        }
-    }
-
-    override fun setJoined(interactiveId: String) {
-        if (interactiveStatusMap.containsKey(interactiveId)) {
-            val currentStatus = interactiveStatusMap[interactiveId]!!
-            interactiveStatusMap[interactiveId] = currentStatus.copy(isJoined = true)
-        }
-    }
-
     override fun getDetail(interactiveId: String): PlayCurrentInteractiveModel? {
-        return interactiveDetailMap[interactiveId]
+//        return interactiveDetailMap[interactiveId]
+        return null
     }
 
     override fun getActiveInteractiveId(): String? {
         return interactiveStatusMap.entries.firstOrNull { it.value.isActive }?.key
-    }
-
-    override fun hasJoined(interactiveId: String): Boolean {
-        return interactiveStatusMap[interactiveId]?.isJoined ?: false
     }
 
     data class InteractiveStatus(val isActive: Boolean, val isJoined: Boolean)

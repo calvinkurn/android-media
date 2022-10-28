@@ -1,9 +1,14 @@
 package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.internal.MediaUploaderUrl
+import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
+import com.tokopedia.mediauploader.common.internal.SourcePolicyManagerImpl
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
@@ -12,7 +17,13 @@ import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
-import com.tokopedia.mediauploader.video.domain.*
+import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
+import com.tokopedia.mediauploader.video.domain.GetChunkUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
+import com.tokopedia.mediauploader.video.domain.InitVideoUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.SetAbortUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.SetCompleteUploaderUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -42,13 +53,22 @@ class MediaUploaderModule {
     }
 
     @Provides
+    fun provideSourcePolicyManager(
+        @ApplicationContext context: Context,
+    ): SourcePolicyManager {
+        return SourcePolicyManagerImpl(context)
+    }
+
+    @Provides
     @MediaUploaderQualifier
     fun provideVideoUploaderManager(
+        policyManager: SourcePolicyManager,
         policyUseCase: GetVideoPolicyUseCase,
         simpleUploader: SimpleUploaderManager,
         largeUploader: LargeUploaderManager
     ): VideoUploaderManager {
         return VideoUploaderManager(
+            policyManager,
             policyUseCase,
             simpleUploader,
             largeUploader
@@ -68,18 +88,21 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideGetImageUploaderUseCase(
-        services: ImageUploadServices
+        services: ImageUploadServices,
+        url: MediaUploaderUrl
     ): GetImageUploaderUseCase {
-        return GetImageUploaderUseCase(services)
+        return GetImageUploaderUseCase(services, url)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideImageUploaderManager(
+        policyManager: SourcePolicyManager,
         imagePolicyUseCase: GetImagePolicyUseCase,
         imageUploaderUseCase: GetImageUploaderUseCase
     ): ImageUploaderManager {
         return ImageUploaderManager(
+            policyManager,
             imagePolicyUseCase,
             imageUploaderUseCase
         )
@@ -98,9 +121,10 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideGetSimpleVideoUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): GetSimpleUploaderUseCase {
-        return GetSimpleUploaderUseCase(services)
+        return GetSimpleUploaderUseCase(services, url)
     }
 
     // --- large video ---
@@ -108,41 +132,46 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideInitVideoUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): InitVideoUploaderUseCase {
-        return InitVideoUploaderUseCase(services)
+        return InitVideoUploaderUseCase(services, url)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideGetChunkCheckerUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): GetChunkCheckerUseCase {
-        return GetChunkCheckerUseCase(services)
+        return GetChunkCheckerUseCase(services, url)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideGetChunkUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): GetChunkUploaderUseCase {
-        return GetChunkUploaderUseCase(services)
+        return GetChunkUploaderUseCase(services, url)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideSetCompleteUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): SetCompleteUploaderUseCase {
-        return SetCompleteUploaderUseCase(services)
+        return SetCompleteUploaderUseCase(services, url)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideSetAbortUploaderUseCase(
-        services: VideoUploadServices
+        services: VideoUploadServices,
+        url: MediaUploaderUrl
     ): SetAbortUploaderUseCase {
-        return SetAbortUploaderUseCase(services)
+        return SetAbortUploaderUseCase(services, url)
     }
 
 }

@@ -42,12 +42,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     testOptions {
@@ -95,7 +95,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
-    implementation rootProject.ext.miscDependencies.robust
     implementation rootProject.ext.miscDependencies.autopatchbase
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation

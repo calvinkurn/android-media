@@ -84,6 +84,7 @@ class VoucherGameListViewModelTest {
     fun getVoucherGameMenuDetail_Success() {
         val telcoCatalogMenuDetailData = TelcoCatalogMenuDetailData(TopupBillsMenuDetail(
                 TopupBillsCatalog("1"),
+                TopupBillsUserPerso(),
                 listOf(TopupBillsRecommendation(title = "recommendation")),
                 listOf(TopupBillsPromo("1")),
                 listOf(TopupBillsTicker(1)),
@@ -130,7 +131,10 @@ class VoucherGameListViewModelTest {
 
     @Test
     fun createMenuDetailParams() {
-        val expectedResult = mapOf(VoucherGameListViewModel.PARAM_MENU_ID to 1)
+        val expectedResult = mapOf(
+            VoucherGameListViewModel.PARAM_MENU_ID to 1,
+            VoucherGameListViewModel.PARAM_PLATFORM_ID to 5
+        )
         val params = voucherGameListViewModel.createMenuDetailParams(1)
         assertEquals(params, expectedResult)
     }

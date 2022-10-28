@@ -20,7 +20,8 @@ object AddEditProductConstants {
     const val FULL_YOUTUBE_URL = "www.youtube.com"
     const val TEMP_IMAGE_EXTENSION = ".0"
     const val KEY_OPEN_BOTTOMSHEET = "tokopedia://bottomsheet_product_limitation"
-
+    const val EXT_JPG = ".jpg"
+    const val EXT_JPEG = ".jpeg"
 
     const val PHOTO_TIPS_URL_1 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_1.png"
     const val PHOTO_TIPS_URL_2 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_2.png"
@@ -31,8 +32,21 @@ object AddEditProductConstants {
     const val PHOTO_TITLE_VALIDATION_SUCCESS = "https://images.tokopedia.net/img/android/product_service/product_title_bottomsheet_success.png"
     const val PHOTO_TITLE_VALIDATION_ERROR = "https://images.tokopedia.net/img/android/product_service/product_title_bottomsheet_error.png"
 
+    const val LIGHT_BULB_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/light_bulb_3x.png"
+    const val ROUND_GREEN_CHECK_MARK_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/round_green_checkmark_3x.png"
+    const val INFORMATION_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/information_icon_3x.png"
+
     const val MAX_PRODUCT_IMAGE_SIZE_IN_MB = 30
     const val MAX_PRODUCT_IMAGE_SIZE_IN_KB = MAX_PRODUCT_IMAGE_SIZE_IN_MB * 1024
+    const val TOP_SCROLL_MARGIN = 16
+
+    const val DELAY_MILLIS = 1000L
 
     const val FIRST_CATEGORY_SELECTED = 0
+    const val DOUBLE_ZERO = 0.0
+
+    const val SERVICE_FEE_LIMIT = 100
+
+    // only applied to CE (Commission Engine) service
+    const val GET_COMMISSION_ENGINE_REGULAR_MERCHANT = 999
 }

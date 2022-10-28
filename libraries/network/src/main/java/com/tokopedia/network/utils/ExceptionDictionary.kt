@@ -1,6 +1,6 @@
 package com.tokopedia.network.utils
 
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import java.io.FileNotFoundException
 import java.io.IOException
 import javax.net.ssl.SSLHandshakeException

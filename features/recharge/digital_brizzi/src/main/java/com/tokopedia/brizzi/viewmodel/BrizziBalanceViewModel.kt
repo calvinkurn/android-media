@@ -15,6 +15,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -29,7 +30,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class
+BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                  val brizziCardObjectMapper: BrizziCardObjectMapper,
                                                  val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
@@ -49,7 +51,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
         //token on server will refresh automatically per 30 minutes
         launchCatchError(block = {
-            var mapParam = HashMap<String, Any>()
+            val mapParam = HashMap<String, Any>()
             mapParam[REFRESH_TOKEN] = refreshToken
 
             val data = withContext(dispatcher) {
@@ -65,6 +67,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
                 brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
             }
+
             brizziInstance.getBalanceInquiry(intent, object : Callback {
                 override fun OnFailure(brizziException: BrizziException?) {
                     brizziException?.let {
@@ -112,7 +115,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<BrizziInquiryLogResponse>()
 
             data.brizziInquiryLog?.let {
-                inquiryIdBrizzi = it.inquiryId
+                inquiryIdBrizzi = it.inquiryId.toIntOrZero()
             }
         }) {
             inquiryIdBrizzi = -1
@@ -152,6 +155,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         logBrizzi(inquiryIdBrizzi, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
                     }
                 }
+
                 emoneyInquiry.postValue(balanceInquiry)
             }
         })

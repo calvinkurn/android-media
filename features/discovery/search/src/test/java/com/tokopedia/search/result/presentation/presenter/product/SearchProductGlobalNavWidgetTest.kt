@@ -6,9 +6,9 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.cpm.CpmDataView
+import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.usecase.RequestParams
@@ -74,7 +74,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list has global nav widget and CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[1].shouldBeInstanceOf<GlobalNavDataView>()
+        visitableList[0].shouldBeInstanceOf<GlobalNavDataView>()
         visitableList[2].shouldBeInstanceOf<CpmDataView>()
     }
 
@@ -101,7 +101,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list has global nav widget and no CPM`(
         visitableList: List<Visitable<*>>
     ) {
-        visitableList[1].shouldBeInstanceOf<GlobalNavDataView>()
+        visitableList[0].shouldBeInstanceOf<GlobalNavDataView>()
 
         for(i in 2 until visitableList.size) {
             visitableList[i].shouldBeInstanceOf<ProductItemDataView>()

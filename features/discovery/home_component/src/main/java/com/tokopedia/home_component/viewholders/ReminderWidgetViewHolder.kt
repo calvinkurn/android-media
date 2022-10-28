@@ -13,6 +13,7 @@ import com.tokopedia.home_component.model.ReminderState
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -22,7 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ReminderWidgetViewHolder(
         itemView: View,
         val reminderWidgetListener : ReminderWidgetListener?,
-        val disableNetwork: Boolean = false
+        val disableNetwork: Boolean = false,
+        private val cardInteraction: Boolean = false
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
     private var binding: HomeComponentReminderWidgetBinding? by viewBinding()
@@ -50,6 +52,11 @@ class ReminderWidgetViewHolder(
 
     fun initView(element: ReminderWidgetModel, itemView: View){
         with(binding) {
+            binding?.cardReminder?.apply {
+                cardElevation = 0f
+                cardType = CardUnify2.TYPE_CLEAR
+                animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
+            }
             if(element.data.reminders.isEmpty()){
                 this?.homeReminderRecommendationLoading?.root?.show()
                 if (!disableNetwork){
@@ -86,7 +93,6 @@ class ReminderWidgetViewHolder(
 
                 this?.btnReminderRecommendation?.setOnClickListener {
                     reminderWidgetListener?.onReminderWidgetClickListener(element)
-                    reminderWidgetListener?.onReminderWidgetDeclineClickListener(element, false)
                 }
 
                 this?.reminderRecommendationWidgetContainer?.addOnImpressionListener(element, object : ViewHintListener {

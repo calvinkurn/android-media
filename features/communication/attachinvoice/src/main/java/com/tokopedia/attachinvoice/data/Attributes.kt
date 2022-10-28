@@ -13,13 +13,13 @@ data class Attributes(
     @SerializedName("HrefURL")
     val hrefURL: String = "",
     @SerializedName("Id")
-    val id: Int = 0,
+    val id: String = "",
     @SerializedName("ImageURL")
     val imageURL: String = "",
     @SerializedName("Status")
     val status: String = "",
     @SerializedName("StatusId")
-    val statusId: Int = 0,
+    val statusId: String = "0",
     @SerializedName("Title")
     val title: String = "",
     @SerializedName("TotalAmount")

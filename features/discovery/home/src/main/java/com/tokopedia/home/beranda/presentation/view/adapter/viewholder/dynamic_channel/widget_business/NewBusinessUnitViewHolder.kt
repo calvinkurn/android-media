@@ -11,7 +11,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LocalLoad
 
-class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitListener): RecyclerView.ViewHolder(view) {
+class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitListener,
+                                 private val cardInteraction: Boolean = false): RecyclerView.ViewHolder(view) {
     private val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
     private val loadingView = view.findViewById<View>(R.id.loading_layout)
     private val errorView = view.findViewById<LocalLoad>(R.id.error_bu_unit_widget)
@@ -42,7 +43,7 @@ class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitL
         recyclerView.hide()
         errorView.hide()
         if(recyclerView.adapter == null) {
-            adapter = BusinessUnitItemAdapter(model?.tabPosition ?: -1, model?.tabName ?: "", listenerBusinessUnitItemTrackerListener)
+            adapter = BusinessUnitItemAdapter(model?.tabPosition ?: -1, model?.tabName ?: "", listenerBusinessUnitItemTrackerListener, cardInteraction)
             recyclerView.adapter = adapter
         }
         adapter?.setPositionWidgetOnHome(positionWidget)

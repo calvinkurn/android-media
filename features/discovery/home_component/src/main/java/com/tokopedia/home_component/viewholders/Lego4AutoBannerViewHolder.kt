@@ -13,7 +13,7 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
+import com.tokopedia.home_component.util.Lego4AutoTabletConfiguration
 import com.tokopedia.home_component.viewholders.adapter.Lego4AutoBannerAdapter
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -29,7 +29,6 @@ class Lego4AutoBannerViewHolder (itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_component_lego_banner_auto
-        const val GRID_COUNT = 2
     }
     private var binding: GlobalComponentLegoBannerAutoBinding? by viewBinding()
     private lateinit var recyclerView: RecyclerView
@@ -69,7 +68,7 @@ class Lego4AutoBannerViewHolder (itemView: View,
 
     private fun initRV() {
         recyclerView = itemView.findViewById(R.id.recycleList)
-        layoutManager = GridLayoutManager(itemView.context, DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context))
+        layoutManager = GridLayoutManager(itemView.context, Lego4AutoTabletConfiguration.getSpanCount(itemView.context))
         parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView.layoutManager = layoutManager
     }
@@ -80,7 +79,7 @@ class Lego4AutoBannerViewHolder (itemView: View,
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context), false))
+                GridSpacingItemDecoration(Lego4AutoTabletConfiguration.getSpanCount(itemView.context), Lego4AutoTabletConfiguration.getSpacingSpaceForLego4Auto(), false))
     }
 
     private fun setHeaderComponent(element: Lego4AutoDataModel) {

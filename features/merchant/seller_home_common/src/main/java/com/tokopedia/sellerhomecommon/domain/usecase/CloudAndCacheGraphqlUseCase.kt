@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -16,13 +17,14 @@ abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> constructor(
     protected val graphqlRepository: GraphqlRepository,
     protected val mapper: BaseResponseMapper<R, U>,
     private val dispatchers: CoroutineDispatchers,
-    private val classType: Class<R>,
-    private val graphqlQuery: String,
-    private val doQueryHash: Boolean
+    protected val graphqlQuery: GqlQueryInterface,
+    private val doQueryHash: Boolean = false
 ) : BaseGqlUseCase<U>() {
 
     private var results: MutableSharedFlow<U> = MutableSharedFlow(replay = 1)
     var collectingResult: Boolean = false
+
+    abstract val classType: Class<R>
 
     private suspend fun getCachedResponse(request: GraphqlRequest): U? {
         try {
@@ -63,11 +65,11 @@ abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> constructor(
         includeCache: Boolean = true
     ) {
         withContext(dispatchers.io) {
-            if (graphqlQuery.isBlank()) {
+            if (graphqlQuery.getQuery().isBlank()) {
                 throw RuntimeException("GQL query must not empty!")
             }
             val request = GraphqlRequest(
-                doQueryHash, graphqlQuery,
+                doQueryHash, graphqlQuery.getQuery(),
                 classType, requestParams.parameters
             )
             if (includeCache) {

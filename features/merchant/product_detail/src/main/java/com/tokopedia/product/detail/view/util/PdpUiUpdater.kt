@@ -1,13 +1,14 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
@@ -16,6 +17,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -23,12 +25,13 @@ import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -40,6 +43,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulRevie
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
@@ -48,6 +53,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -164,7 +170,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productArData: ArButtonDataModel?
         get() = mapOfData[ProductDetailConstant.AR_BUTTON] as? ArButtonDataModel
 
-    fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
+    private val verticalRecommendationItems = mutableListOf<ProductRecommendationVerticalDataModel>()
+
+    fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, loadInitialData: Boolean = false) {
         dataP1?.let {
             updateData(ProductDetailConstant.PRODUCT_CONTENT, loadInitialData) {
                 basicContentMap?.run {
@@ -196,22 +204,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.MEDIA, loadInitialData) {
-                mediaMap?.run {
-                    shouldRenderImageVariant = !loadInitialData
-
-                    listOfMedia = if (enableVideo) {
-                        DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
-                    } else {
-                        DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.filter { it.type != ProductMediaDataModel.VIDEO_TYPE }.toMutableList())
-                    }
-                }
-            }
-
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY, loadInitialData) {
                 shopCredibility?.run {
                     isOs = it.data.isOS
                     isPm = it.data.isPowerMerchant
+                    shopLocation = it.basic.productMultilocation.cityName
                 }
             }
 
@@ -220,7 +217,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     rating = it.basic.stats.rating
                     ratingCount = it.basic.stats.countReview.toIntOrZero()
                     talkCount = it.basic.stats.countTalk.toIntOrZero()
-                    paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
+                    itemSoldFmt = it.basic.txStats.itemSoldFmt
                 }
             }
 
@@ -229,23 +226,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     rating = it.basic.stats.rating
                     ratingCount = it.basic.stats.countReview.toIntOrZero()
                     stock = it.basic.totalStockFmt
-                    paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
-                }
-            }
-
-            updateData(ProductDetailConstant.PRODUCT_WHOLESALE_INFO, loadInitialData) {
-                productWholesaleInfoMap?.run {
-                    val minPrice = it.data.wholesale?.minByOrNull { it.price.value }?.price?.value
-                            ?: return@run
-                    subtitle = context?.getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
-                            ?: ""
-                }
-            }
-
-            updateData(ProductDetailConstant.REVIEW, loadInitialData) {
-                productReviewMap?.run {
-                    totalRating = it.basic.stats.countReview.toIntOrZero()
-                    ratingScore = it.basic.stats.rating
+                    itemSoldFmt = it.basic.txStats.itemSoldFmt
                 }
             }
 
@@ -275,7 +256,40 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.SHOPADS_CAROUSEL, loadInitialData) {
                 topAdsProductBundlingData?.run {
-                    this.productId = dataP1?.basic?.productID
+                    this.productId = dataP1.basic.productID
+                }
+            }
+
+            if (loadInitialData) {
+                verticalRecommendationItems.clear()
+            }
+
+        }
+    }
+
+    fun updateInitialMedia(media: List<Media>, containerType: String) {
+        updateData(ProductDetailConstant.MEDIA, true) {
+            mediaMap?.let {
+                it.initialScrollPosition = if (mediaMap?.initialScrollPosition == -1) -1 else 0
+                it.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(
+                    media.toMutableList()
+                )
+                it.containerType = if (GlobalConfig.isSellerApp()) {
+                    MediaContainerType.Square
+                } else {
+                    containerType.asMediaContainerType()
+                }
+            }
+        }
+    }
+
+    fun updateMediaScrollPosition(selectedOptionId: String?) {
+        if (selectedOptionId == null) return
+        updateData(ProductDetailConstant.MEDIA) {
+            mediaMap?.apply {
+                if (this.variantOptionIdScrollAnchor != selectedOptionId) {
+                    this.variantOptionIdScrollAnchor = selectedOptionId
+                    this.shouldUpdateImage = true
                 }
             }
         }
@@ -308,24 +322,31 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     tradeinResponse.widgetString
                 } else {
                     context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
-                            ?: ""
+                        ?: ""
                 }
             }
         }
     }
 
-    fun updateFintechData(selectedProductId: String, variantData: ProductVariant?, productInfo: DynamicProductInfoP1?) {
-        productInfo?.let{ productDetail->
-            val productIdToPriceURLMap = HashMap<String, FintechPriceUrlDataModel>()
+    fun updateFintechData(
+        selectedProductId: String,
+        variantData: ProductVariant?,
+        productInfo: DynamicProductInfoP1?,
+        loggedIn: Boolean
+    ) {
+        productInfo?.let { productDetail ->
+            val productIdToPriceURLMap = HashMap<String, FintechPriceDataModel>()
             val productCategoryId: String = productDetail.basic.category.id
             if (variantData == null) {
-                productIdToPriceURLMap[productDetail.basic.productID] = FintechPriceUrlDataModel(productDetail.basic.url,productDetail.data.price.value.toString())
+                productIdToPriceURLMap[productDetail.basic.productID] =
+                    FintechPriceDataModel(productDetail.data.price.value.toString())
 
             } else {
                 for (i in variantData.children.indices) {
                     productIdToPriceURLMap[variantData.children[i].productId] =
-                        FintechPriceUrlDataModel( variantData.children[i].url,
-                            variantData.children[i].price.toString())
+                        FintechPriceDataModel(
+                            variantData.children[i].price.toString()
+                        )
                 }
             }
 
@@ -335,17 +356,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     productId = selectedProductId
                     categoryId = productCategoryId
                     idToPriceUrlMap = productIdToPriceURLMap
+                    isLoggedIn = loggedIn
                 }
             }
         }
     }
 
-    fun updateFintechDataWithProductId(selectedProductId: String)
-    {
+    fun updateFintechDataWithProductId(selectedProductId: String, loggedIn: Boolean) {
         updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
         {
             fintechWidgetMap?.run {
                 productId = selectedProductId
+                isLoggedIn = loggedIn
             }
         }
     }
@@ -364,36 +386,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateFulfillmentData(context: Context?, isFullfillment: Boolean) {
-        val fullFillmentText = if (!isFullfillment) {
-            ""
-        } else {
-            context?.getString(R.string.multiorigin_desc) ?: ""
-        }
-
-        updateData(ProductDetailConstant.PRODUCT_FULLFILMENT) {
-            productFullfilmentMap?.run {
-                subtitle = fullFillmentText
-            }
-        }
-    }
-
     fun updateDataP2(context: Context?,
                      p2Data: ProductInfoP2UiData,
                      productId: String,
-                     isProductWarehouse: Boolean,
-                     isProductInCampaign: Boolean,
-                     isOutOfStock: Boolean,
-                     boeImageUrl: String,
-                     isProductParent: Boolean) {
+                     boeImageUrl: String) {
         p2Data.let {
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
                 shopCredibility?.run {
                     shopLastActive = if (context == null) "" else it.shopInfo.shopLastActive.getRelativeDate(context)
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
-                    shopLocation = it.shopInfo.location
-                    isGoApotik = it.isGoApotik
+                    partnerLabel = it.shopInfo.partnerLabel
+                    shopWarehouseCount = it.shopInfo.shopMultilocation.warehouseCount
+                    shopWarehouseApplink = it.shopInfo.shopMultilocation.eduLink.applink
                     shopTierBadgeUrl = it.shopInfo.shopTierBadgeUrl
                     infoShopData = if (context == null) listOf() else
                         getTwoShopInfoHieararchy(context,
@@ -401,7 +406,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                                 it.shopChatSpeed.toLongOrZero(),
                                 it.shopInfo.activeProduct.toLongOrZero(),
                                 it.shopInfo.createdInfo.shopCreated,
-                                it.shopRating)
+                                it.shopRating,
+                                it.shopFinishRate)
                     tickerDataResponse = it.shopInfo.tickerData
                 }
             }
@@ -416,18 +422,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.ORDER_PRIORITY) {
-                orderPriorityMap?.run {
-                    subtitle = it.shopCommitment.staticMessages.pdpMessage
-                }
-            }
-
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF) {
                 miniSocialProofMap?.run {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
+                    buyerPhotosCount = it.imageReview.buyerMediaCount
+                    buyerPhotoStaticText = it.imageReview.staticSocialProofText
                     setSocialProofData()
                 }
             }
@@ -437,7 +438,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
+                    buyerPhotosCount = it.imageReview.buyerMediaCount
+                    buyerPhotoStaticText = it.imageReview.staticSocialProofText
                     setSocialProofData()
                 }
             }
@@ -464,23 +466,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO)
             }
 
-            if (it.productFinancingRecommendationData.data.subtitle.isEmpty()) {
-                removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
-            } else {
-                updateData(ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) {
-                    productInstallmentPaylater?.run {
-                        subtitle = it.productFinancingRecommendationData.data.subtitle
-                    }
-                }
-            }
-
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
             updateNotifyMeAndContent(productId, it.upcomingCampaigns, it.validateTradeIn.isEligible, boeImageUrl)
             updateDataTradein(context, it.validateTradeIn)
             updateData(ProductDetailConstant.REVIEW) {
                 productReviewMap?.run {
-                    listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews?.imageReviewItems
+                    review = it.helpfulReviews?.firstOrNull()
+                    mediaThumbnails = it.imageReview.reviewMediaThumbnails
                     formattedRating = it.rating.ratingScore
                     totalRatingCount = it.rating.totalRating
                     totalReviewCount = it.rating.totalReviewTextAndImage
@@ -534,12 +526,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private fun updatePurchaseProtectionData(ppItemData: PPItemDetailPage) {
         updateData(ProductDetailConstant.PRODUCT_PROTECTION) {
             productProtectionMap?.run {
-                if (ppItemData.title?.isNotEmpty() == true) {
-                    title = ppItemData.title
-                } else if (ppItemData.titlePDP?.isNotEmpty() == true) {
-                    title = ppItemData.titlePDP
-                }
-                subtitle = ppItemData.subTitlePDP ?: ""
+                applink = ppItemData.linkURL.ifNullOrBlank { applink }
+                title = ppItemData.titlePDP.ifNullOrBlank { ppItemData.title.orEmpty() }
+                subtitle = ppItemData.subTitlePDP.ifNullOrBlank { ppItemData.subTitle.orEmpty() }
                 additionalIcon = ppItemData.partnerLogo ?: ""
                 additionalDesc = ppItemData.partnerText ?: ""
                 isApplink = ppItemData.isAppLink ?: false
@@ -645,6 +634,57 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun updateVerticalRecommendationData(data: RecommendationWidget) {
+        updateData(data.pageName) {
+            (mapOfData[data.pageName] as? ProductRecommendationVerticalPlaceholderDataModel)?.apply {
+                if (recomWidgetData?.currentPage != data.currentPage) {
+                    verticalRecommendationItems.addAll(getItemDataModels())
+                }
+                recomWidgetData = data
+            }
+        }
+    }
+
+    fun getVerticalRecommendationNextPage(pageName: String): Int? {
+        val dataModel = (mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel)
+        return dataModel?.recomWidgetData?.nextPage
+    }
+
+    fun removeComponentP2Data(it: ProductInfoP2UiData, countReview: String) {
+        if (it.ratesEstimate.isEmpty()) {
+            removeComponent(ProductDetailConstant.SHIPMENT_V2)
+            removeComponent(ProductDetailConstant.SHIPMENT)
+        }
+
+        if (it.bundleInfoMap.isEmpty()) {
+            removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
+        }
+
+        if (!it.validateTradeIn.isEligible) {
+            removeComponent(ProductDetailConstant.TRADE_IN)
+        }
+
+        if (!it.merchantVoucherSummary.isShown) {
+            removeComponent(ProductDetailConstant.MVC)
+        }
+
+        if (!it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
+            removeComponent(ProductDetailConstant.PRODUCT_PROTECTION)
+        }
+
+        if (it.upcomingCampaigns.values.isEmpty()) {
+            removeComponent(ProductDetailConstant.NOTIFY_ME)
+        }
+
+        if (!it.shopCommitment.isNowActive) {
+            removeComponent(ProductDetailConstant.ORDER_PRIORITY)
+        }
+
+        if (it.helpfulReviews?.isEmpty() == true && countReview.toIntOrZero() == 0) {
+            removeComponent(ProductDetailConstant.REVIEW)
+        }
+    }
+
     fun removeEmptyRecommendation(data: RecommendationWidget) {
         removeComponent(data.pageName)
     }
@@ -675,17 +715,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 recomWidgetData = data.recomWidgetData
                 cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels(hasThreeDots = true)
                         ?: listOf()
-            }
-        }
-    }
-
-    fun updateImageAfterClickVariant(it: MutableList<Media>, enableVideo: Boolean) {
-        updateData(ProductDetailConstant.MEDIA) {
-            mediaMap?.shouldRenderImageVariant = true
-            mediaMap?.listOfMedia = if (enableVideo) {
-                DynamicProductDetailMapper.convertMediaToDataModel(it)
-            } else {
-                DynamicProductDetailMapper.convertMediaToDataModel(it.filter { it.type != ProductMediaDataModel.VIDEO_TYPE }.toMutableList())
             }
         }
     }
@@ -761,7 +790,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem>?) {
+    fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?) {
         mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
             val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
             productRecom.recomWidgetData?.let { recomData ->
@@ -772,7 +801,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<String, MiniCartItem>?, key: String) {
+    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?, key: String) {
         val dataList = recomWidget.copyRecomItemList()
         dataList.forEach { recomItem ->
             //update data based on tokonow cart
@@ -796,7 +825,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
+    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>): Int {
         var variantTotalItems = 0
         miniCart.values.forEach { miniCartItem ->
             if (miniCartItem.productParentId == recomItem.parentID.toString()) {
@@ -885,9 +914,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updatePlayWidget(playWidgetUiModel: PlayWidgetUiModel) {
+    fun updatePlayWidget(playWidgetState: PlayWidgetState) {
         updateData(ProductDetailConstant.PLAY_CAROUSEL) {
-            contentWidgetData?.playWidgetUiModel = playWidgetUiModel
+            contentWidgetData?.playWidgetState = playWidgetState
         }
     }
 
@@ -917,4 +946,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateAction.invoke()
     }
 
+    fun getCurrentDataModels(): List<DynamicPdpDataModel> {
+        val mutableItems = mapOfData.values.toMutableList()
+
+        val indexVerticalRecommendation = mutableItems.indexOfLast {
+            it is ProductRecommendationVerticalPlaceholderDataModel
+        }
+
+        if (indexVerticalRecommendation == -1) return mutableItems
+        verticalRecommendationItems.forEachIndexed { index, item ->
+            item.position = index + 1
+        }
+        mutableItems.addAll(indexVerticalRecommendation + 1, verticalRecommendationItems)
+        return mutableItems
+    }
 }

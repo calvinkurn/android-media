@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.data.pojo;
 
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem;
@@ -21,7 +22,7 @@ public class ProductFeedType {
 
   @SerializedName("price_int")
   @Expose
-  private Integer priceInt;
+  private String priceInt;
 
   @SerializedName("price_original")
   @Expose
@@ -29,7 +30,7 @@ public class ProductFeedType {
 
   @SerializedName("price_original_int")
   @Expose
-  private Integer priceOriginalInt;
+  private String priceOriginalInt;
 
   @SerializedName("image")
   @Expose
@@ -92,7 +93,7 @@ public class ProductFeedType {
     this.price = price;
   }
 
-  public void setPriceInt(Integer priceInt) {
+  public void setPriceInt(String priceInt) {
     this.priceInt = priceInt;
   }
 
@@ -148,7 +149,7 @@ public class ProductFeedType {
     return this.price;
   }
 
-  public Integer getPriceInt() {
+  public String getPriceInt() {
     return this.priceInt;
   }
 
@@ -200,11 +201,11 @@ public class ProductFeedType {
     this.priceOriginal = priceOriginal;
   }
 
-  public Integer getPriceOriginalInt() {
+  public String getPriceOriginalInt() {
     return priceOriginalInt;
   }
 
-  public void setPriceOriginalInt(Integer priceOriginalInt) {
+  public void setPriceOriginalInt(String priceOriginalInt) {
     this.priceOriginalInt = priceOriginalInt;
   }
 

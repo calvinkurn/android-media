@@ -1,0 +1,165 @@
+{
+  "readme": "this tracker to track product detail page",
+  "mode": "exact",
+  "query": [
+    {
+      "networkSpeed": ".+",
+      "businessUnit": "travel & entertainment",
+      "clientId": ".+",
+      "currentSite": "tokopediadigitaldeals",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".+",
+      "screenName": "/digital/deals/product",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "clientId": ".+",
+      "eventCategory": "digital - deals",
+      "item_list": "",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "view product detail",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "item_id": ".+",
+          "price": ".+",
+          "dimension40": "deals - .+ - .+",
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": "none",
+          "item_category": "deals"
+        }
+      ],
+      "eventLabel": ".+"
+    },
+    {
+      "eventCategory": "digital - deals",
+      "event": "digitalDealsClick",
+      "eventAction": "click check location - product detail",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "eventCategory": "digital - deals",
+      "event": "digitalDealsClick",
+      "eventAction": "click check term and condition - product detail",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "eventCategory": "digital - deals",
+      "event": "digitalDealsClick",
+      "eventAction": "check how to redeem - product detail",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "eventCategory": "digital - deals",
+      "event": "digitalDealsClick",
+      "eventAction": "check what you will get - product detail",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "clientId": ".+",
+      "eventCategory": "digital - deals",
+      "item_list": "/deals - .+ - .+ - .+",
+      "event": "view_item_list",
+      "userId": ".*",
+      "eventAction": "impression on deals recommendation",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "item_id": ".+",
+          "price": ".+",
+          "dimension40": "/deals - .+ - .+ - .+",
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": "none",
+          "item_category": "deals"
+        }
+      ],
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "clientId": ".+",
+      "eventCategory": "digital - deals",
+      "item_list": "/deals - .+ - .+ - .+",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click on deals recommendation",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "item_id": ".+",
+          "price": ".+",
+          "dimension40": "",
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": "none",
+          "item_category": "deals"
+        }
+      ],
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "clientId": ".+",
+      "eventCategory": "digital - deals",
+      "item_list": "",
+      "event": "add_to_cart",
+      "userId": ".*",
+      "eventAction": "click beli",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "cart_id": ".+",
+          "quantity": ".+",
+          "category_id": ".+",
+          "item_id": ".+",
+          "price": ".+",
+          "item_name": ".+",
+          "item_variant": "none",
+          "item_category": "deals"
+        }
+      ],
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "clientId": ".+",
+      "eventCategory": "digital - deals",
+      "checkout_step": "1",
+      "currentSite": "tokopediadigitaldeals",
+      "event": "begin_checkout",
+      "userId": ".*",
+      "eventAction": "view checkout",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "cart_id": ".+",
+          "shop_id": ".+",
+          "quantity": ".+",
+          "category_id": ".+",
+          "item_id": ".+",
+          "price": ".+",
+          "shop_type": ".+",
+          "item_name": ".+",
+          "shop_name": ".+",
+          "item_brand": "",
+          "item_variant": "",
+          "item_category": "deals"
+        }
+      ],
+      "eventLabel": ".+",
+      "checkout_option": "cart page loaded"
+    }
+  ]
+}

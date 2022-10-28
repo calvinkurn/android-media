@@ -10,26 +10,22 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.account_settings.presentation.adapter.setting.ImageQualitySettingAdapter
 import com.tokopedia.home_account.account_settings.presentation.listener.ImageQualitySettingListener
 import com.tokopedia.home_account.account_settings.presentation.uimodel.MediaQualityUIModel.Companion.settingsMenu
+import com.tokopedia.home_account.databinding.FragmentImageQualitySettingBinding
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import kotlinx.android.synthetic.main.fragment_image_quality_setting.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class MediaQualitySettingFragment: BaseDaggerFragment(), ImageQualitySettingListener {
+
+    private var viewBinding by autoClearedNullable<FragmentImageQualitySettingBinding>()
 
     private val _adapter by lazy { ImageQualitySettingAdapter(settingsMenu(), this) }
     private val settings by lazy { MediaSettingPreferences(requireContext()) }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(
-                R.layout.fragment_image_quality_setting,
-                container,
-                false
-        )
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewBinding = FragmentImageQualitySettingBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,7 +35,7 @@ class MediaQualitySettingFragment: BaseDaggerFragment(), ImageQualitySettingList
 
     private fun setupRecyclerView() {
         with(_adapter) {
-            recyclerview?.adapter = this
+            viewBinding?.recyclerview?.adapter = this
             previousPosition = settings.qualitySettings()
         }
     }

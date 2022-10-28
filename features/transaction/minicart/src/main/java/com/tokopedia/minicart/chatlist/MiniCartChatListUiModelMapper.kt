@@ -80,9 +80,11 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
                 // Add available product
                 val miniCartChatProductUiModels = mutableListOf<MiniCartChatProductUiModel>()
                 availableGroup.cartDetails.forEach { cartDetail ->
-                    weightTotal += cartDetail.product.productWeight * cartDetail.product.productQuantity
-                    val miniCartChatProductUiModel = mapChatProductUiModel(cartDetail)
-                    miniCartChatProductUiModels.add(miniCartChatProductUiModel)
+                    cartDetail.products.forEach { product ->
+                        weightTotal += product.productWeight * product.productQuantity
+                        val miniCartChatProductUiModel = mapChatProductUiModel(product)
+                        miniCartChatProductUiModels.add(miniCartChatProductUiModel)
+                    }
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartChatProductUiModels)
             }
@@ -102,8 +104,10 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
                 // Add unavailable product
                 val miniCartProductUiModels = mutableListOf<MiniCartChatProductUiModel>()
                 unavailableGroup.cartDetails.forEach { cartDetail ->
-                    val miniCartProductUiModel = mapChatProductUiModel(cartDetail, true)
-                    miniCartProductUiModels.add(miniCartProductUiModel)
+                    cartDetail.products.forEach { product ->
+                        val miniCartProductUiModel = mapChatProductUiModel(product, true)
+                        miniCartProductUiModels.add(miniCartProductUiModel)
+                    }
                 }
                 miniCartUnavailableSectionUiModels.addAll(miniCartProductUiModels)
             }
@@ -122,15 +126,15 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
         return visitables
     }
 
-    private fun mapChatProductUiModel(cartDetail: CartDetail, isDisabled: Boolean = false): MiniCartChatProductUiModel {
+    private fun mapChatProductUiModel(product: Product, isDisabled: Boolean = false): MiniCartChatProductUiModel {
         return MiniCartChatProductUiModel().apply {
-            productId = cartDetail.product.productId
-            productImageUrl = cartDetail.product.productImage.imageSrc100Square
-            productName = cartDetail.product.productName
-            productSlashPriceLabel = cartDetail.product.slashPriceLabel
-            productOriginalPrice = cartDetail.product.productOriginalPrice
-            productPrice = cartDetail.product.productPrice
-            productInformation = cartDetail.product.productInformation
+            productId = product.productId
+            productImageUrl = product.productImage.imageSrc100Square
+            productName = product.productName
+            productSlashPriceLabel = product.slashPriceLabel
+            productOriginalPrice = product.productOriginalPrice
+            productPrice = product.productPrice
+            productInformation = product.productInformation
             isProductDisabled = isDisabled
         }
     }

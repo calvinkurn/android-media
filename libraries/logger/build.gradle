@@ -24,11 +24,24 @@ dependencies {
     // Embrace
     implementation rootProject.ext.miscDependencies.embraceSdk
 
+    //new relic sdk
+    implementation rootProject.ext.miscDependencies.newRelic
+
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.kotlinMockito
+}
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
 }
 
 project.ext {

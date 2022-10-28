@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.BUDGET_MULTIPLE_FACTOR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.BID_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEGATIVE_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEW_KEYWORD
@@ -17,7 +18,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
 class TopAdsInsightShopKeywordViewHolder(private val context: Context, private val view: View) :
     RecyclerView.ViewHolder(view) {
@@ -25,17 +25,12 @@ class TopAdsInsightShopKeywordViewHolder(private val context: Context, private v
     val edtBid: TextFieldUnify = view.findViewById(R.id.edtBid)
     val checkBox: CheckboxUnify = view.findViewById(R.id.checkBox)
     private val txtTitle: Typography = view.findViewById(R.id.txtTitle)
-    private val textGroupTitle: Typography = view.findViewById(R.id.textGroupTitle)
     private val textGroupName: Typography = view.findViewById(R.id.textGroupName)
     private val txtNoOfSearches: Typography = view.findViewById(R.id.txtNoOfSearches)
-    private val txtSubTitle1: Typography = view.findViewById(R.id.txtSubTitle1)
     private val txtSubTitle2: Typography = view.findViewById(R.id.txtSubTitle2)
     private val txtSubTitle2Value: Typography = view.findViewById(R.id.txtSubTitle2Value)
-    private val txtSubTitle1Value: Typography = view.findViewById(R.id.txtSubTitle1Value)
     private val txtRecommendedBudget: Typography = view.findViewById(R.id.txtRecommendedBudget)
     private val txtFooter: Typography = view.findViewById(R.id.txtFooter)
-    private val searchIcon: ImageUnify = view.findViewById(R.id.searchIcon)
-    private val arrow: ImageUnify = view.findViewById(R.id.arrow)
     private val btnEditFee: ImageUnify = view.findViewById(R.id.btnEditFee)
     private val searchGroup: Group = view.findViewById(R.id.searchGroup)
     private val newKeywordGroup: Group = view.findViewById(R.id.newKeywordGroup)
@@ -72,7 +67,7 @@ class TopAdsInsightShopKeywordViewHolder(private val context: Context, private v
     fun updateRecommBudget(item: RecommendedKeywordDetail) = with(txtRecommendedBudget) {
         val inputBudget = item.priceBid
         var isError = false
-        val message = if (inputBudget % 50 != 0) {
+        val message = if (inputBudget % BUDGET_MULTIPLE_FACTOR != 0) {
             isError = true
             resources.getString(R.string.error_bid_not_multiple_50)
         } else if (inputBudget <= item.recommendedBid && inputBudget >= item.minBid) {
@@ -122,7 +117,7 @@ class TopAdsInsightShopKeywordViewHolder(private val context: Context, private v
     }
 
     private fun updateSubTitle2Value(value: Int) {
-        view.txtSubTitle2Value.attributedString(
+        txtSubTitle2Value.attributedString(
             String.format(
                 view.resources.getString(R.string.per_click_bold_value), value
             )

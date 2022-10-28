@@ -22,13 +22,14 @@ buildscript {
 
 android {
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
     packagingOptions {
         exclude 'META-INF/**'
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     defaultConfig {
@@ -69,10 +70,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
-    implementation projectOrAar(rootProject.ext.features.stickyLogin)
+    implementation projectOrAar(rootProject.ext.features.usercomponents)
     implementation projectOrAar(rootProject.ext.features.tokopointsNotification)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.homeNav)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.playWidget)
@@ -131,7 +132,6 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.miscDependencies.traceroute
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation(rootProject.ext.miscDependencies.viewPager2) {
         ['androidx.collection', 'androidx.fragment'].each {

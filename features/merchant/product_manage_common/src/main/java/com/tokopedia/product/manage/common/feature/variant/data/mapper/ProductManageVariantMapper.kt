@@ -1,12 +1,10 @@
 package com.tokopedia.product.manage.common.feature.variant.data.mapper
 
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ShopParam
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
 import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.UpdateVariantParam
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.VariantInputParam
@@ -14,11 +12,16 @@ import com.tokopedia.product.manage.common.feature.variant.data.model.param.Vari
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.VariantSelectionInput
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.VariantSizeChartInput
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 
 object ProductManageVariantMapper {
 
-    fun mapToVariantsResult(response: GetProductV3, access: ProductManageAccess): GetVariantResult {
+    fun mapToVariantsResult(
+        response: GetProductV3,
+        access: ProductManageAccess,
+        maxStock: Int?
+    ): GetVariantResult {
         val variant = response.variant
         val variantSelections = variant.selections
         val variantSizeCharts = variant.sizeCharts
@@ -40,7 +43,8 @@ object ProductManageVariantMapper {
                 it.pictures,
                 isAllStockEmpty,
                 access,
-                it.campaignTypeList
+                it.campaignTypeList,
+                maxStock
             )
         }
 
@@ -76,15 +80,23 @@ object ProductManageVariantMapper {
         return copy(editStock = editStock, editStatus = editStatus)
     }
 
-    fun mapResultToUpdateParam(shopId: String, result: EditVariantResult): UpdateVariantParam {
+    fun mapResultToUpdateParam(shopId: String,
+                               result: EditVariantResult,
+                               shouldSetStock: Boolean = true): UpdateVariantParam {
         val productInput = result.variants.map {
+            val stock =
+                if (shouldSetStock) {
+                    it.stock
+                } else {
+                    null
+                }
             VariantProductInput(
                     it.status,
                     it.combination,
                     it.isPrimary,
-                    it.price.toInt().orZero(),
+                    it.price,
                     it.sku,
-                    it.stock,
+                    stock,
                     it.pictures
             )
         }

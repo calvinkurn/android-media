@@ -13,7 +13,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 16/12/20.
  */
 
-open class ActivateUserUseCase @Inject constructor(
+class ActivateUserUseCase @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<ActivateUserPojo>
 ) : UseCase<ActivateUserPojo>() {
 

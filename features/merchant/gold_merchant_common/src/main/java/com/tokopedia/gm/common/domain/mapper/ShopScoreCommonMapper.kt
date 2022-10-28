@@ -11,18 +11,13 @@ open class ShopScoreCommonMapper @Inject constructor() {
         val dateShopCreated = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result
             ?.firstOrNull()?.createInfo?.shopCreated.orEmpty()
         return ShopInfoPeriodUiModel(
-            periodType = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodType ?: "",
             isNewSeller = GoldMerchantUtil.isNewSeller(
                 dateShopCreated
             ),
             shopAge = GoldMerchantUtil.totalDays(
                 dateShopCreated
             ),
-            dateShopCreated = dateShopCreated,
-            periodStartDate = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo
-                ?.periodStartDate.orEmpty(),
-            periodEndDate = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo
-                ?.periodEndDate.orEmpty(),
+            dateShopCreated = dateShopCreated
         )
     }
 }

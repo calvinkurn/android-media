@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -29,7 +29,7 @@ open class ShopPerformanceViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val shopScoreMapper: ShopScoreMapper,
     val userSession: UserSessionInterface,
-    private val shopInfoPeriodUseCase: Lazy<GetShopInfoPeriodUseCase>,
+    private val shopCreatedInfoUseCase: Lazy<GetShopCreatedInfoUseCase>,
     private val getShopPerformanceUseCase: Lazy<GetShopPerformanceUseCase>
 ) : BaseViewModel(dispatchers.main) {
 
@@ -56,11 +56,11 @@ open class ShopPerformanceViewModel @Inject constructor(
     fun getShopInfoPeriod(isFirstLoad: Boolean) {
         launchCatchError(block = {
             val dataShopInfo = withContext(dispatchers.io) {
-                shopInfoPeriodUseCase.get()
-                    .setCacheStrategy(shopInfoPeriodUseCase.get().getCacheStrategy(isFirstLoad))
-                shopInfoPeriodUseCase.get().requestParams =
-                    GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
-                shopInfoPeriodUseCase.get().executeOnBackground()
+                shopCreatedInfoUseCase.get()
+                    .setCacheStrategy(shopCreatedInfoUseCase.get().getCacheStrategy(isFirstLoad))
+                shopCreatedInfoUseCase.get().requestParams =
+                    GetShopCreatedInfoUseCase.createParams(userSession.shopId.toLongOrZero())
+                shopCreatedInfoUseCase.get().executeOnBackground()
             }
             _shopInfoPeriod.value = Success(dataShopInfo)
         }, onError = {

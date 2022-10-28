@@ -16,8 +16,8 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cachemanager.CacheManager;
@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.instrumentation.test.BuildConfig;
 import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
@@ -85,6 +86,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         PersistentCacheManager.init(this);
 
         TrackApp.initTrackApp(this);
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+            new Cassava.Builder(this)
+                    .initialize();
+        }
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
@@ -95,6 +101,8 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         GraphqlClient.init(this, getAuthenticator());
         RemoteConfigInstance.initAbTestPlatform(this);
 
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
+
         super.onCreate();
 
         ResourceDownloadManager
@@ -102,9 +110,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
                 .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
                 .initialize(this, R.raw.dummy_description);
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
+
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -250,7 +256,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendEvent(String eventName, Map<String, Object> eventValue) {
-            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
+            Cassava.save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         }
 
         @Override
@@ -260,7 +266,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
-            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
+            Cassava.save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         }
     }
 
@@ -290,6 +296,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public void onForceLogout(Activity activity) {
+
+    }
+
+    @Override
+    public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
 
     }
 

@@ -7,14 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
-import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
-import com.tokopedia.logisticCommon.data.response.KeroMapsAutocomplete
-import com.tokopedia.logisticCommon.data.response.KeroPlacesGetDistrict
+import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
-import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,13 +33,13 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
     val districtLocation: LiveData<Result<GetDistrictDataUiModel>>
         get() = _districtLocation
 
-    private val _autoCompleteData = MutableLiveData<Result<AutoCompleteResponse>>()
-    val autoCompleteData: LiveData<Result<AutoCompleteResponse>>
-        get() = _autoCompleteData
-
     private val _districtBoundary = MutableLiveData<Result<DistrictBoundaryResponseUiModel>>()
     val districtBoundary: LiveData<Result<DistrictBoundaryResponseUiModel>>
         get() = _districtBoundary
+
+    private val _districtCenter = MutableLiveData<Result<DistrictCenterUiModel>>()
+    val districtCenter: LiveData<Result<DistrictCenterUiModel>>
+        get() = _districtCenter
 
     fun getDistrictData(lat: Double, long: Double) {
         val param = "$lat,$long"
@@ -67,17 +65,6 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
         }
     }
 
-    fun getAutoComplete(query: String) {
-        viewModelScope.launch {
-            try {
-                val autoComplete = repo.getAutoComplete(query, "")
-                _autoCompleteData.value = Success(autoComplete)
-            } catch (e: Throwable) {
-                _autoCompleteData.value = Fail(e)
-            }
-        }
-    }
-
     fun getDistrictBoundaries(districtId: Long) {
         viewModelScope.launch {
             try {
@@ -86,6 +73,26 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
             } catch (e: Throwable) {
                 _districtBoundary.value = Fail(e)
             }
+        }
+    }
+
+    fun getDistrictCenter(districtId: Long) {
+        viewModelScope.launch {
+            try {
+                val data = repo.getDistrictCenter(districtId)
+                _districtCenter.value = Success(mapDistrictCenterResponseToUiModel(data))
+            } catch (e: Throwable) {
+                _districtCenter.value = Fail(e)
+            }
+        }
+    }
+
+    private fun mapDistrictCenterResponseToUiModel(data: KeroAddrGetDistrictCenterResponse.Data) : DistrictCenterUiModel {
+        return data.keroAddrGetDistrictCenter.district.let {
+            DistrictCenterUiModel(
+                latitude = it.latitude,
+                longitude = it.longitude
+            )
         }
     }
 

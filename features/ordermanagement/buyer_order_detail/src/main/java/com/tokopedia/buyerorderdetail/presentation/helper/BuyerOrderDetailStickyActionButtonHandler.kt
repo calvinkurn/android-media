@@ -22,53 +22,61 @@ class BuyerOrderDetailStickyActionButtonHandler(
         isFromPrimaryButton: Boolean,
         button: ActionButtonsUiModel.ActionButton
     ) {
-        val buttonName = when (button.key) {
+        when (button.key) {
             BuyerOrderDetailActionButtonKey.ASK_SELLER -> {
                 onAskSellerActionButtonClicked()
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_CHAT_SELLER
+                trackClickActionButtonSOM(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_CHAT_SELLER)
             }
             BuyerOrderDetailActionButtonKey.REQUEST_CANCEL -> {
                 onRequestCancelActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_CANCEL_ORDER
+                trackClickActionButtonSOM(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_CANCEL_ORDER)
             }
             BuyerOrderDetailActionButtonKey.TRACK_SHIPMENT -> {
                 onTrackShipmentActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_TRACK_ORDER
+                trackClickActionButtonSOM(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_TRACK_ORDER)
             }
             BuyerOrderDetailActionButtonKey.REQUEST_COMPLAINT -> {
                 onComplaintActionButtonClicked(button.url)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_COMPLAINT_ORDER
+                trackClickActionButtonSOM(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_COMPLAINT_ORDER)
             }
             BuyerOrderDetailActionButtonKey.VIEW_COMPLAINT -> {
                 onViewComplaintActionButtonClicked(button.url)
-                if (isFromPrimaryButton) "" else BuyerOrderDetailTrackerConstant.BUTTON_NAME_VIEW_COMPLAINT_ORDER
+                if (!isFromPrimaryButton) {
+                    trackClickActionButtonSOM(false, BuyerOrderDetailTrackerConstant.BUTTON_NAME_VIEW_COMPLAINT_ORDER)
+                }
             }
             BuyerOrderDetailActionButtonKey.FINISH_ORDER, BuyerOrderDetailActionButtonKey.RECEIVE_CONFIRMATION -> {
                 onReceiveConfirmationActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER
+                trackClickActionButtonSOM(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER)
             }
             BuyerOrderDetailActionButtonKey.HELP -> {
                 onHelpActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_HELP
+                trackClickActionButtonSOM(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_HELP)
             }
             BuyerOrderDetailActionButtonKey.BUY_AGAIN -> {
                 onBuyAgainAllProductButtonClicked()
                 trackBuyAgainProduct()
-                ""
             }
             BuyerOrderDetailActionButtonKey.GIVE_REVIEW -> {
                 onGiveReviewActionButtonClicked(button.url)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_REVIEW_ORDER
+                trackClickActionButtonSOM(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_REVIEW_ORDER)
             }
             BuyerOrderDetailActionButtonKey.RESPONSE_EXTEND_ORDER -> {
                 trackRespondToSubmissionOrderExtensionClicked()
                 onRespondToSubmissionOrderExtensionClicked()
-                ""
             }
-            else -> ""
-        }
-        if (buttonName.isNotBlank()) {
-            trackClickActionButton(isFromPrimaryButton, buttonName)
+            BuyerOrderDetailActionButtonKey.SEE_POD -> {
+                onSeePODButtonClicked(button.url)
+                trackClickActionButtonPG(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_SEE_POD, "")
+            }
+            BuyerOrderDetailActionButtonKey.RE_UPLOAD_PRESCRIPTION -> {
+                onReUploadPrescriptionClicked(button.url)
+                trackClickActionButtonPG(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_RE_UPLOAD_PRESCRIPTION, BuyerOrderDetailTrackerConstant.TRACKER_ID_RE_UPLOAD_PRESCRIPTION)
+            }
+            BuyerOrderDetailActionButtonKey.CHECK_PRESCRIPTION -> {
+                onCheckPrescriptionClicked(button.url)
+                trackClickActionButtonPG(isFromPrimaryButton, BuyerOrderDetailTrackerConstant.BUTTON_NAME_CHECK_PRESCRIPTION, BuyerOrderDetailTrackerConstant.TRACKER_ID_CHECK_PRESCRIPTION)
+            }
         }
     }
 
@@ -78,6 +86,14 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun onRespondToSubmissionOrderExtensionClicked() {
         navigator.goToOrderExtension(viewModel.getOrderId())
+    }
+
+    private fun onReUploadPrescriptionClicked(url: String) {
+        navigator.openAppLink(url, true)
+    }
+
+    private fun onCheckPrescriptionClicked(url: String) {
+        navigator.openAppLink(url, false)
     }
 
     private fun onAskSellerActionButtonClicked() {
@@ -152,10 +168,10 @@ class BuyerOrderDetailStickyActionButtonHandler(
         )
     }
 
-    private fun trackClickActionButton(fromPrimaryButton: Boolean, buttonName: String) {
+    private fun trackClickActionButtonSOM(fromPrimaryButton: Boolean, buttonName: String) {
         viewModel.buyerOrderDetailResult.value?.let {
             if (it is Success) {
-                BuyerOrderDetailTracker.eventClickActionButton(
+                BuyerOrderDetailTracker.eventClickActionButtonSOM(
                     isPrimaryButton = fromPrimaryButton,
                     buttonName = buttonName,
                     orderId = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
@@ -163,5 +179,23 @@ class BuyerOrderDetailStickyActionButtonHandler(
                 )
             }
         }
+    }
+
+    private fun trackClickActionButtonPG(fromPrimaryButton: Boolean, buttonName: String, trackerId: String) {
+        viewModel.buyerOrderDetailResult.value?.let {
+            if (it is Success) {
+                BuyerOrderDetailTracker.eventClickActionButtonPG(
+                    isPrimaryButton = fromPrimaryButton,
+                    buttonName = buttonName,
+                    trackerId = trackerId,
+                    orderId = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                    orderStatusCode = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId
+                )
+            }
+        }
+    }
+
+    private fun onSeePODButtonClicked(url: String) {
+        navigator.openAppLink(url, false)
     }
 }

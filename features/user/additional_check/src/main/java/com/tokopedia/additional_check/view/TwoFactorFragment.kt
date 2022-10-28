@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.additional_check.R
@@ -14,14 +15,20 @@ import com.tokopedia.additional_check.common.ADD_PHONE_NUMBER_PAGE
 import com.tokopedia.additional_check.common.ADD_PIN_PAGE
 import com.tokopedia.additional_check.common.ActivePageListener
 import com.tokopedia.additional_check.data.TwoFactorResult
+import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
 import com.tokopedia.additional_check.databinding.FragmentTwoFactorBinding
+import com.tokopedia.additional_check.di.AdditionalCheckModules
+import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_BOTH
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
 import com.tokopedia.additional_check.internal.TwoFactorTracker
+import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
 import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import javax.inject.Inject
 
 /**
  * Created by Yoris Prayogo on 10/07/20.
@@ -39,13 +46,23 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     var model: TwoFactorResult? = TwoFactorResult()
 
+    @Inject
+    lateinit var additionalCheckPreference: AdditionalCheckPreference
+
     override fun getScreenName(): String = "twoFactorFragment"
-    override fun initInjector() {}
+
+    override fun initInjector() {
+        DaggerAdditionalCheckComponents
+            .builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .additionalCheckModules(AdditionalCheckModules())
+            .build()
+            .inject(this)
+    }
 
     private var _binding: FragmentTwoFactorBinding? = null
 
     private val binding get() = _binding!!
-
 
     fun setActiveListener(mActivePageListener: ActivePageListener){
         this.activePageListener = mActivePageListener
@@ -74,7 +91,8 @@ class TwoFactorFragment: BaseDaggerFragment() {
     private fun renderViewByType(){
         when(model?.popupType){
             POPUP_TYPE_PIN -> renderPinView()
-            POPUP_TYPE_PHONE or POPUP_TYPE_BOTH -> renderPhoneView()
+            POPUP_TYPE_PHONE -> renderPhoneView()
+            POPUP_TYPE_BOTH -> renderPhoneView()
         }
     }
 
@@ -120,13 +138,21 @@ class TwoFactorFragment: BaseDaggerFragment() {
             binding.imgViewTwoFactor.run {
                 ImageHandler.LoadImage(this, PIN_SUCCESS_IMG)
             }
-            binding.btnTwoFactor.setOnClickListener { activity?.finish() }
+            binding.btnTwoFactor.setOnClickListener {
+                if(additionalCheckPreference.getNextOffer().isNotEmpty() && activity != null) {
+                    val nextIntent = TwoFactorCheckerSubscriber.mapStringToOfferData(additionalCheckPreference, requireActivity(), additionalCheckPreference.getNextOffer())
+                    nextIntent?.run {
+                        startActivity(this)
+                    }
+                }
+                activity?.finish()
+            }
         }
     }
 
     private fun goToAddPin(validateToken: String){
         context?.run {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PIN_FROM_2FA)
+            val i = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.ADD_PIN_FROM_2FA)
             i.putExtras(Bundle().apply {
                 putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
                 putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
@@ -137,7 +163,10 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     private fun goToAddPhone(){
         context?.run {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PHONE)
+            val i = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.ADD_PHONE)
+            i.putExtras(Bundle().apply {
+                putBoolean(IS_FROM_2FA, arguments?.getBoolean(IS_FROM_2FA, false) ?: false)
+            })
             startActivityForResult(i, ADD_PHONE_REQ_CODE)
         }
     }
@@ -151,6 +180,9 @@ class TwoFactorFragment: BaseDaggerFragment() {
             }
             ADD_PHONE_REQ_CODE -> {
                 if(resultCode == Activity.RESULT_OK) {
+                    if(additionalCheckPreference.getNextOffer().isNotEmpty()) {
+                        additionalCheckPreference.clearNextOffer()
+                    }
                     validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
                     goToAddPin(validateToken)
                 }
@@ -165,6 +197,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     companion object {
         const val RESULT_POJO_KEY = "modelKey"
+        const val IS_FROM_2FA = "is_from_2fa_checker"
 
         private const val PIN_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_two_factor.png"
         private const val PHONE_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_phone_two_factor.png"

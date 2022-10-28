@@ -22,6 +22,7 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.toCalendar
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.EXTRA_DAYS_COUPON
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
 import com.tokopedia.vouchercreation.databinding.BottomsheetUpdateCouponPeriodBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
@@ -36,7 +37,6 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         private const val ERROR_MESSAGE = "Error edit coupon quota"
         private const val TIME_PICKER_TIME_INTERVAL_IN_MINUTE = 30
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
-        private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
         private const val DATE_TIME_FORMAT_FULL = "EEE, dd MMM yyyy, HH:mm z"
 
         @JvmStatic
@@ -303,7 +303,7 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         calendar.timeInMillis = currentStartDate.time
         calendar.add(
             Calendar.DAY_OF_MONTH,
-            COUPON_END_DATE_OFFSET_IN_DAYS
+            EXTRA_DAYS_COUPON
         )
         return calendar
     }
@@ -319,7 +319,15 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         binding.btnSave.isLoading = true
         binding.btnSave.loadingText = getString(R.string.mvc_please_wait)
 
-        viewModel.updateCoupon()
+        val newPeriod = CouponInformation.Period(viewModel.getSelectedStartDate(), viewModel.getSelectedEndDate())
+
+        val coupon = viewModel.getCoupon() ?: return
+        val updatedCouponInformation = coupon.information.copy(period = newPeriod)
+        val updatedCoupon = coupon.copy(information = updatedCouponInformation)
+
+        val updatedCouponParentProductIds = coupon.productIds.map { it.parentProductId }
+
+        viewModel.updateCoupon(updatedCoupon, updatedCouponParentProductIds)
     }
 
 
@@ -327,6 +335,4 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         val errorMessage = ErrorHandler.getErrorMessage(requireActivity(), throwable)
         Toaster.build(binding.root, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
-
-
 }

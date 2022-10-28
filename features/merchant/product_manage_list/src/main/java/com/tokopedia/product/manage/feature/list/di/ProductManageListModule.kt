@@ -14,6 +14,9 @@ import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductD
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl
 import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.UploadStatusDao
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepository
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepositoryImpl
 import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
@@ -21,10 +24,6 @@ import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
-import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
-import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
-import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -50,24 +49,6 @@ class ProductManageListModule(private val context: Context) {
     @ProductManageListScope
     fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
-    }
-
-    @Provides
-    @ProductManageListScope
-    fun provideTopAdsSourceTracking(@ApplicationContext context: Context?): TopAdsSourceTaggingLocal {
-        return TopAdsSourceTaggingLocal(context)
-    }
-
-    @Provides
-    @ProductManageListScope
-    fun provideTopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal: TopAdsSourceTaggingLocal?): TopAdsSourceTaggingDataSource {
-        return TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal)
-    }
-
-    @Provides
-    @ProductManageListScope
-    fun provideTopAdsSourceTaggingRepository(dataSource: TopAdsSourceTaggingDataSource?): TopAdsSourceTaggingRepository {
-        return TopAdsSourceTaggingRepositoryImpl(dataSource)
     }
 
     @ProductManageListScope
@@ -141,6 +122,14 @@ class ProductManageListModule(private val context: Context) {
     @ProductManageListScope
     @Provides
     fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
+
+    @ProductManageListScope
+    @Provides
+    fun provideUploadStatusDao(draftDb: AddEditProductDraftDb): UploadStatusDao = draftDb.uploadStatusDao()
+
+    @ProductManageListScope
+    @Provides
+    fun provideUploadStatusRepository(dao: UploadStatusDao): UploadStatusRepository = UploadStatusRepositoryImpl(dao)
 
     @ProductManageListScope
     @Provides

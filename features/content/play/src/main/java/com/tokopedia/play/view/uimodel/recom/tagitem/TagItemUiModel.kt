@@ -6,6 +6,7 @@ data class TagItemUiModel(
     val product: ProductUiModel,
     val voucher: VoucherUiModel,
     val maxFeatured: Int,
+    val bottomSheetTitle: String,
     val resultState: ResultState,
 ) {
     companion object {
@@ -15,6 +16,7 @@ data class TagItemUiModel(
                 voucher = VoucherUiModel.Empty,
                 maxFeatured = 0,
                 resultState = ResultState.Loading,
+                bottomSheetTitle = ""
             )
     }
 }

@@ -1,0 +1,268 @@
+{
+  "rechargeCatalogMenuDetail": {
+    "catalog": {
+      "id": 291,
+      "name": "pdp2022_listrik_pln_token_listrik",
+      "label": "Token Listrik",
+      "icon": ""
+    },
+    "user_perso": {
+      "prefill": "111122223333",
+      "user_type": "new user",
+      "loyalty_status": "new user"
+    },
+    "recommendations": [
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+        "title": "Rp 200.000",
+        "clientNumber": "111122223333",
+        "appLink": "tokopedia://digital/form?category_id=3&operator_id=6&product_id=176",
+        "webLink": "https://pulsa.tokopedia.com/pln/?category_id=3&operator_id=6&product_id=176&client_number=111122223333",
+        "productPrice": 202750,
+        "type": "",
+        "categoryId": 3,
+        "productId": 176,
+        "isATC": false,
+        "description": "",
+        "operatorID": 6
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+        "title": "Tagihan Listrik Bulanan",
+        "clientNumber": "102111106111",
+        "appLink": "tokopedia://digital/form?category_id=3&operator_id=18&product_id=291",
+        "webLink": "https://pulsa.tokopedia.com/pln/?category_id=3&operator_id=18&product_id=291&client_number=102111106111",
+        "productPrice": 10000,
+        "type": "",
+        "categoryId": 3,
+        "productId": 291,
+        "isATC": false,
+        "description": "",
+        "operatorID": 18
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+        "title": "Rp 20.000",
+        "clientNumber": "111111111111",
+        "appLink": "tokopedia://digital/form?category_id=3&operator_id=6&product_id=182",
+        "webLink": "https://pulsa.tokopedia.com/pln/?category_id=3&operator_id=6&product_id=182&client_number=111111111111",
+        "productPrice": 22750,
+        "type": "",
+        "categoryId": 3,
+        "productId": 182,
+        "isATC": false,
+        "description": "",
+        "operatorID": 6
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+        "title": "Rp 20.000",
+        "clientNumber": "111111111112",
+        "appLink": "tokopedia://digital/form?category_id=3&operator_id=6&product_id=182",
+        "webLink": "https://pulsa.tokopedia.com/pln/?category_id=3&operator_id=6&product_id=182&client_number=111111111112",
+        "productPrice": 22750,
+        "type": "",
+        "categoryId": 3,
+        "productId": 182,
+        "isATC": false,
+        "description": "",
+        "operatorID": 6
+      }
+    ],
+    "promos": [
+      {
+        "id": 3876,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/gopay-2",
+        "status": 1,
+        "title": "Cashback hingga 50rb untuk Top-up Pulsa hingga Bayar Tagihan dengan GoPay",
+        "subtitle": "Kode Promo: {GOPAYBYR}",
+        "promo_code": "GOPAYBYR"
+      },
+      {
+        "id": 2252,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/4/34631992/34631992_ecb8b9a8-2345-489e-b8d4-4a4a8143f40a.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-7/",
+        "status": 1,
+        "title": "Khusus Pengguna Baru. Bayar Tagihan, Cashback s.d Rp100rb.",
+        "subtitle": "Kode Promo: {COBABAYAR}",
+        "promo_code": "COBABAYAR"
+      },
+      {
+        "id": 2093,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/9/30/42484317/42484317_a2884af5-2dc9-4759-9aa5-527113543c99.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-pln-3/",
+        "status": 1,
+        "title": "Bayar Tagihan Apa Saja, cashback hingga Rp50rb.",
+        "subtitle": "Kode Promo: {BAYARINYUK}",
+        "promo_code": "BAYARINYUK"
+      },
+      {
+        "id": 1573,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/31/42484317/42484317_fa7e8881-26ca-411d-8371-86dd0aee2b1c.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
+        "status": 1,
+        "title": "Bayar Tagihan s.d Pulsa, Dapat Cashback terus-terusan.",
+        "subtitle": "kode promo : {BAYARTERUS}",
+        "promo_code": "BAYARTERUS"
+      },
+      {
+        "id": 2476,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/26/42484317/42484317_9716befc-4764-43e8-a2eb-44a0fede33fc.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-8/",
+        "status": 1,
+        "title": "Bayar Tagihan sampai Hiburan Dapat Kupon Belanja Fashion",
+        "subtitle": "kode promo : {FASHDG}",
+        "promo_code": "FASHDG"
+      },
+      {
+        "id": 6074,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/paket-data/",
+        "status": 1,
+        "title": "Bayar Tagihan tiap Selasa, Diskon Rp30rb dengan Kartu Kredit CIMB Niaga",
+        "subtitle": "Kode promo: {CIMBBTS30}",
+        "promo_code": "CIMBBTS30"
+      },
+      {
+        "id": 2699,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/12/4/34631992/34631992_73150bbc-997a-46d1-859c-a1d882859d17.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/finansial-kredivo-4",
+        "status": 1,
+        "title": "Khusus Pembayaran Kredivo. Bayar tagihan, diskon hingga Rp500rb.",
+        "subtitle": "Kode Promo: {KRDTAGIHAN}",
+        "promo_code": "KRDTAGIHAN"
+      },
+      {
+        "id": 2739,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/12/8/34631992/34631992_c28f7d1c-3e77-41ae-b384-5a9fcf7b21a9.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-diskon-5/",
+        "status": 1,
+        "title": "[INDOTAGIHAN] Bayar tagihan, diskon Rp35rb. Khusus pembayaran Indodana.",
+        "subtitle": "Kode Promo: {INDOTAGIHAN}",
+        "promo_code": "INDOTAGIHAN"
+      },
+      {
+        "id": 2810,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/15/66931192/66931192_39d3a19b-f32f-4f6a-96c8-50cb5890b74c.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-commonwealth",
+        "status": 1,
+        "title": "Diskon 5% hingga Rp250.000 dengan Debit Commonwealth",
+        "subtitle": "Kode promo: {COMMON50}",
+        "promo_code": "COMMON50"
+      },
+      {
+        "id": 5602,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/18/87164404-4ec0-487f-9392-e354bf74172f.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-btn-3/",
+        "status": 1,
+        "title": "Diskon Hingga Rp50.000 dengan Debit Bank BTN (min. trx 60rb)",
+        "subtitle": "Kode promo: {BTNDG50}",
+        "promo_code": "BTNDG50"
+      },
+      {
+        "id": 4013,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/5/c756f11d-4b5a-46aa-aff7-27e2ac315753.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-digibank",
+        "status": 1,
+        "title": "Khusus hari Rabu, Diskon Rp500rb dengan Kartu Kredit Digital digibank by DBS",
+        "subtitle": "Kode promo: {DIGIDG500}",
+        "promo_code": "DIGIDG500"
+      },
+      {
+        "id": 4012,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-digibank",
+        "status": 1,
+        "title": "Khusus hari Rabu, Diskon Rp175rb dengan Kartu Kredit Digital digibank by DBS",
+        "subtitle": "Kode promo: {DIGIDG175}",
+        "promo_code": "DIGIDG175"
+      },
+      {
+        "id": 4011,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-digibank",
+        "status": 1,
+        "title": "Khusus hari Rabu, Diskon Rp50rb dengan Kartu Kredit Digital digibank by DBS",
+        "subtitle": "Kode promo: {DIGIDG50}",
+        "promo_code": "DIGIDG50"
+      },
+      {
+        "id": 3048,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-dbs/",
+        "status": 1,
+        "title": "Hari Rabu, Diskon 350rb dgn Kartu Kredit digibank DBS (min. 6jt)",
+        "subtitle": "Kode promo: {DIGIDG350}",
+        "promo_code": "DIGIDG350"
+      },
+      {
+        "id": 3047,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-dbs/",
+        "status": 1,
+        "title": "Hari Rabu, Diskon 100rb dgn Kartu Kredit digibank DBS (min. 3jt)",
+        "subtitle": "Kode promo: {DIGIDG100}",
+        "promo_code": "DIGIDG100"
+      },
+      {
+        "id": 3046,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-dbs/",
+        "status": 1,
+        "title": "Hari Rabu, Diskon 25rb dgn Kartu Kredit digibank DBS (min. 750rb)",
+        "subtitle": "Kode promo: {DIGIDG25}",
+        "promo_code": "DIGIDG25"
+      },
+      {
+        "id": 5535,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/20/598749dc-6b4d-4d05-8eec-802a0e9794f3.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-hsbc-5/",
+        "status": 1,
+        "title": "Cashback Rp25rb dengan Kartu Kredit HSBC (min. 500rb)",
+        "subtitle": "Kode Promo: {HSBCDG25}",
+        "promo_code": "HSBCDG25"
+      },
+      {
+        "id": 2556,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/17/6b85ad05-17f1-46d7-b4cd-71b749338064.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-citi/",
+        "status": 1,
+        "title": "Diskon Rp25.000 dengan Debit/Kartu Kredit Citibank (min. 500rb)",
+        "subtitle": "Kode promo: {CITIDG25}",
+        "promo_code": "CITIDG25"
+      }
+    ],
+    "tickers": [
+      {
+        "ID": 2361,
+        "Name": "Gangguan Smartfren",
+        "Content": "SMARTFREN - Mohon maaf saat ini sedang terjadi gangguan untuk transaksi Pulsa dan Paket Data Smartfren . Silahkan cek kembali secara berkala.",
+        "Type": "warning",
+        "Environment": "all",
+        "ActionText": "",
+        "ActionLink": ""
+      }
+    ],
+    "banners": [],
+    "express_checkout": false
+  }
+}

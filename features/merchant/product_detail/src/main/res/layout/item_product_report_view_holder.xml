@@ -10,7 +10,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_report_divider"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/product_report_ic"
         app:layout_constraintTop_toTopOf="@id/product_report_ic"
-        app:typographyType="body_3"
+        app:typographyType="display_2"
         tools:text="Produk bermasalah? Laporkan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

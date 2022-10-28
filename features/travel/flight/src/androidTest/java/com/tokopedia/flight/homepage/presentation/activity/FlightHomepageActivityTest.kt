@@ -4,22 +4,27 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeDown
+import androidx.test.espresso.action.ViewActions.swipeLeft
+import androidx.test.espresso.action.ViewActions.swipeRight
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.presentation.adapter.viewholder.FlightCountryViewHolder
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -29,26 +34,26 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 /**
  * @author by furqan on 04/08/2020
  */
-@RunWith(AndroidJUnit4::class)
+
 class FlightHomepageActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
-    var activityRule = ActivityTestRule<FlightHomepageActivity>(FlightHomepageActivity::class.java, false, false)
+    val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
+
+    @get:Rule
+    var activityRule = ActivityTestRule(FlightHomepageActivity::class.java, false, false)
 
     @Before
     fun setup() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_CONTAINS_HOMEPAGE_BANNER,
@@ -92,15 +97,16 @@ class FlightHomepageActivityTest {
     @Test
     fun validateFlightHomepageP1Tracking() {
         Thread.sleep(3000)
+
+        validateFlightHomepageBannerDisplayedAndScrollable()
+
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
 
-        validateFlightHomepageBannerDisplayedAndScrollable()
         validateFlightHomepageBannerClickableAndPerformClick()
         validateFlightHomepageSearchClick()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_P1),
-                hasAllSuccess())
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_P1), hasAllSuccess())
     }
 
     private fun validateFlightHomepageSearchClick() {
@@ -127,13 +133,13 @@ class FlightHomepageActivityTest {
 
         if (getBannerItemCount() > 0) {
             onView(withId(R.id.flightHomepageBanner)).perform(swipeRight())
-            onView(withId(R.id.flightHomepageBanner)).perform(click())
         }
+        onView(withId(R.id.flightHomepageBanner)).perform(click())
     }
 
     private fun getBannerItemCount(): Int {
         val carousel = activityRule.activity.findViewById(R.id.flightHomepageBanner) as CarouselUnify
-        return carousel.indicatorCount.toInt()
+        return carousel.indicatorCount.toIntSafely()
     }
 
     @Test
@@ -151,8 +157,8 @@ class FlightHomepageActivityTest {
         setPassengersClass()
 
         Thread.sleep(1000)
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ALL),
-                hasAllSuccess())
+
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_ALL), hasAllSuccess())
     }
 
     private fun departureAirport() {
@@ -236,7 +242,7 @@ class FlightHomepageActivityTest {
         Thread.sleep(1000)
     }
 
-    fun validateTravelVideoTracking() {
+    private fun validateTravelVideoTracking() {
         Thread.sleep(1000)
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())

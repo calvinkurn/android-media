@@ -4,21 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="@dimen/ovop2p_dp10">
 
     <TextView
         android:id="@+id/tv_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/clr_6b767e"
-        android:textSize="14sp"
+        android:textColor="@color/ovop2p_dms_clr_6b767e"
+        android:textSize="@dimen/ovop2p_sp14"
         tools:text="Batatia" />
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/clr_6b767e"
-        android:textSize="14sp"
+        android:textColor="@color/ovop2p_dms_clr_6b767e"
+        android:textSize="@dimen/ovop2p_sp14"
         tools:text="Number" />
 </LinearLayout>

@@ -9,13 +9,18 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -26,13 +31,17 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirIma
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirProduct
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.product.Stock
+import com.tokopedia.product.detail.common.data.model.product.VariantBasic
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -43,15 +52,21 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteD
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
+import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingData
@@ -64,13 +79,20 @@ import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.invoke
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
+import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -257,7 +279,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     //region getMiniCart
     @Test
     fun `success get minicart`() {
-        val data = MiniCartSimplifiedData(miniCartItems = listOf(MiniCartItem(productId = "123", quantity = 2)))
+        val data = MiniCartSimplifiedData(miniCartItems = mapOf(MiniCartItemKey("123") to MiniCartItem.MiniCartItemProduct(productId = "123", quantity = 2)))
         val shopIdSlot = slot<List<String>>()
 
         `on success get product info login`()
@@ -269,7 +291,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getMiniCart("312")
 
         verify {
-            miniCartListSimplifiedUseCase.setParams(capture(shopIdSlot))
+            miniCartListSimplifiedUseCase.setParams(capture(shopIdSlot), any())
         }
 
         coVerify {
@@ -473,7 +495,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `on success update cart tokonow with minicart data`() = runBlockingTest {
         `on success get product info login`()
         val mockData = UpdateCartV2Data(data = Data(message = "sukses update cart"))
-        val currentMiniCartMock = MiniCartItem(productId = "518076293", quantity = 10)
+        val currentMiniCartMock = MiniCartItem.MiniCartItemProduct(productId = "518076293", quantity = 10)
         val updatedQuantity = 5
 
         coEvery {
@@ -496,7 +518,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         //fulfil empty data minicart
         `on success get product info non login`()
         val mockData = UpdateCartV2Data(data = Data(message = "sukses update cart"))
-        val currentMiniCartMock = MiniCartItem(productId = "518076293", quantity = 10)
+        val currentMiniCartMock = MiniCartItem.MiniCartItemProduct(productId = "518076293", quantity = 10)
         val updatedQuantity = 5
 
         coEvery {
@@ -519,7 +541,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         //fulfil empty data minicart
         `on success get product info non login`()
         val mockData = UpdateCartV2Data(error = listOf("error gan"), data = Data(message = "sukses update cart"))
-        val currentMiniCartMock = MiniCartItem(productId = "518076293", quantity = 10)
+        val currentMiniCartMock = MiniCartItem.MiniCartItemProduct(productId = "518076293", quantity = 10)
         val updatedQuantity = 5
 
         coEvery {
@@ -540,7 +562,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `on fail update cart throwable tokonow`() = runBlockingTest {
         //fulfil empty data minicart
         `on success get product info non login`()
-        val currentMiniCartMock = MiniCartItem(productId = "518076293", quantity = 10)
+        val currentMiniCartMock = MiniCartItem.MiniCartItemProduct(productId = "518076293", quantity = 10)
         val updatedQuantity = 5
 
         coEvery {
@@ -627,6 +649,31 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
+
+        viewModel.addToCart(addToCartOcsRequestParams)
+
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOcsUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
+    fun `on error normal atc cause result null`() = runBlockingTest {
+        val addToCartOcsRequestParams = AddToCartRequestParams()
+
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns null
 
         viewModel.addToCart(addToCartOcsRequestParams)
 
@@ -755,125 +802,255 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
      * RecommendationWidget
      */
     @Test
-    fun onSuccessLoadRecommendationWithEmptyFilter() {
-        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
-        val listOfRecom = arrayListOf(recomWidget)
-        val listOfFilter = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-        val pageName = "pdp3"
-
+    fun `assert request params tokonow`() {
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns listOfRecom
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns RecommendationWidget()
 
-        coEvery {
-            getRecommendationFilterChips.executeOnBackground().filterChip
-        } returns listOfFilter
+        viewModel.loadRecommendation("pdp_10",
+                "123",
+                true,
+                mutableMapOf("123" to MiniCartItem.MiniCartItemProduct())
+        )
 
-        (1..2).forEach { _ ->
-            viewModel.loadRecommendation(pageName)
+        val requestParamsSlot = slot<RequestParams>()
+        coVerify {
+            getProductRecommendationUseCase.executeOnBackground(capture(requestParamsSlot))
         }
 
-        coVerify(exactly = 1) {
-            getRecommendationUseCase.createObservable(any())
-        }
-
-        Assert.assertTrue((viewModel.loadTopAdsProduct.value as Success).data.tid == recomWidget.tid)
+        val requestParams = requestParamsSlot.captured
+        Assert.assertEquals(requestParams.getString("productID", ""), "123")
+        Assert.assertEquals(requestParams.getString("pageName", ""), "pdp_10")
+        Assert.assertEquals(requestParams.getBoolean("tokonow", false), true)
+        val miniCart = requestParams.getObject("minicart") as MutableMap<String, MiniCartItem.MiniCartItemProduct>?
+        Assert.assertEquals(miniCart!!.isNotEmpty(), true)
     }
 
     @Test
-    fun onSuccessLoadRecommendationWithNonEmptyFilter() {
-        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
-        val listOfRecom = arrayListOf(recomWidget)
-        val listOfFilter = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip())
+    fun `assert request params non tokonow`() {
+        coEvery {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns RecommendationWidget()
+
+        viewModel.loadRecommendation("pdp_10",
+                "123",
+                false,
+                null
+        )
+
+        val requestParamsSlot = slot<RequestParams>()
+        coVerify {
+            getProductRecommendationUseCase.executeOnBackground(capture(requestParamsSlot))
+        }
+
+        val requestParams = requestParamsSlot.captured
+        Assert.assertEquals(requestParams.getString("productID", ""), "123")
+        Assert.assertEquals(requestParams.getString("pageName", ""), "pdp_10")
+        Assert.assertEquals(requestParams.getBoolean("tokonow", false), false)
+        val miniCart = requestParams.getObject("minicart") as MutableMap<MiniCartItemKey, MiniCartItem>?
+        Assert.assertNull(miniCart)
+    }
+
+    @Test
+    fun `success load recommendation without filter`() {
+        val mockRecomm = RecommendationWidget(
+                tid = "1",
+                recommendationItemList = listOf(RecommendationItem())
+        )
         val pageName = "pdp3"
-        coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns listOfRecom
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground().filterChip
-        } returns listOfFilter
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns mockRecomm
 
-        viewModel.loadRecommendation(pageName)
+        viewModel.loadRecommendation(pageName,
+                "123",
+                false,
+                mutableMapOf()
+        )
 
         coVerify {
-            getRecommendationUseCase.createObservable(any())
+            getProductRecommendationUseCase.executeOnBackground(any())
         }
 
-        Assert.assertEquals((viewModel.loadTopAdsProduct.value as Success).data.tid, recomWidget.tid)
+        Assert.assertTrue((viewModel.loadTopAdsProduct.value as Success).data.tid == "1")
     }
 
     @Test
-    fun onErrorLoadRecommendation() {
+    fun `success load recommendation with filter`() {
+        val mockFilter = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip())
+        val mockRecomm = RecommendationWidget(tid = "1",
+                recommendationItemList = listOf(RecommendationItem()),
+                recommendationFilterChips = mockFilter
+        )
+        val pageName = "pdp3"
+
+        coEvery {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns mockRecomm
+
+        viewModel.loadRecommendation(pageName, "", false, mutableMapOf())
+
+        coVerify {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        }
+
+        Assert.assertEquals((viewModel.loadTopAdsProduct.value as Success).data.tid, "1")
+        Assert.assertEquals(
+                (viewModel.loadTopAdsProduct.value as Success)
+                        .data
+                        .recommendationFilterChips
+                        .isNotEmpty(), true)
+    }
+
+    @Test
+    fun `error load recommendation`() {
         val pageName = "pdp3"
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking()
+            getProductRecommendationUseCase.executeOnBackground(any())
         } throws Throwable()
 
-        coEvery {
-            getRecommendationFilterChips.executeOnBackground().filterChip
-        } returns listOf()
-
-        viewModel.loadRecommendation(pageName)
+        viewModel.loadRecommendation(pageName, "", false, mutableMapOf())
 
         coVerify {
-            getRecommendationUseCase.createObservable(any())
+            getProductRecommendationUseCase.executeOnBackground(any())
         }
         Assert.assertTrue(viewModel.loadTopAdsProduct.value is Fail)
+        Assert.assertTrue((viewModel.loadTopAdsProduct.value as Fail).throwable.message == pageName)
     }
 
     @Test
-    fun `success get recommendation with exist list`() {
-        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
-        val listOfRecom = arrayListOf(recomWidget)
-        val recomDataModel = ProductRecommendationDataModel(filterData = listOf(AnnotationChip(
-                RecommendationFilterChipsEntity.RecommendationFilterChip(isActivated = true)
-        )))
+    fun `success load recommendation chip clicked`() {
+        val mockResponse = RecommendationWidget(
+                tid = "1",
+                recommendationItemList = listOf(RecommendationItem())
+        )
 
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns listOfRecom
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
 
-        viewModel.getRecommendation(recomDataModel, AnnotationChip(), 1, 1)
+        val mockSelectedChip = AnnotationChip(
+                RecommendationFilterChipsEntity.RecommendationFilterChip(
+                        name = "katun chip",
+                        isActivated = true,
+                        value = "queryparambro"
+                )
+        )
 
+        val initialAnnotationChip = listOf(AnnotationChip(
+                RecommendationFilterChipsEntity.RecommendationFilterChip(
+                        name = "katun chip",
+                        isActivated = false
+                )),
+                AnnotationChip(
+                        RecommendationFilterChipsEntity.RecommendationFilterChip(
+                                name = "kulit chip",
+                                isActivated = false
+                        ))
+        )
+
+        val recomDataModel = ProductRecommendationDataModel(
+                filterData = initialAnnotationChip,
+                recomWidgetData = RecommendationWidget(
+                        pageName = "pdp_11"
+                ))
+
+        viewModel.recommendationChipClicked(recomDataModel, mockSelectedChip, "123")
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
         coVerify {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(capture(slotRequestParams))
         }
 
-        Assert.assertTrue(viewModel.filterTopAdsProduct.value?.isRecomenDataEmpty == false)
-        Assert.assertTrue((viewModel.statusFilterTopAdsProduct.value as Success).data)
+        //assert request params
+        val reqParams = slotRequestParams.captured
+        Assert.assertEquals(reqParams.pageNumber, 1)
+        Assert.assertEquals(reqParams.pageName, "pdp_11")
+        Assert.assertEquals(reqParams.queryParam, "queryparambro")
+        Assert.assertEquals(reqParams.productIds, listOf("123"))
+
+        val filterData = viewModel.filterTopAdsProduct.value
+        Assert.assertNotNull(filterData)
+
+        Assert.assertEquals(filterData!!.isRecomenDataEmpty, false)
+        Assert.assertEquals(filterData.filterData!!.isNotEmpty(), true)
+
+        val selectedChip = filterData.filterData!!.first {
+            it.recommendationFilterChip.isActivated
+        }.recommendationFilterChip.name
+
+        val otherChipUnselected = filterData.filterData!!.any {
+            it.recommendationFilterChip.name == "kulit chip" && !it.recommendationFilterChip.isActivated
+        }
+
+        Assert.assertEquals(selectedChip, "katun chip")
+        Assert.assertEquals(otherChipUnselected, true)
+        Assert.assertNull(viewModel.statusFilterTopAdsProduct.value)
     }
 
     @Test
-    fun `success get recommendation with empty list`() {
+    fun `success load recommendation chip clicked return empty list`() {
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         } returns emptyList()
 
-        viewModel.getRecommendation(ProductRecommendationDataModel(), AnnotationChip(), 1, 1)
+        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), "")
 
         coVerify {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         }
 
         Assert.assertNull(viewModel.filterTopAdsProduct.value?.recomWidgetData)
-        Assert.assertFalse((viewModel.statusFilterTopAdsProduct.value as Success).data)
+        Assert.assertNull(viewModel.statusFilterTopAdsProduct.value)
     }
 
     @Test
-    fun `error get recommendation`() {
+    fun `error load recommendation chip clicked`() {
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         } throws Throwable()
 
-        viewModel.getRecommendation(ProductRecommendationDataModel(), AnnotationChip(), 1, 1)
+        viewModel.recommendationChipClicked(ProductRecommendationDataModel(), AnnotationChip(), "")
 
         coVerify {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         }
 
         Assert.assertNull(viewModel.filterTopAdsProduct.value?.recomWidgetData)
         Assert.assertTrue(viewModel.statusFilterTopAdsProduct.value is Fail)
+    }
+
+    @Test
+    fun `load recommendation already hitted`() {
+        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
+
+        coEvery {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        } returns recomWidget
+
+        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf())
+        Thread.sleep(500)
+        //hit again with same page name
+        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf())
+
+        //make sure it will only called once
+        coVerify(exactly = 1) {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        }
+    }
+
+    @Test
+    fun `load recommendation sellerapp`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns true
+
+        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf())
+
+        coVerify(inverse = true) {
+            getProductRecommendationUseCase.executeOnBackground(any())
+        }
     }
     //endregion
 
@@ -1033,9 +1210,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(viewModel.topAdsImageView.value is Success)
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
+        // update: palugada unused component wholesales_info
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
@@ -1186,12 +1364,57 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getProductP1(productParams, refreshPage = true, userLocationLocal = getUserLocationCache())
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VALUE_PROP } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VARIANT_OPTIONS } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.TRADE_IN })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.VALUE_PROP })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.VARIANT_OPTIONS })
+        // remove unused palugada
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.ORDER_PRIORITY })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.COD })
+
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.MEDIA })
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.TICKER_INFO })
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.PRODUCT_CONTENT })
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.PRODUCT_PROTECTION })
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.SHIPMENT })
+    }
+
+    @Test
+    fun `on success remove unused component when sellerapp`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val productParams = ProductParams("", "", "", "", "", "")
+
+        every {
+            GlobalConfig.isSellerApp()
+        } returns true
+
+        every {
+            viewModel.userId
+        } returns "123"
+
+        every {
+            viewModel.isShopOwner()
+        } returns true
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        every {
+            viewModel.isUserSessionActive
+        } returns false
+
+        `co every p1 success`(dataP1)
+
+        viewModel.getProductP1(productParams, refreshPage = true, userLocationLocal = getUserLocationCache())
+
+        val p1Result = (viewModel.productLayout.value as Success).data
+        Assert.assertTrue(p1Result.none { it.type() == ProductDetailConstant.PRODUCT_LIST })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PLAY_CAROUSEL })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.REPORT })
     }
 
     /**
@@ -1222,6 +1445,40 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
+    fun `determine variant return value`() {
+        val productVariant = ProductVariant()
+        val mapOfSelectedOptionIds = mutableMapOf<String, String>()
+
+        val expectedVariantCategory = VariantCategory()
+
+        mockkObject(ProductDetailVariantLogic)
+
+        every {
+            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+        } returns expectedVariantCategory
+
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
+        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        Assert.assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
+    }
+
+    @Test
+    fun `determine variant return null`() {
+        val productVariant = ProductVariant()
+        val mapOfSelectedOptionIds = mutableMapOf<String, String>()
+
+        mockkObject(ProductDetailVariantLogic)
+
+        every {
+            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+        } returns null
+
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
+        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        Assert.assertTrue(viewModel.singleVariantData.value == null)
+    }
+
+    @Test
     fun `variant clicked not partial`() {
         val partialySelect = false
         val imageVariant = "image"
@@ -1231,25 +1488,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `variant clicked partialy with image not blank`() {
+    fun `variant clicked partialy will post clicked variant option id`() {
         val partialySelect = true
-        val imageVariant = "image"
-        viewModel.listOfParentMedia = mutableListOf(Media(uRLOriginal = "gambar 1"))
-        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        val variantOptionId = "1234567890"
+        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), variantOptionId)
         Assert.assertTrue(viewModel.onVariantClickedData.value == null)
         Assert.assertTrue(viewModel.updatedImageVariant.value != null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.first()?.uRLOriginal == imageVariant)
-    }
-
-    @Test
-    fun `variant clicked partialy with blank image`() {
-        val partialySelect = true
-        val imageVariant = "gambar gan"
-        viewModel.listOfParentMedia = null
-        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
-        Assert.assertTrue(viewModel.onVariantClickedData.value == null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value != null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.isEmpty() == true)
+        Assert.assertTrue(viewModel.updatedImageVariant.value?.second == variantOptionId)
     }
 
     /**
@@ -1281,6 +1526,135 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         verify { viewModel.hitAffiliateTracker(anyString(), anyString()) }
     }
 
+    //region affiliate cookie
+    @Test
+    fun `integration test affiliate cookie sdk`() {
+
+        val productId = "321"
+        val shopId = "123"
+        val categoryId = "123"
+        val isVariant = true
+        val stock = 10
+
+        val mockProductInfoP1 = DynamicProductInfoP1(
+            basic = BasicInfo(
+                shopID = shopId,
+                productID = productId,
+                category = Category(
+                    detail = listOf(
+                        Category.Detail(
+                            id = categoryId
+                        ),
+                        Category.Detail(
+                            id = "312"
+                        )
+                    )
+                )
+            ),
+            data = ComponentData(
+                variant = VariantBasic(
+                    isVariant = isVariant
+                ),
+                stock = Stock(
+                    value = stock
+                )
+            )
+        )
+
+        val affiliateUUID = "123"
+        val affiliateChannel = "affiliate channel"
+        val uuid = "1111"
+
+        val slot = slot<AffiliatePageDetail>()
+
+        viewModel.hitAffiliateCookie(
+            productInfo = mockProductInfoP1,
+            affiliateUuid = affiliateUUID,
+            uuid = uuid,
+            affiliateChannel = affiliateChannel
+        )
+
+        coVerify {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                capture(slot),
+                uuid
+            )
+        }
+
+        with(slot.captured){
+            Assert.assertEquals(productId, this.pageId)
+            Assert.assertTrue(source is AffiliateSdkPageSource.PDP)
+        }
+    }
+
+    @Test
+    fun `when init affiliate cookie throw, no op`() {
+
+        val productId = "321"
+        val shopId = "123"
+        val categoryId = "123"
+        val isVariant = true
+        val stock = 10
+
+        val mockProductInfoP1 = DynamicProductInfoP1(
+            basic = BasicInfo(
+                shopID = shopId,
+                productID = productId,
+                category = Category(
+                    detail = listOf(
+                        Category.Detail(
+                            id = categoryId
+                        ),
+                        Category.Detail(
+                            id = "312"
+                        )
+                    )
+                )
+            ),
+            data = ComponentData(
+                variant = VariantBasic(
+                    isVariant = isVariant
+                ),
+                stock = Stock(
+                    value = stock
+                )
+            )
+        )
+
+        val affiliateUUID = "123"
+        val affiliateChannel = "affiliate channel"
+        val uuid = "1111"
+
+        coEvery{
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                any(),
+                uuid
+            )
+        } throws Throwable("gagal bro")
+
+        viewModel.hitAffiliateCookie(
+            productInfo = mockProductInfoP1,
+            affiliateUuid = affiliateUUID,
+            uuid = uuid,
+            affiliateChannel = affiliateChannel
+        )
+
+        coVerify {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                any(),
+                uuid
+            )
+        }
+        // no op, expect to be handled by Affiliate SDK
+
+    }
+    //endregion
 
     /**
      * UpdateCartCounter
@@ -1363,67 +1737,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     /**
-     * Add/Remove Wishlist
-     */
-    @Test
-    fun onSuccessAddWishlist() {
-        val productId = "123"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun onErrorAddWishlist() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (addWishListUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList(errorMessage, productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
-    }
-
-    @Test
-    fun onSuccessRemoveWishlist() {
-        val productId = "123"
-        every { (removeWishlistUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessRemoveWishlist(productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun onErrorRemoveWishlist() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (removeWishlistUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorRemoveWishlist(errorMessage, productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
-    }
-
-    /**
      * Discussion Most Helpful
      */
     @Test
@@ -1467,8 +1780,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getTopadsIsAdsUseCase.executeOnBackground()
         } throws Throwable("error")
 
-        coEvery { remoteConfigInstance.getLong(any(), any())
-        }  returns 5000
+        coEvery {
+            remoteConfigInstance.getLong(any(), any())
+        } returns 5000
 
         viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
@@ -1502,8 +1816,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val errorCode = slot<Int>()
         val isTopAds = slot<Boolean>()
 
-        coEvery { remoteConfigInstance.getLong(any(), any())
-        }  returns 5000
+        coEvery {
+            remoteConfigInstance.getLong(any(), any())
+        } returns 5000
 
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
 
@@ -1522,6 +1837,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals(isTopAds.captured, true)
     }
 
+
     /**
      * tokonow recom section
      */
@@ -1529,7 +1845,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `test add to cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, cartId = "12345"), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, cartId = "12345", message = arrayListOf("halo")), status = "OK")
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
@@ -1539,6 +1855,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
         Assert.assertTrue(!atcResponseSuccess.isStatusError())
+        Assert.assertTrue(viewModel.atcRecomTokonowSendTracker.value is Success)
+        Assert.assertEquals(Success(recomItem), viewModel.atcRecomTokonowSendTracker.value)
     }
 
     @Test
@@ -1577,7 +1895,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test update cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
         val response = UpdateCartV2Data(data = Data(message = "sukses update cart"))
         coEvery {
@@ -1598,7 +1916,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test update cart non variant then return failed with message`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
         val response = UpdateCartV2Data(error = listOf("error nih gan"))
         coEvery {
@@ -1616,7 +1934,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test update cart non variant then return error throwable`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 11
         coEvery {
             updateCartUseCase.executeOnBackground()
@@ -1633,7 +1951,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test delete cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val response = RemoveFromCartData(status = "OK", data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart"), success = 1))
         coEvery {
             deleteCartUseCase.executeOnBackground()
@@ -1653,7 +1971,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test delete cart non variant then return failed with message`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         val response = RemoveFromCartData(status = "ERROR", data = com.tokopedia.cartcommon.data.response.deletecart.Data(success = 0))
         coEvery {
             deleteCartUseCase.executeOnBackground()
@@ -1670,7 +1988,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `test delete cart non variant then return error throwable`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
-        val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = recomItem.productId.toString(), quantity = 10)
         coEvery {
             deleteCartUseCase.executeOnBackground()
         } throws Throwable()
@@ -1688,22 +2006,25 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
 
         val expectedResponse = PlayWidget()
-        val expectedUiModel = PlayWidgetUiModel.Medium(
-                "title",
-                "action title",
-                "applink",
-                true,
-                PlayWidgetConfigUiModel(
+        val expectedState = PlayWidgetState(
+                model = PlayWidgetUiModel(
+                        "title",
+                        "action title",
+                        "applink",
                         true,
-                        1000,
-                        true,
-                        1,
-                        1,
-                        2,
-                        1
+                        PlayWidgetConfigUiModel(
+                                true,
+                                1000,
+                                true,
+                                1,
+                                1,
+                                2,
+                                1
+                        ),
+                        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                        listOf()
                 ),
-                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-                listOf()
+                isLoading = false,
         )
 
 
@@ -1717,11 +2038,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             playWidgetTools.mapWidgetToModel(
                     expectedResponse
             )
-        } returns expectedUiModel
+        } returns expectedState
 
         viewModel.getPlayWidgetData()
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(expectedUiModel))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(expectedState))
     }
 
     @Test
@@ -1766,22 +2087,25 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `play widget toggle reminder success`() {
 
-        val fakeUiModel = PlayWidgetUiModel.Medium(
-                "title",
-                "action title",
-                "applink",
-                true,
-                PlayWidgetConfigUiModel(
+        val fakeState = PlayWidgetState(
+                model = PlayWidgetUiModel(
+                        "title",
+                        "action title",
+                        "applink",
                         true,
-                        1000,
-                        true,
-                        1,
-                        1,
-                        2,
-                        1
+                        PlayWidgetConfigUiModel(
+                                true,
+                                1000,
+                                true,
+                                1,
+                                1,
+                                2,
+                                1
+                        ),
+                        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                        listOf()
                 ),
-                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-                listOf()
+                isLoading = false,
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1791,9 +2115,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                    fakeUiModel, fakeChannelId, fakeReminderType
+                    fakeState, fakeChannelId, fakeReminderType
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         coEvery {
             playWidgetTools.updateToggleReminder(fakeChannelId, fakeReminderType)
@@ -1804,34 +2128,37 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns expectedMapReminder
 
         viewModel.updatePlayWidgetToggleReminder(
-                fakeUiModel,
+                fakeState,
                 fakeChannelId,
                 fakeReminderType
         )
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))
         viewModel.playWidgetReminderSwitch.verifySuccessEquals(Success(fakeReminderType))
     }
 
     @Test
     fun `play widget toggle reminder fail cause by map reminder return false`() {
 
-        val fakeUiModel = PlayWidgetUiModel.Medium(
-                "title",
-                "action title",
-                "applink",
-                true,
-                PlayWidgetConfigUiModel(
+        val fakeState = PlayWidgetState(
+                model = PlayWidgetUiModel(
+                        "title",
+                        "action title",
+                        "applink",
                         true,
-                        1000,
-                        true,
-                        1,
-                        1,
-                        2,
-                        1
+                        PlayWidgetConfigUiModel(
+                                true,
+                                1000,
+                                true,
+                                1,
+                                1,
+                                2,
+                                1
+                        ),
+                        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                        listOf()
                 ),
-                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-                listOf()
+                isLoading = false,
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1841,9 +2168,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                    fakeUiModel, fakeChannelId, fakeReminderType
+                    fakeState, fakeChannelId, fakeReminderType
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         coEvery {
             playWidgetTools.updateToggleReminder(fakeChannelId, fakeReminderType)
@@ -1855,39 +2182,42 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                    fakeUiModel, fakeChannelId, fakeReminderType.switch()
+                    fakeState, fakeChannelId, fakeReminderType.switch()
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         viewModel.updatePlayWidgetToggleReminder(
-                fakeUiModel,
+                fakeState,
                 fakeChannelId,
                 fakeReminderType
         )
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))
         viewModel.playWidgetReminderSwitch.verifyErrorEquals(Fail(Throwable()))
     }
 
     @Test
     fun `play widget toggle reminder fail cause by exception`() {
 
-        val fakeUiModel = PlayWidgetUiModel.Medium(
-                "title",
-                "action title",
-                "applink",
-                true,
-                PlayWidgetConfigUiModel(
+        val fakeState = PlayWidgetState(
+                model = PlayWidgetUiModel(
+                        "title",
+                        "action title",
+                        "applink",
                         true,
-                        1000,
-                        true,
-                        1,
-                        1,
-                        2,
-                        1
+                        PlayWidgetConfigUiModel(
+                                true,
+                                1000,
+                                true,
+                                1,
+                                1,
+                                2,
+                                1
+                        ),
+                        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                        listOf()
                 ),
-                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-                listOf()
+                isLoading = false,
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1896,9 +2226,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                    fakeUiModel, fakeChannelId, fakeReminderType
+                    fakeState, fakeChannelId, fakeReminderType
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         coEvery {
             playWidgetTools.updateToggleReminder(fakeChannelId, fakeReminderType)
@@ -1906,18 +2236,221 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.updateActionReminder(
-                    fakeUiModel, fakeChannelId, fakeReminderType.switch()
+                    fakeState, fakeChannelId, fakeReminderType.switch()
             )
-        } returns fakeUiModel
+        } returns fakeState
 
         viewModel.updatePlayWidgetToggleReminder(
-                fakeUiModel,
+                fakeState,
                 fakeChannelId,
                 fakeReminderType
         )
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeState))
         viewModel.playWidgetReminderSwitch.verifyErrorEquals(Fail(expectedThrowable))
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns success` () {
+        val productId = "123"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishListV2(productId, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail` () {
+        val productId = "123"
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishListV2(productId, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns success`(){
+        val productId = "123"
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishListV2(productId, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns fail`(){
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishListV2(productId, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify toolbar state should be solid when rollence is empty`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns ""
+
+        val vm = createViewModel()
+        Assert.assertFalse(vm.toolbarTransparentState.getOrAwaitValue())
+    }
+
+    @Test
+    fun `verify toolbar state should be transparent when rollence is transparent`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns RollenceKey.PdpToolbar.transparent
+
+        val vm = createViewModel()
+        Assert.assertTrue(vm.toolbarTransparentState.getOrAwaitValue())
+    }
+
+    @Test
+    fun `verify if seller app then toolbar state should be solid always`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns true
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns RollenceKey.PdpToolbar.transparent
+
+        val vm = createViewModel()
+        val isTimeoutException = try {
+            vm.toolbarTransparentState.getOrAwaitValue()
+        } catch (_: TimeoutException) {
+            true
+        }
+
+        Assert.assertTrue(isTimeoutException)
+    }
+
+    @Test
+    fun `verify vertical recommendation when return empty list, will be fail`() {
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns emptyList()
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = productId
+        )
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify vertical recommendation throw error, will be fail`() {
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Throwable()
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        Assert.assertEquals(pageName, captured.pageName)
+        Assert.assertEquals(pageNumber, captured.pageNumber)
+        Assert.assertEquals(listOf(productId), captured.productIds)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Success)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data with null productId and pageNumber`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageName = "pdp_8_vertical"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = null,
+            page = null
+        )
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        Assert.assertEquals(pageName, captured.pageName)
+        Assert.assertEquals(1, captured.pageNumber)
+        Assert.assertEquals(listOf(""), captured.productIds)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Success)
     }
 
     //region product ar
@@ -1936,48 +2469,109 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
     //endregion
 
-
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//
 
+    // region Review Section
     @Test
-    fun flush() {
-        viewModel.flush()
+    fun `on success get product info login should contain valid review data`() {
+        val expectedVideoCount = 1
+        val expectedImageCount = 4
+        val expectedBuyerMediaCount = 64
+        val expectedSocialProofText = "Foto & Video Pembeli"
 
-        verify {
-            getPdpLayoutUseCase.cancelJobs()
-        }
+        `on success get product info login`()
 
-        verify {
-            getProductInfoP2LoginUseCase.cancelJobs()
+        val actualVideoCount = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.count {
+            it is ReviewMediaVideoThumbnailUiModel
         }
+        val actualImageCount = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.count {
+            it is ReviewMediaImageThumbnailUiModel
+        }
+        val showingSeeMoreThumbnail = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.count {
+            it is ReviewMediaImageThumbnailUiModel && it.isShowingSeeMore()
+        }
+        val seeMoreThumbnailPosition = viewModel.p2Data.value?.imageReview?.reviewMediaThumbnails?.mediaThumbnails?.indexOfFirst {
+            it is ReviewMediaImageThumbnailUiModel && it.isShowingSeeMore()
+        }
+        val showingSeeMoreThumbnailOnLastThumbnailOnly = showingSeeMoreThumbnail == 1 && seeMoreThumbnailPosition == 4
+        val actualBuyerMediaCount = viewModel.p2Data.value?.imageReview?.buyerMediaCount
+        val actualSocialProofText = viewModel.p2Data.value?.imageReview?.staticSocialProofText
 
-        verify {
-            getProductInfoP2OtherUseCase.cancelJobs()
-        }
+        Assert.assertEquals("Invalid video count.", expectedVideoCount, actualVideoCount)
+        Assert.assertEquals("Invalid image count.", expectedImageCount, actualImageCount)
+        Assert.assertTrue("Should show see more thumbnail on last position but was not show", showingSeeMoreThumbnailOnLastThumbnailOnly)
+        Assert.assertEquals("Invalid buyer media count.", expectedBuyerMediaCount, actualBuyerMediaCount)
+        Assert.assertEquals("Invalid social proof text", expectedSocialProofText, actualSocialProofText)
+    }
+    // endregion Review Section
 
-        verify {
-            toggleFavoriteUseCase.cancelJobs()
-        }
+    @Test
+    fun `atc recom non variant quantity changed with quantity changed from 0 to 1`() {
+        val recommItem = RecommendationItem()
+        val quantity = 1
 
-        verify {
-            trackAffiliateUseCase.cancelJobs()
-        }
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
 
-        verify {
-            getTopadsIsAdsUseCase.cancelJobs()
-        }
+        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
 
-        verify {
-            getRecommendationUseCase.unsubscribe()
-        }
+        coVerify { addToCartUseCase.createObservable(any()) }
+    }
 
-        verify {
-            removeWishlistUseCase.unsubscribe()
-        }
-        verify {
-            deleteCartUseCase.cancelJobs()
-        }
+    @Test
+    fun `atc recom non variant quantity changed with quantity changed from 1 to 2`() {
+        val recommItem = RecommendationItem(quantity = 1)
+        val quantity = 2
+        val miniCartItemProduct = MiniCartItem.MiniCartItemProduct()
+        val mapMiniCartItem = mutableMapOf(recommItem.productId.toString() to miniCartItemProduct)
+
+        every {
+            spykViewModel.p2Data.value?.miniCart
+        } returns mapMiniCartItem
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        coVerify { updateCartUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `atc recom non variant quantity changed delete item`() {
+        val recommItem = RecommendationItem(quantity = 1)
+        val quantity = 0
+        val miniCartItemProduct = MiniCartItem.MiniCartItemProduct()
+        val mapMiniCartItem = mutableMapOf(recommItem.productId.toString() to miniCartItemProduct)
+
+        every {
+            spykViewModel.p2Data.value?.miniCart
+        } returns mapMiniCartItem
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        coVerify { deleteCartUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `atc recom non variant quantity changed not logged in`() {
+        val recommItem = RecommendationItem()
+        val quantity = 1
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns false
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        Assert.assertEquals(recommItem, viewModel.atcRecomTokonowNonLogin.value)
     }
 
     private fun getUserLocationCache(): LocalCacheModel {

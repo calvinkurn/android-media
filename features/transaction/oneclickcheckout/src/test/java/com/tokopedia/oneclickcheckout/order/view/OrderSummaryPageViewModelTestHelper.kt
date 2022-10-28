@@ -1,11 +1,30 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.*
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodDataPromo
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrivalPromo
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PriceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 
 class OrderSummaryPageViewModelTestHelper {
 
@@ -69,11 +88,19 @@ class OrderSummaryPageViewModelTestHelper {
     val logisticPromo = LogisticPromoUiModel("bbo", "bbo", "bbo", firstCourierSecondDuration.productData.shipperName,
             secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
             "", "", "", false, "",
-            500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false)
+            500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false,
+            freeShippingMetadata = """{"sent_shipper_partner":true}""")
+
+    val logisticPromoEko = LogisticPromoUiModel("boeko", "boeko", "boeko", firstCourierSecondDuration.productData.shipperName,
+            secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
+            "", "", "", false, "",
+            500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false,
+            freeShippingMetadata = """{"sent_shipper_partner":false}""")
 
     val shippingRecommendationData = ShippingRecommendationData().apply {
         shippingDurationUiModels = listOf(firstDuration, secondDuration)
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
+        listLogisticPromo = listOf(this@OrderSummaryPageViewModelTestHelper.logisticPromo, this@OrderSummaryPageViewModelTestHelper.logisticPromoEko)
     }
 
     val address = OrderProfileAddress(addressId = 1, latitude = "0", longitude = "0")
@@ -95,5 +122,54 @@ class OrderSummaryPageViewModelTestHelper {
 
     val product = OrderProduct(productId = Long.MAX_VALUE, orderQuantity = 1)
 
-    val orderData = OrderData(cart = OrderCart(shop = OrderShop(shopId = Long.MAX_VALUE),products = mutableListOf(product)), preference = preference)
+    val orderData = OrderData(cart = OrderCart(shop = OrderShop(shopId = Long.MAX_VALUE), products = mutableListOf(product)), preference = preference)
+
+    val saveAddOnStateShopLevelResult = SaveAddOnStateResult(
+            addOns = listOf(AddOnResult(
+                    addOnKey = "123-0",
+                    addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER,
+                    addOnData = listOf(AddOnData(
+                            addOnPrice = 2000
+                    ))
+            ))
+    )
+
+    val saveAddOnStateShopLevelResultNegativeTest = SaveAddOnStateResult(
+            addOns = listOf(AddOnResult(
+                    addOnKey = "123-0",
+                    addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                    addOnData = listOf(AddOnData(
+                            addOnPrice = 2000
+                    ))
+            ))
+    )
+
+    val saveAddOnStateProductLevelResult = SaveAddOnStateResult(
+            addOns = listOf(AddOnResult(
+                    addOnKey = "123-456",
+                    addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                    addOnData = listOf(AddOnData(
+                            addOnPrice = 1000
+                    ))
+            ))
+    )
+
+    val saveAddOnStateProductLevelResultNegativeTest = SaveAddOnStateResult(
+            addOns = listOf(AddOnResult(
+                    addOnKey = "123-456",
+                    addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER,
+                    addOnData = listOf(AddOnData(
+                            addOnPrice = 1000
+                    ))
+            ))
+    )
+
+    val saveAddOnStateEmptyResult = SaveAddOnStateResult(
+            addOns = emptyList()
+    )
+
+    val paymentFeeDetails = listOf(
+        OrderPaymentFee(fee = 500.0),
+        OrderPaymentFee(fee = 1000.0)
+    )
 }

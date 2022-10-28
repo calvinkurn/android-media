@@ -7,6 +7,16 @@ import com.tokopedia.logger.utils.Priority
 
 object LoggingUtils {
     const val DEFAULT_RESP_SIZE_THRES = 10000L
+    const val STATUS_CODE_ERROR = 500
+
+    @JvmStatic
+    fun logGqlSuccessRateBasedOnStatusCode(operationName: String, httpStatusCode: Int) {
+        if (httpStatusCode >= STATUS_CODE_ERROR) {
+            logGqlSuccessRate(operationName, "0")
+        } else {
+            logGqlSuccessRate(operationName, "1")
+        }
+    }
 
     @JvmStatic
     fun logGqlSuccessRate(operationName: String, gqlResult: String) {

@@ -16,6 +16,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="heading_4"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
         tools:text="Title" />
 </RelativeLayout>

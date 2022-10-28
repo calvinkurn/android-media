@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Data Pengguna" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Data Pengguna" />
 </LinearLayout>

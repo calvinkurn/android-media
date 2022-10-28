@@ -19,6 +19,7 @@ import com.tokopedia.filter.common.helper.copyParcelable
 import com.tokopedia.filter.common.helper.createFilterDividerItemDecoration
 import com.tokopedia.filter.common.helper.setBottomSheetActionBold
 import com.tokopedia.filter.common.helper.setMargin
+import com.tokopedia.filter.databinding.FilterGeneralDetailBottomSheetBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -26,7 +27,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.filter_general_detail_bottom_sheet.view.*
 
 class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAdapter.Callback {
 
@@ -37,6 +37,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     private var filter: Filter? = null
     private var originalSelectedOptionList = mutableListOf<Option>()
     private var callback: Callback? = null
+    private var buttonApplyFilterDetailText: String? = null
 
     private var filterGeneralDetailBottomSheetView: View? = null
     private val filterGeneralDetailAdapter = FilterGeneralDetailAdapter(this)
@@ -44,12 +45,18 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         filterGeneralDetailAdapter.setOptionList(it)
     }
 
-    fun show(fragmentManager: FragmentManager, filter: Filter, callback: Callback) {
-        this.filter = filter.copyParcelable()
-        this.originalSelectedOptionList.addAll(filter.getSelectedOptions())
-        this.callback = callback
+    private var binding: FilterGeneralDetailBottomSheetBinding? = null
 
-        show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
+    fun show(
+        fragmentManager: FragmentManager,
+        filter: Filter, callback: Callback,
+        buttonApplyFilterDetailText: String? = null) {
+            this.filter = filter.copyParcelable()
+            this.originalSelectedOptionList.addAll(filter.getSelectedOptions())
+            this.callback = callback
+            this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
+
+            show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
     }
 
     private fun Filter?.getSelectedOptions(): List<Option> {
@@ -69,7 +76,9 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
         initButtonReset()
 
-        filterGeneralDetailBottomSheetView = View.inflate(requireContext(), R.layout.filter_general_detail_bottom_sheet, null)
+        val view = View.inflate(requireContext(), R.layout.filter_general_detail_bottom_sheet, null)
+        binding = FilterGeneralDetailBottomSheetBinding.bind(view)
+        filterGeneralDetailBottomSheetView = binding?.root
         setChild(filterGeneralDetailBottomSheetView)
 
         initSearchBar()
@@ -132,7 +141,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     private fun setButtonApplyFilterVisibility() {
         val isVisible = filter.getSelectedOptions() != originalSelectedOptionList
 
-        filterGeneralDetailBottomSheetView?.buttonApplyFilterDetailContainer?.showWithCondition(isVisible)
+        binding?.buttonApplyFilterDetailContainer?.showWithCondition(isVisible)
     }
 
     private fun setActionResetVisibility(isVisible: Boolean) {
@@ -153,9 +162,9 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun initSearchBar() {
-        filterGeneralDetailBottomSheetView?.let {
-            it.searchBarFilterDetail?.shouldShowWithAction(filter?.search?.searchable == 1) {
-                initVisibleSearchBar(it.searchBarFilterDetail)
+        binding?.searchBarFilterDetail?.let {
+            it.shouldShowWithAction(filter?.search?.searchable == 1) {
+                initVisibleSearchBar(it)
             }
         }
     }
@@ -188,17 +197,17 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun initRecyclerView() {
-        filterGeneralDetailBottomSheetView?.let {
+        binding?.recyclerViewFilterDetailBottomSheet?.let {
             filterGeneralDetailAdapter.setOptionList(filter?.options ?: listOf())
 
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             val itemDecorationLeftMargin = getFilterDividerItemDecorationLeftMargin(filter?.isColorFilter ?: false)
             val itemDecoration = createFilterDividerItemDecoration(it.context, layoutManager.orientation, itemDecorationLeftMargin)
 
-            it.recyclerViewFilterDetailBottomSheet?.adapter = filterGeneralDetailAdapter
-            it.recyclerViewFilterDetailBottomSheet?.layoutManager = layoutManager
-            it.recyclerViewFilterDetailBottomSheet?.addItemDecorationIfNotExists(itemDecoration)
-            it.recyclerViewFilterDetailBottomSheet?.addOnScrollListener(createRecyclerViewOnScrollListener())
+            it.adapter = filterGeneralDetailAdapter
+            it.layoutManager = layoutManager
+            it.addItemDecorationIfNotExists(itemDecoration)
+            it.addOnScrollListener(createRecyclerViewOnScrollListener())
         }
     }
 
@@ -214,9 +223,13 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun initButtonApplyDetailFilter() {
-        filterGeneralDetailBottomSheetView?.buttonApplyFilterDetail?.setOnClickListener {
+        binding?.buttonApplyFilterDetail?.setOnClickListener {
             callback?.onApplyButtonClicked(filter?.options)
             dismiss()
+        }
+
+        buttonApplyFilterDetailText?.let {
+            binding?.buttonApplyFilterDetail?.text = it
         }
     }
 
@@ -228,8 +241,12 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         if (showCloseIcon) bottomSheetClose.setMargin(marginLeft = 16.toPx(), marginTop = 4.toPx(), marginRight = 12.toPx())
         else bottomSheetTitle.setMargin(marginLeft = 16.toPx())
 
-        configureBottomSheetHeight()
         setBottomSheetActionBold()
+    }
+
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
     }
 
     override fun onOptionClick(option: Option, isChecked: Boolean, position: Int) {
@@ -249,9 +266,9 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private fun notifyAdapterChanges(option: Option, position: Int) {
         if (option.isTypeRadio)
-            filterGeneralDetailAdapter.notifyDataSetChanged()
+            filterGeneralDetailAdapter.notifyItemRangeChanged(0, filterGeneralDetailAdapter.itemCount, FilterGeneralDetailAdapter.Payload.BIND_INPUT_STATE_ONLY)
         else
-            filterGeneralDetailAdapter.notifyItemChanged(position)
+            filterGeneralDetailAdapter.notifyItemChanged(position, FilterGeneralDetailAdapter.Payload.BIND_INPUT_STATE_ONLY)
     }
 
     private fun getButtonResetVisibility(isChecked: Boolean) = isChecked || filter.hasActiveOptions()

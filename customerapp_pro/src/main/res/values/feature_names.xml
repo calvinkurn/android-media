@@ -47,6 +47,9 @@
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
+    <string name="change_profile_info_title">Ubah Info Profil</string>
+    <string name="title_profile_info">Ubah Profil</string>
+
 
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
@@ -73,6 +76,8 @@
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="ovop2p_app_name">Saldo</string>
     <string name="title_kyc_info_simple">Dokumen Data Diri</string>
+    <string name="title_kyc_form_upload">Kirim Dokumen</string>
+    <string name="title_kyc_info">Verifikasi Data Diri</string>
     <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
     <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
 
@@ -151,7 +156,7 @@
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
     <string name="label_affiliate">Affiliate</string>
-
+    <string name="title_category_epharmacy">E-Pharmacy</string>
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
@@ -195,6 +200,8 @@
 
     <string name="label_manage_address">Daftar Alamat</string>
 
+    <string name="label_pod">Bukti Pengiriman</string>
+
     <string name="title_activity_add_address">Tambah Alamat</string>
     <string name="title_activity_search_address">Kota atau kecamatan</string>
     <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
@@ -214,7 +221,7 @@
 
     <!-- Dynamic feature for Power Merchant-->
     <string name="pm_title_activity">Power Merchant</string>
-    <string name="pm_benefit_package_title_activity">Paket Keuntungan</string>
+    <string name="pm_membership_detail_title_activity">Detail Keanggotaan</string>
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
     <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
 
@@ -256,6 +263,7 @@
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
+    <string name="title_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
 
 
@@ -321,6 +329,8 @@
     <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+    <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
+    <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
 
     <!-- Dynamic feature for buyerorder-->
@@ -331,6 +341,10 @@
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="title_wishlist_v2">Wishlist</string>
+    <string name="page_name_wishlist">Wishlist Collection</string>
+    <string name="page_name_wishlist_collection">Wishlist Collection</string>
+    <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
+    <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
 
     <!-- Dynamic feature for cart -->
     <string name="checkout_module_title_activity_cart">Keranjang</string>
@@ -355,6 +369,9 @@
     <!-- Merchant Login -->
     <string name="title_module_merchant_login">Fitur Toko</string>
 
+    <!-- Merchant NonLogin -->
+    <string name="title_module_merchant_nonlogin">Fitur Toko Non-Login</string>
+
     <!-- Shop Page -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_label_physical_shop">Toko Fisik</string>
@@ -377,16 +394,22 @@
     <string name="album">Album</string>
     <string name="edit_image">Edit Gambar</string>
 
-    <!-- Review   -->
-    <string name="title_review">Ulasan</string>
-
+    <string name="title_feed_content_creation">Feed Content Creation</string>
     <string name="title_image_picker_insta_df">Media Picker</string>
     <string name="title_feed_create_post">Create Post</string>
+    <string name="title_feed_people">People</string>
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
     <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
     <string name="cu_surey_layana">Survey Layana</string>
     <string name="title_dynamic_libraries">Libraries</string>
+
+    <!-- TokoFood -->
+    <string name="title_tokofood" translatable="false">TokoFood</string>
+    <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
+
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
 
     <!-- Review   -->
     <string name="title_product_ar">Product Ar</string>

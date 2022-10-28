@@ -11,9 +11,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.ItemMvcFooterBinding
 import com.tokopedia.vouchercreation.shop.detail.model.FooterUiModel
-import kotlinx.android.synthetic.main.item_mvc_footer.view.*
 
 /**
  * Created By @ilhamsuaib on 06/05/20
@@ -29,10 +30,12 @@ class FooterViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_footer
     }
 
+    private var binding: ItemMvcFooterBinding? by viewBinding()
+
     override fun bind(element: FooterUiModel) {
-        with(itemView) {
+        binding?.apply {
             val text = element.footerText.parseAsHtml()
-            val greenColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.light_G500)
+            val greenColor = tvMvcFooter.context.getResColor(com.tokopedia.unifyprinciples.R.color.light_G500)
             val spannableStringColor = ForegroundColorSpan(greenColor)
             val spannableString = SpannableString(text)
             val clickableSpan = object : ClickableSpan() {

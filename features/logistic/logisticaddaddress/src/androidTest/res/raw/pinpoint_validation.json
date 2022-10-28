@@ -1,0 +1,16 @@
+[
+  {
+    "data": {
+      "pinpoint_validation": {
+        "data": {
+          "checksum": "M1wS7advTBD9BWyDxKqGG6U1mGs\u003d",
+          "district_id": 2270,
+          "latitude": -6.2152395,
+          "longitude": 106.830055,
+          "result": true,
+          "result_text": "Pinpoint valid"
+        }
+      }
+    }
+  }
+]

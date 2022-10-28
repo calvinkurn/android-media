@@ -1,0 +1,30 @@
+<resources>
+    <string name="title_app_data_explorer">Data Explorer</string>
+    <string name="title_app_db_explorer">Database Explorer</string>
+    <string name="title_schema">Schema</string>
+    <string name="data_explorer_select_page_text">Select Page</string>
+    <string name="data_explorer_page_number_initial_text">1</string>
+
+    <string-array name="data_explorer_white_listed_database">
+        <item>cm_push_notification</item>
+        <item>iris-db</item>
+        <item>tkpd_gtm_log_analytics</item>
+    </string-array>
+    <!--
+        com.google.android.datatransport.events
+        google_app_measurement_local.db
+        google_analytics_v4.dbdb_resource
+        tokopedia_graphql
+        chucker.db,cm_push_notification
+        iris-db,tkpd_gtm_log_analytics
+        HomeCache.db
+        responseDb.db
+        tokopedia_cache_db
+        log_database
+        tokopedia_tracking_db
+        tokopedia_rest,leaks.db
+        core,gtm_urls.db
+
+
+    -->
+</resources>

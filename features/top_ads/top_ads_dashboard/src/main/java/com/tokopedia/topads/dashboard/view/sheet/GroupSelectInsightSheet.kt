@@ -10,18 +10,24 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMa
 import com.tokopedia.topads.dashboard.data.utils.ListUnifyUtils.setSelectedItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import kotlinx.android.synthetic.main.topads_dash_move_group_insight_sheet.*
+import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 22/7/20.
  */
 
-class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId: String) : BottomSheetUnify() {
+class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId: String) :
+    BottomSheetUnify() {
 
-    private var contentView: View? = null
+    private var searchBar: SearchBarUnify? = null
+    private var listGroup: ListUnify? = null
+    private var txtSearch: Typography? = null
+
     var selectedGroup: ((pos: Int, groupId: String) -> Unit)? = null
-    var index = 0
+    private var index = 0
     private var listOfKeys: MutableList<String> = mutableListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,16 +45,22 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.topads_dash_move_group_insight_sheet, null)
+        val contentView = View.inflate(context, R.layout.topads_dash_move_group_insight_sheet, null)
         isFullpage = false
         setChild(contentView)
         context?.getString(R.string.topads_insight_pilih_grup_iklan)?.let { setTitle(it) }
+
+        searchBar = contentView.findViewById(R.id.searchBar)
+        listGroup = contentView.findViewById(R.id.listGroup)
+        txtSearch = contentView.findViewById(R.id.txtSearch)
     }
 
     private fun setList() {
@@ -56,7 +68,7 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
         val data: HashMap<String, KeywordInsightDataMain> = response.data
         var count = 0
         data.forEach {
-            if (it.value.name.contains(searchBar.searchBarTextField.text.toString())) {
+            if (it.value.name.contains(searchBar?.searchBarTextField?.text.toString())) {
                 listOfKeys.add(it.key)
                 count++
                 if (groupId == it.key) {
@@ -70,12 +82,14 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
         }
         if (listUnify.isNotEmpty()) {
             listGroup?.setData(listUnify)
-            listGroup.visibility = View.VISIBLE
-            txtSearch.visibility = View.GONE
+            listGroup?.visibility = View.VISIBLE
+            txtSearch?.visibility = View.GONE
         } else {
-            listGroup.visibility = View.GONE
-            txtSearch.text = String.format(resources.getString(R.string.topads_insight_search_text), searchBar.searchBarTextField.text.toString())
-            txtSearch.visibility = View.VISIBLE
+            listGroup?.visibility = View.GONE
+            txtSearch?.text =
+                String.format(resources.getString(R.string.topads_insight_search_text),
+                    searchBar?.searchBarTextField?.text.toString())
+            txtSearch?.visibility = View.VISIBLE
         }
 
         listGroup?.run {

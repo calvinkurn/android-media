@@ -2,6 +2,7 @@ package com.tokopedia.test.application.environment.interceptor.mock
 
 import com.tokopedia.instrumentation.test.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_QUERY_AND_VARIABLES
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_QUERY_NAME
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -43,6 +44,15 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
                             queryStringCopy.substringBefore(" ", "")
                                 .substringBefore("\n", "")
                         if (firstWord == it.key) {
+                            responseString = it.value.value
+                            return mockResponse(requestBody.newBuilder().build(), responseString)
+                        }
+                    } else if (it.value.findType == FIND_BY_QUERY_AND_VARIABLES) {
+                        var isContainsAll = true
+                        it.value.keys.forEach { key ->
+                            isContainsAll = isContainsAll.and(requestString.contains(key))
+                        }
+                        if (isContainsAll) {
                             responseString = it.value.value
                             return mockResponse(requestBody.newBuilder().build(), responseString)
                         }

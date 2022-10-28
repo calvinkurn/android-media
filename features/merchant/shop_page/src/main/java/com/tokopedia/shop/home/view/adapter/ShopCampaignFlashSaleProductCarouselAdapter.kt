@@ -66,16 +66,16 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
             }
             PRODUCT_CARD_LIST -> {
                 val productCardListViewHolder = holder as ShopHomeFlashSaleProductListViewHolder
-                productCardListViewHolder.bindData(uiModel = flashSaleProductList[position])
+                productCardListViewHolder.bindData(uiModel = flashSaleProductList[position], fsUiModel = flashSaleUiModel)
             }
             PRODUCT_CARD_BIG_GRID -> {
                 val productCardBigGridViewHolder =
                     holder as ShopHomeFlashSaleProductCardBigGridViewHolder
-                productCardBigGridViewHolder.bindData(uiModel = flashSaleProductList[position])
+                productCardBigGridViewHolder.bindData(uiModel = flashSaleProductList[position], fsUiModel = flashSaleUiModel)
             }
             else -> {
                 val productCardGridViewHolder = holder as ShopHomeFlashSaleProductCardGridViewHolder
-                productCardGridViewHolder.bindData(uiModel = flashSaleProductList[position])
+                productCardGridViewHolder.bindData(uiModel = flashSaleProductList[position], fsUiModel = flashSaleUiModel)
             }
         }
     }

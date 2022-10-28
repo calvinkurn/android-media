@@ -18,6 +18,10 @@ data class AffiliateValidateUserData(
                 var isEligible: Boolean?,
                 @SerializedName("IsRegistered")
                 var isRegistered: Boolean?,
+                @SerializedName("IsReviewed")
+                var isReviewed: Boolean?,
+                @SerializedName("IsSystemDown")
+                var isSystemDown: Boolean?,
                 @SerializedName("Status")
                 var status: Int?
         ) {

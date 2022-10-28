@@ -23,7 +23,7 @@ data class TokopediaRewardTopSection(
         val introductionText: String? = null,
 
         @SerializedName("backgroundImageURLMobileV2")
-        val backgroundImageURLMobileV2: String? = null,
+        var backgroundImageURLMobileV2: String? = null,
 
         @SerializedName("title")
         val title: String? = null,
@@ -35,5 +35,20 @@ data class TokopediaRewardTopSection(
         val backgroundImageURL: String? = null,
 
         @SerializedName("isShowSavingPage")
-        val isShowSavingPage: Boolean? = false
+        val isShowSavingPage: Boolean? = false,
+
+        @SerializedName("lastVisitBackgroundImageURL")
+        val lastVisitBackgroundImageURL: String? = "",
+
+        @SerializedName("lastVisitBackgroundImageURLMobile")
+        val lastVisitBackgroundImageURLMobile: String? = "",
+
+        @SerializedName("lastVisitBackgroundImageURLMobileV2")
+        val lastVisitBackgroundImageURLMobileV2: String? = "",
+
+        @SerializedName("targetV2")
+        val targetV2: TargetV2? = null,
+
+        @SerializedName("progressInfoList")
+        val progressInfoList: List<ProgressInfoList>? = null
 )

@@ -33,7 +33,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
 

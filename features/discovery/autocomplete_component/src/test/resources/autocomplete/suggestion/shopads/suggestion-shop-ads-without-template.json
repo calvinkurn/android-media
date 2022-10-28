@@ -20,7 +20,11 @@
             {
               "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
             }
-          ]
+          ],
+          "shop": {
+            "location": "Jakarta Barat",
+            "suggestion_id": "12345"
+          }
         }
       }
     ]

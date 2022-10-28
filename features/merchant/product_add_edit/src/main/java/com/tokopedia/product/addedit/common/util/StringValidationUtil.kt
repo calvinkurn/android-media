@@ -10,4 +10,7 @@ object StringValidationUtil {
     fun Char.isAllowedSymbol(): Boolean {
         return "!/-%_*|#$&@() ".contains(this)
     }
+
+    fun String.filterDigit() = filter { it.isDigit() }
+
 }

@@ -10,7 +10,7 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.otp.R
 import com.tokopedia.unifyprinciples.R as RUnify
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.pin.PinUnify
 

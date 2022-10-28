@@ -1,7 +1,7 @@
 package com.tokopedia.shop.score.stub.performance.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.score.performance.domain.mapper.ShopScoreMapper
@@ -17,13 +17,13 @@ class ShopPerformanceViewModelStub @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val shopScoreMapper: ShopScoreMapper,
     userSession: UserSessionInterface,
-    getShopInfoPeriodUseCase: Lazy<GetShopInfoPeriodUseCase>,
+    getShopCreatedInfoUseCase: Lazy<GetShopCreatedInfoUseCase>,
     private val getShopPerformanceUseCase: Lazy<GetShopPerformanceUseCase>
 ) : ShopPerformanceViewModel(
     dispatchers,
     shopScoreMapper,
     userSession,
-    getShopInfoPeriodUseCase,
+    getShopCreatedInfoUseCase,
     getShopPerformanceUseCase
 ) {
     override fun getShopScoreLevel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {

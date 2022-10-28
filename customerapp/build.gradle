@@ -3,6 +3,7 @@ apply plugin: 'embrace-swazzler'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'newrelic'
+apply plugin: 'robust'
 
 if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
@@ -59,6 +60,13 @@ def isFirebasePerformanceLogEnabled() {
         return "true"
     }
     return "false"
+}
+
+def isEnableMacrobenchmarkUtil() {
+    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+        return "true";
+    }
+    return "false";
 }
 
 project.ext {
@@ -142,7 +150,7 @@ android {
         abortOnError false
         xmlReport true
         htmlReport false
-        checkDependencies true
+        checkDependencies false
     }
 
     signingConfigs {
@@ -160,6 +168,7 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
             buildConfigField "boolean", "IS_PREINSTALL", "false"
+            buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
@@ -177,7 +186,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            debuggable = project.hasProperty('enableDebug') && enableDebug == "true"
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
             if (isFirebasePerformanceLogEnabled().toBoolean()) {
@@ -192,6 +201,7 @@ android {
             }
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
+            buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
             buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
             buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
@@ -228,12 +238,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     configurations.all {
@@ -277,7 +287,6 @@ dependencies {
     implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
     implementation projectOrAar(rootProject.ext.features.customer_mid_app)
-    implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
@@ -294,7 +303,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
-    implementation projectOrAar(rootProject.ext.features.kyc)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -302,8 +310,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.mediaCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
-    implementation projectOrAar(rootProject.ext.features.feedbackForm)
     implementation projectOrAar(rootProject.ext.libraries.screenshot_observer)
+    implementation projectOrAar(rootProject.ext.features.addOnGifting)
+    implementation projectOrAar(rootProject.ext.features.appCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.network)
 
@@ -335,7 +344,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -344,6 +352,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.supportLibDependencies.exifinterface
+    implementation rootProject.ext.miscDependencies.embraceSdk
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
@@ -433,6 +442,10 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.accordion
+    implementation rootProject.ext.unifyDependencies.imageGallery
+    if (project.hasProperty('enableMacrobenchmarkUtil')?: false) {
+        implementation projectOrAar(rootProject.ext.libraries.macrobenchmarkUtil)
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

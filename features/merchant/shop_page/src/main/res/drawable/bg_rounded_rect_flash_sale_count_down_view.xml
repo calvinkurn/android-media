@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle" >
-
-    <corners
-        android:bottomRightRadius="@dimen/dp_30"
-        android:topRightRadius="@dimen/dp_30" />
-
-    <solid android:color="@color/clr_dms_EF144A" />
-
-    <padding
-        android:bottom="@dimen/dp_6"
-        android:left="@dimen/unify_space_0"
-        android:right="@dimen/unify_space_0"
-        android:top="@dimen/dp_6" />
-
-    <size
-        android:height="@dimen/dp_32"
-        android:width="@dimen/dp_210" />
-
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:bottomRightRadius="@dimen/dp_30" android:topRightRadius="@dimen/dp_30"/>
+    <solid android:color="@color/clr_dms_EF144A"/>
+    <padding android:bottom="@dimen/dp_6" android:left="@dimen/unify_space_0" android:right="@dimen/unify_space_0" android:top="@dimen/dp_6"/>
+    <size android:height="@dimen/dp_32" android:width="@dimen/dp_210"/>
 </shape>

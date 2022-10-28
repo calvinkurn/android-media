@@ -1,0 +1,2229 @@
+[
+  {
+    "data": {
+      "rechargeCatalogProductInputMultiTab": {
+        "productInputs": [
+          {
+            "label": "pdp2022_paket_data INPUT",
+            "needEnquiry": false,
+            "isShowingProduct": true,
+            "enquiryFields": [],
+            "product": {
+              "id": 8,
+              "name": "product_id",
+              "text": "Input Nominal",
+              "placeholder": "Input Nominal",
+              "validations": [],
+              "dataCollections": [
+                {
+                  "name": "Promo Spesial Buat Kamu",
+                  "cluster_type": "MCCM",
+                  "products": [
+                    {
+                      "id": "10258",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "PRIO Data Booster 10GB",
+                        "detail": "Promo Paket Data Rp39.600",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp44.000",
+                        "price": "Rp44.000",
+                        "price_plain": 44000,
+                        "detail_compact": "Promo Paket Data Rp39.600",
+                        "category_id": 55,
+                        "operator_id": 5,
+                        "product_descriptions": ["hello"],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp39.600",
+                          "new_price_plain": 39600,
+                          "value_text": "",
+                          "discount": "10%"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Flash Sale",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "18869",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "Xtra Combo Flex Plus 10GB + Kuota Area Hingga 14GB + Bonus Flex",
+                        "detail": "Kuota Utama 10GB. Kuota Area hingga 14GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 20 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 4GB / Unlimited Turbo Super (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 7hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 65.000",
+                        "price": "Rp65.000",
+                        "price_plain": 65000,
+                        "detail_compact": "Kuota Utama 10GB. Kuota Area hingga 14GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 20 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 4GB / Unlimited Turbo Super (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 7hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 10GB. Kuota Area hingga 14GB.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eXtra Unlimited Turbo WhatsApp \u0026amp; LINE. + 20 Min Nelpon ke semua operator.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL:\u003cbr\u003e a. Kuota Utama 4GB\u0026nbsp;\u003c/p\u003e\n\u003cp\u003e\u0026nbsp;b. Unlimited Turbo Super (Unlimited Access Tokopedia \u0026amp; App Lainnya)\u0026nbsp;\u003c/p\u003e\n\u003cp\u003e\u0026nbsp;c.Vidio Platinum Subscription 7hr.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr. Cek info area di xl.co.id/xcfm\u0026nbsp;\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "7953",
+                          "bonus_text": "",
+                          "new_price": "Rp62.000",
+                          "new_price_plain": 62000,
+                          "value_text": "",
+                          "discount": "5%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "18870",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "Xtra Combo Flex Super 20GB + Kuota Area Hingga 22GB + Bonus Flex",
+                        "detail": "Kuota Utama 20GB. Kuota Area hingga 22GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 30 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 7GB / Unlimited Turbo Premium (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 95.000",
+                        "price": "Rp95.000",
+                        "price_plain": 95000,
+                        "detail_compact": "Kuota Utama 20GB. Kuota Area hingga 22GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 30 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 7GB / Unlimited Turbo Premium (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 20GB. Kuota Area hingga 22GB.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u0026nbsp;Xtra Unlimited Turbo WhatsApp \u0026amp; LINE. + 30 Min Nelpon ke semua operator.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL \u003cbr\u003e a. Kuota Utama 7GB \u003cbr\u003e b. Unlimited Turbo Premium (Unlimited Access Tokopedia \u0026amp; App Lainnya) \u003cbr\u003e c. Vidio Platinum Subscription 30hr.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr. Cek info area di xl.co.id/xcfm\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "8457",
+                          "bonus_text": "",
+                          "new_price": "Rp79.000",
+                          "new_price_plain": 79000,
+                          "value_text": "",
+                          "discount": "17%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "18871",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "Xtra Combo Flex Ultra 35GB + Kuota Area Hingga 40GB + Bonus Flex",
+                        "detail": "Kuota Utama 35GB. Kuota Area hingga 40GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 40 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 10GB / Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek Info area di xl.co.id/xcfm ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 135.000",
+                        "price": "Rp135.000",
+                        "price_plain": 135000,
+                        "detail_compact": "Kuota Utama 35GB. Kuota Area hingga 40GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 40 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 10GB / Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek Info area di xl.co.id/xcfm ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 35GB. Kuota Area hingga 40GB.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eXtra Unlimited Turbo WhatsApp \u0026amp; LINE. + 40 Min Nelpon ke semua operator.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL :\u003cbr\u003e a. Kuota Utama 10GB \u003cbr\u003e b. Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026amp; App Lainnya) \u003cbr\u003e c. Vidio Platinum Subscription 30hr.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr. Cek Info area di xl.co.id/xcfm\u0026nbsp;\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "8458",
+                          "bonus_text": "",
+                          "new_price": "Rp101.000",
+                          "new_price_plain": 101000,
+                          "value_text": "",
+                          "discount": "25%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "18872",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "Xtra Combo Flex Prime 48GB + Kuota Area Hingga 67GB + Bonus Flex",
+                        "detail": "Kuota Utama 48GB. Kuota Area hingga 67GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 60 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 12GB / Unlimited Turbo (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek info \u0026 area di xl.co.id/xcfm ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 185.000",
+                        "price": "Rp185.000",
+                        "price_plain": 185000,
+                        "detail_compact": "Kuota Utama 48GB. Kuota Area hingga 67GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 60 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 12GB / Unlimited Turbo (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek info \u0026 area di xl.co.id/xcfm ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 48GB. Kuota Area hingga 67GB.\u003c/p\u003e\n",
+                          "\u003cp\u003eXtra Unlimited Turbo WhatsApp \u0026amp; LINE. + 60 Min Nelpon ke semua operator.\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL:\u003c/p\u003e\n\u003cp\u003ea. Kuota Utama 12GB\u0026nbsp;\u003c/p\u003e\n\u003cp\u003eb. Unlimited Turbo (Unlimited Access Tokopedia \u0026amp; App Lainnya)\u0026nbsp;\u003c/p\u003e\n\u003cp\u003ec.Vidio Platinum Subscription 30hr.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr. Cek info \u0026amp; area di xl.co.id/xcfm\u0026nbsp;\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "7956",
+                          "bonus_text": "",
+                          "new_price": "Rp160.000",
+                          "new_price_plain": 160000,
+                          "value_text": "",
+                          "discount": "14%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "18873",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "Xtra Combo Flex Max 80GB + Kuota Area Hingga 105GB + Bonus Flex",
+                        "detail": "Kuota Utama 80GB. Kuota Area hingga 105GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 90 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 12GB / Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek Info area di xl.co.id/xcfm ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 245.000",
+                        "price": "Rp245.000",
+                        "price_plain": 245000,
+                        "detail_compact": "Kuota Utama 80GB. Kuota Area hingga 105GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 90 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 12GB / Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek Info area di xl.co.id/xcfm ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 80GB. Kuota Area hingga 105GB.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eXtra Unlimited Turbo WhatsApp \u0026amp; LINE. + 90 Min Nelpon ke semua operator.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL:\u0026nbsp;\u003c/p\u003e\n\u003cp\u003ea. Kuota Utama 12GB\u0026nbsp;\u003c/p\u003e\n\u003cp\u003eb Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026amp; App Lainnya)\u0026nbsp;\u003c/p\u003e\n\u003cp\u003ec. Vidio Platinum Subscription 30hr.\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr. Cek Info area di xl.co.id/xcfm\u0026nbsp;\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "7957",
+                          "bonus_text": "",
+                          "new_price": "Rp205.000",
+                          "new_price_plain": 205000,
+                          "value_text": "",
+                          "discount": "16%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "1767",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON",
+                          "DISKON"
+                        ],
+                        "desc": "XTRA Combo 20GB + 40GB + Bonus Pulsa 15.000",
+                        "detail": "20GB Kuota Utama + 40GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 60 Menit Nelpon ke Semua Operator + Bonus Pulsa 15.000. Masa aktif 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 179.000",
+                        "price": "Rp179.000",
+                        "price_plain": 179000,
+                        "detail_compact": "20GB Kuota Utama + 40GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 60 Menit Nelpon ke Semua Operator + Bonus Pulsa 15.000. Masa aktif 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 20GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 40GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e40GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e60 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 15.000\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "8073",
+                          "bonus_text": "",
+                          "new_price": "Rp162.890",
+                          "new_price_plain": 162890,
+                          "value_text": "",
+                          "discount": "9%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "1768",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "XTRA Combo 35GB + 70GB + Bonus Pulsa 20.000",
+                        "detail": "35GB Kuota Utama + 70GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 90 Menit Nelpon ke Semua Operator + Bonus Pulsa 20.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 239.000",
+                        "price": "Rp239.000",
+                        "price_plain": 239000,
+                        "detail_compact": "35GB Kuota Utama + 70GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 90 Menit Nelpon ke Semua Operator + Bonus Pulsa 20.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 35GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 70GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e70GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e90 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 20.000\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224173,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223136,
+                            "name": "product_paket_data_kuota",
+                            "value": "105GB"
+                          }
+                        ],
+                        "promo": {
+                          "id": "8074",
+                          "bonus_text": "",
+                          "new_price": "Rp205.540",
+                          "new_price_plain": 205540,
+                          "value_text": "",
+                          "discount": "14%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "9410",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "Akrab 144GB, 3 Anggota + Bonus Pulsa 10.000",
+                        "detail": "45GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 33GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 10.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 205.000",
+                        "price": "Rp205.000",
+                        "price_plain": 205000,
+                        "detail_compact": "45GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 33GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 10.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Bersama 45GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Pribadi hingga 33GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eUnlimited Kuota aplikasi productivitas\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eUnlimited Nelpon \u0026 SMS\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eKe XL/Axis dan Bonus Pulsa 10.000\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 222639,
+                            "name": "product_paket_data_kuota",
+                            "value": "33GB-78GB"
+                          }
+                        ],
+                        "promo": {
+                          "id": "8461",
+                          "bonus_text": "",
+                          "new_price": "Rp175.000",
+                          "new_price_plain": 175000,
+                          "value_text": "",
+                          "discount": "15%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "9411",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "Akrab 260GB, 4 Anggota + Bonus Pulsa 15.000",
+                        "detail": "80GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 45GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 15.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 320.000",
+                        "price": "Rp320.000",
+                        "price_plain": 320000,
+                        "detail_compact": "80GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 45GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 15.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 45GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003ePer Anggota\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Bersama up to 80GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003ePaket Tambahan\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eUnlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 15.000. Detail Area bisa dilihat di xl.co.id/akrab\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 222824,
+                            "name": "product_paket_data_kuota",
+                            "value": "45GB-125GB"
+                          }
+                        ],
+                        "promo": {
+                          "id": "8078",
+                          "bonus_text": "",
+                          "new_price": "Rp288.000",
+                          "new_price_plain": 288000,
+                          "value_text": "",
+                          "discount": "10%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "9409",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "Akrab 63GB, 2 Anggota + Bonus Pulsa 5.000",
+                        "detail": "25GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 19GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 5.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 125.000",
+                        "price": "Rp125.000",
+                        "price_plain": 125000,
+                        "detail_compact": "25GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 19GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 5.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 19GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003ePer Anggota\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Bersama up to 25GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003ePaket Tambahan\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eUnlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 5.000. Detail Area bisa dilihat di xl.co.id/akrab\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223166,
+                            "name": "product_paket_data_kuota",
+                            "value": "19GB-44GB"
+                          }
+                        ],
+                        "promo": {
+                          "id": "8460",
+                          "bonus_text": "",
+                          "new_price": "Rp110.000",
+                          "new_price_plain": 110000,
+                          "value_text": "",
+                          "discount": "12%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "9412",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "DISKON"
+                        ],
+                        "desc": "Akrab 460GB, 4 Anggota + Bonus Pulsa 100.000",
+                        "detail": "160GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 75GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 100.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 515.000",
+                        "price": "Rp515.000",
+                        "price_plain": 515000,
+                        "detail_compact": "160GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 75GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 100.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 75GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003ePer Anggota\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Bersama up to 160GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003ePaket Tambahan\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eUnlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 100.000. Detail Area bisa dilihat di xl.co.id/akrab\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223126,
+                            "name": "product_paket_data_kuota",
+                            "value": "75GB-235GB"
+                          }
+                        ],
+                        "promo": {
+                          "id": "8079",
+                          "bonus_text": "",
+                          "new_price": "Rp430.000",
+                          "new_price_plain": 430000,
+                          "value_text": "",
+                          "discount": "17%"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Xtra Combo Flex",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "18791",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "Xtra Combo Flex Basic 4GB + Kuota Area Hingga 1.5GB + Bonus Flex",
+                        "detail": "Kuota Utama 4GB. Kuota Area hingga 1.5GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. +5 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 2GB/ Unlimited Turbo Basic (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 7hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 45.000",
+                        "price": "Rp45.000",
+                        "price_plain": 45000,
+                        "detail_compact": "Kuota Utama 4GB. Kuota Area hingga 1.5GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. +5 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 2GB/ Unlimited Turbo Basic (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 7hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 4GB + Kuota Area hingga 1.5GB\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eXtra Unlimited Turbo WhatsApp \u0026amp; LINE  + 5 Min Nelpon ke semua operator\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL\u003cbr\u003e  a. Kuota Utama 2GB \u003cbr\u003e b. Xtra Unlimited Turbo Basic (Unlimited Access Tokopedia \u0026amp; App Lainnya)\u003cbr\u003e  c. Vidio Platinum Subscription 7hr\u0026nbsp;\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr  Cek info area di xl.co.id/xcfm\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "18721",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "Xtra Combo Flex Plus 10GB + Kuota Area Hingga 14GB + Bonus Flex",
+                        "detail": "Kuota Utama 10GB. Kuota Area hingga 14GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 20 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 4GB / Unlimited Turbo Super (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 7hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 65.000",
+                        "price": "Rp65.000",
+                        "price_plain": 65000,
+                        "detail_compact": "Kuota Utama 10GB. Kuota Area hingga 14GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 20 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 4GB / Unlimited Turbo Super (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 7hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 10GB\u003cbr\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003eKuota Area hingga 14GB \u0026amp; Xtra Unlimited Turbo WhatsApp \u0026amp; LINE\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL\u003cbr\u003e  a. Kuota Utama 4GB \u003cbr\u003e b. Xtra Unlimited Turbo Super (Unlimited Access Tokopedia \u0026amp; App Lainnya) \u003cbr\u003e c. Vidio Platinum Subscription 7hr \u003cbr\u003e\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003e+20 Min Nelpon ke semua operator.  Masa aktif 30hr  Cek info area di \u003ca href\u003d\"http://xl.co.id/xcfm\" target\u003d\"_self\" style\u003d\"undefined\"\u003exl.co.id/xcfm\u003c/a\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "18792",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "Xtra Combo Flex Super 20GB + Kuota Area Hingga 22GB + Bonus Flex",
+                        "detail": "Kuota Utama 20GB. Kuota Area hingga 22GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 30 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 7GB / Unlimited Turbo Premium (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 95.000",
+                        "price": "Rp95.000",
+                        "price_plain": 95000,
+                        "detail_compact": "Kuota Utama 20GB. Kuota Area hingga 22GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 30 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 7GB / Unlimited Turbo Premium (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek info area di xl.co.id/xcfm",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 20GB + Kuota Area hingga 22GB\u003c/p\u003e\n",
+                          "\u003cp\u003eXtra Unlimited Turbo WhatsApp \u0026amp; LINE. + 30 Min Nelpon ke semua operator\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL\u003c/p\u003e\n\u003cp\u003e\u0026nbsp;1. Kuota Utama 7GB\u0026nbsp;\u003c/p\u003e\n\u003cp\u003e\u0026nbsp;2. Xtra Unlimited Turbo Premium (Unlimited Access Tokopedia \u0026amp; App Lainnya)\u0026nbsp;\u003c/p\u003e\n\u003cp\u003e\u0026nbsp;3. Vidio Platinum Subscription 30hr\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr  Cek info area di xl.co.id/xcfm\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "18793",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "Xtra Combo Flex Ultra 35GB + Kuota Area Hingga 40GB + Bonus Flex",
+                        "detail": "Kuota Utama 35GB. Kuota Area hingga 40GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 40 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 10GB / Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek Info area di xl.co.id/xcfm ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 135.000",
+                        "price": "Rp135.000",
+                        "price_plain": 135000,
+                        "detail_compact": "Kuota Utama 35GB. Kuota Area hingga 40GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 40 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 10GB / Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek Info area di xl.co.id/xcfm ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 35GB + Kuota Area hingga 40GB\u003c/p\u003e\n",
+                          "\u003cp\u003eXtra Unlimited Turbo WhatsApp \u0026amp; LINE + 40 Min Nelpon ke semua operator\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL\u003c/p\u003e\n\u003cp\u003e\u0026nbsp;a. Kuota Utama 10GB\u0026nbsp;\u003c/p\u003e\n\u003cp\u003eb.  Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026amp; App Lainnya)\u0026nbsp;\u003c/p\u003e\n\u003cp\u003ec. Vidio Platinum Subscription 30hr\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr  Cek Info area di \u003ca href\u003d\"http://xl.co.id/xcfm\" target\u003d\"_self\" style\u003d\"undefined\"\u003exl.co.id/xcfm\u003c/a\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "18794",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "Xtra Combo Flex Prime 48GB + Kuota Area Hingga 67GB + Bonus Flex",
+                        "detail": "Kuota Utama 48GB. Kuota Area hingga 67GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 60 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 12GB / Unlimited Turbo (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek info \u0026 area di xl.co.id/xcfm ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 185.000",
+                        "price": "Rp185.000",
+                        "price_plain": 185000,
+                        "detail_compact": "Kuota Utama 48GB. Kuota Area hingga 67GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 60 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 12GB / Unlimited Turbo (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek info \u0026 area di xl.co.id/xcfm ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 48GB + Kuota Area hingga 67GB\u0026nbsp;\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eXtra Unlimited Turbo WhatsApp \u0026amp; LINE + 60 Min Nelpon ke semua operator\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL\u0026nbsp;\u003c/p\u003e\n\u003cp\u003ea. Kuota Utama 12GB\u0026nbsp;\u003c/p\u003e\n\u003cp\u003eb. Xtra Unlimited Turbo (Unlimited Access Tokopedia \u0026amp; App Lainnya)\u0026nbsp;\u003c/p\u003e\n\u003cp\u003ec. Vidio Platinum Subscription 30hr\u0026nbsp;\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr  Cek info \u0026amp; area di \u003ca href\u003d\"http://xl.co.id/xcfm\" target\u003d\"_self\" style\u003d\"undefined\"\u003exl.co.id/xcfm\u003c/a\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "18795",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "Xtra Combo Flex Max 80GB + Kuota Area Hingga 105GB + Bonus Flex",
+                        "detail": "Kuota Utama 80GB. Kuota Area hingga 105GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 90 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 12GB / Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek Info area di xl.co.id/xcfm ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 245.000",
+                        "price": "Rp245.000",
+                        "price_plain": 245000,
+                        "detail_compact": "Kuota Utama 80GB. Kuota Area hingga 105GB. Xtra Unlimited Turbo WhatsApp \u0026 LINE. + 90 Min Nelpon ke semua operator. Pilih satu Bonus Flex di myXL berupa Kuota Utama 12GB / Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026 App Lainnya) / Vidio Platinum Subscription 30hr. Masa aktif 30hr. Cek Info area di xl.co.id/xcfm ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003eKuota Utama 80GB + Kuota Area hingga 105GB\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eXtra Unlimited Turbo WhatsApp \u0026amp; LINE + 90 Min Nelpon ke semua operator\u003c/p\u003e\n",
+                          "\u003cp\u003ePilih satu Bonus Flex di myXL\u0026nbsp;\u003c/p\u003e\n\u003cp\u003ea. Kuota Utama 12GB\u0026nbsp;\u003c/p\u003e\n\u003cp\u003eb. Unlimited Turbo Ultimate (Unlimited Access Tokopedia \u0026amp; App Lainnya)\u0026nbsp;\u003c/p\u003e\n\u003cp\u003ec. Vidio Platinum Subscription 30hr\u0026nbsp;\u003c/p\u003e\n",
+                          "\u003cp\u003eMasa aktif 30hr  Cek Info area di \u003ca href\u003d\"http://xl.co.id/xcfm\" target\u003d\"_self\" style\u003d\"undefined\"\u003exl.co.id/xcfm\u003c/a\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Bonus Pulsa",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "10149",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo 5GB + 10GB + Bonus Pulsa 2.000",
+                        "detail": "5GB Kuota Utama + 10GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 20 Menit Nelpon ke Semua Operator+ Bonus Pulsa 2.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 59.000",
+                        "price": "Rp59.000",
+                        "price_plain": 59000,
+                        "detail_compact": "5GB Kuota Utama + 10GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 20 Menit Nelpon ke Semua Operator+ Bonus Pulsa 2.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 5GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 10GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e10GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e20 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 2.000\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223594,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 222624,
+                            "name": "product_paket_data_kuota",
+                            "value": "15GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10150",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo 10GB + 20GB + Bonus Pulsa 5.000",
+                        "detail": "10GB Kuota Utama + 20GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 30 Menit Nelpon ke Semua Operator + Bonus Pulsa 5.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 89.000",
+                        "price": "Rp89.000",
+                        "price_plain": 89000,
+                        "detail_compact": "10GB Kuota Utama + 20GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 30 Menit Nelpon ke Semua Operator + Bonus Pulsa 5.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 10GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 20GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e20GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e30 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 5.000.\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223487,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223211,
+                            "name": "product_paket_data_kuota",
+                            "value": "30GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10151",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo 15GB + 30GB + Bonus Pulsa 10.000",
+                        "detail": "15GB Kuota Utama + 30GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 40 Menit Nelpon ke Semua Operator + Bonus Pulsa 10.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 129.000",
+                        "price": "Rp129.000",
+                        "price_plain": 129000,
+                        "detail_compact": "15GB Kuota Utama + 30GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 40 Menit Nelpon ke Semua Operator + Bonus Pulsa 10.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003e15GB Kuota Utama\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 30GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e30GB Kuota Youtube (00:00 - 24:00 + Unlimited Kuota Youtube (01:00 - 06:00) \u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e40 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eke Semua Operator\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223517,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223216,
+                            "name": "product_paket_data_kuota",
+                            "value": "45GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10152",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo 20GB + 40GB + Bonus Pulsa 15.000",
+                        "detail": "20GB Kuota Utama + 40GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 60 Menit Nelpon ke Semua Operator + Bonus Pulsa 15.000. Masa aktif 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 179.000",
+                        "price": "Rp179.000",
+                        "price_plain": 179000,
+                        "detail_compact": "20GB Kuota Utama + 40GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 60 Menit Nelpon ke Semua Operator + Bonus Pulsa 15.000. Masa aktif 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 20GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 40GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e40GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e60 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 15.000\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223481,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223210,
+                            "name": "product_paket_data_kuota",
+                            "value": "60GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10153",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo 35GB + 70GB + Bonus Pulsa 20.000",
+                        "detail": "35GB Kuota Utama + 70GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 90 Menit Nelpon ke Semua Operator + Bonus Pulsa 20.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 239.000",
+                        "price": "Rp239.000",
+                        "price_plain": 239000,
+                        "detail_compact": "35GB Kuota Utama + 70GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 90 Menit Nelpon ke Semua Operator + Bonus Pulsa 20.000. Masa aktif Paket 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 35GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 70GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e70GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e90 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 20.000\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224021,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 222790,
+                            "name": "product_paket_data_kuota",
+                            "value": "105GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10154",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo VIP 5GB + 10GB + Bonus Pulsa 2.000",
+                        "detail": "5GB Kuota Utama + 10GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 20 Menit Nelpon ke Semua Operator + Bonus Pulsa 2.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 69.000",
+                        "price": "Rp69.000",
+                        "price_plain": 69000,
+                        "detail_compact": "5GB Kuota Utama + 10GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 20 Menit Nelpon ke Semua Operator + Bonus Pulsa 2.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 5GB \u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 10GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e10GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e20 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 2.000.\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223477,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223209,
+                            "name": "product_paket_data_kuota",
+                            "value": "15GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10155",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo VIP 10GB + 20GB + Bonus Pulsa 5.000",
+                        "detail": "10GB Kuota Utama + 20GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 30 Menit Nelpon ke Semua Operator + Bonus Pulsa 5.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 99.000",
+                        "price": "Rp99.000",
+                        "price_plain": 99000,
+                        "detail_compact": "10GB Kuota Utama + 20GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 30 Menit Nelpon ke Semua Operator + Bonus Pulsa 5.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 10GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 20GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e20GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e30 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 5.000.\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223448,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223204,
+                            "name": "product_paket_data_kuota",
+                            "value": "30GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10156",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo VIP 15GB + 30GB + Bonus Pulsa 10.000",
+                        "detail": "15GB Kuota Utama + 30GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 40 Menit Nelpon ke Semua Operator + Bonus Pulsa 10.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 139.000",
+                        "price": "Rp139.000",
+                        "price_plain": 139000,
+                        "detail_compact": "15GB Kuota Utama + 30GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 40 Menit Nelpon ke Semua Operator + Bonus Pulsa 10.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 15GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 30GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e30GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e40 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 10.000\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223471,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223208,
+                            "name": "product_paket_data_kuota",
+                            "value": "45GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10157",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo VIP 20GB + 40GB + Bonus Pulsa 15.000",
+                        "detail": "20GB Kuota Utama + 40GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 60 Menit Nelpon ke Semua Operator + Bonus Pulsa 15.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 189.000",
+                        "price": "Rp189.000",
+                        "price_plain": 189000,
+                        "detail_compact": "20GB Kuota Utama + 40GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 60 Menit Nelpon ke Semua Operator + Bonus Pulsa 15.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 20GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 40GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e40GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e60 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 15.000\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223443,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223203,
+                            "name": "product_paket_data_kuota",
+                            "value": "60GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10158",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Combo VIP 35GB + 70GB + Bonus Pulsa 20.000",
+                        "detail": "35GB Kuota Utama + 70GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 90 Menit Nelpon ke Semua Operator + Bonus Pulsa 20.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 249.000",
+                        "price": "Rp249.000",
+                        "price_plain": 249000,
+                        "detail_compact": "35GB Kuota Utama + 70GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 90 Menit Nelpon ke Semua Operator + Bonus Pulsa 20.000. Masa aktif Paket 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 35GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya.\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Youtube 70GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e70GB Kuota Youtube (00:00 - 24:00) dan Unlimited Kuota Youtube (01:00 - 06:00)\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e90 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSemua Operator dan Bonus Pulsa 20.000\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223466,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223207,
+                            "name": "product_paket_data_kuota",
+                            "value": "105GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Bonus Pulsa (Akrab - Berbagi Kuota Sekeluarga)",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "10144",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "Akrab 28GB, 2 Anggota + Bonus Pulsa 2.000",
+                        "detail": "10GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 9GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 2.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 62.000",
+                        "price": "Rp62.000",
+                        "price_plain": 62000,
+                        "detail_compact": "10GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 9GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 2.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 9GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003ePer Anggota\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Bersama up to 10GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003ePaket Tambahan\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eUnlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 2.000. Detail Area bisa dilihat di xl.co.id/akrab\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223107,
+                            "name": "product_paket_data_kuota",
+                            "value": "9GB-19GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10145",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "Akrab 63GB, 2 Anggota + Bonus Pulsa 5.000",
+                        "detail": "25GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 19GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 5.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 125.000",
+                        "price": "Rp125.000",
+                        "price_plain": 125000,
+                        "detail_compact": "25GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 19GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 5.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 19GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003ePer Anggota\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Bersama up to 25GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003ePaket Tambahan\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eUnlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 5.000. Detail Area bisa dilihat di xl.co.id/akrab\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223206,
+                            "name": "product_paket_data_kuota",
+                            "value": "19GB-44GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10146",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "Akrab 144GB, 3 Anggota + Bonus Pulsa 10.000",
+                        "detail": "45GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 33GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 10.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 205.000",
+                        "price": "Rp205.000",
+                        "price_plain": 205000,
+                        "detail_compact": "45GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 33GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 10.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 33GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003ePer Anggota\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Bersama up to 45GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003ePaket Tambahan\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 10.000. Detail Area bisa dilihat di xl.co.id/akrab\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223124,
+                            "name": "product_paket_data_kuota",
+                            "value": "33GB-78GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10147",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "Akrab 260GB, 4 Anggota + Bonus Pulsa 15.000",
+                        "detail": "80GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 45GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 15.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 320.000",
+                        "price": "Rp320.000",
+                        "price_plain": 320000,
+                        "detail_compact": "80GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 45GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 15.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 45GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003ePer Anggota\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Bersama up to 80GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003ePaket Tambahan\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eUnlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 15.000. Detail Area bisa dilihat di xl.co.id/akrab\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223164,
+                            "name": "product_paket_data_kuota",
+                            "value": "45GB-125GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10148",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "Akrab 460GB, 4 Anggota + Bonus Pulsa 100.000",
+                        "detail": "160GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 75GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 100.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 515.000",
+                        "price": "Rp515.000",
+                        "price_plain": 515000,
+                        "detail_compact": "160GB Kuota untuk dipakai bersama-sama + Bonus Kuota Pribadi hingga 75GB per Anggota + Unlimited Kuota Aplikasi Produktivitas + Unlimited Nelpon \u0026 SMS ke XL/AXIS + Bonus Pulsa 100.000. Detail Area bisa dilihat di xl.co.id/akrab",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [
+                          {
+                            "id": 222686,
+                            "name": "product_paket_data_kuota",
+                            "value": "75GB-235GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Produk Eksklusif",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "3340",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "Tokopedia Booster Pack",
+                        "detail": "Akses Tokopedia 100MB/hr, 30hr, Rp10rb",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 9.500",
+                        "price": "Rp10.000",
+                        "price_plain": 10000,
+                        "detail_compact": "Akses Tokopedia 100MB/hr, 30hr, Rp10rb",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eAkses Tokopedia\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e100MB/hr\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224008,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 222772,
+                            "name": "product_paket_data_kuota",
+                            "value": "100MB/hr"
+                          }
+                        ],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp9.500",
+                          "new_price_plain": 9500,
+                          "value_text": "",
+                          "discount": "5%"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "HOTROD",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "6588",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "HotRod 500MB / 7 hari",
+                        "detail": "500MB 24jam. Masa aktif 7 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging) ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 5.700",
+                        "price": "Rp5.700",
+                        "price_plain": 5700,
+                        "detail_compact": "500MB 24jam. Masa aktif 7 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging) ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 500MB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eKuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging) \u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223996,
+                            "name": "product_paket_data_expire",
+                            "value": "7 Hari"
+                          },
+                          {
+                            "id": 222753,
+                            "name": "product_paket_data_kuota",
+                            "value": "500MB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6589",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "HotRod 1.5GB / 3 hari",
+                        "detail": "1.5GB 24jam. Masa aktif 3 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 11.000",
+                        "price": "Rp11.000",
+                        "price_plain": 11000,
+                        "detail_compact": "1.5GB 24jam. Masa aktif 3 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 1.5GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eKuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224210,
+                            "name": "product_paket_data_expire",
+                            "value": "3 Hari"
+                          },
+                          {
+                            "id": 223150,
+                            "name": "product_paket_data_kuota",
+                            "value": "1.5GB"
+                          }
+                        ],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp9.500",
+                          "new_price_plain": 9500,
+                          "value_text": "",
+                          "discount": "14%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "6591",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "HotRod 2GB / 7 hari",
+                        "detail": "2GB 24jam. Masa aktif 7 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 21.000",
+                        "price": "Rp21.000",
+                        "price_plain": 21000,
+                        "detail_compact": "2GB 24jam. Masa aktif 7 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 2GB \u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224035,
+                            "name": "product_paket_data_expire",
+                            "value": "7 Hari"
+                          },
+                          {
+                            "id": 222813,
+                            "name": "product_paket_data_kuota",
+                            "value": "2GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6592",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "HotRod 3GB / 7 hari",
+                        "detail": "",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 28.000",
+                        "price": "Rp28.000",
+                        "price_plain": 28000,
+                        "detail_compact": "",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6590",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [
+                          "BARU"
+                        ],
+                        "desc": "HotRod 1GB / 7 hari",
+                        "detail": "",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 11.000",
+                        "price": "Rp11.000",
+                        "price_plain": 11000,
+                        "detail_compact": "",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp9.500",
+                          "new_price_plain": 9500,
+                          "value_text": "",
+                          "discount": "14%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "130",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "HotRod 1.5GB",
+                        "detail": "1.5GB Kuota Utama. Masa aktif 30 hari",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 49.600",
+                        "price": "Rp49.600",
+                        "price_plain": 49600,
+                        "detail_compact": "1.5GB Kuota Utama. Masa aktif 30 hari",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 1.5GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224082,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223094,
+                            "name": "product_paket_data_kuota",
+                            "value": "1.5GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "163",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "HotRod 800MB",
+                        "detail": "800MB Kuota Utama. Masa aktif 30 hari",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 30.000",
+                        "price": "Rp30.000",
+                        "price_plain": 30000,
+                        "detail_compact": "800MB Kuota Utama. Masa aktif 30 hari",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 800MB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224162,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223132,
+                            "name": "product_paket_data_kuota",
+                            "value": "800MB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "164",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "HotRod 3GB",
+                        "detail": "3GB Kuota Utama. Masa aktif 30 hari",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 60.000",
+                        "price": "Rp60.000",
+                        "price_plain": 60000,
+                        "detail_compact": "3GB Kuota Utama. Masa aktif 30 hari",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [
+                          {
+                            "id": 223644,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 222670,
+                            "name": "product_paket_data_kuota",
+                            "value": "3GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "166",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "HotRod 8GB",
+                        "detail": "8GB Kuota Utama. Masa aktif 30 hari",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 130.000",
+                        "price": "Rp130.000",
+                        "price_plain": 130000,
+                        "detail_compact": "8GB Kuota Utama. Masa aktif 30 hari",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 8GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224186,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223141,
+                            "name": "product_paket_data_kuota",
+                            "value": "8GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "165",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "HotRod 6GB",
+                        "detail": "6GB Kuota Utama. Masa aktif 30 hari",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 100.000",
+                        "price": "Rp100.000",
+                        "price_plain": 100000,
+                        "detail_compact": "6GB Kuota Utama. Masa aktif 30 hari",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 6GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223522,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223217,
+                            "name": "product_paket_data_kuota",
+                            "value": "6GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "167",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "HotRod 12GB",
+                        "detail": "12GB Kuota Utama. Masa aktif 30 hari",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 180.000",
+                        "price": "Rp180.000",
+                        "price_plain": 180000,
+                        "detail_compact": "12GB Kuota Utama. Masa aktif 30 hari",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 12GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224176,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223137,
+                            "name": "product_paket_data_kuota",
+                            "value": "12GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "168",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "HotRod 16GB",
+                        "detail": "16GB Kuota Utama. Masa aktif 30 hari",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 220.000",
+                        "price": "Rp220.000",
+                        "price_plain": 220000,
+                        "detail_compact": "16GB Kuota Utama. Masa aktif 30 hari",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 16GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223991,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 222745,
+                            "name": "product_paket_data_kuota",
+                            "value": "16GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Yang Terbaru",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "6593",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA ON 1GB",
+                        "detail": "Kuota 1GB dengan masa aktif unlimited. Kuota anti hangus, internetan ON Teruuuus",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 15.000",
+                        "price": "Rp15.000",
+                        "price_plain": 15000,
+                        "detail_compact": "Kuota 1GB dengan masa aktif unlimited. Kuota anti hangus, internetan ON Teruuuus",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 1GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223120,
+                            "name": "product_paket_data_kuota",
+                            "value": "1GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6594",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA ON 2GB",
+                        "detail": "Kuota 2GB dengan masa aktif unlimited. Kuota anti hangus, internetan ON Teruuuus",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 25.000",
+                        "price": "Rp25.000",
+                        "price_plain": 25000,
+                        "detail_compact": "Kuota 2GB dengan masa aktif unlimited. Kuota anti hangus, internetan ON Teruuuus",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Utama 2GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223205,
+                            "name": "product_paket_data_kuota",
+                            "value": "2GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6883",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Edukasi 2GB, 1 Hari",
+                        "detail": "2GB Kuota untuk mengakses Rumah Belajar Kemendikbud, Spada Indonesia Kemendikbud, Ruang Guru, Zenius, Sekolahmu, dan website Lembaga Pendidikan dan Universitas. Masa aktif 1 Hari. Daftar website dan aplikasi lengkap: https://www.xl.co.id/xtra-conference",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 2.000",
+                        "price": "Rp2.000",
+                        "price_plain": 2000,
+                        "detail_compact": "2GB Kuota untuk mengakses Rumah Belajar Kemendikbud, Spada Indonesia Kemendikbud, Ruang Guru, Zenius, Sekolahmu, dan website Lembaga Pendidikan dan Universitas. Masa aktif 1 Hari. Daftar website dan aplikasi lengkap: https://www.xl.co.id/xtra-conference",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Belajar 2GB \u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003euntuk mengakses Rumah Belajar Kemendikbud, Spada Indonesia Kemendikbud, Ruang Guru, Zenius, Sekolahmu, dan website Lembaga Pendidikan dan Universitas.\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224010,
+                            "name": "product_paket_data_expire",
+                            "value": "1 Hari"
+                          },
+                          {
+                            "id": 222776,
+                            "name": "product_paket_data_kuota",
+                            "value": "2GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6884",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Edukasi 5GB, 3 Hari",
+                        "detail": "5GB Kuota untuk mengakses Rumah Belajar Kemendikbud, Spada Indonesia Kemendikbud, Ruang Guru, Zenius, Sekolahmu, dan website Lembaga Pendidikan dan Universitas. Masa aktif 3 Hari. Daftar website dan aplikasi lengkap: https://www.xl.co.id/xtra-conference",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 3.500",
+                        "price": "Rp3.500",
+                        "price_plain": 3500,
+                        "detail_compact": "5GB Kuota untuk mengakses Rumah Belajar Kemendikbud, Spada Indonesia Kemendikbud, Ruang Guru, Zenius, Sekolahmu, dan website Lembaga Pendidikan dan Universitas. Masa aktif 3 Hari. Daftar website dan aplikasi lengkap: https://www.xl.co.id/xtra-conference",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Belajar 5GB \u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003euntuk mengakses Rumah Belajar Kemendikbud, Spada Indonesia Kemendikbud, Ruang Guru, Zenius, Sekolahmu, dan website Lembaga Pendidikan dan Universitas.\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224052,
+                            "name": "product_paket_data_expire",
+                            "value": "3 Hari"
+                          },
+                          {
+                            "id": 223068,
+                            "name": "product_paket_data_kuota",
+                            "value": "5GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6885",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Edukasi 15GB, 7 Hari",
+                        "detail": "15GB Kuota untuk mengakses Rumah Belajar Kemendikbud, Spada Indonesia Kemendikbud, Ruang Guru, Zenius, Sekolahmu, dan website Lembaga Pendidikan dan Universitas. Masa aktif 7 Hari. Daftar website dan aplikasi lengkap: https://www.xl.co.id/xtra-conference",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 9.000",
+                        "price": "Rp9.000",
+                        "price_plain": 9000,
+                        "detail_compact": "15GB Kuota untuk mengakses Rumah Belajar Kemendikbud, Spada Indonesia Kemendikbud, Ruang Guru, Zenius, Sekolahmu, dan website Lembaga Pendidikan dan Universitas. Masa aktif 7 Hari. Daftar website dan aplikasi lengkap: https://www.xl.co.id/xtra-conference",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Belajar 15GB \u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003euntuk mengakses Rumah Belajar Kemendikbud, Spada Indonesia Kemendikbud, Ruang Guru, Zenius, Sekolahmu, dan website Lembaga Pendidikan dan Universitas.\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224127,
+                            "name": "product_paket_data_expire",
+                            "value": "7 Hari"
+                          },
+                          {
+                            "id": 223119,
+                            "name": "product_paket_data_kuota",
+                            "value": "15GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6878",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Conference 2GB, 1 Hari",
+                        "detail": "2GB akses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom. Masa berlaku 1 Hari.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 3.000",
+                        "price": "Rp3.000",
+                        "price_plain": 3000,
+                        "detail_compact": "2GB akses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom. Masa berlaku 1 Hari.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Aplikasi 2GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eakses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224199,
+                            "name": "product_paket_data_expire",
+                            "value": "1 Hari"
+                          },
+                          {
+                            "id": 223146,
+                            "name": "product_paket_data_kuota",
+                            "value": "2GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6879",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Conference 5GB, 3 Hari",
+                        "detail": "5GB akses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom. Masa berlaku 3 Hari.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 5.000",
+                        "price": "Rp5.000",
+                        "price_plain": 5000,
+                        "detail_compact": "5GB akses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom. Masa berlaku 3 Hari.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Aplikasi 5GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eakses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224149,
+                            "name": "product_paket_data_expire",
+                            "value": "3 Hari"
+                          },
+                          {
+                            "id": 223127,
+                            "name": "product_paket_data_kuota",
+                            "value": "5GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "6880",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Conference 15GB, 7 Hari",
+                        "detail": "15GB akses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom. Masa berlaku 7 Hari.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 12.000",
+                        "price": "Rp12.000",
+                        "price_plain": 12000,
+                        "detail_compact": "15GB akses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom. Masa berlaku 7 Hari.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eKuota Aplikasi 15GB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eakses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224196,
+                            "name": "product_paket_data_expire",
+                            "value": "7 Hari"
+                          },
+                          {
+                            "id": 223145,
+                            "name": "product_paket_data_kuota",
+                            "value": "15GB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "ANYNET",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "1899",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "AnyNet 400 Menit / 7 Hari",
+                        "detail": "Bebas Nelpon ke semua operator selama 400 menit (370 Menit ke XL + 30 Menit ke Operator Lain). Masa aktif 7 hari. ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 12.000",
+                        "price": "Rp12.100",
+                        "price_plain": 12100,
+                        "detail_compact": "Bebas Nelpon ke semua operator selama 400 menit (370 Menit ke XL + 30 Menit ke Operator Lain). Masa aktif 7 hari. ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003e370 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eJaringan XL\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e30 Menit\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eKe Operator Lain\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224089,
+                            "name": "product_paket_data_expire",
+                            "value": "7 Hari"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "1900",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "AnyNet 150 Menit / 30 Hari",
+                        "detail": "Bebas Nelpon ke semua operator selama 150 menit. Masa aktif  30 hari.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 40.000",
+                        "price": "Rp40.000",
+                        "price_plain": 40000,
+                        "detail_compact": "Bebas Nelpon ke semua operator selama 150 menit. Masa aktif  30 hari. ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003e150 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eKe semua operator\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224111,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "1901",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "AnyNet 250 Menit / 30 Hari",
+                        "detail": "Bebas Nelpon ke semua operator selama 250 menit. Masa aktif  30 hari.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 60.000",
+                        "price": "Rp60.000",
+                        "price_plain": 60000,
+                        "detail_compact": "Bebas Nelpon ke semua operator selama 250 menit. Masa aktif  30 hari.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003e250 Menit Semua Operator\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223984,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "1903",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "AnyNet 325 Menit / 30 Hari",
+                        "detail": "Bebas Nelpon ke semua operator selama 325 menit. Masa aktif  30 hari.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 75.000",
+                        "price": "Rp75.000",
+                        "price_plain": 75000,
+                        "detail_compact": "Bebas Nelpon ke semua operator selama 325 menit. Masa aktif  30 hari.",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003e325 Menit Semua Operator\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223998,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "1906",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "AnyNet  500 Menit / 30 Hari ",
+                        "detail": "Bebas Nelpon ke semua operator selama 500 menit. Masa aktif  30 hari.",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 140.500",
+                        "price": "Rp145.000",
+                        "price_plain": 145000,
+                        "detail_compact": "Bebas Nelpon ke semua operator selama 500 menit. Masa aktif  30 hari. ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003e500 Menit Semua Operator\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223986,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          }
+                        ],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp140.500",
+                          "new_price_plain": 140500,
+                          "value_text": "",
+                          "discount": "3%"
+                        }
+                      }
+                    },
+                    {
+                      "id": "1877",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "AnyNet 300 Menit / 90 Hari ",
+                        "detail": "Bebas Nelpon ke semua operator selama 300 Menit. Masa aktif 90 Hari. ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 100.000",
+                        "price": "Rp100.000",
+                        "price_plain": 100000,
+                        "detail_compact": "Bebas Nelpon ke semua operator selama 300 Menit. Masa aktif 90 Hari. ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003e300 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eKe semua operator\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224113,
+                            "name": "product_paket_data_expire",
+                            "value": "90 Hari"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "1878",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "AnyNet 500 Menit / 90 Hari",
+                        "detail": "Bebas Nelpon ke semua operator selama 500 Menit. Masa aktif 90 Hari. ",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp 150.500",
+                        "price": "Rp150.500",
+                        "price_plain": 150500,
+                        "detail_compact": "Bebas Nelpon ke semua operator selama 500 Menit. Masa aktif 90 Hari. ",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003e500 Menit Semua Operator\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224003,
+                            "name": "product_paket_data_expire",
+                            "value": "90 Hari"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "",
+                  "cluster_type": "",
+                  "products": [
+                    {
+                      "id": "10762",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Bicara Nelpon,SMS,Internet, 30hr",
+                        "detail": "Nelpon unlimited ke sesama XL, 30 menit ke semua operator, 30 SMS ke semua operator, Data 200MB, 30 Hari",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "XTRA Bicara Nelpon,SMS,Internet, 30hr",
+                        "price": "Rp35.000",
+                        "price_plain": 35000,
+                        "detail_compact": "Nelpon unlimited ke sesama XL, 30 menit ke semua operator, 30 SMS ke semua operator, Data 200MB, 30 Hari",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003e30 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eKe semua operator\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e30 SMS\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eKe semua operator\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Data 200MB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 223309,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223180,
+                            "name": "product_paket_data_kuota",
+                            "value": "200MB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    },
+                    {
+                      "id": "10763",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "XTRA Bicara Nelpon+Internet, 30hr",
+                        "detail": "Nelpon unlimited ke sesama XL, 30 menit ke semua operator, Data 200MB, 30 Hari",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "XTRA Bicara Nelpon+Internet, 30hr",
+                        "price": "Rp30.000",
+                        "price_plain": 30000,
+                        "detail_compact": "Nelpon unlimited ke sesama XL, 30 menit ke semua operator, Data 200MB, 30 Hari",
+                        "category_id": 2,
+                        "operator_id": 5,
+                        "product_descriptions": [
+                          "\u003cp\u003e\u003cstrong\u003eUnlimited Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eSesama XL\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003e30 Menit Nelpon\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003eke operator lain\u003c/p\u003e\n",
+                          "\u003cp\u003e\u003cstrong\u003eKuota Data 200MB\u003c/strong\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n"
+                        ],
+                        "custom_attributes": [
+                          {
+                            "id": 224155,
+                            "name": "product_paket_data_expire",
+                            "value": "30 Hari"
+                          },
+                          {
+                            "id": 223129,
+                            "name": "product_paket_data_kuota",
+                            "value": "200MB"
+                          }
+                        ],
+                        "promo": null
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "filterTagComponents": [
+              {
+                "name": "filter_tag_kuota",
+                "text": "Kuota",
+                "param_name": "filter_tag_kuota",
+                "data_collections": [
+                  {
+                    "key": "1157",
+                    "value": "\u003c 1GB"
+                  },
+                  {
+                    "key": "1158",
+                    "value": "1-5GB"
+                  },
+                  {
+                    "key": "1159",
+                    "value": "6GB-10GB"
+                  },
+                  {
+                    "key": "1160",
+                    "value": "11-20GB"
+                  },
+                  {
+                    "key": "1161",
+                    "value": "\u003e 20GB"
+                  }
+                ]
+              },
+              {
+                "name": "filter_tag_feature",
+                "text": "Feature",
+                "param_name": "filter_tag_feature",
+                "data_collections": [
+                  {
+                    "key": "613",
+                    "value": "Telepon"
+                  },
+                  {
+                    "key": "1131",
+                    "value": "Produk Promo"
+                  },
+                  {
+                    "key": "1133",
+                    "value": "Kerja/Belajar"
+                  },
+                  {
+                    "key": "620",
+                    "value": "Exclusive"
+                  },
+                  {
+                    "key": "1132",
+                    "value": "Hiburan "
+                  }
+                ]
+              },
+              {
+                "name": "filter_tag_tipe_kuota",
+                "text": "Tipe Kuota\t",
+                "param_name": "filter_tag_tipe_kuota",
+                "data_collections": [
+                  {
+                    "key": "1135",
+                    "value": "Mingguan"
+                  },
+                  {
+                    "key": "1138",
+                    "value": "Unlimited"
+                  },
+                  {
+                    "key": "622",
+                    "value": "Kuota Malam"
+                  },
+                  {
+                    "key": "623",
+                    "value": "Kuota Utama"
+                  },
+                  {
+                    "key": "621",
+                    "value": "Kuota Tambahan"
+                  },
+                  {
+                    "key": "1134",
+                    "value": "Harian"
+                  },
+                  {
+                    "key": "1136",
+                    "value": "Bulanan"
+                  },
+                  {
+                    "key": "1137",
+                    "value": "Berlangganan"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

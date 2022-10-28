@@ -23,14 +23,14 @@ abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
     protected fun getAlwaysCloudCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
-            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+            .setExpiryTime(GraphqlConstant.ExpiryTimes.DAY.`val`())
             .setSessionIncluded(true)
             .build()
     }
 
     protected fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
-            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+            .setExpiryTime(GraphqlConstant.ExpiryTimes.DAY.`val`())
             .setSessionIncluded(true)
             .build()
     }

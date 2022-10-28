@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="user_profile_homepage_offlset">132dp</dimen>
+    <dimen name="user_profile_error_margin">85dp</dimen>
+    <dimen name="user_profile_dp_1">1dp</dimen>
+    <dimen name="user_profile_dp_2">2dp</dimen>
+    <dimen name="user_profile_dp_88">88dp</dimen>
+    <dimen name="user_profile_dp_160">160dp</dimen>
+    <dimen name="user_profile_dp_284">284dp</dimen>
+    <dimen name="user_profile_dp_12">12dp</dimen>
+    <dimen name="user_profile_dp_38">38dp</dimen>
+    <dimen name="user_profile_page_top_margin">80dp</dimen>
+    <dimen name="user_profile_follow_error_page_top_margin">160dp</dimen>
+    <dimen name="user_profile_live_circle_size">76dp</dimen>
+    <dimen name="user_profile_sp_28">28dp</dimen>
+    <dimen name="user_profile_space_6">6dp</dimen>
+    <dimen name="user_profile_margin_64">64dp</dimen>
+    <dimen name="user_profile_margin_8">8dp</dimen>
+    <dimen name="user_profile_margin_96">96dp</dimen>
+</resources>

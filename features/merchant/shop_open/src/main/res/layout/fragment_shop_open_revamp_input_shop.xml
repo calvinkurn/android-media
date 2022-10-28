@@ -10,7 +10,7 @@
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbar_input_shop"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -46,7 +46,7 @@
                 android:lineSpacingExtra="6sp"
                 android:text="@string/masukkan_info_toko"
                 android:textColor="@color/Unify_N700_96"
-                android:textSize="@dimen/sp_18"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify
@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="@dimen/dp_34"
+                android:layout_marginTop="34dp"
                 android:layout_marginRight="16dp"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/nama_domain"

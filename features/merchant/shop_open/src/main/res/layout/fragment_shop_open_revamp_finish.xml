@@ -11,17 +11,17 @@
         android:id="@+id/txt_greeting"
         android:text="@string/title_text_greeting"
         android:textColor="@color/Unify_N700_96"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:letterSpacing="0.01"
-        android:layout_marginTop="@dimen/dp_85"
-        android:textSize="@dimen/sp_28"
+        android:layout_marginTop="85dp"
+        android:textSize="28sp"
         android:layout_marginStart="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:gravity="center"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
@@ -34,10 +34,10 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/dp_120"
+        android:layout_marginTop="120dp"
         android:visibility="gone" />
 
     <com.airbnb.lottie.LottieAnimationView

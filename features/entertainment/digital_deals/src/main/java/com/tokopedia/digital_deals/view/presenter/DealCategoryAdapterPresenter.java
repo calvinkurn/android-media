@@ -36,12 +36,16 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
     }
 
+    public void initialize(UserSession mUserSession) {
+        this.userSession = mUserSession;
+    }
+
     @Override
     public void onDestroy() {
         postUpdateDealLikesUseCase.unsubscribe();
     }
 
-    public boolean setDealLike(int id, boolean liked, final int position, int likes) {
+    public boolean setDealLike(long id, boolean liked, final int position, int likes) {
         if (userSession.isLoggedIn()) {
             LikeUpdateModel requestModel = new LikeUpdateModel();
             Rating rating = new Rating();
@@ -50,7 +54,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
             } else {
                 rating.setIsLiked("true");
             }
-            rating.setUserId(Integer.parseInt(userSession.getUserId()));
+            rating.setUserId(Long.parseLong(userSession.getUserId()));
             rating.setProductId(id);
             rating.setFeedback("");
             requestModel.setRating(rating);
@@ -76,12 +80,12 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
                     DataResponse dataResponse = restResponse.getData();
                     LikeUpdateResult updateResult = (LikeUpdateResult) dataResponse.getData();
                     if (updateResult.isLiked()) {
-                        if (!(Utils.getSingletonInstance().containsLikedEvent(updateResult.getProductId()) > 0)) {
+                        if (!(Utils.getSingletonInstance().containsLikedEvent(updateResult.getProductIdInInt()) > 0)) {
                             Utils.getSingletonInstance().addLikedEvent(id, likes);
                         }
                     } else {
-                        if (Utils.getSingletonInstance().containsLikedEvent(updateResult.getProductId()) > 0) {
-                            Utils.getSingletonInstance().removeLikedEvent(updateResult.getProductId());
+                        if (Utils.getSingletonInstance().containsLikedEvent(updateResult.getProductIdInInt()) > 0) {
+                            Utils.getSingletonInstance().removeLikedEvent(updateResult.getProductIdInInt());
                         }
                     }
 

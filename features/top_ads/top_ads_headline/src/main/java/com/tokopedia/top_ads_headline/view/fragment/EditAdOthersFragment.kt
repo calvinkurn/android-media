@@ -32,15 +32,29 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import kotlinx.android.synthetic.main.fragment_edit_ad_others.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class EditAdOthersFragment : BaseDaggerFragment() {
+
+    private lateinit var headlineAdNameInput: TextFieldUnify
+    private lateinit var startDate: TextFieldUnify
+    private lateinit var endDate: TextFieldUnify
+    private lateinit var adAppearanceMessage: Typography
+    private lateinit var adScheduleSwitch: SwitchUnify
+    private lateinit var budgetWarningMessage: Typography
+    private lateinit var budgetCost: TextFieldUnify
+    private lateinit var hari: Typography
+    private lateinit var budgetCostMessage: Typography
+    private lateinit var limitBudgetSwitch: SwitchUnify
+    private lateinit var tooltipBtn: FloatingButtonUnify
 
     private val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
     private var selectedStartDate: Calendar? = null
@@ -68,19 +82,36 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        editAdOthersViewModel = ViewModelProvider(this, viewModelFactory).get(EditAdOthersViewModel::class.java)
+        editAdOthersViewModel =
+            ViewModelProvider(this, viewModelFactory).get(EditAdOthersViewModel::class.java)
         activity?.let {
-            sharedEditHeadlineViewModel = ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
+            sharedEditHeadlineViewModel =
+                ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
         }
     }
 
     override fun initInjector() {
-        DaggerHeadlineAdsComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        DaggerHeadlineAdsComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_edit_ad_others, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_edit_ad_others, container, false)
+        headlineAdNameInput = view.findViewById(R.id.headlineAdNameInput)
+        startDate = view.findViewById(R.id.startDate)
+        endDate = view.findViewById(R.id.endDate)
+        adAppearanceMessage = view.findViewById(R.id.adAppearanceMessage)
+        adScheduleSwitch = view.findViewById(R.id.adScheduleSwitch)
+        budgetWarningMessage = view.findViewById(R.id.budgetWarningMessage)
+        budgetCost = view.findViewById(R.id.budgetCost)
+        hari = view.findViewById(R.id.hari)
+        budgetCostMessage = view.findViewById(R.id.budgetCostMessage)
+        limitBudgetSwitch = view.findViewById(R.id.limitBudgetSwitch)
+        tooltipBtn = view.findViewById(R.id.tooltipBtn)
+        return view
     }
 
     companion object {
@@ -113,12 +144,13 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpObservers() {
-        sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
-            stepperModel = it
-            setUpAdNameEditText()
-            setUpScheduleView()
-            setMinBid()
-        })
+        sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()
+            ?.observe(viewLifecycleOwner, Observer {
+                stepperModel = it
+                setUpAdNameEditText()
+                setUpScheduleView()
+                setMinBid()
+            })
     }
 
     fun setDailyBudget(minBid: Double) {
@@ -144,7 +176,8 @@ class EditAdOthersFragment : BaseDaggerFragment() {
             }
             budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
             budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())
-            budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget.toString())
+            budgetCostMessage.text =
+                getString(R.string.topads_headline_schedule_budget_cost_message, budget.toString())
         }
     }
 
@@ -152,7 +185,9 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         return object : NumberTextWatcher(budgetCost.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, Utils.convertToCurrency(number.toLong()))
+                budgetCostMessage.text =
+                    getString(R.string.topads_headline_schedule_budget_cost_message,
+                        Utils.convertToCurrency(number.toLong()))
                 val minBid: String = stepperModel?.minBid ?: "0"
                 var minBudget = (stepperModel?.currentBid ?: 0.0) * MULTIPLIER
                 if (minBid.toDouble() > stepperModel?.currentBid ?: 0.0) {
@@ -161,11 +196,13 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                 val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toFloatOrZero()
                 if (number < minBudget && budgetCost.isVisible) {
                     budgetCost.setError(true)
-                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(minBudget.toLong())))
+                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error),
+                        Utils.convertToCurrency(minBudget.toLong())))
                     saveButtonState?.setButtonState(false)
                 } else if (number > maxDailyBudget) {
                     budgetCost.setError(true)
-                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), MAX_DAILY_BUDGET))
+                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error),
+                        MAX_DAILY_BUDGET))
                     saveButtonState?.setButtonState(false)
                 } else {
                     stepperModel?.dailyBudget = number.toFloat()
@@ -207,22 +244,30 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         }
         startDate.textFieldInput.isFocusable = false
         endDate.textFieldInput.isFocusable = false
-        val padding = resources.getDimensionPixelSize(R.dimen.dp_8)
+        val padding = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_8)
         startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         context?.run {
             setDate()
             startDate.textFieldInput.setOnClickListener {
                 (selectedEndDate as? GregorianCalendar)?.let { selectedEndDate ->
-                    openSetDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(), selectedStartDate as GregorianCalendar,
-                            selectedEndDate, this@EditAdOthersFragment::onStartDateChanged)
+                    openSetDateTimePicker(getString(R.string.topads_headline_start_date_header),
+                        "",
+                        getToday(),
+                        selectedStartDate as GregorianCalendar,
+                        selectedEndDate,
+                        this@EditAdOthersFragment::onStartDateChanged)
                 }
             }
             endDate.textFieldInput.setOnClickListener {
                 getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar)?.let { it1 ->
                     (selectedEndDate as? GregorianCalendar)?.let { it2 ->
-                        openSetDateTimePicker(getString(R.string.topads_headline_end_date_header), getString(R.string.topads_headline_end_date_info),
-                                it1, it2, getSpecifiedDateFromToday(years = 50), this@EditAdOthersFragment::onEndDateChanged)
+                        openSetDateTimePicker(getString(R.string.topads_headline_end_date_header),
+                            getString(R.string.topads_headline_end_date_info),
+                            it1,
+                            it2,
+                            getSpecifiedDateFromToday(years = 50),
+                            this@EditAdOthersFragment::onEndDateChanged)
                     }
                 }
             }
@@ -234,24 +279,35 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         context?.run {
             if (selectedStartDate == null) {
                 selectedStartDate = getToday()
-                val startDateString = getToday().time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
+                val startDateString =
+                    getToday().time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
                 startDate.textFieldInput.setText(startDateString)
             } else {
-                startDate.textFieldInput.setText(selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID))
-                selectedEndDate = getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar, month = 1)
+                startDate.textFieldInput.setText(selectedStartDate?.time?.toFormattedString(
+                    HEADLINE_DATETIME_FORMAT1,
+                    localeID))
+                selectedEndDate =
+                    getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar,
+                        month = 1)
             }
             if (selectedEndDate == null) {
-                selectedEndDate = getSpecifiedDateFromStartDate(month = 1, startCalendar = selectedStartDate as GregorianCalendar?)
-                val endDateString = selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
+                selectedEndDate = getSpecifiedDateFromStartDate(month = 1,
+                    startCalendar = selectedStartDate as GregorianCalendar?)
+                val endDateString =
+                    selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
                 endDate.textFieldInput.setText(endDateString)
             } else {
-                endDate.textFieldInput.setText(selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID))
+                endDate.textFieldInput.setText(selectedEndDate?.time?.toFormattedString(
+                    HEADLINE_DATETIME_FORMAT1,
+                    localeID))
             }
         }
     }
 
     private fun setAdAppearanceMessage() {
-        adAppearanceMessage.text = String.format(getString(R.string.topads_headline_schedule_add_appearance_message), getTimeSelected()?.toInt())
+        adAppearanceMessage.text =
+            String.format(getString(R.string.topads_headline_schedule_add_appearance_message),
+                getTimeSelected()?.toInt())
     }
 
     private fun getTimeSelected(): Long? {
@@ -282,12 +338,14 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpToolTip() {
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
-            val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
-        }
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
+                    tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
+                    val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                }
         tooltipBtn.addItem(tooltipView)
         tooltipBtn.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
@@ -295,20 +353,26 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_schedule_header))
                 add(TipsUiRowModel(R.string.topads_headline_tips_schedule_row1))
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_budget_header))
-                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row1, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row2, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row3, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row1,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row2,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row3,
+                    R.drawable.topads_create_ic_checklist))
             }
-            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            val tipsListSheet =
+                context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.show(childFragmentManager, "")
         }
     }
 
-    private fun openSetDateTimePicker(header: String, info: String, minDate: GregorianCalendar, defaultDate: GregorianCalendar,
-                                      maxDate: GregorianCalendar, onDateChanged: (Calendar) -> Unit) {
+    private fun openSetDateTimePicker(
+        header: String, info: String, minDate: GregorianCalendar, defaultDate: GregorianCalendar,
+        maxDate: GregorianCalendar, onDateChanged: (Calendar) -> Unit,
+    ) {
         context?.run {
             val startDateTimePicker = DateTimePickerUnify(this, minDate, defaultDate, maxDate, null,
-                    DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
+                DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
                 setTitle(header)
                 if (info.isNotEmpty()) {
                     setInfo(info)
@@ -318,7 +382,8 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                 }
                 minuteInterval = MINUTE_INTERVAL
                 datePickerButton.let { button ->
-                    button.text = this@run.getString(R.string.topads_headline_date_picker_calendar_button)
+                    button.text =
+                        this@run.getString(R.string.topads_headline_date_picker_calendar_button)
                     button.setOnClickListener {
                         onDateChanged.invoke(getDate())
                         dismiss()
@@ -330,8 +395,8 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpAdNameEditText() {
-        headlineAdNameInput?.textFieldInput?.setText(MethodChecker.fromHtml(stepperModel?.groupName))
-        headlineAdNameInput?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        headlineAdNameInput.textFieldInput.setText(MethodChecker.fromHtml(stepperModel?.groupName))
+        headlineAdNameInput.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -339,11 +404,11 @@ class EditAdOthersFragment : BaseDaggerFragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                headlineAdNameInput?.setError(false)
+                headlineAdNameInput.setError(false)
                 if (s.toString().isBlank()) {
-                    headlineAdNameInput?.getFirstIcon()?.hide()
+                    headlineAdNameInput.getFirstIcon().hide()
                 } else {
-                    headlineAdNameInput?.getFirstIcon()?.show()
+                    headlineAdNameInput.getFirstIcon().show()
                 }
             }
         })

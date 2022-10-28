@@ -51,7 +51,8 @@
             app:layout_goneMarginLeft="8dp"
             android:maxLines="1"
             android:ellipsize="end"
-            app:typographyType="heading_6"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/suggestionTopShopCardIconTitle"
             app:layout_constraintRight_toRightOf="parent"/>
@@ -69,7 +70,7 @@
             android:layout_marginEnd="8dp"
             android:maxLines="1"
             android:ellipsize="end"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler"
             app:layout_constraintTop_toBottomOf="@id/suggestionTopShopCardTitle"
             app:layout_constraintLeft_toRightOf="@id/suggestionTopShopCardImage"

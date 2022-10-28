@@ -9,7 +9,6 @@ import android.text.TextPaint
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.IntDef
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -19,6 +18,7 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.whenAlive
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.utils.getTextSizeFromDimens
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherImageTextType
@@ -353,7 +353,7 @@ class VoucherPreviewPainter(private val context: Context,
     }
 
     private fun getTextView(value: String, type: VoucherImageTextType) =
-            TextView(context).apply {
+            Typography(context).apply {
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value

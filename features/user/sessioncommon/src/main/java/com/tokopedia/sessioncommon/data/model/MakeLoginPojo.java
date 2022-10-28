@@ -17,7 +17,7 @@ public class MakeLoginPojo {
     private String msisdnIsVerified = "";
     @SerializedName("shop_id")
     @Expose
-    private int shopId;
+    private String shopId;
     @SerializedName("shop_name")
     @Expose
     private String shopName = "";
@@ -38,7 +38,7 @@ public class MakeLoginPojo {
     private int isRegisterDevice;
     @SerializedName("user_id")
     @Expose
-    private int userId;
+    private String userId;
     @SerializedName("msisdn_show_dialog")
     @Expose
     private int msisdnShowDialog;
@@ -68,11 +68,11 @@ public class MakeLoginPojo {
         this.msisdnIsVerified = msisdnIsVerified;
     }
 
-    public int getShopId() {
+    public String getShopId() {
         return shopId;
     }
 
-    public void setShopId(int shopId) {
+    public void setShopId(String shopId) {
         this.shopId = shopId;
     }
 
@@ -127,11 +127,11 @@ public class MakeLoginPojo {
         this.isRegisterDevice = isRegisterDevice;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

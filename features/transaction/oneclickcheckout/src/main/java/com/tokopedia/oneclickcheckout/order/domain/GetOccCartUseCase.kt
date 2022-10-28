@@ -60,10 +60,12 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
     error_message
     status
     data {
+      cart_data
       errors
       error_code
       pop_up_message
       max_char_note
+      placeholder_note
       kero_token
       kero_unix_time
       kero_discom_token
@@ -108,6 +110,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           }
           free_shipping_extra {
             eligible
+            badge_url
+          }
+          free_shipping_general {
+            bo_name
+            bo_type
             badge_url
           }
           preorder {
@@ -188,6 +195,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             product_price
             category_id
             category
+            last_level_category
+            category_identifier
             wholesale_price {
               qty_min_fmt
               qty_max_fmt
@@ -223,6 +232,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             free_shipping_extra {
               eligible
             }
+            free_shipping_general {
+              bo_name
+              bo_type
+              badge_url
+            }
             product_preorder {
               duration_day
             }
@@ -250,7 +264,41 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
               protection_checkbox_disabled
               unit
               source
-            }
+            }            
+            add_ons {
+              status
+              add_on_data {
+            	add_on_id
+            	add_on_qty
+              	add_on_price
+              	add_on_metadata {
+              	  add_on_note {
+					is_custom_note
+					to
+					from
+					notes
+				  }
+              	}
+              }
+              add_on_button {
+                title
+                description
+                left_icon_url
+                right_icon_url
+                action
+              }
+              add_on_bottomsheet {
+                header_title
+                description
+                products {
+			      product_name
+			      product_image_url
+			    }
+			    ticker {
+				  text
+			    }
+              }
+            }            
           }
         }
         toko_cabang {
@@ -260,7 +308,41 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         warehouse {
           warehouse_id
           is_fulfillment
-        }
+        }        
+        add_ons {
+          status
+          add_on_data {
+            add_on_id
+            add_on_qty
+            add_on_price
+            add_on_metadata {
+              add_on_note {
+			    is_custom_note
+				to
+				from
+				notes
+			  }
+            }
+          }
+          add_on_button {
+            title
+            description
+            left_icon_url
+            right_icon_url
+            action
+          }
+          add_on_bottomsheet {
+          	header_title
+            description
+            products {
+			  product_name
+			  product_image_url
+			}
+			ticker {
+			  text
+			}
+          }
+        }        
       }
       profile {
         address {
@@ -274,6 +356,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           city_name
           province_id
           province_name
+          country
           phone
           longitude
           latitude
@@ -408,6 +491,15 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 selected_tenure
             }
           }
+          payment_fee_detail {
+            fee
+            show_slashed
+            show_tooltip
+            slashed_fee
+            title
+            tooltip_info
+            type
+          }
         }
         shipment {
           service_id
@@ -468,6 +560,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
               success
               cart_id
               unique_id
+              shipping_id
+              sp_id
               order_id
               shop_id
               is_po
@@ -598,6 +692,18 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           action
           color
         }
+      }
+      pop_up {
+        title
+        description
+        button {
+          text
+        }
+      }
+      add_on_wording {
+        packaging_and_greeting_card
+        only_greeting_card
+        invoice_not_sent_to_recipient
       }
       total_product_price
     }

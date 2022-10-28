@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.R as networkR
@@ -20,25 +21,20 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by jegul on 16/07/20
  */
-internal fun GlobalError.productNotFoundState() {
-    errorIllustration.setImageResource(com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)
-    errorTitle.text = context.getString(R.string.play_product_not_found_title)
-    errorDescription.text = context.getString(R.string.play_product_not_found_desc)
-    errorAction.gone()
-}
-
-internal fun GlobalError.productEtalaseEmpty() {
-    errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
-    errorTitle.text = context.getString(R.string.play_product_etalase_empty_title)
-    errorDescription.text = context.getString(R.string.play_product_etalase_empty_desc)
-    errorAction.gone()
-}
-
 internal fun GlobalError.channelNotFound(onAction: () -> Unit) {
     this.errorTitle.setTextColor(ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
     this.errorDescription.setTextColor(ContextCompat.getColor(this.context, R.color.play_dms_white_68))
     this.setType(GlobalError.PAGE_NOT_FOUND)
     this.setActionClickListener { onAction() }
+}
+
+internal fun GlobalError.productTagSummaryEmpty(onAction: () -> Unit) {
+    errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
+    errorTitle.text = context.getString(R.string.play_bro_product_summary_empty_title)
+    errorDescription.text = context.getString(R.string.play_bro_product_summary_empty_description)
+    errorAction.text = context.getString(R.string.play_bro_product_summary_empty_action_text)
+    errorSecondaryAction.gone()
+    setActionClickListener { onAction() }
 }
 
 internal fun View.showErrorToaster(
@@ -93,15 +89,18 @@ internal fun View.showToaster(
         actionLabel: String = "",
         actionListener: View.OnClickListener = View.OnClickListener { },
         bottomMargin: Int? = null
-) {
+) : Snackbar {
     if (actionLabel.isNotEmpty()) Toaster.toasterCustomCtaWidth = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
     if (bottomMargin != null) Toaster.toasterCustomBottomHeight = bottomMargin
-    Toaster.build(this,
+
+    return Toaster.build(this,
             text = message,
             duration = duration,
             type = type,
             actionText = actionLabel,
-            clickListener = actionListener).show()
+            clickListener = actionListener).apply {
+                show()
+            }
 }
 
 internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestListener<Drawable>) {

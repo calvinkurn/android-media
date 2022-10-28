@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:orientation="horizontal"
+        android:background="@color/Unify_Background"
         android:padding="16dp">
 
         <ImageView

@@ -29,7 +29,7 @@ class OfficialStoreCategoriesUseCaseTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        getOfficialStoreCategoriesUseCase = GetOfficialStoreCategoriesUseCase(graphqlUseCase, anyString())
+        getOfficialStoreCategoriesUseCase = GetOfficialStoreCategoriesUseCase(graphqlUseCase)
     }
 
     @Test

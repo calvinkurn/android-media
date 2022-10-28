@@ -8,7 +8,6 @@ import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastIte
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.media.loader.loadImage
 
 class RechargeHomepageLastItemViewHolder(
     private val binding: ContentRechargeHomepageLastItemBinding,
@@ -19,7 +18,7 @@ class RechargeHomepageLastItemViewHolder(
 
     override fun bind(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
         renderView(element)
-        applyCarousel()
+        setCardHeightMatchParent()
     }
 
     private fun renderView(element: RechargeHomepageProductCardCustomLastItemModel.LastItem) {
@@ -35,15 +34,12 @@ class RechargeHomepageLastItemViewHolder(
         }
     }
 
-    private fun applyCarousel() {
-        setCardHeightMatchParent()
-    }
-
     private fun setCardHeightMatchParent() {
         with(binding) {
             val layoutParams = cardViewRechargeHomepageLastItem.layoutParams
             layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
             cardViewRechargeHomepageLastItem.layoutParams = layoutParams
+            cardViewRechargeHomepageLastItem.requestLayout()
         }
     }
 

@@ -22,6 +22,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 
 object KycOnBoardingViewInflater {
 
@@ -41,19 +42,27 @@ object KycOnBoardingViewInflater {
         }
     }
 
-    fun setupKycBenefitView(activity: FragmentActivity?, view: View, mainAction: () -> Unit, closeButtonAction: () -> Unit, onCheckedChanged: (Boolean) -> Unit) {
+    fun setupKycBenefitView(activity: FragmentActivity?, view: View, mainAction: () -> Unit, closeButtonAction: () -> Unit, onCheckedChanged: (Boolean) -> Unit, onTncClicked: () -> Unit) {
         val kycBenefitImage = view.findViewById<ImageUnify>(R.id.image_banner)
         kycBenefitImage?.cornerRadius = 0
         kycBenefitImage.loadImage(KycUrl.KYC_BENEFIT_BANNER)
 
-        val kycBenefitPowerMerchant = view.findViewById<ImageUnify>(R.id.image_power_merchant)
-        kycBenefitPowerMerchant.loadImage(KycUrl.KYC_BENEFIT_SHIELD)
-
-        val kycBenefitFintech = view.findViewById<ImageUnify>(R.id.image_fintech)
-        kycBenefitFintech.loadImage(KycUrl.KYC_BENEFIT_CART)
-
-        val kycBenefitShield = view.findViewById<ImageUnify>(R.id.image_shiled_star)
-        kycBenefitShield.loadImage(KycUrl.KYC_BENEFIT_POWER_MERCHANT)
+        with(view) {
+            findViewById<KycBenefitItemView>(R.id.benefit_complete_shopping_feature).apply {
+                iconUrl = KycUrl.KYC_BENEFIT_CART
+            }
+            findViewById<KycBenefitItemView>(R.id.benefit_exclusive_sales_feature).apply {
+                iconUrl = KycUrl.KYC_BENEFIT_POWER_MERCHANT
+            }
+            findViewById<KycBenefitItemView>(R.id.benefit_account_more_safer).apply {
+                iconUrl = KycUrl.KYC_BENEFIT_SHIELD
+            }
+            findViewById<Typography>(R.id.see_more_benefit_button).setOnClickListener {
+                activity?.supportFragmentManager?.let { fragmentManager ->
+                    KycBenefitDetailBottomSheet.createInstance().show(fragmentManager, KycBenefitDetailBottomSheet.TAG)
+                }
+            }
+        }
 
         val benefitButton: UnifyButton? = view.findViewById(R.id.kyc_benefit_btn)
         benefitButton?.isEnabled = false
@@ -68,7 +77,7 @@ object KycOnBoardingViewInflater {
         val chkBox: CheckboxUnify? = view.findViewById(R.id.kyc_benefit_checkbox)
 
         if(activity != null){
-            val spannableString = setupTncText(activity)
+            val spannableString = setupTncText(activity, onTncClicked)
             chkBox?.movementMethod = LinkMovementMethod.getInstance()
             chkBox?.setText(spannableString, TextView.BufferType.SPANNABLE)
             chkBox?.setOnCheckedChangeListener { _, isChecked ->
@@ -79,12 +88,12 @@ object KycOnBoardingViewInflater {
     }
 
 
-    fun setupTncText(activity: FragmentActivity): SpannableString {
+    fun setupTncText(activity: FragmentActivity, onTncClicked: () -> Unit): SpannableString {
         val sourceString = activity.getString(R.string.kyc_consent_text)
         val spannable = SpannableString(sourceString)
         spannable.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {
-                println("clickbree")
+                onTncClicked()
                 RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${URL_TNC}")
             }
             override fun updateDrawState(ds: TextPaint) {

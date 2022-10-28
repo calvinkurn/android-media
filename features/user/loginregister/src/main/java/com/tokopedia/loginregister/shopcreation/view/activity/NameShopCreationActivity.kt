@@ -8,7 +8,7 @@ import com.tokopedia.loginregister.shopcreation.view.fragment.NameShopCreationFr
  * Created by Ade Fulki on 2019-12-18.
  * ade.hadian@tokopedia.com
  * For navigating to this class
- * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal.NAME_SHOP_CREATION
+ * @see com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.NAME_SHOP_CREATION
  */
 
 class NameShopCreationActivity : BaseShopCreationActivity() {

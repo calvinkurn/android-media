@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +22,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import javax.inject.Inject
 
 /**
@@ -33,7 +33,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     private var llContent: LinearLayout? = null
     private var rvCourier: RecyclerView? = null
     private var llNetworkErrorView: LinearLayout? = null
-    private var pbLoading: ProgressBar? = null
+    private var pbLoading: LoaderUnify? = null
 
     private var activity: Activity? = null
     private var bottomSheet: BottomSheetUnify? = null

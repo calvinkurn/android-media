@@ -4,13 +4,16 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment.Companion.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -60,6 +63,52 @@ class CategoryChooseAddressTest: CategoryTestFixtures() {
         `When localizing address selected`()
 
         `Then assert request params contains new address`(dummyChooseAddressData)
+    }
+
+    @Test
+    fun `Get current category id if default value of category level 2 and level 3 are empty`(){
+        `Given category view model`()
+
+        val categoryLvl1 = "1000"
+        var categoryLvl2 = ""
+        var categoryLvl3 = ""
+
+        var currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(categoryLvl1, categoryLvl2, categoryLvl3)
+
+        assertEquals(categoryLvl1, currentCategoryId)
+
+        categoryLvl2 = "2000"
+        currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(categoryLvl1, categoryLvl2, categoryLvl3)
+
+        assertEquals(categoryLvl2, currentCategoryId)
+
+        categoryLvl3 = "3000"
+        currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(categoryLvl1, categoryLvl2, categoryLvl3)
+
+        assertEquals(categoryLvl3, currentCategoryId)
+    }
+
+    @Test
+    fun `Get current category id if default value of category level 2 and level 3 are zero string`(){
+        `Given category view model`()
+
+        val categoryLvl1 = "1000"
+        var categoryLvl2 = DEFAULT_CATEGORY_ID
+        var categoryLvl3 = DEFAULT_CATEGORY_ID
+
+        var currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(categoryLvl1, categoryLvl2, categoryLvl3)
+
+        assertEquals(categoryLvl1, currentCategoryId)
+
+        categoryLvl2 = "2000"
+        currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(categoryLvl1, categoryLvl2, categoryLvl3)
+
+        assertEquals(categoryLvl2, currentCategoryId)
+
+        categoryLvl3 = "3000"
+        currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(categoryLvl1, categoryLvl2, categoryLvl3)
+
+        assertEquals(categoryLvl3, currentCategoryId)
     }
 
     private fun `Given choose address data changes`() {
@@ -135,5 +184,21 @@ class CategoryChooseAddressTest: CategoryTestFixtures() {
         verify(exactly = 1) {
             getCategoryFirstPageUseCase.execute(any(), any(), any())
         }
+    }
+
+    @Test
+    fun `onResume should not reload page when choose address is null`() {
+        `Given choose address data`()
+        `Given choose address is not updated`()
+        `Given view model setup until view created`()
+        `Given choose address data is null`()
+
+        `When view resumed`()
+
+        `Then verify get first page API is only called once from view created`()
+    }
+
+    private fun `Given choose address data is null`() {
+        tokoNowCategoryViewModel.mockSuperClassField("chooseAddressData", null)
     }
 }

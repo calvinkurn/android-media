@@ -26,9 +26,9 @@ class AffiliatePromotionErrorCardItemVH(itemView: View , private val promotionCl
         const val BUTTON_GHOST = 1
         const val BUTTON_TEXT_ONLY = 2
 
-        const val ERROR_STATUS_NOT_FOUND = 1
-        const val ERROR_STATUS_NOT_ELIGIBLE = 2
-        const val ERROR_NON_PM_OS = 3
+        const val ERROR_STATUS_NOT_FOUND = 2
+        const val ERROR_STATUS_NOT_ELIGIBLE = 3
+        const val ERROR_NON_PM_OS = 4
 
         const val ACTION_REDIRECT = 0
         const val ACTION_RESET = 1

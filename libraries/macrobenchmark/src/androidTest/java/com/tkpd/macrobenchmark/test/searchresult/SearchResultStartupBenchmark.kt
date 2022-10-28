@@ -7,7 +7,6 @@ import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
 import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
-import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
@@ -22,6 +21,13 @@ import org.junit.runners.Parameterized
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
 class SearchResultStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+    override fun setupMock() {
+        MacroDevOps.setupEnvironment(MacroIntent.Mock.getSearchMockIntent())
+    }
+
+    override fun setupEnvironment() {
+    }
+
     override fun getIntent() = MacroIntent.SearchResult.getSearchResultIntent()
 
     override fun waitUntil() {
@@ -30,4 +36,7 @@ class SearchResultStartupBenchmark(startupMode: StartupMode): BaseStartupBenchma
                 MacroIntent.SearchResult.RV_RESOURCE_ID,
         )
     }
+
+    override fun traceName() = "search_result_trace"
+
 }

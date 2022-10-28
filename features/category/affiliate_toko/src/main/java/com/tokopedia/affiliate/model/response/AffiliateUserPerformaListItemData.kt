@@ -73,7 +73,38 @@ data class AffiliateUserPerformaListItemData(
                               data class Tooltip(
                                     @SerializedName("Description")
                                     var description: String?,
-                              )
+                                    @SerializedName("Ticker")
+                                    var ticker: String?,
+                                    @SerializedName("Metrics")
+                                    var metrics: List<SubMetrics?>
+                              ){
+                                    data class SubMetrics(
+                                          @SerializedName("MetricType")
+                                          var metricType: String?,
+                                          @SerializedName("MetricTitle")
+                                          var metricTitle: String,
+                                          @SerializedName("MetricValue")
+                                          var metricValue: String?,
+                                          @SerializedName("MetricValueFmt")
+                                          var metricValueFmt: String?,
+                                          @SerializedName("MetricDifferenceValue")
+                                          var metricDifferenceValue: String? = "0",
+                                          @SerializedName("MetricDifferenceValueFmt")
+                                          var metricDifferenceValueFmt: String?,
+                                          @SerializedName("Order")
+                                          var order: Int?,
+                                          @SerializedName("Tooltip")
+                                          var tooltip : SubTooltip?,
+
+                                          //customAttribute
+                                          var isLastItem: Boolean = false
+                                    ){
+                                          data class SubTooltip(
+                                                @SerializedName("Description")
+                                                var description: String?
+                                          )
+                                    }
+                              }
                         }
                   }
             }

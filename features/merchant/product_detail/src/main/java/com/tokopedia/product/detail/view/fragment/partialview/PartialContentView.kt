@@ -8,37 +8,33 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemProductContentBinding
-import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonLayoutBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 
 /**
  * Created by Yehezkiel on 25/05/20
  */
-class PartialContentView(private val view: View, private val listener: DynamicProductDetailListener) : CampaignRibbon.CampaignCountDownCallback {
-
-    companion object {
-        const val PRICE_FONT_SIZE = 24F
-    }
+class PartialContentView(
+    private val view: View,
+    private val listener: DynamicProductDetailListener
+) : CampaignRibbon.CampaignCountDownCallback {
 
     private val context = view.context
     private val binding = ItemProductContentBinding.bind(view)
 
     fun renderData(data: ProductContentMainData,
                    isUpcomingNplType: Boolean, freeOngkirImgUrl: String) = with(binding) {
-        txtMainPrice.textSize = PRICE_FONT_SIZE
         txtMainPrice.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
         productName.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         productName.text = MethodChecker.fromHtml(data.productName)
 
         imgFreeOngkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty()) {
-            imgFreeOngkir.loadIcon(freeOngkirImgUrl)
+            imgFreeOngkir.setImageUrl(freeOngkirImgUrl)
         }
 
         textCashbackGreen.shouldShowWithAction(data.cashbackPercentage > 0) {
@@ -95,9 +91,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
 
     fun renderFreeOngkir(freeOngkirUrl: String) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
-            imgFreeOngkir.loadIcon(freeOngkirUrl) {
-                fitCenter()
-            }
+            imgFreeOngkir.setImageUrl(freeOngkirUrl)
         }
     }
 
@@ -129,7 +123,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         }
 
         textDiscountRed.run {
-            text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, campaign.percentageAmount.toString())
+            text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, campaign.percentageAmount)
             show()
         }
         hideGimmick(campaign)

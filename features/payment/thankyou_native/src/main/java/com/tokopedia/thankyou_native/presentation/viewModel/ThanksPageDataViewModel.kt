@@ -6,13 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
+import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.WalletBalance
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
+import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.tokomember.model.MembershipRegister
+import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -29,6 +33,7 @@ class ThanksPageDataViewModel @Inject constructor(
     private val topTickerDataUseCase: TopTickerUseCase,
     private val getDefaultAddressUseCase: GetDefaultAddressUseCase,
     private val thankYouTopAdsViewModelUseCase: ThankYouTopAdsViewModelUseCase,
+    private val membershipRegisterUseCase: MembershipRegisterUseCase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
@@ -52,6 +57,9 @@ class ThanksPageDataViewModel @Inject constructor(
     private val _gyroResponseLiveData = MutableLiveData<FeatureEngineData>()
     val gyroResponseLiveData: LiveData<FeatureEngineData> = _gyroResponseLiveData
 
+    private val _membershipRegisterData = MutableLiveData<Result<MembershipRegister>>()
+    val membershipRegisterData : LiveData<Result<MembershipRegister>> = _membershipRegisterData
+
 
     fun getThanksPageData(paymentId: String, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
@@ -73,6 +81,7 @@ class ThanksPageDataViewModel @Inject constructor(
     @VisibleForTesting
     fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?) {
         gyroEngineRequestUseCase.cancelJobs()
+        var queryParamTokomember : TokoMemberRequestParam ? = null
         gyroEngineRequestUseCase.getFeatureEngineData(
             thanksPageData,
             walletBalance
@@ -85,7 +94,13 @@ class ThanksPageDataViewModel @Inject constructor(
                     if (topAdsRequestParams != null) {
                         loadTopAdsViewModelData(topAdsRequestParams, thanksPageData)
                     }
-                    postGyroRecommendation(it.engineData)
+                    if (isTokomemberWidgetShow(it.engineData)) {
+                        queryParamTokomember  =
+                            getTokomemberRequestParams(thanksPageData , it.engineData)
+                        queryParamTokomember?.pageType =
+                            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)
+                    }
+                    postGyroRecommendation(it.engineData , queryParamTokomember)
                 }
             }
         }
@@ -109,10 +124,24 @@ class ThanksPageDataViewModel @Inject constructor(
         return FeatureRecommendationMapper.getTopAdsParams(engineData)
     }
 
+    private fun isTokomemberWidgetShow(engineData: FeatureEngineData?): Boolean {
+        return FeatureRecommendationMapper.isTokomemberWidgetShow(engineData)
+    }
+
+    private fun getTokomemberRequestParams(
+        thanksPageData: ThanksPageData,
+        engineData: FeatureEngineData
+    ): TokoMemberRequestParam {
+        return FeatureRecommendationMapper.getTokomemberRequestParams(thanksPageData,engineData)
+    }
+
     @VisibleForTesting
-    fun postGyroRecommendation(engineData: FeatureEngineData?) {
+     fun postGyroRecommendation(
+        engineData: FeatureEngineData?,
+        queryParamTokomember: TokoMemberRequestParam?
+    ) {
         gyroEngineMapperUseCase.cancelJobs()
-        gyroEngineMapperUseCase.getFeatureListData(engineData, {
+        gyroEngineMapperUseCase.getFeatureListData(engineData,queryParamTokomember, {
             _gyroRecommendationLiveData.postValue(it)
         }, { it.printStackTrace() })
     }
@@ -146,6 +175,16 @@ class ThanksPageDataViewModel @Inject constructor(
         })
     }
 
+    fun registerTokomember(membershipCardID:String) {
+        membershipRegisterUseCase.registerMembership(membershipCardID ,{
+            it?.let {
+                _membershipRegisterData.postValue(Success(it))
+            }
+        },{
+            _membershipRegisterData.postValue(Fail(it))
+        })
+    }
+
     override fun onCleared() {
         topTickerDataUseCase.cancelJobs()
         thanksPageDataUseCase.cancelJobs()
@@ -153,6 +192,7 @@ class ThanksPageDataViewModel @Inject constructor(
         thankYouTopAdsViewModelUseCase.cancelJobs()
         thanksPageMapperUseCase.cancelJobs()
         gyroEngineMapperUseCase.cancelJobs()
+        membershipRegisterUseCase.cancelJobs()
         fetchWalletBalanceUseCase.cancelJobs()
         super.onCleared()
     }

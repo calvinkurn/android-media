@@ -14,7 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRecommendationBinding
-import com.tokopedia.digital.digital_recommendation.presentation.model.*
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemUnifyModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
@@ -43,23 +46,20 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private lateinit var lifecycleOwner: LifecycleOwner
 
     private lateinit var digitalRecommendationViewModel: DigitalRecommendationViewModel
-    private lateinit var digitalRecommendationAnalytics: DigitalRecommendationAnalytics
 
     private var additionalTrackingData: DigitalRecommendationAdditionalTrackingData? = null
     private var page: DigitalRecommendationPage? = null
     private var trackers: List<DigitalRecommendationItemUnifyModel>? = null
 
+    private val digitalRecommendationAnalytics: DigitalRecommendationAnalytics by lazy(LazyThreadSafetyMode.NONE){ DigitalRecommendationAnalytics()}
+
     private val unifyListener = object : DigitalUnifyCardViewHolder.DigitalUnifyCardListener{
         override fun onItemClicked(item: DigitalUnifyModel, index: Int) {
-            if (!trackers.isNullOrEmpty()){
-                trackers?.get(index)?.let { onItemClicked(it, index) }
-            }
+            trackers.getElementByIndex(index){ onItemClicked(it, index) }
         }
 
         override fun onItemImpression(item: DigitalUnifyModel, index: Int) {
-            if (!trackers.isNullOrEmpty()){
-                trackers?.get(index)?.let { onItemBinding(it, index) }
-            }
+            trackers.getElementByIndex(index){ onItemBinding(it, index) }
         }
     }
 
@@ -109,32 +109,74 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         return Bundle().apply {
             putParcelable(SAVED_ADDITIONAL_TRACK_DATA, additionalTrackingData)
             putSerializable(SAVED_PAGE, page)
+            putParcelable(SUPER_STATE, super.onSaveInstanceState())
         }
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(state)
-        state?.let {
-            val bundle = it as Bundle
-            additionalTrackingData = bundle.getParcelable(SAVED_ADDITIONAL_TRACK_DATA)
-            page = bundle.getSerializable(SAVED_PAGE) as DigitalRecommendationPage
+        var viewState = state
+        if (viewState is Bundle) {
+            additionalTrackingData = viewState.getParcelable(SAVED_ADDITIONAL_TRACK_DATA)
+            page = viewState.getSerializable(SAVED_PAGE) as DigitalRecommendationPage
+            viewState = viewState.getParcelable(SUPER_STATE)
         }
+        super.onRestoreInstanceState(viewState)
     }
 
     private fun onItemBinding(element: DigitalRecommendationItemUnifyModel, position: Int) {
         additionalTrackingData?.let {
-            digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
-                    element, it, position, digitalRecommendationViewModel.getUserId(), page
-            )
+            when(page){
+                DigitalRecommendationPage.PG_THANK_YOU_PAGE ->{
+                    digitalRecommendationAnalytics.impressionDigitalRecommendationThankYouPageItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.DG_THANK_YOU_PAGE ->{
+                    digitalRecommendationAnalytics.impressionDigitalRecommendationThankYouPageItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.PHYSICAL_GOODS -> {
+                    digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.DIGITAL_GOODS -> {
+                    digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                else -> { /*no op*/ }
+            }
         }
     }
 
     private fun onItemClicked(element: DigitalRecommendationItemUnifyModel, position: Int) {
         RouteManager.route(context, element.unify.actionButton.applink)
         additionalTrackingData?.let {
-            digitalRecommendationAnalytics.clickDigitalRecommendationItems(
-                    element, it, position, digitalRecommendationViewModel.getUserId(), page
-            )
+            when(page){
+                DigitalRecommendationPage.PG_THANK_YOU_PAGE ->{
+                    digitalRecommendationAnalytics.clickDigitalRecommendationThankYouPageItem(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.DG_THANK_YOU_PAGE ->{
+                    digitalRecommendationAnalytics.clickDigitalRecommendationThankYouPageItem(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.PHYSICAL_GOODS -> {
+                    digitalRecommendationAnalytics.clickDigitalRecommendationItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.DIGITAL_GOODS -> {
+                    digitalRecommendationAnalytics.clickDigitalRecommendationItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                else -> { /*no op*/ }
+            }
         }
     }
 
@@ -169,8 +211,6 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             throw UninitializedPropertyAccessException("View Model is not Initialized")
         }
 
-        digitalRecommendationAnalytics = DigitalRecommendationAnalytics()
-
         showLoading()
         observeLivedata()
         digitalRecommendationViewModel.fetchDigitalRecommendation(
@@ -194,6 +234,15 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         digitalRecommendationViewModel.digitalRecommendationItems.observe(lifecycleOwner, observer)
     }
 
+    private inline fun List<DigitalRecommendationItemUnifyModel>?.getElementByIndex(
+        index: Int,
+        block: (DigitalRecommendationItemUnifyModel) -> Unit
+    ){
+        if (this != null && index >= 0 && index <= size - MAX_INDEX_SUBTRACTOR){
+            block(this[index])
+        }
+    }
+
     interface Listener {
         fun onFetchFailed(throwable: Throwable)
         fun onEmptyResult()
@@ -202,6 +251,8 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     companion object {
         private const val SAVED_ADDITIONAL_TRACK_DATA = "SAVED_ADDITIONAL_TRACK_DATA"
         private const val SAVED_PAGE = "SAVED_PAGE"
+        private const val SUPER_STATE = "superState"
+        private const val MAX_INDEX_SUBTRACTOR = 1
     }
 
 }

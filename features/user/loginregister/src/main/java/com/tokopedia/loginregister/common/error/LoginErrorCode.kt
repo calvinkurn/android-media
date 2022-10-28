@@ -12,6 +12,7 @@ object LoginErrorCode {
     const val ERROR_GMAIL = "error_gmail"
 
     const val ERROR_ACTIVATE_USER = "error_activate_user"
+    const val ERROR_BIOMETRIC = "error_biometric"
 
     const val ERROR_ACTIVATION_AFTER_RELOGIN = "error_activation_after_relogin"
     const val ERROR_SQ_AFTER_RELOGIN = "error_sq_after_relogin"

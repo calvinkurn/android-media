@@ -10,7 +10,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.common.travel.widget.TravelMenuBottomSheet
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil

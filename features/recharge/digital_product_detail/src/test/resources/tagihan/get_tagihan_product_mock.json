@@ -1,0 +1,20 @@
+{
+  "id": "291",
+  "attributes": {
+    "product_labels": [],
+    "desc": "Tagihan Listrik Bulanan",
+    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:40-00.20 WIB akan <b>mulai diproses pada pukul 00.45 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+    "detail_url": "",
+    "detail_url_text": "",
+    "info": "",
+    "price": "",
+    "price_plain": 10000,
+    "status": 1,
+    "detail_compact": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:40-00.20 WIB akan <b>mulai diproses pada pukul 00.45 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+    "category_id": 3,
+    "operator_id": 18,
+    "product_descriptions": [],
+    "custom_attributes": [],
+    "promo": null
+  }
+}

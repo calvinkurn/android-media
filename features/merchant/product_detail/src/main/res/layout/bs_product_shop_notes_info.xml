@@ -4,22 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
     android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="16dp">
+        android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_shop_notes_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="03 Mar 2019, pukul 11:33" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -28,8 +25,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="body_2"
-            tools:text="@tools:sample/lorem/random" />
+            app:typographyType="display_2"
+            tools:text="@tools:sample/lorem/random"
+            android:layout_marginBottom="16dp"/>
 
     </LinearLayout>
 

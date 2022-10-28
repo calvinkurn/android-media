@@ -21,10 +21,10 @@ class CheckShopFavoritedUseCase @Inject constructor(private val reputationReposi
         const val PARAM_USER_ID: String = "PARAM_USER_ID"
         const val PARAM_SHOP_ID: String = "PARAM_SHOP_ID"
 
-        fun getParam(loginID: String?, shopId: Long): RequestParams {
+        fun getParam(loginID: String?, shopId: String): RequestParams {
             val params: RequestParams = RequestParams.create()
             params.putString(PARAM_USER_ID, loginID)
-            params.putString(PARAM_SHOP_ID, shopId.toString())
+            params.putString(PARAM_SHOP_ID, shopId)
             return params
         }
     }

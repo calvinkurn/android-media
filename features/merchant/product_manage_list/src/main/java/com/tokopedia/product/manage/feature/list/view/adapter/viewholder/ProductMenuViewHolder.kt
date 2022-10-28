@@ -25,6 +25,7 @@ class ProductMenuViewHolder(
 
     private val binding by viewBinding<ItemProductManageMenuBinding>()
 
+
     override fun bind(menu: ProductMenuUiModel) {
         binding?.run {
             textMenu.text = itemView.context?.getString(menu.title).orEmpty()
@@ -37,6 +38,10 @@ class ProductMenuViewHolder(
             }
             labelProductManageMenuNew.showIfNew(menu.newTagEndMillis)
             itemView.setOnClickListener { listener.onClickOptionMenu(menu) }
+
+            if (menu.title == R.string.product_manage_stock_reminder_menu){
+                listener.onFinishBindMenuReminder(itemView)
+            }
         }
     }
 
@@ -51,5 +56,6 @@ class ProductMenuViewHolder(
 
     interface ProductMenuListener {
         fun onClickOptionMenu(menu: ProductMenuUiModel)
+        fun onFinishBindMenuReminder(view:View)
     }
 }

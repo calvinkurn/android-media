@@ -65,6 +65,8 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
 
     private var globalError: View? = null
 
+    private val offset24 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
+
     override fun onSeeMoreDetailClicked(type: PostStatisticDetailType) { listener?.onSeeMoreDetailClicked(this, type) }
 
     fun setPostStatisticCommissionModel(model: PostStatisticCommissionUiModel) {
@@ -108,7 +110,7 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
                     val constraintSet = ConstraintSet()
                     constraintSet.clone(clLayout)
                     constraintSet.connect(com.tokopedia.globalerror.R.id.globalerror_parent, ConstraintSet.TOP, clLayout.id, ConstraintSet.TOP)
-                    constraintSet.connect(com.tokopedia.globalerror.R.id.globalerror_parent, ConstraintSet.BOTTOM, clLayout.id, ConstraintSet.BOTTOM, 24)
+                    constraintSet.connect(com.tokopedia.globalerror.R.id.globalerror_parent, ConstraintSet.BOTTOM, clLayout.id, ConstraintSet.BOTTOM, offset24)
                     constraintSet.centerHorizontally(com.tokopedia.globalerror.R.id.globalerror_parent, clLayout.id)
                     constraintSet.applyTo(clLayout)
 
@@ -152,7 +154,7 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
     private fun initLoading(view: View) {
         Glide.with(view)
                 .asGif()
-                .load(R.drawable.ic_loading_indeterminate)
+                .load(com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate)
                 .into(ivLoading)
     }
 

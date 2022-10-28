@@ -1,8 +1,6 @@
 package com.tokopedia.navigation.presentation.presenter
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.navigation.data.entity.NotificationEntity
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber
@@ -11,24 +9,21 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Subscriber
-import java.util.ArrayList
 
 @ExperimentalCoroutinesApi
 class InboxPresenterTest {
@@ -43,13 +38,17 @@ class InboxPresenterTest {
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
 
     @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
-
-    @RelaxedMockK
-    lateinit var removeWishListUseCase: RemoveWishListUseCase
-
-    @RelaxedMockK
     lateinit var topAdsWishListedUseCase: TopAdsWishlishedUseCase
+
+    @RelaxedMockK
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
+
+    @RelaxedMockK
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
+
+    @RelaxedMockK
+    lateinit var topAdsHeadlineViewModel: TopAdsHeadlineViewModel
+
 
     @RelaxedMockK
     lateinit var inboxView: InboxView
@@ -59,9 +58,10 @@ class InboxPresenterTest {
                 getDrawerNotificationUseCase,
                 getRecommendationUseCase,
                 userSessionInterface,
-                addWishListUseCase,
-                removeWishListUseCase,
-                topAdsWishListedUseCase
+                addToWishlistV2UseCase,
+                deleteWishlistV2UseCase,
+                topAdsWishListedUseCase,
+                topAdsHeadlineViewModel
         )
     }
 
@@ -216,145 +216,72 @@ class InboxPresenterTest {
         }
     }
 
-    /**
-     * WisList
-     * */
     @Test
-    fun `add top ads wishList | on success`() {
-        val recommendationItem = RecommendationItem(
-                isTopAds = true
-        )
+    fun `verify add to wishlistv2 returns success` () {
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
-        val wishListViewModel = WishlistModel()
-
-        every {
-            topAdsWishListedUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<WishlistModel>>().onStart()
-            secondArg<Subscriber<WishlistModel>>().onCompleted()
-            secondArg<Subscriber<WishlistModel>>().onNext(wishListViewModel)
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
         }
 
-        inboxPresenter.addWishlist(recommendationItem) { b, throwable ->
-            Assert.assertTrue(b)
-        }
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        inboxPresenter.addWishlistV2(recommendationItem, mockListener)
 
-        verify {
-            topAdsWishListedUseCase.execute(any(), any())
-        }
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
     }
 
     @Test
-    fun `add top ads wishList | on fail`() {
-        val recommendationItem = RecommendationItem(
-                isTopAds = true
-        )
+    fun `verify add to wishlistv2 returns fail` () {
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val mockThrowable = mockk<Throwable>("fail")
 
-        every {
-            topAdsWishListedUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<WishlistModel>>().onStart()
-            secondArg<Subscriber<WishlistModel>>().onCompleted()
-            secondArg<Subscriber<WishlistModel>>().onError(Throwable())
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        inboxPresenter.addWishlist(recommendationItem) { b, throwable ->
-            Assert.assertFalse(b)
-        }
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        inboxPresenter.addWishlistV2(recommendationItem, mockListener)
 
-        verify {
-            topAdsWishListedUseCase.execute(any(), any())
-        }
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
     }
 
     @Test
-    fun `add wishList | on success`() {
-        val productId = "123"
-        val recommendationItem = RecommendationItem(
-                isTopAds = false
-        )
+    fun `verify remove wishlistV2 returns success`(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
-        every {
-            addWishListUseCase.createObservable(any(), any(), any())
-        } answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(Success(resultWishlistRemoveV2))
         }
 
-        inboxPresenter.addWishlist(recommendationItem) { b, throwable ->
-            Assert.assertTrue(b)
-        }
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        inboxPresenter.removeWishlistV2(recommItem, mockListener)
 
-        verify {
-            addWishListUseCase.createObservable(any(), any(), any())
-        }
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
     }
 
     @Test
-    fun `add wishList | on fail`() {
-        val productId = "123"
-        val message = ""
-        val recommendationItem = RecommendationItem(
-                isTopAds = false
-        )
+    fun `verify remove wishlistV2 returns fail`(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val mockThrowable = mockk<Throwable>("fail")
 
-        every {
-            addWishListUseCase.createObservable(any(), any(), any())
-        } answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList(message, productId)
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        inboxPresenter.addWishlist(recommendationItem) { b, throwable ->
-            Assert.assertFalse(b)
-        }
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        inboxPresenter.removeWishlistV2(recommItem, mockListener)
 
-        verify {
-            addWishListUseCase.createObservable(any(), any(), any())
-        }
-    }
-
-    @Test
-    fun `remove wishList | on success`() {
-        val productId = "123"
-        val recommendationItem = RecommendationItem()
-
-        every {
-            removeWishListUseCase.createObservable(any(), any(), any())
-        } answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessRemoveWishlist(productId)
-        }
-
-        inboxPresenter.removeWishlist(recommendationItem) { b, throwable ->
-            Assert.assertTrue(b)
-        }
-
-        verify {
-            removeWishListUseCase.createObservable(any(), any(), any())
-        }
-    }
-
-    @Test
-    fun `remove wishList | on fail`() {
-        val productId = "123"
-        val message = ""
-        val recommendationItem = RecommendationItem()
-
-        every {
-            removeWishListUseCase.createObservable(any(), any(), any())
-        } answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList(message, productId)
-        }
-
-        inboxPresenter.removeWishlist(recommendationItem) { b, throwable ->
-            Assert.assertFalse(b)
-        }
-
-        verify {
-            removeWishListUseCase.createObservable(any(), any(), any())
-        }
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
     }
 
     /**

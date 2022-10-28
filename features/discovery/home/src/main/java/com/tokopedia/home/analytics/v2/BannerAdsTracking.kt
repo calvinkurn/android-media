@@ -9,6 +9,8 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object BannerAdsTracking: BaseTrackerConst() {
+    private const val BANNER_ADS_DEFAULT_POSITION = 1
+
     private class CustomAction{
         companion object {
             val IMPRESSION_ON_BANNER_ADS = Action.IMPRESSION_ON.format("banner dynamic channel ads")
@@ -20,7 +22,6 @@ object BannerAdsTracking: BaseTrackerConst() {
             userId: String,
             isToIris: Boolean = false,
             channel: DynamicHomeChannel.Channels,
-            position: Int,
             topAdsId: String
     ): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
@@ -34,7 +35,7 @@ object BannerAdsTracking: BaseTrackerConst() {
                                 id = buildTopAdsTdnBannerId(channelId = channel.id, topAdsId = topAdsId),
                                 name = channel.promoName,
                                 creative = "",
-                                position = (position+1).toString()
+                                position = BANNER_ADS_DEFAULT_POSITION.toString()
                         )
                 ))
                 .appendChannelId(channel.id)
@@ -49,7 +50,6 @@ object BannerAdsTracking: BaseTrackerConst() {
             headerName: String,
             channelId: String,
             userId: String,
-            position: Int,
             channel: DynamicHomeChannel.Channels,
             topAdsId: String
     ): Map<String, Any> {
@@ -64,7 +64,7 @@ object BannerAdsTracking: BaseTrackerConst() {
                                 id = buildTopAdsTdnBannerId(channelId = channelId, topAdsId = topAdsId),
                                 name = channel.promoName,
                                 creative = "",
-                                position = (position+1).toString()
+                                position = BANNER_ADS_DEFAULT_POSITION.toString()
                         )
                 ))
                 .appendChannelId(channelId)
@@ -90,7 +90,6 @@ object BannerAdsTracking: BaseTrackerConst() {
                         channelModel.header.name,
                         channelModel.id,
                         userId,
-                        position,
                         channelModel,
                         topAdsId
                 )
@@ -100,7 +99,7 @@ object BannerAdsTracking: BaseTrackerConst() {
     fun sendBannerAdsImpressionTracking(trackingQueue: TrackingQueue?,
                                         channelModel: DynamicHomeChannel.Channels,
                                         userId: String,
-                                        position: Int, isToIris: Boolean = false,
+                                        isToIris: Boolean = false,
                                         topAdsId: String
     ) {
         trackingQueue?.putEETracking(
@@ -108,7 +107,6 @@ object BannerAdsTracking: BaseTrackerConst() {
                         userId,
                         isToIris,
                         channelModel,
-                        position,
                         topAdsId
                 ) as HashMap<String, Any>
         )

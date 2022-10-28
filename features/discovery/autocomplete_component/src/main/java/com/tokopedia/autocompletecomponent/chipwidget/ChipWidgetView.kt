@@ -8,7 +8,6 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.util.addItemDecorationIfNotExists
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.autocomplete_chip_widget_view.view.autocompleteChipWidgetRecyclerView
 
 class ChipWidgetView: BaseCustomView {
 
@@ -17,6 +16,9 @@ class ChipWidgetView: BaseCustomView {
             context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
             context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
     )
+    private val autocompleteChipWidgetRecyclerView : RecyclerView? by lazy {
+        findViewById(R.id.autocompleteChipWidgetRecyclerView)
+    }
 
     constructor(context: Context): super(context) {
         init()

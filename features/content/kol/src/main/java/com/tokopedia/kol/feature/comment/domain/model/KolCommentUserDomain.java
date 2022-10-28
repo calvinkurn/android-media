@@ -6,19 +6,19 @@ package com.tokopedia.kol.feature.comment.domain.model;
 
 public class KolCommentUserDomain {
 
-    private final int id;
+    private final String id;
     private final boolean isKol;
     private final String photo;
     private final String name;
 
-    public KolCommentUserDomain(int id, boolean iskol, String name, String photo) {
+    public KolCommentUserDomain(String id, boolean iskol, String name, String photo) {
         this.id = id;
         this.isKol = iskol;
         this.name = name;
         this.photo = photo;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

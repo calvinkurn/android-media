@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
+import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_NEW_USER_SPECIFICATION
 import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
+import com.tokopedia.unifycomponents.ImageUnify
 
 class NewUserSpecificationBottomSheet: TabletAdaptiveBottomSheet() {
 
@@ -17,7 +18,7 @@ class NewUserSpecificationBottomSheet: TabletAdaptiveBottomSheet() {
         const val TAG = "Tag New User Specification Bottom Sheet"
     }
 
-    private var ivNewUser: AppCompatImageView? = null
+    private var ivNewUser: ImageUnify? = null
 
     init {
         setCloseClickListener {
@@ -36,6 +37,7 @@ class NewUserSpecificationBottomSheet: TabletAdaptiveBottomSheet() {
     }
 
     private fun setupImageView() {
+        ivNewUser?.scaleType = ImageView.ScaleType.FIT_CENTER
         ivNewUser?.loadImage(PHOTO_NEW_USER_SPECIFICATION)
     }
 

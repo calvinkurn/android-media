@@ -5,12 +5,6 @@ apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
 
-repositories{
-    flatDir {
-        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
-    }
-}
-
 buildscript {
     repositories {
         google()
@@ -24,6 +18,12 @@ buildscript {
 kapt {
     correctErrorTypes = true
     generateStubs = false
+}
+def isEnableMacrobenchmarkUtil() {
+    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+        return "true";
+    }
+    return "false";
 }
 android {
     packagingOptions {
@@ -48,10 +48,14 @@ android {
             zipAlignEnabled false
             testCoverageEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
+            buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
             ext.enableHansel = false
             ext.enableCrashlytics = false
         }
         release {
+            minifyEnabled true
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
+            buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
             signingConfig signingConfigs.debug
         }
     }
@@ -72,8 +76,8 @@ android {
         buildConfig true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 dependencies {
@@ -97,10 +101,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.core_legacy)
     implementation projectOrAar(rootProject.ext.libraries.iris)
-    implementation projectOrAar(rootProject.ext.libraries.liveness_lib)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.cassava
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.network)
@@ -108,6 +112,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation rootProject.ext.miscDependencies.autopatchbase
 
     implementation rootProject.ext.playServicesDependencies.base
 

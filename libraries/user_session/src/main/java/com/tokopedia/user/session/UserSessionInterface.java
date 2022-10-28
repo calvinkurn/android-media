@@ -13,7 +13,6 @@ public interface UserSessionInterface {
     String LOGIN_METHOD_PHONE = "phone";
     String LOGIN_METHOD_EMAIL_SMART_LOCK = "email_smartlock";
 
-
     String getAccessToken();
 
     String getTokenType();

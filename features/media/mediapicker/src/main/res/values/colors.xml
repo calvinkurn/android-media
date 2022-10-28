@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dms_bg_gradient_start_color">#99424242</color>
+    <color name="dms_bg_gradient_end_color">#00424242</color>
+
+    <color name="dms_bg_gradient_video_player_end">#662E3137</color>
+    <color name="dms_bg_gradient_video_player_start">#002E3137</color>
+
+    <color name="dms_bg_center_video_player_action">#802E3137</color>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape >
+            <size android:width="48dp" android:height="48dp"/>
+            <corners android:radius="24dp"/>
+            <solid android:color="@color/dms_bg_center_video_player_action"/>
+        </shape>
+    </item>
+
+    <item android:drawable="@drawable/picker_ic_video_pause"/>
+
+</layer-list>

@@ -120,6 +120,8 @@ const val GQL_DEPOSIT_HISTORY_INVOICE = """
                 detail {
                   type_description
                   amount
+                  is_late
+                  last_update_deposit
                 }
             }
         }

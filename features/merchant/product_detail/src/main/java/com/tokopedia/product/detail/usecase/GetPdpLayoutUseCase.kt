@@ -34,6 +34,14 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
+                  shopMultilocation {
+                    isReroute
+                    cityName
+                    eduLink {
+                        appLink
+                    }
+                  }
+                  isGiftable
                   isTokoNow
                   shopName
                   productID
@@ -50,6 +58,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                   isLeasing
                   isBlacklisted
                   totalStockFmt
+                  defaultMediaURL
                   menu {
                     id
                     name
@@ -81,7 +90,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                     transactionReject
                     countSold
                     paymentVerified
-                    itemSoldPaymentVerified
+                    itemSoldFmt
                   }
                   stats {
                     countReview
@@ -102,14 +111,18 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         description
                         videoURLAndroid
                         isAutoplay
+                        variantOptionID
+                        URLMaxRes
                       }
                       videos {
                         source
                         url
                       }
+                      containerType
             		}
             		... on pdpDataProductContent {
                       name
+                      parentName
                       isCOD
                       price {
                         value
@@ -180,12 +193,26 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       }
                     }
                     ... on pdpDataProductDetail {
+                      title
                       content {
                         title
                         subtitle
                         applink
+                        infoLink
+                        icon
                         showAtFront
                         isAnnotation
+                        showAtBottomsheet
+                      }
+                      catalogBottomsheet {
+                        actionTitle
+                        bottomSheetTitle
+                        param
+                      }
+                      bottomsheet {
+                        actionTitle
+                        bottomSheetTitle
+                        param
                       }
                     }
                     ... on pdpDataSocialProof {
@@ -202,6 +229,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       title
                       isApplink
                       applink
+                      lightIcon
+                      darkIcon
                       content {
                         icon
                         text
@@ -226,6 +255,12 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        applink
                        separator
                        description
+                       lightIcon
+                       darkIcon
+                       label {
+                        value
+                        color
+                      }
                     }
                     ... on pdpDataProductVariant {
                       errorCode
@@ -313,6 +348,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        separator
                        icon
                        isVisible
+                       eduLink {
+                          appLink
+                       }
                     }
                   }
                 }

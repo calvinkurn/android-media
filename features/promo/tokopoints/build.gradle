@@ -37,6 +37,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.pin
     implementation projectOrAar(rootProject.ext.features.promoUiCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
     implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

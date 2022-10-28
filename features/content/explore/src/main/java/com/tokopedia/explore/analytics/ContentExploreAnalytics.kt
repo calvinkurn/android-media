@@ -14,7 +14,7 @@ class ContentExploreAnalytics @Inject constructor() {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    fun eventTrackExploreItem(name : String, postId: Int, recomId: Int) {
+    fun eventTrackExploreItem(name : String, postId: String, recomId: Long) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 ContentExloreEventTracking.Event.EXPLORE,
                 ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
@@ -25,15 +25,6 @@ class ContentExploreAnalytics @Inject constructor() {
                         postId,
                         recomId
                 )
-        ))
-    }
-
-    fun eventSubmitSearch(text: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                ContentExloreEventTracking.Event.EXPLORE,
-                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                ContentExloreEventTracking.Action.SEARCH,
-                text
         ))
     }
 

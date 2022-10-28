@@ -93,6 +93,6 @@ class SomSubFilterCheckboxAdapter(private val somSubFilterListener: SomSubCheckb
     }
 
     interface SomSubCheckboxFilterListener {
-        fun onCheckboxItemClicked(id: Int, position: Int, checked: Boolean)
+        fun onCheckboxItemClicked(id: Long, position: Int, checked: Boolean)
     }
 }

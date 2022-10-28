@@ -18,37 +18,51 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewHolder
@@ -81,8 +95,8 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.mvcwidget.AnimatedInfos
@@ -92,7 +106,7 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.data.HintData
@@ -112,7 +126,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.sticky_header_recycler_view.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.unifyprinciples.R as RUnify
@@ -139,6 +152,7 @@ class DiscoveryFragment :
     PermissionListener,
     MiniCartWidgetListener {
 
+    private var autoScrollSectionID: String? = null
     private var anchorViewHolder: AnchorTabsViewHolder? = null
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -161,6 +175,7 @@ class DiscoveryFragment :
     private var miniCartWidget: MiniCartWidget? = null
     private var miniCartData:MiniCartSimplifiedData? = null
     private var miniCartInitialized:Boolean = false
+    private var userPressed: Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -183,6 +198,7 @@ class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
+    var currentTabPosition: Int? = null
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
@@ -209,6 +225,12 @@ class DiscoveryFragment :
                 bundle.putString(PIN_PRODUCT, queryParameterMap[PIN_PRODUCT])
                 bundle.putString(CATEGORY_ID, queryParameterMap[CATEGORY_ID])
                 bundle.putString(EMBED_CATEGORY, queryParameterMap[EMBED_CATEGORY])
+                bundle.putString(RECOM_PRODUCT_ID, queryParameterMap[RECOM_PRODUCT_ID])
+                bundle.putString(DYNAMIC_SUBTITLE, queryParameterMap[DYNAMIC_SUBTITLE])
+                bundle.putString(TARGET_TITLE_ID, queryParameterMap[TARGET_TITLE_ID])
+                bundle.putString(CAMPAIGN_ID, queryParameterMap[CAMPAIGN_ID])
+                bundle.putString(VARIANT_ID, queryParameterMap[VARIANT_ID])
+                bundle.putString(SHOP_ID, queryParameterMap[SHOP_ID])
             }
         }
     }
@@ -331,7 +353,9 @@ class DiscoveryFragment :
                     chooseAddressWidgetDivider?.hide()
                     shouldShowChooseAddressWidget = false
                     scrollDist = 0
-                    discoveryViewModel.updateScroll(dx, dy, newState)
+                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                        scrollToLastSection()
                 } else if (scrollDist < -MINIMUM) {
                     if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
@@ -339,13 +363,41 @@ class DiscoveryFragment :
                         shouldShowChooseAddressWidget = true
                     }
                     scrollDist = 0
-                    discoveryViewModel.updateScroll(dx, dy, newState)
-                    if(mAnchorHeaderView.childCount == 0 && !stickyHeaderShowing){
+                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
+                    if(mAnchorHeaderView.childCount == 0){
                         setupObserveAndShowAnchor()
                     }
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                        scrollToLastSection()
                 }
             }
         })
+        recyclerView.setOnTouchListenerRecyclerView{ v, event ->
+            userPressed = true
+            if(event.actionMasked == MotionEvent.ACTION_UP)
+                v.performClick()
+            false
+        }
+        recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener{
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                userPressed = true
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+                userPressed = true
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+                userPressed = true
+            }
+        } )
+    }
+
+    private fun scrollToLastSection() {
+        if(!userPressed && !autoScrollSectionID.isNullOrEmpty()){
+            scrollToSection(autoScrollSectionID!!)
+        }
     }
 
     private fun calculateScrollDepth(recyclerView: RecyclerView) {
@@ -399,8 +451,17 @@ class DiscoveryFragment :
         setAdapter()
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
+        checkForSamePageOpened()
         fetchDiscoveryPageData()
         setUpObserver()
+    }
+
+    private fun checkForSamePageOpened() {
+        discoveryViewModel.checkForSamePageOpened(
+            discoveryViewModel.getQueryParameterMapFromBundle(
+                arguments
+            )
+        )
     }
 
     private fun setAdapter() {
@@ -501,6 +562,9 @@ class DiscoveryFragment :
                     }
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
+                    recyclerView.post {
+                        scrollToLastSection()
+                    }
                 }
                 is Fail -> {
                     mProgressBar.hide()
@@ -600,11 +664,29 @@ class DiscoveryFragment :
 
         discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner, {
             if(it is Success) {
-                getMiniCart()
-                showToaster(
-                    message = it.data.errorMessage.joinToString(separator = ", "),
-                    type = Toaster.TYPE_NORMAL
-                )
+                if(it.data.requestParams.isGeneralCartATC){
+                    showToasterWithAction(
+                        message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
+                        Toaster.LENGTH_LONG,
+                        type = Toaster.TYPE_NORMAL,
+                        actionText = getString(R.string.disco_lihat),
+                        clickListener = {
+                            context?.let { context->
+                                RouteManager.route(context,ApplinkConst.CART)
+                            }
+                        }
+                    )
+                    analytics.trackEventProductATC(
+                        it.data.requestParams.requestingComponent,
+                        it.data.addToCartDataModel.data.cartId
+                    )
+                }else {
+                    getMiniCart()
+                    showToaster(
+                        message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
+                        type = Toaster.TYPE_NORMAL
+                    )
+                }
             }else if(it is Fail){
                 if(it.throwable is ResponseErrorException)
                     showToaster(
@@ -671,15 +753,18 @@ class DiscoveryFragment :
     }
 
     private fun setupObserveAndShowAnchor() {
-        anchorViewHolder?.let {
-            if (!it.viewModel.getCarouselItemsListData().hasActiveObservers())
-                anchorViewHolder?.setUpObservers(viewLifecycleOwner)
-            if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
-                mAnchorHeaderView.removeAllViews()
-                (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(anchorViewHolder?.itemView)
-                mAnchorHeaderView.addView(it.itemView)
+        if (!stickyHeaderShowing)
+            anchorViewHolder?.let {
+                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers())
+                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
+                    mAnchorHeaderView.removeAllViews()
+                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
+                        anchorViewHolder?.itemView
+                    )
+                    mAnchorHeaderView.addView(it.itemView)
+                }
             }
-        }
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
@@ -690,6 +775,21 @@ class DiscoveryFragment :
                     text = message,
                     duration = duration,
                     type = type
+                ).show()
+            }
+        }
+    }
+
+    private fun showToasterWithAction(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int,actionText: String, clickListener: View.OnClickListener = View.OnClickListener {}) {
+        view?.let { view ->
+            if (message.isNotBlank()) {
+                Toaster.build(
+                    view = view,
+                    text = message,
+                    duration = duration,
+                    type = type,
+                    actionText = actionText,
+                    clickListener = clickListener
                 ).show()
             }
         }
@@ -1009,11 +1109,22 @@ class DiscoveryFragment :
             if (!pinnedComponentId.isNullOrEmpty()) {
                 val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 if (position >= 0) {
+                    userPressed = true
                     recyclerView.smoothScrollToPosition(position)
                     isManualScroll = false
                 }
             }
             pinnedAlreadyScrolled = true
+        }
+    }
+
+    fun scrollToComponentWithID(componentID:String){
+        val position = discoveryViewModel.scrollToPinnedComponent(
+            discoveryAdapter.currentList, componentID
+        )
+        if (position >= 0) {
+            userPressed = false
+            smoothScrollToComponentWithPosition(position)
         }
     }
 
@@ -1064,9 +1175,16 @@ class DiscoveryFragment :
         getDiscoveryAnalytics().clearProductViewIds(true)
         miniCartData = null
         resetAnchorTabs()
+        checkTabPositionBeforeRefresh()
         discoveryViewModel.resetScroll()
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
+    }
+
+    private fun checkTabPositionBeforeRefresh(){
+        if((activity as? DiscoveryActivity)?.isFromCategory() != true && currentTabPosition != null){
+            this.arguments?.putString(ACTIVE_TAB,(currentTabPosition).toString())
+        }
     }
 
     private fun resetAnchorTabs(){
@@ -1154,9 +1272,9 @@ class DiscoveryFragment :
             OPEN_PLAY_CHANNEL -> {
                 if (data == null)
                     return
-                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
-                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-                val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+                val channelId = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_CHANNEL_ID).orEmpty()
+                val totalView = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+                val isReminder = data.getBooleanExtra(PlayWidgetConst.KEY_EXTRA_IS_REMINDER, false)
                 if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel){
                     val discoveryPlayWidgetViewModel = (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
                     discoveryPlayWidgetViewModel.updatePlayWidgetTotalView(channelId, totalView)
@@ -1190,6 +1308,100 @@ class DiscoveryFragment :
             }
 
         })
+
+        handleProductCardOptionsActivityResult(requestCode,
+            resultCode,
+            data,
+            object : ProductCardOptionsWishlistCallback {
+                override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    handleWishlistAction(productCardOptionsModel)
+                }
+            },
+            visitShopCallback = object : ProductCardOptionsResult {
+                override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    handleClickVisitShopCallback(productCardOptionsModel)
+                }
+            },
+            shareProductCallback = object : ProductCardOptionsResult {
+                override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    analytics.track3DotsOptionsClickedShareProduct()
+                }
+            }
+        )
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        (activity as? DiscoveryActivity)?.let { activity ->
+            if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+                if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+                    trackAddToWishlist(productCardOptionsModel)
+                    if (productCardOptionsModel.wishlistResult.isSuccess) {
+                        if (activity.isFromCategory())
+                            NetworkErrorHelper.showSnackbar(
+                                activity,
+                                getString(R.string.discovery_msg_success_add_wishlist)
+                            )
+                        else
+                            showToasterForWishlistAddSuccess()
+                        this.discoveryViewModel.updateWishlist(productCardOptionsModel)
+                    } else {
+                        NetworkErrorHelper.showSnackbar(
+                            activity,
+                            getString(R.string.discovery_msg_error_add_wishlist)
+                        )
+                    }
+                } else {
+                    if (productCardOptionsModel.wishlistResult.isSuccess) {
+                        this.discoveryViewModel.updateWishlist(productCardOptionsModel)
+                        NetworkErrorHelper.showSnackbar(
+                            activity,
+                            getString(R.string.discovery_msg_success_remove_wishlist)
+                        )
+                    } else {
+                        NetworkErrorHelper.showSnackbar(
+                            activity,
+                            getString(R.string.discovery_msg_error_remove_wishlist)
+                        )
+                    }
+                }
+            } else {
+                openLoginScreen()
+            }
+        }
+    }
+
+    private fun trackAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        analytics.track3DotsOptionsClickedWishlist(productCardOptionsModel)
+    }
+
+    fun handleClickVisitShopCallback(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.shopId.isNotEmpty()) {
+            context?.let {
+                analytics.track3DotsOptionsClickedLihatToko()
+                RouteManager.route(
+                    it,
+                    (ApplinkConst.SHOP.replace(
+                        "{shop_id}",
+                        productCardOptionsModel.shopId
+                    ))
+                )
+            }
+        }
+    }
+
+    private fun showToasterForWishlistAddSuccess() {
+        showToasterWithAction(
+            getString(R.string.discovery_msg_success_add_wishlist),
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            actionText = getString(R.string.discovery_msg_success_add_wishlist_CTA)
+        ) { goToWishlistPage() }
+    }
+
+    private fun goToWishlistPage() {
+        this.context?.let {
+            RouteManager.route(it, ApplinkConst.NEW_WISHLIST)
+        }
     }
 
     private fun showVerificationBottomSheet() {
@@ -1216,6 +1428,7 @@ class DiscoveryFragment :
     override fun onClick(view: View?) {
         when (view) {
             ivToTop -> {
+                userPressed = true
                 recyclerView.smoothScrollToPosition(DEFAULT_SCROLL_POSITION)
                 ivToTop.hide()
             }
@@ -1263,10 +1476,13 @@ class DiscoveryFragment :
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
+        val campaignId = arguments?.getString(CAMPAIGN_ID,"") ?: ""
+        val variantId = arguments?.getString(VARIANT_ID,"") ?: ""
+        val shopId = arguments?.getString(SHOP_ID,"") ?: ""
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn())
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(),campaignId,variantId,shopId)
         } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn())
+            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(),campaignId,variantId,shopId)
         }
         openScreenStatus = true
     }
@@ -1448,13 +1664,12 @@ class DiscoveryFragment :
         discoveryViewModel.getMiniCart(shopId, warehouseId)
     }
 
-    fun addOrUpdateItemCart(parentPosition: Int, position: Int, productId: String, quantity: Int) {
+    fun addOrUpdateItemCart(discoATCRequestParams: DiscoATCRequestParams) {
+        if(discoATCRequestParams.shopId.isNullOrEmpty()){
+            discoATCRequestParams.shopId = (userAddressData?.shop_id ?: "")
+        }
         discoveryViewModel.addProductToCart(
-            parentPosition,
-            position,
-            productId,
-            quantity,
-            userAddressData?.shop_id ?: ""
+            discoATCRequestParams
         )
     }
 
@@ -1466,7 +1681,8 @@ class DiscoveryFragment :
                     shopIds,
                     this,
                     this,
-                    pageName = MiniCartAnalytics.Page.DISCOVERY_PAGE
+                    pageName = MiniCartAnalytics.Page.DISCOVERY_PAGE,
+                    source = MiniCartSource.TokonowDiscoveryPage
                 )
                 miniCartWidget?.show()
             } else {
@@ -1488,16 +1704,7 @@ class DiscoveryFragment :
     }
 
     private fun syncWithCart(data:MiniCartSimplifiedData){
-        val map = HashMap<String,MiniCartItem>()
-        data.miniCartItems.associateByTo (map,{ it.productId })
-        val variantMap = data.miniCartItems.groupBy { it.productParentId }
-        for((parentProductId,list) in variantMap){
-            if(parentProductId.isNotEmpty() && parentProductId!="0"){
-                val quantity = list.sumOf { it.quantity }
-                map[parentProductId] = MiniCartItem(productParentId = parentProductId,quantity = quantity)
-            }
-        }
-        setCartData(map,pageEndPoint)
+        setCartData(data.miniCartItems,pageEndPoint)
         miniCartData = data
         reSync()
     }
@@ -1545,15 +1752,28 @@ class DiscoveryFragment :
         }
     }
 
-    fun scrollToSection(sectionID: String, parentPosition: Int) {
+    fun scrollToSection(sectionID: String) {
+        autoScrollSectionID = sectionID
         getSectionPositionMap(pageEndPoint)?.let {
             it[sectionID]?.let { position ->
                 if (position >= 0) {
-                    anchorViewHolder?.viewModel?.updateSelectedSection(sectionID,true)
-                    recyclerView.smoothScrollToPosition(position)
+                    userPressed = false
+                    anchorViewHolder?.viewModel?.updateSelectedSection(sectionID, true)
+                    smoothScrollToComponentWithPosition(position)
                 }
             }
         }
+    }
+
+    private fun smoothScrollToComponentWithPosition(position: Int) {
+        val smoothScroller: RecyclerView.SmoothScroller =
+            object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+        smoothScroller.targetPosition = position
+        staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
     }
 
     fun updateSelectedSection(sectionID: String) {

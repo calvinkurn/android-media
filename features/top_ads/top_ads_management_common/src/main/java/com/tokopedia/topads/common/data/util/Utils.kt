@@ -1,15 +1,25 @@
 package com.tokopedia.topads.common.data.util
 
 import android.content.Context
+import android.content.res.Resources
+import android.text.Html
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.core.text.HtmlCompat
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.Constants
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BUDGET_MULTIPLE_FACTOR
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_0
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -23,7 +33,65 @@ import kotlin.jvm.Throws
 object Utils {
 
     var locale = Locale("in", "ID")
-    const val KALI = " kali"
+    private const val KALI = " kali"
+
+    fun Typography.attributedText(@StringRes id: Int) {
+        text = Html.fromHtml(this.context.resources.getString(id))
+    }
+
+    fun <T> fastLazy(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)
+
+    /**
+     * This method helps to validate and update ui for edit bid textfield
+     * @param[block] is false ,if validation passed or is true is bid is error
+     */
+    fun TextFieldUnify.addBidValidationListener(
+        minBid: String, maxBid: String, suggestedBid: String,
+        block: ((error: Boolean) -> Unit)? = null,
+    ) {
+        val textField = this
+        val resources = textField.context.resources
+        textField.setMessage(String.format(
+            resources.getString(R.string.topads_common_keyword_recommended_budget), suggestedBid
+        ))
+        textFieldInput.addTextChangedListener(
+            object : NumberTextWatcher(textFieldInput, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    val result = number.toInt()
+                    textField.setError(true)
+                    when {
+                        result < minBid.toDoubleOrZero() -> {
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.min_bid_error_new), minBid
+                            ))
+                            block?.invoke(true)
+                        }
+                        result > maxBid.toDoubleOrZero() -> {
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.max_bid_error_new), maxBid
+                            ))
+                            block?.invoke(true)
+                        }
+                        result % BUDGET_MULTIPLE_FACTOR != CONST_0 -> {
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.topads_common_error_multiple_50), "50"
+                            ))
+                            block?.invoke(true)
+                        }
+                        else -> {
+                            textField.setError(false)
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.topads_common_keyword_recommended_budget),
+                                suggestedBid
+                            ))
+                            block?.invoke(false)
+                        }
+                    }
+                }
+            }
+        )
+    }
 
     @JvmStatic
     @Throws(JSONException::class)
@@ -102,7 +170,7 @@ object Utils {
     fun dismissKeyboard(context: Context?, view: View?) {
         val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         if (inputMethodManager?.isAcceptingText == true)
-            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, CONST_0)
     }
 
     fun convertToCurrencyString(value: Long): String {
@@ -115,12 +183,13 @@ object Utils {
 
     fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").replace("Rp", "").trim()
 
+    private const val VALIDATE_KEYWORD_MAX_RANGE = 70
     fun validateKeyword(context: Context?, text: CharSequence?): CharSequence? {
         return if (!text.isNullOrBlank() && text.split(" ").size > Constants.KEYWORD_WORD_COUNT) {
             context?.getString(R.string.error_max_length_keyword)
         } else if (!text.isNullOrBlank() && !text.matches(Constants.KEYWORD_REGEX.toRegex())) {
             context?.getString(R.string.error_keyword)
-        } else if (text?.length ?: 0 > 70) {
+        } else if (text?.length ?: CONST_0 > VALIDATE_KEYWORD_MAX_RANGE) {
             context?.getString(R.string.error_max_length)
         } else {
             null
@@ -128,7 +197,7 @@ object Utils {
     }
 
     fun validateKeywordCountAndChars(context: Context?, text: CharSequence?): CharSequence? {
-        return if (text?.length ?: 0 > Constants.KEYWORD_CHARACTER_COUNT) {
+        return if (text?.length ?: CONST_0 > Constants.KEYWORD_CHARACTER_COUNT) {
             context?.getString(R.string.error_max_length)
         } else if (!text.isNullOrBlank() && !text.matches(Constants.KEYWORD_REGEX_WITH_SPECIAL_CHARS.toRegex())) {
             context?.getString(R.string.error_keyword)

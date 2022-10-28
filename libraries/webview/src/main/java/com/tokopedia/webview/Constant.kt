@@ -16,8 +16,13 @@ internal const val JS_TOKOPEDIA = "js.tokopedia.com"
 internal const val JS_STAGING_TOKOPEDIA = "js-staging.tokopedia.com"
 internal const val STAGING = "staging"
 const val SEAMLESS = "seamless"
+const val LOGIN = "login"
+const val WWW_TOKOPEDIA_COM = "www.tokopedia.com"
 
 internal const val PARAM_EXTERNAL_TRUE = "tokopedia_external=true"
 internal const val PARAM_EXTERNAL_FALSE = "tokopedia_external=false"
+const val GOOGLE_DOCS_PDF_URL = "https://docs.google.com/viewer?url="
+
+internal const val ZOOM_US_STRING: String = "zoom.us"
 
 const val EXAMPLE_DOMAIN = "http://example00.com/"

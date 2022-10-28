@@ -52,6 +52,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
             val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
             if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim() ?: "" else ""
         }
+        catalogId = catalogId.split("-").lastOrNull()?.trim() ?: ""
         prepareView(savedInstanceState == null)
     }
 

@@ -1,11 +1,15 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import android.graphics.Color
+import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataSetModel
+import com.tokopedia.sellerhomecommon.domain.model.TableRowMeta
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableHeaderUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
@@ -16,7 +20,10 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 30/06/20
  */
 
-class TableMapper @Inject constructor() :
+class TableMapper @Inject constructor(
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetTableDataResponse, List<TableDataUiModel>> {
 
     companion object {
@@ -38,25 +45,11 @@ class TableMapper @Inject constructor() :
         private const val CONST_ONE = 1
     }
 
+    private var dataKeys: List<DataKeyModel> = emptyList()
+
     override fun mapRemoteDataToUiData(
         response: GetTableDataResponse,
         isFromCache: Boolean
-    ): List<TableDataUiModel> {
-        return response.fetchSearchTableWidgetData.data.map { table ->
-            TableDataUiModel(
-                dataKey = table.dataKey,
-                error = table.errorMsg,
-                dataSet = getTableDataSet(table.data, MAX_ROWS_PER_PAGE),
-                isFromCache = isFromCache,
-                showWidget = table.showWidget.orFalse()
-            )
-        }
-    }
-
-    fun mapRemoteDataToUiData(
-        response: GetTableDataResponse,
-        isFromCache: Boolean,
-        dataKeys: List<DataKeyModel>
     ): List<TableDataUiModel> {
         return response.fetchSearchTableWidgetData.data.mapIndexed { i, table ->
             var maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ROWS_PER_PAGE
@@ -71,9 +64,14 @@ class TableMapper @Inject constructor() :
                 error = table.errorMsg,
                 dataSet = getTableDataSet(table.data, maxDisplay),
                 isFromCache = isFromCache,
-                showWidget = table.showWidget.orFalse()
+                showWidget = table.showWidget.orFalse(),
+                lastUpdated = getLastUpdatedMillis(table.dataKey, isFromCache)
             )
         }
+    }
+
+    fun setDataKeys(dataKeys: List<DataKeyModel>) {
+        this.dataKeys = dataKeys
     }
 
     private fun getTableDataSet(
@@ -98,23 +96,27 @@ class TableMapper @Inject constructor() :
                     val width = headers[j].width
                     val rowColumn: TableRowsUiModel = when (col.type) {
                         COLUMN_TEXT -> TableRowsUiModel.RowColumnText(
-                            col.value,
-                            width,
+                            valueStr = col.value,
+                            width = width,
+                            meta = getTableRowMeta(col.meta),
                             isLeftAlign = firstTextColumn == col
                         )
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
                         else -> TableRowsUiModel.RowColumnHtml(
-                            col.value,
-                            width,
+                            valueStr = col.value,
+                            width = width,
+                            meta = getTableRowMeta(col.meta),
                             isLeftAlign = firstTextColumn == col,
-                            getColorFromHtml(col.value)
+                            colorInt = getColorFromHtml(col.value)
                         ) //it's COLUMN_HTML
                     }
                     rows.add(rowColumn)
                 }
             }
 
-            if (i.plus(oneRowCount).rem(maxRowsPerPage) == zeroRowCount && rowCount >= maxRowsPerPage) {
+            if (i.plus(oneRowCount)
+                    .rem(maxRowsPerPage) == zeroRowCount && rowCount >= maxRowsPerPage
+            ) {
                 val tablePage = TablePageUiModel(headers, rows)
                 tablePages.add(tablePage)
                 rows = mutableListOf()
@@ -125,6 +127,15 @@ class TableMapper @Inject constructor() :
         }
 
         return tablePages
+    }
+
+    private fun getTableRowMeta(meta: String): TableRowsUiModel.Meta {
+        return try {
+            val metaModel = Gson().fromJson(meta, TableRowMeta::class.java)
+            TableRowsUiModel.Meta(flag = metaModel.flag)
+        } catch (e: Exception) {
+            TableRowsUiModel.Meta(flag = String.EMPTY)
+        }
     }
 
     private fun getHeaders(headers: List<HeaderModel>): List<TableHeaderUiModel> {
@@ -184,5 +195,4 @@ class TableMapper @Inject constructor() :
             .substringBefore("\"").substringBefore(";")
             .replace("[^A-Za-z0-9#]+".toRegex(), "")
     }
-
 }

@@ -86,7 +86,7 @@
             android:label="@string/title_report_talk"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity
             android:name="com.tokopedia.talk.feature.sellersettings.common.activity.TalkSellerSettingsActivity"
             android:label="@string/title_seller_settings_page"

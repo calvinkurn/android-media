@@ -1,12 +1,16 @@
 package com.tokopedia.device.info
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.TextUtils
+import androidx.core.app.ActivityCompat
 import java.net.NetworkInterface
 import java.util.*
 
@@ -40,6 +44,8 @@ object DeviceConnectionInfo {
     const val CONN_IWLAN = "IWLAN"
     const val CONN_UNKNOWN = "unknown"
 
+    private const val NETWORK_TYPE_LTE_CA = 19 // @UnsupportedAppUsage: TelephonyManager.NETWORK_TYPE_LTE_CA
+
     /**
      * Return SSID device
      * The function will return empty string when device can not get the ssid
@@ -50,11 +56,14 @@ object DeviceConnectionInfo {
     fun getSSID(context: Context): String {
         var ssid = ""
         try {
-            val connManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connManager =
+                context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connManager.activeNetworkInfo
             if (networkInfo != null && networkInfo.isConnected &&
-                networkInfo.type == ConnectivityManager.TYPE_WIFI) {
-                val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+                networkInfo.type == ConnectivityManager.TYPE_WIFI
+            ) {
+                val wifiManager =
+                    context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
                 val connectionInfo = wifiManager.connectionInfo
                 if (connectionInfo != null && !TextUtils.isEmpty(connectionInfo.ssid)) {
                     ssid = connectionInfo.ssid
@@ -82,14 +91,17 @@ object DeviceConnectionInfo {
         return isInternetAvailable(context, checkEthernet = true)
     }
 
+    @Deprecated("Use isConnectWifi(context), isConnectCellular(context), or isConnectEthernet(context) instead.")
     @JvmStatic
-    fun isInternetAvailable(context: Context,
-                            checkWifi: Boolean = false,
-                            checkCellular: Boolean = false,
-                            checkEthernet: Boolean = false): Boolean {
+    fun isInternetAvailable(
+        context: Context,
+        checkWifi: Boolean = false,
+        checkCellular: Boolean = false,
+        checkEthernet: Boolean = false
+    ): Boolean {
         var result = false
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val networkCapabilities = connectivityManager.activeNetwork ?: return false
             val actNw =
@@ -114,8 +126,8 @@ object DeviceConnectionInfo {
                 connectivityManager.activeNetworkInfo?.run {
                     when {
                         checkWifi -> return type == ConnectivityManager.TYPE_WIFI
-                        checkCellular -> return  type == ConnectivityManager.TYPE_MOBILE
-                        checkEthernet -> return  type == ConnectivityManager.TYPE_ETHERNET
+                        checkCellular -> return type == ConnectivityManager.TYPE_MOBILE
+                        checkEthernet -> return type == ConnectivityManager.TYPE_ETHERNET
                         else -> {
                             result = when (type) {
                                 ConnectivityManager.TYPE_WIFI -> true
@@ -145,6 +157,39 @@ object DeviceConnectionInfo {
     }
 
     @JvmStatic
+    fun getDualSimCarrierNames(context: Context): Pair<String, String>? {
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                val localSubscriptionManager: SubscriptionManager =
+                    context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_PHONE_STATE
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return if (localSubscriptionManager.activeSubscriptionInfoCount > 1) {
+                        val localList = localSubscriptionManager.activeSubscriptionInfoList
+                        val sim1Info = localList[0]
+                        val sim2Info = localList[1]
+
+                        Pair(sim1Info.displayName.toString(), sim2Info.displayName.toString())
+                    } else {
+                        Pair(getCarrierName(context), "")
+                    }
+                } else {
+                    return Pair(getCarrierName(context), "")
+                }
+            } else {
+                return Pair(getCarrierName(context), "")
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            return null
+        }
+    }
+
+    @JvmStatic
     fun getIPAddress(useIPv4: Boolean): String {
         try {
             val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())
@@ -161,7 +206,10 @@ object DeviceConnectionInfo {
                         } else {
                             if (!isIPv4) {
                                 val delim = sAddr.indexOf('%') // drop ip6 zone suffix
-                                return if (delim < 0) sAddr.toUpperCase() else sAddr.substring(0, delim).toUpperCase()
+                                return if (delim < 0) sAddr.toUpperCase() else sAddr.substring(
+                                    0,
+                                    delim
+                                ).toUpperCase()
                             }
                         }
                     }
@@ -174,7 +222,7 @@ object DeviceConnectionInfo {
     }
 
     private fun getConnectionTransportType(context: Context): Int {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
             if (capabilities != null) {
@@ -203,7 +251,8 @@ object DeviceConnectionInfo {
             when (getConnectionTransportType(context)) {
                 WIFI -> CONN_WIFI
                 MOBILE -> {
-                    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    val cm =
+                        context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                     if (cm.activeNetworkInfo?.subtype == null) return CONN_UNKNOWN
                     return when (cm.activeNetworkInfo?.subtype) {
                         // 2G:
@@ -228,12 +277,12 @@ object DeviceConnectionInfo {
 
                         //4G
                         TelephonyManager.NETWORK_TYPE_LTE -> CONN_LTE // ~ 10+ Mbps
-                        TelephonyManager.NETWORK_TYPE_IWLAN-> CONN_IWLAN
+                        TelephonyManager.NETWORK_TYPE_IWLAN -> CONN_IWLAN
                         // LTE CA
-                        19 -> CONN_LTE_CA
+                        NETWORK_TYPE_LTE_CA -> CONN_LTE_CA
 
                         //5G
-                        20 -> CONN_NR
+                        TelephonyManager.NETWORK_TYPE_NR -> CONN_NR
 
                         TelephonyManager.NETWORK_TYPE_UNKNOWN -> CONN_UNKNOWN
                         else -> CONN_UNKNOWN
@@ -243,7 +292,7 @@ object DeviceConnectionInfo {
                     CONN_UNKNOWN
                 }
             }
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             return CONN_UNKNOWN
         }
     }

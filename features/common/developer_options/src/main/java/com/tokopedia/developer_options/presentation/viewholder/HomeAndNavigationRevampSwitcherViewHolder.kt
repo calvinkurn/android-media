@@ -13,7 +13,8 @@ import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_E
 import com.tokopedia.unifycomponents.UnifyButton
 
 class HomeAndNavigationRevampSwitcherViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: HomeAndNavigationRevampListener
 ): AbstractViewHolder<HomeAndNavigationRevampSwitcherUiModel>(itemView)
 {
     companion object {
@@ -26,8 +27,7 @@ class HomeAndNavigationRevampSwitcherViewHolder(
         val btnExpOsBottomNavigation = itemView.findViewById<UnifyButton>(R.id.os_exp_btn)
         val btnOldBalanceWidget = itemView.findViewById<UnifyButton>(R.id.old_balance_widget_btn)
         val btnNewBalanceWidget = itemView.findViewById<UnifyButton>(R.id.new_balance_widget_btn)
-        val btnOldInbox = itemView.findViewById<UnifyButton>(R.id.old_inbox_btn)
-        val btnNewInbox = itemView.findViewById<UnifyButton>(R.id.new_inbox_btn)
+        val btnSkipOnBoardingUserSession = itemView.findViewById<UnifyButton>(R.id.skip_onboarding_user_session_btn)
 
         itemView.context.apply {
             btnNewNavigation.setOnClickListener {
@@ -50,16 +50,13 @@ class HomeAndNavigationRevampSwitcherViewHolder(
                 Toast.makeText(this, "balance widget: Revamped", Toast.LENGTH_SHORT).show()
             }
 
-            btnOldInbox.setOnClickListener {
-                RemoteConfigInstance.getInstance().abTestPlatform.setString(RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX)
-                Toast.makeText(this, "Inbox: Old", Toast.LENGTH_SHORT).show()
+            btnSkipOnBoardingUserSession.setOnClickListener {
+                listener.onClickSkipOnBoardingBtn()
             }
-
-            btnNewInbox.setOnClickListener {
-                RemoteConfigInstance.getInstance().abTestPlatform.setString(RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_NEW_INBOX)
-                Toast.makeText(this, "Inbox: New", Toast.LENGTH_SHORT).show()
-            }
-
         }
+    }
+
+    interface HomeAndNavigationRevampListener {
+        fun onClickSkipOnBoardingBtn()
     }
 }

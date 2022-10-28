@@ -2,27 +2,23 @@ package com.tokopedia.officialstore.official.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BANNERS
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BENEFITS
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.officialstore.official.data.mapper.OfficialProductCardMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module(includes = [OfficialStoreHomeViewModelModule::class])
 class OfficialStoreHomeModule {
@@ -43,43 +39,7 @@ class OfficialStoreHomeModule {
 
     @OfficialStoreHomeScope
     @Provides
-    @Named(QUERY_OFFICIAL_STORE_BANNERS)
-    fun provideQueryofficialStoreBanners(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_banner)
-    }
-
-    @OfficialStoreHomeScope
-    @Provides
-    @Named(QUERY_OFFICIAL_STORE_BENEFITS)
-    fun provideQueryofficialStoreBenefitShop(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_benefit)
-    }
-
-    @OfficialStoreHomeScope
-    @Provides
-    @Named(QUERY_OFFICIAL_STORE_FEATURED_SHOPS)
-    fun provideQueryofficialStoreFeaturedShop(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_featured)
-    }
-
-    @OfficialStoreHomeScope
-    @Provides
-    @Named(QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL)
-    fun provideQueryOfficialStoreDynamicChannel(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_dynamic_channel)
-    }
-
-    @OfficialStoreHomeScope
-    @Provides
-    @Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION)
-    fun provideQueryOfficialStoreProductRecommendation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_product_recommendation)
-    }
-
-
-    @OfficialStoreHomeScope
-    @Provides
-    fun provideOfficialHomeMapper(@ApplicationContext context: Context, dispatchers: CoroutineDispatchers) = OfficialHomeMapper(context, dispatchers)
+    fun provideOfficialHomeMapper(@ApplicationContext context: Context, dispatchers: CoroutineDispatchers) = OfficialProductCardMapper(context, dispatchers)
 
     @OfficialStoreHomeScope
     @Provides
@@ -87,11 +47,11 @@ class OfficialStoreHomeModule {
 
     @OfficialStoreHomeScope
     @Provides
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
+    fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase = AddToWishlistV2UseCase(graphqlRepository)
 
     @OfficialStoreHomeScope
     @Provides
-    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
+    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(graphqlRepository)
 
     @OfficialStoreHomeScope
     @Provides
@@ -102,4 +62,15 @@ class OfficialStoreHomeModule {
     fun provideGetTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
         return GetTopAdsHeadlineUseCase(graphqlRepository)
     }
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig = FirebaseRemoteConfigImpl(context)
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface, topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(), topAdsIrisSession.getSessionId())
+    }
+
 }

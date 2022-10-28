@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
+import java.util.Locale
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 
 
 /**
@@ -41,14 +43,13 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
     protected open fun getReadStatusId() = R.id.chat_status
     protected open fun getChatBalloonId() = R.id.card_group_chat_message
 
-    override fun bind(element: ImageUploadUiModel?) {
-        if (element == null) return
-        super.bind(element)
-        prerequisiteUISetup(element)
-        setupChatBubbleAlignment(chatBalloon, element)
-        bindClickListener(element)
-        bindImageAttachment(element)
-        bindRetry(element)
+    override fun bind(uiModel: ImageUploadUiModel) {
+        super.bind(uiModel)
+        prerequisiteUISetup(uiModel)
+        setupChatBubbleAlignment(chatBalloon, uiModel)
+        bindClickListener(uiModel)
+        bindImageAttachment(uiModel)
+        bindRetry(uiModel)
         setVisibility(attachment, View.VISIBLE)
     }
 
@@ -59,9 +60,12 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
     }
 
     protected open fun bindClickListener(element: ImageUploadUiModel) {
-        view.setOnClickListener { view ->
-            if (element.imageUrl != null && element.replyTime != null) {
-                listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)
+        view?.setOnClickListener { view ->
+            val imageUrl = element.imageUrl.toEmptyStringIfNull()
+            val replyTime = element.replyTime.toEmptyStringIfNull()
+            if (imageUrl.isNotEmpty() && replyTime.isNotEmpty()) {
+                listener.onImageUploadClicked(
+                    imageUrl, replyTime, false)
             }
         }
     }
@@ -97,7 +101,9 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
 
     protected open fun setChatLeft(chatBalloon: View?) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon)
-        alignHour(RelativeLayout.ALIGN_PARENT_LEFT, hour)
+        hour?.let {
+            alignHour(RelativeLayout.ALIGN_PARENT_LEFT, it)
+        }
         setVisibility(chatStatus, View.GONE)
         setVisibility(name, View.GONE)
         setVisibility(label, View.GONE)
@@ -106,7 +112,9 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
 
     protected open fun setChatRight(chatBalloon: View?) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon)
-        alignHour(RelativeLayout.ALIGN_PARENT_RIGHT, hour)
+        hour?.let {
+            alignHour(RelativeLayout.ALIGN_PARENT_RIGHT, it)
+        }
         setVisibility(chatStatus, View.VISIBLE)
     }
 
@@ -138,10 +146,11 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
         action?.visibility = View.GONE
         progressBarSendImage?.visibility = View.GONE
         if (!TextUtils.isEmpty(element.fromRole)
-                && element.fromRole.toLowerCase() != ROLE_USER.toLowerCase()
-                && element.isSender
-                && !element.isDummy
-                && element.isShowRole) {
+            && element.fromRole.lowercase(Locale.getDefault()) != ROLE_USER.lowercase(Locale.getDefault())
+            && element.isSender
+            && !element.isDummy
+            && element.isShowRole
+        ) {
             if (name != null) name.text = element.from
             if (label != null) label.text = element.fromRole
             setVisibility(name, View.VISIBLE)

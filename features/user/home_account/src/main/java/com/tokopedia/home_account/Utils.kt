@@ -1,9 +1,13 @@
 package com.tokopedia.home_account
 
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.style.URLSpan
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.unifyprinciples.Typography
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -56,5 +60,21 @@ object Utils {
         formatter.groupingSize = 3
 
         return formatter.format(balance)
+    }
+
+    fun Typography.removeUrlLine() {
+        val spannable = SpannableString(text)
+        for (u in spannable.getSpans(0, spannable.length, URLSpan::class.java)) {
+            spannable.setSpan(
+                object : URLSpan(u.url) {
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                }
+            },
+                spannable.getSpanStart(u), spannable.getSpanEnd(u), 0
+            )
+        }
+        text = spannable
     }
 }

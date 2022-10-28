@@ -9,10 +9,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcShareVoucherBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.ShareVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.adapter.ShareVoucherAdapter
-import kotlinx.android.synthetic.main.bottomsheet_mvc_share_voucher.view.*
 
 /**
  * Created By @ilhamsuaib on 28/04/20
@@ -28,6 +29,8 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
 
         const val TAG = "ShareVoucherBottomSheet"
     }
+
+    private var binding by autoClearedNullable<BottomsheetMvcShareVoucherBinding>()
 
     private var broadCastChatStatus = 0
 
@@ -62,16 +65,16 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         context?.run {
-            val child = View.inflate(this, R.layout.bottomsheet_mvc_share_voucher, null)
+            binding = BottomsheetMvcShareVoucherBinding.inflate(LayoutInflater.from(context))
             setTitle(getString(R.string.mvc_share))
-            setChild(child)
+            setChild(binding?.root)
         }
     }
 
     private fun setupView(view: View) = with(view) {
         mAdapter.clearAllElements()
         mAdapter.addElement(getSocmedList())
-        rvMvcShareVoucher.run {
+        binding?.rvMvcShareVoucher?.run {
             layoutManager = LinearLayoutManager(view.context)
             adapter = mAdapter
         }

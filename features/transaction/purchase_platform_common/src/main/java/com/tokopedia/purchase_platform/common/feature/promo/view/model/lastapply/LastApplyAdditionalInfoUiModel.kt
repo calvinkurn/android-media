@@ -10,5 +10,7 @@ data class LastApplyAdditionalInfoUiModel(
 		var errorDetail: LastApplyErrorDetailUiModel = LastApplyErrorDetailUiModel(),
 		var emptyCartInfo: LastApplyEmptyCartInfoUiModel = LastApplyEmptyCartInfoUiModel(),
 		var usageSummaries: List<LastApplyUsageSummariesUiModel> = emptyList(),
-		var promoSpIds: List<PromoSpIdUiModel> = emptyList()
+		var promoSpIds: List<PromoSpIdUiModel> = emptyList(),
+		var pomlAutoApplied: Boolean = false,
+        var bebasOngkirInfo: LastApplyBebasOngkirInfo = LastApplyBebasOngkirInfo(),
 ) : Parcelable

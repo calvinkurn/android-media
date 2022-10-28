@@ -115,17 +115,8 @@ object DeeplinkMapperHome {
     }
 
     fun getRegisteredInboxNavigation(deeplink: String): String {
-        return if (useNewInbox()) {
-            ApplinkConstInternalMarketplace.INBOX
-        } else {
-            ApplinkConsInternalHome.HOME_INBOX
-        }
+        return ApplinkConsInternalHome.HOME_INBOX
     }
-
-    fun useNewInbox(): Boolean =
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
 
     fun isOsExperiment(): Boolean = RemoteConfigInstance.getInstance().abTestPlatform.getString(
             RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT, ""

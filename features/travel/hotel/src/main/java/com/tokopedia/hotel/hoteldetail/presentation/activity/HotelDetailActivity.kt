@@ -12,16 +12,13 @@ import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * @author by furqan on 22/04/19
  */
 class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailComponent> {
-
-    override fun getParentViewResourceID(): Int = com.tokopedia.abstraction.R.id.parent_view
-
-    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
     private var checkInDate: String = ""
     private var checkOutDate: String = ""
@@ -40,10 +37,10 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                 propertyId = uri.lastPathSegment.toLongOrZero()
                 if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) checkInDate = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
                 if (!uri.getQueryParameter(PARAM_CHECK_OUT).isNullOrEmpty()) checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
-                if (!uri.getQueryParameter(PARAM_ROOM_COUNT).isNullOrEmpty()) roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT)?.toInt() ?: 0
-                if (!uri.getQueryParameter(PARAM_ADULT_COUNT).isNullOrEmpty()) adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT)?.toInt() ?: 0
+                if (!uri.getQueryParameter(PARAM_ROOM_COUNT).isNullOrEmpty()) roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT)?.toIntSafely() ?: 0
+                if (!uri.getQueryParameter(PARAM_ADULT_COUNT).isNullOrEmpty()) adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT)?.toIntSafely() ?: 0
 
-                showRoom = !(!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && (uri.getQueryParameter(PARAM_SHOW_ROOM)?.toInt() ?: 0) == 0)
+                showRoom = !(!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && (uri.getQueryParameter(PARAM_SHOW_ROOM)?.toIntSafely() ?: 0) == 0)
 
             } else {
                 with(intent) {

@@ -78,6 +78,45 @@ class ProductAdsListViewModelTest {
     }
 
     @Test
+    fun `test exception of execute in etalaseList`() {
+        var actual: Throwable? = null
+        val expected = Exception("my excep")
+
+        val onError: (Throwable) -> Unit = {
+            actual = expected
+        }
+        every { getEtalaseListUseCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(expected)
+        }
+
+        viewModel.etalaseList(
+            onSuccess = {},
+            onError = onError
+        )
+        Assert.assertEquals(actual?.message, expected.message)
+    }
+
+    @Test
+    fun `test exception of execute in productList`() {
+        var actual: Throwable? = null
+        val expected = Exception("my excep")
+
+        val onError: (Throwable) -> Unit = {
+            actual = expected
+        }
+        every { topAdsGetListProductUseCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(expected)
+        }
+
+        viewModel.productList("", "", "", "", 0, 0, "",
+            onSuccess = { _, _ -> },
+            onEmpty = {},
+            onError = onError
+        )
+        Assert.assertEquals(actual?.message, expected.message)
+    }
+
+    @Test
     fun `test exception in productList`() {
         var actual: Throwable? = null
         val expected = Exception("my excep")
@@ -143,6 +182,40 @@ class ProductAdsListViewModelTest {
 
         Assert.assertEquals(expectedSize, actualSize)
         Assert.assertEquals(expectedEof, actualEof)
+    }
+
+    @Test
+    fun `check invocation of onSuccess on etalseid empty in productList`() {
+
+        val data = ResponseProductList.Result(ResponseProductList.Result.TopadsGetListProduct(listOf(TopAdsProductModel())))
+        every { userSession.shopId } returns "2"
+        every { topAdsGetListProductUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(ResponseProductList.Result)->Unit>().invoke(data)
+        }
+        var successCalled = false
+        viewModel.productList("", "", "", "", 0, 0, "",
+            onSuccess = { _, _ -> successCalled = true },
+            onEmpty = { },
+            onError = {})
+
+        Assert.assertTrue(successCalled)
+    }
+
+    @Test
+    fun `addsemuaProudk totalcount check if etalseid is empty in productList`() {
+        val expected = 1
+        val data =
+            ResponseProductList.Result(ResponseProductList.Result.TopadsGetListProduct(listOf(
+                TopAdsProductModel())))
+        every { userSession.shopId } returns "2"
+        every { topAdsGetListProductUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(ResponseProductList.Result) -> Unit>().invoke(data)
+        }
+        viewModel.productList("", "", "", "", 0, 0, "",
+            { _, _ -> }, { }, {})
+
+        Assert.assertEquals(viewModel.addSemuaProduk().count, expected)
+
     }
 
     @Test

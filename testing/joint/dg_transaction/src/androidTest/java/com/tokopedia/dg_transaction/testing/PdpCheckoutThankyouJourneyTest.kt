@@ -35,7 +35,7 @@ class PdpCheckoutThankyouJourneyTest {
         false, false)
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
+    var cassavaTestRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
     private lateinit var activity: EmoneyPdpActivityStub
     private var emoneyPdpComponentStub: StubEmoneyPdpComponent? = null

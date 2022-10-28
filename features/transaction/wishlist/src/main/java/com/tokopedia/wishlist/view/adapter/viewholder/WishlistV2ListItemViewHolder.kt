@@ -12,9 +12,15 @@ import com.tokopedia.productcard.R as RProductCard
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2ListItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.clickWithDebounce
 
 class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: WishlistV2TypeLayoutData, position: Int, isShowCheckbox: Boolean) {
+    fun bind(
+        item: WishlistV2TypeLayoutData,
+        position: Int,
+        isShowCheckbox: Boolean,
+        isAutoSelected: Boolean
+    ) {
         if (item.dataObject is ProductCardModel) {
             binding.pcListItem.setProductModel(item.dataObject)
 
@@ -25,7 +31,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
             val buttonSeeSimilarProduct = footerLayout.findViewById<UnifyButton>(RProductCard.id.buttonSeeSimilarProductWishlist)
 
             if (isShowCheckbox) {
-                renderBulkDelete(item, buttonSecondary, rlPrimaryButton)
+                renderBulkDelete(item, buttonSecondary, rlPrimaryButton, isAutoSelected)
 
             } else {
                 renderRegularWishlist(item, buttonSecondary, rlPrimaryButton)
@@ -42,23 +48,31 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         }
     }
 
-    private fun renderBulkDelete(item: WishlistV2TypeLayoutData, buttonSecondary: FrameLayout, rlPrimaryButton: RelativeLayout) {
+    private fun renderBulkDelete(
+        item: WishlistV2TypeLayoutData,
+        buttonSecondary: FrameLayout,
+        rlPrimaryButton: RelativeLayout,
+        isAutoSelected: Boolean
+    ) {
         binding.wishlistCheckbox.setOnCheckedChangeListener(null)
         binding.wishlistCheckbox.visible()
         binding.wishlistCheckbox.isChecked = item.isChecked
         binding.wishlistCheckbox.skipAnimation()
         binding.wishlistCheckbox.setOnClickListener {
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
         buttonSecondary.gone()
         rlPrimaryButton.gone()
         binding.pcListItem.setOnClickListener {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
         binding.root.setOnClickListener {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
     }
 
@@ -66,7 +80,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         binding.wishlistCheckbox.gone()
         buttonSecondary.visible()
         rlPrimaryButton.visible()
-        binding.pcListItem.setOnClickListener {
+        binding.pcListItem.clickWithDebounce {
             actionListener?.onProductItemClicked(item.wishlistItem, position)
         }
     }

@@ -8,15 +8,12 @@ import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertNotEqualTo
-import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.websocket.response.PlayMerchantVoucherSocketResponse
-import com.tokopedia.play.websocket.response.PlayProductTagSocketResponse
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -29,7 +26,9 @@ class PlayVoucherTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val modelBuilder = UiModelBuilder.get()
@@ -111,7 +110,7 @@ class PlayVoucherTest {
                 voucherList = mockVoucherList
             )
         )
-        coEvery { repo.getTagItem(any()) } returns mockTagItem
+        coEvery { repo.getTagItem(any(), any()) } returns mockTagItem
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -154,7 +153,7 @@ class PlayVoucherTest {
                 voucherList = mockVoucherList
             )
         )
-        coEvery { repo.getTagItem(any()) } returns mockTagItem
+        coEvery { repo.getTagItem(any(), any()) } returns mockTagItem
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,

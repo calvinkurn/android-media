@@ -7,18 +7,11 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
 
-class SliderBannerViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class SliderBannerViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
     private val componentsData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
     init {
         componentsData.value = components

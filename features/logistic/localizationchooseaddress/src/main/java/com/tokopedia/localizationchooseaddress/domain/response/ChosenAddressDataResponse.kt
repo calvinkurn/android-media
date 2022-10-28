@@ -68,7 +68,11 @@ data class Tokonow(
 
         @Expose
         @SerializedName("service_type")
-        var serviceType: String = ""
+        var serviceType: String = "",
+
+        @Expose
+        @SerializedName("tokonow_last_update")
+        var tokonowLastUpdate: String = ""
 )
 
 data class ErrorChosenAddress(

@@ -6,10 +6,10 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_status"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_80"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         app:srcCompat="@drawable/ic_ts_notif_status_loader"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,8 +17,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/pg_loader"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/img_status"
         app:layout_constraintEnd_toEndOf="@+id/img_status"
         app:layout_constraintStart_toStartOf="@+id/img_status"

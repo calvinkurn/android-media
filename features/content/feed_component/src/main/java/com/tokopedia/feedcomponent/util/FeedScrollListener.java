@@ -108,7 +108,8 @@ public class FeedScrollListener {
     }
 
     private static boolean isVideoCard(List<Visitable> list, int position) {
-        return list.size() > position
+        return position >= 0
+                && list.size() > position
                 && list.get(position) instanceof DynamicPostViewModel
                 && ((DynamicPostViewModel)list.get(position)).getContentList().size() == 1
                 && (((DynamicPostViewModel)list.get(position)).getContentList().get(0) instanceof VideoViewModel

@@ -9,11 +9,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDetailTitle"
-        android:layout_width="@dimen/unify_space_0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_8"
+        app:layout_constraintHorizontal_bias="0"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/tvDetailAmount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,11 +22,38 @@
         tools:text="Jumlah Penarikan" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDetailLastUpdate"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/tvDetailAmount"
+        app:layout_constraintStart_toStartOf="@id/tvDetailTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvDetailTitle"
+        app:typographyType="small"
+
+        tools:text="sfgdfgdfgsg" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/lateNotifier"
+        android:layout_width="@dimen/unify_space_4"
+        android:layout_height="@dimen/unify_space_4"
+        app:layout_constraintTop_toTopOf="@id/tvDetailTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvDetailTitle"
+        app:layout_constraintLeft_toRightOf="@id/tvDetailTitle"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:src="@drawable/saldo_ic_circle_red"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDetailAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tvDetailTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvDetailTitle"
         app:typographyType="body_2"

@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.reading.presentation.viewmodel
 
 import com.tokopedia.review.common.data.ProductrevLikeReview
 import com.tokopedia.review.common.data.ToggleLikeReviewResponse
-import com.tokopedia.review.feature.reading.data.Attachments
+import com.tokopedia.review.feature.reading.data.ImageAttachments
 import com.tokopedia.review.feature.reading.data.Product
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductRatingAndTopic
@@ -225,7 +225,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     fun `when mapShopReviewToReadReviewUiModel should return expected list of ReadReviewUiModel`() {
         val productId = "129123"
         val shopReviews = listOf(
-                ShopReview(reviewID = "1", product = Product(productID = productId), attachments = listOf(Attachments())),
+                ShopReview(reviewID = "1", product = Product(productID = productId), imageAttachments = listOf(ImageAttachments())),
                 ShopReview(reviewID = "2", product = Product(productID = productId))
         )
         val isShopViewHolder = true
@@ -316,7 +316,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilterWithImage(isActive, true)
+        viewModel.setFilterWithMedia(isActive, true)
 
         verifyGetProductReviewListUseCaseExecuted()
         verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
@@ -329,7 +329,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetShopReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilterWithImage(isActive, false)
+        viewModel.setFilterWithMedia(isActive, false)
 
         verifyGetShopReviewListUseCaseExecuted()
         verifyShopReviewsSuccessEquals(Success(expectedResponse.productrevGetShopReviewList))
@@ -496,8 +496,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilterWithImage(isActive, true)
-        viewModel.setFilterWithImage(isActive, true)
+        viewModel.setFilterWithMedia(isActive, true)
+        viewModel.setFilterWithMedia(isActive, true)
 
         Assert.assertFalse(viewModel.isFilterSelected())
         verifyGetProductReviewListUseCaseExecuted()
@@ -511,8 +511,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetShopReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilterWithImage(isActive, false)
-        viewModel.setFilterWithImage(isActive, false)
+        viewModel.setFilterWithMedia(isActive, false)
+        viewModel.setFilterWithMedia(isActive, false)
 
         Assert.assertFalse(viewModel.isFilterSelected())
         verifyGetShopReviewListUseCaseExecuted()

@@ -20,10 +20,10 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
 
     fun toInitialMode() {
         hideShadow()
-        setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Header_Background))
         setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            navigationIcon?.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Header_Background))
         } else navigationIcon = ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_back_white_24)
     }
 

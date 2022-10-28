@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dms_proof_background_image_static_black"
+    tools:context=".view.pod.ui.ProofOfDeliveryActivity">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_proof"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:minHeight="300dp"
+        android:src="@color/transparent"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/proof_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dms_proof_description_static_black"
+        android:paddingHorizontal="62dp"
+        android:paddingVertical="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_Static_White"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/img_proof"
+        app:layout_constraintEnd_toEndOf="@id/img_proof"
+        app:layout_constraintStart_toStartOf="@id/img_proof"
+        app:typographyType="body_3"
+        tools:text="Foto sepenuhnya diambil dan merupakan tanggung jawab kurir."
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_back"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/Unify_G500"
+        android:text="@string/label_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="filled" />
+
+    <include layout="@layout/partial_proof_of_delivery_error" android:id="@+id/partial_pod_error"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

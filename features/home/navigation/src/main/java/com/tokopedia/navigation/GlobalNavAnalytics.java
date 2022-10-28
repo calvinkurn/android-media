@@ -76,14 +76,14 @@ public class GlobalNavAnalytics {
      * Analytics when user visits feed
      */
     public void userVisitsFeed(String isLoggedInStatus, String userID) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         map.put(EVENT, OPEN_SCREEN);
         map.put("isLoggedInStatus", isLoggedInStatus);
         map.put(EVENT_BUSINESSUNIT, "content");
         map.put(SCREEN_NAME, "/feed");
         map.put(EVENT_CURRENTSITE, EVENT_CURRENTSITE_VALUE);
         map.put(EVENT_USERID, userID);
-        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated("/feed",map);
     }
 
     public void eventNotificationPage(String section, String item) {

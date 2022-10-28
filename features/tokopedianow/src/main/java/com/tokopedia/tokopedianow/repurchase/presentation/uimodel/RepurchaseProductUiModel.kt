@@ -12,7 +12,8 @@ data class RepurchaseProductUiModel(
     val categoryId: String,
     val category: String,
     val isStockEmpty: Boolean,
-    val productCard: ProductCardModel
+    val productCard: ProductCardModel,
+    val position: Int
 ) : Visitable<RepurchaseTypeFactory>, ImpressHolder() {
 
     override fun type(typeFactory: RepurchaseTypeFactory): Int {

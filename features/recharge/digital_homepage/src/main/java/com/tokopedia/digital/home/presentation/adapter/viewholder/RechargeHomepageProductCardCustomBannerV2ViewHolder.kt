@@ -3,11 +3,13 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomBannerV2Binding
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
@@ -15,6 +17,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.util.ParallaxScrollEffectListener
 import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -44,6 +47,11 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
             setupInitialView(bind, section)
             setupList(bind, element.digitalUnifyItems)
             setSnapEffect(bind)
+
+            bind.root.addOnImpressionListener(section) {
+                listener.onRechargeSectionItemImpression(section)
+            }
+
         } else {
             showShimmer(bind)
             listener.loadRechargeSectionData(element.visitableId())
@@ -56,7 +64,15 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     ) {
         with(bind) {
             try {
-                contentContainer.setCardBackgroundColor(Color.parseColor(section.label2))
+                if (section.label2.isNotEmpty())
+                    contentContainer.setCardBackgroundColor(Color.parseColor(section.label2))
+                else
+                    contentContainer.setCardBackgroundColor(
+                        MethodChecker.getColor(
+                            root.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        )
+                    )
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
@@ -98,19 +114,36 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                     DigitalUnifyCardAdapterTypeFactory(digitalUnifyCardListener),
                     element
                 )
-                addOnScrollListener(object : ParallaxScrollEffectListener(layoutManagers) {
-                    override fun translatedX(translatedX: Float) {
-                        bind.parallaxView.translationX = translatedX
-                    }
-
-                    override fun setAlpha(alpha: Float) {
-                        bind.parallaxImage.alpha = alpha
-                    }
-
-                    override fun getPixelSize(): Int =
-                        itemView.resources.getDimensionPixelSize(com.tokopedia.digital.home.R.dimen.product_card_custom_banner_width)
-                })
             }
+
+            parallaxImage.viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    parallaxImage.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    rvRechargeProduct.setPadding(
+                        parallaxImage.measuredWidth + parallaxImage.paddingStart,
+                        rvRechargeProduct.paddingTop,
+                        rvRechargeProduct.paddingRight,
+                        rvRechargeProduct.paddingBottom
+                    )
+
+                    rvRechargeProduct.addOnScrollListener(object :
+                        ParallaxScrollEffectListener(layoutManagers) {
+                        override fun translatedX(translatedX: Float) {
+                            bind.parallaxView.translationX = translatedX
+                        }
+
+                        override fun setAlpha(alpha: Float) {
+                            bind.parallaxImage.alpha = alpha
+                        }
+
+                        override fun getPixelSize(): Int =
+                            parallaxImage.measuredWidth + parallaxImage.paddingStart
+                    })
+                }
+
+            })
         }
     }
 

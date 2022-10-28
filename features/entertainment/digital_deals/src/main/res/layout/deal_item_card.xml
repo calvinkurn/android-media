@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
+    android:layout_marginBottom="16dp"
     app:cardCornerRadius="@dimen/card_corner_deals_item"
     app:cardElevation="4dp">
 
@@ -23,38 +23,41 @@
             android:layout_height="@dimen/image_width_deal"
             android:scaleType="centerCrop"
             android:src="@color/Unify_N50"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="iv_product" />
 
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_hot_deal"
-            style="@style/TextView.Micro11.FontMedium.White"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/details_header_background"
-            android:paddingBottom="@dimen/dp_3"
             android:paddingLeft="16dp"
+            android:paddingTop="3dp"
             android:paddingRight="16dp"
-            android:paddingTop="@dimen/dp_3"
+            android:paddingBottom="3dp"
             android:text="@string/hot_deal"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="small" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_deal_intro"
-            style="@style/TextView.Small.FontMedium.BlackPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_product"
+            app:typographyType="display_2"
             tools:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)" />
 
 
@@ -81,95 +84,100 @@
                     android:id="@+id/iv_brand"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="fitCenter"
+                    android:contentDescription="image brand" />
 
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_brand_name"
-            style="@style/TextView.Micro.Black40"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_brand_name_revamped"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="4dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="14dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textColor="@color/Unify_N700_44"
             app:layout_constraintLeft_toRightOf="@+id/ll_brand"
             app:layout_constraintTop_toTopOf="@+id/ll_brand"
+            app:typographyType="display_3"
             tools:text="Bakerzin" />
 
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_available_locations"
-            style="@style/TextView.Micro.Black40"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
+            android:textColor="@color/Unify_N700_44"
             app:layout_constraintLeft_toRightOf="@+id/ll_brand"
             app:layout_constraintRight_toLeftOf="@+id/tv_off"
             app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
+            app:typographyType="display_3"
             tools:text="Tersedia di 50 lokasi fgfg vgfg fgf gfgvgfgf fgfg fgf" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_off"
-            style="@style/TextView.Micro11.Bold.Red"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/background_lightgreen_oval"
             android:gravity="center"
-            android:paddingBottom="2dp"
             android:paddingLeft="8dp"
-            android:paddingRight="8dp"
             android:paddingTop="2dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="2dp"
+            android:textColor="@color/Unify_R500"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_available_locations"
+            app:typographyType="small"
+            app:typographyWeight="bold"
             tools:text="20% OFF" />
-
 
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="1dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
             android:background="@color/Unify_N75"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_available_locations" />
 
-        <TextView
-            android:id="@+id/tv_mrp"
-            style="@style/TextView.Micro.Black40"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_mrp_revamped"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:gravity="end"
-            android:textSize="@dimen/sp_10"
+            android:textColor="@color/Unify_N700_44"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:typographyType="small"
             tools:text="Rp50.000.000" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_sales_price"
-            style="@style/TextView.Medium.FontMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
             android:includeFontPadding="false"
             android:textColor="@color/Unify_Y500"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_mrp"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
             tools:text="Rp40.000.000" />
 
         <ImageView
@@ -180,16 +188,18 @@
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_mrp" />
+            app:layout_constraintTop_toTopOf="@+id/tv_mrp"
+            android:contentDescription="wishlist" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_wish_list"
-            style="@style/TextView.Micro.FontMedium.Black40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_44"
             app:layout_constraintBottom_toBottomOf="@+id/iv_wish_list"
             app:layout_constraintLeft_toRightOf="@+id/iv_wish_list"
             app:layout_constraintTop_toTopOf="@+id/iv_wish_list"
+            app:typographyType="display_3"
             tools:text="5" />
 
         <ImageView
@@ -201,7 +211,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toRightOf="@id/tv_wish_list"
             app:layout_constraintTop_toTopOf="@+id/tv_mrp"
-            app:srcCompat="@drawable/deals_ic_share_via_card" />
+            app:srcCompat="@drawable/deals_ic_share_via_card"
+            android:contentDescription="share" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
 

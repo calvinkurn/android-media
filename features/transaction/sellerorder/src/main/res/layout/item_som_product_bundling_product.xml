@@ -7,9 +7,10 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSomBundleProduct"
-        android:layout_width="@dimen/som_list_product_image_size"
-        android:layout_height="@dimen/som_list_product_image_size"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
         android:layout_marginStart="@dimen/layout_lvl2"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

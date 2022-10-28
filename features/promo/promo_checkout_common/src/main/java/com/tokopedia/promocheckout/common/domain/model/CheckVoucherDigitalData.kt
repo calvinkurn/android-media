@@ -16,7 +16,7 @@ class CheckVoucherDigitalData {
     var code: String = ""
     @SerializedName("promo_code_id")
     @Expose
-    var promoCodeId: Int = 0
+    var promoCodeId: String = "0"
     @SerializedName("discount_amount")
     @Expose
     var discountAmount: Long = 0

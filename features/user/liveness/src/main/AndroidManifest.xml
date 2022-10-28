@@ -9,8 +9,9 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
+
         <activity
-            android:name="com.tokopedia.liveness.view.activity.LivenessActivity"
+            android:name="com.tokopedia.liveness.view.LivenessActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -28,11 +29,5 @@
                     android:pathPattern="@string/path_liveness_detection" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.liveness.view.activity.LivenessFailedActivity"
-            android:launchMode="singleTop"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
     </application>
 </manifest>

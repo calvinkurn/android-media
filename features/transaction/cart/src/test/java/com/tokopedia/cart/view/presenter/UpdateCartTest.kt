@@ -4,6 +4,7 @@ import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
+import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartcommon.data.response.updatecart.Data
@@ -282,14 +283,15 @@ class UpdateCartTest : BaseCartTest() {
     }
 
     @Test
-    fun `WHEN update cart for checkout success with not blank BO affordability THEN should send EE dimension119 value`() {
+    fun `WHEN update cart for checkout success with not blank and afford BO affordability THEN should send EE dimension119 value with fulfill`() {
         // GIVEN
         val tickerText = "tickerText"
         val boType = 0
         val cartItem = CartItemHolderData().apply {
             isSelected = true
             shopBoAffordabilityData = CartShopBoAffordabilityData(
-                    tickerText = tickerText
+                    tickerText = tickerText,
+                    state = CartShopBoAffordabilityState.SUCCESS_AFFORD
             )
             shopBoMetadata = BoMetadata(
                     boType = boType
@@ -317,7 +319,49 @@ class UpdateCartTest : BaseCartTest() {
         // THEN
         verify {
             view.renderToShipmentFormSuccess(match {
-                (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == "${tickerText}_${boType}"
+                (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == "fulfill_${boType}"
+            }, any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `WHEN update cart for checkout success with not blank and not afford BO affordability THEN should send EE dimension119 value with unfulfill`() {
+        // GIVEN
+        val tickerText = "tickerText"
+        val boType = 0
+        val cartItem = CartItemHolderData().apply {
+            isSelected = true
+            shopBoAffordabilityData = CartShopBoAffordabilityData(
+                    tickerText = tickerText,
+                    state = CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD
+            )
+            shopBoMetadata = BoMetadata(
+                    boType = boType
+            )
+        }
+        val shopDataList = mutableListOf<CartShopHolderData>().apply {
+            add(CartShopHolderData().apply {
+                productUiModelList = mutableListOf(cartItem)
+                isAllSelected = true
+                isPartialSelected = false
+            })
+        }
+
+        val mockResponse = DataProvider.provideUpdateCartSuccess()
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        }
+        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllSelectedCartDataList() } answers { listOf(cartItem) }
+
+        // WHEN
+        cartListPresenter.processUpdateCartData(false)
+
+        // THEN
+        verify {
+            view.renderToShipmentFormSuccess(match {
+                (((it[KEY_CHECKOUT]!! as Map<String, Any>)[KEY_PRODUCT]!! as List<Any>)[0] as Map<String, Any>)["dimension119"] == "unfulfill_${boType}"
             }, any(), any(), any())
         }
     }

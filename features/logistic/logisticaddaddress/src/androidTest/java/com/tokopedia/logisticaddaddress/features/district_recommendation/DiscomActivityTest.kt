@@ -20,11 +20,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.containsMapOf
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
+import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
 import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -45,12 +44,13 @@ class DiscomActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
+    private val logisticInterceptor = AddAddressInterceptor.logisticInterceptor
+
     @Before
     fun setup() {
-        setupGraphqlMockResponse {
-            addMockResponse(GET_DISTRICT_KET, InstrumentationMockHelper.getRawString(
-                    context, R.raw.district_recommendation_jakarta), MockModelConfig.FIND_BY_CONTAINS)
-        }
+        AddAddressInterceptor.resetAllCustomResponse()
+        AddAddressInterceptor.setupGraphqlMockResponse(context)
+        logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.district_recommendation_jakarta)
         activityRule.launchActivity(createIntent())
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
@@ -93,7 +93,6 @@ class DiscomActivityTest {
     }
 
     companion object {
-        const val GET_DISTRICT_KET = "KeroDistrictRecommendation"
         const val IS_LOCALIZATION = "is_localization"
     }
 }

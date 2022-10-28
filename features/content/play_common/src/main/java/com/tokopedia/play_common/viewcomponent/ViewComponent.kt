@@ -17,13 +17,14 @@ import com.tokopedia.kotlin.extensions.view.show
  * Created by jegul on 31/07/20
  */
 abstract class ViewComponent(
-        container: ViewGroup,
-        @IdRes rootId: Int
+    view: View
 ) : IViewComponent {
 
-    override val id: Int = rootId
+    constructor(container: ViewGroup, @IdRes rootId: Int) : this(container.findViewById<View>(rootId))
 
-    override val rootView: View = container.findViewById(rootId)
+    override val id: Int = view.id
+
+    override val rootView: View = view
 
     protected fun <V: View> findViewById(@IdRes id: Int): V = rootView.findViewById(id)
 

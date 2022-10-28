@@ -29,7 +29,7 @@
         android:singleLine="true"
         android:text="@string/state_dikirim_ke"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"

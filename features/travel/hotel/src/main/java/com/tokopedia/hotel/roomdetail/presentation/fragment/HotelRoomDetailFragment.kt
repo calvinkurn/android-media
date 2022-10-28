@@ -14,13 +14,15 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
@@ -31,7 +33,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.MutationAddToCart
 import com.tokopedia.hotel.databinding.FragmentHotelRoomDetailBinding
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
@@ -88,7 +90,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             roomDetailViewModel = viewModelProvider.get(HotelRoomDetailViewModel::class.java)
 
             roomIndex = arguments?.getInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX, 0) ?: 0
@@ -184,7 +186,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = binding?.roomDetailDetailToolbar?.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         binding?.roomDetailCollapsingToolbar?.title = ""
@@ -198,23 +200,25 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     binding?.roomDetailCollapsingToolbar?.title = hotelRoom.roomInfo.name
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     binding?.roomDetailCollapsingToolbar?.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
             }
         })
     }
 
+    private fun getColor(@ColorRes id: Int): Int = context?.resources?.let { ResourcesCompat.getColor(it, id, null) } ?: 0
+
     private fun setupRoomImages() {
         if (hotelRoom.roomInfo.roomImages.isNotEmpty()) {
             val roomImageUrls300 = hotelRoom.roomInfo.roomImages.map { it.url300 }
             val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
 
-            if (roomImageUrls300.size >= 5) binding?.roomDetailImages?.setImages(roomImageUrls300.subList(0, 5))
+            if (roomImageUrls300.size >= ROOM_IMAGE_URL_MIN_SIZE) binding?.roomDetailImages?.setImages(roomImageUrls300.subList(0, ROOM_IMAGE_URL_MIN_SIZE))
             else binding?.roomDetailImages?.setImages(roomImageUrls300)
 
             binding?.roomDetailImages?.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
@@ -270,7 +274,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     + "\n" + hotelRoom.creditCardInfo.creditCardInfo)
             spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.header.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(LeadingMarginSpan.Standard(FIRST_LEADING_MARGIN_SPAN, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             binding?.payAtHotelTitle?.text = hotelRoom.isDirectPaymentString
             binding?.payAtHotelDesc?.text = spannableString
         }
@@ -381,7 +385,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     it.roomDetailButton.isEnabled = false
                     trackingHotelUtil.hotelChooseRoomDetails(context, hotelRoom, roomIndex, addToCartParam,
                         ROOM_DETAIL_SCREEN_NAME)
-                    roomDetailViewModel.addToCart(HotelGqlMutation.ADD_TO_CART, addToCartParam)
+                    roomDetailViewModel.addToCart(MutationAddToCart(), addToCartParam)
                 } else {
                     navigateToLoginPage()
                 }
@@ -417,11 +421,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     }
 
     private fun navigateToAddPhonePage() {
-        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
+        RouteManager.route(requireContext(), ApplinkConstInternalUserPlatform.ADD_PHONE)
     }
 
     private fun navigateToAddEmailPage() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+        RouteManager.route(context, ApplinkConstInternalUserPlatform.ADD_EMAIL)
     }
 
     private fun showFailedGetRoomErrorDialog(message: String) {
@@ -452,6 +456,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         const val MINIMUM_ROOM_COUNT = 3
         const val ROOM_FACILITY_DEFAULT_COUNT = 6
         const val REQ_CODE_LOGIN = 1345
+
+        private const val ROOM_IMAGE_URL_MIN_SIZE = 5
+        private const val FIRST_LEADING_MARGIN_SPAN = 50
 
         fun getInstance(savedInstanceId: String, roomIndex: Int): HotelRoomDetailFragment =
                 HotelRoomDetailFragment().also {

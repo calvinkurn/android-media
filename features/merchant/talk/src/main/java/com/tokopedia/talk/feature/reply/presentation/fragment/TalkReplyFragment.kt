@@ -388,7 +388,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId)
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, viewModel.isMyShop)
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TALK)
         startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
     }

@@ -57,6 +57,16 @@ class NonGroupItemsListAdapter(private val typeFactory: NonGroupItemsAdapterType
         return list
     }
 
+    fun getSelectedItemsProductId() : List<String> {
+        val list = mutableListOf<String>()
+        items.forEach {
+            if(it is NonGroupItemsItemModel && it.isChecked) {
+                list.add(it.data.itemId)
+            }
+        }
+        return list
+    }
+
     private fun clearData(selectedMode: Boolean) {
         if (!selectedMode){
             items.forEach {

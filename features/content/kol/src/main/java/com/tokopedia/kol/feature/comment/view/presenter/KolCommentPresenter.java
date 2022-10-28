@@ -56,13 +56,12 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         super.detachView();
         getKolCommentsUseCase.unsubscribe();
         sendKolCommentUseCase.unsubscribe();
-        deleteKolCommentUseCase.unsubscribe();
         getMentionableUserUseCase.unsubscribe();
         sendReportUseCase.unsubscribe();
     }
 
     @Override
-    public void getCommentFirstTime(int postId) {
+    public void getCommentFirstTime(long postId) {
         getView().showLoading();
         getKolCommentsUseCase.execute(
                 GetKolCommentsUseCase.getFirstTimeParam(postId),
@@ -70,7 +69,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Override
-    public void loadMoreComments(int postId) {
+    public void loadMoreComments(long postId) {
         getKolCommentsUseCase.execute(
                 GetKolCommentsUseCase.getParam(postId, cursor),
                 new GetKolCommentSubscriber(getView()));
@@ -85,8 +84,9 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     public void deleteComment(String id, int adapterPosition) {
         getView().showProgressDialog();
         deleteKolCommentUseCase.execute(
-                DeleteKolCommentUseCase.getParam(Integer.parseInt(id)),
-                new DeleteKolCommentSubscriber(getView(), adapterPosition));
+                DeleteKolCommentUseCase.getParam(Long.parseLong(id)),
+                new DeleteKolCommentSubscriber(getView(), adapterPosition)
+        );
     }
 
     @Override
@@ -98,7 +98,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Override
-    public void sendComment(int id, String comment) {
+    public void sendComment(long id, String comment) {
         if (isValid(comment)) {
             getView().showProgressDialog();
             getView().disableSendComment();

@@ -14,6 +14,8 @@ object CatalogConstant {
     const val VIDEO = "catalog-video-horizontal-scroll"
     const val REVIEW = "catalog-product-review"
     const val COMPARISON = "catalog-product-recommendation"
+    const val COMPARISON_NEW = "catalog-product-comparison-new"
+    const val CATALOG_COMPARISON = "catalog_comparison"
     const val COMPARISON_PRODUCT = "catalog-comparison-product"
     const val CATALOG_PRODUCT_FILTER = "product-filter"
     const val CATALOG_PRODUCT_LIST = "product-list-infinite-scroll"
@@ -27,7 +29,7 @@ object CatalogConstant {
 
     const val DEFAULT_SPECS_ICON_URL="https://image.flaticon.com/icons/png/128/3524/3524636.png"
 
-    const val ZERO_VALUE = "0"
+    const val ZERO_VALUE = 0
 
     const val CATALOG_DEEPLINK_PREFIX = "https://www.tokopedia.com/catalog/"
     const val CATALOG_URL = "tokopedia://catalog/"
@@ -58,4 +60,8 @@ object CatalogConstant {
 
     const val DEBOUNCE_SEARCH = 250L
     const val KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING  = "Catalog For You List Analytics"
+
+    const val CATALOG_PRODUCT_BS_NEW_DESIGN = "catalog_product_list"
+    const val DIGITS_RATING_DECIMAL = 3
+
 }

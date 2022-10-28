@@ -1,8 +1,8 @@
 package com.tokopedia.cart.domain.usecase
 
-fun getQueryCartRevampV3(): String {
-    return """
-        query cart_revamp_v3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
+const val CART_REVAMP_V3_QUERY =
+        """
+        query cartRevampV3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
           cart_revamp_v3(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
             error_message
@@ -11,6 +11,7 @@ fun getQueryCartRevampV3(): String {
               errors
               popup_error_message
               pop_up_message
+              placeholder_note
               localization_choose_address {
                 address_id
                 address_name
@@ -116,6 +117,11 @@ fun getQueryCartRevampV3(): String {
                   message
                 }
                 available_group {
+                  add_on {
+                    ticker_text
+                    icon_url
+                    add_on_ids
+                 }
                   user_address_id
                   shipment_information {
                     shop_location
@@ -126,6 +132,11 @@ fun getQueryCartRevampV3(): String {
                     }
                     free_shipping_extra {
                       eligible
+                      badge_url
+                    }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
                       badge_url
                     }
                     preorder {
@@ -215,11 +226,16 @@ fun getQueryCartRevampV3(): String {
                       edit_app_link
                       slash_price_label
                       bundle_icon_url
+                      bundle_grayscale_icon_url
                     }
                     products {
                       checkbox_state
                       cart_id
                       product_information
+                      product_information_with_icon {
+                        text
+                       icon_url
+                     }
                       product_tracker_data {
                         attribution
                         tracker_list_name
@@ -326,12 +342,22 @@ fun getQueryCartRevampV3(): String {
                       is_parent
                       is_campaign_error
                       is_blacklisted
+                      ethical_drug {
+                        need_prescription
+                        icon_url
+                        text
+                      }
                       free_shipping {
                         eligible
                         badge_url
                       }
                       free_shipping_extra {
                         eligible
+                        badge_url
+                      }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
                         badge_url
                       }
                       booking_stock
@@ -405,6 +431,11 @@ fun getQueryCartRevampV3(): String {
                     }
                     free_shipping_extra {
                       eligible
+                      badge_url
+                    }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
                       badge_url
                     }
                     preorder {
@@ -584,6 +615,11 @@ fun getQueryCartRevampV3(): String {
                         eligible
                         badge_url
                       }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
@@ -629,21 +665,28 @@ fun getQueryCartRevampV3(): String {
                   checkbox_state
                 }
               }
-              total_product_price,
-              total_product_count,
-              total_product_error,
+              total_product_price
+              total_product_count
+              total_product_error
               global_coupon_attr {
-                description, 
+                description 
                 quantity_label
-              },
-              global_checkbox_state,
+              }
+              global_checkbox_state
               tickers {
                 id
+                title
                 message
                 page
-              },
-              hashed_email,
+              }
+              hashed_email
               promo {
+                show_choose_promo_widget
+                ticker {
+                    enable
+                    text
+                    icon_url
+                }
                 last_apply {
                   data {
                     global_success
@@ -691,6 +734,13 @@ fun getQueryCartRevampV3(): String {
                       success
                       cart_id
                       unique_id
+                      shipping_id
+                      sp_id
+                      shipping_subsidy
+                      shipping_price
+                      benefit_class
+                      bo_campaign_id
+                      eta_txt
                       order_id
                       shop_id
                       is_po
@@ -754,8 +804,10 @@ fun getQueryCartRevampV3(): String {
                         type
                         amount_str
                         amount
+                        currency_details_str
                       }
                       sp_ids
+                      poml_auto_applied
                     }
                   }
                   code
@@ -768,5 +820,4 @@ fun getQueryCartRevampV3(): String {
             }
           }
         }
-    """.trimIndent()
-}
+        """

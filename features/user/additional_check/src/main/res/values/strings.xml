@@ -17,5 +17,12 @@
     <string name="link_account_reminder_bottom_sheet_desc">\u2022 Bisa pakai GoPay &amp; GoPay Coins di Tokopedia.\n\u2022 Kesempatan nikmatin berbagai promo spesial\n\u0020\u0020di Tokopedia &amp; Gojek.</string>
     <string name="link_account_reminder_bottom_sheet_btn_primary_title">Oke! Sambungin Akun</string>
 
+    <string name="biometric_offering_title">Daftarkan sidik jarimu, yuk!</string>
+    <string name="biometric_offering_subtitle">Nanti kamu bisa verifikasi dan masuk ke akunmu pakai sidik jari. Makin gampang dan praktis, deh!</string>
+    <string name="biometric_offering_btn_primary_text">Daftarkan Sidik Jari</string>
+
+    <string name="biometric_offering_success_title">Sidik jarimu udah terdaftar</string>
+    <string name="biometric_offering_success_subtitle">Hore! Sekarang kamu bisa verifikasi dan masuk ke akunmu pakai sidik jari.</string>
+    <string name="biometric_offering_btn_primary_success_text">Lanjut Belanja</string>
 
 </resources>

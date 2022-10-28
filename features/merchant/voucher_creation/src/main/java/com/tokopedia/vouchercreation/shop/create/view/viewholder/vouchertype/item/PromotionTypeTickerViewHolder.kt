@@ -3,9 +3,10 @@ package com.tokopedia.vouchercreation.shop.create.view.viewholder.vouchertype.it
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.MvcVoucherTypeBudgetTickerBinding
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
-import kotlinx.android.synthetic.main.mvc_voucher_type_budget_ticker.view.*
 
 class PromotionTypeTickerViewHolder(itemView: View) : AbstractViewHolder<PromotionTypeTickerUiModel>(itemView) {
 
@@ -14,10 +15,12 @@ class PromotionTypeTickerViewHolder(itemView: View) : AbstractViewHolder<Promoti
         val LAYOUT = R.layout.mvc_voucher_type_budget_ticker
     }
 
+    private var binding: MvcVoucherTypeBudgetTickerBinding? by viewBinding()
+
     override fun bind(element: PromotionTypeTickerUiModel) {
-        itemView.run {
-            typeBudgetTickerDesc?.text = context?.resources?.getText(element.descRes) ?: ""
-            typeBudgetTickerClose?.setOnClickListener {
+        binding?.apply {
+            typeBudgetTickerDesc.text = binding?.root?.context?.resources?.getText(element.descRes) ?: ""
+            typeBudgetTickerClose.setOnClickListener {
                 element.onDismissTicker()
             }
         }

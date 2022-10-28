@@ -29,6 +29,12 @@ data class Product (
     @SerializedName("stock")
     val stock: Int,
     @Expose
+    @SerializedName("stockAlertCount")
+    val stockAlertCount: String,
+    @Expose
+    @SerializedName("stockAlertStatus")
+    val stockAlertStatus: Int,
+    @Expose
     @SerializedName("pictures")
     val pictures: List<Picture>,
     @Expose

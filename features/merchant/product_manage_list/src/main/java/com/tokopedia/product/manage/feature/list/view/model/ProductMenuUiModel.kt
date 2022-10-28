@@ -15,8 +15,8 @@ sealed class ProductMenuUiModel(
 ): Visitable<ProductMenuAdapterFactory> {
 
     companion object {
-        // Wed Mar 30 2022 00:00:00
-        private const val PRODUCT_COUPON_END_DATE = 1648573200000
+        // Wed Apr 14 2022 00:00:00
+        private const val PRODUCT_COUPON_END_DATE = 1649869200000
     }
 
     data class Preview(override val product: ProductUiModel): ProductMenuUiModel(
@@ -66,13 +66,6 @@ sealed class ProductMenuUiModel(
             R.drawable.ic_bc_chat,
         null,
             product
-    )
-
-    data class SetCashBack(override val product: ProductUiModel): ProductMenuUiModel(
-        R.string.product_manage_menu_set_cashback,
-        IconUnify.DISCOUNT,
-        null,
-        product
     )
 
     data class SetFeaturedProduct(override val product: ProductUiModel): ProductMenuUiModel(

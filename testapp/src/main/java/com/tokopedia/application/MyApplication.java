@@ -15,6 +15,7 @@ import com.google.firebase.FirebaseApp;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -28,6 +29,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
@@ -38,6 +40,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
@@ -79,6 +82,8 @@ public class MyApplication extends BaseMainApplication
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        GlobalConfig.ENABLE_MACROBENCHMARK_UTIL = BuildConfig.ENABLE_MACROBENCHMARK_UTIL;
+
         com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -87,8 +92,16 @@ public class MyApplication extends BaseMainApplication
         upgradeSecurityProvider();
 
         GraphqlClient.init(this, getAuthenticator());
+        GraphqlClient.setContextData(getApplicationContext());
+
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+            new Cassava.Builder(this).initialize();
+        }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         // apps flyer is dummy
@@ -109,13 +122,13 @@ public class MyApplication extends BaseMainApplication
                 .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
                 .initialize(this, R.raw.dummy_description);
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
+
 
         IrisAnalytics.Companion.getInstance(this).initialize();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         FirebaseApp.initializeApp(this);
+
+        new DevOptNotificationManager(this).start();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -167,6 +180,11 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void refreshFCMFromInstantIdService(String token) {
+
+    }
+
+    @Override
+    public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
 
     }
 

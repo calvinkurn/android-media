@@ -22,6 +22,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -94,6 +95,20 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
+    fun testBalanceWidgetLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        HomeDCCassavaTest {
+            login()
+            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBalanceWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED)
+        }
+    }
+
+    @Test
     fun testComponentProductHighlight() {
         HomeDCCassavaTest {
             initTest()
@@ -153,7 +168,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 //            clickOnBusinessWidgetSection(viewHolder)
 //        }
 //
-//        getAssertBUWiddet(gtmLogDBSource, context)
 //
 //        onFinishTest()
 //
@@ -202,7 +216,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 //            clickOnRecommendationFeedSection(viewHolder)
 //        }
 //
-//        getAssertRecommendationFeedTab(gtmLogDBSource, context)
 //
 //        onFinishTest()
 //
@@ -221,6 +234,45 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN)
+        }
+    }
+
+    @Test
+    fun testCueWidgetCategory() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = CueCategoryDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnCueWidgetCategory(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY)
+        }
+    }
+
+    @Test
+    fun testVpsWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = VpsDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnVpsWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET)
+        }
+    }
+
+    @Test
+    fun testLego4Product() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = Lego4ProductDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnLego4Product(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_4_PRODUCT)
         }
     }
 
@@ -376,6 +428,46 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
+    @Test
+    fun testComponentMerchantVoucherWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                waitForData()
+                actionOnMerchantVoucherWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER)
+        }
+    }
+
+    @Test
+    fun testSpecialReleaseWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = SpecialReleaseDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnSpecialReleaseWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE)
+        }
+    }
+
+    @Test
+    fun testSpecialCampaignWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = CampaignWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnCampaignWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET)
+        }
+    }
+
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
         waitForData()
@@ -459,7 +551,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 

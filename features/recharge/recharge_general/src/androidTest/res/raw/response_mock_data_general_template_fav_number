@@ -1,8 +1,11 @@
 [
   {
     "data": {
-      "recharge_favorite_number": {
-        "list": []
+      "digiPersoGetPersonalizedItems": {
+        "trackingData": {
+          "userType": "new user"
+        },
+        "items": []
       }
     }
   }

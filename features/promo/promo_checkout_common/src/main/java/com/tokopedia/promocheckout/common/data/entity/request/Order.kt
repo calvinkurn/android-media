@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.data.entity.request
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -10,8 +11,9 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class Order(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
-        var shopId: Int? = 0,
+        var shopId: Long? = 0,
 
         @SerializedName("unique_id")
         var uniqueId: String? = null,
@@ -22,12 +24,15 @@ data class Order(
         @SerializedName("codes")
         var codes: ArrayList<String>? = null,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_id")
-        var shippingId: Int? = null,
+        var shippingId: Long? = null,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("sp_id")
-        var spId: Int? = null,
+        var spId: Long? = null,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("is_insurance_price")
-        var isInsurancePrice: Int? = null
+        var isInsurancePrice: Long? = null
 ) : Parcelable

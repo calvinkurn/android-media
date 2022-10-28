@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.view.ShopPageLabelView
+import com.tokopedia.shop_widget.common.customview.ShopPageLabelView
 import com.tokopedia.shop.databinding.ItemShopInfoLogisticBinding
 import com.tokopedia.shop.info.view.model.ShopInfoLogisticUiModel
 import com.tokopedia.unifyprinciples.Typography

@@ -33,11 +33,11 @@ object SubmitDataViewAction {
     }
 
     fun clickOnButtonExitPopup() {
-        clickOnButtonWithText("Keluar")
+        clickOnButtonWithTextAndId("Keluar", R.id.dialog_btn_primary)
     }
 
     fun clickOnButtonLanjutVerifikasi() {
-        clickOnButtonWithText("Lanjut Verifikasi")
+        clickOnButtonWithTextAndId("Lanjut Ubah Nomor", R.id.dialog_btn_secondary)
     }
 
     fun checkThumbnailImageIdCard() {

@@ -1,8 +1,6 @@
 package com.tokopedia.notifcenter.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManagerImpl
 import com.tokopedia.notifcenter.di.scope.NotificationContext
@@ -14,8 +12,6 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -27,22 +23,6 @@ class NotificationModule {
     @NotificationScope
     fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
         return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
-    }
-
-    @Provides
-    @NotificationScope
-    fun provideAddWishlistUseCase(
-            @NotificationContext context: Context
-    ): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @Provides
-    @NotificationScope
-    fun provideRemoveWishlistUseCase(
-            @NotificationContext context: Context
-    ): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
     }
 
     @NotificationScope

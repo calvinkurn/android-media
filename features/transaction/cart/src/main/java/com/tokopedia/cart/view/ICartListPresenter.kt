@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
@@ -11,11 +12,13 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 
 interface ICartListPresenter {
 
@@ -70,9 +73,9 @@ interface ICartListPresenter {
 
     fun generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList: List<CartRecentViewItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
 
-    fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener)
+    fun processAddToWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener)
 
-    fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener)
+    fun processRemoveFromWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener)
 
     fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean = false)
 
@@ -84,7 +87,7 @@ interface ICartListPresenter {
 
     fun processGetRecentViewData(allProductIds: List<String>)
 
-    fun processGetWishlistData()
+    fun processGetWishlistV2Data()
 
     fun processGetRecommendationData(page: Int, allProductIds: List<String>)
 
@@ -108,7 +111,11 @@ interface ICartListPresenter {
 
     fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest)
 
-    fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>)
+    fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest)
+
+    fun setLastValidateUseRequest(validateUsePromoRequest: ValidateUsePromoRequest)
+
+    fun getLastValidateUseRequest(): ValidateUsePromoRequest?
 
     fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel?
 
@@ -133,6 +140,16 @@ interface ICartListPresenter {
     fun setLocalizingAddressData(lca: LocalCacheModel?)
 
     fun checkBoAffordability(cartShopHolderData: CartShopHolderData)
+
+    fun getPromoFlag(): Boolean
+
+    fun getTickerPromoData(): CartPromoTicker
+
+    fun getShowChoosePromoWidget(): Boolean
+
+    fun clearAllBo(clearPromoOrderData: ClearPromoOrderData)
+
+    fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel)
 
     companion object {
         const val GET_CART_STATE_DEFAULT = 0

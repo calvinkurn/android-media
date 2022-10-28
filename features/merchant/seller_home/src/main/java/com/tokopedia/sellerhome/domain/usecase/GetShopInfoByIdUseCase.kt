@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -10,15 +11,39 @@ import com.tokopedia.sellerhome.domain.model.ShopInfoResultResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("GetShopInfoByIdGqlQuery", GetShopInfoByIdUseCase.QUERY)
 class GetShopInfoByIdUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetShopClosedInfoResponse>(gqlRepository) {
 
-    companion object {
-        private const val PARAM_SHOP_ID = "shopID"
-        private const val ERROR_MESSAGE = "Failed to get shop closed info"
+    init {
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        setCacheStrategy(cacheStrategy)
 
-        private val QUERY = """
+        setGraphqlQuery(GetShopInfoByIdGqlQuery())
+        setTypeClass(GetShopClosedInfoResponse::class.java)
+    }
+
+    suspend fun execute(shopId: Long): ShopInfoResultResponse {
+        val requestParams = RequestParams.create().apply {
+            putLong(PARAM_SHOP_ID, shopId)
+        }
+        setRequestParams(requestParams.parameters)
+
+        val response = executeOnBackground()
+        val shopInfo = response.data
+        val result = shopInfo.result.firstOrNull()
+        val errorMessage = shopInfo.error?.message
+
+        return when {
+            errorMessage.isNullOrBlank() && result != null -> result
+            !errorMessage.isNullOrBlank() -> throw MessageErrorException(errorMessage)
+            else -> throw MessageErrorException(ERROR_MESSAGE)
+        }
+    }
+
+    companion object {
+        const val QUERY = """
             query shopInfoByID(${'$'}shopID: Int!) {
               shopInfoByID(input: {shopIDs: [${'$'}shopID], fields: ["core","closed_info","shop-snippet","status"]}) {
                 result {
@@ -42,32 +67,8 @@ class GetShopInfoByIdUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
-    }
-
-    init {
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        setCacheStrategy(cacheStrategy)
-
-        setGraphqlQuery(QUERY)
-        setTypeClass(GetShopClosedInfoResponse::class.java)
-    }
-
-    suspend fun execute(shopId: Long): ShopInfoResultResponse {
-        val requestParams = RequestParams.create().apply {
-            putLong(PARAM_SHOP_ID, shopId)
-        }
-        setRequestParams(requestParams.parameters)
-
-        val response = executeOnBackground()
-        val shopInfo = response.data
-        val result = shopInfo.result.firstOrNull()
-        val errorMessage = shopInfo.error?.message
-
-        return when {
-            errorMessage.isNullOrBlank() && result != null -> result
-            !errorMessage.isNullOrBlank() -> throw MessageErrorException(errorMessage)
-            else -> throw MessageErrorException(ERROR_MESSAGE)
-        }
+        """
+        private const val PARAM_SHOP_ID = "shopID"
+        private const val ERROR_MESSAGE = "Failed to get shop closed info"
     }
 }

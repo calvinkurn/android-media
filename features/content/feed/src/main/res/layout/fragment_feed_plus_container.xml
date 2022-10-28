@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -11,7 +12,7 @@
     <FrameLayout
         android:id="@+id/feed_background_frame"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_200"
+        android:layout_height="200dp"
         app:layout_scrollFlags="scroll|snap">
 
         <ImageView
@@ -45,7 +46,7 @@
             android:background="@color/Unify_G500"
             android:layout_width="match_parent"
             app:layout_scrollFlags="enterAlways"
-            android:layout_height="@dimen/dp_25"/>
+            android:layout_height="25dp"/>
 
         <FrameLayout
             android:id="@+id/toolbarParent"
@@ -63,22 +64,54 @@
             android:background="@color/Unify_G500"
             android:layout_width="match_parent"
             android:layout_marginTop="-5dp"
-            android:layout_height="@dimen/dp_25"/>
+            android:layout_height="25dp"/>
 
-        <com.tokopedia.design.component.Tabs
-            android:id="@+id/tab_layout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:visibility="visible"
-            app:layout_scrollFlags="enterAlways"
-            app:tabMode="fixed"
-            app:tabGravity="fill"
-            app:tabIndicatorHeight="@dimen/dp_1"
-            app:tabSelectedTextColor="@color/Unify_GN500"
-            app:tabTextColor="@color/Unify_N700_32"
-            app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
-            app:tabIndicatorColor="@color/Unify_GN500"
-            android:theme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_feed_user"
+                android:layout_width="@dimen/feed_space_24"
+                android:layout_height="@dimen/feed_space_24"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/feed_space_16"
+                android:layout_marginEnd="@dimen/feed_space_16"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tab_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_type="circle" />
+
+            <com.tokopedia.unifycomponents.TabsUnify
+                android:id="@+id/tab_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_feed_user"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_scrollFlags="enterAlways"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@color/Unify_GN500"
+                app:tabIndicatorHeight="@dimen/feed_space_1"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/Unify_GN500"
+                app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
+                app:tabTextColor="@color/Unify_N700_32" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/feed_space_1"
+                android:background="@color/Unify_NN300"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tab_layout"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
             android:id="@+id/postUpdateView"
@@ -121,7 +154,15 @@
         app:backgroundTint="@color/Unify_GN500"
         app:fbType="circle"
         app:srcCompat="@drawable/ic_feed_post_plus"
-        tools:visibility="visible"
+        />
+
+    <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+        android:id="@+id/feed_floating_button"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/unify_space_16"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

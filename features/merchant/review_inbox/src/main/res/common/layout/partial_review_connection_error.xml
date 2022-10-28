@@ -5,15 +5,17 @@
     android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/review_image_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl5"
-        android:layout_marginEnd="@dimen/layout_lvl5"
         android:layout_marginTop="@dimen/layout_lvl3"
-        android:src="@drawable/unify_globalerrors_connection"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_marginEnd="@dimen/layout_lvl5"
+        android:adjustViewBounds="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/review_error_title"

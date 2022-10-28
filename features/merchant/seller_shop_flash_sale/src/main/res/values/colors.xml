@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ssfs_dms_campaign_detail_ended_gradient_start_color">#80EBFFEF</color>
+    <color name="ssfs_dms_campaign_detail_ended_gradient_end_color">#00EBFFEF</color>
+    <color name="teal_600">#04837E</color>
+</resources>

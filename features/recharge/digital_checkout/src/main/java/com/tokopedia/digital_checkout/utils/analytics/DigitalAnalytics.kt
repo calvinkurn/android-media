@@ -1,6 +1,6 @@
 package com.tokopedia.digital_checkout.utils.analytics
 
-import android.text.TextUtils
+import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
@@ -223,9 +223,11 @@ class DigitalAnalytics {
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName, categoryId))
 
-        val label = String.format("%s - %s",
+        val label = String.format("%s - %s - %s - %s",
                 cartDigitalInfoData.attributes.categoryName.toLowerCase(),
-                cartDigitalInfoData.attributes.operatorName.toLowerCase()
+                cartDigitalInfoData.attributes.operatorName.toLowerCase(),
+                cartDigitalInfoData.channelId,
+                cartDigitalInfoData.attributes.autoApplyVoucher.code
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -252,14 +254,12 @@ class DigitalAnalytics {
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDataInfo, productName, categoryId))
 
-        var label = String.format("%s - %s - ",
-                cartDataInfo.attributes.categoryName.toLowerCase(),
-                cartDataInfo.attributes.operatorName.toLowerCase())
-        label += if (TextUtils.isEmpty(voucherCode)) {
-            DigitalCheckoutTrackingConst.Value.NO_PROMO
-        } else {
-            DigitalCheckoutTrackingConst.Value.PROMO
-        }
+        var label = String.format("%s - %s - %s - %s",
+            cartDataInfo.attributes.categoryName.toLowerCase(),
+            cartDataInfo.attributes.operatorName.toLowerCase(),
+            cartDataInfo.channelId,
+            voucherCode,
+        )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -327,6 +327,36 @@ class DigitalAnalytics {
                         DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(
                         *fintechProductList.toTypedArray())))
                 )
+        )
+    }
+
+    fun eventViewErrorPage(category: String, operator: String, errorType: String) {
+        val value = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.OPEN_ERROR_PAGE)
+            putString(TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.ERROR_PAGE)
+            putString(TrackAppUtils.EVENT_LABEL, "$category - $operator - $errorType")
+            putString(DigitalCheckoutTrackingConst.Misc.TRACKER_ID, DigitalCheckoutTrackingConst.Value.TRACKER_ID_OPEN_ERROR_PAGE)
+            putString(DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU)
+            putString(DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DigitalCheckoutTrackingConst.Event.VIEW_DIGITAL_IRIS, value
+        )
+    }
+
+    fun eventClickErrorButton(category: String, operator: String, errorType: String = DigitalCheckoutTrackingConst.Misc.EMPTY_ERROR_BUTTON){
+        val value = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.CLICK_ERROR_PAGE)
+            putString(TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.ERROR_PAGE)
+            putString(TrackAppUtils.EVENT_LABEL, "$category - $operator - $errorType")
+            putString(DigitalCheckoutTrackingConst.Misc.TRACKER_ID, DigitalCheckoutTrackingConst.Value.TRACKER_ID_CLICK_ERROR_PAGE)
+            putString(DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU)
+            putString(DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DigitalCheckoutTrackingConst.Event.CLICK_DIGITAL, value
         )
     }
 

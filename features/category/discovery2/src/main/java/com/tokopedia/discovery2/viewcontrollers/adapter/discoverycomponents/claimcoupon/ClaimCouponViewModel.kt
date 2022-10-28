@@ -38,7 +38,7 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
 
 
 
-    fun getClickCouponData() {
+    private fun getClickCouponData() {
         launchCatchError(block = {
             claimCouponUseCase.getClickCouponData(components.id, components.pageEndPoint)
             componentList.postValue(components.getComponentsItem() as ArrayList<ComponentsItem>)

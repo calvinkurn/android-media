@@ -10,9 +10,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.SimilarProductRecommendationActivity
@@ -75,7 +73,7 @@ class SimilarRecommendationAnalyticsTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(5000)
+        Thread.sleep(10000)
     }
 
     private fun addDebugEnd() {

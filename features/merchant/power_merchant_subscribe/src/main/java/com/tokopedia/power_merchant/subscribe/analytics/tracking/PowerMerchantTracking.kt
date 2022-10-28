@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.analytics.tracking
 
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -68,7 +69,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_POP_UP_IMPROVE_NUMBER_OF_ORDER,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -79,7 +80,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_POP_UP_IMPROVE_NIV,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -90,7 +91,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_STOP_PM_BECOME_RM,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -101,7 +102,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_STOP_PM_BECOME_PM,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -112,7 +113,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_ADD_ONE_PRODUCT_POP_UP,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -123,7 +124,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_ADD_PRODUCT,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -134,7 +135,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_LEARN_MORE_SHOP_PERFORMANCE,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -145,7 +146,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_DATA_VERIFICATION,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -156,7 +157,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_STOP_POWER_MERCHANT,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -167,7 +168,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_CONFIRM_TO_STOP_POWER_MERCHANT,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -178,7 +179,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.CATEGORY_POWER_MERCHANT_OPT_OUT,
             action = TrackingConstant.ACTION_CLICK_SUBMIT_QUESTIONNAIRE,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -226,7 +227,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_POPUP_SUCCESS_REGISTER,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -243,23 +244,23 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
-    fun sendEventShowPopupAddNewProduct() {
+    fun sendEventShowPopupAddNewProduct(shopScore: String) {
         val event = createEvent(
-            event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+            event = TrackingConstant.EVENT_CLICK_PG,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_POPUP_ADD_NEW_PRODUCT,
-            label = ""
+            label = getLabelWithShopStatusAndShopScore(shopScore)
         )
 
         sendEvent(event)
     }
 
-    fun sendEventClickTabPowerMerchantPro() {
+    fun sendEventClickTabPowerMerchantPro(tabLabel: String) {
         val event = createEvent(
-            event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+            event = TrackingConstant.EVENT_CLICK_PG,
             category = TrackingConstant.getPowerMerchantCategory(),
-            action = TrackingConstant.ACTION_CLICK_TAB_POWER_MERCHANT_PRO,
-            label = getShopStatus()
+            action = TrackingConstant.ACTION_CLICK_TAB_POWER_MERCHANT,
+            label = tabLabel
         )
 
         sendEvent(event)
@@ -270,7 +271,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_POPUP_UNABLE_TO_REGISTER_SHOP_MODERATION,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -281,7 +282,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_ACKNOWLEDGE_SHOP_MODERATION,
-            label = ""
+            label = String.EMPTY
         )
 
         sendEvent(event)
@@ -302,12 +303,114 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
+    fun sendEventClickTooltipShopLevel(shopLevel: String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            action = TrackingConstant.ACTION_CLICK_TOOLTIP_SHOP_LEVEL,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            label = shopLevel
+        )
+
+        sendEvent(event)
+    }
+
     fun sendEventClickCTAPmUpgradeLearnMore(shopScore: String) {
         val event = createEventMapPmPro(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.CLICK_LEARN_MORE_PM_PRO,
-            label = getEventLabelCTAPmUpgrade(shopScore)
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        event[TrackingConstant.KEY_PAGE_SOURCE] = TrackingConstant.PM_PRO_ACTIVATION_PAGE
+        sendEvent(event)
+    }
+
+    fun sendEventClickDetailTermPM(shopScore: String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.ACTION_CLICK_DETAIL_TERM_MEMBERSHIP,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickLearnMorePMBenefit(shopScore: String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.ACTION_CLICK_LEARN_MORE_PM_BENEFIT,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickLearnMorePM(shopScore: String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.ACTION_CLICK_LEARN_MORE_PM,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickSeeCategory(shopScore: String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.ACTION_CLICK_SEE_CATEGORY,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        sendEvent(event)
+    }
+
+
+    fun sendEventClickProgressBar(currentGrade: String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            action = TrackingConstant.ACTION_CLICK_PROGRESS_BAR,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            label = currentGrade
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickFeeService(shopScore: String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            action = TrackingConstant.ACTION_CLICK_FEE_SERVICE,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventImpressFeeService(shopScore: String) {
+        val event = createEventMapPmPro(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.IMPRESSION_FEE_SERVICE,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        event[TrackingConstant.KEY_PAGE_SOURCE] = TrackingConstant.PM_PRO_ACTIVATION_PAGE
+        sendEvent(event)
+    }
+
+    fun sendEventImpressUpliftPmPro(shopScore: String) {
+        val event = createEventMapPmPro(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.IMPRESSION_PM_PRO_LEARN_MORE,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
         )
 
         event[TrackingConstant.KEY_PAGE_SOURCE] = TrackingConstant.PM_PRO_ACTIVATION_PAGE
@@ -319,15 +422,11 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.VIEW_POWER_MERCHANT_IRIS,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.IMPRESSION_PM_PRO_LEARN_MORE,
-            label = getEventLabelCTAPmUpgrade(shopScore)
+            label = getLabelWithShopStatusAndShopScore(shopScore)
         )
 
         event[TrackingConstant.KEY_PAGE_SOURCE] = TrackingConstant.PM_PRO_ACTIVATION_PAGE
         sendEvent(event)
-    }
-
-    private fun getEventLabelCTAPmUpgrade(shopScore: String): String {
-        return "${TrackingConstant.SHOP_TYPE}: ${getShopStatus()} - ${TrackingConstant.SHOP_SCORE}: $shopScore"
     }
 
     private fun getShopStatus(): String {
@@ -339,6 +438,9 @@ class PowerMerchantTracking @Inject constructor(
             else -> TrackingConstant.RM
         }
     }
+
+    private fun getLabelWithShopStatusAndShopScore(shopScore: String) =
+        "${TrackingConstant.SHOP_TYPE}: ${getShopStatus()} - ${TrackingConstant.SHOP_SCORE}: $shopScore"
 
     private fun createEventMapPmPro(
         event: String, category: String,
@@ -354,22 +456,15 @@ class PowerMerchantTracking @Inject constructor(
 
         return map
     }
+
     private fun createEvent(
         event: String, category: String,
         action: String, label: String
     ): MutableMap<String, Any> {
-        val map = TrackAppUtils.gtmData(
-            event, category, action, label
-        )
-        map[TrackingConstant.KEY_BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
-        map[TrackingConstant.KEY_CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
-        map[TrackingConstant.KEY_SHOP_ID] = userSession.shopId
-        map[TrackingConstant.KEY_USER_ID] = userSession.userId
-
-        return map
+        return TrackerUtils.createEvent(userSession, event, category, action, label)
     }
 
     private fun sendEvent(map: Map<String, Any>) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+        TrackerUtils.sendEvent(map)
     }
 }

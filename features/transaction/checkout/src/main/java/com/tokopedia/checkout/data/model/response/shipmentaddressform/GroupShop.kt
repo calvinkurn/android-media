@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 
 data class GroupShop(
+        @SerializedName("add_ons")
+        val addOns: AddOnsResponse = AddOnsResponse(),
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("errors_unblocking")
@@ -22,6 +25,8 @@ data class GroupShop(
         @SuppressLint("Invalid Data Type")
         @SerializedName("sp_id")
         val spId: Int = 0,
+        @SerializedName("bo_code")
+        val boCode: String = "",
         @SerializedName("dropshipper")
         val dropshiper: Dropshiper = Dropshiper(),
         @SerializedName("is_insurance")

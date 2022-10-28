@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_bundle_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_product_bundle_master"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/unify_space_16"
+            android:layout_marginTop="6dp"
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/du_top"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_product_bundle_master" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_po_process_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_4"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/du_top"
+            app:typographyType="body_3"
+            tools:text="Terjual 50 paket" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_product_bundle_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            android:nestedScrollingEnabled="false"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="@+id/du_bottom"
+            app:layout_constraintTop_toBottomOf="@id/tv_po_process_day"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <View
+            android:id="@+id/du_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toTopOf="@id/ta_product_bundle_sum" />
+
+        <com.tokopedia.totalamount.TotalAmount
+            android:id="@+id/ta_product_bundle_sum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unify_total_amount_enable_shadow="true"
+            app:unify_total_amount_enable_title_chevron="false"
+            app:unify_total_amount_subtitle_text="Hemat Rp0"
+            app:unify_total_amount_text="Rp0"
+            app:unify_total_amount_title_suffix_text="Rp0"
+            app:unify_total_amount_title_text=" " />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/ge_bundle_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        app:globalerrors_type="PAGE_FULL"
+        android:visibility="gone"/>
+
+</RelativeLayout>

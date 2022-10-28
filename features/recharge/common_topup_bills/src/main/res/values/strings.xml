@@ -12,7 +12,9 @@
     <string name="common_topup_title_recent_transaction_widget">Transaksi Terakhir</string>
 
     <string name="common_topup_fav_number_clue">Mau isi nomor yang mana, nih?</string>
+    <string name="common_topup_fav_number_clue_cc">Mau isi nomor kartu yang mana, nih?</string>
     <string name="common_topup_fav_number_title">Nomor Favorit</string>
+    <string name="common_topup_fav_number_title_cc">Nomor Tersimpan</string>
     <string name="common_topup_fav_number_input_hint">Masukkan nomor HP</string>
     <string name="common_topup_fav_number_empty_state_title">Wah, nomor baru ya?</string>
     <string name="common_topup_fav_number_not_found_state_title">Belum ada Nomor Favorit, Transaksi dulu, yuk!</string>
@@ -40,7 +42,7 @@
     <string name="common_topup_fav_number_modify_phone">Nomor HP</string>
     <string name="common_topup_fav_number_modify_button">Simpan</string>
     <string name="common_topup_fav_number_delete_dialog"><![CDATA[<b>%s</b> akan dihapus dari Nomor Favorit. Kamu masih bisa simpan lagi nomor ini lain kali]]></string>
-    <string name="common_topup_fav_number_delete_dialog_with_client_name"><![CDATA[<b>%s (%s)</b> akan dihapus dari Nomor Favorit. Kamu masih bisa simpan lagi nomor ini lain kali]]></string>
+    <string name="common_topup_fav_number_delete_dialog_cc"><![CDATA[Nomor kartu kredit kamu <b>%s</b> akan dihapus dari Tokopedia.]]></string>
     <string name="common_topup_fav_number_success_update_name">Oke, nama berhasil diubah.</string>
     <string name="common_topup_fav_number_failed_update_name">Maaf, belum berhasil diubah. Coba lagi, ya.</string>
     <string name="common_topup_fav_number_refresh">Refresh</string>
@@ -64,11 +66,13 @@
     <string name="common_topup_fav_number_error_state_title">Maaf, Nomor Favorit gagal ditampilkan</string>
     <string name="common_topup_fav_number_error_state_desc">Coba refresh atau masukkan nomor manual dulu, ya.</string>
     <string name="common_topup_fav_number_error_state_button">Refresh</string>
+    <string name="common_topup_fav_number_searchbar_placeholder">Cari nama atau nomor pelanggan</string>
 
     <string name="common_topup_saved_number_title">Nomor Tersimpan</string>
     <string name="common_topup_saved_number_tab_contact">Kontak HP</string>
     <string name="common_topup_saved_number_tab_favorite">Nomor Favorit</string>
     <string name="common_topup_saved_number_searchbar_placeholder">Cari nama atau nomor HP</string>
+    <string name="common_topup_saved_number_searchbar_placeholder_cc">Cari nama atau nomor kartu</string>
     <string name="common_topup_contact_permission_title">Boleh akses kontak kamu?</string>
     <string name="common_topup_contact_permission_desc">Kamu bakal makin gampang transaksi buat teman dan keluarga.</string>
     <string name="common_topup_contact_permission_settings_button">Ke Pengaturan HP</string>
@@ -77,7 +81,10 @@
     <string name="common_topup_contact_name_default">Nomor Telepon</string>
     <string name="common_topup_autocomplete_header">DARI NOMOR FAVORIT</string>
     <string name="common_topup_autocomplete_empty_title">Hmm, nama kontaknya nggak ketemu</string>
-    <string name="common_topup_autocomplete_empty_desc">Coba ketik nomor HP-nya aja, deh.</string>
+    <string name="common_topup_autocomplete_empty_desc">Coba ketik %s-nya aja, deh.</string>
+    <string name="common_topup_autocomplete_unit_nomor_hp">nomor HP</string>
+    <string name="common_topup_autocomplete_unit_nomor_meter">nomor meter</string>
+    <string name="common_topup_autocomplete_unit_nomor_kartu">nomor kartu</string>
     <string name="common_topup_contact_empty_desc">Coba masukan kata kunci atau nomor yang lain ya</string>
     <string name="common_topup_contact_empty_title">Yah, gaada yang sesuai</string>
 </resources>

@@ -1,6 +1,0 @@
-<resources>
-  <string name="app_name">Sticky Login</string>
-  
-  <string name="close_button_icon">close button icon</string>
-  <string name="sticky_icon">sticky icon</string>
-</resources>

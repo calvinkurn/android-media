@@ -13,24 +13,26 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 class AddToCartDoneViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addToCartUseCase: AddToCartUseCase,
         val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
@@ -60,60 +62,42 @@ class AddToCartDoneViewModel @Inject constructor(
         }
     }
 
-    private fun loadRecommendationProduct(productId: String): List<RecommendationWidget> {
+    private suspend fun loadRecommendationProduct(productId: String): List<RecommendationWidget> {
         try {
-            val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+            val requestParams = GetRecommendationRequestParam(
                     pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
                     pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
                     productIds = arrayListOf(productId)
-            )).toBlocking()
-            return data.first()?: emptyList()
+            )
+            return getRecommendationUseCase.getData(requestParams)
         } catch (e: Throwable) {
             Timber.d(e)
             throw e
         }
     }
 
-    fun addWishList(productId: String, callback: (Boolean, Throwable?) -> Unit) {
-        addWishListUseCase.createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                callback.invoke(false, Throwable(errorMessage))
+    fun addWishListV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
+        launch(dispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
             }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                callback.invoke(true, null)
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                // no op
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                // no op
-            }
-        })
+        }
     }
 
-    fun removeWishList(productId: String, callback: (Boolean, Throwable?) -> Unit) {
-        removeWishlistUseCase.createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                // no op
+    fun removeWishListV2(productId: String, actionListener: WishlistV2ActionListener) {
+        launch(dispatcher.main) {
+            deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorRemoveWishlist(result.throwable, productId)
             }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                // no op
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                callback.invoke(false, Throwable(errorMessage))
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                callback.invoke(true, null)
-            }
-        })
+        }
     }
 
     fun isLoggedIn(): Boolean = userSessionInterface.isLoggedIn

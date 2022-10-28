@@ -30,9 +30,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.getCallingIntent
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
@@ -154,12 +154,13 @@ class VideoDetailFragment :
             INTENT_COMMENT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.let {
-                        calculateTotalComment(
-                            it.getIntExtra(
-                                KolCommentFragment.ARGS_TOTAL_COMMENT,
-                                0
+                        if (::dynamicPostViewModel.isInitialized)
+                            calculateTotalComment(
+                                it.getIntExtra(
+                                    COMMENT_ARGS_TOTAL_COMMENT,
+                                    0
+                                )
                             )
-                        )
                     }
                 }
             }
@@ -179,27 +180,28 @@ class VideoDetailFragment :
     }
 
     override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
+        if (::dynamicPostViewModel.isInitialized) {
+            val like = dynamicPostViewModel.feedXCard.like
+            like.isLiked = !like.isLiked
+            if (like.isLiked) {
+                try {
+                    val likeValue = Integer.valueOf(like.countFmt) + 1
+                    like.countFmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
 
-        val like = dynamicPostViewModel.feedXCard.like
-        like.isLiked = !like.isLiked
-        if (like.isLiked) {
-            try {
-                val likeValue = Integer.valueOf(like.countFmt) + 1
-                like.countFmt = likeValue.toString()
-            } catch (ignored: NumberFormatException) {
+                like.count = like.count + 1
+            } else {
+                try {
+                    val likeValue = Integer.valueOf(like.countFmt) - 1
+                    like.countFmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.count = like.count - 1
             }
-
-            like.count = like.count + 1
-        } else {
-            try {
-                val likeValue = Integer.valueOf(like.countFmt) - 1
-                like.countFmt = likeValue.toString()
-            } catch (ignored: NumberFormatException) {
-            }
-
-            like.count = like.count - 1
+            bindLike(like)
         }
-        bindLike(like)
     }
 
     override fun onLikeKolError(message: String) {
@@ -301,8 +303,10 @@ class VideoDetailFragment :
         ivClose.setOnClickListener {
             val intent = Intent()
             intent.putExtra(POST_POSITION, arguments?.getInt(POST_POSITION))
-            intent.putExtra(PARAM_COMMENT_COUNT, dynamicPostViewModel.feedXCard.comments.count)
-            intent.putExtra(PARAM_LIKE_COUNT, dynamicPostViewModel.feedXCard.like.isLiked)
+            if (::dynamicPostViewModel.isInitialized) {
+                intent.putExtra(PARAM_COMMENT_COUNT, dynamicPostViewModel.feedXCard.comments.count)
+                intent.putExtra(PARAM_LIKE_COUNT, dynamicPostViewModel.feedXCard.like.isLiked)
+            }
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
@@ -317,7 +321,7 @@ class VideoDetailFragment :
     private fun onLikeSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
             if (userSession.isLoggedIn) {
-                presenter.likeKol(id.toInt(), 0, this)
+                presenter.likeKol(id.toLongOrZero(), 0, this)
             } else {
                 goToLogin()
             }
@@ -335,7 +339,7 @@ class VideoDetailFragment :
                 if (callSource == PARAM_FEED) {
                     val intent = getCallingIntent(
                         requireContext(),
-                        id.toInt(),
+                        id.toIntOrZero(),
                         0,
                         authorId,
                         isFollowed,
@@ -345,10 +349,13 @@ class VideoDetailFragment :
 
                 } else {
                     startActivityForResult(
-                        KolCommentActivity.getCallingIntent(
+                        KolCommentNewActivity.getCallingIntent(
                             requireActivity(),
-                            id.toInt(),
-                            0
+                            id.toIntOrZero(),
+                            0,
+                            authorId,
+                            isFollowed,
+                            postType
                         ), INTENT_COMMENT
                     )
                 }
@@ -474,7 +481,7 @@ class VideoDetailFragment :
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.design.R.color.tkpd_main_green
+                        com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                 )
             }

@@ -36,7 +36,7 @@
         app:layout_goneMarginLeft="8dp"
         app:layout_goneMarginRight="8dp"
         app:layout_goneMarginStart="8dp"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="reguler"
         tools:text="@string/dummy_recent_search_two_lines"/>
 
@@ -91,6 +91,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_goneMarginStart="8dp"
         app:layout_goneMarginTop="2dp"
+        app:typographyType="display_3"
         tools:visibility="visible"
         tools:text="@string/dummy_recent_search_subtitle" />
 

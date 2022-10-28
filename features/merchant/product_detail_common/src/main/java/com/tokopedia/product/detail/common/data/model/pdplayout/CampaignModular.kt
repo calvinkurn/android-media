@@ -29,7 +29,7 @@ data class CampaignModular(
         @SerializedName("originalPrice")
         val originalPrice: Double = 0.0,
         @SerializedName("percentageAmount")
-        val percentageAmount: Int = 0,
+        val percentageAmount: Float = 0f,
         @SerializedName("startDate")
         val startDate: String = "",
         @SerializedName("stock")

@@ -22,7 +22,7 @@ object CatalogDetailAnalytics {
     }
 
     fun sendEvent(event: String, category: String,
-                  action: String, label: String, userId : String, catalogId: String) {
+                  action: String, label: String, userId : String, catalogId: String, trackerId: String?="") {
         HashMap<String,Any>().apply {
             put(EventKeys.KEY_EVENT,event)
             put(EventKeys.KEY_EVENT_CATEGORY,category)
@@ -32,6 +32,9 @@ object CatalogDetailAnalytics {
             put(EventKeys.KEY_CATALOG_ID,catalogId)
             put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
             put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+            if(!trackerId.isNullOrEmpty()){
+                put(EventKeys.KEY_TRACKER_ID, trackerId)
+            }
         }.also {
             getTracker().sendGeneralEvent(it)
         }
@@ -177,7 +180,9 @@ object CatalogDetailAnalytics {
         position: Int,
         userId: String,
         impressedCatalogId : String,
-        impressedCatalogName : String
+        impressedCatalogName : String,
+        impressedItemName : String,
+        impressionUniqueKey : String,
     ){
 
         val list = ArrayList<Map<String, Any>>()
@@ -186,13 +191,13 @@ object CatalogDetailAnalytics {
         promotionMap[EventKeys.KEY_ITEM_ID] = impressedCatalogId
         promotionMap[EventKeys.KEY_CREATIVE_NAME] = impressedCatalogName
         promotionMap[EventKeys.KEY_CREATIVE_SLOT] =  (position + 1).toString()
-        promotionMap[EventKeys.KEY_ITEM_NAME] = KATALOG_PiILIHAN_UNTUKMU
+        promotionMap[EventKeys.KEY_ITEM_NAME] = impressedItemName
         list.add(promotionMap)
         val eventModel = EventModel(event,category,action,eventLabel)
-        eventModel.key = CatalogConstant.KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING
+        eventModel.key = impressionUniqueKey
         val customDimensionMap = HashMap<String, Any>()
         customDimensionMap[EventKeys.KEY_CATALOG_ID] = catalogId
-        customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE_CATALOG
+        customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         customDimensionMap[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         customDimensionMap[EventKeys.KEY_USER_ID] = userId
 
@@ -218,6 +223,7 @@ object CatalogDetailAnalytics {
 
             const val KEY_BUSINESS_UNIT = "businessUnit"
             const val KEY_CURRENT_SITE = "currentSite"
+            const val KEY_TRACKER_ID = "trackerId"
 
             const val KEY_PROMOTIONS = "promotions"
             const val BUSINESS_UNIT_VALUE= "Physical Goods"
@@ -233,6 +239,7 @@ object CatalogDetailAnalytics {
             const val EVENT_NAME_PRODUCT_VIEW = "productView"
             const val EVENT_NAME_CLICK_PG = "clickPG"
             const val EVENT_PROMO_VIEW = "promoView"
+            const val EVENT_VIEW_PG_IRIS = "viewPGIris"
 
             const val KEY_CREATIVE_NAME = "creative_name"
             const val KEY_CREATIVE_SLOT = "creative_slot"
@@ -240,7 +247,6 @@ object CatalogDetailAnalytics {
             const val KEY_ITEM_NAME = "item_name"
 
             const val EVENT_SELECT_CONTENT = "select_content"
-            const val EVENT_VIEW_ITEM = "promoView"
 
         }
     }
@@ -288,10 +294,30 @@ object CatalogDetailAnalytics {
             const val CLICK_GANTI_PERBANDINGAN = "click ganti perbandingan - perbandingan produk"
             const val CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK = "click search bar - perbandingan produk"
             const val CLICK_BANDINGKAN_PERBANDINGAN_PRODUK= "click bandingkan - perbandingan produk"
+            const val CLICK_NEXT_CATALOG_PAGE_PERBANDINGAN_PRODUK = "click next catalog page - perbandingan produk"
+            const val CLICK_DROP_UP_BUTTON_PERBANDINGAN_PRODUK = "click drop up button - perbandingan produk"
+            const val CLICK_DROP_DOWN_BUTTON_PERBANDINGAN_PRODUK = "click drop down button - perbandingan produk"
 
             const val KATALOG_PiILIHAN_UNTUKMU = "katalog pilihan untukmu"
             const val CLICK_KATALOG_PILIHAN_UNTUKMU = "click katalog pilihan untukmu"
             const val IMPRESSION_KATALOG_PILIHAN_UNTUKMU = "impression katalog pilihan untukmu"
+
+            const val IMAGE_WIDGET_IMPRESSION = "impression image"
+            const val IMAGE_WIDGET_IMPRESSION_ITEM_NAME = "image banner impression"
+
+            const val SPECIFICATION_WIDGET_IMPRESSION = "impression specification"
+            const val SPECIFICATION_WIDGET_IMPRESSION_ITEM_NAME = "specification banner impression"
+
+            const val VIDEO_WIDGET_IMPRESSION = "impression video widget"
+            const val VIDEO_WIDGET_IMPRESSION_ITEM_NAME = "video banner impression"
+
+            const val DESCRIPTION_WIDGET_IMPRESSION = "impression description"
+            const val COMPARISON_WIDGET_IMPRESSION = "impression comparison widget"
+            const val REVIEW_WIDGET_IMPRESSION = "impression review widget"
+
+            const val CLICK_FLOATING_BUTTON_PRODUCT = "click floating action button to product list"
+            const val CLICK_FLOATING_BUTTON_LAST_SCROLL = "click floating action button to last scroll position"
+
         }
     }
 
@@ -317,6 +343,18 @@ object CatalogDetailAnalytics {
             const val IDR = "IDR"
 
             const val CATALOG_URL_KEY = "/catalog/"
+        }
+    }
+
+    interface TrackerId{
+        companion object {
+            const val OPEN_BOTTOMSHEET = "27182"
+            const val CLICK_SEARCH_BAR = "27183"
+            const val CLICK_BANDINGAN = "27184"
+            const val CLICK_NEXT_CATALOG_PAGE = "28893"
+            const val CLICK_DROP_UP_BUTTON = "35721"
+            const val CLICK_DROP_DOWN_BUTTON = "35722"
+
         }
     }
 

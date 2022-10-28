@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2
+    android:id="@+id/card_empty"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/empty_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/empty_state_wishlist"
+            app:typographyWeight="reguler"
+            app:typographyType="display_3"
+            android:textColor="@color/Unify_NN600"
+            android:layout_marginVertical="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/empty_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/empty_image"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="16dp"
+            android:contentDescription="@string/content_desc_image_empty_wishlist"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>

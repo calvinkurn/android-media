@@ -12,12 +12,14 @@ import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
  * Created By @ilhamsuaib on 06/03/21
  */
 
-class QuestionnaireAdapterFactoryImpl : BaseAdapterTypeFactory(), QuestionnaireAdapterFactory {
+class QuestionnaireAdapterFactoryImpl(
+    private val onAnswerSelected: () -> Unit
+) : BaseAdapterTypeFactory(), QuestionnaireAdapterFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            QuestionnaireRatingViewHolder.RES_LAYOUT -> QuestionnaireRatingViewHolder(parent)
-            QuestionnaireMultipleViewHolder.RES_LAYOUT -> QuestionnaireMultipleViewHolder(parent)
+            QuestionnaireRatingViewHolder.RES_LAYOUT -> QuestionnaireRatingViewHolder(parent, onAnswerSelected)
+            QuestionnaireMultipleViewHolder.RES_LAYOUT -> QuestionnaireMultipleViewHolder(parent, onAnswerSelected)
             else -> super.createViewHolder(parent, type)
         }
     }

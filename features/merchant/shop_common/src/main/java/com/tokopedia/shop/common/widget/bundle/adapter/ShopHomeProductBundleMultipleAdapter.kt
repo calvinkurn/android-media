@@ -10,7 +10,9 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleL
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleMultiplePackageViewHolder
 
 class ShopHomeProductBundleMultipleAdapter(
-        private val multipleProductBundleListener: MultipleProductBundleListener
+        private val multipleProductBundleListener: MultipleProductBundleListener,
+        private val widgetTitle: String,
+        private val widgetName: String
 ): RecyclerView.Adapter<ShopHomeProductBundleMultiplePackageViewHolder>() {
 
     private var bundleProducts: List<ShopHomeBundleProductUiModel> = listOf()
@@ -24,8 +26,7 @@ class ShopHomeProductBundleMultipleAdapter(
                         parent,
                         false
                 ),
-                multipleProductBundleListener,
-                itemCount
+                multipleProductBundleListener
         )
     }
 
@@ -35,7 +36,9 @@ class ShopHomeProductBundleMultipleAdapter(
                 bundleProduct,
                 multipleBundleDetail,
                 multipleBundleParent,
-                position
+                position,
+                widgetTitle,
+                widgetName
         )
     }
 

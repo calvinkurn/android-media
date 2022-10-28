@@ -149,7 +149,7 @@ open class WatermarkBuilder {
 
     fun getOutputImages(): Array<Bitmap> {
         return getWatermarks().map {
-            it.outputImage!!
+            it.outputImage ?: backgroundImg!!
         }.toTypedArray()
     }
 

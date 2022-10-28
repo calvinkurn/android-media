@@ -5,23 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl1"
-        android:background="@drawable/som_detail_divider"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/payments_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
         android:text="@string/rincian_pembayaran"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="@string/rincian_pembayaran" />
@@ -43,8 +35,8 @@
         android:id="@+id/payments_method_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/payments_title"
@@ -55,10 +47,11 @@
         android:id="@+id/rvDynamicPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/payments_method_label"
-        app:layout_constraintStart_toStartOf="parent"
+        android:nestedScrollingEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_dynamic_price_detail"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/payments_method_label"
+        tools:listitem="@layout/item_dynamic_price_detail" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_payments"

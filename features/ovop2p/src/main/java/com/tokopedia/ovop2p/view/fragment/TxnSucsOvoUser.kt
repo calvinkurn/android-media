@@ -1,9 +1,6 @@
 package com.tokopedia.ovop2p.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -11,21 +8,24 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
-import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
 import com.tokopedia.ovop2p.util.AnalyticsUtil
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrPage
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar
-import com.tokopedia.ovop2p.view.viewStates.ThankYouPageState
 import com.tokopedia.ovop2p.view.viewStates.ThankYouSucs
-import com.tokopedia.ovop2p.viewmodel.OvoP2pTxnThankYouOvoUsrVM
+import com.tokopedia.ovop2p.viewmodel.OvoP2PTransactionThankYouVM
+import com.tokopedia.utils.currency.CurrencyFormatUtil
+import javax.inject.Inject
 
 class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
@@ -40,13 +40,22 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     private lateinit var backToApp: Button
     private lateinit var infoIcon: ImageView
     private var transferId: String = ""
-    private lateinit var txnThankYouPageVM: OvoP2pTxnThankYouOvoUsrVM
     private lateinit var thankYouDataCntnr: OvoP2pTransferThankyouBase
     private lateinit var errorSnackbar: Snackbar
 
 
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val ovoP2PTransactionThankYouVM: OvoP2PTransactionThankYouVM by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider =
+            ViewModelProvider(requireActivity(), viewModelFactory.get())
+        viewModelProvider.get(OvoP2PTransactionThankYouVM::class.java)
+    }
+
+
     override fun initInjector() {
-        getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
+        getComponent(OvoP2pTransferComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String {
@@ -80,9 +89,9 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun setRcvrUserData() {
-        thankYouDataCntnr.ovoP2pTransferThankyou.destination.let {
-            rcvrName.text = it.name
-            var number = it.phone
+        thankYouDataCntnr.ovoP2pTransferThankyou?.destination.let {
+            rcvrName.text = it?.name?:""
+            var number = it?.phone?:""
             if (!TextUtils.isEmpty(number)) {
                 number = Constants.Prefixes.OVO + number
             } else {
@@ -97,11 +106,14 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         updateHeader()
         if (!TextUtils.isEmpty(transferId)) {
             var dataMap: HashMap<String, Any> = HashMap()
-            dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toInt())
+            dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toIntOrZero())
             context?.let {
-                (activity as LoaderUiListener).showProgressDialog()
-                txnThankYouPageVM.makeThankyouDataCall(it, dataMap)
+                activity?.let {
+                    (it as LoaderUiListener).showProgressDialog()
+                }
             }
+            ovoP2PTransactionThankYouVM.makeThankyouDataCall(dataMap)
+
         }
     }
 
@@ -109,33 +121,27 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         transferId = arguments?.getString(Constants.Keys.TRANSFER_ID) ?: ""
     }
 
-    private fun createAndSubscribeToThankYouVM() {
-        if (!::txnThankYouPageVM.isInitialized) {
-            if (activity != null) {
-                txnThankYouPageVM = ViewModelProviders.of(this.activity!!).get(OvoP2pTxnThankYouOvoUsrVM::class.java)
-                txnThankYouPageVM.transferThankyouLiveData?.observe(this, getThankYouObsvr(activity as LoaderUiListener))
+    private fun createAndSubscribeToThankYouVM() =
+        ovoP2PTransactionThankYouVM.transferThankyouLiveData.observe(
+            viewLifecycleOwner){
+            hideLoader()
+            when(it)
+            {
+                is ThankYouErrPage ->  gotoErrorPage(it.errMsg)
+                is ThankYouErrSnkBar ->  showErrorSnackBar(it.errMsg)
+                is ThankYouSucs ->  assignThankYouData(it.thankyouBase)
             }
+        }
+
+
+    private fun hideLoader()
+    {
+        activity?.let {
+            (it as LoaderUiListener).hideProgressDialog()
         }
     }
 
-    private fun getThankYouObsvr(loaderUiListener: LoaderUiListener): Observer<ThankYouPageState> {
-        return Observer {
-            it?.let { pageState ->
-                loaderUiListener.hideProgressDialog()
-                when (pageState) {
-                    is ThankYouErrPage -> {
-                        gotoErrorPage(pageState.errMsg)
-                    }
-                    is ThankYouErrSnkBar -> {
-                        showErrorSnackBar(pageState.errMsg)
-                    }
-                    is ThankYouSucs -> {
-                        assignThankYouData(pageState.thankyouBase)
-                    }
-                }
-            }
-        }
-    }
+
 
     private fun gotoErrorPage(errMsg: String) {
         var fragment: BaseDaggerFragment = TransferError.createInstance()
@@ -146,23 +152,26 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun updateHeader() {
-        (activity as LoaderUiListener).setHeaderTitle(Constants.Headers.TRANSFER_SUCCESS)
+        activity?.let {
+            (it as LoaderUiListener).setHeaderTitle(Constants.Headers.TRANSFER_SUCCESS)
+        }
     }
 
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
         thankYouDataCntnr = thankYouData
-        date.text = thankYouData.ovoP2pTransferThankyou.trnsfrDate
-        val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(thankYouData.ovoP2pTransferThankyou.amt.toDouble(), false, 0)
-        trnsfrAmt.text = rpFormattedString.formattedString
-        var sourceName = thankYouData.ovoP2pTransferThankyou.source.name
+        date.text = thankYouData.ovoP2pTransferThankyou?.trnsfrDate?:""
+        val rpFormattedString = thankYouData.ovoP2pTransferThankyou?.amt?.toDouble()
+            ?.let { CurrencyFormatUtil.getThousandSeparatorString(it, false, 0) }
+        trnsfrAmt.text = rpFormattedString?.formattedString?:""
+        var sourceName = thankYouData.ovoP2pTransferThankyou?.source?.name
         if (TextUtils.isEmpty(sourceName)) {
             sourceName = context?.let {
                 OvoP2pUtil.getUserName(it)
             }.toString()
-            thankYouDataCntnr.ovoP2pTransferThankyou.source.name = sourceName
+            thankYouDataCntnr.ovoP2pTransferThankyou?.source?.name = sourceName
         }
-        sndrName.text = sourceName
-        sndrNum.text = Constants.Prefixes.OVO + thankYouData.ovoP2pTransferThankyou.source.phone
+        sndrName.text = sourceName?:""
+        sndrNum.text = Constants.Prefixes.OVO + thankYouData.ovoP2pTransferThankyou?.source?.phone
         setRcvrUserData()
     }
 
@@ -191,11 +200,6 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
                                 AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_KMBL_TKPD)
                     }
                 }
-                com.tokopedia.design.R.id.btn_ok -> {
-                    errorSnackbar.let {
-                        if (it.isShownOrQueued) it.dismiss()
-                    }
-                }
             }
         }
     }
@@ -207,14 +211,19 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
         fun newInstance(bundle: Bundle): TxnSucsOvoUser {
             val fragmentSucsOvoUsr = newInstance()
-            fragmentSucsOvoUsr.setArguments(bundle)
+            fragmentSucsOvoUsr.arguments = bundle
             return fragmentSucsOvoUsr
         }
     }
 
     private fun showErrorSnackBar(errMsg: String) {
         activity?.let {
-            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it, this, errMsg)
+            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it,  errMsg)
+        {
+            errorSnackbar.let { errorSnackbar->
+                if (errorSnackbar.isShownOrQueued) errorSnackbar.dismiss()
+            }
+            }
             errorSnackbar.show()
         }
     }

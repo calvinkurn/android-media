@@ -7,7 +7,8 @@
     android:orientation="vertical"
     android:clipToPadding="false"
     android:clipChildren="false"
-    android:layout_marginBottom="4dp">
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="10dp">
 
     <include
         android:id="@+id/etalase_header_container"
@@ -18,7 +19,6 @@
         android:id="@+id/rvCarouselRecommendation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
         android:scrollbars="none"
         app:useDefaultItemDecorator="false" />
 

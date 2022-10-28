@@ -22,40 +22,44 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/layout_lvl2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer1"
         android:layout_width="@dimen/shc_dimen_156dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer2"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/shimmer1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer3"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/shimmer2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer4"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/shimmer3" />

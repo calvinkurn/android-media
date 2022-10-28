@@ -35,7 +35,11 @@ data class Watermark(
 ) {
 
     init {
-        watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N100)
+        watermarkTextAndImage?.textShadowColor =
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.imagepicker.R.color.imagepicker_dms_watermark_text_and_image
+            )
 
         if (!isCombine) {
             createWatermarkImage(watermarkImg)
@@ -55,7 +59,7 @@ data class Watermark(
      * @param: [TextAndImageUIModel]
      */
     private fun createScalableWatermarkTextAndImage(watermark: TextAndImageUIModel?) {
-        if (watermark == null) return
+        if (watermark == null || watermark.image!!.isRecycled) return
 
         val resizedBitmap = watermark.image!!.resizeBitmap(backgroundImg!!)
 

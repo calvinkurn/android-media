@@ -6,6 +6,7 @@ import com.tokopedia.play.data.repository.PlayViewerUserReportRepositoryImpl
 import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
+import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
@@ -34,32 +35,19 @@ class PlayViewerUserReportTest {
     private val getUserReportListUseCase: GetUserReportListUseCase = mockk(relaxed = true)
     private val postUserReportUseCase: PostUserReportUseCase = mockk(relaxed = true)
 
-    lateinit var playUiModelMapper: PlayUiModelMapper
-    private val userReportMapper = PlayUserReportReasoningMapper()
-
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
     private val testDispatcher = CoroutineTestDispatchers
 
-    private val modelBuilder = ModelBuilder()
+    private val classBuilder = ClassBuilder()
+    private val mapper = classBuilder.getPlayUiModelMapper()
 
     @Before
     fun setUp(){
         Dispatchers.setMain(testDispatcher.coroutineDispatcher)
 
-        playUiModelMapper = PlayUiModelMapper(
-            productTagMapper = mockk(relaxed = true),
-            merchantVoucherMapper = mockk(relaxed = true),
-            chatMapper = mockk(relaxed = true),
-            channelStatusMapper = mockk(relaxed = true),
-            channelInteractiveMapper = mockk(relaxed = true),
-            interactiveLeaderboardMapper = mockk(relaxed = true),
-            cartMapper = mockk(relaxed = true),
-            playUserReportMapper = userReportMapper
-        )
-
         userReportRepo = PlayViewerUserReportRepositoryImpl(
-            getUserReportListUseCase, postUserReportUseCase, playUiModelMapper, userSession, testDispatcher
+            getUserReportListUseCase, postUserReportUseCase, mapper, userSession, testDispatcher
         )
     }
 

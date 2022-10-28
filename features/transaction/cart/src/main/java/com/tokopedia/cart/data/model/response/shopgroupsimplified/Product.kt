@@ -14,6 +14,8 @@ data class Product(
         val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList(),
+        @SerializedName("product_information_with_icon")
+        val productInformationWithIcon: List<ProductInformationWithIcon> = emptyList(),
         @SerializedName("parent_id")
         val parentId: String = "",
         @SerializedName("product_id")
@@ -120,8 +122,13 @@ data class Product(
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
         val freeShippingExtra: FreeShipping = FreeShipping(),
+        @SerializedName("free_shipping_general")
+        val freeShippingGeneral: FreeShippingGeneral = FreeShippingGeneral(),
         @SerializedName("selected_unavailable_action_link")
         val selectedUnavailableActionLink: String = "",
         @SerializedName("warehouse_id")
-        val warehouseId: String = ""
+        val warehouseId: String = "",
+        @SerializedName("ethical_drug")
+        val ethicalDrug: EthicalDrug = EthicalDrug()
+
 )

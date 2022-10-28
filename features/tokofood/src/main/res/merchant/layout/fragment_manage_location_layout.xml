@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Static_White"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tokofood_title"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="display_1"
+                    app:typographyWeight="bold" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iu_location_bs_image"
+            android:layout_width="280dp"
+            android:layout_height="210dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_location_bs_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="heading_2"
+            tools:text="@string/home_no_pin_poin_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_location_bs_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_2"
+            tools:text="@string/home_no_pin_poin_desc" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_location_bs_cta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            tools:text="@string/home_no_pin_poin_button" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_location_bs_to_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/home_back_to_home"
+            android:textColor="@color/Unify_N600"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

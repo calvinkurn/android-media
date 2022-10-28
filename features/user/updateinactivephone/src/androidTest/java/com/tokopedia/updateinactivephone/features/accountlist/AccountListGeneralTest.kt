@@ -2,9 +2,8 @@ package com.tokopedia.updateinactivephone.features.accountlist
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
-import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.accountlist.AccountListViewAction.assertAccountListItem
 import com.tokopedia.updateinactivephone.features.accountlist.AccountListViewAction.checkAccountListIsDisplayed
 import com.tokopedia.updateinactivephone.features.accountlist.AccountListViewAction.clickAccountListItemAtPosition
@@ -13,6 +12,7 @@ import com.tokopedia.updateinactivephone.features.accountlist.AccountListViewAct
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@UiTest
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class AccountListGeneralTest : BaseAccountListTest() {

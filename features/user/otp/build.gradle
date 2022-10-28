@@ -25,9 +25,6 @@ android {
         viewBinding true
     }
 
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -42,6 +39,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -49,7 +47,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
 
     implementation rootProject.ext.miscDependencies.viewModelKtx
@@ -87,7 +84,6 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.testDependencies.espressoIdlingResource
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
     androidTestImplementation rootProject.ext.firebase.messaging
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

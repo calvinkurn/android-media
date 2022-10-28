@@ -144,10 +144,6 @@ data class AceSearchProductModel(
             @SerializedName("query")
             @Expose
             val query: String = "",
-
-            @SerializedName("typeId")
-            @Expose
-            val typeId: Int = 0
     )
 
         data class Related(
@@ -321,10 +317,6 @@ data class AceSearchProductModel(
             @Expose
             val categoryBreadcrumb: String = "",
 
-            @SerializedName("categoryId")
-            @Expose
-            val categoryId: Int = 0,
-
             @SerializedName("categoryName")
             @Expose
             val categoryName: String = "",
@@ -388,6 +380,10 @@ data class AceSearchProductModel(
             @SerializedName("maxOrder")
             @Expose
             val maxOrder: Int = 0,
+
+            @SerializedName("stock")
+            @Expose
+            val stock: Int = 0
     )
 
     data class ProductShop(

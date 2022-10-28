@@ -25,7 +25,6 @@ object ApplinkConsInternalDigital {
     const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
     const val SMART_BILLS = "$INTERNAL_RECHARGE/bayarsekaligus"
     const val ADD_TELCO = "$INTERNAL_RECHARGE/add_telco?template={template}"
-    const val SUBHOMEPAGE = "$INTERNAL_RECHARGE/home"
     const val DYNAMIC_SUBHOMEPAGE = "$INTERNAL_RECHARGE/home/dynamic"
     const val DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE = "$INTERNAL_RECHARGE/home/dynamic?platform_id={platform_id}"
     const val DYNAMIC_SUBHOMEPAGE_WITH_PARAM = "$INTERNAL_RECHARGE/home/dynamic?platform_id={platform_id}&personalize={bool_personalize}"
@@ -43,4 +42,17 @@ object ApplinkConsInternalDigital {
     const val APPLINK_RECHARGE_SLICE = "tokopedia-android-internal://recharge_slice/main"
     const val SEARCH_NUMBER = "$INTERNAL_DIGITAL/searchnumber"
     const val FAVORITE_NUMBER = "$INTERNAL_DIGITAL/favoritenumber"
+
+    /**
+     * Applink Digital PDP Revamp 2022
+     */
+
+    const val DIGITAL_PDP_PULSA = "$INTERNAL_DIGITAL/pdp_pulsa"
+
+    /** Paket data and roaming using this same applink*/
+    const val DIGITAL_PDP_PAKET_DATA = "$INTERNAL_DIGITAL/pdp_paket_data"
+    const val DIGITAL_TOKEN_LISTRIK = "$INTERNAL_DIGITAL/pdp_token_listrik"
+    const val DIGITAL_TAGIHAN_LISTRIK = "$INTERNAL_DIGITAL/pdp_tagihan_listrik"
+
+    /** End Applink Digital PDP Revamp 2022*/
 }

@@ -16,9 +16,11 @@ import com.tokopedia.developer_options.presentation.viewholder.*
 class DeveloperOptionTypeFactoryImpl(
     private val accessTokenListener: AccessTokenViewHolder.AccessTokenListener,
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
-    private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener
+    private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener,
+    private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener
 ):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
+    override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
     override fun type(uiModel: AccessTokenUiModel): Int = AccessTokenViewHolder.LAYOUT
     override fun type(uiModel: SystemNonSystemAppsUiModel): Int = SystemNonSystemAppsViewHolder.LAYOUT
@@ -49,6 +51,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: AppVersionUiModel): Int = AppVersionViewHolder.LAYOUT
     override fun type(uiModel: UrlEnvironmentUiModel): Int = UrlEnvironmentViewHolder.LAYOUT
     override fun type(uiModel: FakeResponseActivityUiModel): Int = FakeResponseActivityViewHolder.LAYOUT
+    override fun type(uiModel: DataExplorerActivityUiModel): Int = DataExplorerActivityViewHolder.LAYOUT
     override fun type(uiModel: HomeAndNavigationRevampSwitcherUiModel): Int = HomeAndNavigationRevampSwitcherViewHolder.LAYOUT
     override fun type(uiModel: RollenceAbTestingManualSwitcherUiModel): Int = RollenceAbTestingManualSwitcherViewHolder.LAYOUT
     override fun type(uiModel: RequestNewFcmTokenUiModel): Int = RequestNewFcmTokenViewHolder.LAYOUT
@@ -58,14 +61,20 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: SellerAppReviewDebuggingUiModel): Int = SellerAppReviewDebuggingViewHolder.LAYOUT
     override fun type(uiModel: ShowApplinkOnToastUiModel): Int = ShowApplinkOnToastViewHolder.LAYOUT
     override fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int = PlayWebSocketSseLoggingViewHolder.LAYOUT
+    override fun type(uiModel: TypographySwitchUiModel): Int = TypographySwitcherViewHolder.LAYOUT
+    override fun type(uiModel: ConvertResourceIdUiModel): Int = ConvertResourceIdViewHolder.LAYOUT
+    override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
+    override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
+            DeveloperOptionsOnNotificationViewHolder.LAYOUT -> DeveloperOptionsOnNotificationViewHolder(view)
             PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
             AccessTokenViewHolder.LAYOUT -> AccessTokenViewHolder(view, accessTokenListener)
             SystemNonSystemAppsViewHolder.LAYOUT -> SystemNonSystemAppsViewHolder(view)
             ResetOnBoardingViewHolder.LAYOUT -> ResetOnBoardingViewHolder(view, resetOnBoardingListener)
             ForceCrashViewHolder.LAYOUT -> ForceCrashViewHolder(view)
+            ForceLogoutViewHolder.LAYOUT -> ForceLogoutViewHolder(view)
             SendFirebaseCrashExceptionViewHolder.LAYOUT -> SendFirebaseCrashExceptionViewHolder(view)
             OpenScreenRecorderViewHolder.LAYOUT -> OpenScreenRecorderViewHolder(view)
             NetworkLogOnNotificationViewHolder.LAYOUT -> NetworkLogOnNotificationViewHolder(view)
@@ -91,7 +100,8 @@ class DeveloperOptionTypeFactoryImpl(
             AppVersionViewHolder.LAYOUT -> AppVersionViewHolder(view)
             UrlEnvironmentViewHolder.LAYOUT -> UrlEnvironmentViewHolder(view, urlEnvironmentListener)
             FakeResponseActivityViewHolder.LAYOUT -> FakeResponseActivityViewHolder(view)
-            HomeAndNavigationRevampSwitcherViewHolder.LAYOUT -> HomeAndNavigationRevampSwitcherViewHolder(view)
+            DataExplorerActivityViewHolder.LAYOUT -> DataExplorerActivityViewHolder(view)
+            HomeAndNavigationRevampSwitcherViewHolder.LAYOUT -> HomeAndNavigationRevampSwitcherViewHolder(view, homeAndNavigationRevampListener)
             RollenceAbTestingManualSwitcherViewHolder.LAYOUT -> RollenceAbTestingManualSwitcherViewHolder(view)
             RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)
             ResetOnBoardingNavigationViewHolder.LAYOUT -> ResetOnBoardingNavigationViewHolder(view)
@@ -100,6 +110,9 @@ class DeveloperOptionTypeFactoryImpl(
             SellerAppReviewDebuggingViewHolder.LAYOUT -> SellerAppReviewDebuggingViewHolder(view)
             ShowApplinkOnToastViewHolder.LAYOUT -> ShowApplinkOnToastViewHolder(view)
             PlayWebSocketSseLoggingViewHolder.LAYOUT -> PlayWebSocketSseLoggingViewHolder(view)
+            TypographySwitcherViewHolder.LAYOUT -> TypographySwitcherViewHolder(view)
+            ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
+            ViewHanselPatchViewHolder.LAYOUT -> ViewHanselPatchViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

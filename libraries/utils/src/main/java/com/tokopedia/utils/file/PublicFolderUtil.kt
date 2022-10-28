@@ -33,7 +33,7 @@ object PublicFolderUtil {
     ): Pair<File?, Uri?> {
         try {
             val contentResolver: ContentResolver = context.contentResolver
-            val contentValues = createContentValues(fileName, mimeType, directory)
+            val contentValues = createContentValues(fileName, mimeType, directory, null)
             val contentUri = getContentUriFromMime(mimeType)
             val uri = contentResolver.insert(contentUri, contentValues)
             uri?.let {
@@ -68,7 +68,7 @@ object PublicFolderUtil {
 
         try {
             val contentResolver: ContentResolver = context.contentResolver
-            val contentValues = createContentValues(outputFileName, mimeType, directory)
+            val contentValues = createContentValues(outputFileName, mimeType, directory, localFile.absolutePath)
             val contentUri = getContentUriFromMime(mimeType)
             val uri = contentResolver.insert(contentUri, contentValues)
             uri?.let {
@@ -143,7 +143,8 @@ object PublicFolderUtil {
     private fun createContentValues(
             fileName: String,
             mimeType: String,
-            directory: String? = null
+            directory: String? = null,
+            filePath: String?
     ): ContentValues {
         val contentValues = ContentValues()
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
@@ -154,6 +155,8 @@ object PublicFolderUtil {
                     directory ?: getDirectoryFromMime(mimeType)
             )
             contentValues.put(MediaStore.Images.Media.IS_PENDING, 1)
+        } else if (filePath!= null) {
+            contentValues.put(MediaStore.MediaColumns.DATA, filePath);
         }
         return contentValues
     }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/unify_space_8">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/cellText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:gravity="center_vertical"
+        android:textColor="@color/Unify_N700_96"
+        android:ellipsize="end"
+        android:maxWidth="@dimen/unify_space_128"
+        android:minHeight="@dimen/unify_space_40"
+        android:maxLines="2"
+        app:typographyType="body_3"
+        tools:text="Cell Data" />
+
+</LinearLayout>

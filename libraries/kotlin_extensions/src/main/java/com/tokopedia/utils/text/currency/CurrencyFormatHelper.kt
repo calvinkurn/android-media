@@ -1,6 +1,7 @@
 package com.tokopedia.utils.text.currency
 
 import android.widget.EditText
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import java.lang.Integer.parseInt
@@ -14,13 +15,18 @@ import java.util.*
  */
 object CurrencyFormatHelper {
     private val RupiahFormat = NumberFormat.getIntegerInstance(Locale.US)
-    private val DollarFormat = NumberFormat.getCurrencyInstance(Locale("en", "US"))
     // this flag intend to block textwatcher to be called recursively
     private var LockTextWatcher = false
 
     val RUPIAH = 1
     val OTHER = -1
 
+    private fun String.toRawStringOfNumbers(): String {
+        return replace("Rp", "")
+            .replace(",", "")
+            .replace(".", "")
+            .replace(" ", "")
+    }
 
     fun convertToRupiah(string: String): String {
         return try {
@@ -33,58 +39,7 @@ object CurrencyFormatHelper {
 
     }
 
-    fun convertToDollar(string: String): String {
-        return try {
-            val indollar: String = DollarFormat.format(java.lang.Double.parseDouble(string)).replace("$", "")
-            indollar
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-            "Exception raised"
-        }
-
-    }
-
-    fun setToRupiah(et: EditText) {
-        try {
-            if (et.length() > 0 && !LockTextWatcher) {
-                LockTextWatcher = true
-                var tempCursorPos = et.selectionStart
-                val tempLength = et.length()
-                et.setText(RupiahFormat.format(java.lang.Long.parseLong(et.text.toString().replace("$", "").replace(".00", "").replace(".0", "").replace(",", "").replace(".", ""))).replace("$", "").replace(".00", "").replace(".0", ""))
-                // Handler untuk tanda koma
-                if (et.length() - tempLength == 1)
-                // Untuk majuin cursor ketika nambah koma
-                {
-                    if (et.length() < 4)
-                        tempCursorPos += 1
-                    else if (et.text[tempCursorPos] != '.')
-                    // Untuk mundur ketika mencoba menghapus koma
-                        tempCursorPos += 1
-                } else if (et.length() - tempLength == -1)
-                // Mundurin cursor ketika hapus koma
-                {
-                    tempCursorPos -= 1
-                } else if (et.length() > 3 && tempCursorPos < et.length() && tempCursorPos > 0)
-                    if (et.text[tempCursorPos - 1] == '.') { // Mundurin cursor ketika menambah digit dibelakang koma
-                        tempCursorPos -= 1
-                    }
-
-                // Set posisi cursor
-                if (tempCursorPos < et.length() && tempCursorPos > -1)
-                    et.setSelection(tempCursorPos)
-                else if (tempCursorPos < 0)
-                    et.setSelection(0)
-                else
-                    et.setSelection(et.length())
-                LockTextWatcher = false
-            }
-        } catch (e: NumberFormatException) {
-            LockTextWatcher = false
-            e.printStackTrace()
-        }
-
-    }
-
+    @Suppress("MagicNumber")
     fun setToRupiahCheckPrefix(et: EditText) {
         try {
             val noFirstCharToIgnore = countPrefixCurrency(et.text.toString())
@@ -176,18 +131,14 @@ object CurrencyFormatHelper {
     }
 
     fun convertRupiahToInt(rupiah: String): Int {
-        var result = rupiah.replace("Rp", "")
-        result = result.replace(",", "")
-        result = result.replace(".", "")
-        result = result.replace(" ", "")
-        return result.toIntOrZero()
+        return rupiah.toRawStringOfNumbers().toIntOrZero()
     }
 
     fun convertRupiahToLong(rupiah: String): Long {
-        var result = rupiah.replace("Rp", "")
-        result = result.replace(",", "")
-        result = result.replace(".", "")
-        result = result.replace(" ", "")
-        return result.toLongOrZero()
+        return rupiah.toRawStringOfNumbers().toLongOrZero()
+    }
+
+    fun convertRupiahToDouble(rupiah: String): Double {
+        return rupiah.toRawStringOfNumbers().toDoubleOrZero()
     }
 }

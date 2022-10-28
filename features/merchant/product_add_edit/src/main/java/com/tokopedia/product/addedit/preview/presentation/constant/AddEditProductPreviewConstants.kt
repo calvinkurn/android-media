@@ -22,6 +22,9 @@ class AddEditProductPreviewConstants {
         const val DETAIL_DATA = 1
         const val DESCRIPTION_DATA = 2
         const val SHIPMENT_DATA = 3
+        const val DETAIL_DATA_INDEX = 0
+        const val DESCRIPTION_DATA_INDEX = 1
+        const val SHIPMENT_DATA_INDEX = 2
         const val REQUEST_CODE_SIZE = 3
         const val UPLOAD_DATA = 4
         const val BUNDLE_DRAFT_ID = "draftId"

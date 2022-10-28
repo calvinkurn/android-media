@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <declare-styleable name="rounded_corner_imageView">
-        <attr name="border_radius" format="dimension" />
-    </declare-styleable>
-
-</resources>

@@ -14,30 +14,30 @@ import java.util.*
 class DigitalRecommendationMapper {
     companion object {
 
-        fun transform(response: DigitalRecommendationResponse): DigitalRecommendationModel{
+        fun transform(response: DigitalRecommendationResponse): DigitalRecommendationModel {
 
             val items = response.personalizedItems.recommendationItems.map {
 
-                val discountLabel = when{
+                val discountLabel = when {
                     it.cashback.isNotEmpty() -> it.cashback
                     it.specialDiscount.isNotEmpty() -> it.specialDiscount
                     else -> it.discount
                 }
 
-                val discountType = when{
+                val discountType = when {
                     it.cashback.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_CASHBACK
                     it.specialDiscount.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_SPECIAL
                     it.discount.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_SLASH
                     else -> ""
                 }
 
-                val discountLabelType = when(discountType){
+                val discountLabelType = when (discountType) {
                     DigitalUnifyConst.DISCOUNT_CASHBACK -> Label.HIGHLIGHT_LIGHT_GREEN
                     DigitalUnifyConst.DISCOUNT_SPECIAL, DigitalUnifyConst.DISCOUNT_SLASH -> Label.HIGHLIGHT_LIGHT_RED
                     else -> 0
                 }
 
-                val itemUnify =  DigitalUnifyModel(
+                val itemUnify = DigitalUnifyModel(
                     id = it.id,
                     mediaUrl = it.mediaURL,
                     mediaType = response.personalizedItems.mediaUrlType,
@@ -69,7 +69,7 @@ class DigitalRecommendationMapper {
                     ),
                     priceData = DigitalCardPriceModel(
                         price = it.price,
-                        discountLabelType =discountLabelType,
+                        discountLabelType = discountLabelType,
                         discountLabel = discountLabel,
                         discountType = discountType,
                         slashedPrice = it.slashedPrice,

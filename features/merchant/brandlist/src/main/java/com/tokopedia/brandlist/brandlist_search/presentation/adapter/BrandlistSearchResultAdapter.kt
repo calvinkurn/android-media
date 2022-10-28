@@ -73,8 +73,10 @@ class BrandlistSearchResultAdapter(
         if (!isLoadMore && totalBrands == 0) {
             getVisitables().removeAll(getVisitables().filterIsInstance<BrandlistSearchResultUiModel>())
             notifyItemRangeRemoved(_startIndex, _totalUnusedData)
-            getVisitables().add(_startIndex, BrandlistSearchRecommendationNotFoundUiModel())
-            notifyItemChanged(_startIndex)
+            if (getVisitables().size > _startIndex) {
+                getVisitables().add(_startIndex, BrandlistSearchRecommendationNotFoundUiModel())
+                notifyItemChanged(_startIndex)
+            }
         }
     }
 

@@ -19,9 +19,9 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import java.math.BigInteger
 
 class MultipleVariantEditSelectBottomSheet(
-        private val multipleVariantEditListener: MultipleVariantEditListener? = null,
-        private val couldShowMultiLocationTicker: Boolean = false
-): BottomSheetUnify(), MultipleVariantEditInputBottomSheet.MultipleVariantEditInputListener,
+    private val multipleVariantEditListener: MultipleVariantEditListener? = null,
+    private val couldShowMultiLocationTicker: Boolean = false
+): BottomSheetUnify(), MultipleVariantEditListener,
         MultipleVariantEditSelectAdapter.OnSelectionsDataListener {
 
     companion object {
@@ -39,12 +39,6 @@ class MultipleVariantEditSelectBottomSheet(
     private var trackerShopId = ""
     private var trackerIsEditMode = false
 
-    interface MultipleVariantEditListener {
-        fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
-        fun onMultipleEditInputValidatePrice(price: BigInteger): String
-        fun onMultipleEditInputValidateStock(stock: BigInteger): String
-    }
-
     init {
         selectAdapter = MultipleVariantEditSelectAdapter()
         selectAdapter?.setOnSelectionsDataListener(this)
@@ -58,7 +52,7 @@ class MultipleVariantEditSelectBottomSheet(
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
         selectAdapter?.getSelectedData()?.let {
             multipleVariantEditInputModel.selection = it
-            multipleVariantEditListener?.onMultipleEditFinished(multipleVariantEditInputModel)
+            multipleVariantEditListener?.onMultipleEditInputFinished(multipleVariantEditInputModel)
         }
     }
 
@@ -68,6 +62,10 @@ class MultipleVariantEditSelectBottomSheet(
 
     override fun onMultipleEditInputValidateStock(stock: BigInteger): String {
         return multipleVariantEditListener?.onMultipleEditInputValidateStock(stock).orEmpty()
+    }
+
+    override fun onMultipleEditInputValidateWeight(weight: BigInteger): String {
+        return multipleVariantEditListener?.onMultipleEditInputValidateWeight(weight).orEmpty()
     }
 
     override fun onSelectionsDataChanged(selectedCount: Int) {

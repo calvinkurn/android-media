@@ -209,6 +209,9 @@ object AccountConstants {
         const val SETTING_DARK_MODE = 50
         const val SETTING_LINK_ACCOUNT = 51
         const val SETTING_VIEW_ALL_BALANCE = 52
+        const val SETTING_PLAY_WIDGET_AUTOPLAY = 53
+        const val SETTING_EXPLICIT_PROFILE = 54
+        const val SETTING_PRIVACY_ACCOUNT = 55
     }
 
     object KEY {
@@ -216,10 +219,12 @@ object AccountConstants {
         const val KEY_PREF_SAFE_SEARCH = "notification_safe_mode"
         const val KEY_SHOW_COACHMARK = "home_account_coachmark"
         const val CLEAR_CACHE = "clear cache"
+        const val KEY_PREF_PLAY_WIDGET_AUTOPLAY = "play_widget_autoplay"
     }
 
     object REQUEST {
         const val REQUEST_ADD_PASSWORD = 100
+        const val REQUEST_LOCATION_PERMISSION = 888
     }
 
     object TDNBanner {
@@ -249,5 +254,9 @@ object AccountConstants {
         const val REKSADANA = "reksadana"
         const val EMAS = "emas"
         const val PAYLATER = "paylater"
+    }
+
+    object RollenceKey {
+        const val BIOMETRIC_ENTRY_POINT = "and_biom_entry_point"
     }
 }

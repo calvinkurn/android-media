@@ -22,6 +22,7 @@ class AddressRevampRobot {
         val i = Intent()
         i.putExtra(EXTRA_REF, screenName)
         rule.launchActivity(i)
+        waitForData()
     }
 
     fun searchAddressStreet(keyword: String) {
@@ -38,22 +39,34 @@ class AddressRevampRobot {
 
     fun onClickChooseLocation() {
         onView(withId(R.id.btn_primary)).perform(click())
-        waitForData()
+        waitForData(3000)
     }
 
     fun fillAddress(address: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
-                .perform(click(), typeText(address), closeSoftKeyboard())
+                .perform(click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
+            .perform(replaceText(address), closeSoftKeyboard())
+        waitForData()
     }
 
     fun fillReceiver(receiver: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
-                .perform(click(), typeText(receiver), closeSoftKeyboard())
+                .perform(click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
+            .perform(replaceText(receiver), closeSoftKeyboard())
+        waitForData()
     }
 
     fun fillPhoneNumber(phone: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
-                .perform(click(), typeText(phone), closeSoftKeyboard())
+                .perform(click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
+            .perform(replaceText(phone), closeSoftKeyboard())
+        waitForData()
     }
 
     fun clickManualForm() {
@@ -68,7 +81,7 @@ class AddressRevampRobot {
     fun searchKotaKecamatan(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
         onView(withId(R.id.searchbar_textfield))
-                .perform(click(), typeText(keyword), closeSoftKeyboard())
+                .perform(click(), replaceText(keyword), closeSoftKeyboard())
         waitForData()
     }
 
@@ -94,11 +107,11 @@ class AddressRevampRobot {
 
     fun fillAddressNegative(address: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
-                .perform(click(), typeText(address), closeSoftKeyboard())
+                .perform(click(), replaceText(address), closeSoftKeyboard())
     }
 
-    private fun waitForData() {
-        Thread.sleep(1000L)
+    private fun waitForData(millis: Long = 1000) {
+        Thread.sleep(millis)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {

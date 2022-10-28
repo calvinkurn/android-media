@@ -7,8 +7,30 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.usecase.*
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -36,6 +58,7 @@ class StatisticViewModel @Inject constructor(
     private val getTableDataUseCase: Lazy<GetTableDataUseCase>,
     private val getPieChartDataUseCase: Lazy<GetPieChartDataUseCase>,
     private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
+    private val getAnnouncementDataUseCase: Lazy<GetAnnouncementDataUseCase>,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -65,6 +88,8 @@ class StatisticViewModel @Inject constructor(
         get() = _pieChartWidgetData
     val barChartWidgetData: LiveData<Result<List<BarChartDataUiModel>>>
         get() = _barChartWidgetData
+    val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
+        get() = _announcementWidgetData
 
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -79,6 +104,7 @@ class StatisticViewModel @Inject constructor(
     private val _tableWidgetData = MutableLiveData<Result<List<TableDataUiModel>>>()
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
+    private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
 
     private var dynamicParameter = DynamicParameterModel()
 
@@ -234,6 +260,19 @@ class StatisticViewModel @Inject constructor(
             _barChartWidgetData.postValue(result)
         }, onError = {
             _barChartWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getAnnouncementWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            getAnnouncementDataUseCase.get().params =
+                GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+            val result = Success(withContext(dispatcher.io) {
+                return@withContext getAnnouncementDataUseCase.get().executeOnBackground()
+            })
+            _announcementWidgetData.postValue(result)
+        }, onError = {
+            _announcementWidgetData.postValue(Fail(it))
         })
     }
 }

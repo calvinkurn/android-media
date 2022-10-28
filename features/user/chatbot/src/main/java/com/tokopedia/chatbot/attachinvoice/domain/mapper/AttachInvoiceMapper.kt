@@ -1,10 +1,9 @@
 package com.tokopedia.chatbot.attachinvoice.domain.mapper
 
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkAttributePojo
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkAttributePojo
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
-
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import javax.inject.Inject
 
 /**
@@ -16,22 +15,24 @@ internal constructor() {
     companion object {
 
         @Deprecated("")
-        fun selectedInvoiceViewModelToSelectedInvoice(viewModel: AttachInvoiceSingleViewModel): SelectedInvoice {
-            return SelectedInvoice(viewModel.id,
-                    viewModel.code,
-                    viewModel.typeString,
-                    viewModel.type,
-                    viewModel.title,
-                    viewModel.imageUrl,
-                    viewModel.description,
-                    viewModel.amount,
-                    viewModel.createdTime,
-                    viewModel.url,
-                    viewModel.status,
-                    viewModel.statusId)
+        fun selectedInvoiceViewModelToSelectedInvoice(viewModel: AttachInvoiceSingleUiModel): SelectedInvoice {
+            return SelectedInvoice(
+                viewModel.id,
+                viewModel.code,
+                viewModel.typeString,
+                viewModel.type,
+                viewModel.title,
+                viewModel.imageUrl,
+                viewModel.description,
+                viewModel.amount,
+                viewModel.createdTime,
+                viewModel.url,
+                viewModel.status,
+                viewModel.statusId
+            )
         }
 
-        fun invoiceViewModelToDomainInvoicePojo(selectedInvoice: AttachInvoiceSingleViewModel): InvoiceLinkPojo {
+        fun invoiceViewModelToDomainInvoicePojo(selectedInvoice: AttachInvoiceSingleUiModel): InvoiceLinkPojo {
             val invoiceLinkAttributePojo = InvoiceLinkAttributePojo()
             invoiceLinkAttributePojo.code = selectedInvoice.code
             invoiceLinkAttributePojo.createTime = selectedInvoice.createdTime
@@ -43,10 +44,11 @@ internal constructor() {
             invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
             invoiceLinkAttributePojo.title = selectedInvoice.title
             invoiceLinkAttributePojo.totalAmount = selectedInvoice.amount
+            invoiceLinkAttributePojo.color = selectedInvoice.color
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.typeString
-            invoiceLinkPojo.typeId = selectedInvoice.type
+            invoiceLinkPojo.typeId = selectedInvoice.type.toLong()
             invoiceLinkPojo.attributes = invoiceLinkAttributePojo
             return invoiceLinkPojo
         }
@@ -57,16 +59,17 @@ internal constructor() {
             invoiceLinkAttributePojo.createTime = selectedInvoice.date.toString()
             invoiceLinkAttributePojo.description = selectedInvoice.description.toString()
             invoiceLinkAttributePojo.hrefUrl = selectedInvoice.invoiceUrl.toString()
-            invoiceLinkAttributePojo.id = selectedInvoice.invoiceId!!
+            invoiceLinkAttributePojo.id = selectedInvoice.invoiceId ?: 0
             invoiceLinkAttributePojo.imageUrl = selectedInvoice.topProductImage.toString()
             invoiceLinkAttributePojo.status = selectedInvoice.status.toString()
             invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
             invoiceLinkAttributePojo.title = selectedInvoice.topProductName.toString()
             invoiceLinkAttributePojo.totalAmount = selectedInvoice.amount.toString()
+            invoiceLinkAttributePojo.color = selectedInvoice.color.toString()
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.invoiceTypeStr
-            invoiceLinkPojo.typeId = selectedInvoice.invoiceType!!
+            invoiceLinkPojo.typeId = selectedInvoice.invoiceType?.toLong() ?: 0
             invoiceLinkPojo.attributes = invoiceLinkAttributePojo
             return invoiceLinkPojo
         }

@@ -20,9 +20,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
@@ -43,7 +45,9 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_FULL_FLOW
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -78,6 +82,7 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
 import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
@@ -87,8 +92,22 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardI
 import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
-import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
+import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
+import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_FINISH_ERROR
+import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_ERROR
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -185,6 +204,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
             REQUEST_CODE_LINK_ACCOUNT -> onResultFromLinkAccount(resultCode, data)
             REQUEST_CODE_WALLET_ACTIVATION -> refresh()
+            REQUEST_CODE_ADD_ON -> onResultFromAddOn(resultCode, data)
         }
     }
 
@@ -204,26 +224,27 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
             } else {
-                val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
-                if (validateUsePromoRevampUiModel != null) {
-                    viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
-                    viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
+                data?.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)?.let {
+                    viewModel.lastValidateUsePromoRequest = it
                 }
 
-                val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
-                if (validateUsePromoRequest != null) {
-                    viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
+                data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)?.let {
+                    viewModel.validateUsePromoRevampUiModel = it
+                    viewModel.validateBboStacking()
+                    viewModel.updatePromoStateWithoutCalculate(it.promoUiModel)
+                    viewModel.reloadRates()
                 }
 
-                val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
-                if (clearPromoUiModel != null) {
+                data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)?.let {
                     //reset
                     viewModel.validateUsePromoRevampUiModel = null
-                    viewModel.updatePromoState(PromoUiModel().apply {
-                        titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+                    viewModel.updatePromoStateWithoutCalculate(
+                        PromoUiModel().apply {
+                        titleDescription = it.successDataModel.defaultEmptyPromoMessage
                     })
-                    // trigger validate to reset BBO benefit
-                    viewModel.validateUsePromo()
+                    viewModel.autoUnApplyBBO()
+                    // refresh shipping section and calculate total
+                    viewModel.reloadRates()
                 }
             }
         }
@@ -287,6 +308,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         refresh()
     }
 
+    private fun onResultFromAddOn(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            val result = data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
+            result?.let {
+                viewModel.updateAddOn(it)
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentOrderSummaryPageBinding.inflate(inflater, container, false)
         return binding.root
@@ -318,6 +348,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             progressDialog?.dismiss()
             viewModel.globalEvent.value = OccGlobalEvent.Normal
         }
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -381,6 +416,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             putExtra(EXTRA_IS_FULL_FLOW, true)
                             putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
                             putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
+                            putExtra(PARAM_SOURCE, AddEditAddressSource.OCC.source)
                         }, REQUEST_CODE_ADD_NEW_ADDRESS)
                     } else {
                         startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
@@ -715,11 +751,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                     }
                 }
+                is OccGlobalEvent.AdjustShippingToaster -> {
+                    view?.let { v ->
+                        Toaster.build(v, getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message)).show()
+                    }
+                }
                 is OccGlobalEvent.ToasterInfo -> {
                     progressDialog?.dismiss()
                     view?.let { v ->
                         Toaster.build(v, it.message).show()
                     }
+                }
+
+                is OccGlobalEvent.PopUp -> {
+                    showPopUpDialog(it.popUp)
                 }
             }
         }
@@ -731,6 +776,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
                 intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.address.state)
                 intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET, true)
+                intent.putExtra(PARAM_SOURCE, ManageAddressSource.DISTRICT_NOT_MATCH.source)
                 startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
             }
             AddressState.ERROR_CODE_OPEN_ANA -> {
@@ -801,11 +847,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             serviceType = if (shouldUpdateTokoNowData) addressModel.tokoNow.serviceType else localCache.service_type)
                 } else if (shouldUpdateTokoNowData) {
                     ChooseAddressUtils.updateTokoNowData(
-                        context = it,
-                        shopId = addressModel.tokoNow.shopId,
-                        warehouseId = addressModel.tokoNow.warehouseId,
-                        warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
-                        serviceType = addressModel.tokoNow.serviceType
+                            context = it,
+                            shopId = addressModel.tokoNow.shopId,
+                            warehouseId = addressModel.tokoNow.warehouseId,
+                            warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(addressModel.tokoNow.warehouses),
+                            serviceType = addressModel.tokoNow.serviceType
                     )
                 }
             }
@@ -1209,6 +1255,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showPopUpDialog(popUpData: PopUpData) {
+        activity?.let {
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(popUpData.title)
+                setDescription(popUpData.description)
+                setPrimaryCTAText(popUpData.button.text)
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                show()
+            }
+        }
+    }
+
     private fun getOrderShopCardListener(): OrderShopCard.OrderShopCardListener = object : OrderShopCard.OrderShopCardListener {
         override fun onClickLihatProductError(index: Int) {
             binding.rvOrderSummaryPage.layoutManager?.let {
@@ -1233,7 +1293,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionPricePerProduct: Int, protectionTitle: String) {
-            PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
+            PurchaseProtectionInfoBottomsheet(url,userSession.get()).show(this@OrderSummaryPageFragment)
             orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, protectionPricePerProduct, protectionTitle)
         }
 
@@ -1249,6 +1309,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun getLastPurchaseProtectionCheckState(productId: Long): Int {
             return lastPurchaseProtectionCheckStates[productId]
                     ?: PurchaseProtectionPlanData.STATE_EMPTY
+        }
+
+        override fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
+            // No need to open add on bottom sheet if action = 0
+            if (addOn.addOnsButtonModel.action != 0) {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+                intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
+                        AddOnMapper.mapAddOnBottomSheetParam(addOnButtonType, addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
+                )
+                intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
+                startActivityForResult(intent, REQUEST_CODE_ADD_ON)
+            }
         }
     }
 
@@ -1332,7 +1404,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, payment.bid)
                 putExtra(PaymentListingActivity.EXTRA_ORDER_METADATA, GoCicilInstallmentRequest(
                         merchantType = viewModel.orderCart.shop.merchantType,
-                        paymentAmount = orderCost.totalPriceWithoutPaymentFees
+                        paymentAmount = orderCost.totalPriceWithoutPaymentFees,
+                        address = profile.address,
+                        products = viewModel.orderCart.products
                 ).orderMetadata)
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
@@ -1362,7 +1436,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val orderTotal = viewModel.orderTotal.value
             if (orderTotal.buttonState != OccButtonState.LOADING) {
                 GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment,
-                        viewModel.orderCart, viewModel.orderPayment.value, orderTotal.orderCost, userSession.get().userId,
+                        viewModel.orderCart, viewModel.orderPayment.value, viewModel.orderProfile.value, orderTotal.orderCost, userSession.get().userId,
                         object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                             override fun onSelectInstallment(selectedInstallment: OrderPaymentGoCicilTerms, installmentList: List<OrderPaymentGoCicilTerms>, isSilent: Boolean) {
                                 viewModel.chooseInstallment(selectedInstallment, installmentList, isSilent)
@@ -1409,7 +1483,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             context?.let { ctx ->
                 if (!URLUtil.isNetworkUrl(activationUrl) && RouteManager.isSupportApplink(ctx, activationUrl)) {
                     if (activationUrl.startsWith(ApplinkConst.LINK_ACCOUNT)) {
-                        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+                        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
                             putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
                             putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
                         }
@@ -1457,24 +1531,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 viewModel.setInsuranceCheck(isChecked)
             }
 
-            override fun onClickInsuranceInfo(title: String, message: String, image: Int) {
-                context?.also { ctx ->
-                    GeneralBottomSheet().apply {
-                        setTitle(title)
-                        setDesc(message)
-                        setButtonText(getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
-                        setIcon(image)
-                        setButtonOnClickListener { it.dismiss() }
-                    }.show(ctx, parentFragmentManager)
-                }
+            override fun onClickInsuranceInfo(message: String) {
+                orderSummaryAnalytics.eventClickOnInsuranceInfoTooltip(userSession.get().userId)
+                showInsuranceBottomSheet(message)
             }
+        }
+    }
+
+    private fun showInsuranceBottomSheet(message: String) {
+        context?.let { ctx ->
+            InsuranceBottomSheet().apply {
+                setDesc(message)
+            }.show(getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance), ctx, parentFragmentManager)
         }
     }
 
     private fun getOrderPromoCardListener(): OrderPromoCard.OrderPromoCardListener {
         return object : OrderPromoCard.OrderPromoCardListener {
             override fun onClickRetryValidatePromo() {
-                viewModel.validateUsePromo()
+                viewModel.validateUsePromo(forceValidateUse = true)
             }
 
             override fun onClickPromo() {
@@ -1536,6 +1611,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         const val REQUEST_CODE_LINK_ACCOUNT = 22
         const val REQUEST_CODE_WALLET_ACTIVATION = 23
+
+        const val REQUEST_CODE_ADD_ON = 24
 
         const val QUERY_PRODUCT_ID = "product_id"
         const val QUERY_SOURCE = "source"

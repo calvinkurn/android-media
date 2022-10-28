@@ -8,17 +8,15 @@ import com.tokopedia.productcard.options.di.ProductCardOptionsScope
 import com.tokopedia.productcard.options.di.TopAdsWishlistUseCaseModule
 import com.tokopedia.productcard.options.di.UserSessionModule
 import com.tokopedia.productcard.options.di.WishlistUseCaseModule
-import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
 @Module(includes = [
     WishlistUseCaseModule::class,
-    TopAdsWishlistUseCaseModule::class,
     UserSessionModule::class
 ])
 internal class ProductCardOptionsViewModelFactoryModule(
@@ -29,9 +27,8 @@ internal class ProductCardOptionsViewModelFactoryModule(
     @Provides
     @Named(PRODUCT_CARD_OPTIONS_VIEW_MODEL_FACTORY)
     fun provideProductCardOptionsViewModelFactory(
-            addWishListUseCase: AddWishListUseCase,
-            removeWishListUseCase: RemoveWishListUseCase,
-            topAdsWishlistUseCase: UseCase<Boolean>,
+            addToWishlistV2UseCase: AddToWishlistV2UseCase,
+            deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
             addToCartUseCase: AddToCartUseCase,
             userSession: UserSessionInterface,
             coroutineDispatchers: CoroutineDispatchers
@@ -39,9 +36,8 @@ internal class ProductCardOptionsViewModelFactoryModule(
         return ProductCardOptionsViewModelFactory(
                 coroutineDispatchers,
                 productCardOptionsModel,
-                addWishListUseCase,
-                removeWishListUseCase,
-                topAdsWishlistUseCase,
+                addToWishlistV2UseCase,
+                deleteWishlistV2UseCase,
                 addToCartUseCase,
                 userSession
         )

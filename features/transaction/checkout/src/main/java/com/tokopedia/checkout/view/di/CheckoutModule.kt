@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
+import com.tokopedia.checkout.analytics.EPharmacyAnalytics
 import com.tokopedia.checkout.domain.mapper.CheckoutMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
@@ -16,6 +17,7 @@ import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
@@ -58,6 +60,12 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
+    fun provideShipmentDataRequestConverter(gson: Gson): ShipmentDataRequestConverter {
+        return ShipmentDataRequestConverter(gson)
+    }
+
+    @Provides
+    @CheckoutScope
     fun provideCompositeSubscription(): CompositeSubscription {
         return CompositeSubscription()
     }
@@ -90,6 +98,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
+                                 prescriptionIdsUseCase: GetPrescriptionIdsUseCase,
                                  validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                  gson: Gson,
                                  executorSchedulers: ExecutorSchedulers,
@@ -102,7 +111,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 clearCacheAutoApplyStackUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, checkoutAnalytics,
-                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,
+                shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+                validateUsePromoRevampUseCase, gson,
                 executorSchedulers, eligibleForAddressUseCase)
     }
 
@@ -143,5 +153,11 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     fun provideCheckoutTradeInAnalytics(userSession: UserSessionInterface): CheckoutTradeInAnalytics {
         return CheckoutTradeInAnalytics(userSession.userId)
+    }
+
+    @Provides
+    @CheckoutScope
+    fun provideEPharmacyAnalytics(userSession: UserSessionInterface): EPharmacyAnalytics {
+        return EPharmacyAnalytics(userSession.userId)
     }
 }

@@ -48,8 +48,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassava
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassavaNoOp
     }
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
@@ -72,7 +74,6 @@ dependencies {
 
     testImplementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

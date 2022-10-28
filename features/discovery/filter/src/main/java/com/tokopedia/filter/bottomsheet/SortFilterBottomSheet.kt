@@ -16,6 +16,7 @@ import com.tokopedia.filter.R
 import com.tokopedia.filter.bottomsheet.filter.FilterViewListener
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.filtercategorydetail.FilterCategoryDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
@@ -23,12 +24,14 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.configureBottomSheetHeight
 import com.tokopedia.filter.common.helper.setBottomSheetActionBold
+import com.tokopedia.filter.databinding.SortFilterBottomSheetBinding
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -37,7 +40,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet.view.*
 
 class SortFilterBottomSheet: BottomSheetUnify() {
 
@@ -51,6 +53,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private var sortFilterBottomSheetViewModel: SortFilterBottomSheetViewModel? = null
     private var sortFilterBottomSheetView: View? = null
+    private var binding: SortFilterBottomSheetBinding? = null
     private val sortViewListener = object: SortViewListener {
         override fun onSortItemClick(sortItemViewModel: SortItemViewModel) {
             sortFilterBottomSheetViewModel?.onSortItemClick(sortItemViewModel)
@@ -111,10 +114,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private val keywordFilterListener = object: KeywordFilterListener {
         override fun scrollToPosition(position: Int) {
-            val layoutManager =
-                sortFilterBottomSheetView
-                    ?.recyclerViewSortFilterBottomSheet
-                    ?.layoutManager
+            val layoutManager = binding?.recyclerViewSortFilterBottomSheet?.layoutManager
 
             if (layoutManager is LinearLayoutManager)
                 layoutManager.scrollToPositionWithOffset(position, 0)
@@ -125,12 +125,23 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         }
     }
 
+    private val priceRangeFilterCheckboxListener = object : PriceRangeFilterCheckboxListener {
+
+        override fun onPriceRangeFilterCheckboxItemClicked(
+            priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
+            optionViewModel: OptionViewModel
+        ) {
+            sortFilterBottomSheetViewModel?.onOptionClick(priceRangeFilterCheckboxDataView, optionViewModel)
+        }
+    }
+
     private val sortFilterBottomSheetAdapter = SortFilterBottomSheetAdapter(
             SortFilterBottomSheetTypeFactoryImpl(
                 sortViewListener,
                 filterViewListener,
                 priceFilterListener,
                 keywordFilterListener,
+                priceRangeFilterCheckboxListener,
             )
     )
 
@@ -150,9 +161,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     fun setResultCountText(buttonApplySortFilterText: String) {
-        sortFilterBottomSheetView?.let {
-            it.buttonApplySortFilter.isLoading = false
-            it.buttonApplySortFilter.text = buttonApplySortFilterText
+        binding?.buttonApplySortFilter?.let {
+            it.isLoading = buttonApplySortFilterText.isEmpty()
+            it.text = buttonApplySortFilterText
         }
     }
 
@@ -179,7 +190,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
         initBottomSheetAction()
 
-        sortFilterBottomSheetView = View.inflate(requireContext(), R.layout.sort_filter_bottom_sheet, null)
+        val view = View.inflate(requireContext(), R.layout.sort_filter_bottom_sheet, null)
+        binding = SortFilterBottomSheetBinding.bind(view)
+        sortFilterBottomSheetView = binding?.root
         setChild(sortFilterBottomSheetView)
 
         initRecyclerView()
@@ -201,10 +214,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun initRecyclerView() {
-        sortFilterBottomSheetView?.let {
-            it.recyclerViewSortFilterBottomSheet?.adapter = sortFilterBottomSheetAdapter
-            it.recyclerViewSortFilterBottomSheet?.layoutManager = LinearLayoutManager(activity, VERTICAL, false)
-            it.recyclerViewSortFilterBottomSheet?.addOnScrollListener(createRecyclerViewOnScrollListener())
+        binding?.recyclerViewSortFilterBottomSheet?.let {
+            it.adapter = sortFilterBottomSheetAdapter
+            it.layoutManager = LinearLayoutManager(activity, VERTICAL, false)
+            it.addOnScrollListener(createRecyclerViewOnScrollListener())
         }
     }
 
@@ -221,7 +234,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun initButtonApplySortFilter() {
-        sortFilterBottomSheetView?.buttonApplySortFilter?.setOnClickListener(this::onButtonApplySortFilterClicked)
+        binding?.buttonApplySortFilter?.setOnClickListener(this::onButtonApplySortFilterClicked)
     }
 
     private fun onButtonApplySortFilterClicked(view: View) {
@@ -284,7 +297,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private fun processSortFilterList(sortFilterList: List<Visitable<SortFilterBottomSheetTypeFactory>>) {
         sortFilterBottomSheetAdapter.setSortFilterList(sortFilterList)
-        sortFilterBottomSheetView?.recyclerViewSortFilterBottomSheet?.scrollToPosition(0)
+        binding?.recyclerViewSortFilterBottomSheet?.scrollToPosition(0)
     }
 
     private fun processUpdateViewInPosition(position: Int) {
@@ -292,23 +305,36 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun processLoading(isLoading: Boolean) {
-        if (isLoading) {
-            sortFilterBottomSheetView?.let {
-                if (context.isDarkMode()) {
-                    it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
-                } else {
-                    it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                }
-                it.buttonApplyContainer?.visibility = View.VISIBLE
-                it.buttonApplySortFilter?.isLoading = true
-                it.buttonApplySortFilter?.text = ""
-            }
+        if (isLoading)
+            showButtonApplyFilter()
+        else
+            hideButtonApplyFilter()
+    }
 
-            sortFilterCallback?.getResultCount(sortFilterBottomSheetViewModel?.mapParameter ?: mapOf())
+    private fun showButtonApplyFilter() {
+        binding?.buttonApplyContainer?.let {
+            it.background = getButtonApplyContainerBackground()
+            it.visibility = View.VISIBLE
         }
-        else {
-            sortFilterBottomSheetView?.buttonApplyContainer?.visibility = View.GONE
-        }
+
+        setButtonApplyFilterText()
+    }
+
+    private fun setButtonApplyFilterText() {
+        val mapParameter = sortFilterBottomSheetViewModel?.mapParameter ?: mapOf()
+
+        setResultCountText("")
+        sortFilterCallback?.getResultCount(mapParameter)
+    }
+
+    private fun getButtonApplyContainerBackground() =
+        if (context.isDarkMode())
+            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+        else
+            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+
+    private fun hideButtonApplyFilter() {
+        binding?.buttonApplyContainer?.visibility = View.GONE
     }
 
     private fun setActionResetVisibility(isVisible: Boolean) {
@@ -332,18 +358,16 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun showLoadingForDynamicFilter() {
-        sortFilterBottomSheetView?.let {
-            it.progressBarSortFilterBottomSheet?.show()
-            it.recyclerViewSortFilterBottomSheet?.hide()
-            it.buttonApplyContainer?.hide()
-        }
+        val binding = binding ?: return
+        binding.progressBarSortFilterBottomSheet.show()
+        binding.recyclerViewSortFilterBottomSheet.hide()
+        binding.buttonApplyContainer.hide()
     }
 
     private fun finishLoadingForDynamicFilter() {
-        sortFilterBottomSheetView?.let {
-            it.progressBarSortFilterBottomSheet?.hide()
-            it.recyclerViewSortFilterBottomSheet?.show()
-        }
+        val binding = binding ?: return
+        binding.progressBarSortFilterBottomSheet.hide()
+        binding.recyclerViewSortFilterBottomSheet.show()
     }
 
     override fun onDestroyView() {
@@ -352,6 +376,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
                 it.removeAllViews()
             }
         }
+        binding = null
 
         super.onDestroyView()
     }

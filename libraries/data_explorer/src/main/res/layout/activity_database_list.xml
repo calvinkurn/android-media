@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/il_main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/dataExplorerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_title="@string/title_app_data_explorer"
+        app:unify_header_is_show_shadow="false"
+        />
+
+    <FrameLayout
+        android:background="@color/Unify_Background"
+        android:id="@+id/dbInspectorFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/dataExplorerHeader" />
+
+
+</RelativeLayout>

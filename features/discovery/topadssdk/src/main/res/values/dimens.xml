@@ -58,8 +58,20 @@
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_32">32dp</dimen>
 
+
     <dimen name="shop_recommendation_width">220dp</dimen>
     <dimen name="dp_148">148dp</dimen>
     <dimen name="topads_sdk_headline_ad_width">132dp</dimen>
     <dimen name="topads_sdk_headline_ad_max_height">226dp</dimen>
+    <dimen name="sdk_dp_1">1dp</dimen>
+    <dimen name="sdk_dp_140">140dp</dimen>
+    <dimen name="sdk_dp_132">132dp</dimen>
+    <dimen name="sdk_dp_14">14dp</dimen>
+    <dimen name="sdk_dp_110">110dp</dimen>
+    <dimen name="sdk_dp_94">94dp</dimen>
+    <dimen name="sdk_dp_10">10dp</dimen>
+    <dimen name="sdk_dp_112">112dp</dimen>
+    <dimen name="sdk_dp_300">300dp</dimen>
+    <dimen name="sdk_dp_36">36dp</dimen>
+    <dimen name="sdk_dp_16">16dp</dimen>
 </resources>

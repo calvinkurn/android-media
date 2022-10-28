@@ -1,7 +1,9 @@
 package com.tokopedia.digital_deals.view.model;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.tokopedia.common_entertainment.data.Brand;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -29,10 +31,11 @@ public class ProductItem extends BaseItem implements Parcelable {
     private String longRichDesc;
     @SerializedName("mrp")
     @Expose
-    private int mrp;
+    private long mrp;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("sales_price")
     @Expose
-    private int salesPrice;
+    private long salesPrice;
     @SerializedName("quantity")
     @Expose
     private int quantity;
@@ -92,16 +95,16 @@ public class ProductItem extends BaseItem implements Parcelable {
     private Object media;
     @SerializedName("id")
     @Expose
-    private int id;
+    private long id;
     @SerializedName("is_searchable")
     @Expose
     private int isSearchable;
     @SerializedName("category_id")
     @Expose
-    private int categoryId;
+    private String categoryId;
     @SerializedName("provider_id")
     @Expose
-    private int providerId;
+    private String providerId;
     @SerializedName("provider_product_id")
     @Expose
     private String providerProductId;
@@ -164,8 +167,8 @@ public class ProductItem extends BaseItem implements Parcelable {
         imageWeb = in.readString();
         thumbnailWeb = in.readString();
         longRichDesc = in.readString();
-        mrp = in.readInt();
-        salesPrice = in.readInt();
+        mrp = in.readLong();
+        salesPrice = in.readLong();
         quantity = in.readInt();
         soldQuantity = in.readInt();
         sellRate = in.readInt();
@@ -185,8 +188,8 @@ public class ProductItem extends BaseItem implements Parcelable {
         likes = in.readInt();
         id = in.readInt();
         isSearchable = in.readInt();
-        categoryId = in.readInt();
-        providerId = in.readInt();
+        categoryId = in.readString();
+        providerId = in.readString();
         providerProductId = in.readString();
         providerProductName = in.readString();
         saleStartTime = in.readString();
@@ -272,19 +275,19 @@ public class ProductItem extends BaseItem implements Parcelable {
         this.longRichDesc = longRichDesc;
     }
 
-    public int getMrp() {
+    public long getMrp() {
         return mrp;
     }
 
-    public void setMrp(int mrp) {
+    public void setMrp(long mrp) {
         this.mrp = mrp;
     }
 
-    public int getSalesPrice() {
+    public long getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(int salesPrice) {
+    public void setSalesPrice(long salesPrice) {
         this.salesPrice = salesPrice;
     }
 
@@ -481,11 +484,11 @@ public class ProductItem extends BaseItem implements Parcelable {
         isLiked = liked;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -505,8 +508,8 @@ public class ProductItem extends BaseItem implements Parcelable {
         dest.writeString(imageWeb);
         dest.writeString(thumbnailWeb);
         dest.writeString(longRichDesc);
-        dest.writeInt(mrp);
-        dest.writeInt(salesPrice);
+        dest.writeLong(mrp);
+        dest.writeLong(salesPrice);
         dest.writeInt(quantity);
         dest.writeInt(soldQuantity);
         dest.writeInt(sellRate);
@@ -523,10 +526,10 @@ public class ProductItem extends BaseItem implements Parcelable {
         dest.writeString(cityName);
         dest.writeInt(rating);
         dest.writeInt(likes);
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeInt(isSearchable);
-        dest.writeInt(categoryId);
-        dest.writeInt(providerId);
+        dest.writeString(categoryId);
+        dest.writeString(providerId);
         dest.writeString(providerProductId);
         dest.writeString(providerProductName);
         dest.writeString(saleStartTime);

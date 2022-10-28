@@ -39,6 +39,7 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
             }
             newIntent.replaceExtras(intent);
             newIntent.setAction(intent.getAction());
+
             context.startActivity(newIntent);
         }
     }

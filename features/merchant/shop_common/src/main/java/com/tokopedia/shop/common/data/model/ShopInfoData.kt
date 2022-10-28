@@ -16,5 +16,10 @@ data class ShopInfoData(
         val isGold: Int,
         val openSince: String,
         val shipments: List<ShopShipmentData>,
-        val shopSnippetUrl: String
-): Parcelable
+        val shopSnippetUrl: String,
+        val isGoApotik: Boolean,
+        val siaNumber: String,
+        val sipaNumber: String,
+        val apj: String,
+        val partnerLabel: String
+) : Parcelable

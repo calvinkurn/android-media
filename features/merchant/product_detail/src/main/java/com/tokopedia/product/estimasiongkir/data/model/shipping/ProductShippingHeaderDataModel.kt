@@ -3,6 +3,7 @@ package com.tokopedia.product.estimasiongkir.data.model.shipping
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW_15
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.NO_BEBAS_ONGKIR
+import com.tokopedia.product.estimasiongkir.data.model.v3.FreeShipping
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactory
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 
@@ -18,9 +19,11 @@ data class ProductShippingHeaderDataModel(
         val freeOngkirEstimation: String = "",
         val freeOngkirPrice: String = "",
         val freeOngkirPriceOriginal: Double = 0.0,
+        val isFreeOngkirQuotaEmpty: Boolean = false,
         val freeOngkirDesc: String = "",
         val freeOngkirImageUrl: String = "",
         val freeOngkirTokoNowText:String = "",
+        val freeOngkirEtas: List<FreeShipping.Eta> = emptyList(),
 
         val isFulfillment: Boolean = false,
         val tokoCabangIcon: String = "",

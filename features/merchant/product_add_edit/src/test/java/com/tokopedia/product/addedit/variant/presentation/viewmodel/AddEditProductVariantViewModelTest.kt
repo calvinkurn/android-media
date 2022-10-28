@@ -87,7 +87,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         )
 
         val colorVariantDetailTest1 = variantDetailsTest[0]
-        val colorVariantDetailTest2 = variantDetailsTest[1].apply { variantID = 1 }
+        val colorVariantDetailTest2 = variantDetailsTest[1].apply { variantID = 1.toBigInteger() }
         val colorVariantDetailsTest = listOf(colorVariantDetailTest1, colorVariantDetailTest2)
 
         spiedViewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
@@ -286,11 +286,6 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         // validate removing unidentified layout pos
         viewModel.removeSelectedVariantUnitValue(1000, variantDetailTest1.units[0].unitValues[2])
         assert(viewModel.isVariantUnitValuesEmpty(0))
-
-        // validate removing all variant
-        viewModel.clearProductVariant()
-        val selection = viewModel.productInputModel.value?.variantInputModel?.selections
-        assert(selection?.isEmpty() == true)
     }
 
     @Test
@@ -652,7 +647,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val expectedVariantData = VariantDetail()
         viewModel.updateVariantDataMap(layoutPosition, expectedVariantData)
         assert(viewModel.getVariantData(layoutPosition) == expectedVariantData)
-        assert(viewModel.getVariantData(9999).variantID == 0)
+        assert(viewModel.getVariantData(9999).variantID == 0.toBigInteger())
     }
 
     @Test
@@ -671,21 +666,12 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `product variant photos should ignore set value when the variant type is not color`() {
-        val selectedVariantDetail = VariantDetail(variantID = 9999999)
+        val selectedVariantDetail = VariantDetail(variantID = 9999999.toBigInteger())
         viewModel.showProductVariantPhotos(selectedVariantDetail)
         assert(viewModel.isVariantPhotosVisible.value == null)
 
         viewModel.hideProductVariantPhotos(selectedVariantDetail)
         assert(viewModel.isVariantPhotosVisible.value == null)
-    }
-
-    @Test
-    fun `clear product variant should the product list inside variant input model`() {
-        viewModel.productInputModel.value?.variantInputModel?.products = listOf(ProductVariantInputModel())
-        viewModel.clearProductVariant()
-        viewModel.productInputModel.value?.variantInputModel?.products?.run {
-            assert(this.isEmpty())
-        }
     }
 
     @Test
@@ -766,6 +752,21 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     }
 
     @Test
+    fun `removing product variant should remove custom variant stype`() {
+        viewModel.productInputModel.value = ProductInputModel(productId = 0)
+        viewModel.isEditMode.getOrAwaitValue()
+        viewModel.removeVariant()
+
+        viewModel.productInputModel.value = ProductInputModel(productId = 1333)
+        viewModel.isEditMode.getOrAwaitValue()
+        viewModel.removeVariant()
+
+        viewModel.productInputModel.value = ProductInputModel(productId = 0)
+        viewModel.isEditMode.getOrAwaitValue()
+        viewModel.removeSelectedVariantDetails(VariantDetail())
+    }
+
+    @Test
     fun `view model should be able to map variant photo into variant picture input model`() {
         val expectedFilePathUrlOriginal = "expected value"
         val expectedPicID = "expected value"
@@ -826,7 +827,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         productInputModel.variantInputModel.selections = listOf(selectionInputModel1)
         val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
         val selectedVariantDetail = selectedVariantDetails.first()
-        assert(selectedVariantDetail.variantID == expectedVariantId)
+        assert(selectedVariantDetail.variantID == expectedVariantId.toBigInteger())
         assert(selectedVariantDetail.identifier == expectedIdentifier)
         assert(selectedVariantDetail.name == expectedName)
         assert(selectedVariantDetail.units == expectedUnits)
@@ -834,8 +835,8 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `view model should be able to remove selected variant detail from collection`() {
-        val selectedVariantDetail1 = VariantDetail(variantID = 10)
-        val selectedVariantDetail2 = VariantDetail(variantID = 20)
+        val selectedVariantDetail1 = VariantDetail(variantID = 10.toBigInteger())
+        val selectedVariantDetail2 = VariantDetail(variantID = 20.toBigInteger())
         viewModel.setSelectedVariantDetails(mutableListOf(selectedVariantDetail1, selectedVariantDetail2))
         viewModel.removeSelectedVariantDetails(selectedVariantDetail1)
         assert(viewModel.getSelectedVariantDetails().size == 1)

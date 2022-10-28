@@ -61,7 +61,8 @@
                 app:layout_constraintEnd_toStartOf="@id/ic_pm_reputation_right"
                 app:layout_constraintStart_toEndOf="@id/ic_pm_badge_current_status"
                 app:layout_constraintTop_toBottomOf="@id/tv_pm_reputation_score_label"
-                app:typographyType="heading_4"
+                app:typographyType="display_1"
+                app:typographyWeight="bold"
                 tools:text="@string/example_regarding_penalty_pm_value" />
 
             <com.tokopedia.iconunify.IconUnify
@@ -100,7 +101,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:typographyType="heading_5"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
                 android:text="@string/title_content_pm_section"
                 android:textColor="@color/Unify_N700_96" />
 
@@ -128,7 +130,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrierTitleContentPMSection"
-                app:typographyType="body_2"
+                app:typographyType="display_2"
                 android:text="@string/desc_content_pm_to_pm_pro_section" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -154,7 +156,7 @@
                 app:layout_constraintTop_toBottomOf="@id/rv_pm_to_pm_pro_potential_benefit"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="@dimen/spacing_lvl4"
-                app:typographyType="body_2"
+                app:typographyType="display_2"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.iconunify.IconUnify

@@ -9,13 +9,7 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOptio
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
-import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -78,7 +72,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
     }
 
     suspend fun getGopayAdminFee(orderPayment: OrderPayment, userId: String,
-                                 orderCost: OrderCost, orderCart: OrderCart): Triple<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>, Boolean>? {
+                                 orderCost: OrderCost, orderCart: OrderCart,
+                                 orderProfile: OrderProfile): Triple<OrderPaymentGoCicilTerms, List<OrderPaymentGoCicilTerms>, Boolean>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
@@ -90,7 +85,9 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
                                         profileCode = orderPayment.creditCard.additionalData.profileCode,
                                         userId = userId,
                                         paymentAmount = orderCost.totalPriceWithoutPaymentFees,
-                                        merchantType = orderCart.shop.merchantType
+                                        merchantType = orderCart.shop.merchantType,
+                                        address = orderProfile.address,
+                                        products = orderCart.products
                                 )
                         )
                 )

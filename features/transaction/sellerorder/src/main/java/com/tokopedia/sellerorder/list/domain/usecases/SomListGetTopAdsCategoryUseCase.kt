@@ -27,8 +27,8 @@ class SomListGetTopAdsCategoryUseCase @Inject constructor(
         }
     }
 
-    fun setParams(shopId: Int) {
-        params.putInt(PARAM_SHOP_ID, shopId)
+    fun setParams(shopId: Long) {
+        params.putLong(PARAM_SHOP_ID, shopId)
     }
 
     companion object {

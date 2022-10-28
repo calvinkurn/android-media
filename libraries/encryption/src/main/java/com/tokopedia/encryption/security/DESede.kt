@@ -1,8 +1,6 @@
 package com.tokopedia.encryption.security
 
 import com.tokopedia.encryption.utils.Constants
-import com.tokopedia.encryption.utils.Utils.byteToHex
-import com.tokopedia.encryption.utils.Utils.decodeHex
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey

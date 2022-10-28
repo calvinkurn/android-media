@@ -57,16 +57,15 @@ class CalendarWidgetItemViewModelTest {
             coEvery { application.getString(any()) } returns stringTest
             coEvery { viewModel.subScribeToUseCase.subscribeToPush(any()) } returns pushSubscriptionResponse
 
-            viewModel.subscribeUserForPushNotification(1)
+            viewModel.subscribeUserForPushNotification("1")
 
             assertEquals(viewModel.getPushBannerStatusData().value, Pair(true, stringTest))
 
 
             every { viewModel.isUserLoggedIn() } returns false
 
-            viewModel.subscribeUserForPushNotification(1)
+            viewModel.subscribeUserForPushNotification("1")
 
-            assertEquals(viewModel.getShowLoginData().value , true)
         }
     }
 
@@ -78,16 +77,15 @@ class CalendarWidgetItemViewModelTest {
             coEvery { application.getString(any()) } returns stringTest
             coEvery { viewModel.subScribeToUseCase.unSubscribeToPush(any()) } returns pushUnSubscriptionResponse
 
-            viewModel.unSubscribeUserForPushNotification(1)
+            viewModel.unSubscribeUserForPushNotification("1")
 
             assertEquals(viewModel.getPushBannerStatusData().value, Pair(false, stringTest))
 
 
             every { viewModel.isUserLoggedIn() } returns false
 
-            viewModel.unSubscribeUserForPushNotification(1)
+            viewModel.unSubscribeUserForPushNotification("1")
 
-            assertEquals(viewModel.getShowLoginData().value , true)
         }
     }
     @Test
@@ -97,16 +95,15 @@ class CalendarWidgetItemViewModelTest {
             every { viewModel.isUserLoggedIn() } returns true
             coEvery { viewModel.checkPushStatusUseCase.checkPushStatus(any()) } returns pushStatusResponse
 
-            viewModel.checkUserPushStatus(1)
+            viewModel.checkUserPushStatus("1")
 
             assertEquals(viewModel.getPushBannerSubscriptionData().value, true)
 
 
             every { viewModel.isUserLoggedIn() } returns false
 
-            viewModel.checkUserPushStatus(1)
+            viewModel.checkUserPushStatus("1")
 
-            assertEquals(viewModel.getShowLoginData().value , true)
         }
     }
 

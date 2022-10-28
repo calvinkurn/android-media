@@ -4,8 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class OfficialStoreBanners(
     @SerializedName("slides")
-    val banners: MutableList<Banner> = mutableListOf(),
-    var isCache: Boolean = false
+    val banners: MutableList<Banner> = mutableListOf()
 ) {
     data class Response(
             @SerializedName("slides")

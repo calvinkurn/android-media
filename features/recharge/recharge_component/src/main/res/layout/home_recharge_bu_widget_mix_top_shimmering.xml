@@ -4,41 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="344dp">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/bu_widget_mix_top_container"
         android:layout_width="match_parent"
         android:layout_height="160dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/bu_widget_mix_top_header"
         android:layout_width="180dp"
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl5"
-        app:corners="8"
-        app:custom_color="@color/Unify_N0"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:corners="8"
-        app:custom_color="@color/Unify_N0"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bu_widget_mix_top_header" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:corners="16"
-        app:custom_color="@color/Unify_N0"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="string_btn_whitelist">Buat Post</string>
+    <string name="empty_feed_title">Tingkatkan Penjualanmu</string>
+    <string name="empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
+    <string name="empty_feed_btn">Post Sekarang</string>
+
+</resources>

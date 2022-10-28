@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/toolbarOrderCustomization"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_is_show_shadow="true" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_custom_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@id/du_bottom_custom_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/du_bottom_custom_list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@id/tpg_total_order_label"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_total_order_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginBottom="12dp"
+        android:text="@string/text_order_customization_total_order"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@id/du_total_price"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/qeu_product_qty_editor"
+        android:layout_width="152dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="@id/tpg_total_order_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tpg_total_order_label"
+        app:qty_default_value="1"
+        app:qty_min_value="1" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/du_total_price"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:layout_constraintBottom_toTopOf="@id/tpg_total_price_label"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_total_price_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_2"
+        android:text="@string/text_order_customization_total_price"
+        app:layout_constraintBottom_toTopOf="@id/subtotalProductPriceLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/subtotalProductPriceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/atcButton"
+        android:layout_width="106dp"
+        android:layout_height="40dp"
+        android:layout_marginVertical="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="@string/action_order"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

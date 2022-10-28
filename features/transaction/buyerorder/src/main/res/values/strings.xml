@@ -14,10 +14,11 @@
     <string name="event_ticket_voucher_count">E-Tiket</string>
     <string name="event_ticket_qrcode_multiple">x QR Code</string>
     <string name="event_ticket_qrcode_count">QR Code</string>
+    <string name="event_date_label">%1$s - %2$s</string>
     <string name="purchase_detail">Detail Pembelian</string>
     <string name="voucher_code_title_deals">Voucher Deals</string>
     <string name="event_ticket_booking_multiple">x Kode Booking</string>
-    <string name="voucher_code_title">Kode Booking :</string>
+    <string name="voucher_code_title">Kode Voucher :</string>
     <string name="detail_label_events">Detail E-Tiket</string>
     <string name="tanggal_events">Tanggal Events </string>
     <string name="text_valid_till">Berlaku hingga </string>
@@ -49,6 +50,7 @@
     <string name="top_btn_text">langannan</string>
     <string name="bottom_btn_text">Beli Lagi</string>
     <string name="insurance_policy">Polis Asuransi</string>
+    <string name="order_detail_date_whitespace"> %s</string>
 
     <string name="label_event_date">Tanggal Event</string>
     <string name="button_order_detail_download_invoice">Unduh</string>
@@ -112,8 +114,17 @@
     <string name="recharge_order_detail_help_center_detail">Info lebih lanjut, jika ada kendala</string>
 
     <string name="recharge_order_detail_copied_message" formatted="false">%s berhasil tersalin</string>
+    <string name="deals_order_detail_copied_message">Kode voucher berhasil disalin</string>
 
     <string name="static_assets_ic_my_bills_link">https://images.tokopedia.net/img/android/recharge_order_details/sbm.png</string>
     <string name="static_assets_ic_langganan_link">https://images.tokopedia.net/img/android/recharge_order_details/langganan.png</string>
 
+    <string name="deals_voucher_label_count">%d dari %d voucher</string>
+    <string name="deals_label_copy">Salin</string>
+    <string name="deals_label_copied">Tersalin</string>
+    <string name="deals_msg_copy">Kode voucher telah disalin</string>
+    <string name="dialog_void_emoney_title">Yakin mau batalkan transaksi?</string>
+    <string name="dialog_void_emoney_description"><![CDATA[Proses pembatalan membutuhkan waktu <strong>paling lambat 2x24 jam</strong>. Dana akan dikembalikan ke metode pembayaran yang kamu pilih.]]></string>
+    <string name="dialog_void_emoney_primary_cta_label">Ya, Batalkan</string>
+    <string name="dialog_void_emoney_secondary_cta_label">Kembali</string>
 </resources>

@@ -15,22 +15,25 @@
         android:weightSum="3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_140" />
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_140" />
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_height="@dimen/dp_140" />
     </LinearLayout>
 
@@ -43,25 +46,28 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="12dp"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="12dp"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="12dp"/>
@@ -76,22 +82,25 @@
         android:weightSum="3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_140" />
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_140" />
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_height="@dimen/dp_140" />
     </LinearLayout>
 
@@ -104,25 +113,28 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="12dp"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="12dp"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="12dp"/>
@@ -137,22 +149,25 @@
         android:weightSum="3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_140" />
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_140" />
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_height="@dimen/dp_140" />
     </LinearLayout>
 
@@ -165,25 +180,28 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="12dp"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="12dp"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="12dp"/>
@@ -198,22 +216,25 @@
         android:weightSum="3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_140" />
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="@dimen/dp_140" />
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="0dp"
             android:layout_weight="1"
-            app:corners="15"
+            app:loader_corner_radius="7dp"
+            app:loader_type="rect"
             android:layout_height="@dimen/dp_140" />
     </LinearLayout>
 
@@ -226,25 +247,28 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="12dp"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_height="12dp"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_alignParentLeft="true"
-            app:corners="10"
+            app:loader_corner_radius="5dp"
+            app:loader_type="rect"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="12dp"/>

@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageCustomLastItemAdapterTypeFactory
+import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel.Companion.ALL_CATEGORY_PLATFORM_ID
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardActionModel
@@ -59,10 +60,10 @@ data class RechargeHomepageSections(
         val mediaUrl: String = "",
         @SerializedName("label_1")
         @Expose
-        val label1: String = "#FFFFFF",
+        val label1: String = "",
         @SerializedName("label_2")
         @Expose
-        val label2: String = "#FFFFFF",
+        val label2: String = "",
         @SerializedName("items")
         @Expose
         val items: List<Item> = listOf()
@@ -285,10 +286,6 @@ data class RechargeHomepageCategoryModel(
     }
 
     fun shouldShowChevron(): Boolean = (platformId == ALL_CATEGORY_PLATFORM_ID)
-
-    companion object {
-        private const val ALL_CATEGORY_PLATFORM_ID = 52
-    }
 
 }
 
@@ -600,7 +597,7 @@ class RechargeHomepageRecommendationBannerModel(section: RechargeHomepageSection
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is RechargeHomepageThreeIconsModel) {
+        return if (b is RechargeHomepageRecommendationBannerModel) {
             section == b.section
         } else false
     }
@@ -615,7 +612,7 @@ class RechargeHomepageProductCardCustomLastItemModel(section: RechargeHomepageSe
     RechargeProductCardUnifyModel(section) {
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is RechargeHomepageProductCardCustomBannerV2Model) {
+        return if (b is RechargeHomepageProductCardCustomLastItemModel) {
             section == b.section
         } else false
     }
@@ -628,4 +625,20 @@ class RechargeHomepageProductCardCustomLastItemModel(section: RechargeHomepageSe
         override fun type(typeFactory: RechargeHomepageCustomLastItemAdapterTypeFactory): Int =
             typeFactory.type(this)
     }
+}
+
+class RechargeHomepageOfferingWidgetModel(val section: RechargeHomepageSections.Section) :
+    RechargeHomepageSectionModel {
+
+    override fun visitableId(): String=section.id
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageOfferingWidgetModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int =
+        typeFactory.type(this)
+
 }

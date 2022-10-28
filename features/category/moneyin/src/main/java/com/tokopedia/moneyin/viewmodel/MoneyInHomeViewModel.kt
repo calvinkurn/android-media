@@ -47,7 +47,7 @@ class MoneyInHomeViewModel @Inject constructor(
 
     fun processMessage(intent: Intent) {
         val diagnostics = getDiagnosticData(intent)
-        if (diagnostics.imei.isEmpty()) {
+        if (diagnostics.imei?.isEmpty() == true) {
             diagnostics.imei = imei
         }
         tradeInParams.deviceId = diagnostics.imei
@@ -193,7 +193,7 @@ class MoneyInHomeViewModel @Inject constructor(
 
     fun getMaxPrice(laku6TradeIn: Laku6TradeIn) {
         progBarVisibility.value = true
-        laku6TradeIn.getMinMaxPrice(this)
+        laku6TradeIn.getMinMaxPrice(-1, this)
     }
 
     fun setDeviceId(deviceId: String?) {

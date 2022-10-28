@@ -1,5 +1,5 @@
 def isDebuggable() {
-    if (project.hasProperty('enableDebug') && enableDebug == "true") {
+    if (rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true") {
         return "true";
     }
     return "false";
@@ -28,7 +28,7 @@ android {
 
     lintOptions {
         checkReleaseBuilds false
-        checkDependencies true
+        checkDependencies false
         htmlReport false
         warningsAsErrors false
         abortOnError false
@@ -48,8 +48,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     testOptions {
@@ -91,7 +91,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.robust
     implementation rootProject.ext.miscDependencies.autopatchbase
 
     testImplementation rootProject.ext.testDependencies.mockitorCore

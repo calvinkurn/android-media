@@ -37,52 +37,50 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline1"
+            app:layout_constraintEnd_toStartOf="@+id/iu_selected_product_free_shipping"
             app:layout_constraintStart_toEndOf="@+id/iu_time"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_max="36dp"
+            app:layout_constraintWidth_max="50dp"
             app:typographyType="heading_6" />
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iu_stock_available"
+            android:id="@+id/iu_selected_product_free_shipping"
             android:layout_width="@dimen/tokopedianow_usp_illustration_width"
             android:layout_height="@dimen/tokopedianow_usp_illustration_height"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tp_stock_available"
+            app:layout_constraintEnd_toStartOf="@+id/tp_selected_product_free_shipping"
             app:layout_constraintStart_toStartOf="@+id/guideline1"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tp_stock_available"
+            android:id="@+id/tp_selected_product_free_shipping"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="4dp"
             android:gravity="center_vertical"
-            android:maxWidth="70dp"
-            android:text="@string/tokopedianow_home_educational_information_stock_available"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toEndOf="@+id/iu_stock_available"
+            app:layout_constraintStart_toEndOf="@+id/iu_selected_product_free_shipping"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_max="70dp"
+            app:layout_constraintWidth_max="50dp"
             app:typographyType="heading_6" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_guaranteed_quality"
             android:layout_width="@dimen/tokopedianow_usp_illustration_width"
             android:layout_height="@dimen/tokopedianow_usp_illustration_height"
-            app:layout_constraintBottom_toBottomOf="@+id/tp_stock_available"
+            app:layout_constraintBottom_toBottomOf="@+id/tp_selected_product_free_shipping"
             app:layout_constraintEnd_toStartOf="@+id/tp_guaranteed_quality"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/tp_stock_available" />
+            app:layout_constraintTop_toTopOf="@+id/tp_selected_product_free_shipping" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_guaranteed_quality"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
             android:text="@string/tokopedianow_home_educational_information_guaranteed_quality"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -126,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25" />
+            app:layout_constraintGuide_percent="0.3" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
@@ -140,7 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.90" />
+            app:layout_constraintGuide_percent="0.9" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

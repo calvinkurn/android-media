@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700"
         app:typographyType="body_2"
-        tools:text="@string/pm_deactivate_power_merchant_message_info" />
+        tools:text="@string/pm_deactivate_power_merchant_pro_message_info" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnPmCancelQuitSubmission"

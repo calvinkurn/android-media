@@ -183,7 +183,6 @@
 
     <!-- Product Detail -->
     <string name="title_activity_product_detail">Rincian Produk</string>
-    <string name="title_activity_atc_variant">Varian Barang</string>
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
     <string name="label_product_installment">Cicilan</string>
@@ -221,6 +220,11 @@
     <!-- Review   -->
     <string name="review_reading_title">Ulasan Pembeli</string>
     <string name="review_reminder_title">Pengingat Ulasan</string>
-    <string name="review_gallery_title">Foto Pembeli</string>
+    <string name="review_gallery_title">Foto &amp; Video Pembeli</string>
     <string name="reputation_history_set_date">Atur Tanggal</string>
+
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
+    <string name="title_admin_invitation_confirmation">Admin Invitation Confirmation</string>
+    <string name="title_admin_invitation_accepted">Admin Invitation Accepted</string>
 </resources>

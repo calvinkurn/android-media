@@ -10,6 +10,9 @@ class TopupBillsMenuDetail(
         @SerializedName("catalog")
         @Expose
         val catalog: TopupBillsCatalog = TopupBillsCatalog(),
+        @SerializedName("user_perso")
+        @Expose
+        val userPerso: TopupBillsUserPerso = TopupBillsUserPerso(),
         @SerializedName("recommendations")
         @Expose
         val recommendations: List<TopupBillsRecommendation> = listOf(),
@@ -24,5 +27,8 @@ class TopupBillsMenuDetail(
         val banners: List<TopupBillsBanner> = listOf(),
         @SerializedName("express_checkout")
         @Expose
-        val isExpressCheckout: Boolean = false
+        val isExpressCheckout: Boolean = false,
+        @SerializedName("menu_label")
+        @Expose
+        val menuLabel: String = ""
 )

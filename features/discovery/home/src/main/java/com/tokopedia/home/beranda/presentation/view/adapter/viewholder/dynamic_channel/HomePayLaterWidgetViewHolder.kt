@@ -9,20 +9,25 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
-import kotlinx.android.synthetic.main.home_dc_paylater_widget.view.*
+import com.tokopedia.home.databinding.HomeDcPaylaterWidgetBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomePayLaterWidgetViewHolder (
     val view: View,
     private val callback: HomePayLaterWidgetListener
 ) : AbstractViewHolder<HomePayLaterWidgetDataModel>(view), PayLaterWidgetListener {
 
+    private val binding: HomeDcPaylaterWidgetBinding? by viewBinding()
+
     override fun bind(dataModel: HomePayLaterWidgetDataModel) {
-        dataModel.payLaterWidgetData?.let { payLaterWidgetData ->
-            itemView.paylater_home_widget.setData(payLaterWidgetData)
-            itemView.paylater_home_widget.setPayLaterWidgetListener(this)
-            setChannelDivider(dataModel.channel)
-        } ?: run {
-            callback.getPayLaterWidgetData()
+        binding?.run {
+            dataModel.payLaterWidgetData?.let { payLaterWidgetData ->
+                paylaterHomeWidget.setData(payLaterWidgetData)
+                paylaterHomeWidget.setPayLaterWidgetListener(this@HomePayLaterWidgetViewHolder)
+                setChannelDivider(dataModel.channel)
+            } ?: run {
+                callback.getPayLaterWidgetData()
+            }
         }
     }
 
@@ -36,11 +41,13 @@ class HomePayLaterWidgetViewHolder (
      * @author minion-yoda
      */
     private fun setChannelDivider(channel: DynamicHomeChannel.Channels) {
-        HomeChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = channel,
-            dividerTop = itemView.paylater_home_widget_divider_header,
-            dividerBottom = itemView.paylater_home_widget_divider_footer
-        )
+        binding?.run {
+            HomeChannelWidgetUtil.validateHomeComponentDivider(
+                channelModel = channel,
+                dividerTop = paylaterHomeWidgetDividerHeader,
+                dividerBottom = paylaterHomeWidgetDividerFooter
+            )
+        }
     }
 
 

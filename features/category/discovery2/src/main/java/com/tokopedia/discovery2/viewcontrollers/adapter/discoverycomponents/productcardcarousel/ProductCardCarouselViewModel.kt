@@ -8,13 +8,13 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.user.session.UserSession
@@ -34,8 +34,10 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
     private val productLoadError: MutableLiveData<Boolean> = MutableLiveData()
+    private val mixLeftData: MutableLiveData<MixLeft> = MutableLiveData()
     private val _atcFailed =  SingleLiveEvent<Int>()
     private var isLoading = false
+    private val mixLeftComponentsItem : ComponentsItem by lazy { ComponentsItem() }
 
     @Inject
     lateinit var productCardsUseCase: ProductCardsUseCase
@@ -44,6 +46,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun getProductCardMaxHeight(): LiveData<Int> = maxHeightProductCard
     fun getProductCardHeaderData(): LiveData<ComponentsItem?> = productCarouselHeaderData
     fun getProductLoadState(): LiveData<Boolean> = productLoadError
+    fun getMixLeftData(): LiveData<MixLeft> = mixLeftData
     val atcFailed:LiveData<Int> = _atcFailed
 
     override val coroutineContext: CoroutineContext
@@ -53,8 +56,16 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         super.onAttachToViewHolder()
         components.shouldRefreshComponent = null
         handleLihatSemuaHeader()
+        handleMixLeftData()
         handleErrorState()
         fetchProductCarouselData()
+    }
+
+    private fun handleMixLeftData() {
+        mixLeftData.value = components.properties?.mixLeft
+        if(isMixLeftBannerPresent()){
+            setupMixLeftComponent()
+        }
     }
 
     private fun handleErrorState() {
@@ -127,8 +138,9 @@ class ProductCardCarouselViewModel(val application: Application, val components:
                 productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
             }
         }
+        val mixLeftPadding = if(isMixLeftBannerPresent()) application.applicationContext.resources.getDimensionPixelSize(R.dimen.dp_10) else 0
         val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-        maxHeightProductCard.value = productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth)
+        maxHeightProductCard.value = ( productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth) + mixLeftPadding )
     }
 
     fun fetchCarouselPaginatedProducts() {
@@ -161,6 +173,9 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     private fun addLoadMore(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val productLoadState: ArrayList<ComponentsItem> = ArrayList()
+        if (isMixLeftBannerPresent()) {
+            productLoadState.add(mixLeftComponentsItem)
+        }
         productLoadState.addAll(productDataList)
         if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
             productLoadState.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
@@ -175,6 +190,9 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     }
     private fun addErrorReLoadView(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val productLoadState: ArrayList<ComponentsItem> = ArrayList()
+        if (isMixLeftBannerPresent()) {
+            productLoadState.add(mixLeftComponentsItem)
+        }
         productLoadState.addAll(productDataList)
         productLoadState.add(ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
             pageEndPoint = components.pageEndPoint
@@ -207,12 +225,22 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     override fun refreshProductCarouselError(){
         getProductList()?.let {
             isLoading = false
-            productCarouselList.value = it
+            productCarouselList.value = addMixLeftIfPresent(it)
             syncData.value = true
         }
     }
 
-    fun areFitterApplied():Boolean{
+    private fun addMixLeftIfPresent(productList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
+        if (isMixLeftBannerPresent()) {
+            val arrayList = ArrayList<ComponentsItem>()
+            arrayList.add(mixLeftComponentsItem)
+            arrayList.addAll(productList)
+            return arrayList
+        }
+        return productList
+    }
+
+    fun areFiltersApplied():Boolean{
         return ((components.selectedSort != null && components.selectedFilters != null) &&
             (components.selectedSort?.isNotEmpty() == true ||
                     components.selectedFilters?.isNotEmpty() == true))
@@ -232,5 +260,17 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     fun containsTokoNowProducts():Boolean{
         return (components.properties?.tokonowATCActive == true)
+    }
+
+    private fun setupMixLeftComponent() {
+        mixLeftComponentsItem.position = 0
+        mixLeftComponentsItem.name = ComponentNames.MixLeftEmptyItem.componentName
+        mixLeftComponentsItem.properties = components.properties
+        mixLeftComponentsItem.parentComponentId = components.id
+        mixLeftComponentsItem.parentComponentPosition = components.position
+    }
+
+    private fun isMixLeftBannerPresent(): Boolean {
+        return !components.properties?.mixLeft?.bannerImageUrlMobile.isNullOrEmpty()
     }
 }

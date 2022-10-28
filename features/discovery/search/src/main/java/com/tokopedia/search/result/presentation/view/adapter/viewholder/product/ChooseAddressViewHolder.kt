@@ -4,21 +4,21 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductChooseAddressLayoutBinding
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.result.product.changeview.ChangeViewListener
+import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ChooseAddressViewHolder(
-        itemView: View,
-        private val chooseAddressListener: ChooseAddressListener,
-        private val searchNavigationListener: SearchNavigationClickListener,
+    itemView: View,
+    private val chooseAddressListener: ChooseAddressListener,
+    private val changeViewListener: ChangeViewListener,
+    private val fragmentProvider: FragmentProvider,
 ): AbstractViewHolder<ChooseAddressDataView>(itemView) {
 
     companion object {
@@ -51,7 +51,7 @@ internal class ChooseAddressViewHolder(
                 if (!isRollOutUser) binding?.searchProductChooseAddressContainer?.hide()
             }
 
-            override fun getLocalizingAddressHostFragment() = chooseAddressListener.getFragment()
+            override fun getLocalizingAddressHostFragment() = fragmentProvider.getFragment()
 
             override fun getLocalizingAddressHostSourceData() = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
 
@@ -73,22 +73,15 @@ internal class ChooseAddressViewHolder(
     }
 
     private fun bindChangeViewButton() {
+        setChangeViewIcon(changeViewListener.viewType.icon)
+
         binding?.searchProductChooseAddressChangeViewButton?.setOnClickListener {
-            searchNavigationListener.onChangeViewClicked(adapterPosition)
+            changeViewListener.onChangeViewClicked()
+            setChangeViewIcon(changeViewListener.viewType.icon)
         }
     }
 
-    override fun bind(element: ChooseAddressDataView?, payloads: MutableList<Any>) {
-        val payload = payloads.getOrNull(0) ?: return
-
-        when(payload) {
-            SearchConstant.RecyclerView.VIEW_LIST -> changeViewButton(IconUnify.VIEW_LIST)
-            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID -> changeViewButton(IconUnify.VIEW_GRID)
-            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID -> changeViewButton(IconUnify.VIEW_GRID_BIG)
-        }
-    }
-
-    private fun changeViewButton(id: Int) {
+    private fun setChangeViewIcon(id: Int) {
         binding?.searchProductChooseAddressChangeViewButton?.setImage(newIconId = id)
     }
 }

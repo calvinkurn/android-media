@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IS_FULFILLMENT
+import com.tokopedia.filter.common.helper.isPostProcessingFilter
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import timber.log.Timber
@@ -17,6 +17,10 @@ class AdsInjector {
         adsModel: TopAdsModel,
         searchParameter: Map<String, Any>,
         dimension90: String,
+        productListType: String,
+        externalReference: String,
+        keywordIntention: Int,
+        showButtonAtc: Boolean,
     ): List<Visitable<*>> {
         val list = mutableListOf<ProductItemDataView>()
         list.addAll(productList)
@@ -31,7 +35,15 @@ class AdsInjector {
                 if (!willInjectAds) continue
 
                 val topAds = adsModel.data[topAdsIndex]
-                val item = ProductItemDataView.create(topAds, topAdsPosition, dimension90)
+                val item = ProductItemDataView.create(
+                    topAds,
+                    topAdsPosition,
+                    dimension90,
+                    productListType,
+                    externalReference,
+                    keywordIntention,
+                    showButtonAtc,
+                )
 
                 list.add(i, item)
                 topAdsIndex++
@@ -49,12 +61,9 @@ class AdsInjector {
         index: Int,
         searchParameter: Map<String, Any>,
     ) = isInjectAdsByTemplate(adsModel, index)
-        || isIgnoreTemplate(searchParameter)
+        || isPostProcessingFilter(searchParameter)
 
     private fun isInjectAdsByTemplate(adsModel: TopAdsModel, index: Int) =
         adsModel.templates.size > 0
             && adsModel.templates[index].isIsAd
-
-    private fun isIgnoreTemplate(searchParameter: Map<String, Any>) =
-        searchParameter[IS_FULFILLMENT].toString().toBoolean()
 }

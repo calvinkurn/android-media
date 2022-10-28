@@ -26,7 +26,11 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequ
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import io.mockk.coEvery
@@ -350,7 +354,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             )
         }
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -408,7 +412,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             )
         }
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -1269,7 +1273,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option1.installmentTerm),
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option1.installmentTerm, isActive = true)),
@@ -1306,7 +1310,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true)),
@@ -1346,7 +1350,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true, isRecommended = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true, isRecommended = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = true)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true, isRecommended = true)),
@@ -1386,7 +1390,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = false)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true, isRecommended = false)),
@@ -1426,7 +1430,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = false, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = false, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = false)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option3.installmentTerm, isActive = false, isRecommended = false)),
@@ -1452,7 +1456,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = emptyList(),
                 selectedTerm = OrderPaymentGoCicilTerms(isActive = true)),
@@ -1560,5 +1564,202 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coVerify(inverse = true) {
             updateCartOccUseCase.executeSuspend(any())
         }
+    }
+
+    @Test
+    fun `WHEN previously no add on selected and then select add on on product level THEN add on price should be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
+        orderSummaryPageViewModel.orderCart = OrderCart(shop = OrderShop(isFulfillment = false), products = mutableListOf(OrderProduct(cartId = "456", orderQuantity = 1)), cartString = "123")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(1000L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously no add on selected and then select add on on shop level THEN add on price should be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateShopLevelResult
+        orderSummaryPageViewModel.orderCart = OrderCart(shop = OrderShop(isFulfillment = true), products = mutableListOf(OrderProduct(cartId = "456", orderQuantity = 1)), cartString = "123")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(2000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on product level and then select no add on THEN add on price should be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateEmptyResult
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(
+                cartId = "456", orderQuantity = 1, addOn = AddOnsDataModel(
+                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+        ))), shop = OrderShop(isFulfillment = false), cartString = "123")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(0L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on shop level and then select no add on THEN add on price should be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateEmptyResult
+        orderSummaryPageViewModel.orderCart = OrderCart(
+                shop = OrderShop(addOn = AddOnsDataModel(
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                ), isFulfillment = true),
+                products = mutableListOf(OrderProduct(cartId = "456", orderQuantity = 1)), cartString = "123")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+        orderSummaryPageViewModel.orderShop.value = orderSummaryPageViewModel.orderCart.shop
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(0L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on product level and then update add on but got wrong add on key THEN add on price should not be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(
+                cartId = "123", orderQuantity = 1, addOn = AddOnsDataModel(
+                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+        ))), shop = OrderShop(isFulfillment = false), cartString = "456")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(1000L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on shop level and then update add on but got wrong add on key THEN add on price should not be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
+        orderSummaryPageViewModel.orderCart = OrderCart(
+                shop = OrderShop(addOn = AddOnsDataModel(
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                ), isFulfillment = true),
+                products = mutableListOf(OrderProduct(cartId = "123", orderQuantity = 1)), cartString = "456")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+        orderSummaryPageViewModel.orderShop.value = orderSummaryPageViewModel.orderCart.shop
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(2000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on product level and then update add on but got wrong level THEN add on price should not be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateProductLevelResultNegativeTest
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(
+                cartId = "123", orderQuantity = 1, addOn = AddOnsDataModel(
+                addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000L))
+        ))), shop = OrderShop(isFulfillment = false), cartString = "456")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(1000L, orderSummaryPageViewModel.orderProducts.value.firstOrNull()?.addOn?.addOnsDataItemModelList?.firstOrNull()?.addOnPrice
+                ?: 0)
+    }
+
+    @Test
+    fun `WHEN previously has add on selected on shop level and then update add on but got wrong level THEN add on price should not be updated`() {
+        // Given
+        val saveAddOnStateResult = helper.saveAddOnStateShopLevelResultNegativeTest
+        orderSummaryPageViewModel.orderCart = OrderCart(
+                shop = OrderShop(addOn = AddOnsDataModel(
+                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000L))
+                ), isFulfillment = true),
+                products = mutableListOf(OrderProduct(cartId = "123", orderQuantity = 1)), cartString = "456")
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProducts.value = orderSummaryPageViewModel.orderCart.products
+        orderSummaryPageViewModel.orderShop.value = orderSummaryPageViewModel.orderCart.shop
+
+        // When
+        orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
+
+        // Then
+        assertEquals(
+            2000L,
+            orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0
+        )
+    }
+
+    @Test
+    fun `Get Occ return last apply with BO`() {
+        // Given
+        val boCode = "BOCODE"
+        val response = helper.orderData.copy(
+            promo = OrderPromo(
+                lastApply = LastApplyUiModel(
+                    voucherOrders = listOf(
+                        LastApplyVoucherOrdersItemUiModel(
+                            boCode,
+                            helper.orderData.cart.cartString,
+                            shippingId = 1,
+                            spId = 1,
+                            type = "logistic"
+                        )
+                    )
+                )
+            )
+        )
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+        coEvery { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        val promoResponse = ValidateUsePromoRevampUiModel(
+            status = "OK", errorCode = "200", promoUiModel = PromoUiModel()
+        )
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns promoResponse
+
+        // When
+        orderSummaryPageViewModel.getOccCart("")
+
+        // Then
+        assertEquals(
+            OrderPromo(
+                lastApply = LastApplyUiModel(),
+                state = OccButtonState.NORMAL,
+                isDisabled = false
+            ), orderSummaryPageViewModel.orderPromo.value
+        )
     }
 }

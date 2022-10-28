@@ -4,6 +4,7 @@ object ProductTrackingConstant {
 
     object Category {
         const val PDP = "product detail page"
+        const val PDP_DETAIL_BOTTOMSHEET = "product detail page - product detail bottomsheet"
         const val PDP_VARIANT_BOTTOMSHEET = "product detail page - global variant bottomsheet"
         const val PDP_AFTER_ATC = "product detail page after atc"
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
@@ -36,6 +37,7 @@ object ProductTrackingConstant {
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
         const val KEY_CATEGORY_ID = "categoryId"
+        const val KEY_TRACKER_ID = "trackerId"
 
         /**
          * Tracking Key - Product Level
@@ -150,6 +152,7 @@ object ProductTrackingConstant {
         const val CLICK_ANNOTATION_RECOM_CHIP = "click annotation chips"
         const val CLICK_SHARE_PDP = "click - share button"
         const val CLICK_READ_MORE = "click - baca selengkapnya"
+        const val CLICK_SPECIFICATION_READ_MORE = "click - selengkapnya on spesifikasi produk  - product detail bottomsheet"
         const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
@@ -201,6 +204,7 @@ object ProductTrackingConstant {
         const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
 
         const val CLICK_VARIANT_GUIDELINE_BOTTOM_SHEET = "click - panduan ukuran on product detail bottomsheet"
+        const val CLICK_CUSTOM_INFO_HAMPERS_BOTTOM_SHEET = "click - informasi pelengkap bingkisan"
         const val CLICK_SHOP_NOTES_BOTTOM_SHEET = "click - lihat informasi penting catatan toko on product detail bottomsheet"
         const val CLICK_SPECIFICATION_BOTTOM_SHEET = "click - selengkapnya on product detail bottomsheet"
         const val CLICK_CATEGORY_BOTTOM_SHEET = "click - kategori on product detail bottomsheet"
@@ -233,6 +237,8 @@ object ProductTrackingConstant {
         const val CLICK_SEE_ALL_CATEGORY_CAROUSEL = "click - lihat semua on category carousel"
         const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
         const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" //recoom title, page name, widget type
+
+        const val CLICK_INFO_MULTILOC = "click - information icon on shop component"
 
         const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
         const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
@@ -274,10 +280,12 @@ object ProductTrackingConstant {
 
     object PDP {
         const val EVENT_CLICK_PDP = "clickPDP"
+        const val EVENT_CLICK_PG = "clickPG"
         const val EVENT_CLICK_RECOMMENDATION = "clickRecommendation"
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
         const val EVENT_CLICK_COURIER = "clickCourier"
+        const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
     }
 
     object Affiliate {
@@ -290,6 +298,12 @@ object ProductTrackingConstant {
     object ImageReview {
         const val ACTION_SEE_ITEM = "click - review gallery on foto dari pembeli"
         const val ACTION_SEE_ALL = "click - lihat semua review gallery"
+    }
+
+    object MostHelpfulReview {
+        const val TRACKER_ID_CLICK_REVIEWER_NAME = "33836"
+        const val ACTON_CLICK_REVIEWER_NAME = "click - reviewer name"
+        const val LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;label:%s;"
     }
 
     object MerchantVoucher {
@@ -329,5 +343,12 @@ object ProductTrackingConstant {
         // example /tokonow - recomproduct - pdp_1 - rekomendasi untuk anda - {recommendation type}
         const val PARAM_ATC_DIMENS_40 = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s"
         const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" //page source like PDP, recommendationType
+    }
+
+    object TrackerId {
+        const val TRACKER_ID_CLICK_THUMBNAIL = "31790"
+        const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
+        const val TRACKER_ID_CLICK_SPECIFICATION = "36325"
+        const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
     }
 }

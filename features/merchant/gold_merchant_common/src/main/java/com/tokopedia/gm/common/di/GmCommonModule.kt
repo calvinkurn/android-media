@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.gm.common.R
 import com.tokopedia.gm.common.constant.GMCommonUrl
-import com.tokopedia.gm.common.constant.GMParamConstant
 import com.tokopedia.gm.common.data.interceptor.PowerMerchantSubscribeInterceptor
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
 import com.tokopedia.network.NetworkRouter
@@ -21,7 +18,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import javax.inject.Named
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

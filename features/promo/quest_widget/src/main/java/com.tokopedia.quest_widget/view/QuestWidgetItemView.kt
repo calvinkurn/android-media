@@ -67,7 +67,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
         progressBar = findViewById(R.id.progressBar)
         progressBarContainer = findViewById(R.id.progressBarContainer)
         iconContainer = findViewById(R.id.iconContainer)
-        progressBar.setProgressCompletionListener(this)
+        progressBar.progressCompletionListener = this
     }
 
     override fun onAttachedToWindow() {

@@ -2,8 +2,10 @@ package com.tokopedia.loginregister.login.tracker
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.text.InputType
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents.intending
@@ -12,21 +14,25 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.getAnalyticValidator
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
-import com.tokopedia.loginregister.login.helper.LoginSocmedTestHelper
+import com.tokopedia.loginregister.utils.LoginSocmedTestHelper
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
+import com.tokopedia.test.application.annotations.CassavaTest
 import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@CassavaTest
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class LoginActivityTest: LoginBase() {
@@ -94,10 +100,10 @@ class LoginActivityTest: LoginBase() {
         //Then
         val query = listOf(
             getAnalyticValidator(
-                "clickLogin",
-                "login page",
-                "click on lupa kata sandi",
-                ""
+                "clickAccount",
+                "widget login page",
+                "click on button lupa kata sandi",
+                "widget butuh bantuan"
             )
         )
         validate(cassavaTestRule, query)
@@ -148,7 +154,7 @@ class LoginActivityTest: LoginBase() {
     }
 
     fun simulateClickForgotPass() {
-        intending(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         clickForgotPass()
     }
 
@@ -178,8 +184,9 @@ class LoginActivityTest: LoginBase() {
     }
 
     private fun inputEditText(value: String) {
-        val viewInteraction = Espresso.onView(withId(R.id.input_email_phone)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(typeText(value))
+        val viewInteraction = Espresso.onView(withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(typeText(value), closeSoftKeyboard())
     }
 
     private fun clickRegisterBottom(){

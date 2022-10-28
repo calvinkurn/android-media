@@ -10,8 +10,13 @@ data class OrderCost(
         val shippingDiscountAmount: Int = 0,
         val productDiscountAmount: Int = 0,
         val purchaseProtectionPrice: Int = 0,
+        val addOnPrice: Double = 0.0,
+        val hasAddOn: Boolean = false,
         val cashbacks: List<OrderCostCashbackData> = emptyList(),
         val installmentData: OrderCostInstallmentData? = null,
+
+        val orderPaymentFees: List<OrderPaymentFee> = emptyList(),
+        val isInstallment: Boolean = false,
 
         // Easy access for calculation
         val totalPriceWithoutPaymentFees: Double = 0.0,

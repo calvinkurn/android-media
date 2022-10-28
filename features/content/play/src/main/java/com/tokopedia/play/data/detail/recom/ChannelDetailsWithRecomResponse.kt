@@ -62,6 +62,9 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("air_time")
         val airTime: String = "",
+
+        @SerializedName("description")
+        val description: String = "",
     )
 
     data class Partner(
@@ -160,9 +163,6 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("feeds_like_params")
         val feedLikeParam: FeedLikeParam = FeedLikeParam(),
 
-        @SerializedName("pinned_product_config")
-        val pinnedProductConfig: PinnedProductConfig = PinnedProductConfig(),
-
         @SerializedName("room_background")
         val roomBackground: RoomBackground = RoomBackground(),
 
@@ -171,6 +171,12 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("multiple_like")
         val multipleLikeConfig: List<MultipleLikeConfig> = emptyList(),
+
+        @SerializedName("has_follow_button")
+        val hasFollowButton: Boolean = false,
+
+        @SerializedName("empty_bottom_sheet")
+        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet()
     )
 
     data class FreezeData(
@@ -217,14 +223,6 @@ data class ChannelDetailsWithRecomResponse(
         val likeType: Int = 1
     )
 
-    data class PinnedProductConfig(
-        @SerializedName("pin_title")
-        val pinTitle: String = "",
-
-        @SerializedName("bottom_sheet_title")
-        val bottomSheetTitle: String = ""
-    )
-
     data class RoomBackground(
         @SerializedName("image_url")
         val imageUrl: String = ""
@@ -255,5 +253,19 @@ data class ChannelDetailsWithRecomResponse(
     data class Reminder(
         @SerializedName("is_set")
         val isSet: Boolean = false
+    )
+
+    data class EmptyBottomSheet(
+        @SerializedName("copy_text_header")
+        val headerText: String = "",
+
+        @SerializedName("copy_text_body")
+        val bodyText: String = "",
+
+        @SerializedName("copy_text_redirect_button")
+        val redirectButtonText: String = "",
+
+        @SerializedName("image_url")
+        val imageUrl: String = "",
     )
 }

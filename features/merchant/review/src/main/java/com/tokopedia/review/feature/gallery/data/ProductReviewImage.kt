@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.gallery.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.review.feature.reading.data.UserReviewStats
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 
 data class ProductrevGetReviewImageResponse(
     @SerializedName("productrevGetReviewImage")

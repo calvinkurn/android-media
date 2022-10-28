@@ -50,7 +50,7 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
 
     protected lateinit var transactionType: TransactionType
 
-    private val adapter: SaldoTransactionAdapter by lazy {
+    protected val adapter: SaldoTransactionAdapter by lazy {
         SaldoTransactionAdapter(getAdapterTypeFactory())
     }
 
@@ -141,7 +141,7 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onDataLoaded(historyList: List<Visitable<*>>, hasMore: Boolean) {
+    protected open fun onDataLoaded(historyList: List<Visitable<*>>, hasMore: Boolean) {
         adapter.addAllElements(historyList)
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(hasMore)
@@ -194,5 +194,4 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
         }
 
     }
-
 }

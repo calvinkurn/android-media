@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.vouchercreation.databinding.ItemProductListLayoutBinding
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
+import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder
 import com.tokopedia.vouchercreation.product.list.view.viewholder.ProductItemViewHolder.OnProductItemClickListener
 
@@ -14,7 +15,8 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     : RecyclerView.Adapter<ProductItemViewHolder>(), OnProductItemClickListener {
 
     interface OnProductItemClickListener {
-        fun onProductCheckBoxClicked(isSelected: Boolean)
+        fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel)
+        fun onRemoveButtonClicked(position: Int)
     }
 
     private var productUiModelList: MutableList<ProductUiModel> = mutableListOf()
@@ -30,6 +32,10 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     override fun getItemCount(): Int {
         return productUiModelList.size
+    }
+
+    fun getProductList(): MutableList<ProductUiModel> {
+        return productUiModelList
     }
 
     fun getSelectedProducts(): List<ProductUiModel> {
@@ -74,11 +80,20 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
         }
     }
 
+    fun enableAllSelectedProducts() {
+        this.productUiModelList.forEach {
+            val isSelected = it.isSelected
+            if (isSelected)  {
+                it.isError = false
+            }
+        }
+    }
+
     fun enableAllProductSelections() {
         this.productUiModelList.forEach {
-            it.isError = false
+            if (it.errorMessage.isEmpty()) it.isError = false
             it.variants.forEach { variantUiModel ->
-                variantUiModel.isError = false
+                if (variantUiModel.errorMessage.isEmpty()) variantUiModel.isError = false
             }
         }
     }
@@ -106,11 +121,16 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     }
 
     override fun onProductCheckBoxClicked(isSelected: Boolean, dataSetPosition: Int) {
-        productUiModelList[dataSetPosition].isSelected = isSelected
-        listener.onProductCheckBoxClicked(isSelected)
+        val uiModel = productUiModelList[dataSetPosition]
+        uiModel.isSelected = isSelected
+        listener.onProductCheckBoxClicked(isSelected, uiModel)
     }
 
     override fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int) {
+        listener.onRemoveButtonClicked(dataSetPosition)
+    }
+
+    fun removeSingleProduct(dataSetPosition: Int ) {
         try {
             productUiModelList.removeAt(dataSetPosition)
             notifyDataSetChanged()
@@ -132,5 +152,9 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     override fun onProductVariantHeaderClicked(isExpanded: Boolean, dataSetPosition: Int) {
         productUiModelList[dataSetPosition].isVariantHeaderExpanded = isExpanded
+    }
+
+    override fun onProductVariantRemoved(variantList: List<VariantUiModel>, dataSetPosition: Int) {
+        productUiModelList[dataSetPosition].variants = variantList
     }
 }

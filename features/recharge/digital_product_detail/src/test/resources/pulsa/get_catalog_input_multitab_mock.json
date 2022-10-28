@@ -1,0 +1,205 @@
+{
+  "rechargeCatalogProductInputMultiTab": {
+    "productInputs": [
+      {
+        "filterTagComponents": [],
+        "product": {
+          "name": "product_id",
+          "text": "Input Nominal",
+          "help": "Input Nominal",
+          "dataCollections": [
+            {
+              "name": "",
+              "products": [
+                {
+                  "id": "1",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp6.000",
+                    "desc": "5.000",
+                    "detail": "",
+                    "detail_compact": "",
+                    "info": "Rp5.800",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": {
+                      "id": "0",
+                      "new_price": "Rp5.800",
+                      "discount": "3%"
+                    }
+                  }
+                },
+                {
+                  "id": "2",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp11.500",
+                    "desc": "10.000",
+                    "detail": "",
+                    "detail_compact": "Masa Aktif 15 Hari ",
+                    "info": "Rp11.500",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": null
+                  }
+                },
+                {
+                  "id": "2190",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp15.000",
+                    "desc": "15.000",
+                    "detail": "Masa berlaku 20 hari",
+                    "detail_compact": "Masa berlaku 20 hari",
+                    "info": "Rp 15.000",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": null
+                  }
+                },
+                {
+                  "id": "4",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp25.000",
+                    "desc": "25.000",
+                    "detail": "Masa berlaku 35 hari",
+                    "detail_compact": "Masa berlaku 35 hari",
+                    "info": "Rp 24.800",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": {
+                      "id": "0",
+                      "new_price": "Rp24.800",
+                      "discount": "1%"
+                    }
+                  }
+                },
+                {
+                  "id": "5",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp50.000",
+                    "desc": "50.000",
+                    "detail": "Masa berlaku 75 hari",
+                    "detail_compact": "Masa berlaku 75 hari",
+                    "info": "Rp 49.500",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": {
+                      "id": "0",
+                      "new_price": "Rp49.500",
+                      "discount": "1%"
+                    }
+                  }
+                },
+                {
+                  "id": "6",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp100.000",
+                    "desc": "100.000",
+                    "detail": "Masa berlaku 150 hari",
+                    "detail_compact": "Masa berlaku 150 hari",
+                    "info": "Rp 99.000",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": {
+                      "id": "0",
+                      "new_price": "Rp99.000",
+                      "discount": "1%"
+                    }
+                  }
+                },
+                {
+                  "id": "18",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp200.000",
+                    "desc": "200.000",
+                    "detail": "",
+                    "detail_compact": "",
+                    "info": "Rp 200.000",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": null
+                  }
+                },
+                {
+                  "id": "19",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp300.000",
+                    "desc": "300.000",
+                    "detail": "",
+                    "detail_compact": "",
+                    "info": "Rp298.000",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": {
+                      "id": "0",
+                      "new_price": "Rp298.000",
+                      "discount": "1%"
+                    }
+                  }
+                },
+                {
+                  "id": "20",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp500.000",
+                    "desc": "500.000",
+                    "detail": "",
+                    "detail_compact": "",
+                    "info": "Rp 496.500",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": {
+                      "id": "0",
+                      "new_price": "Rp496.500",
+                      "discount": "1%"
+                    }
+                  }
+                },
+                {
+                  "id": "21",
+                  "attributes": {
+                    "custom_attributes": [],
+                    "price": "Rp1.000.000",
+                    "desc": "1.000.000",
+                    "detail": "",
+                    "detail_compact": "",
+                    "info": "Rp1.000.000",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 1,
+                    "product_labels": [],
+                    "promo": null
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

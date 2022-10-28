@@ -20,7 +20,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/initialStateDynamicButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
         tools:text="@string/search_title_popular_search" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -35,7 +36,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

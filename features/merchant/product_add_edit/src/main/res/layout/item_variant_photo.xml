@@ -7,19 +7,28 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ImageView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/Unify_N50"
+            app:layout_constraintBottom_toBottomOf="@+id/ivVariantPhoto"
+            app:layout_constraintEnd_toEndOf="@+id/ivVariantPhoto"
+            app:layout_constraintStart_toStartOf="@+id/ivVariantPhoto"
+            app:layout_constraintTop_toTopOf="@+id/ivVariantPhoto" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivVariantPhoto"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl7"
-            android:background="@color/Unify_N50"
             android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_plus_gray" />
+            app:srcCompat="@drawable/ic_plus_gray"
+            app:unify_image_corner_radius="0"
+            app:unify_image_placeholder="@color/Unify_N50" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/typographyVariantPhoto"

@@ -129,6 +129,47 @@
               ]
             }
           ],
+          "promo_stackings": [{
+            "is_promo": 1,
+            "promo_code": "EKSCEPAT",
+            "title": "Now! 2 jam tiba",
+            "shipper_id": 10,
+            "shipper_product_id": 28,
+            "shipper_name": "Gojek",
+            "shipper_desc": "2-4 hari|1104",
+            "promo_detail": "",
+            "benefit_desc": "",
+            "point_change": 0,
+            "user_point": 0,
+            "promo_tnc_html": "Anda akan menggunakan promo \u003cb\u003eBebas Ongkir Tokopedia\u003c/b\u003e",
+            "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
+            "service_id": 1000,
+            "is_applied": 0,
+            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+            "discounted_rate": 0,
+            "shipping_rate": 10000,
+            "benefit_amount": 10000,
+            "disabled": false,
+            "hide_shipper_name": true,
+            "cod": {
+              "is_cod_available": 0,
+              "cod_text": "",
+              "cod_price": 0,
+              "formatted_price": "",
+              "tnc_text": "",
+              "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "Tiba dalam 2 jam",
+              "error_code": 0
+            },
+            "is_bebas_ongkir_extra": false,
+            "texts": {
+              "bottom_sheet": "\u003cb\u003eBebas Ongkir (3-5 hari)\u003c/b\u003e",
+              "chosen_courier": "\u003cb\u003eNow! 2 jam tiba (Rp0)\u003c/b\u003e",
+              "ticker_courier": "Tersedia Bebas Ongkir (3-5 hari)"
+            }
+          }],
           "promo_stacking": {
             "is_promo": 1,
             "promo_code": "EKSCEPAT",

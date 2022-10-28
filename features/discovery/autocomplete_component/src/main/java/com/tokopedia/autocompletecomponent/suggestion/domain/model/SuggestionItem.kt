@@ -78,5 +78,9 @@ data class SuggestionItem(
 
         @SerializedName("child_items")
         @Expose
-        val suggestionChildItems: List<SuggestionChildItem> = listOf()
+        val suggestionChildItems: List<SuggestionChildItem> = listOf(),
+
+        @SerializedName("suggestion_id")
+        @Expose
+        val suggestionId: String = "",
 )

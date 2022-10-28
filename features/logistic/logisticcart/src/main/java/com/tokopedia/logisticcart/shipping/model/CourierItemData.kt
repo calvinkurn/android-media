@@ -62,5 +62,9 @@ class CourierItemData(
         var preOrderModel: PreOrderModel? = null,
         var freeShippingChosenCourierTitle: String = "",
         var isHideChangeCourierCard: Boolean = false,
-        var durationCardDescription: String = ""
+        var durationCardDescription: String = "",
+        var freeShippingMetadata: String = "",
+        var benefitClass: String = "",
+        var shippingSubsidy: Long = 0,
+        var boCampaignId: Long = 0,
 ) : Parcelable, ShipmentOptionData

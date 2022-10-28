@@ -12,6 +12,7 @@ import com.tokopedia.favorite.domain.FavoriteRepository
 import com.tokopedia.favorite.domain.interactor.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -60,8 +61,9 @@ class FavoriteModule {
     @Provides
     fun provideAllDataFavoriteUsecase(@ApplicationContext context: Context,
                                       favUseCase: GetFavoriteShopUsecase,
-                                      topAdsShopUseCase: GetTopAdsShopUseCase): GetAllDataFavoriteUseCase {
-        return GetAllDataFavoriteUseCase(context, favUseCase, topAdsShopUseCase)
+                                      topAdsShopUseCase: GetTopAdsShopUseCase,
+                                      topAdsAddressHelper: TopAdsAddressHelper): GetAllDataFavoriteUseCase {
+        return GetAllDataFavoriteUseCase(context, favUseCase, topAdsShopUseCase, topAdsAddressHelper)
     }
 
     @FavoriteScope
@@ -69,9 +71,10 @@ class FavoriteModule {
     fun provideGetAllDataFavoriteUseCaseWithCoroutine(
             @ApplicationContext context: Context,
             favUseCase: GetFavoriteShopUseCaseWithCoroutine,
-            topAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine
+            topAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine,
+            topAdsAddressHelper: TopAdsAddressHelper
     ): GetAllDataFavoriteUseCaseWithCoroutine {
-        return GetAllDataFavoriteUseCaseWithCoroutine(context, favUseCase, topAdsShopUseCase)
+        return GetAllDataFavoriteUseCaseWithCoroutine(context, favUseCase, topAdsShopUseCase, topAdsAddressHelper)
     }
 
     @FavoriteScope
@@ -82,7 +85,7 @@ class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    fun provideGetTopAdsShopUseCaseWithCoroutine(favoriteRepository: FavoriteRepository): GetTopAdsShopUseCaseWithCoroutine {
+    fun provideGetTopAdsShopUseCaseWithCoroutine(favoriteRepository: FavoriteRepository, topAdsAddressHelper: TopAdsAddressHelper): GetTopAdsShopUseCaseWithCoroutine {
         return GetTopAdsShopUseCaseWithCoroutine(favoriteRepository)
     }
 
@@ -91,11 +94,13 @@ class FavoriteModule {
     fun provideFavoriteWishlitUsecase(
             @ApplicationContext context: Context,
             getFavoriteShopUsecase: GetFavoriteShopUsecase,
-            getTopAdsShopUseCase: GetTopAdsShopUseCase): GetInitialDataPageUsecase {
+            getTopAdsShopUseCase: GetTopAdsShopUseCase,
+            topAdsAddressHelper: TopAdsAddressHelper): GetInitialDataPageUsecase {
         return GetInitialDataPageUsecase(
                 context,
                 getFavoriteShopUsecase,
-                getTopAdsShopUseCase)
+                getTopAdsShopUseCase,
+                topAdsAddressHelper)
     }
 
     @FavoriteScope
@@ -103,11 +108,13 @@ class FavoriteModule {
     fun provideGetInitialDataPageUseCaseWithCoroutine(
             @ApplicationContext context: Context,
             getFavoriteShopUsecase: GetFavoriteShopUseCaseWithCoroutine,
-            getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine): GetInitialDataPageUseCaseWithCoroutine {
+            getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine,
+            topAdsAddressHelper: TopAdsAddressHelper): GetInitialDataPageUseCaseWithCoroutine {
         return GetInitialDataPageUseCaseWithCoroutine(
                 context,
                 getFavoriteShopUsecase,
-                getTopAdsShopUseCase
+                getTopAdsShopUseCase,
+                topAdsAddressHelper
         )
     }
 

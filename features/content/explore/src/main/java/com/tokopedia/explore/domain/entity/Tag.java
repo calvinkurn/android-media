@@ -1,6 +1,8 @@
 
 package com.tokopedia.explore.domain.entity;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,7 +10,7 @@ public class Tag {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("type")
     @Expose
     private String type;
@@ -18,6 +20,7 @@ public class Tag {
     @SerializedName("link")
     @Expose
     private String link;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     @Expose
     private String price;
@@ -25,11 +28,11 @@ public class Tag {
     @Expose
     private String caption;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

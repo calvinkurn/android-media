@@ -20,6 +20,7 @@ import com.tokopedia.quest_widget.R
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
+import com.tokopedia.quest_widget.listeners.QuestWidgetStatusCallback
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTracker
 import com.tokopedia.quest_widget.tracker.QuestTrackerImpl
@@ -53,6 +54,7 @@ class QuestWidgetView @JvmOverloads constructor(
     var userSession: UserSessionInterface
     private lateinit var page: String
     private lateinit var questWidgetCallbacks: QuestWidgetCallbacks
+    private var questWidgetStatusCallback: QuestWidgetStatusCallback? = null
 
     private var reload = false
 
@@ -94,6 +96,7 @@ class QuestWidgetView @JvmOverloads constructor(
 
         viewModel.questWidgetListLiveData.removeObservers(context as AppCompatActivity)
         viewModel.questWidgetListLiveData.observe(context as AppCompatActivity, Observer {
+            questWidgetStatusCallback?.getQuestWidgetStatus(it.status)
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
                     if (isConnectedToInternet()) {
@@ -214,14 +217,16 @@ class QuestWidgetView @JvmOverloads constructor(
         list?.let {
             rvQuestWidget.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            val adapter = QuestWidgetAdapter(
-                data.widgetData.questWidgetList.questWidgetList,
-                data.config,
-                questTracker,
-                source,
-                questWidgetCallbacks,
-                this.position
-            )
+            val adapter = data.widgetData.questWidgetList.questWidgetList?.let { it1 ->
+                QuestWidgetAdapter(
+                    it1,
+                    data.config,
+                    questTracker,
+                    source,
+                    questWidgetCallbacks,
+                    this.position
+                )
+            }
             rvQuestWidget.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                 private var direction = ""
@@ -277,5 +282,9 @@ class QuestWidgetView @JvmOverloads constructor(
 
     fun setTrackerImpl(questTrackerImpl: QuestTrackerImpl){
         questTracker.trackerImpl = questTrackerImpl
+    }
+
+    fun setQuestWidgetStatusCallback(questWidgetStatusCallback: QuestWidgetStatusCallback?){
+        this.questWidgetStatusCallback = questWidgetStatusCallback
     }
 }

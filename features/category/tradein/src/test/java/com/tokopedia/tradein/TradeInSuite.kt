@@ -1,16 +1,23 @@
 package com.tokopedia.tradein
 
 import com.tokopedia.tradein.usecase.*
-import com.tokopedia.tradein.viewmodel.FinalPriceViewModelTest
-import com.tokopedia.tradein.viewmodel.TradeInHomeViewModelTest
+import com.tokopedia.tradein.viewmodel.*
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
 
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-        FinalPriceViewModelTest::class,
-        TradeInHomeViewModelTest::class
+    PromoUseCaseTest::class,
+    TNCInfoUseCaseTest::class,
+    InsertLogisticPreferenceUseCaseTest::class,
+    TradeInDetailUseCaseTest::class,
+    TradeInValidateImeiUseCaseTest::class,
+    TradeInHomePageFragmentVMTest::class,
+    TradeInHomePageVMTest::class,
+    TradeInImeiBSViewModelTest::class,
+    TradeInInfoViewModelTest::class,
+    TradeInPromoDetailPageVMTest::class
 )
 class TradeInSuite {
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.list.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.list.domain.model.SomListGetBulkAcceptOrderStatusResponse
 import com.tokopedia.sellerorder.list.presentation.models.Error
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderStatusUiModel
@@ -12,7 +13,7 @@ class BulkAcceptOrderStatusMapper @Inject constructor() {
                 data = SomListBulkAcceptOrderStatusUiModel.Data(
                         multiOriginInvalidOrder = result.data.multiOriginInvalidOrder.map {
                             SomListBulkAcceptOrderStatusUiModel.Data.MultiOriginInvalidOrder(
-                                    orderId = it.orderId.toIntOrZero(),
+                                    orderId = it.orderId.toLongOrZero(),
                                     invoiceRefNum = it.invoiceRefNum
                             )
                         },

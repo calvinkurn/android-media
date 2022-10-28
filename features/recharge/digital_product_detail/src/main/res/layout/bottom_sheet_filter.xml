@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_pdp_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        tools:spanCount="3" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_pdp_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bottom_sheet_filter_btn"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
+        android:textSize="@dimen/fontSize_lvl4"
+        android:textStyle="bold"
+        app:unifyButtonSize="large"
+        app:unifyButtonVariant="filled" />
+</LinearLayout>

@@ -3,6 +3,9 @@ package com.tokopedia.topads.view.model
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.KeywordData
+import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
@@ -32,15 +35,16 @@ class BudgetingAdsViewModelTest {
 
     private lateinit var repository: GraphqlRepository
     private lateinit var context: Context
-    private val bidInfoUseCase:BidInfoUseCase = mockk(relaxed = true)
-    private val bidInfoUseCaseDefault:BidInfoUseCase = mockk(relaxed = true)
+    private val bidInfoUseCase: BidInfoUseCase = mockk(relaxed = true)
+    private val bidInfoUseCaseDefault: BidInfoUseCase = mockk(relaxed = true)
     private val suggestionKeywordUseCase: SuggestionKeywordUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
-        viewModel = spyk(BudgetingAdsViewModel(rule.dispatchers, bidInfoUseCase, bidInfoUseCaseDefault,suggestionKeywordUseCase))
+        viewModel = spyk(BudgetingAdsViewModel(rule.dispatchers,
+            bidInfoUseCase, bidInfoUseCaseDefault, suggestionKeywordUseCase))
     }
 
 
@@ -49,10 +53,10 @@ class BudgetingAdsViewModelTest {
         val expected = "empty"
         var actual = ""
         val data = listOf<TopadsBidInfo.DataItem>()
-        val onEmpty:() -> Unit = {
+        val onEmpty: () -> Unit = {
             actual = "empty"
         }
-        val onSuccess:(List<TopadsBidInfo.DataItem>) -> Unit = {
+        val onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit = {
             if (it.isEmpty()) {
                 onEmpty()
             }
@@ -63,9 +67,7 @@ class BudgetingAdsViewModelTest {
             onSuccess.invoke(data)
         }
         viewModel.getBidInfo(
-                suggestions = listOf(),
-                onSuccess = onSuccess,
-                onEmpty = onEmpty
+            suggestions = listOf(), onSuccess = onSuccess, onEmpty = onEmpty
         )
         Assert.assertEquals(expected, actual)
     }
@@ -88,13 +90,73 @@ class BudgetingAdsViewModelTest {
         }
 
         viewModel.getBidInfo(
-                suggestions = listOf(),
-                onSuccess = onSuccess,
-                onEmpty = {
-                }
+            suggestions = listOf(), onSuccess = onSuccess, onEmpty = {}
         )
 
         Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `check exception in getBidInfo`() {
+        every {
+            bidInfoUseCase.executeQuerySafeMode(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockk())
+        }
+
+        var actual: List<TopadsBidInfo.DataItem>? = null
+        viewModel.getBidInfo(
+            suggestions = listOf(),
+            onSuccess = { actual = it }, {}
+        )
+        Assert.assertEquals(null, actual)
+    }
+
+    @Test
+    fun `getSuggestionKeyword invoke success is not empty data`() {
+        val expected = spyk(KeywordSuggestionResponse.Result())
+
+        every { expected.topAdsGetKeywordSuggestionV3.data } returns listOf(KeywordData())
+        every { suggestionKeywordUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(KeywordSuggestionResponse.Result) -> Unit>().invoke(expected)
+        }
+
+        var actual: List<KeywordData>? = null
+        viewModel.getSuggestionKeyword("", 0, { actual = it }, {})
+        Assert.assertEquals(expected.topAdsGetKeywordSuggestionV3.data, actual)
+    }
+
+    @Test
+    fun `getSuggestionKeyword on empty data should invoke onEmpty`() {
+        every { suggestionKeywordUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(KeywordSuggestionResponse.Result) -> Unit>().invoke(KeywordSuggestionResponse.Result())
+        }
+        var onEmptyCalled = false
+        viewModel.getSuggestionKeyword("", 0, {}, { onEmptyCalled = true })
+        Assert.assertTrue(onEmptyCalled)
+    }
+
+    @Test
+    fun `getSuggestionKeyword on empty data should not invoke onsuccess`() {
+        every { suggestionKeywordUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(KeywordSuggestionResponse.Result) -> Unit>().invoke(KeywordSuggestionResponse.Result())
+        }
+        var actual: List<KeywordData>? = null
+        viewModel.getSuggestionKeyword("", 0, { actual = it }, {})
+        Assert.assertEquals(null, actual)
+    }
+
+    @Test
+    fun `getSuggestionKeyword on error should not invoke onsuccess`() {
+        every {
+            suggestionKeywordUseCase.executeQuerySafeMode(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockk())
+        }
+
+        var actual: List<KeywordData>? = null
+        viewModel.getSuggestionKeyword("", 0, { actual = it }, {})
+        Assert.assertEquals(null, actual)
     }
 
     @Test
@@ -114,11 +176,27 @@ class BudgetingAdsViewModelTest {
         }
 
         viewModel.getBidInfoDefault(
-                suggestions = listOf(),
-                onSuccess = onSuccess
+            suggestions = listOf(), onSuccess = onSuccess
         )
 
         Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `check onerror check`() {
+
+        every {
+            bidInfoUseCaseDefault.executeQuerySafeMode(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockk())
+        }
+
+        var actual: List<TopadsBidInfo.DataItem>? = null
+        viewModel.getBidInfoDefault(
+            suggestions = listOf(), onSuccess = { actual = it }
+        )
+
+        Assert.assertEquals(null, actual)
     }
 
 

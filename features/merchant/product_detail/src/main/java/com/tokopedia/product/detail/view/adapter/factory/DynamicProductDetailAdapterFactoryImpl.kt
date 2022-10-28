@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
@@ -17,7 +18,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
@@ -35,13 +36,15 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.LoadingViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
@@ -50,7 +53,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCategoryCarouselViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductContentViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCustomInfoViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductDetailInfoViewHolder
+import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductGeneralInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
@@ -60,11 +63,12 @@ import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofStockV
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductReportViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductShimmeringViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductShopCredibilityViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductTickerInfoViewHolder
@@ -152,9 +156,7 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductShipmentDataModel): Int {
-        return if (data.type == ProductDetailConstant.SHIPMENT)
-            ProductShipmentViewHolder.LAYOUT
-        else ShipmentViewHolder.LAYOUT
+        return ShipmentViewHolder.LAYOUT
     }
 
     override fun type(data: ProductMerchantVoucherSummaryDataModel): Int {
@@ -205,13 +207,22 @@ class DynamicProductDetailAdapterFactoryImpl(
         return FintechWidgetViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductRecommendationVerticalDataModel): Int {
+        return ProductRecommendationVerticalViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductRecommendationVerticalPlaceholderDataModel): Int {
+        return ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT
+    }
+
+    override fun type(data: LoadingDataModel): Int {
+        return LoadingViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view,listener)
-            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
-                view,
-                listener
-            )
+            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(
                 view,
                 listener
@@ -244,7 +255,6 @@ class DynamicProductDetailAdapterFactoryImpl(
             ProductTopAdsImageViewHolder.LAYOUT -> ProductTopAdsImageViewHolder(view, listener)
             ProductDetailInfoViewHolder.LAYOUT -> ProductDetailInfoViewHolder(view, listener)
             ProductReportViewHolder.LAYOUT -> ProductReportViewHolder(view, listener)
-            ProductShipmentViewHolder.LAYOUT -> ProductShipmentViewHolder(view, listener)
             ShipmentViewHolder.LAYOUT -> ShipmentViewHolder(view, listener)
             ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(view, listener)
             PdpComparisonWidgetViewHolder.LAYOUT -> PdpComparisonWidgetViewHolder(view, listener)
@@ -258,13 +268,17 @@ class DynamicProductDetailAdapterFactoryImpl(
                 val playWidgetView: View? = view.findViewById(R.id.pdp_play_widget_view)
                 if (playWidgetView != null) {
                     ContentWidgetViewHolder(
-                            view, listener, PlayWidgetViewHolder(
+                        view, PlayWidgetViewHolder(
                             itemView = playWidgetView,
                             coordinator = playWidgetCoordinator
-                    )
+                        ),
+                        listener
                     )
                 } else super.createViewHolder(view, type)
             }
+            ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(view, listener)
+            ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT -> ProductRecommendationVerticalPlaceholderViewHolder(view, listener)
+            LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             ProductArViewHolder.LAYOUT -> ProductArViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }

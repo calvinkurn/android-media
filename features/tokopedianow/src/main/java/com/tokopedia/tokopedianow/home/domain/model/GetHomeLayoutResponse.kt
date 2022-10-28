@@ -5,11 +5,13 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GetHomeLayoutResponse(
+    @Expose
     @SerializedName("dynamicHomeChannel")
     val response: DynamicHomeChannelResponse
 )
 
 data class DynamicHomeChannelResponse(
+    @Expose
     @SerializedName("channels")
     val data: List<HomeLayoutResponse>
 )
@@ -54,6 +56,7 @@ data class HomeLayoutResponse(
     @Expose
     @SerializedName("campaignID")
     val campaignID: String = "",
+    @Expose
     @SerializedName("showPromoBadge")
     val showPromoBadge: Boolean = false,
     @Expose
@@ -71,16 +74,25 @@ data class HomeLayoutResponse(
     @Expose
     @SerializedName("banner")
     val banner: Banner = Banner(),
+    @Expose
     @SerializedName("promoName")
     var promoName: String = "",
+    @Expose
     @SerializedName("homeAttribution")
     val homeAttribution: String = "",
+    @Expose
     @SerializedName("has_close_button")
     val hasCloseButton: Boolean = false,
+    @Expose
     @SerializedName("isAutoRefreshAfterExpired")
     val isAutoRefreshAfterExpired: Boolean = false,
+    @Expose
     @SerializedName("token")
     var token: String = "",
+    @Expose
+    @SerializedName("widgetParam")
+    var widgetParam: String = "",
+    @Expose
     @SerializedName("timestamp")
     var timestamp: String = ""
 )
@@ -175,9 +187,6 @@ data class Grid(
     @Expose
     @SerializedName("isTopads")
     val isTopads: Boolean = false,
-    @Expose
-    @SerializedName("freeOngkir")
-    val freeOngkir: FreeOngkir = FreeOngkir(),
     @Expose
     @SerializedName("productViewCountFormatted")
     val productViewCountFormatted: String = "",
@@ -310,16 +319,6 @@ data class Shop(
     @SerializedName("shopID")
     val shopId: String = ""
 )
-
-data class FreeOngkir(
-    @SerializedName("isActive")
-    @Expose
-    val isActive: Boolean = false,
-    @SerializedName("imageUrl")
-    @Expose
-    val imageUrl: String = ""
-)
-
 data class LabelGroup(
     @SerializedName("title")
     @Expose
@@ -329,5 +328,8 @@ data class LabelGroup(
     val position: String = "",
     @SerializedName("type")
     @Expose
-    val type: String = ""
+    val type: String = "",
+    @SerializedName("url")
+    @Expose
+    val url: String = ""
 )
