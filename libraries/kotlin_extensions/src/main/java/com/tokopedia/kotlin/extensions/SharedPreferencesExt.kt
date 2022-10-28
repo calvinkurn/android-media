@@ -1,6 +1,10 @@
 package com.tokopedia.kotlin.extensions
 
 import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -61,4 +65,10 @@ fun SharedPreferences.remove(
 fun SharedPreferences.clear(
 ) {
     edit().clear().apply()
+}
+
+fun Editor.backgroundCommit() {
+    CoroutineScope(Dispatchers.IO).launch {
+        commit()
+    }
 }

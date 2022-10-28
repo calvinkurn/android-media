@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.installations.FirebaseInstallationsException
 import com.tokopedia.device.info.cache.DeviceInfoCache
+import com.tokopedia.kotlin.extensions.backgroundCommit
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
@@ -26,8 +27,6 @@ object DeviceInfo {
     const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
     const val X_86 = "x86"
     var cacheAdsId = ""
-
-    var scope = CoroutineScope(Dispatchers.IO)
 
     @JvmStatic
     fun isRooted(): Boolean {
@@ -302,11 +301,9 @@ object DeviceInfo {
     }
 
     private fun setCacheAdsId(context: Context, adsId: String) {
-        scope.launch {
-            val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
-            sp.edit().putString(KEY_ADVERTISINGID, adsId).commit()
-            cacheAdsId = adsId
-        }
+        val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
+        sp.edit().putString(KEY_ADVERTISINGID, adsId).backgroundCommit()
+        cacheAdsId = adsId
     }
 
     @JvmStatic

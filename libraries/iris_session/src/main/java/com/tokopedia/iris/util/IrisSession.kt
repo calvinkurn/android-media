@@ -3,9 +3,7 @@ package com.tokopedia.iris.util
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.util.Base64
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.tokopedia.kotlin.extensions.backgroundCommit
 import java.nio.charset.Charset
 import java.util.*
 
@@ -23,16 +21,16 @@ class IrisSession(val context: Context) : Session {
 
     // variable to hold last time Iris Session is accessed
     private var lastTrackingActivity: Long = 0L
+
     // variable to hold last time Iris Session is accessed (from shared Preference)
     private var lastTrackingActivityPref: Long = 0L
-
-    private var scope = CoroutineScope(Dispatchers.IO)
 
     companion object {
         const val THRESHOLD_EXPIRED_IF_NO_ACTIVITY = 1_800_000L //30 minutes
         const val ONE_DAY_MILLIS = 86_400_000L
         const val GMT_MILLIS = 25_200_000L // 7 hours
-        const val THRESHOLD_UPDATE_LAST_ACTIVITY = 10_000L // 10 seconds to prevent burst update shared pref
+        const val THRESHOLD_UPDATE_LAST_ACTIVITY =
+            10_000L // 10 seconds to prevent burst update shared pref
     }
 
     /**
@@ -111,32 +109,26 @@ class IrisSession(val context: Context) : Session {
     }
 
     private fun setPrefSessionId(id: String) {
-        scope.launch {
-            editor.putString(KEY_SESSION_ID, id)
-            editor.commit()
-        }
+        editor.putString(KEY_SESSION_ID, id)
+        editor.backgroundCommit()
     }
 
     /**
      * Update timestamp of last tracking activity
      */
     private fun setPrefTrackingTimeStamp(timestamp: Long) {
-        scope.launch {
-            lastTrackingActivity = timestamp
-            if (timestamp - lastTrackingActivityPref > THRESHOLD_UPDATE_LAST_ACTIVITY) {
-                lastTrackingActivityPref = timestamp
-                editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
-                editor.commit()
-            }
+        lastTrackingActivity = timestamp
+        if (timestamp - lastTrackingActivityPref > THRESHOLD_UPDATE_LAST_ACTIVITY) {
+            lastTrackingActivityPref = timestamp
+            editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
+            editor.backgroundCommit()
         }
     }
 
     private fun setInitialVisit(initialVisit: Long) {
-        scope.launch {
-            this@IrisSession.initialVisit = initialVisit
-            timestampOfDayChanged = generateNextDayGMT7(initialVisit)
-            editor.putLong(KEY_INITIAL_VISIT, initialVisit)
-            editor.commit()
-        }
+        this@IrisSession.initialVisit = initialVisit
+        timestampOfDayChanged = generateNextDayGMT7(initialVisit)
+        editor.putLong(KEY_INITIAL_VISIT, initialVisit)
+        editor.backgroundCommit()
     }
 }
