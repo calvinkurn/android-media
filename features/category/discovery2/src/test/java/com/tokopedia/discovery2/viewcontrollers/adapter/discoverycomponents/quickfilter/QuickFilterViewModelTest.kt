@@ -3,7 +3,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Path.Op
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
@@ -14,9 +16,12 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeResponse
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.usecase.QuickFilterUseCase
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import junit.framework.TestCase
@@ -141,5 +146,22 @@ class QuickFilterViewModelTest {
         TestCase.assertEquals(viewModel.getTargetComponent(),null)
 
     }
+
+   @Test
+   fun `test for on Quick Filter Selected return null`() {
+       val viewModel: QuickFilterViewModel = spyk(QuickFilterViewModel(application, componentsItem, 99))
+       val componentsItem: ComponentsItem = mockk(relaxed = true)
+
+       val option: Option = mockk(relaxed = true)
+       val quickFilterUseCase: QuickFilterUseCase = mockk(relaxed = true)
+       every { viewModel.isQuickFilterSelected(option) } returns false
+       every { quickFilterUseCase.onFilterApplied(componentsItem, selectedFilter = null, selectedSort = null) } returns true
+       every { getComponent(any(),any()) } returns null
+
+       viewModel.onQuickFilterSelected(option)
+
+       assert( viewModel.syncData.value == null )
+
+   }
 
 }
