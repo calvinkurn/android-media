@@ -182,7 +182,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     override fun onBackPressed() {
-        (activity as BaseTokofoodActivity).onBackPressed()
+        (activity as? BaseTokofoodActivity)?.onBackPressed()
     }
 
     private fun initializeToolbar() {
@@ -299,7 +299,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                 setLabelTitle(fragmentUiModel.promoTitle)
                 setAmount(fragmentUiModel.promoAmountStr)
                 amountCtaView.setOnClickListener {
-                    (activity as BaseTokofoodActivity).onBackPressed()
+                    (activity as? BaseTokofoodActivity)?.onBackPressed()
                 }
             }
         }

@@ -29,11 +29,11 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         const val RESULT_CODE_OK = 1
     }
 
-    lateinit var imageChevron: AppCompatImageView
-    lateinit var mvcTextContainerFirst: MvcTextContainer
-    lateinit var mvcTextContainerSecond: MvcTextContainer
-    lateinit var mvcContainer: View
-    lateinit var imageCouponBackground: SquareImageView
+    var imageChevron: AppCompatImageView
+    var mvcTextContainerFirst: MvcTextContainer
+    var mvcTextContainerSecond: MvcTextContainer
+    var mvcContainer: View
+    var imageCouponBackground: SquareImageView
 
     var mvcAnimationHandler: MvcAnimationHandler
     private var startActivityForResultFunction: (() -> Unit)? = null
@@ -49,19 +49,16 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     init {
         View.inflate(context, R.layout.mvc_entry_view, this)
-        initViews()
         setClicks()
 
-        mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst), WeakReference(mvcTextContainerSecond))
-        mvcAnimationHandler.checkToCancelTimer()
-    }
-
-    private fun initViews() {
         imageChevron = this.findViewById(R.id.image_chevron)
         mvcContainer = this.findViewById(R.id.mvc_container)
         mvcTextContainerFirst = this.findViewById(R.id.mvc_text_container_first)
         mvcTextContainerSecond = this.findViewById(R.id.mvc_text_container_second)
         imageCouponBackground = this.findViewById(R.id.image_coupon_bg)
+
+        mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst), WeakReference(mvcTextContainerSecond))
+        mvcAnimationHandler.checkToCancelTimer()
     }
 
     private fun setClicks() {
