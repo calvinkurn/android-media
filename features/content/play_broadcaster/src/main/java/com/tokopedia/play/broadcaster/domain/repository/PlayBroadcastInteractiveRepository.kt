@@ -13,7 +13,7 @@ import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
  */
 interface PlayBroadcastInteractiveRepository {
 
-    suspend fun getInteractiveConfig(): InteractiveConfigUiModel
+    suspend fun getInteractiveConfig(authorId: String, authorType: String): InteractiveConfigUiModel
 
     suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel
 

@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
@@ -30,14 +32,6 @@ import java.util.Calendar
  */
 interface PlayBroadcastMapper {
 
-    fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel>
-
-    fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ): List<ProductContentUiModel>
-
     fun mapSearchSuggestionList(
         keyword: String,
         productsResponse: GetProductsByEtalaseResponse.GetProductListData
@@ -52,7 +46,7 @@ interface PlayBroadcastMapper {
         media: CreateLiveStreamChannelResponse.GetMedia
     ): LiveStreamInfoUiModel
 
-    fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel>
+    fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel>
 
     fun mapTotalView(totalView: TotalView): TotalViewUiModel
 
@@ -91,7 +85,7 @@ interface PlayBroadcastMapper {
 
     fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
 
-    fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel
+    fun mapInteractiveConfig(authorType: String, response: GetInteractiveConfigResponse): InteractiveConfigUiModel
 
     fun mapInteractiveSession(
         response: PostInteractiveCreateSessionResponse,
@@ -135,4 +129,6 @@ interface PlayBroadcastMapper {
         authorId: String,
         channelId: String,
     ): PlayBroadcasterMetric
+
+    fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel>
 }

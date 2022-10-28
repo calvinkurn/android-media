@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
@@ -29,7 +28,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomS
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
@@ -108,6 +106,10 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                         return viewModel.productList
                     }
 
+                    override fun getAuthorId(): String {
+                        return viewModel.authorId
+                    }
+
                     override fun getChannelId(): String {
                         return viewModel.channelId
                     }
@@ -180,7 +182,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         binding.clCoverPreview.apply {
             setCoverWithPlaceholder(value.coverUrl)
             setTitle(value.title)
-            setShopName(viewModel.shopName)
+            setAuthorName(viewModel.shopName)
         }
     }
 

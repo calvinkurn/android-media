@@ -5,7 +5,10 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -35,12 +38,10 @@ import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
 import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -52,35 +53,6 @@ class PlayBroadcastUiMapper @Inject constructor(
     private val textTransformer: HtmlTextTransformer,
     private val uriParser: UriParser,
 ) : PlayBroadcastMapper {
-
-    override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> =
-        etalaseList.map {
-            val type = EtalaseType.getByType(it.type, it.id)
-            EtalaseContentUiModel(
-                id = if (type is EtalaseType.Group) type.fMenu else it.id,
-                name = it.name,
-                productMap = mutableMapOf(),
-                totalProduct = it.count,
-                stillHasProduct = true
-            )
-        }
-
-    override fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ) = productsResponse.data.map {
-        ProductContentUiModel(
-            id = it.id,
-            name = it.name,
-            imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-            originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-            stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
-            price = PriceUnknown,
-            isSelectedHandler = isSelectedHandler,
-            isSelectable = isSelectableHandler
-        )
-    }
 
     override fun mapSearchSuggestionList(
         keyword: String,
@@ -125,16 +97,26 @@ class PlayBroadcastUiMapper @Inject constructor(
 
             )
 
-    override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> =
-        mutableListOf(
-            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
-            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
-            TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
-            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
-        )
+    override fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel> =
+        if (authorType == TYPE_SHOP) {
+            mutableListOf(
+                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
+                TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
+                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
+            )
+        } else {
+            mutableListOf(
+                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
+            )
+        }
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
         totalView.totalViewFmt
@@ -340,7 +322,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             buttonTitle = bannedEvent.btnText
         )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
+    override fun mapInteractiveConfig(authorType: String, response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
         val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
 
         val quizDurationInMs = response.interactiveConfig.quizConfig.quizDurationsInSeconds.map {
@@ -349,7 +331,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 
         return InteractiveConfigUiModel(
             giveawayConfig = GiveawayConfigUiModel(
-                isActive = response.interactiveConfig.tapTapConfig.isActive,
+                isActive = if (authorType == TYPE_SHOP) response.interactiveConfig.tapTapConfig.isActive else false,
                 nameGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineHeader,
                 nameGuidelineDetail = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineDetail,
                 timeGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveTimeGuidelineHeader,
@@ -361,7 +343,8 @@ class PlayBroadcastUiMapper @Inject constructor(
                 },
             ),
             quizConfig = QuizConfigUiModel(
-                isActive = response.interactiveConfig.quizConfig.isActive,
+                isActive = if (authorType == TYPE_SHOP) response.interactiveConfig.tapTapConfig.isActive else false,
+                isGiftActive = authorType == TYPE_SHOP,
                 maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
                 minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,
@@ -614,6 +597,20 @@ class PlayBroadcastUiMapper @Inject constructor(
         videoBufferTimestamp = metric.videoBufferTimestamp,
         audioBufferTimestamp = metric.audioBufferTimestamp,
     )
+
+    override fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel> {
+        return response.whitelist.authors.map {
+            ContentAccountUiModel(
+                id = it.id,
+                name = it.name,
+                iconUrl = it.thumbnail,
+                badge = it.badge,
+                type = it.type,
+                hasUsername = it.livestream.hasUsername,
+                hasAcceptTnc = it.livestream.enable,
+            )
+        }
+    }
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"
