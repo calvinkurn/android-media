@@ -309,7 +309,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     fun loadFirstPage() {
         launchCatchError(block =  {
             _loadRecipeBookmarks.value = UiState.Loading()
-            val (recipeBookmarks, header, hasNext) = getRecipeBookmarks(pageCounter)
+            val (recipeBookmarks, header, hasNext) = getRecipeBookmarks(pageCounter++)
             onResponseLoadFirstPageBE(recipeBookmarks, header, hasNext)
         }, onError = { throwable ->
             onFailLoadFirstPageFE(throwable)
