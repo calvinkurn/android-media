@@ -96,6 +96,9 @@
     <string name="new_add_phone_subtitle">Nomor HP akan memperkuat keamanan &amp; akses masuk ke akunmu.</string>
     <string name="new_add_phone_label_filed">Nomor HP</string>
     <string name="new_add_phone_label_button">Tambah Nomor HP</string>
+    <string name="new_add_phone_must_be_filled">Wajib diisi.</string>
+    <string name="new_add_phone_min_length_error">Min. 9 digit.</string>
+    <string name="new_add_phone_max_length_error">Maks. 15 angka</string>
 
     <!-- CHANGE PIN -->
     <string name="title_change_pin">Ubah PIN Tokopedia</string>

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
+import com.tokopedia.profilecompletion.addphone.viewmodel.NewAddPhoneViewModel
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
@@ -44,6 +45,11 @@ abstract class ProfileCompletionViewModelsModule {
     @IntoMap
     @ViewModelKey(AddPhoneViewModel::class)
     internal abstract fun addPhoneViewModel(viewModel: AddPhoneViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(NewAddPhoneViewModel::class)
+    internal abstract fun newAddPhoneViewModel(viewModel: NewAddPhoneViewModel): ViewModel
 
     @Binds
     @IntoMap
