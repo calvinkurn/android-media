@@ -1,7 +1,7 @@
 package com.tokopedia.tokochat.domain.usecase
 
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.tokochat.data.repository.TokoChatRepository
+import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import javax.inject.Inject
 
 class TokoChatGetTypingUseCase@Inject constructor(

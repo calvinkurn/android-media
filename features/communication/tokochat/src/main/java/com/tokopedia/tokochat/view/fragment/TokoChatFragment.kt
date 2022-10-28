@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
-import com.gojek.courier.lifecycle.LifecycleEvent
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.applink.ApplinkConst
@@ -26,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.tokochat.R
-import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
@@ -108,7 +106,6 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     override fun onStart() {
         super.onStart()
-        TokoChatCourierConnectionLifecycle.publishSubject.onNext(LifecycleEvent.Started)
         if (channelId.isNotEmpty() && channelId.isNotBlank()) {
             viewModel.registerActiveChannel(channelId)
         }
@@ -116,7 +113,6 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     override fun onStop() {
         super.onStop()
-        TokoChatCourierConnectionLifecycle.publishSubject.onNext(LifecycleEvent.Stopped)
         if (channelId.isNotEmpty() && channelId.isNotBlank()) {
             viewModel.deRegisterActiveChannel(channelId)
         }

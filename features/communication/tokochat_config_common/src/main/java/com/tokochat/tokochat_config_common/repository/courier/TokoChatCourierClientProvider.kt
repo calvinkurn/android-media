@@ -1,7 +1,6 @@
-package com.tokopedia.tokochat.data.repository.courier
+package com.tokochat.tokochat_config_common.repository.courier
 
 import android.content.Context
-import android.util.Log
 import com.gojek.chuckmqtt.external.MqttChuckConfig
 import com.gojek.chuckmqtt.external.MqttChuckInterceptor
 import com.gojek.courier.CourierConnection
@@ -11,23 +10,23 @@ import com.gojek.courier.di.CourierComponent
 import com.gojek.courier.di.UsernameProvider
 import com.gojek.mqtt.client.MqttInterceptor
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
-import com.tokopedia.user.session.BuildConfig
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
+import com.tokochat.tokochat_config_common.util.TokoChatCourierConnectionLifecycle
+import com.tokopedia.config.BuildConfig
 import com.tokopedia.user.session.UserSessionInterface
 import retrofit2.Retrofit
 import javax.inject.Inject
 
 class TokoChatCourierClientProvider @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @TokoChatQualifier private val context: Context,
     private val gson: Gson,
-    private val retrofit: Retrofit,
+    @TokoChatQualifier private val retrofit: Retrofit,
     private val userSession: UserSessionInterface,
     private val courierRemoteConfig: CourierRemoteConfig
 ) {
 
     // TODO: Change the value after BE ready
-    fun initializeCourierConnection(): CourierConnection {
+    fun getCourierConnection(): CourierConnection {
         val params = CourierComponent.Params(
             context = context,
             gson = gson,
@@ -41,7 +40,8 @@ class TokoChatCourierClientProvider @Inject constructor(
             courierRemoteConfig = courierRemoteConfig,
             connectionLifecycle = TokoChatCourierConnectionLifecycle
         )
-        return CourierComponent.getOrCreate(params).courierConnection()
+
+       return CourierComponent.getOrCreate(params).courierConnection()
     }
 
     private fun getUsernameProvider(): UsernameProvider {

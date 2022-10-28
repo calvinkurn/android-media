@@ -2,7 +2,6 @@ package com.tokopedia.tokochat.view.activity
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -59,6 +58,9 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     private fun initializeTokoChatComponent(): TokoChatComponent {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .tokoChatConfigComponent(
+                (application as BaseMainApplication).tokoChatConnection.tokoChatConfigComponent
+            )
             .tokoChatContextModule(TokoChatContextModule(this))
             .build().also {
                 tokoChatComponent = it
@@ -66,7 +68,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     override fun getComponent(): TokoChatComponent {
-        return tokoChatComponent?: initializeTokoChatComponent()
+        return tokoChatComponent ?: initializeTokoChatComponent()
     }
 
     override fun getNewFragment(): Fragment {
