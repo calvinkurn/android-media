@@ -1,14 +1,14 @@
 package com.tokopedia.product.manage.feature.quickedit.variant.presentation.viewmodel
 
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.data.createGetVariantResponse
 import com.tokopedia.product.manage.data.createOptionResponse
 import com.tokopedia.product.manage.data.createProductVariant
 import com.tokopedia.product.manage.data.createProductVariantResponse
 import com.tokopedia.product.manage.data.createSelectionResponse
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
-import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
 class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
@@ -33,7 +33,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createSelectionResponse(options = secondOption)
         )
         val response = createGetVariantResponse(
-            productName,
+            productName = productName,
             products = variantList,
             selections = selections
         )
@@ -86,7 +86,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createProductVariantResponse(productID = "1", price = 100.0),
             createProductVariantResponse(productID = "2", price = 200.0)
         )
-        val response = createGetVariantResponse(productName, products = variantList)
+        val response = createGetVariantResponse(productName = productName, products = variantList)
 
         onGetProductVariant_thenReturn(response)
 
@@ -113,7 +113,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createProductVariantResponse(productID = "1", stock = 2),
             createProductVariantResponse(productID = "2", stock = 3)
         )
-        val response = createGetVariantResponse(productName, products = variantList)
+        val response = createGetVariantResponse(productName = productName, products = variantList)
 
         onGetProductVariant_thenReturn(response)
 
@@ -147,7 +147,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createProductVariantResponse(productID = "1", status = ProductStatus.ACTIVE),
             createProductVariantResponse(productID = "2", status = ProductStatus.INACTIVE)
         )
-        val response = createGetVariantResponse(productName, products = variantList)
+        val response = createGetVariantResponse(productName = productName, products = variantList)
 
         onGetProductVariant_thenReturn(response)
 

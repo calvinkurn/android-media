@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
@@ -229,11 +230,11 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Then assert product item non variant quantity`(
-            miniCartItems: List<MiniCartItem>,
+            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
             productItems: List<RecommendationItem>,
     ) {
-        val miniCartItemsNonVariant = miniCartItems.filter {
-            it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID
+        val miniCartItemsNonVariant = miniCartItems.values.mapNotNull {
+            if (it is MiniCartItem.MiniCartItemProduct && it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID) it else null
         }
 
         miniCartItemsNonVariant.forEach { miniCartItem ->
@@ -246,22 +247,22 @@ class BindRecommendationCarouselTestHelper(
         }
     }
 
-    private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem) =
+    private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem.MiniCartItemProduct) =
             "Product \"${miniCartItem.productId}\" non variant quantity is invalid."
 
     private fun `Then assert product item variant quantity`(
-            miniCartItems: List<MiniCartItem>,
+            miniCartItems: Map<MiniCartItemKey, MiniCartItem>,
             productItems: List<RecommendationItem>,
     ) {
-        val miniCartItemsVariant = miniCartItems.filter {
-            it.productParentId != NO_VARIANT_PARENT_PRODUCT_ID
+        val miniCartItemsVariant = miniCartItems.values.mapNotNull {
+            if (it is MiniCartItem.MiniCartItemParentProduct) it else null
         }
-        val miniCartItemsVariantGroup = miniCartItemsVariant.groupBy { it.productParentId }
+//        val miniCartItemsVariantGroup = miniCartItemsVariant.groupBy { it.productParentId }
 
-        miniCartItemsVariantGroup.forEach { miniCartItemGroup ->
-            val totalQuantity = miniCartItemGroup.value.sumBy { it.quantity }
+        miniCartItemsVariant.forEach { miniCartItemGroup ->
+            val totalQuantity = miniCartItemGroup.totalQuantity
             val productItemIndexed = productItems.withIndex()
-                    .find { it.value.parentID.toString() == miniCartItemGroup.key }!!
+                    .find { it.value.parentID.toString() == miniCartItemGroup.parentId }!!
             val productItem = productItemIndexed.value
             val parentProductId = productItem.parentID.toString()
             val productId = productItem.productId.toString()

@@ -21,7 +21,7 @@ class SwitcherWidgetViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_search_category_switcher_widget
         private const val SWITCHER_WIDGET_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget.png"
         private const val SWITCHER_WIDGET_CARD_2H_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_2h.png"
-        private const val SWITCHER_WIDGET_CARD_15M_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_15m.png"
+        private const val SWITCHER_WIDGET_CARD_20M_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_15m.png"
     }
 
     private var binding: ItemTokopedianowSearchCategorySwitcherWidgetBinding? by viewBinding()
@@ -36,20 +36,20 @@ class SwitcherWidgetViewHolder(
         binding?.root?.context?.let {
             setBackgroundImage(it, SWITCHER_WIDGET_BG_URL, binding?.switcherLayout)
             setBackgroundImage(it, SWITCHER_WIDGET_CARD_2H_BG_URL, binding?.container2h)
-            setBackgroundImage(it, SWITCHER_WIDGET_CARD_15M_BG_URL, binding?.container15m)
+            setBackgroundImage(it, SWITCHER_WIDGET_CARD_20M_BG_URL, binding?.container20m)
         }
     }
 
     private fun setText() {
         binding?.apply {
-            tpDesc15m.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_fifteen_minutes))
+            tpDesc20m.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_twenty_minutes))
             tpDesc2h.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_two_hours))
         }
     }
 
     private fun setListener() {
         binding?.apply {
-            cv15m.setOnClickListener {
+            cv20m.setOnClickListener {
                 listener?.onClickSwitcherTo15M()
             }
             cv2h.setOnClickListener {

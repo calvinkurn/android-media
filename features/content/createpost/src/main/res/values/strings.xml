@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">createpost</string>
+
+    <!-- Content Creation UGC -->
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_title">Yakin mau ganti ke profil tokomu?</string>
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_desc">Tag yang dipilih akan hilang, karena kamu hanya bisa tag dari produk tokomu.</string>
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_primary_button">Lanjut Tag Produk</string>
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_secondary_button">Ganti sebagai penjual</string>
+
     <!--CREATE POST-->
     <string name="cp_title_image_picker">Tambah Foto</string>
     <string name="cp_title_image_video">Tambah Video</string>
@@ -18,6 +25,10 @@
     <string name="cp_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
     <string name="cp_title_edit">Edit</string>
     <string name="cp_get_commission">Raih Komisi</string>
+    <string name="cp_play_btn_content_desc">Play Button</string>
+    <string name="cp_del_btn_content_desc">Delete Media Button</string>
+    <string name="cp_thumbnail_content_desc">Profile Image</string>
+    <string name="cp_img_checkl_content_desc">Image Icon CheckMark</string>
 
     <string name="cp_share_tokopedia">Follower</string>
     <string name="cp_share_facebook">Facebook</string>
@@ -50,31 +61,4 @@
     <string name="cp_label_add_sticker">Aa</string>
 
     <string name="string_attach_product_warning_max_product_format">Hanya bisa masukkan %1$s barang ya.</string>
-
-    <!--CONTENT-->
-    <string name="feed_content_position_text">Tag produk pada postingan ini %s</string>
-    <string name="feed_content_post_tag_text">Lihat Produk</string>
-    <string name="feed_content_tag_product_text">Tag Produk</string>
-    <string name="feed_content_product_bottom_sheet_name">Yang ada di post ini</string>
-    <string name="feed_content_caption_text">Tulis deskripsi yang menarik, ya!</string>
-    <string name="feed_content_post_sebagai">Post sebagai</string>
-    <string name="feed_content_dialog_title">Yakin nggak lanjut tag produk?</string>
-    <string name="feed_content_dialog_desc">Tag produk akan hilang jika kamu keluar dari halaman ini.</string>
-    <string name="feed_content_primary_cta_text">Lanjut Tag Produk</string>
-    <string name="feed_content_sec_cta_text">Keluar</string>
-    <string name="feed_content_text_lanjut">Lanjut</string>
-    <string name="feed_content_text_post">Post</string>
-    <string name="feed_content_delete_toaster_text">Tag produk telah dihapus.</string>
-    <string name="feed_content_post_successful_toaster">Yay, post kamu berhasil di-upload!</string>
-    <string name="feed_content_more_than_5_product_tag">Oops, tag produkmu sudah maksimum. Hapus salah satu media jika ingin menggantinya.</string>
-    <string name="feed_content_progress_bar_text">Memproses...</string>
-    <string name="feed_content_progress_bar_failed_text">Gagal Diproses</string>
-    <string name="feed_content_coba_lagi_text">Coba Lagi</string>
-    <string name="feed_content_no_product_sheet_header">Kamu belum punya produk</string>
-    <string name="feed_content_no_product_sheet_body">Yuk, upload produk di tokomu dulu supaya bisa nge-tag di postingan!</string>
-    <string name="feed_content_product_list_page_error">Gagal memuat produk. Silakan ulangi.</string>
-    <string name="feed_product_page_search_bar_placeholder_text">Cari produk di %s </string>
-    <string name="feed_product_page_filter_title">Urutkan</string>
-    <string name="feed_content_default_filter_value">Pembaruan Terakhir</string>
-
 </resources>

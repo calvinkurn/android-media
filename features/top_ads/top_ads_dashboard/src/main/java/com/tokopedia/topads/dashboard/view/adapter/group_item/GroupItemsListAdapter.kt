@@ -20,7 +20,7 @@ class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactor
     var countList: MutableList<CountDataItem> = mutableListOf()
     private var selectedMode = false
     private var fromSearch = false
-    var statsData: MutableList<DataItem> = mutableListOf()
+    private var statsData =  mutableMapOf<String, DataItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupItemsViewHolder<GroupItemsModel> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -75,7 +75,9 @@ class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactor
     }
 
     fun setstatistics(data: List<DataItem>) {
-        statsData = data.toMutableList()
+        data.forEach {
+            statsData[it.groupId] = it
+        }
         notifyDataSetChanged()
     }
 

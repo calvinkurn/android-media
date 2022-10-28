@@ -76,6 +76,10 @@ class RechargeBUWidgetMixLeftViewHolder(
 
         private const val EXPIRED_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZZZZ"
         private const val SECOND_IN_MILIS = 1000
+        private const val FIRST_INDEX = 0
+        private const val MULTIPLIER_DISTANCE_LEFT = 0.2f
+        private const val MULTIPLIER_ITEM_SIZE_ALPHA = 0.80f
+        private const val SUBTRACTOR_ALPHA = 1
     }
 
     override fun bind(element: RechargeBUWidgetDataModel) {
@@ -208,18 +212,18 @@ class RechargeBUWidgetMixLeftViewHolder(
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                if (layoutManager.findFirstVisibleItemPosition() == FIRST_INDEX) {
                     val firstView =
                         layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                     firstView?.let {
                         val distanceFromLeft = it.left
-                        val translateX = distanceFromLeft * 0.2f
+                        val translateX = distanceFromLeft * MULTIPLIER_DISTANCE_LEFT
                         parallaxView.translationX = translateX
 
                         if (distanceFromLeft <= 0) {
                             val itemSize = it.width.toFloat()
-                            val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                            image.alpha = 1 - alpha
+                            val alpha = (abs(distanceFromLeft).toFloat() / itemSize * MULTIPLIER_ITEM_SIZE_ALPHA)
+                            image.alpha = SUBTRACTOR_ALPHA - alpha
                         }
                     }
                 }

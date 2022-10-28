@@ -13,6 +13,7 @@ object ChannelMapper {
             type = response.type,
             layout = response.layout,
             pageName = response.pageName,
+            widgetParam = response.widgetParam,
             channelHeader = ChannelHeader(
                 response.header.id,
                 response.header.name,
@@ -85,15 +86,14 @@ object ChannelMapper {
                     isTopads = it.isTopads,
                     productViewCountFormatted = it.productViewCountFormatted,
                     isOutOfStock = it.isOutOfStock,
-                    isFreeOngkirActive = it.freeOngkir.isActive,
-                    freeOngkirImageUrl = it.freeOngkir.imageUrl,
                     shopId = it.shop.shopId,
                     hasBuyButton = it.hasBuyButton,
                     labelGroup = it.labelGroup.map { label ->
                         LabelGroup(
                             title = label.title,
                             position = label.position,
-                            type = label.type
+                            type = label.type,
+                            url = label.url
                         )
                     },
                     rating = it.rating,

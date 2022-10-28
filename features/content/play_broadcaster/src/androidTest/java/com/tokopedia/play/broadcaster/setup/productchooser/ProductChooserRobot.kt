@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
-import com.tokopedia.play.broadcaster.helper.delay
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
@@ -26,6 +25,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSort
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductListViewHolder
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
+import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk
 import com.tokopedia.dialog.R as unifyDialogR
 import com.tokopedia.unifycomponents.R as unifyR
@@ -75,7 +75,7 @@ class ProductChooserRobot(
         delay()
     }
 
-    fun close() {
+    fun close() = chainable {
         onView(
             ViewMatchers.withId(unifyR.id.bottom_sheet_close)
         ).perform(click())
@@ -93,7 +93,7 @@ class ProductChooserRobot(
         ).perform(click())
     }
 
-    fun selectProduct(position: Int = 0) {
+    fun selectProduct(position: Int = 0) = chainable {
         onView(
             ViewMatchers.withId(R.id.rv_products)
         ).perform(RecyclerViewActions.actionOnItemAtPosition<ProductListViewHolder.Product>(
@@ -101,7 +101,7 @@ class ProductChooserRobot(
         )
     }
 
-    fun saveProducts() {
+    fun saveProducts() = chainable {
         onView(
             ViewMatchers.withId(R.id.btn_next)
         ).perform(click())
@@ -111,6 +111,8 @@ class ProductChooserRobot(
         onView(
             ViewMatchers.withId(R.id.chips_sort)
         ).perform(click())
+
+        delay(300)
     }
 
     fun clickEtalaseCampaignChips() {
@@ -155,5 +157,10 @@ class ProductChooserRobot(
             if (isShown) ViewAssertions.matches(isDisplayed())
             else doesNotExist()
         )
+    }
+
+    private fun chainable(fn: () -> Unit): ProductChooserRobot {
+        fn()
+        return this
     }
 }

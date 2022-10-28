@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -40,8 +41,8 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCO
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.VerificationPref
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
@@ -199,7 +200,16 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
 
         if (isCountdownFinished()) {
-            if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
+            if (otpData.otpType == OtpConstant.OtpType.PHONE_REGISTER_MANDATORY) {
+                viewModel.sendOtpPhoneRegisterMandatory(
+                    otpType = otpData.otpType.toString(),
+                    mode = modeListData.modeText,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email,
+                    otpDigit = modeListData.otpDigit,
+                    validateToken = otpData.accessToken
+                )
+            } else if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
                 viewModel.sendOtp2FA(
                         otpType = otpData.otpType.toString(),
                         mode = modeListData.modeText,
@@ -239,7 +249,16 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 analytics.trackClickVerificationButton(otpData.otpType)
             }
         }
-        if ((otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
+        if (otpData.otpType == OtpConstant.OtpType.PHONE_REGISTER_MANDATORY) {
+            viewModel.otpValidatePhoneRegisterMandatory(
+                code = code,
+                otpType = otpData.otpType.toString(),
+                mode = modeListData.modeText,
+                msisdn = otpData.msisdn,
+                email = otpData.email,
+                validateToken = otpData.accessToken
+            )
+        } else if ((otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
                         otpData.otpType.toString() == OtpConstant.OtpType.RESET_PIN.toString()) &&
                 otpData.userIdEnc.isNotEmpty()) {
             viewModel.otpValidate2FA(
@@ -247,7 +266,9 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     otpType = otpData.otpType.toString(),
                     mode = modeListData.modeText,
                     userIdEnc = otpData.userIdEnc,
-                    validateToken = otpData.accessToken
+                    validateToken = otpData.accessToken,
+                    userId = otpData.userId.toIntOrZero(),
+                    msisdn = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN).orEmpty()
             )
         } else {
             viewModel.otpValidate(
@@ -390,7 +411,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     open fun redirectAfterValidationSuccessful(bundle: Bundle) {
         if ((activity as VerificationActivity).isResetPin2FA) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CHANGE_PIN).apply {
                 bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
                 bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
                 putExtras(bundle)

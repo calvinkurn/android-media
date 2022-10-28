@@ -37,6 +37,7 @@ object ProductTrackingConstant {
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
         const val KEY_CATEGORY_ID = "categoryId"
+        const val KEY_TRACKER_ID = "trackerId"
 
         /**
          * Tracking Key - Product Level
@@ -151,6 +152,7 @@ object ProductTrackingConstant {
         const val CLICK_ANNOTATION_RECOM_CHIP = "click annotation chips"
         const val CLICK_SHARE_PDP = "click - share button"
         const val CLICK_READ_MORE = "click - baca selengkapnya"
+        const val CLICK_SPECIFICATION_READ_MORE = "click - selengkapnya on spesifikasi produk  - product detail bottomsheet"
         const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
@@ -236,6 +238,8 @@ object ProductTrackingConstant {
         const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
         const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" //recoom title, page name, widget type
 
+        const val CLICK_INFO_MULTILOC = "click - information icon on shop component"
+
         const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
         const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
         const val IMPRESSION_PRODUCT_BUNDLING = "impression - bundling component"
@@ -281,6 +285,7 @@ object ProductTrackingConstant {
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
         const val EVENT_CLICK_COURIER = "clickCourier"
+        const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
     }
 
     object Affiliate {
@@ -293,6 +298,12 @@ object ProductTrackingConstant {
     object ImageReview {
         const val ACTION_SEE_ITEM = "click - review gallery on foto dari pembeli"
         const val ACTION_SEE_ALL = "click - lihat semua review gallery"
+    }
+
+    object MostHelpfulReview {
+        const val TRACKER_ID_CLICK_REVIEWER_NAME = "33836"
+        const val ACTON_CLICK_REVIEWER_NAME = "click - reviewer name"
+        const val LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;label:%s;"
     }
 
     object MerchantVoucher {
@@ -332,5 +343,12 @@ object ProductTrackingConstant {
         // example /tokonow - recomproduct - pdp_1 - rekomendasi untuk anda - {recommendation type}
         const val PARAM_ATC_DIMENS_40 = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s"
         const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" //page source like PDP, recommendationType
+    }
+
+    object TrackerId {
+        const val TRACKER_ID_CLICK_THUMBNAIL = "31790"
+        const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
+        const val TRACKER_ID_CLICK_SPECIFICATION = "36325"
+        const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
     }
 }

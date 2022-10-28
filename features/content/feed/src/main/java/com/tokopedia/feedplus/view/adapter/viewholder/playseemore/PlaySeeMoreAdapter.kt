@@ -13,12 +13,13 @@ import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVid
 /**
  * Created by jegul on 07/10/20
  */
-class PlaySeeMoreAdapter(coordinator: PlayWidgetCoordinatorVideoTab
+class PlaySeeMoreAdapter(
+    coordinator: PlayWidgetCoordinatorVideoTab
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
+
     init {
         delegatesManager
                 .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator))
-
     }
 
     override fun areItemsTheSame(oldItem: PlayFeedUiModel, newItem: PlayFeedUiModel): Boolean {
@@ -29,10 +30,9 @@ class PlaySeeMoreAdapter(coordinator: PlayWidgetCoordinatorVideoTab
         return oldItem == newItem
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        super.onBindViewHolder(holder, position)
-    }
     fun getPositionInList(channelId: String, positionOfItem: Int): Int {
+        if(positionOfItem == -1) return -1
+
         itemList.forEachIndexed { index, playFeedUiModel ->
             if (playFeedUiModel is PlayWidgetLargeUiModel && playFeedUiModel.model.items.size > positionOfItem) {
                 val item = playFeedUiModel.model.items[positionOfItem]
@@ -45,29 +45,49 @@ class PlaySeeMoreAdapter(coordinator: PlayWidgetCoordinatorVideoTab
         return -1
     }
 
-    fun updateItemInList(position: Int, channelId: String, reminderType: PlayWidgetReminderType) {
-        val list = mutableListOf<PlayFeedUiModel>()
-        //update adapter list item at a particular position
-        itemList.forEachIndexed { index, playFeedUiModel ->
-            if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
-                val model = (itemList[position] as PlayWidgetLargeUiModel)
-                val updatedItem = model.copy( model = updateWidgetActionReminder(model.model, channelId, reminderType) )
-                list.add(updatedItem)
-            } else {
-                list.add(playFeedUiModel)
+    fun updatePlayWidgetInfo(
+        position: Int,
+        channelId: String,
+        totalView: String?,
+        isReminderSet: Boolean?
+    ) {
+        if(position == -1) return
+
+        setItems(
+            itemList.mapIndexed { index, playFeedUiModel ->
+                if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
+                    playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet))
+                } else {
+                    playFeedUiModel
+                }
             }
-        }
-        setItems(list)
+        )
         notifyItemChanged(position)
     }
 
-    private fun updateWidgetActionReminder(model: PlayWidgetUiModel, channelId: String, reminderType: PlayWidgetReminderType): PlayWidgetUiModel {
+    private fun updateChannelInfo(
+        model: PlayWidgetUiModel,
+        channelId: String,
+        totalView: String?,
+        isReminderSet: Boolean?
+    ): PlayWidgetUiModel {
         return model.copy(
-                items = model.items.map { largeWidget ->
-                    if (largeWidget is PlayWidgetChannelUiModel && largeWidget.channelId == channelId) largeWidget.copy(reminderType = reminderType)
-                    else largeWidget
+            items = model.items.map { widget ->
+                if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
+                    val finalTotalView = totalView ?: widget.totalView.totalViewFmt
+                    val finalReminderType = when(isReminderSet) {
+                        true -> PlayWidgetReminderType.Reminded
+                        false -> PlayWidgetReminderType.NotReminded
+                        null -> widget.reminderType
+                    }
+
+                    widget.copy(
+                        reminderType = finalReminderType,
+                        totalView = widget.totalView.copy(totalViewFmt = finalTotalView)
+                    )
                 }
+                else widget
+            }
         )
     }
-
 }

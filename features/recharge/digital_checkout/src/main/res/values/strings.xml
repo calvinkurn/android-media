@@ -14,6 +14,7 @@
 
     <string name="digital_cart_login_message">Silakan login terlebih dahulu</string>
     <string name="digital_cart_default_error_img_url">https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png</string>
+    <string name="digital_cart_error_message">%1$s, Kode Error : (%2$s)</string>
 
     <string name="digital_cart_generate_token_checkout">%1$s_%2$s</string>
 
@@ -36,7 +37,7 @@
 
     <string name="digital_checkout_error_remove_coupon_message">Oops, belum berhasil hapus kupon. Coba lagi, yuk!</string>
 
-    <string name="digital_checkout_promo_disabled_title">Produk ini sudah pakai promo</string>
+    <string name="digital_checkout_promo_disabled_title">Produk ini tidak bisa pakai promo</string>
     <string name="digital_checkout_promo_disabled_description">Tidak bisa digabung dengan promo lain</string>
 
     <string name="subscription_more_info_bottomsheet_title">Langganan itu apa, sih?</string>
@@ -45,4 +46,7 @@
         <item>Jika kamu melakukan transaksi manual untuk produk yang bisa dibayarkan berkali-kali (cth: Pulsa dan BPJS), Langganan kamu akan terus berjalan.\n</item>
         <item>Kamu bisa atur jadwal Langganan, periode Langganan, dan metode pembayaran kapan pun di halaman Langganan.</item>
     </string-array>
+    <string name="digital_cart_goto_plus_consent">Saya menyetujui %1$s serta %2$s Berlangganan PLUS.</string>
+    <string name="digital_cart_goto_plus_tos">Syarat &amp; Ketentuan</string>
+    <string name="digital_cart_goto_plus_privacy_policy">Kebijakan Privasi</string>
 </resources>

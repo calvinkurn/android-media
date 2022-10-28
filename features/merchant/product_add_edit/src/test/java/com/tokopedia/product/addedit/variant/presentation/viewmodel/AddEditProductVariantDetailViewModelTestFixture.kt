@@ -1,10 +1,11 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.common.util.IMSResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -26,7 +27,10 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var resourceProvider: ResourceProvider
+    lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
+
+    @RelaxedMockK
+    lateinit var imsResourceProvider: IMSResourceProvider
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -61,7 +65,8 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
 
     protected val viewModel: AddEditProductVariantDetailViewModel by lazy {
         spyk(AddEditProductVariantDetailViewModel(
-                resourceProvider,
+                imsResourceProvider,
+                getMaxStockThresholdUseCase,
                 userSession,
                 testCoroutineDispatcher
         ))

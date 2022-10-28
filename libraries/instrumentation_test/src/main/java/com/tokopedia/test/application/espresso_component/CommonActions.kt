@@ -9,7 +9,10 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.test.application.util.ViewUtils
 import com.tokopedia.test.application.util.ViewUtils.takeScreenShot
@@ -113,6 +116,73 @@ object CommonActions {
     }
 
     /**
+     * Display on specified child view inside of item recycler view
+     *
+     * example:
+     * onView(withId(R.id.recycler_view)).check(matches(ViewMatchers.isDisplayed()))
+     * .check(matches(displayChildViewWithId(index,id)))
+     *
+     * @param position index of list
+     * @param targetViewId resource id of item
+     */
+
+    fun displayChildViewWithId(
+        position: Int,
+        targetViewId: Int,
+    ): Matcher<View?> {
+        return object : BoundedMatcher<View?, RecyclerView?>(
+            RecyclerView::class.java
+        ) {
+
+
+            override fun describeTo(description: org.hamcrest.Description) {
+
+            }
+
+            override fun matchesSafely(item: RecyclerView?): Boolean {
+                val viewHolder = item?.findViewHolderForAdapterPosition(position)
+                val targetView = viewHolder?.itemView?.findViewById<View>(targetViewId)
+                return isDisplayed().matches(targetView)
+            }
+
+        }
+    }
+
+    /**
+     * Display on specified child view inside of item recycler view
+     *
+     * example:
+     * onView(withId(R.id.recycler_view)).check(matches(ViewMatchers.isDisplayed()))
+     *  .check(matches(displayChildViewWithIdAndText(index,id,text)))
+     *
+     * @param position index of list
+     * @param targetViewId resource id of item
+     * @param text
+
+     */
+
+    fun displayChildViewWithIdAndText(
+        position: Int,
+        targetViewId: Int,
+        text:String
+    ): Matcher<View?> {
+        return object : BoundedMatcher<View?, RecyclerView?>(
+            RecyclerView::class.java
+        ) {
+
+            override fun describeTo(description: org.hamcrest.Description) {
+
+            }
+
+            override fun matchesSafely(item: RecyclerView?): Boolean {
+                val viewHolder = item?.findViewHolderForAdapterPosition(position)
+                val targetView = viewHolder?.itemView?.findViewById<View>(targetViewId)
+                return withText(text).matches(targetView) && isDisplayed().matches(targetView)
+            }
+
+        }
+    }
+    /**
      * Use for screenshot entire recyclerview into one image
      * @param startPosition determine in start position it will start screenshot
      * @param endPosition determine in start position it will end screenshot
@@ -151,6 +221,15 @@ object CommonActions {
                 view.takeScreenShot("$fileName-$fileNamePostFix")
             }
         })
+    }
+
+    fun findViewHolderAndDo(recyclerViewId: Int, position: Int, action: (View?) -> Unit) {
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(recyclerViewId)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, screenShotChild { view ->
+                    action.invoke(view)
+                })
+        )
     }
 
     /**

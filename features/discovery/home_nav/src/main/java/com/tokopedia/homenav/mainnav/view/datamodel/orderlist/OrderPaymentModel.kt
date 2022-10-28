@@ -4,7 +4,10 @@ import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.OrderListTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
-data class OrderPaymentModel(
+/**
+ * Created by dhaba
+ */
+class OrderPaymentModel(
         val navPaymentModel: NavPaymentOrder
 ): OrderNavVisitable, ImpressHolder() {
     override fun type(factory: OrderListTypeFactory): Int {

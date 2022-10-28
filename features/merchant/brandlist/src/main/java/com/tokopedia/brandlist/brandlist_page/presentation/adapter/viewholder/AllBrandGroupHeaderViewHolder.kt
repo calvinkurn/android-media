@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistAlphabetHeaderAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandGroupHeaderUiModel
-import com.tokopedia.brandlist.common.Constant.DEFAULT_SELECTED_CHIPS
 import java.text.NumberFormat
 import java.util.*
 
@@ -53,9 +52,7 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
 
         this.allBrandGroupHeaderUiModel = element
         element.recyclerViewLastState?.let {
-            if(element.selectedChip != DEFAULT_SELECTED_CHIPS){
-                recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
-            }
+            recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
         }
 
         adapter = BrandlistAlphabetHeaderAdapter(element.listener)
@@ -63,7 +60,9 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
             it.headerList = headerList
             it.selectedPosition = element.selectedChip
             it.lastTimeChipsClicked = element.lastTimeChipsClicked
-            it.notifyDataSetChanged()
+            if (!recyclerViewBrandHeader.isComputingLayout) {
+                it.notifyDataSetChanged()
+            }
         }
         recyclerViewBrandHeader.adapter = adapter
     }

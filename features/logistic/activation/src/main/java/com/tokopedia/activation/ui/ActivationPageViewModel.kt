@@ -58,7 +58,7 @@ class ActivationPageViewModel @Inject constructor(
         )
     }
 
-    fun validateActivatedShipping(userId: Int) {
+    fun validateActivatedShipping(userId: Long) {
         _activatedShipping.value= ActivationPageState.Loading
         getShippingEditorUseCase.execute(
                 { shippingEditorModel: ShippingEditorModel ->

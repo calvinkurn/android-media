@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,6 +20,7 @@ import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.utils.ErrorHandler
@@ -31,12 +32,16 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.product_bundle.common.data.mapper.ProductBundleAtcTrackerMapper
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
+import com.tokopedia.product_bundle.fragment.EntrypointFragment
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailBundleTracker
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
@@ -69,7 +74,7 @@ class SingleProductBundleFragment(
     lateinit var userSession: UserSessionInterface
 
     private var tvBundlePreorder: Typography? = null
-    private var bundleListLayout: LinearLayoutCompat? = null
+    private var bundleListLayout: ConstraintLayout? = null
     private var totalAmount: TotalAmount? = null
     private var geBundlePage: GlobalError? = null
     private var loaderDialog: LoaderDialog? = null
@@ -77,12 +82,13 @@ class SingleProductBundleFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId,
-            emptyVariantProductIds)
+        initBundleData()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_single_product_bundle, container, false)
     }
 
@@ -111,13 +117,15 @@ class SingleProductBundleFragment(
             val selectedProductVariant = adapter.getSelectedProductVariant() ?: ProductVariant()
             adapter.setSelectedVariant(selectedProductId,
                 viewModel.getVariantText(selectedProductVariant, selectedProductId))
-            Toaster.build(
-                requireView(),
-                getString(R.string.single_bundle_success_variant_added),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.action_oke)
-            ).setAnchorView(totalAmount?.bottomContentView).show()
+            totalAmount?.bottomContentView?.apply {
+                Toaster.build(
+                    this.rootView,
+                    getString(R.string.single_bundle_success_variant_added),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.action_oke)
+                ).setAnchorView(this).show()
+            }
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.validateAndAddToCart(
@@ -200,7 +208,17 @@ class SingleProductBundleFragment(
     private fun observeAddToCartResult() {
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             hideLoadingDialog()
-            if (pageSource == PAGE_SOURCE_CART) {
+            val productDetails = ProductBundleAtcTrackerMapper.mapSingleBundlingDataToProductTracker(
+                    bundleInfo, selectedBundleId, it.responseResult.data[0].cartId
+            )
+
+            if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
+                sendSingleBundleAtcTrackerClickEvent(
+                        selectedProductIds = parentProductID,
+                        shopId = it.requestParams.shopId,
+                        productDetails = productDetails
+                )
+
                 val intent = Intent()
                 intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
                 intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
@@ -209,9 +227,46 @@ class SingleProductBundleFragment(
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             } else {
+                sendSingleBundleAtcTrackerClickEvent(
+                        selectedProductIds = parentProductID,
+                        shopId = it.requestParams.shopId,
+                        productDetails = productDetails
+                )
                 RouteManager.route(context, ApplinkConst.CART)
             }
         })
+    }
+
+    private fun sendTrackerBundleAtcClickEvent(
+            selectedProductIds: String,
+            shopId: String,
+            productDetails: List<ProductDetailBundleTracker>
+    ) {
+        val _userId = viewModel.getUserId()
+        SingleProductBundleTracking.trackSingleBuyClick(
+                userId = _userId,
+                source = pageSource,
+                parentProductId = selectedProductIds,
+                bundleId = adapter.getSelectedBundleId(),
+                selectedProductId = adapter.getSelectedProductId(),
+                shopId = shopId,
+                productIds = selectedProductIds,
+                productDetails = productDetails
+        )
+    }
+
+    private fun sendSingleBundleAtcTrackerClickEvent(
+            selectedProductIds: String,
+            shopId: String,
+            productDetails: List<ProductDetailBundleTracker>
+    ) {
+        if (productDetails.isNotEmpty() && productDetails[0].productId != "0") {    // Check if the data is valid
+            sendTrackerBundleAtcClickEvent(
+                    selectedProductIds = selectedProductIds,
+                    shopId = shopId,
+                    productDetails = productDetails
+            )
+        }
     }
 
     private fun observeToasterError() {
@@ -226,8 +281,10 @@ class SingleProductBundleFragment(
                 else -> getString(R.string.single_bundle_error_unknown)
             }
             hideLoadingDialog()
-            Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(R.string.action_oke)).setAnchorView(totalAmount?.bottomContentView).show()
+            totalAmount?.bottomContentView?.apply {
+                Toaster.build(this.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.action_oke)).setAnchorView(this).show()
+            }
         })
     }
 
@@ -269,12 +326,14 @@ class SingleProductBundleFragment(
 
     private fun observeThrowableError() {
         viewModel.throwableError.observe(viewLifecycleOwner, {
-            Toaster.build(
-                requireView(),
-                ErrorHandler.getErrorMessage(context, it),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR
-            ).setAnchorView(totalAmount?.bottomContentView).show()
+            totalAmount?.bottomContentView?.apply {
+                Toaster.build(
+                    this.rootView,
+                    ErrorHandler.getErrorMessage(context, it),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).setAnchorView(this).show()
+            }
             hideLoadingDialog()
             // TODO: log error
         })
@@ -282,7 +341,7 @@ class SingleProductBundleFragment(
 
     private fun setupTotalPO(view: View) {
         tvBundlePreorder = view.findViewById(R.id.tv_bundle_preorder)
-        updateTotalPO(null) // set null to hide
+        updateTotalPO(null, true) // set null to hide
     }
 
     private fun setupRecyclerViewItems(view: View) {
@@ -305,11 +364,6 @@ class SingleProductBundleFragment(
                 priceGap = defaultPrice
             )
             amountCtaView.setOnClickListener {
-                SingleProductBundleTracking.trackSingleBuyClick(
-                    adapter.getSelectedBundleId(),
-                    parentProductID,
-                    adapter.getSelectedProductId()
-                )
                 atcProductBundle()
             }
         }
@@ -342,14 +396,14 @@ class SingleProductBundleFragment(
     }
 
     // only visible when totalPOWording not null or empty
-    private fun updateTotalPO(totalPOWording: String?) {
+    private fun updateTotalPO(totalPOWording: String?, isFirstSetup: Boolean = false) {
         tvBundlePreorder?.isVisible = !totalPOWording.isNullOrEmpty()
         tvBundlePreorder?.text = getString(R.string.preorder_prefix, totalPOWording)
-        updateTotalAmountAtcButtonText(totalPOWording)
+        updateTotalAmountAtcButtonText(totalPOWording, isFirstSetup)
     }
 
     private fun updateTotalPO(singleProductBundleItem: SingleProductBundleItem) {
-        updateTotalPO(singleProductBundleItem.preorderDurationWording)
+        updateTotalPO(singleProductBundleItem.preorderDurationWording, true)
     }
 
     private fun updateTotalAmount(price: String, discount: Int = 0, slashPrice: String, priceGap: String) {
@@ -366,12 +420,57 @@ class SingleProductBundleFragment(
         }
     }
 
-    private fun updateTotalAmountAtcButtonText(preorderDurationWording: String?) {
+    private fun updateTotalAmountAtcButtonText(preorderDurationWording: String?, isFirstSetup: Boolean) {
         totalAmount?.amountCtaView?.text = if (preorderDurationWording.isNullOrEmpty()) {
-            getString(R.string.action_buy_bundle)
+            getAddUpdateModeCtaText(isFirstSetup)
         } else {
-            getString(R.string.action_preorder)
+            getCtaText(
+                stringRes = R.string.action_preorder,
+                isEnabled = true
+            )
         }
+    }
+
+    private fun getAddUpdateModeCtaText(isFirstSetup: Boolean): String {
+        return if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
+            /*
+             * UPDATE MODE (CART & MINI CART)
+             *
+             * isProductBundleDifferent : Will be true if user chooses the other product bundle.
+             * isProductVariantChanged  : Will be true if user changes the product variant of product bundle.
+             * isFirstSetup             : Flag to indicate first attempt opening bottomsheet (directly show selected item), it will make atc button disabled if the value is true.
+             *
+             * Will disable the button if there is no changes and vice versa
+             */
+            val isProductBundleDifferent = selectedBundleId != adapter.getSelectedBundleId()
+            val isProductVariantChanged = selectedProductId != adapter.getSelectedProductId().toLongOrZero()
+            if ((isProductBundleDifferent || isProductVariantChanged) && !isFirstSetup) {
+                getCtaText(
+                    stringRes = R.string.action_choose_package,
+                    isEnabled = true
+                )
+            } else {
+                getCtaText(
+                    stringRes = R.string.action_package_chosen,
+                    isEnabled = false
+                )
+            }
+        } else {
+            /*
+             * ADD MODE (PDP)
+             *
+             * Always enable atc button
+             */
+            getCtaText(
+                stringRes = R.string.action_choose_package,
+                isEnabled = true
+            )
+        }
+    }
+
+    private fun getCtaText(stringRes: Int, isEnabled: Boolean): String {
+        totalAmount?.amountCtaView?.isEnabled = isEnabled
+        return context?.getString(stringRes).orEmpty()
     }
 
     private fun showLoadingDialog() {
@@ -383,11 +482,6 @@ class SingleProductBundleFragment(
 
     private fun hideLoadingDialog() {
         loaderDialog?.dialog?.dismiss()
-    }
-
-    private fun refreshPage() {
-        val productBundleActivity = requireActivity() as ProductBundleActivity
-        productBundleActivity.refreshPage()
     }
 
     private fun atcProductBundle() {
@@ -403,6 +497,20 @@ class SingleProductBundleFragment(
                 selectedProductId.toString(),
                 adapter.getSelectedData()
             )
+        }
+    }
+
+    private fun initBundleData() {
+        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId,
+            emptyVariantProductIds)
+    }
+
+    private fun refreshPage() {
+        val parentActivity = activity as? ProductBundleActivity
+        parentActivity?.entrypointFragment?.let {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, it, EntrypointFragment.tagFragment)
+                .commit()
         }
     }
 

@@ -10,6 +10,7 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeThreeIconsBinding
 import com.tokopedia.digital.home.model.RechargeHomepageThreeIconsModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageThreeIconsItemAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 
 class RechargeHomepageThreeIconsViewHolder(
     itemView: View,
@@ -33,6 +34,10 @@ class RechargeHomepageThreeIconsViewHolder(
             setRecycledViewPool(rvPool)
             adapter = RechargeHomepageThreeIconsItemAdapter(itemThreeIcons, listener)
             layoutManager = GridLayoutManager(context, SPAN_COUNT)
+        }
+
+        bind.root.addOnImpressionListener(element.section) {
+            listener.onRechargeSectionItemImpression(element.section)
         }
     }
 }

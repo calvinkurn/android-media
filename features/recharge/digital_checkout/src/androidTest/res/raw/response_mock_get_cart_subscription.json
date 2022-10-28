@@ -149,7 +149,8 @@
         ],
         "atc_source": "",
         "admin_fee_text": "Rp 0",
-        "admin_fee": 3000
+        "admin_fee": 3000,
+        "channel_id": 1
       }
     }
   }

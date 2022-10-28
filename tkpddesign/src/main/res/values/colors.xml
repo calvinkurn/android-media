@@ -32,7 +32,6 @@
     <color name="countdown_background">#ff3b30</color>
     <color name="background_apps">@color/Unify_N50</color>
     <color name="background_error">#D50000</color>
-    <color name="background_notification">#EA212D</color>
     <color name="background_wish_list">#F33960</color>
     <color name="background_star_review">#FFC107</color>
 
@@ -76,7 +75,6 @@
 
     <color name="bg_button_border_outline">#E0E0E0</color>
     <color name="bg_button_green_border_outline">#03AC0E</color>
-    <color name="white_two">#e0e0e0</color>
     <color name="gray_background">#fff2f3f4</color>
 
     <color name="pinkish_grey">#bdbdbd</color>
@@ -148,4 +146,6 @@
     <color name="clr_194c2a86">#194c2a86</color>
     <color name="clr_6c727c">#6c727c</color>
     <color name="bg_saldolock_ticker">#fffae6</color>
+
+    <color name="tkpddesign_dms_transparent_black">#00000000</color>
 </resources>

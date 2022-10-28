@@ -56,6 +56,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                 data {
                   id
                   title
+                  description
                   cover_url
                   start_time
                   is_live
@@ -132,6 +133,13 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       icon
                       background_color
                     }
+                    has_follow_button
+                    empty_bottom_sheet{
+                        copy_text_header
+                        copy_text_body
+                        copy_text_redirect_button
+                        image_url
+                    }
                   }
                   app_link
                   web_link
@@ -161,9 +169,9 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
 
         private fun createParamsWithChannelId(channelId: String, playSource: PlaySource): Map<String, Any> = mutableMapOf(
                 PARAM_CHANNEL_ID to channelId,
-                PARAM_SOURCE_TYPE to playSource.key
+                PARAM_SOURCE_TYPE to playSource.type
         ).apply {
-            if (playSource is PlaySource.Shop) put(PARAM_SOURCE_ID, playSource.sourceId)
+            if (playSource.id.isNotBlank()) put(PARAM_SOURCE_ID, playSource.id)
         }
 
         private fun createParamsWithCursor(cursor: String): Map<String, Any> = mapOf(

@@ -126,6 +126,8 @@ object UohConsts {
     const val VERTICAL_CATEGORY_INSURANCE = "insurance"
     const val VERTICAL_CATEGORY_MODALTOKO = "modal_toko"
     const val VERTICAL_CATEGORY_HOTEL = "hotel"
+    const val VERTICAL_CATEGORY_TOKOFOOD = "tokofood"
+    const val VERTICAL_CATEGORY_PLUS = "plus"
 
     const val QUERY_PARAM_INVOICE = "invoice"
     const val QUERY_PARAM_INVOICE_URL = "invoice_url"
@@ -169,4 +171,6 @@ object UohConsts {
     const val TDN_ADS_COUNT = 1
     const val TDN_DIMEN_ID = 3
     const val TDN_RADIUS = 16
+
+    const val PMS_IMAGE_URL = "https://images.tokopedia.net/img/android/uoh/saldo_tempo.png"
 }

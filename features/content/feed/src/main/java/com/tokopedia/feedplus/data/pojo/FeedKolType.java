@@ -8,7 +8,7 @@ import java.util.List;
 public class FeedKolType {
   @SerializedName("id")
   @Expose
-  private Integer id;
+  private String id;
 
   @SerializedName("headerTitle")
   @Expose
@@ -52,7 +52,7 @@ public class FeedKolType {
 
   @SerializedName("userId")
   @Expose
-  private Integer userId;
+  private String userId;
 
   @SerializedName("userInfo")
   @Expose
@@ -70,7 +70,7 @@ public class FeedKolType {
   @Expose
   private List<ContentFeedKol> content;
 
-  public void setId(Integer id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -114,7 +114,7 @@ public class FeedKolType {
     this.userPhoto = userPhoto;
   }
 
-  public void setUserId(Integer userId) {
+  public void setUserId(String userId) {
     this.userId = userId;
   }
 
@@ -134,7 +134,7 @@ public class FeedKolType {
     this.content = content;
   }
 
-  public Integer getId() {
+  public String getId() {
     return this.id;
   }
 
@@ -178,7 +178,7 @@ public class FeedKolType {
     return this.userPhoto;
   }
 
-  public Integer getUserId() {
+  public String getUserId() {
     return this.userId;
   }
 

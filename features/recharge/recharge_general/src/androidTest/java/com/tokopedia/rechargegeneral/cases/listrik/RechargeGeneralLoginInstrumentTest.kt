@@ -15,13 +15,12 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.RechargeGeneralLoginMockResponseConfig
@@ -42,8 +41,6 @@ import org.junit.Test
 
 class RechargeGeneralLoginInstrumentTest {
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -56,7 +53,6 @@ class RechargeGeneralLoginInstrumentTest {
     fun stubAllExternalIntents() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(RechargeGeneralLoginMockResponseConfig(RechargeGeneralProduct.LISTRIK))
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -66,7 +62,8 @@ class RechargeGeneralLoginInstrumentTest {
         }
         mActivityRule.launchActivity(intent)
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
-        Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IsNot.not(IntentMatchers.isInternal()))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
@@ -77,94 +74,114 @@ class RechargeGeneralLoginInstrumentTest {
         validate_promo()
 
         MatcherAssert.assertThat(
-                cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_LOGIN),
-                hasAllSuccess()
+            cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_LOGIN),
+            hasAllSuccess()
         )
     }
 
     private fun validate_recent_number() {
         Thread.sleep(1000)
-        onView(AllOf.allOf(
+        onView(
+            AllOf.allOf(
                 withId(R.id.recycler_view_menu_component),
                 ViewMatchers.isDescendantOfA(withId(R.id.recent_transaction_widget))
-        )).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
-                        0, click()))
+            )
+        ).check(matches(isDisplayed())).perform(
+            RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                0, click()
+            )
+        )
     }
 
     private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = "12345678910")
+        val orderClientNumber = TopupBillsSearchNumberDataModel(clientNumber = "12345678910")
         val resultData = Intent()
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-                TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE)
+        resultData.putExtra(
+            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER,
+            orderClientNumber
+        )
+        resultData.putExtra(
+            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
+            TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE
+        )
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
     private fun stubSearchNumber() {
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasShortClassName("com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity")))
-                .respondWith(createOrderNumberTypeManual())
+        Intents.intending(
+            IntentMatchers.hasComponent(
+                ComponentNameMatchers.hasShortClassName("com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity")
+            )
+        )
+            .respondWith(createOrderNumberTypeManual())
     }
 
     private fun validate_favorite_number() {
         // Choose existing favorite number
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
-                        0, click()
-                )
+            RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
+                0, click()
+            )
         )
         Thread.sleep(1000)
-        onView(withText("08121111111"))
-                .check(matches(isDisplayed()))
-                .perform(click())
+        onView(withText("111111111111"))
+            .check(matches(isDisplayed()))
+            .perform(click())
         Thread.sleep(1000)
-        onView(withText("08121111111")).check(matches(isDisplayed()))
+        onView(withText("111111111111")).check(matches(isDisplayed()))
         onView(withId(R.id.recharge_general_enquiry_button)).check(matches(ViewMatchers.isEnabled()))
 
         // Stub manual typed number
         stubSearchNumber()
         Thread.sleep(3000)
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
-                        0, click()
-                )
+            RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
+                0, click()
+            )
         )
         onView(withText("12345678910")).check(matches(isDisplayed()))
     }
 
     fun validate_select_product_token() {
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectViewHolder>(
-                        1, click()
-                )
+            RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectViewHolder>(
+                1, click()
+            )
         )
         Thread.sleep(1000)
         onView(withId(R.id.rv_product_select_dropdown)).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectBottomSheet.DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>(
-                        1, click()
-                )
+            RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectBottomSheet.DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>(
+                1, click()
+            )
         )
         Thread.sleep(1000)
         onView(withText("Rp 50.000")).check(matches(isDisplayed()))
     }
 
     private fun validate_promo() {
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(ViewActions.click())
+        onView(
+            AllOf.allOf(
+                withId(R.id.tab_item_text_id),
+                withText("Promo")
+            )
+        ).perform(ViewActions.click())
         Thread.sleep(1000)
         onView(withId(R.id.promo_list_widget)).check(matches(isDisplayed()))
-        onView(AllOf.allOf(
+        onView(
+            AllOf.allOf(
                 withId(R.id.recycler_view_menu_component),
                 ViewMatchers.isDescendantOfA(withId(R.id.promo_list_widget))
-        )).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
-                        0, CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
-                )
+            )
+        ).check(matches(isDisplayed())).perform(
+            RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                0, CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
+            )
         )
         Thread.sleep(1000)
     }
 
     companion object {
-        private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_general_template_test_login.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_LOGIN =
+            "tracker/recharge/recharge_general_template_test_login.json"
     }
 }

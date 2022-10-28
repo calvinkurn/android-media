@@ -21,6 +21,7 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
                 notes
                 steps
               }
+              payment_gateway_code
             }
             installment_per_month
             installment_per_month_ceil
@@ -121,6 +122,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       user_balance_amt
       detail {
         tenure
+        tenure_disable
         label
         chip_title
         monthly_installment

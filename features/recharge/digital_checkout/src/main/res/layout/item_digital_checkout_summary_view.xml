@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/digital_checkout_summary_title"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold" />
 
     <androidx.recyclerview.widget.RecyclerView

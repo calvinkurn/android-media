@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product.detail.common.generateTopchatButtonPdp
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_ATC_MAX_ORDER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_MIN_QTY
@@ -142,7 +143,7 @@ class PartialButtonActionView private constructor(val view: View,
         } else {
             showViewTokoNowNonVar()
             renderTokoNowNonVar(tokonowButtonData?.selectedMiniCart
-                    ?: MiniCartItem(), tokonowButtonData?.minQuantity ?: DEFAULT_MIN_QTY,
+                    ?: MiniCartItem.MiniCartItemProduct(), tokonowButtonData?.minQuantity ?: DEFAULT_MIN_QTY,
                     tokonowButtonData?.maxQuantity ?: DEFAULT_ATC_MAX_ORDER)
         }
 
@@ -227,7 +228,7 @@ class PartialButtonActionView private constructor(val view: View,
         btnAddToCart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
     }
 
-    private fun renderTokoNowNonVar(selectedMiniCart: MiniCartItem, minQuantity: Int, maxQuantity: Int) = with(view) {
+    private fun renderTokoNowNonVar(selectedMiniCart: MiniCartItem.MiniCartItemProduct, minQuantity: Int, maxQuantity: Int) = with(view) {
         localQuantity = selectedMiniCart.quantity
         qtyButtonPdp?.run {
             minValue = minQuantity
@@ -251,7 +252,7 @@ class PartialButtonActionView private constructor(val view: View,
         }
     }
 
-    private fun initTextWatcherDebouncer(minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem) {
+    private fun initTextWatcherDebouncer(minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem.MiniCartItemProduct) {
         quantityDebounceSubscription = Observable.create(
                 Observable.OnSubscribe<Int> { subscriber ->
                     textWatcher = object : TextWatcher {
@@ -295,7 +296,7 @@ class PartialButtonActionView private constructor(val view: View,
         buttonListener.getRxCompositeSubcription().add(quantityDebounceSubscription)
     }
 
-    private fun onNextValueQuantity(quantity: Int, minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem) {
+    private fun onNextValueQuantity(quantity: Int, minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem.MiniCartItemProduct) {
         qtyButtonPdp?.run {
             if (quantity < minQuantity) {
                 setValue(minQuantity)
@@ -312,41 +313,6 @@ class PartialButtonActionView private constructor(val view: View,
                     //fire again to update + and - button
                     setValue(localQuantity)
                 }
-            }
-        }
-    }
-
-    private fun UnifyButton.generateTheme(colorDescription: String) {
-        when (colorDescription) {
-            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY -> {
-                this.buttonVariant = UnifyButton.Variant.FILLED
-                this.buttonType = UnifyButton.Type.TRANSACTION
-                this.isEnabled = true
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_DISABLE -> {
-                this.buttonVariant = UnifyButton.Variant.FILLED
-                this.buttonType = UnifyButton.Type.MAIN
-                this.isEnabled = false
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN -> {
-                this.buttonVariant = UnifyButton.Variant.FILLED
-                this.buttonType = UnifyButton.Type.MAIN
-                this.isEnabled = true
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN -> {
-                this.buttonVariant = UnifyButton.Variant.GHOST
-                this.buttonType = UnifyButton.Type.MAIN
-                this.isEnabled = true
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY -> {
-                this.buttonVariant = UnifyButton.Variant.GHOST
-                this.buttonType = UnifyButton.Type.ALTERNATE
-                this.isEnabled = true
-            }
-            else -> {
-                this.buttonVariant = UnifyButton.Variant.GHOST
-                this.buttonType = UnifyButton.Type.TRANSACTION
-                this.isEnabled = true
             }
         }
     }
@@ -467,5 +433,5 @@ data class TokoNowButtonData(
         //non var
         val minQuantity: Int = DEFAULT_MIN_QTY,
         val maxQuantity: Int = DEFAULT_ATC_MAX_ORDER,
-        val selectedMiniCart: MiniCartItem? = null
+        val selectedMiniCart: MiniCartItem.MiniCartItemProduct? = null
 )

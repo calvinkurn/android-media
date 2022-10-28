@@ -7,12 +7,12 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
@@ -22,13 +22,15 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
+import com.tokopedia.usercomponents.explicit.di.ExplicitViewModule
 import dagger.Component
 
 
 @DiscoveryScope
 @Component(modules = [DiscoveryModule::class,
     DiscoveryViewModelModule::class,
-    TopAdsUrlHitterModule::class], dependencies = [BaseAppComponent::class])
+    TopAdsUrlHitterModule::class,
+    ExplicitViewModule::class], dependencies = [BaseAppComponent::class])
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
     fun inject(discoveryFragment: DiscoveryFragment)
@@ -41,7 +43,6 @@ interface DiscoveryComponent {
     fun inject(categoryNavigationViewModel: CategoryNavigationViewModel)
     fun inject(claimCouponViewModel: ClaimCouponViewModel)
     fun inject(claimCouponItemViewModel: ClaimCouponItemViewModel)
-    fun inject(productCardItemViewModel: ProductCardItemViewModel)
     fun inject(masterProductCardItemViewModel: MasterProductCardItemViewModel)
     fun inject(chipsFilterViewModel: ChipsFilterViewModel)
     fun inject(loadMoreViewModel: LoadMoreViewModel)
@@ -50,5 +51,6 @@ interface DiscoveryComponent {
     fun inject(emptyStateViewModel: EmptyStateViewModel)
     fun inject(myCouponViewModel: MyCouponViewModel)
     fun inject(myCouponItemViewModel: MyCouponItemViewModel)
+    fun inject(explicitWidgetViewModel: ExplicitWidgetViewModel)
     fun provideSubComponent() : UIWidgetComponent
 }

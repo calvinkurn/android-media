@@ -17,6 +17,10 @@ class AdsInjector {
         adsModel: TopAdsModel,
         searchParameter: Map<String, Any>,
         dimension90: String,
+        productListType: String,
+        externalReference: String,
+        keywordIntention: Int,
+        showButtonAtc: Boolean,
     ): List<Visitable<*>> {
         val list = mutableListOf<ProductItemDataView>()
         list.addAll(productList)
@@ -31,7 +35,15 @@ class AdsInjector {
                 if (!willInjectAds) continue
 
                 val topAds = adsModel.data[topAdsIndex]
-                val item = ProductItemDataView.create(topAds, topAdsPosition, dimension90)
+                val item = ProductItemDataView.create(
+                    topAds,
+                    topAdsPosition,
+                    dimension90,
+                    productListType,
+                    externalReference,
+                    keywordIntention,
+                    showButtonAtc,
+                )
 
                 list.add(i, item)
                 topAdsIndex++

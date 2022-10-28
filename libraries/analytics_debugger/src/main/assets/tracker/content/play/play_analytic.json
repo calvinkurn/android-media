@@ -15,6 +15,17 @@
       "theme": ".*"
     },
     {
+      "event": "clickTopAds",
+      "eventAction": "swipe channel",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - .* - \\d+",
+      "trackerId": "6663",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
       "businessUnit": "play",
       "eventCategory": "groupchat room",
       "currentSite": ".*",
@@ -23,6 +34,16 @@
       "eventAction": "swipe channel",
       "eventLabel": ".+",
       "sessionIris": ".*"
+    },
+    {
+      "event": "openScreen",
+      "trackerId": "13881",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "(true|false)",
+      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true/false)",
+      "sessionIris": ".*",
+      "userId": ".*"
     },
     {
       "eventAction": "leave room",
@@ -116,13 +137,6 @@
       "sessionIris": ".*"
     },
     {
-      "eventAction": "click watch mode option",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "sessionIris": ".*"
-    },
-    {
       "eventAction": "click on play button video",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
@@ -147,7 +161,7 @@
       "eventAction": "click buy in bottom sheet",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false)",
       "items": [
         {
           "shop_id": ".*",
@@ -185,7 +199,7 @@
       "eventAction": "click atc in bottom sheet",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false)",
       "items": [
         {
           "shop_id": ".*",
@@ -214,9 +228,12 @@
     },
     {
       "eventAction": "view product",
+      "userId": ".*",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false)",
       "sessionIris": ".*",
       "items": [
         {
@@ -224,9 +241,10 @@
           "item_name": ".*",
           "item_brand": ".*",
           "item_category": ".*",
-          "price": ".*",
+          "price": "\\d+\\..*",
           "item_variant": ".*",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension40": "/groupchat - bottom sheet"
         }
       ],
       "item_list": "/groupchat - bottom sheet"
@@ -235,7 +253,7 @@
       "eventAction": "impression - product in ongoing section",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
       "sessionIris": ".*",
       "items": [
         {
@@ -257,7 +275,7 @@
       "eventAction": "impression - product in upcoming section",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
       "sessionIris": ".*",
       "items": [
         {
@@ -276,10 +294,10 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click",
+      "eventAction": "click product in bottom sheet",
       "event": "select_content",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false)",
       "items": [
         {
           "item_id": "\\d+",
@@ -307,7 +325,7 @@
       "eventAction": "click - product in ongoing section",
       "event": "select_content",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
       "items": [
         {
           "item_id": "\\d+",
@@ -330,7 +348,7 @@
       "eventAction": "click - product in upcoming section",
       "event": "select_content",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
       "items": [
         {
           "item_id": "\\d+",
@@ -353,7 +371,7 @@
       "eventAction": "click - atc in ongoing section",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
       "items": [
         {
           "shop_id": ".*",
@@ -362,7 +380,7 @@
           "item_id": "\\d+",
           "price": "\\d+\\..*",
           "shop_type": ".*",
-          "dimension39": "/groupchat - varian page",
+          "dimension39": "/groupchat - bottom sheet",
           "item_name": ".*",
           "shop_name": ".*",
           "item_brand": ".*",
@@ -442,17 +460,16 @@
       "eventAction": "click - buy in ongoing section",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
       "items": [
         {
-
           "shop_id": ".*",
           "quantity": "\\d+(.\\d+)?",
           "category_id": ".*",
           "item_id": "\\d+",
           "price": "\\d+\\..*",
           "shop_type": ".*",
-          "dimension39": "/groupchat - varian page",
+          "dimension39": "/groupchat - bottom sheet",
           "item_name": ".*",
           "shop_name": ".*",
           "item_brand": ".*",
@@ -531,7 +548,7 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click",
+      "eventAction": "click featured product tagging",
       "event": "select_content",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod) - featured product tagging",
@@ -683,7 +700,7 @@
       "event": "viewTopAdsIris",
       "eventAction": "impression - remind me in upcoming section",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "eventLabel": "\\d+ - (live|vod) - \\d+",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
@@ -693,7 +710,7 @@
       "event": "clickTopAds",
       "eventAction": "click - remind me in upcoming section",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "eventLabel": "\\d+ - (live|vod) - \\d+",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
@@ -703,7 +720,7 @@
       "event": "clickTopAds",
       "eventAction": "click - remove remind me in upcoming section",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "eventLabel": "\\d+ - (live|vod) - \\d+",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",

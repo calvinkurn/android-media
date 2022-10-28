@@ -11,8 +11,10 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.NumberConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.roundDate
 import com.tokopedia.vouchercreation.common.utils.FragmentRouter
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
@@ -215,15 +217,15 @@ class CreateCouponProductActivity : AppCompatActivity() {
     }
 
     private fun getCouponDefaultStartDate() : Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.HOUR_OF_DAY, COUPON_START_DATE_OFFSET_IN_HOUR)
+        val calendar = getMinStartDate()
+        calendar.roundDate()
         return calendar.time
     }
 
     private fun getCouponDefaultEndDate(): Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, DateTimeUtils.EXTRA_DAYS_COUPON)
-        return calendar.time
+        val startDate = GregorianCalendar().apply { time = getCouponDefaultStartDate() }
+        val endDate = DateTimeUtils.getCouponMaxEndDate(startDate)
+        return endDate.time
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

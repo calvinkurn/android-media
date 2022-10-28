@@ -24,17 +24,16 @@ class RechargeRecommendationCardWidget @JvmOverloads constructor(@NotNull contex
     fun renderRecommendationLayout(recommendationListener: RechargeRecommendationCardListener, titleRecommendation:String, listRecommendation: List<RecommendationCardWidgetModel>){
             val adapterRecommendation = RecommendationCardWidgetAdapter(recommendationListener, titleRecommendation)
             with(rechargeRecommendationViewBinding) {
-                root.show()
                 shimmeringRecommendation.root.hide()
                 if (!listRecommendation.isNullOrEmpty()) {
-                tgRechargeRecommendationCardTitle.show()
-                rvRechargeRecommendationCardTitle.show()
-                tgRechargeRecommendationCardTitle.text =
-                    HtmlCompat.fromHtml(titleRecommendation, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                rvRechargeRecommendationCardTitle.apply {
-                    adapterRecommendation.setRecommendationList(listRecommendation)
-                    adapter = adapterRecommendation
-                    layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                    tgRechargeRecommendationCardTitle.show()
+                    rvRechargeRecommendationCardTitle.show()
+                    tgRechargeRecommendationCardTitle.text =
+                        HtmlCompat.fromHtml(titleRecommendation, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    rvRechargeRecommendationCardTitle.apply {
+                        adapterRecommendation.setRecommendationList(listRecommendation)
+                        adapter = adapterRecommendation
+                        layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 }
             }
         }
@@ -47,12 +46,4 @@ class RechargeRecommendationCardWidget @JvmOverloads constructor(@NotNull contex
             shimmeringRecommendation.root.show()
         }
     }
-
-    fun renderFailRecommendation(){
-        with(rechargeRecommendationViewBinding){
-            shimmeringRecommendation.root.hide()
-            root.hide()
-        }
-    }
-
 }

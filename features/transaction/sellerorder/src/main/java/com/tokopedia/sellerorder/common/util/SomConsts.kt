@@ -30,6 +30,7 @@ object SomConsts {
     const val STATUS_NAME_ALL_ORDER = "Semua Pesanan"
 
     const val DETAIL_HEADER_TYPE = "header"
+    const val DETAIL_RESO_TYPE = "reso"
     const val DETAIL_PRODUCTS_TYPE = "products"
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
@@ -57,6 +58,7 @@ object SomConsts {
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
     const val KEY_PRINT_AWB = "print"
     const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
+    const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
@@ -77,11 +79,6 @@ object SomConsts {
     const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
     const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
 
-    const val INPUT_ORDER_ID = "#orderId"
-    const val INPUT_SHIPPING_REF = "#shippingRef"
-    const val INPUT_AGENCY_ID = "#agencyId"
-    const val INPUT_SP_ID = "#spId"
-
     const val LABEL_EMPTY = "-"
     const val LABEL_COPY_BOOKING_CODE = "LABEL_COPY_BOOKING_CODE"
 
@@ -100,11 +97,6 @@ object SomConsts {
     const val STATUS_CODE_WAITING_PICKUP = 450
     const val STATUS_CODE_READY_TO_SEND = 520
     const val STATUS_CODE_RECEIPT_CHANGED = 530
-
-    const val SORT_ASCENDING = 0
-    const val SORT_DESCENDING = 2
-    const val CHIPS_SORT_DESC = "Paling Baru"
-    const val CHIPS_SORT_ASC = "Paling Lama"
 
     const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
     const val ALREADY_PRINT_LABEL = "Sudah Dicetak"

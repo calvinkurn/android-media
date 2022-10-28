@@ -84,7 +84,7 @@ class PromoCheckoutListDealsPresenter(
             data?.forEachIndexed { index, banner ->
                 if (!banner.attribute.promoCode.isBlank() && !banner.attribute.promoCode.equals("-")) {
                     val dataMapper = PromoCheckoutLastSeenModel(
-                            id = banner.id.toInt(),
+                            id = banner.id,
                             title = banner.attribute.description,
                             promoCode = banner.attribute.promoCode,
                             subtitle = banner.product

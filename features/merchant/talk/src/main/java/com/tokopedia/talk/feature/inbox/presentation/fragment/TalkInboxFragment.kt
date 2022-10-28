@@ -82,6 +82,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val INDEX_UNRESPONDED_FILTER = 0
         const val INDEX_PROBLEM_FILTER = 1
         const val INDEX_AUTOREPLY_FILTER = 2
+        const val SETTING_CHIP_POSITION = 3
 
         fun createNewInstance(
             tab: TalkInboxTab? = null,
@@ -766,7 +767,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setSettingsChipMargins() {
-        binding?.talkInboxSortFilter?.chipItems?.getOrNull(3)?.refChipUnify?.chip_text?.hide()
+        binding?.talkInboxSortFilter?.chipItems?.getOrNull(SETTING_CHIP_POSITION)?.refChipUnify?.chip_text?.hide()
     }
 
     private fun getCoachMarkItem(
@@ -810,6 +811,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                     setOnClickListener {
                         goToSellerSettings()
                     }
+                    contentDescription = getString(R.string.menu_talk_inbox_setting_content_description)
                 }
                 show()
                 binding?.talkInboxSettingsIcon?.hide()

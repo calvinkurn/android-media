@@ -8,9 +8,8 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.addedit.R
@@ -27,7 +26,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.MatcherAssert
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -54,11 +53,7 @@ class AddEditProductEditingAnalyticTest {
         private const val PRODUCT_PREVIEW_PAGE_CLICK_BACK = "tracker/merchant/product_add_edit/edit/product_preview_page_click_back.json"
         private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_IMAGE = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_image.json"
         private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_VARIANT = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_variant.json"
-        private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_PROMOTION = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_promotion.json"
         private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_STATUS = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_status.json"
-
-        private const val PRODUCT_PROMOTION_PAGE_CLICK_BACK = "tracker/merchant/product_add_edit/edit/product_promotion_page_click_back.json"
-        private const val PRODUCT_PROMOTION_PAGE_CLICK_SAVE = "tracker/merchant/product_add_edit/edit/product_promotion_page_click_save.json"
     }
 
     @get:Rule
@@ -69,16 +64,15 @@ class AddEditProductEditingAnalyticTest {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.READ_EXTERNAL_STORAGE)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     private val SAMPLE_PRODUCT_ID = "000"
 
     @Before
     fun beforeTest() {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP
-
-        gtmLogDBSource.deleteAll().toBlocking().first()
 
         setupGraphqlMockResponse(AddEditProductEditingMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser2()
@@ -90,7 +84,6 @@ class AddEditProductEditingAnalyticTest {
     @After
     fun afterTest() {
         InstrumentedTestUtil.deleteAllDraft()
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
@@ -124,19 +117,13 @@ class AddEditProductEditingAnalyticTest {
     fun testEditProductJourney2() {
         testEditPhoto()
         testEditVariant()
-        testEditPromotion()
         testEditProductStatus()
 
         //stepper
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_BACK)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_IMAGE)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_VARIANT)
-        doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_PROMOTION)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_STATUS)
-
-        //promotion
-        doAnalyticDebuggerTest(PRODUCT_PROMOTION_PAGE_CLICK_BACK)
-        doAnalyticDebuggerTest(PRODUCT_PROMOTION_PAGE_CLICK_SAVE)
 
         activityRule.activity.finish()
     }
@@ -148,6 +135,7 @@ class AddEditProductEditingAnalyticTest {
         performScrollAndClick(R.id.su_wholesale)
         performScrollAndClick(R.id.switch_preorder)
         performReplaceText(R.id.tfu_duration, "2")
+        performReplaceText(R.id.tfu_available_stock, "1000")
         performScrollAndClick(R.id.btn_submit)
     }
 
@@ -179,12 +167,6 @@ class AddEditProductEditingAnalyticTest {
         Thread.sleep(500)
     }
 
-    private fun testEditPromotion() {
-        performScrollAndClick(R.id.tv_edit_product_promotion)
-        performClick(com.tokopedia.product.manage.R.id.submitCashbackButton)
-        performPressBack()
-    }
-
     private fun testEditProductStatus() {
         performScrollAndClick(R.id.su_product_status)
         performScrollAndClick(R.id.su_product_status)
@@ -212,9 +194,6 @@ class AddEditProductEditingAnalyticTest {
     }
 
     private fun doAnalyticDebuggerTest(fileName: String) {
-        MatcherAssert.assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
-                hasAllSuccess()
-        )
+        assertThat(cassavaRule.validate(fileName), hasAllSuccess())
     }
 }

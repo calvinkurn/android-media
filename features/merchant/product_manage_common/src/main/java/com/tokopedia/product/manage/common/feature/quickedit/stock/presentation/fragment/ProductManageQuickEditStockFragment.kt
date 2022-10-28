@@ -20,26 +20,20 @@ import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.databinding.FragmentQuickEditStockBinding
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
-import com.tokopedia.product.manage.common.feature.list.ext.getId
-import com.tokopedia.product.manage.common.feature.list.ext.getName
-import com.tokopedia.product.manage.common.feature.list.ext.getStatus
-import com.tokopedia.product.manage.common.feature.list.ext.getStock
+import com.tokopedia.product.manage.common.feature.list.ext.*
 import com.tokopedia.product.manage.common.feature.list.ext.hasEditProductAccess
-import com.tokopedia.product.manage.common.feature.list.ext.hasEditStockAccess
 import com.tokopedia.product.manage.common.feature.list.ext.isActive
-import com.tokopedia.product.manage.common.feature.list.ext.isCampaign
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper
-import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.DaggerProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class ProductManageQuickEditStockFragment(
@@ -50,7 +44,6 @@ class ProductManageQuickEditStockFragment(
     companion object {
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
-
         private const val KEY_CACHE_MANAGER_ID = "product_edit_cache_manager"
         private const val KEY_PRODUCT = "product"
 
@@ -148,6 +141,7 @@ class ProductManageQuickEditStockFragment(
         setAddButtonClickListener()
         setSubtractButtonClickListener()
         getStockTicker()
+        setMaxStock()
     }
 
     private fun setStockAndStatus() {
@@ -209,7 +203,7 @@ class ProductManageQuickEditStockFragment(
             binding?.quickEditStockQuantityEditor?.setValue(MINIMUM_STOCK)
         }
         val isStatusChecked = binding?.quickEditStockActivateSwitch?.isChecked == true
-        val inputStock = binding?.quickEditStockQuantityEditor?.getValue().orZero()
+        val inputStock = getCurrentInputStock()
         val inputStatus = if (isStatusChecked) {
             ProductStatus.ACTIVE
         } else {
@@ -296,7 +290,7 @@ class ProductManageQuickEditStockFragment(
 
     private fun setupQuantityEditor() {
         binding?.quickEditStockQuantityEditor?.run {
-            maxValue = MAXIMUM_STOCK
+            maxValue = getMaxStock()
             minValue = MINIMUM_STOCK
             editText.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_STOCK_LENGTH))
             editText.setOnEditorActionListener { _, actionId, _ ->
@@ -344,11 +338,22 @@ class ProductManageQuickEditStockFragment(
         viewModel.getStockTicker(hasEditStockAccess)
     }
 
+    private fun setMaxStock() {
+        viewModel.setMaxStock(product?.maxStock)
+    }
+
     private fun setupStockEditor(stock: Int) {
         when {
             !product.hasEditStockAccess() -> disableStockEditor(stock)
-            stock >= MAXIMUM_STOCK -> setMaxStockBehavior()
-            stock <= MINIMUM_STOCK -> setZeroStockBehavior()
+            stock > getMaxStock() -> setAboveMaxStockBehavior()
+            stock == getMaxStock() -> setMaxStockBehavior()
+            stock <= MINIMUM_STOCK -> {
+                if (product.suspendAccess()){
+                    setZeroStockSuspendBehavior()
+                }else{
+                    setZeroStockBehavior()
+                }
+            }
             else -> setNormalBehavior()
         }
     }
@@ -356,17 +361,41 @@ class ProductManageQuickEditStockFragment(
     private fun setZeroStockBehavior() {
         binding?.zeroStockInfo?.visible()
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
+        binding?.quickEditStockQuantityEditor?.errorMessageText = String.EMPTY
+        binding?.quickEditStockSaveButton?.isEnabled = true
+    }
+
+    private fun setZeroStockSuspendBehavior() {
+        binding?.suspendStockInfo?.visible()
+        binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
+        binding?.quickEditStockSaveButton?.isEnabled = true
     }
 
     private fun setNormalBehavior() {
         binding?.zeroStockInfo?.gone()
+        binding?.suspendStockInfo?.gone()
         binding?.quickEditStockQuantityEditor?.addButton?.isEnabled = true
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = true
+        binding?.quickEditStockQuantityEditor?.errorMessageText = String.EMPTY
+        binding?.quickEditStockSaveButton?.isEnabled = true
     }
 
     private fun setMaxStockBehavior() {
         binding?.quickEditStockActivateSwitch?.isSelected = true
         binding?.quickEditStockQuantityEditor?.addButton?.isEnabled = false
+        binding?.quickEditStockQuantityEditor?.errorMessageText = String.EMPTY
+        binding?.quickEditStockSaveButton?.isEnabled = true
+    }
+
+    private fun setAboveMaxStockBehavior() {
+        binding?.quickEditStockActivateSwitch?.isSelected = true
+        binding?.quickEditStockQuantityEditor?.addButton?.isEnabled = false
+        binding?.quickEditStockQuantityEditor?.errorMessageText =
+            context?.getString(
+                R.string.product_manage_quick_edit_stock_max_stock,
+                getMaxStock().getNumberFormatted()
+            ).orEmpty()
+        binding?.quickEditStockSaveButton?.isEnabled = false
     }
 
     private fun setAddButtonClickListener() {
@@ -382,7 +411,7 @@ class ProductManageQuickEditStockFragment(
 
                 stock++
 
-                if(stock <= MAXIMUM_STOCK) {
+                if(stock <= getMaxStock()) {
                     editText.setText(stock.getNumberFormatted())
                 }
             }
@@ -411,6 +440,14 @@ class ProductManageQuickEditStockFragment(
 
     private fun String.toInt(): Int {
         return replace(".", "").toIntOrZero()
+    }
+
+    private fun getMaxStock(): Int {
+        return product?.maxStock ?: MAXIMUM_STOCK
+    }
+
+    private fun getCurrentInputStock(): Int {
+        return binding?.quickEditStockQuantityEditor?.getValue().orZero()
     }
 
     private fun removeObservers() {

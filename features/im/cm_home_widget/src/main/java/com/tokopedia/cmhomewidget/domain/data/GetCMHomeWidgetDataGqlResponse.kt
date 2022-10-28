@@ -39,16 +39,55 @@ data class CMHomeWidgetData(
     @SerializedName("campaign_id")
     @Expose
     val campaignId: String,
+    @SerializedName("session_id")
+    @Expose
+    val sessionId: String?,
     @SerializedName("widget_title")
     @Expose
     val widgetTitle: String?,
+    @SerializedName("widget_type")
+    @Expose
+    val widgetType: String?,
     @SerializedName("products")
     @Expose
     val cmHomeWidgetProductCardData: List<CMHomeWidgetProductCardData>?,
+    @SerializedName("payments")
+    @Expose
+    val cMHomeWidgetPaymentData: List<CMHomeWidgetPaymentData>?,
     @SerializedName("card")
     @Expose
     val cmHomeWidgetViewAllCardData: CMHomeWidgetViewAllCardData?
 )
+
+@SuppressLint("ResponseFieldAnnotation")
+data class CMHomeWidgetPaymentData(
+    @SerializedName("image_url")
+    @Expose
+    val imgUrl: String,
+    @SerializedName("gateway_name")
+    @Expose
+    val gatewayName: String?,
+    @SerializedName("account_number")
+    @Expose
+    val accountNumber: String?,
+    @SerializedName("total_payment")
+    @Expose
+    val totalPayment: String?,
+    @SerializedName("expired_time")
+    @Expose
+    val expiredTime: String?,
+    @SerializedName("app_link")
+    @Expose
+    val appLink: String?,
+    @SerializedName("action_buttons")
+    @Expose
+    val actionButton: List<CMHomeWidgetActionButton>?,
+    var isWidgetClosePress: Boolean = false
+): CMHomeWidgetVisitable {
+    override fun type(typeFactory: CMHomeWidgetViewHolderTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}
 
 @SuppressLint("Invalid Data Type")
 data class CMHomeWidgetProductCardData(
@@ -111,7 +150,13 @@ data class CMHomeWidgetActionButton(
     val actionButtonText: String?,
     @SerializedName("app_link")
     @Expose
-    val appLink: String?
+    val appLink: String?,
+    @SerializedName("icon")
+    @Expose
+    val icon: String?,
+    @SerializedName("type")
+    @Expose
+    val type: String?
 )
 
 data class CMHomeWidgetViewAllCardData(

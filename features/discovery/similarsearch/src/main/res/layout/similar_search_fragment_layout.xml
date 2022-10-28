@@ -21,14 +21,15 @@
         app:titleTextAppearance="?titleTextAppearance">
 
         <include
+            android:id="@+id/toolbarContent"
             layout="@layout/similar_search_toolbar_layout" />
 
     </androidx.appcompat.widget.Toolbar>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressBarSimilarSearch"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:loader_type="circular"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -12,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE
@@ -65,16 +67,18 @@ class ProductShopCredibilityViewHolder(
         val binding = mainBinding ?: return
         with(binding) {
             val componentTracker = getComponentTrackData(element)
-            val shopLocation = element.shopLocation
+            setupShopLocation(
+                element.shopLocation,
+                element.shopName,
+                element.shopWarehouseCount,
+                element.shopWarehouseApplink,
+                componentTracker,
+                binding
+            )
 
-            shopCredibilityName.text = HtmlLinkHelper(context, shopName).spannedString
-            shopCredibilityLocation.shouldShowWithAction(shopLocation.isNotEmpty()) {
-                shopCredibilityLocation.text =
-                    view.context.getString(R.string.location_dot_builder, shopLocation)
-            }
             setupLastActive(element.shopLastActive, this)
             setupBadgeAndImage(element, this)
-            setupGoApotik(element.isGoApotik, this)
+            setupCredibilityPartner(parentLabel = element.partnerLabel)
             setupInfoRegion(element, this)
             setupFollow(element.isFavorite, componentTracker, this)
 
@@ -93,8 +97,39 @@ class ProductShopCredibilityViewHolder(
             setupTicker(element.tickerDataResponse, componentTracker, this)
 
             view.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(componentTracker)
+                listener.onShopCredibilityImpressed(element.shopWarehouseCount, componentTracker)
             }
+        }
+    }
+
+    private fun setupShopLocation(
+        shopLocation: String,
+        shopName: String,
+        shopWarehouseCount: String,
+        shopWarehouseApplink: String,
+        componentTracker: ComponentTrackDataModel,
+        binding: ViewShopCredibilityBinding
+    ) = with(binding) {
+        val shopLocationBuilder = if (shopWarehouseCount.isNotEmpty()) {
+            icShopCredibilityLocation.show()
+            icShopCredibilityLocation.setOnClickListener {
+                listener.onShopMultilocClicked(componentTracker)
+                listener.goToApplink(shopWarehouseApplink)
+            }
+            shopCredibilityLocation.setOnClickListener {
+                listener.onShopMultilocClicked(componentTracker)
+                listener.goToApplink(shopWarehouseApplink)
+            }
+            "$shopLocation $shopWarehouseCount"
+        } else {
+            shopCredibilityLocation.setOnClickListener { }
+            icShopCredibilityLocation.hide()
+            shopLocation
+        }
+
+        shopCredibilityName.text = HtmlLinkHelper(context, shopName).spannedString
+        shopCredibilityLocation.shouldShowWithAction(shopLocationBuilder.isNotEmpty()) {
+            shopCredibilityLocation.text = shopLocationBuilder
         }
     }
 
@@ -110,7 +145,7 @@ class ProductShopCredibilityViewHolder(
 
             setHtmlDescription(generateHtml(data.message, data.link))
             tickerTitle = data.title
-            setDescriptionClickEvent(object : TickerCallback{
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     listener.onShopTickerClicked(data, componentTrackDataModel)
                 }
@@ -162,12 +197,11 @@ class ProductShopCredibilityViewHolder(
         shopCredibilityButtonFollow.isClickable = true
     }
 
-    private fun setupGoApotik(
-        isGoApotik: Boolean,
-        binding: ViewShopCredibilityBinding
-    ) = with(binding) {
-        shopCredibilityFeature.shouldShowWithAction(isGoApotik) {
-            shopCredibilityFeature.text = binding.root.context.getString(R.string.label_go_apotik)
+    private fun ViewShopCredibilityBinding.setupCredibilityPartner(
+        parentLabel: String
+    ) {
+        shopCredibilityPartner.shouldShowWithAction(parentLabel.isNotBlank()) {
+            shopCredibilityPartner.text = parentLabel
         }
     }
 
@@ -180,18 +214,12 @@ class ProductShopCredibilityViewHolder(
         if (shopLastActiveData == context.getString(R.string.shop_online)) {
             shopCredibilityLastActive.setWeight(Typography.BOLD)
             shopCredibilityLastActive.setTextColor(
-                MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
-                )
+                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         } else {
-            shopCredibilityLastActive.setType(Typography.BODY_3)
+            shopCredibilityLastActive.setType(Typography.DISPLAY_3)
             shopCredibilityLastActive.setTextColor(
-                MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                )
+                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             )
         }
     }
@@ -298,8 +326,8 @@ class ProductShopCredibilityViewHolder(
     private fun getComponentTrackData(
         element: ProductShopCredibilityDataModel?
     ) = ComponentTrackDataModel(
-        element?.type ?: "",
-        element?.name ?: "",
-        adapterPosition + 1
+        componentType = element?.type.orEmpty(),
+        componentName = element?.name.orEmpty(),
+        adapterPosition = bindingAdapterPosition + Int.ONE
     )
 }

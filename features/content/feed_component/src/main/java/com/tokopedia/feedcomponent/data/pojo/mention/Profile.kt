@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 data class Profile(
         @SerializedName("id")
         @Expose
-        val id: Long = 0L,
+        val id: String = "",
 
         @SerializedName("name")
         @Expose

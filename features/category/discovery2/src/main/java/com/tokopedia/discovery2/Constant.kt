@@ -33,6 +33,11 @@ object Constant {
         const val LIST = "list"
     }
 
+    object ATCButtonCTATypes {
+        const val MINI_CART = "minicart_cta"
+        const val GENERAL_CART = "general_atc"
+    }
+
     object ProductCardModel{
         const val SALE_PRODUCT_STOCK = 100
         const val PRODUCT_STOCK = 0
@@ -65,6 +70,7 @@ object Constant {
         const val RPC_USER_LONG = "rpc_UserLong"
         const val RPC_USER_POST_CODE = "rpc_UserPostCode"
         const val RPC_USER_WAREHOUSE_ID = "rpc_UserWarehouseId"
+        const val RPC_PRODUCT_ID = "rpc_ProductId"
         const val USER_ADDRESS_KEY = "user_address"
     }
 
@@ -84,6 +90,12 @@ object Constant {
         const val DOUBLE = "double"
         const val GRID = "grid"
         const val TRIPLE = "triple"
+    }
+
+    object QueryParamConstants{
+        const val RPC_DYNAMIC_SUBTITLE = "rpc_DynamicSubtitle"
+        const val RPC_TARGET_TITLE_ID = "rpc_TargetTitleId"
+        const val QUERY_PARAMS_KEY = "query_params_key"
     }
 
     const val LABEL_FULFILLMENT = "fulfillment"

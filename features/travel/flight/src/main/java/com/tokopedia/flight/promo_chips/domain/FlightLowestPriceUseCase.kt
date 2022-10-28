@@ -3,6 +3,7 @@ package com.tokopedia.flight.promo_chips.domain
 import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
 import com.tokopedia.flight.promo_chips.data.model.FlightLowestPriceArgs
 import com.tokopedia.flight.search.presentation.viewmodel.FlightSearchViewModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 class FlightLowestPriceUseCase @Inject constructor(val graphqlRepository: GraphqlRepository) :
         GraphqlUseCase<FlightLowestPrice.Response>(graphqlRepository) {
-    suspend fun execute(rawQuery: String, dataParam: FlightLowestPriceArgs): Result<FlightLowestPrice> {
+    suspend fun execute(rawQuery: GqlQueryInterface, dataParam: FlightLowestPriceArgs): Result<FlightLowestPrice> {
         return try {
             this.setTypeClass(FlightLowestPrice.Response::class.java)
             this.setGraphqlQuery(rawQuery)

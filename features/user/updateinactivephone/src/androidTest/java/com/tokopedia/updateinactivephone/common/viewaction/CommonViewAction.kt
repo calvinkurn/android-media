@@ -4,10 +4,9 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -24,6 +23,11 @@ fun isDisplayed(resId: Int) {
 fun isTextDisplayed(text: String) {
     onView(withText(text))
         .check(matches(isDisplayed()))
+}
+
+fun isTextNotDisplayed(text: String) {
+    onView(withText(text))
+        .check(doesNotExist())
 }
 
 fun isChildTextDisplayed(resId: Int, childRes: Int, position: Int, text: String) {
@@ -52,6 +56,11 @@ fun clickOnButtonWithTextAndId(textButton: String, resId: Int) {
 fun scrollToView(resId: Int) {
     onView(withId(resId))
         .perform(scrollTo())
+}
+
+fun scrollAndIsDisplayed(resId: Int) {
+    scrollToView(resId)
+    isDisplayed(resId)
 }
 
 fun scrollToPosition(resId: Int, position: Int) {

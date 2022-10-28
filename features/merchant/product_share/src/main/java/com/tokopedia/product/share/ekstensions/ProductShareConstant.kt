@@ -1,11 +1,13 @@
 package com.tokopedia.product.share.ekstensions
 
+import com.tokopedia.abstraction.common.utils.network.AuthUtil
+
 /**
  * Created by Yehezkiel on 05/08/21
  */
 object ProductShareConstant {
-    const val EVENT_CLICK_PDP_SHARING = "clickPDP"
-    const val EVENT_VIEW_IRIS_PDP_SHARING = "viewPDPIris"
+    const val EVENT_CLICK_PDP_SHARING = "clickCommunication"
+    const val EVENT_VIEW_IRIS_PDP_SHARING = "viewCommunicationIris"
     const val EVENT_CATEGORY_PDP_SHARING = "product detail page"
 
 
@@ -26,4 +28,7 @@ object ProductShareConstant {
     const val KEY_CURRENT_SITE_SHARING = "currentSite"
     const val KEY_PRODUCT_ID_SHARING = "productId"
     const val KEY_USER_ID_SHARING = "userId"
+
+    const val TRACKER_ID = "trackerId"
+    const val TRACKER_ID_CLICK_SHARING_CHANNEL = "10367"
 }

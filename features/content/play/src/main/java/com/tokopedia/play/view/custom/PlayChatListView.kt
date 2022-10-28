@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Path
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -39,10 +40,9 @@ class PlayChatListView : ConstraintLayout {
 
     private val chatAdapter = ChatAdapter()
 
-    private val path = Path()
-    private var maskHeight: Float? = null
+    private val chatListOnLayoutChangeListener: View.OnLayoutChangeListener
 
-    private var maskAnimator: ValueAnimator? = null
+    private val itemDecoration = ChatListItemDecoration(context)
 
     init {
         val view = View.inflate(context, R.layout.view_chat_list, this)
@@ -50,10 +50,15 @@ class PlayChatListView : ConstraintLayout {
         rvChatList = view.findViewById(R.id.rv_chat_list)
         csDownView = view.findViewById(R.id.csdown_view)
 
+        chatListOnLayoutChangeListener =
+            OnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+                if ((bottom - top) != (oldBottom - oldTop)) scrollToLatest()
+            }
+
         adapterObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 csDownView.showIndicatorRed(rvChatList.canScrollDown)
-                if (!csDownView.isVisible || chatAdapter.getItem(chatAdapter.lastIndex).isSelfMessage) {
+                if (!csDownView.isVisible || chatAdapter.currentList.lastOrNull()?.isSelfMessage == true) {
                     scrollToLatest()
                 }
             }
@@ -61,18 +66,21 @@ class PlayChatListView : ConstraintLayout {
 
         scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.canScrollDown && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    if (isChatPositionBeyondOffset(recyclerView)) csDownView.show()
-                    else csDownView.hide()
-                } else if (recyclerView.scrollState != RecyclerView.SCROLL_STATE_SETTLING) {
-                    csDownView.apply { showIndicatorRed(false) }.hide()
-                } else if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_SETTLING) {
-                    if (!recyclerView.canScrollDown) csDownView.hide()
-                    else {
+                when(recyclerView.scrollState) {
+                    RecyclerView.SCROLL_STATE_DRAGGING -> {
                         if (isChatPositionBeyondOffset(recyclerView)) csDownView.show()
                         else csDownView.hide()
                     }
+                    else -> {
+                        if (!recyclerView.canScrollDown) csDownView.hide()
+                        else {
+                            if (isChatPositionBeyondOffset(recyclerView)) csDownView.show()
+                            else csDownView.hide()
+                        }
+                    }
                 }
+
+                if (!recyclerView.canScrollDown) csDownView.showIndicatorRed(false)
             }
         }
 
@@ -83,6 +91,12 @@ class PlayChatListView : ConstraintLayout {
         super.onAttachedToWindow()
         try {
             chatAdapter.registerAdapterDataObserver(adapterObserver)
+
+            rvChatList.apply {
+                addOnScrollListener(scrollListener)
+                addItemDecoration(itemDecoration)
+                addOnLayoutChangeListener(chatListOnLayoutChangeListener)
+            }
         } catch (ignored: java.lang.IllegalStateException) {}
     }
 
@@ -90,54 +104,28 @@ class PlayChatListView : ConstraintLayout {
         super.onDetachedFromWindow()
         try {
             chatAdapter.unregisterAdapterDataObserver(adapterObserver)
+
+            rvChatList.apply {
+                removeOnScrollListener(scrollListener)
+                removeItemDecoration(itemDecoration)
+                removeOnLayoutChangeListener(chatListOnLayoutChangeListener)
+            }
         } catch (ignored: IllegalStateException) {}
     }
 
-    fun showNewChat(chat: PlayChatUiModel) {
-        chatAdapter.addChat(chat)
-    }
-
     fun setChatList(chatList: List<PlayChatUiModel>) {
-        chatAdapter.setChatList(chatList)
-    }
-
-    fun setTopMask(height: Float, animate: Boolean) {
-        maskAnimator?.cancel()
-
-        val valueAnimator = ValueAnimator.ofFloat(maskHeight.orZero(), height)
-        valueAnimator.addUpdateListener {
-            val value = it.animatedValue as Float
-            maskHeight = value
-            postInvalidateOnAnimation()
-        }
-        valueAnimator.duration = if (animate) MASK_DURATION_IN_MS else 0
-        valueAnimator.start()
-
-        maskAnimator = valueAnimator
-    }
-
-    override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
-        val maskHeight = this.maskHeight
-        if (maskHeight != null) {
-            path.apply {
-                reset()
-                addRect(MASK_START_POS, height.toFloat(), width.toFloat(), maskHeight, Path.Direction.CW)
-            }
-            canvas.clipPath(path)
-        }
-        return super.drawChild(canvas, child, drawingTime)
+        chatAdapter.submitList(chatList)
     }
 
     private fun setupView(view: View) {
         rvChatList.apply {
             val layoutMan = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            addItemDecoration(PlayChatItemDecoration(context))
             layoutMan.stackFromEnd = true
             layoutManager = layoutMan
             itemAnimator = null
 
             adapter = chatAdapter
-            addOnScrollListener(scrollListener)
-            addItemDecoration(ChatListItemDecoration(context))
         }
 
         csDownView.setOnClickListener {
@@ -151,7 +139,6 @@ class PlayChatListView : ConstraintLayout {
                 rvChatList.scrollBy(0, Integer.MAX_VALUE)
             }
         } catch (ignored: Throwable) {}
-
     }
 
     private fun isChatPositionBeyondOffset(recyclerView: RecyclerView): Boolean {
@@ -165,5 +152,14 @@ class PlayChatListView : ConstraintLayout {
 
         private const val MASK_START_POS = 0f
         private const val MASK_DURATION_IN_MS = 300L
+    }
+
+    private class PlayChatItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
+
+        private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.dp_6)
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            outRect.bottom = dividerHeight
+        }
     }
 }

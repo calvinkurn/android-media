@@ -12,8 +12,10 @@ import com.tokopedia.home_component.util.loadImageNormal
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -21,7 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by dhaba
  */
 class CarouselMerchantVoucherViewHolder (
-    view: View
+    view: View,
+    private val cardInteraction: Boolean = false
 ): AbstractViewHolder<CarouselMerchantVoucherDataModel>(view) {
 
     private var binding: HomeBannerItemMerchantVoucherBinding? by viewBinding()
@@ -50,7 +53,7 @@ class CarouselMerchantVoucherViewHolder (
                 com.tokopedia.home_component.R.drawable.placeholder_grey
             )
         }
-        binding?.shopName?.text = element.shopName
+        binding?.shopName?.text = element.shopName.parseAsHtml()
         binding?.titleBenefit?.text = element.benefit
         binding?.benefitPrice?.text = element.benefitPrice
         binding?.totalOtherCoupon?.text = element.totalOtherCoupon
@@ -74,8 +77,13 @@ class CarouselMerchantVoucherViewHolder (
         binding?.containerShop?.setOnClickListener {
             element.merchantVoucherComponentListener.onShopClicked(element, adapterPosition)
         }
-        binding?.containerProduct?.setOnClickListener {
-            element.merchantVoucherComponentListener.onProductClicked(element, adapterPosition)
+        binding?.cardContainerMvc?.apply {
+            setCardUnifyBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
+            cardType = CardUnify2.TYPE_CLEAR
+            animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_BOUNCE else CardUnify2.ANIMATE_NONE
+            setOnClickListener {
+                element.merchantVoucherComponentListener.onProductClicked(element, adapterPosition)
+            }
         }
         itemView.addOnImpressionListener(element.impressHolder) {
             element.merchantVoucherComponentListener.onMerchantImpressed(element, adapterPosition)

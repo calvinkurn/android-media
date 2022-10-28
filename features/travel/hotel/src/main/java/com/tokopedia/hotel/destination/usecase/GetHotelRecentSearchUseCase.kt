@@ -1,11 +1,10 @@
 package com.tokopedia.hotel.destination.usecase
 
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.QueryHotelGetRecentSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
@@ -21,10 +20,9 @@ class GetHotelRecentSearchUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
     override suspend fun executeOnBackground(): List<RecentSearch> {
-        val gqlRequest = GraphqlRequest(HotelGqlQuery.GET_HOTEL_RECENT_SEARCH_QUERY, RecentSearch.Response::class.java, params)
+        val gqlRequest = GraphqlRequest(QueryHotelGetRecentSearch(), RecentSearch.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-                .Builder(CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`()).build())
+                .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(RecentSearch.Response::class.java)
         if (!errors.isNullOrEmpty()){
             throw  MessageErrorException(errors[0].message)

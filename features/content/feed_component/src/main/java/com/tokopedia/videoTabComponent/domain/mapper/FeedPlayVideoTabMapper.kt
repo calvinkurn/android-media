@@ -1,9 +1,8 @@
 package com.tokopedia.videoTabComponent.domain.mapper
 
-import android.content.Context
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -29,9 +28,12 @@ private const val  LIVE_WIDGET_TITLE = "Lagi Live, nih!"
 private const val GIVEAWAY = "GIVEAWAY"
 
 
-
-
 object FeedPlayVideoTabMapper {
+
+    private const val AUTO_PLAY_AMOUNT = 8
+    private const val MAX_AUTO_PLAY_WIFI_DURATION = 30
+    private const val BUSINESS_WIDGET_POSITION = 30
+
     fun getTabData(playGetContentSlotResponse: PlayGetContentSlotResponse): List<PlaySlot> {
         return playGetContentSlotResponse.data.filter {
             it.type == FEED_TYPE_TAB_MENU
@@ -112,9 +114,7 @@ object FeedPlayVideoTabMapper {
 
         val autoRefresh = false
         val autoRefreshTimer: Long = 0
-        val autoPlayAmount: Int = 8
-        val maxAutoPlayWifiDuration: Int = 30
-        val businessWidgetPosition: Int = 30
+
         //till here
         val actionLink = if (PlayWidgetChannelType.getByValue(playSlot.items.first().air_time) == PlayWidgetChannelType.Upcoming) FEED_SEE_MORE_UPCOMING_APP_LINK else FEED_SEE_MORE_LIVE_APP_LINK
 
@@ -125,8 +125,8 @@ object FeedPlayVideoTabMapper {
             actionAppLink = actionLink,
             isActionVisible = playSlot.lihat_semua.show,
             config = PlayWidgetConfigUiModel(
-                autoRefresh, autoRefreshTimer, playWidgetPreference.getAutoPlay(meta.is_autoplay), autoPlayAmount,
-                meta.max_autoplay_in_cell, maxAutoPlayWifiDuration, businessWidgetPosition
+                autoRefresh, autoRefreshTimer, playWidgetPreference.getAutoPlay(meta.is_autoplay), AUTO_PLAY_AMOUNT,
+                meta.max_autoplay_in_cell, MAX_AUTO_PLAY_WIFI_DURATION, BUSINESS_WIDGET_POSITION
             ),
             background = PlayWidgetBackgroundUiModel(
                 "", item.appLink, item.webLink, emptyList(), ""
@@ -162,13 +162,13 @@ object FeedPlayVideoTabMapper {
                         item.configurations.promoLabels.firstOrNull()?.text ?: ""
                     ),
                     reminderType = getReminderType(item.configurations.reminder.isSet),
-                    partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
+                    partner = PlayWidgetPartnerUiModel(item.partner.id, MethodChecker.fromHtml(item.partner.name).toString()),
                     video = PlayWidgetVideoUiModel(
                         item.video.id, item.is_live,
                         item.video.cover_url, item.video.stream_source
                     ),
                     channelType = channelType,
-                    hasGiveaway = mapHasGiveaway(item.configurations.promoLabels),
+                    hasGame = mapHasGame(item.configurations.promoLabels),
                     share = PlayWidgetShareUiModel(item.share.text, item.share.is_show_button),
                     performanceSummaryLink = performanceSummaryLink,
                     poolType = poolType,
@@ -184,7 +184,7 @@ object FeedPlayVideoTabMapper {
 
         return list
     }
-    private fun mapHasGiveaway(promoLabels: List<Configurations.PromoLabel>): Boolean {
+    private fun mapHasGame(promoLabels: List<Configurations.PromoLabel>): Boolean {
         return promoLabels.firstOrNull { it.type == GIVEAWAY } != null
     }
 

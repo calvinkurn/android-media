@@ -7,11 +7,19 @@
     android:layout_height="wrap_content"
     android:focusableInTouchMode="true">
 
+    <com.tokopedia.digital_checkout.presentation.widget.DigitalConsentWidget
+        android:id="@+id/view_consent_goto_plus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
         android:id="@+id/digitalPromoBtnView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/view_consent_goto_plus"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTotalPaymentLabel"
@@ -24,7 +32,7 @@
         app:layout_constraintEnd_toStartOf="@id/btnCheckout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:layout_goneMarginTop="@dimen/spacing_lvl4" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -37,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
         app:layout_constraintStart_toStartOf="@id/tvTotalPaymentLabel"
         app:layout_constraintTop_toBottomOf="@id/tvTotalPaymentLabel"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Rp.102.500" />
 

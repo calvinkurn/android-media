@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.databinding.ItemComparisonWidgetViewholderBinding
@@ -33,8 +34,10 @@ class PdpComparisonWidgetViewHolder(
                 element.recommendationWidget,
                 this@PdpComparisonWidgetViewHolder,
                 RecommendationTrackingModel(
+                        eventClick = ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                         androidPageName = PDP_PAGE_NAME,
-                        headerTitle = element.recommendationWidget.title
+                        headerTitle = element.recommendationWidget.title,
+                        eventCategory = PDP_PAGE_NAME
                 ),
                 listener.getFragmentTrackingQueue()
         )

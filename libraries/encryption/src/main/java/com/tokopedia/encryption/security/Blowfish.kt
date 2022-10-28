@@ -1,8 +1,6 @@
 package com.tokopedia.encryption.security
 
 import com.tokopedia.encryption.utils.Constants
-import com.tokopedia.encryption.utils.Utils.byteToHex
-import com.tokopedia.encryption.utils.Utils.decodeHex
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
@@ -25,6 +23,6 @@ class Blowfish(private val algorithm: String = Constants.BLOWFISH_ALGORITHM): Ba
                          decoder: ((String) -> (ByteArray))): String {
         val cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.DECRYPT_MODE, secretKey)
-        return String(cipher.doFinal(decodeHex(message)), Charsets.UTF_8)
+        return String(cipher.doFinal(decoder(message)), Charsets.UTF_8)
     }
 }

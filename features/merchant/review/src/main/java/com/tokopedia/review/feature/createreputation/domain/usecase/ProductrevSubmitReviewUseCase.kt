@@ -4,7 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
-import com.tokopedia.usecase.RequestParams
+import java.io.Serializable
 import javax.inject.Inject
 
 @GqlQuery(
@@ -23,13 +23,16 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         const val PARAM_REVIEW_TEXT = "reviewText"
         const val PARAM_IS_ANONYMOUS = "isAnonymous"
         const val PARAM_ATTACHMENT_ID = "attachmentIDs"
+        const val PARAM_VIDEO_ATTACHMENT = "videoAttachments"
+        const val PARAM_VIDEO_ATTACHMENT_UPLOAD_ID = "uploadID"
+        const val PARAM_VIDEO_ATTACHMENT_URL = "url"
         const val PARAM_UTM_SOURCE = "utmSource"
         const val PARAM_BAD_RATING_CATEGORY_IDS = "badRatingCategoryIDs"
         const val SUBMIT_REVIEW_QUERY_CLASS_NAME = "SubmitReview"
         const val SUBMIT_REVIEW_MUTATION =
             """
-                mutation productrevSubmitReviewV2(${'$'}reputationID: String!,${'$'}productID: String!, ${'$'}shopID: String!, ${'$'}reputationScore: Int, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}attachmentIDs: [String], ${'$'}utmSource: String, ${'$'}badRatingCategoryIDs: [String]) {
-                  productrevSubmitReviewV2(reputationID: ${'$'}reputationID, productID: ${'$'}productID , shopID: ${'$'}shopID, reputationScore: ${'$'}reputationScore, rating: ${'$'}rating, reviewText: ${'$'}reviewText , isAnonymous: ${'$'}isAnonymous, attachmentIDs: ${'$'}attachmentIDs, utmSource: ${'$'}utmSource, badRatingCategoryIDs: ${'$'}badRatingCategoryIDs) {
+                mutation productrevSubmitReviewV2(${'$'}reputationID: String!,${'$'}productID: String!, ${'$'}shopID: String!, ${'$'}reputationScore: Int, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}attachmentIDs: [String], ${'$'}videoAttachments: [productrevVideoAttachment], ${'$'}utmSource: String, ${'$'}badRatingCategoryIDs: [String]) {
+                  productrevSubmitReviewV2(reputationID: ${'$'}reputationID, productID: ${'$'}productID , shopID: ${'$'}shopID, reputationScore: ${'$'}reputationScore, rating: ${'$'}rating, reviewText: ${'$'}reviewText , isAnonymous: ${'$'}isAnonymous, attachmentIDs: ${'$'}attachmentIDs, videoAttachments: ${'$'}videoAttachments, utmSource: ${'$'}utmSource, badRatingCategoryIDs: ${'$'}badRatingCategoryIDs) {
                     success
                     feedbackID
                   }
@@ -42,39 +45,49 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         setGraphqlQuery(SubmitReview.GQL_QUERY)
     }
 
-    fun setParams(
-        reputationId: String,
-        productId: String,
-        shopId: String,
-        reputationScore: Int = 0,
-        rating: Int,
-        reviewText: String,
-        isAnonymous: Boolean,
-        attachmentIds: List<String> = emptyList(),
-        utmSource: String,
-        badRatingCategoryIds: List<String>
-    ) {
-        setRequestParams(RequestParams.create().apply {
-            putString(PARAM_REPUTATION_ID, reputationId)
-            putString(PARAM_PRODUCT_ID, productId)
-            putString(PARAM_SHOP_ID, shopId)
-            if (reputationScore != 0) {
-                putInt(PARAM_REPUTATION_SCORE, reputationScore)
+    fun setParams(requestParams: SubmitReviewRequestParams) {
+        setRequestParams(requestParams.toRequestParamMap())
+    }
+
+    data class SubmitReviewRequestParams(
+        val reputationId: String,
+        val productId: String,
+        val shopId: String,
+        val reputationScore: Int = 0,
+        val rating: Int,
+        val reviewText: String,
+        val isAnonymous: Boolean,
+        val attachmentIds: List<String> = emptyList(),
+        val videoAttachments: List<VideoAttachment> = emptyList(),
+        val utmSource: String,
+        val badRatingCategoryIds: List<String>
+    ): Serializable {
+        fun toRequestParamMap(): Map<String, Any> {
+            return mapOf(
+                PARAM_REPUTATION_ID to reputationId,
+                PARAM_PRODUCT_ID to productId,
+                PARAM_SHOP_ID to shopId,
+                PARAM_REPUTATION_SCORE to reputationScore,
+                PARAM_RATING to rating,
+                PARAM_REVIEW_TEXT to reviewText,
+                PARAM_IS_ANONYMOUS to isAnonymous,
+                PARAM_ATTACHMENT_ID to attachmentIds,
+                PARAM_VIDEO_ATTACHMENT to videoAttachments.map { it.toRequestParamMap() },
+                PARAM_UTM_SOURCE to utmSource,
+                PARAM_BAD_RATING_CATEGORY_IDS to badRatingCategoryIds
+            )
+        }
+
+        data class VideoAttachment(
+            val uploadId: String,
+            val videoUrl: String
+        ): Serializable {
+            fun toRequestParamMap(): Map<String, Any> {
+                return mapOf(
+                    PARAM_VIDEO_ATTACHMENT_UPLOAD_ID to uploadId,
+                    PARAM_VIDEO_ATTACHMENT_URL to videoUrl
+                )
             }
-            putInt(PARAM_RATING, rating)
-            if (reviewText.isNotBlank()) {
-                putString(PARAM_REVIEW_TEXT, reviewText)
-            }
-            if (isAnonymous) {
-                putBoolean(PARAM_IS_ANONYMOUS, isAnonymous)
-            }
-            if (attachmentIds.isNotEmpty()) {
-                putObject(PARAM_ATTACHMENT_ID, attachmentIds)
-            }
-            if (badRatingCategoryIds.isNotEmpty()) {
-                putObject(PARAM_BAD_RATING_CATEGORY_IDS, badRatingCategoryIds)
-            }
-            putString(PARAM_UTM_SOURCE, utmSource)
-        }.parameters)
+        }
     }
 }

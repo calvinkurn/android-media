@@ -4,8 +4,9 @@ import android.view.View
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.similarsearch.R
 import com.tokopedia.similarsearch.abstraction.BaseViewHolder
+import com.tokopedia.similarsearch.databinding.SimilarSearchProductCardLayoutBinding
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
-import kotlinx.android.synthetic.main.similar_search_product_card_layout.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class SimilarProductItemViewHolder(
         itemView: View,
@@ -15,8 +16,10 @@ internal class SimilarProductItemViewHolder(
     companion object {
         val LAYOUT = R.layout.similar_search_product_card_layout
     }
+    private var binding: SimilarSearchProductCardLayoutBinding? by viewBinding()
 
     override fun bind(item: Product) {
+        val binding = binding ?: return
         val productCardModel = ProductCardModel(
                 productName = item.name,
                 productImageUrl = item.imageUrl,
@@ -32,13 +35,13 @@ internal class SimilarProductItemViewHolder(
                 hasThreeDots = true
         )
 
-        itemView.productCardView?.setProductModel(productCardModel)
+        binding.productCardView.setProductModel(productCardModel)
 
-        itemView.productCardView?.setOnClickListener {
+        binding.productCardView.setOnClickListener {
             similarProductItemListener.onItemClicked(item, adapterPosition)
         }
 
-        itemView.productCardView?.setThreeDotsOnClickListener {
+        binding.productCardView.setThreeDotsOnClickListener {
             similarProductItemListener.onThreeDotsClicked(item, adapterPosition)
         }
     }

@@ -44,7 +44,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 if (element.productCount > 1) {
                     labelAddOnHeader.text = MethodChecker.fromHtml(String.format(itemView.context.getString(R.string.add_on_label_header_toko_cabang_multiple_product), element.productCount))
                 } else {
-                    labelAddOnHeader.text = MethodChecker.fromHtml(itemView.context.getString(R.string.add_on_label_header_toko_cabang_single_product))
+                    labelAddOnHeader.text = itemView.context.getString(R.string.add_on_label_header)
                 }
             } else {
                 labelAddOnHeader.text = itemView.context.getString(R.string.add_on_label_header)

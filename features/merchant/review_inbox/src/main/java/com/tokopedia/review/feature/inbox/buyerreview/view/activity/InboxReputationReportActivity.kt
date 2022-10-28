@@ -19,7 +19,7 @@ class InboxReputationReportActivity : BaseSimpleActivity(), HasComponent<BaseApp
         const val ARGS_SHOP_ID: String = "ARGS_SHOP_ID"
         const val ARGS_REVIEW_ID: String = "ARGS_REVIEW_ID"
 
-        fun getCallingIntent(context: Context?, shopId: Long, reviewId: String?): Intent {
+        fun getCallingIntent(context: Context?, shopId: String, reviewId: String?): Intent {
             val intent = Intent(context, InboxReputationReportActivity::class.java)
             val bundle = Bundle()
             bundle.putString(ARGS_SHOP_ID, shopId.toString())

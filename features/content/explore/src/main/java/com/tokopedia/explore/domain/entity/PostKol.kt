@@ -58,7 +58,7 @@ data class PostKol(
 
         @SerializedName("userId")
         @Expose
-        var userId: Int = 0,
+        var userId: String = "",
 
         @SerializedName("tracking")
         @Expose

@@ -1,60 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/chatcommon_3dp"
     android:paddingLeft="@dimen/chatcommon_15dp"
+    android:paddingTop="@dimen/chatcommon_3dp"
     android:paddingRight="@dimen/chatcommon_15dp"
-    android:paddingTop="@dimen/chatcommon_3dp">
+    android:paddingBottom="@dimen/chatcommon_3dp">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/date"
+        android:layout_alignParentEnd="true"
         android:layout_marginStart="@dimen/chatcommon_3dp"
-        android:fontFamily="sans-serif"
-        android:lineSpacingExtra="@dimen/chatcommon_3sp"
         android:textColor="@color/Unify_N700_32"
-        android:textSize="@dimen/chatcommon_11sp"
-        android:textStyle="normal"
-        tools:text="Pengguna"/>
+        app:typographyType="small"
+        tools:text="Pengguna" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dot"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@id/label"
         android:layout_alignTop="@id/label"
+        android:layout_alignBottom="@id/label"
         android:layout_marginStart="@dimen/chatcommon_3dp"
         android:layout_toStartOf="@+id/label"
-        android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:lineSpacingExtra="@dimen/chatcommon_3sp"
         android:text="●"
         android:textColor="@color/Unify_N200"
         android:textSize="@dimen/chatcommon_5sp"
-        android:textStyle="normal"/>
+        android:textStyle="normal" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/date"
         android:layout_marginBottom="@dimen/chatcommon_5dp"
         android:layout_toStartOf="@id/dot"
-        android:fontFamily="sans-serif-medium"
-        android:lineSpacingExtra="3sp"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/chatcommon_11sp"
-        android:textStyle="normal"
-        tools:text="@tools:sample/lorem/random"/>
+        app:typographyType="display_3"
+        tools:text="@tools:sample/lorem/random" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,15 +55,15 @@
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:textAllCaps="true"
         android:textColor="@color/Unify_N200"
-        android:textSize="@dimen/fontSize_lvl2"
-        tools:text="13:16 wib"/>
+        app:typographyType="display_3"
+        tools:text="13:16 wib" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_group_chat_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_below="@id/name"
+        android:layout_alignParentEnd="true"
         app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="@dimen/chatcommon_3dp"
         app:cardElevation="@dimen/layout_lvl0"
@@ -83,11 +75,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:maxHeight="@dimen/chatcommon_270dp"
             android:maxWidth="@dimen/chatcommon_270dp"
+            android:maxHeight="@dimen/chatcommon_270dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="image" />
 
     </androidx.cardview.widget.CardView>
 
@@ -95,44 +88,47 @@
         android:id="@+id/left_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/card_group_chat_message"
         android:layout_alignTop="@+id/card_group_chat_message"
+        android:layout_alignBottom="@+id/card_group_chat_message"
         android:layout_toStartOf="@+id/card_group_chat_message"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_error_to_send"/>
+        app:srcCompat="@drawable/ic_error_to_send"
+        android:contentDescription="left_action" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/card_group_chat_message"
         android:layout_alignTop="@+id/card_group_chat_message"
+        android:layout_alignBottom="@+id/card_group_chat_message"
         android:layout_toStartOf="@+id/card_group_chat_message"
         android:indeterminateDrawable="@drawable/progress"
         android:visibility="visible"
-        tools:visibility="gone"/>
+        tools:visibility="gone"
+        tools:ignore="UnifyComponentUsage" />
 
     <ImageView
         android:id="@+id/chat_status"
         android:layout_width="@dimen/chatcommon_11dp"
         android:layout_height="@dimen/chatcommon_6dp"
-        android:layout_alignBottom="@+id/hour"
-        android:layout_alignTop="@+id/hour"
         android:layout_below="@+id/card_group_chat_message"
+        android:layout_alignTop="@+id/hour"
+        android:layout_alignBottom="@+id/hour"
         android:layout_marginEnd="@dimen/chatcommon_5dp"
         android:layout_toStartOf="@+id/hour"
         android:adjustViewBounds="true"
-        tools:src="@drawable/ic_read_thin"/>
+        tools:src="@drawable/ic_read_thin"
+        android:contentDescription="chat_status" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/card_group_chat_message"
         android:layout_below="@id/card_group_chat_message"
+        android:layout_alignEnd="@id/card_group_chat_message"
         android:layout_marginTop="@dimen/chatcommon_3dp"
         android:textColor="@color/Unify_N300"
-        android:textSize="@dimen/chatcommon_10sp"
+        app:typographyType="small"
         tools:text="10:13 pm"
         tools:visibility="visible" />
 

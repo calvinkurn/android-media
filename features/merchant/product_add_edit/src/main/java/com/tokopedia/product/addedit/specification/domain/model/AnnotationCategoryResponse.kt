@@ -32,7 +32,7 @@ data class AnnotationCategoryData (
 data class Values (
 		@SerializedName("id")
 		@Expose
-		val id : Int,
+		val id : String,
 
 		@SerializedName("name")
 		@Expose

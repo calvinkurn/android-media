@@ -19,6 +19,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 10/15/18.
  */
+@Deprecated("please use com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase")
 class DeletePostUseCase @Inject constructor(@ApplicationContext private val context: Context,
                                             private val graphqlUseCase: GraphqlUseCase)
     : UseCase<Boolean>() {

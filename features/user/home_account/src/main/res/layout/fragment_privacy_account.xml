@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".privacy_account.view.PrivacyAccountFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/inc_loader_link_account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginHorizontal="@dimen/unify_space_16"
+            layout="@layout/item_privacy_account_loader"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_header_link_account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/unify_space_16"
+            android:layout_marginTop="24dp"
+            android:text="@string/opt_link_account_header"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_desc_link_account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/opt_link_account_desc"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintEnd_toEndOf="@+id/txt_header_link_account"
+            app:layout_constraintStart_toStartOf="@id/txt_header_link_account"
+            app:layout_constraintTop_toBottomOf="@+id/txt_header_link_account"
+            app:typographyType="display_3" />
+
+        <include
+            android:id="@+id/layout_item_link_account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            layout="@layout/view_item_account_privacy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_desc_link_account" />
+
+        <include
+            android:id="@+id/layoutConsentWithdrawal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            layout="@layout/layout_privacy_account_consent_withdrawal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_item_link_account" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

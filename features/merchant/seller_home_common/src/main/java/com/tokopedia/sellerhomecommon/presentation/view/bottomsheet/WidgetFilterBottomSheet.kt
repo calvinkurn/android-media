@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcWidgetFilterBottomSheetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetFilterAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
@@ -36,12 +38,10 @@ class WidgetFilterBottomSheet : BottomSheetUnify(), WidgetFilterAdapter.Listener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(
-            DialogFragment.STYLE_NORMAL,
-            com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle
-        )
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.ShcDialogStyle)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onItemClick(item: WidgetFilterUiModel) {
         widgetFilterAdapter?.getItems()?.forEach {
             it.isSelected = it == item

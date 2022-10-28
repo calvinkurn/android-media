@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_marginTop="12dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_list_usp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_list_usp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toEndOf="@+id/img_list_usp"
+        app:layout_constraintTop_toTopOf="@+id/img_list_usp"
+        app:layout_constraintBottom_toBottomOf="@+id/img_list_usp"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Main benefit. Terima belanjaan dalam 2 jam. Bisa nikmati gratis ongkir juga!"
+        app:typographyType="paragraph_2"
+        android:textColor="@color/Unify_NN700"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

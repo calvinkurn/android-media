@@ -43,7 +43,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.miscDependencies.viewPager2
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
     implementation rootProject.ext.networkDependencies.glide
 

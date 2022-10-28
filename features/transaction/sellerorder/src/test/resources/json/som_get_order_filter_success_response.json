@@ -1,6 +1,43 @@
 {
   "data": {
     "orderFilterSom": {
+      "order_types": [
+        {
+          "id": 2,
+          "key": "same_day",
+          "name": "Sameday Delivery"
+        },
+        {
+          "id": 9,
+          "key": "next_day",
+          "name": "Nextday Delivery"
+        },
+        {
+          "id": 3,
+          "key": "pickup_delivery",
+          "name": "Request Pickup"
+        },
+        {
+          "id": 1,
+          "key": "pre_order",
+          "name": "Pre Order"
+        },
+        {
+          "id": 10,
+          "key": "request_cancel",
+          "name": "Pengajuan Pembatalan"
+        },
+        {
+          "id": 8,
+          "key": "cod",
+          "name": "Bayar di Tempat"
+        },
+        {
+          "id": 11,
+          "key": "tokocabang",
+          "name": "Tokocabang"
+        }
+      ],
       "status_list": [
         {
           "order_status_id": [
@@ -403,44 +440,17 @@
           "status": 0,
           "img_logo": ""
         }
+      ],
+      "sort_by": [
+        {
+          "text": "Paling Baru",
+          "value": 2
+        },
+        {
+          "text": "Paling Lama",
+          "value": 0
+        }
       ]
-    },
-    "orderTypeList": [
-      {
-        "id": 2,
-        "key": "same_day",
-        "name": "Sameday Delivery"
-      },
-      {
-        "id": 9,
-        "key": "next_day",
-        "name": "Nextday Delivery"
-      },
-      {
-        "id": 3,
-        "key": "pickup_delivery",
-        "name": "Request Pickup"
-      },
-      {
-        "id": 1,
-        "key": "pre_order",
-        "name": "Pre Order"
-      },
-      {
-        "id": 10,
-        "key": "request_cancel",
-        "name": "Pengajuan Pembatalan"
-      },
-      {
-        "id": 8,
-        "key": "cod",
-        "name": "Bayar di Tempat"
-      },
-      {
-        "id": 11,
-        "key": "tokocabang",
-        "name": "Tokocabang"
-      }
-    ]
+    }
   }
 }

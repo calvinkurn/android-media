@@ -8,9 +8,10 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.MvcFillVoucherNameWidgetBinding
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.vouchertarget.widgets.FillVoucherNameUiModel
-import kotlinx.android.synthetic.main.mvc_fill_voucher_name_widget.view.*
 
 class FillVoucherNameViewHolder(itemView: View) : AbstractViewHolder<FillVoucherNameUiModel>(itemView) {
 
@@ -23,10 +24,12 @@ class FillVoucherNameViewHolder(itemView: View) : AbstractViewHolder<FillVoucher
         private const val MIN_TEXTFIELD_LENGTH = 5
     }
 
+    private var binding: MvcFillVoucherNameWidgetBinding? by viewBinding()
+
     private var alertMinimumMessage = itemView.resources?.getString(TEXFIELD_ALERT_MINIMUM).toBlankOrString()
 
     override fun bind(element: FillVoucherNameUiModel?) {
-        itemView.fillVoucherNameTextfield?.run {
+        binding?.fillVoucherNameTextfield?.run {
             textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {

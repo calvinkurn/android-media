@@ -45,8 +45,16 @@ class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
             mAnalyticListener?.onImpressChannelCard(
                 this@PlayWidgetJumboView,
                 item,
+                mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
+            )
+
+            if(item.isUpcoming)
+                mAnalyticListener?.onImpressReminderIcon(
+                view = this@PlayWidgetJumboView,
+                item = item,
+                channelPositionInList = position,
+                isReminded = item.reminderType == PlayWidgetReminderType.Reminded,
             )
         }
 
@@ -58,8 +66,8 @@ class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
             mAnalyticListener?.onClickChannelCard(
                 this@PlayWidgetJumboView,
                 item,
+                mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
             mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
         }
@@ -82,14 +90,13 @@ class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
                 position
             )
         }
-
     }
 
     private val adapter = PlayWidgetJumboAdapter(
         cardChannelListener = channelCardListener,
     )
 
-    private var mIsAutoPlay: Boolean = false
+    private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_jumbo, this)
@@ -116,9 +123,8 @@ class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
     }
 
     fun setData(data: PlayWidgetUiModel) {
+        mModel = data
         adapter.setItemsAndAnimateChanges(data.items)
-
-        mIsAutoPlay = data.config.autoPlay
     }
 
     override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {

@@ -8,6 +8,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 
 class GetOccCartData(
+        @SerializedName("cart_data")
+        val cartData: String = "",
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("error_code")
@@ -16,6 +18,8 @@ class GetOccCartData(
         val popUpMessage: String = "",
         @SerializedName("max_char_note")
         val maxCharNote: Int = 0,
+        @SerializedName("placeholder_note")
+        val placeholderNote: String = "",
         @SerializedName("kero_token")
         val keroToken: String = "",
         @SerializedName("kero_unix_time")

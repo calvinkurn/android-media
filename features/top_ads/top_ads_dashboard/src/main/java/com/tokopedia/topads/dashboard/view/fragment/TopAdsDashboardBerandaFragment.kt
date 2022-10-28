@@ -8,12 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_DEFAULT_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.model.beranda.*
@@ -44,7 +47,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private lateinit var binding: FragmentTopadsDashboardBerandaBaseBinding
 
-    private val graphLayoutFragment by lazy(LazyThreadSafetyMode.NONE) { TopAdsMultiLineGraphFragment() }
+    private val graphLayoutFragment = TopAdsMultiLineGraphFragment()
 
     private val summaryAdTypeList by lazy(LazyThreadSafetyMode.NONE) {
         context?.resources?.getSummaryAdTypes() ?: listOf()
@@ -56,14 +59,15 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
     private val summaryInformationBottomSheet by lazy(LazyThreadSafetyMode.NONE) { SummaryInformationBottomSheet() }
 
-    private val kataKunciChipsDetailRvAdapter by lazy(LazyThreadSafetyMode.NONE) { TopAdsBerandsKataKunciChipsDetailRvAdapter() }
-    private val kataKunciChipsRvAdapter by lazy(LazyThreadSafetyMode.NONE) {
+    private val kataKunciChipsDetailRvAdapter = TopAdsBerandsKataKunciChipsDetailRvAdapter()
+    private val kataKunciChipsRvAdapter =
         TopAdsBerandsKataKunciChipsRvAdapter(::kataKunciItemSelected)
+    private val anggarnHarianAdapter = TopAdsBerandaAnggarnHarianAdapter()
+    private val produkBerpotensiAdapter = TopadsImageRvAdapter()
+    private val summaryRvAdapter = TopAdsBerandaSummaryRvAdapter()
+    private val latestReadingRvAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        LatestReadingTopAdsDashboardRvAdapter { context?.openWebView(it) }
     }
-    private val anggarnHarianAdapter by lazy(LazyThreadSafetyMode.NONE) { TopAdsBerandaAnggarnHarianAdapter() }
-    private val produkBerpotensiAdapter by lazy(LazyThreadSafetyMode.NONE) { TopadsImageRvAdapter() }
-    private val summaryRvAdapter by lazy(LazyThreadSafetyMode.NONE) { TopAdsBerandaSummaryRvAdapter() }
-    private val latestReadingRvAdapter by lazy(LazyThreadSafetyMode.NONE) { LatestReadingTopAdsDashboardRvAdapter() }
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
@@ -74,7 +78,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     @Inject
-    lateinit var topAdsDashboardViewModel: TopAdsDashboardViewModel
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val topAdsDashboardViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[TopAdsDashboardViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -96,7 +104,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun kataKunciItemSelected(item: KataKunciHomePageBase) {
         when (item) {
             is KataKunciSimpleButton -> {
-                (activity as? TopAdsDashboardActivity)?.switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
             is RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup -> {
                 context?.resources?.let {
@@ -186,13 +194,13 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 recommendationInfoBottomSheet.show(childFragmentManager, "")
             }
             layoutkataKunci.button.setOnClickListener {
-                (activity as? TopAdsDashboardActivity)?.switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
             layoutAnggaranHarian.button.setOnClickListener {
-                (activity as? TopAdsDashboardActivity)?.switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
             layoutProdukBerpostensi.button.setOnClickListener {
-                (activity as? TopAdsDashboardActivity)?.switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
         }
     }
@@ -313,7 +321,9 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         topAdsDashboardViewModel.latestReadingLiveData.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is Success -> latestReadingRvAdapter.addItems(data.data)
-                else -> { binding.layoutLatestReading.root.hide() }
+                else -> {
+                    binding.layoutLatestReading.root.hide()
+                }
             }
         }
     }

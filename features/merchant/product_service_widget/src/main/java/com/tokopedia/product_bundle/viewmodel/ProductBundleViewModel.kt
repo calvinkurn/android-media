@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
+import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -15,13 +16,20 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
-import com.tokopedia.product_bundle.common.data.model.request.*
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_DAY
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_MONTH
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_WEEK
+import com.tokopedia.product_bundle.common.data.model.request.Bundle
+import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
+import com.tokopedia.product_bundle.common.data.model.request.ProductData
+import com.tokopedia.product_bundle.common.data.model.request.RequestData
+import com.tokopedia.product_bundle.common.data.model.request.UserLocation
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
-import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
@@ -50,8 +58,6 @@ class ProductBundleViewModel @Inject constructor(
         private const val SINGLE_PRODUCT_BUNDLE_ITEM_SIZE = 1
         private const val PRODUCT_BUNDLE_STATUS_ACTIVE = "1"
         private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
-        private const val PREORDER_TYPE_DAY: Int = 1
-        private const val PREORDER_TYPE_MONTH: Int = 2
     }
 
     var parentProductID: Long = 0L
@@ -125,8 +131,9 @@ class ProductBundleViewModel @Inject constructor(
 
     fun getPreOrderTimeUnitWording(processTypeNum: Int): String {
         return when (processTypeNum) {
-            PREORDER_TYPE_DAY -> rscProvider.getPreOrderTimeUnitDay() ?: ""
-            PREORDER_TYPE_MONTH -> rscProvider.getPreOrderTimeUnitMonth() ?: ""
+            PREORDER_TYPE_DAY -> rscProvider.getPreOrderTimeUnitDay()
+            PREORDER_TYPE_WEEK -> rscProvider.getPreOrderTimeUnitWeek()
+            PREORDER_TYPE_MONTH -> rscProvider.getPreOrderTimeUnitMonth()
             else -> ""
         }
     }
@@ -151,7 +158,7 @@ class ProductBundleViewModel @Inject constructor(
         }
     }
 
-    fun getBundleInfo(productId: Long) {
+    fun getBundleInfo(productId: Long, warehouseId: String) {
         val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
         mPageState.value = ProductBundleState.LOADING
         launchCatchError(block = {
@@ -164,20 +171,22 @@ class ProductBundleViewModel @Inject constructor(
                         CheckCampaign = true,
                         BundleGroup = true,
                         Preorder = true,
+                        BundleStats = true,
                         inventoryDetail = InventoryDetail(
                             required = true,
                             userLocation = UserLocation(
-                                addressId = chosenAddress?.addressId.orEmpty(),
-                                districtID = chosenAddress?.districtId.orEmpty(),
-                                postalCode = chosenAddress?.postalCode.orEmpty(),
-                                latlon = chosenAddress?.geolocation.orEmpty()
+                                addressId = chosenAddress.addressId,
+                                districtID = chosenAddress.districtId,
+                                postalCode = chosenAddress.postalCode,
+                                latlon = chosenAddress.geolocation
                             )
                         )
                     ),
                     productData = ProductData(
-                        productID = productId.toString()
+                        productID = productId.toString(),
+                        warehouseIDs = listOf(warehouseId)
                     ),
-                    bundleIdList = createBundleListParam(productId)
+                    bundleIdList = createBundleListParam(productId, warehouseId)
                 )
                 getBundleInfoUseCase.executeOnBackground()
             }
@@ -234,7 +243,7 @@ class ProductBundleViewModel @Inject constructor(
             bundleName = bundleInfo.name,
             quota = bundleInfo.quota,
             preOrderStatus = bundleInfo.preorder.status,
-            processDay = bundleInfo.preorder.processDay,
+            processDay = bundleInfo.preorder.processTime.toLongOrZero(),
             processTypeNum = bundleInfo.preorder.processTypeNum
         )
     }
@@ -259,12 +268,12 @@ class ProductBundleViewModel @Inject constructor(
         }
     }
 
-    fun mapBundleDetailsToProductDetails(userId: String, shopId: Int, productBundleDetails: List<ProductBundleDetail>): List<ProductDetail> {
+    fun mapBundleDetailsToProductDetails(userId: String, shopId: String, productBundleDetails: List<ProductBundleDetail>): List<ProductDetail> {
         return productBundleDetails.map { productBundleDetail ->
             ProductDetail(
                 productId = productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString(),
                 quantity = ATC_BUNDLE_QUANTITY,
-                shopId = shopId.toString(),
+                shopId = shopId,
                 isProductParent = parentProductID == productBundleDetail.productId,
                 customerId = userId,
                 warehouseId = productBundleDetail.warehouseId
@@ -349,7 +358,7 @@ class ProductBundleViewModel @Inject constructor(
             isAddToCartInputValid = false
             errorMessageLiveData.value = rscProvider.getProductVariantNotSelected()
         } else if (
-            pageSource == PAGE_SOURCE_CART &&
+                (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) &&
             selectedProductBundleMaster.bundleId == selectedBundleId &&
             variantProductNotChanged(productBundleDetails)) {
                 isAddToCartInputValid = false
@@ -363,16 +372,7 @@ class ProductBundleViewModel @Inject constructor(
         return isAddToCartInputValid
     }
 
-    private fun createBundleListParam(productId: Long): List<Bundle> {
-        // if given product ID is 0, then use bundle ID to search bundle info
-        return if (productId == Int.ZERO.toLong()) {
-            listOf(Bundle(ID = selectedBundleId.toString()))
-        } else {
-            emptyList()
-        }
-    }
-
-    private fun variantProductNotChanged(productBundleDetails: List<ProductBundleDetail>) =
+    fun variantProductNotChanged(productBundleDetails: List<ProductBundleDetail>) =
         productBundleDetails
             .filter { it.hasVariant }
             .all { bundleDetail ->
@@ -380,6 +380,15 @@ class ProductBundleViewModel @Inject constructor(
                     bundleDetail.selectedVariantId == it
                 }
             }
+
+    private fun createBundleListParam(productId: Long, warehouseId: String): List<Bundle> {
+        // if given product ID is 0, then use bundle ID to search bundle info
+        return if (productId == Int.ZERO.toLong()) {
+            listOf(Bundle(ID = selectedBundleId.toString(), WarehouseID = warehouseId))
+        } else {
+            emptyList()
+        }
+    }
 
     private fun isProductVariantSelectionComplete(productBundleDetails: List<ProductBundleDetail>): Boolean {
         val invalidInput = productBundleDetails.find { productBundleDetail ->

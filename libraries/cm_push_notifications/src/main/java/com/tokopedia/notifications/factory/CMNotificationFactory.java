@@ -11,6 +11,7 @@ import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.common.PersistentEvent;
+import com.tokopedia.notifications.factory.custom_notifications.ReplyChatNotification;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
 import java.util.HashMap;
@@ -41,7 +42,13 @@ public class CMNotificationFactory {
             case CMConstant.NotificationType.GENERAL:
             case CMConstant.NotificationType.BIG_IMAGE:
             case CMConstant.NotificationType.ACTION_BUTTONS: {
-                return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
+                if (baseNotificationModel.isReviewOn()) {
+                    return new ReviewNotification(context.getApplicationContext(), baseNotificationModel);
+                } else if (baseNotificationModel.isReplyChat()) {
+                    return new ReplyChatNotification(context.getApplicationContext(), baseNotificationModel);
+                } else {
+                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
+                }
             }
 
             case CMConstant.NotificationType.PERSISTENT:

@@ -8,55 +8,49 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class GetProgressDataResponse(
-        @Expose
-        @SerializedName("fetchProgressBarWidgetData")
-        val getProgressBarData: ProgressDataWrapper?
+    @Expose
+    @SerializedName("fetchProgressBarWidgetData")
+    val getProgressBarData: ProgressDataWrapper?
 )
 
 data class ProgressDataWrapper(
-        @Expose
-        @SerializedName("data")
-        val progressData: List<ProgressDataModel>?
+    @Expose
+    @SerializedName("data")
+    val progressData: List<ProgressDataModel>?
 )
 
 data class ProgressDataModel(
-        @Expose
-        @SerializedName("dataKey")
-        val dataKey: String?,
-
-        @Expose
-        @SerializedName("valueTxt")
-        val valueText: String?,
-
-        @Expose
-        @SerializedName("maxValueTxt")
-        val maxValueText: String?,
-
-        @Expose
-        @SerializedName("value")
-        val value: Int?,
-
-        @Expose
-        @SerializedName("maxValue")
-        val maxValue: Int?,
-
-        @Expose
-        @SerializedName("state")
-        val state: String?,
-
-        @Expose
-        @SerializedName("subtitle")
-        val subtitle: String?,
-
-        @Expose
-        @SerializedName("errorMessage")
-        val error: Boolean?,
-
-        @Expose
-        @SerializedName("errorMsg")
-        val errorMessage: String?,
-
-        @Expose
-        @SerializedName("showWidget")
-        val showWidget: Boolean?
+    @Expose
+    @SerializedName("dataKey")
+    val dataKey: String?,
+    @Expose
+    @SerializedName("valueTxt")
+    val valueText: String?,
+    @Expose
+    @SerializedName("maxValueTxt")
+    val maxValueText: String?,
+    @Expose
+    @SerializedName("value")
+    val value: Long?,
+    @Expose
+    @SerializedName("maxValue")
+    val maxValue: Long?,
+    @Expose
+    @SerializedName("state")
+    val state: String?,
+    @Expose
+    @SerializedName("subtitle")
+    val subtitle: String?,
+    @Expose
+    @SerializedName("errorMessage")
+    val error: Boolean?,
+    @Expose
+    @SerializedName("errorMsg")
+    val errorMessage: String?,
+    @Expose
+    @SerializedName("showWidget")
+    val showWidget: Boolean?,
+    @Expose
+    @SerializedName("updateInfo")
+    val updateInfo: String?
 )

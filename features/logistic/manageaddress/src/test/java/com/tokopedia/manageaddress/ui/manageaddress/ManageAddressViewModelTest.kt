@@ -7,14 +7,16 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
+import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -48,7 +50,7 @@ class ManageAddressViewModelTest {
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
-    private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeature>> = mockk(relaxed = true)
+    private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> = mockk(relaxed = true)
 
 
     private lateinit var manageAddressViewModel: ManageAddressViewModel
@@ -59,7 +61,7 @@ class ManageAddressViewModelTest {
         manageAddressViewModel = ManageAddressViewModel(getPeopleAddressUseCase, deletePeopleAddressUseCase, setDetaultPeopleAddressUseCase, chooseAddressRepo, chooseAddressMapper, eligibleForAddressUseCase)
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
-        manageAddressViewModel.eligibleForAnaRevamp.observeForever(eligibleForAddressFeatureObserver)
+        manageAddressViewModel.eligibleForAddressFeature.observeForever(eligibleForAddressFeatureObserver)
     }
 
     @Test
@@ -109,9 +111,9 @@ class ManageAddressViewModelTest {
     @Test
     fun `Set Default Address Success`() {
         every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
+            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any(), any())
         } answers  {
-            (thirdArg() as ((String) -> Unit)).invoke(success)
+            (arg(3) as ((String) -> Unit)).invoke(success)
         }
 
         manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
@@ -123,7 +125,7 @@ class ManageAddressViewModelTest {
     fun `Set Default Address Fail`() {
         val response = Throwable()
         every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
+            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any(), any())
         } answers {
             (lastArg() as ((Throwable) -> Unit)).invoke(response)
         }
@@ -136,28 +138,26 @@ class ManageAddressViewModelTest {
     @Test
     fun `Delete Address Success`() {
         every {
-            deletePeopleAddressUseCase.execute(any(), any(), any())
-        } answers {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
-            (secondArg() as ((String) -> Unit)).invoke(success)
+            deletePeopleAddressUseCase.execute(any(), any(), any(), any())
+        }answers {
+            (arg(2) as ((String) -> Unit)).invoke(success)
         }
 
-        manageAddressViewModel.deletePeopleAddress("1", -1, -1, true)
+        manageAddressViewModel.deletePeopleAddress("1")
 
-        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
+        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.resultRemovedAddress.value)
     }
 
     @Test
     fun `Delete Address Fail`() {
         val response = Throwable()
         every {
-            deletePeopleAddressUseCase.execute(any(), any(), any())
+            deletePeopleAddressUseCase.execute(any(), any(), any(), any())
         } answers {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+            (lastArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
-        manageAddressViewModel.deletePeopleAddress("1", -1, -1, true)
+        manageAddressViewModel.deletePeopleAddress("1")
 
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
@@ -196,29 +196,45 @@ class ManageAddressViewModelTest {
 
     @Test
     fun `Get Eligible For Revamp Ana Success`() {
-        onCheckEligibility_thenReturn()
+        onCheckEligibility_thenReturn(ANA_REVAMP_FEATURE_ID)
         manageAddressViewModel.checkUserEligibilityForAnaRevamp()
         verify { eligibleForAddressFeatureObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Eligible For Revamp Ana Fail`() {
-        onCheckEligibility_thenThrow()
+        onCheckEligibility_thenThrow(ANA_REVAMP_FEATURE_ID)
         manageAddressViewModel.checkUserEligibilityForAnaRevamp()
         verify { eligibleForAddressFeatureObserver.onChanged(match { it is Fail }) }
     }
 
-    private fun onCheckEligibility_thenReturn() {
+    @Test
+    fun `Get Eligible For Revamp Edit Address Success`() {
+        onCheckEligibility_thenReturn(EDIT_ADDRESS_REVAMP_FEATURE_ID)
+        val data = RecipientAddressModel()
+        manageAddressViewModel.checkUserEligibilityForEditAddressRevamp(data)
+        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Success }) }
+    }
+
+    @Test
+    fun `Get Eligible For Revamp Edit Address Fail`() {
+        onCheckEligibility_thenThrow(EDIT_ADDRESS_REVAMP_FEATURE_ID)
+        val data = RecipientAddressModel()
+        manageAddressViewModel.checkUserEligibilityForEditAddressRevamp(data)
+        verify { eligibleForAddressFeatureObserver.onChanged(match { it is Fail }) }
+    }
+
+    private fun onCheckEligibility_thenReturn(featureId: Int) {
         coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), featureId)
         } answers {
             firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureData())
         }
     }
 
-    private fun onCheckEligibility_thenThrow() {
+    private fun onCheckEligibility_thenThrow(featureId: Int) {
         coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), featureId)
         } answers {
             secondArg<(Throwable)-> Unit>().invoke(Throwable())
         }

@@ -8,10 +8,11 @@ import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst.ELIGIBLE_STATUS
+import com.tokopedia.vouchercreation.databinding.ItemMvcShareVoucherBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.ShareVoucherUiModel
-import kotlinx.android.synthetic.main.item_mvc_share_voucher.view.*
 
 /**
  * Created By @ilhamsuaib on 28/04/20
@@ -30,6 +31,8 @@ class ShareVoucherViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_share_voucher
     }
 
+    private var binding: ItemMvcShareVoucherBinding? by viewBinding()
+
     init {
         quotaView = itemView?.findViewById(R.id.tv_mvc_quota)
         freeLabelView = itemView?.findViewById(R.id.iv_mvc_free)
@@ -37,8 +40,8 @@ class ShareVoucherViewHolder(
 
     override fun bind(element: ShareVoucherUiModel) {
         with(itemView) {
-            tvMvcSocmed.text = element.socmedName
-            icMvcSocmed.loadImageDrawable(element.icon)
+            binding?.tvMvcSocmed?.text = element.socmedName
+            binding?.icMvcSocmed?.loadImageDrawable(element.icon)
 
             if (element.status == ELIGIBLE_STATUS && element.promo > 0) {
                 // replace %s wit the number of quota

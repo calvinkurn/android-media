@@ -64,7 +64,7 @@
             app:typographyType="heading_4"
             tools:text="Jakarta Barat" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shimmerDealsBaseLocationTitle"
             android:layout_width="@dimen/deals_dp_100"
             android:layout_height="@dimen/layout_lvl2"
@@ -73,7 +73,8 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
-            app:corners="8"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect"
             android:includeFontPadding="false"
             app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
             app:layout_constraintStart_toStartOf="@id/txtDealsBaseLocationHint"

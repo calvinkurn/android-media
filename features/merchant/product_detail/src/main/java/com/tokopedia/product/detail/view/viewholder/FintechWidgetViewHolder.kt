@@ -28,7 +28,7 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
             element.categoryId
         ) }
 
-        element?.productId?.let { fintechWidget.updateProductId(it, this) }
+        element?.productId?.let { fintechWidget.updateProductId(it, this,element.isLoggedIn) }
     }
 
     override fun removeWidget() {

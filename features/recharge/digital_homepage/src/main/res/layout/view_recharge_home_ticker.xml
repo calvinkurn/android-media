@@ -18,14 +18,15 @@
         android:visibility="visible"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:id="@+id/ticker_recharge_home_page_shimmering"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl7"
-        app:corners="@integer/section_shimmering_corner"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         android:visibility="gone"
         />
 

@@ -23,7 +23,7 @@ class GetRepurchaseWidgetUseCase @Inject constructor(
 
     suspend fun execute(warehouseId: String, queryParam: String = ""): RepurchaseData {
         graphql.apply {
-            setGraphqlQuery(GetRepurchaseWidget.QUERY)
+            setGraphqlQuery(GetRepurchaseWidget)
             setTypeClass(GetRepurchaseResponse::class.java)
 
             setRequestParams(RequestParams.create().apply {

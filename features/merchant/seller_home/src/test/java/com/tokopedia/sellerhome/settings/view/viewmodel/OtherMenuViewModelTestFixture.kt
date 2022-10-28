@@ -7,6 +7,10 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
+import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -21,7 +25,7 @@ import org.junit.Rule
 abstract class OtherMenuViewModelTestFixture {
 
     @RelaxedMockK
-    lateinit var getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase
+    lateinit var getTokoPlusBadgeUseCase: GetTokoPlusBadgeUseCase
 
     @RelaxedMockK
     lateinit var getShopOperationalUseCase: GetShopOperationalUseCase
@@ -34,6 +38,9 @@ abstract class OtherMenuViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getShopBadgeUseCase: GetShopBadgeUseCase
+
+    @RelaxedMockK
+    lateinit var getTotalTokoMemberUseCase: GetTotalTokoMemberUseCase
 
     @RelaxedMockK
     lateinit var getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
@@ -62,6 +69,9 @@ abstract class OtherMenuViewModelTestFixture {
     @RelaxedMockK
     lateinit var shouldSwipeSecondaryInfoObserver: Observer<in Boolean>
 
+    @RelaxedMockK
+    lateinit var getNewPromotionUseCase: GetNewPromotionUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -77,16 +87,18 @@ abstract class OtherMenuViewModelTestFixture {
         mViewModel =
             OtherMenuViewModel(
                 coroutineTestRule.dispatchers,
-                getShopFreeShippingInfoUseCase,
+                getTokoPlusBadgeUseCase,
                 getShopOperationalUseCase,
                 getShopCreatedInfoUseCase,
                 balanceInfoUseCase,
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,
+                getTotalTokoMemberUseCase,
                 getUserShopInfoUseCase,
                 topAdsAutoTopupUseCase,
                 topAdsDashboardDepositUseCase,
                 shopShareInfoUseCase,
+                getNewPromotionUseCase,
                 userSession,
                 remoteConfig
             )
@@ -104,5 +116,4 @@ abstract class OtherMenuViewModelTestFixture {
             shouldSwipeSecondaryInfo.removeObserver(shouldSwipeSecondaryInfoObserver)
         }
     }
-
 }

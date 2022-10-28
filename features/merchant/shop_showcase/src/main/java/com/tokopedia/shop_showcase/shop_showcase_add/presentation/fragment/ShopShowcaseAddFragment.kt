@@ -379,7 +379,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 if (!isActionEdit) {
                     showcaseAddAdapter?.getSelectedProductList()?.map {
                         if (it is ShowcaseProduct) {
-                            addShopShowcaseParam.productIDs.add(it.productId)
+                            addShopShowcaseParam.productIdList.add(it.productId)
                         }
                     }
                     createShopShowcase(addShopShowcaseParam)
@@ -476,7 +476,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         tvShowcaseTitle?.visible()
         textShowcaseName?.visible()
         textShowcaseName?.textFieldInput?.setText(showcaseName)
-        textShowcaseName?.setMessage(resources.getString(R.string.showcase_name_hint))
+        textShowcaseName?.setMessage(getString(R.string.showcase_name_hint))
     }
 
     private fun showUnifyToaster(message: String) {

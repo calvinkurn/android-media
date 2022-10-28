@@ -10,5 +10,7 @@ interface TokoNowView {
     fun refreshLayoutPage()
     fun getScrollState(adapterPosition: Int): Parcelable?
     fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?)
+    fun saveParallaxState(mapParallaxState: Map<String, Float>)
+    fun getParallaxState(): Map<String, Float>
 }
 

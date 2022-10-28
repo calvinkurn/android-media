@@ -74,7 +74,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/detail_item_button"
-        android:layout_width="@dimen/dp_80"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:text="Salin"
         android:visibility="gone"

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="global_nav_see_all_text">Lihat Semua</string>
-
+    <string name="global_nav_see_catalog">Lihat Katalog</string>
 
     <string name="single_global_nav_category">Hotel</string>
     <string name="single_global_nav_title">Temukan tempat nginap di sini!</string>
@@ -11,4 +10,7 @@
 
     <string name="content_desc_globalNavCardItemBackground">global nav card background</string>
     <string name="content_desc_globalNavCardItemLogo">global nav card logo</string>
+
+    <string name="catalog_global_nav_view_all_title">Cari tahu lebih lanjut tentang produk ini!</string>
+    <string name="catalog_global_nav_view_all_cta">Lihat Katalog</string>
 </resources>

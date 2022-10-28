@@ -10,6 +10,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumChannelView
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumBannerView
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumTranscodeView
@@ -63,7 +64,7 @@ class PlayWidgetMediumViewHolder private constructor() {
 
     class Banner private constructor(
         itemView: View,
-        listener: Listener,
+        private val listener: Listener,
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val bannerView = itemView as PlayWidgetCardMediumBannerView
@@ -78,6 +79,9 @@ class PlayWidgetMediumViewHolder private constructor() {
         }
 
         fun bind(data: PlayWidgetBannerUiModel) {
+            itemView.addOnImpressionListener(data.impressHolder) {
+                listener.onBannerImpressed(itemView, data, adapterPosition)
+            }
             bannerView.setData(data)
         }
 
@@ -92,6 +96,12 @@ class PlayWidgetMediumViewHolder private constructor() {
         }
 
         interface Listener {
+
+            fun onBannerImpressed(
+                view: View,
+                item: PlayWidgetBannerUiModel,
+                position: Int,
+            )
 
             fun onBannerClicked(
                 view: View,

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/play_stats_info_height"
-    tools:background="@color/Unify_Static_Black">
+    tools:background="@color/Unify_Static_Black"
+    tools:viewBindingIgnore="true"
+    >
 
     <include
         android:id="@+id/view_bro_total_view_badge"
@@ -12,7 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/play_stats_info_height"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <View
         android:id="@+id/v_separator_1"
@@ -22,7 +26,8 @@
         android:background="@drawable/bg_play_circle_separator"
         app:layout_constraintBottom_toBottomOf="@id/view_bro_total_view_badge"
         app:layout_constraintStart_toEndOf="@id/view_bro_total_view_badge"
-        app:layout_constraintTop_toTopOf="@id/view_bro_total_view_badge" />
+        app:layout_constraintTop_toTopOf="@id/view_bro_total_view_badge"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_bro_total_like"
@@ -31,7 +36,8 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="@id/v_separator_1"
         app:layout_constraintStart_toEndOf="@id/v_separator_1"
-        app:layout_constraintTop_toTopOf="@id/v_separator_1">
+        app:layout_constraintTop_toTopOf="@id/v_separator_1"
+        >
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_total_like"
@@ -43,7 +49,8 @@
             app:icon_name="THUMB_FILLED"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_likes"
@@ -56,7 +63,8 @@
             app:layout_constraintStart_toEndOf="@id/iv_total_like"
             app:layout_constraintTop_toTopOf="@id/iv_total_like"
             app:typographyType="body_3"
-            tools:text="320" />
+            tools:text="320"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -68,7 +76,8 @@
         android:background="@drawable/bg_play_circle_separator"
         app:layout_constraintBottom_toBottomOf="@id/cl_bro_total_like"
         app:layout_constraintStart_toEndOf="@id/cl_bro_total_like"
-        app:layout_constraintTop_toTopOf="@id/cl_bro_total_like" />
+        app:layout_constraintTop_toTopOf="@id/cl_bro_total_like"
+        />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_bro_count_up"
@@ -80,7 +89,8 @@
         app:icon_name="CLOCK"
         app:layout_constraintBottom_toBottomOf="@id/v_separator_2"
         app:layout_constraintStart_toEndOf="@id/v_separator_2"
-        app:layout_constraintTop_toTopOf="@id/v_separator_2" />
+        app:layout_constraintTop_toTopOf="@id/v_separator_2"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bro_count_up"
@@ -94,6 +104,7 @@
         app:layout_constraintStart_toEndOf="@id/ic_bro_count_up"
         app:layout_constraintTop_toTopOf="@id/ic_bro_count_up"
         app:typographyType="body_3"
-        tools:text="12:34" />
+        tools:text="12:34"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

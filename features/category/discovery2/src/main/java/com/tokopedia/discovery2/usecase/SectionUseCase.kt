@@ -26,6 +26,7 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
             withContext(Dispatchers.IO) {
                 components.forEach { comp ->
                     comp.parentSectionId = it.sectionId
+                    comp.parentSectionCompID = it.id
                     val creativeName = comp.creativeName ?: ""
                     var isProductComponent = true
                     comp.pageEndPoint = component.pageEndPoint
@@ -100,7 +101,7 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
 
                 }
             }
-            it.setComponentsItem(components)
+            it.setComponentsItem(components,component.tabName)
             it.noOfPagesLoaded = 1
             it.verticalProductFailState = false
             return true

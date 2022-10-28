@@ -5,12 +5,13 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.MvcVoucherTypeCashbackTypeBinding
 import com.tokopedia.vouchercreation.shop.create.view.adapter.vouchertype.CashbackTypeAdapter
 import com.tokopedia.vouchercreation.shop.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.vouchertype.item.CashbackTypeChipUiModel
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.vouchertype.item.CashbackTypePickerUiModel
-import kotlinx.android.synthetic.main.mvc_voucher_type_cashback_type.view.*
 
 class CashbackTypePickerViewHolder(itemView: View) : AbstractViewHolder<CashbackTypePickerUiModel>(itemView) {
 
@@ -18,6 +19,8 @@ class CashbackTypePickerViewHolder(itemView: View) : AbstractViewHolder<Cashback
         @LayoutRes
         val LAYOUT = R.layout.mvc_voucher_type_cashback_type
     }
+
+    private var binding: MvcVoucherTypeCashbackTypeBinding? by viewBinding()
 
     private var cashbackChipsList: List<CashbackTypeChipUiModel> = listOf()
 
@@ -39,7 +42,7 @@ class CashbackTypePickerViewHolder(itemView: View) : AbstractViewHolder<Cashback
             )
             cashbackTypeAdapter = CashbackTypeAdapter(cashbackChipsList, ::onChipSelected)
         }
-        itemView.cashbackTypeRecyclerView?.run {
+        binding?.cashbackTypeRecyclerView?.run {
             cashbackTypeAdapter?.run {
                 adapter = this
             }

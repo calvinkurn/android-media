@@ -39,7 +39,7 @@ class GetProductRecommendationUseCase @Inject constructor(
         fun createParams(productId: String,
                          pageName: String,
                          isTokoNow: Boolean,
-                         miniCartData: MutableMap<String, MiniCartItem>?): RequestParams =
+                         miniCartData: MutableMap<String, MiniCartItem.MiniCartItemProduct>?): RequestParams =
                 RequestParams.create().apply {
                     putString(PARAM_PRODUCT_ID, productId)
                     putString(PARAM_PAGE_NAME, pageName)
@@ -59,7 +59,7 @@ class GetProductRecommendationUseCase @Inject constructor(
         val productIdParam = requestParams.getString(PARAM_PRODUCT_ID, "")
         val pageNameParam = requestParams.getString(PARAM_PAGE_NAME, "")
         val isTokoNowParam = requestParams.getBoolean(PARAM_TOKONOW, false)
-        val miniCartParam = requestParams.getObject(PARAM_MINI_CART) as MutableMap<String, MiniCartItem>?
+        val miniCartParam = requestParams.getObject(PARAM_MINI_CART) as MutableMap<String, MiniCartItem.MiniCartItemProduct>?
 
         val recommendationFilterResponse = try {
             getRecommendationFilter(
@@ -141,7 +141,7 @@ class GetProductRecommendationUseCase @Inject constructor(
     }
 
     private fun updateRecomWhenTokoNow(response: RecommendationWidget,
-                                       miniCart: MutableMap<String, MiniCartItem>?): RecommendationWidget {
+                                       miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?): RecommendationWidget {
         return if (response.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
             response.recommendationItemList.forEach { item ->
                 miniCart?.let {

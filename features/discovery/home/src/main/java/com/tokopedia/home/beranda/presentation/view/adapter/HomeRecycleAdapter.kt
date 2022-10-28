@@ -18,7 +18,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
-import java.util.*
 
 class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
         HomeBaseAdapter<HomeAdapterFactory>(asyncDifferConfig, adapterTypeFactory, visitables){
@@ -28,8 +27,12 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
    private var mLayoutManager: LinearLayoutManager? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
-        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return adapterTypeFactory.createViewHolder(view, viewType)
+        return try {
+            val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+            adapterTypeFactory.createViewHolder(view, viewType)
+        } catch (e: Exception) {
+            EmptyBlankViewHolder(parent)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -163,5 +166,17 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
             if (position == -1) return@let
             notifyItemChanged(position)
         }
+    }
+
+    override fun onBindViewHolder(
+        holder: AbstractViewHolder<out Visitable<*>>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+    }
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
+        super.onBindViewHolder(holder, position)
     }
 }

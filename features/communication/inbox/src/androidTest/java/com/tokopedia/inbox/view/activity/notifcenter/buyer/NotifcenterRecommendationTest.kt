@@ -18,6 +18,7 @@ class NotifcenterRecommendationTest : InboxNotifcenterTest() {
     fun should_show_product_recom_when_response_is_not_empty() {
         // Given
         inboxNotifcenterDep.apply {
+            topAdsRepository.response = topAdsRepository.defaultResponse
             getRecommendationUseCase.response = getRecommendationUseCase.defaultResponse
         }
         startInboxActivity()

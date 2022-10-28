@@ -5,6 +5,9 @@ import com.tokopedia.atc_common.domain.mapper.AddToCartBundleDataMapper
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -25,8 +28,8 @@ import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import dagger.Lazy
 import dagger.Module
@@ -43,6 +46,27 @@ class ShopPageHomeModule {
                                         addToCartDataMapper: AddToCartDataMapper,
                                         chosenAddressRequestHelper: ChosenAddressRequestHelper): AddToCartOccMultiUseCase {
         return AddToCartOccMultiUseCase(graphqlRepository, addToCartDataMapper, chosenAddressRequestHelper)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideAddToCart(graphqlRepository: GraphqlRepository,
+                                        addToCartDataMapper: AddToCartDataMapper,
+                                        chosenAddressRequestHelper: ChosenAddressRequestHelper): AddToCartUseCase {
+        return AddToCartUseCase(graphqlRepository, addToCartDataMapper, chosenAddressRequestHelper)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideUpdateCart(graphqlRepository: GraphqlRepository,
+                         chosenAddressRequestHelper: ChosenAddressRequestHelper): UpdateCartUseCase {
+        return UpdateCartUseCase(graphqlRepository, chosenAddressRequestHelper)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideDeleteCart(graphqlRepository: GraphqlRepository): DeleteCartUseCase {
+        return DeleteCartUseCase(graphqlRepository)
     }
 
     @ShopPageHomeScope
@@ -83,14 +107,14 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun provideAddToWishListUseCase(@ShopPageContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
+    fun provideAddToWishListV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @ShopPageHomeScope
     @Provides
-    fun provideRemoveFromWishListUseCase(@ShopPageContext context: Context?): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
+    fun provideRemoveFromWishListV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @ShopPageHomeScope
@@ -145,8 +169,7 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun providePlayWidgetTracking(trackingQueue: TrackingQueue,
-                                  userSession: UserSessionInterface): ShopPlayWidgetAnalyticListener {
-        return ShopPlayWidgetAnalyticListener(trackingQueue, userSession)
+    fun providePlayWidgetTracking(userSession: UserSessionInterface): ShopPlayWidgetAnalyticListener {
+        return ShopPlayWidgetAnalyticListener(userSession)
     }
 }

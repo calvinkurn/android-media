@@ -5,6 +5,7 @@ import kotlin.math.floor
 import kotlin.math.round
 
 object DiscountUtil {
+    @Suppress("MagicNumber")
     fun getDiscountPercentage(originalPrice: Double, discountPrice: Double): Int {
         if (originalPrice <= 0) {
             return 0

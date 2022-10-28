@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.view.type.*
 
 /**
@@ -8,17 +9,23 @@ import com.tokopedia.play.view.type.*
 sealed class PlayProductUiModel {
 
     data class Product(
-            val id: String,
-            val shopId: String,
-            val imageUrl: String,
-            val title: String,
-            val stock: ProductStock,
-            val isVariantAvailable: Boolean,
-            val price: ProductPrice,
-            val minQty: Int,
-            val isFreeShipping: Boolean,
-            val applink: String?
+        val id: String,
+        val shopId: String,
+        val imageUrl: String,
+        val title: String,
+        val stock: ProductStock,
+        val isVariantAvailable: Boolean,
+        val price: ProductPrice,
+        val minQty: Int,
+        val isFreeShipping: Boolean,
+        val applink: String?,
+        val isTokoNow: Boolean,
+        val isPinned: Boolean,
+        val isRilisanSpesial: Boolean,
     ) : PlayProductUiModel() {
+
+        val impressHolder = ImpressHolder()
+
         companion object {
             val Empty: Product
                 get() = Product(
@@ -31,7 +38,10 @@ sealed class PlayProductUiModel {
                     price = OriginalPrice("", 0.0),
                     minQty = 0,
                     isFreeShipping = false,
-                    applink = null
+                    applink = null,
+                    isTokoNow = false,
+                    isPinned = false,
+                    isRilisanSpesial = false,
                 )
         }
     }

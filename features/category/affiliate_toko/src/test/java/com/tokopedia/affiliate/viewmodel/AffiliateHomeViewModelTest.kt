@@ -1,11 +1,16 @@
 package com.tokopedia.affiliate.viewmodel
 
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
+import com.tokopedia.affiliate.AFFILIATE_SHOP_ADP
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.TOTAL_ITEMS_METRIC_TYPE
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.*
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.usecase.*
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -18,16 +23,22 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @ExperimentalCoroutinesApi
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [Build.VERSION_CODES.P])
 class AffiliateHomeViewModelTest{
     private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
     private val affiliateAffiliateAnnouncementUseCase : AffiliateAnnouncementUseCase = mockk()
     private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase = mockk()
     private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase = mockk()
+    private val affiliatePerformanceItemTypeUseCase: AffiliatePerformanceItemTypeUseCase = mockk()
     private var affiliateHomeViewModel = spyk(AffiliateHomeViewModel(userSessionInterface, affiliateValidateUserStatus,
-            affiliateAffiliateAnnouncementUseCase,affiliateUserPerformanceUseCase,affiliatePerformanceDataUseCase))
+        affiliateAffiliateAnnouncementUseCase,affiliateUserPerformanceUseCase,affiliatePerformanceItemTypeUseCase,affiliatePerformanceDataUseCase))
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -41,18 +52,20 @@ class AffiliateHomeViewModelTest{
 
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+        mockkStatic(RemoteConfigInstance::class)
     }
 
     @After
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+        clearStaticMockk(RemoteConfigInstance::class)
     }
     /**************************** getAnnouncementInformation() *******************************************/
     @Test
     fun getAnnouncementInformation(){
-        val affiliateAnnouncementData : AffiliateAnnouncementData = mockk(relaxed = true)
-        coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } returns affiliateAnnouncementData
+        val affiliateAnnouncementData : AffiliateAnnouncementDataV2 = mockk(relaxed = true)
+        coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_HOME) } returns affiliateAnnouncementData
 
         affiliateHomeViewModel.getAnnouncementInformation()
 
@@ -62,12 +75,10 @@ class AffiliateHomeViewModelTest{
     @Test
     fun getAnnouncementValidateException() {
         val throwable = Throwable("Validate Data Exception")
-        coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } throws throwable
+        coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_HOME) } throws throwable
 
         affiliateHomeViewModel.getAnnouncementInformation()
 
-        assertEquals(affiliateHomeViewModel.getAffiliateErrorMessage().value, throwable)
-        assertEquals(affiliateHomeViewModel.progressBar().value, false)
     }
 
     /**************************** getAffiliateValidateUser() *******************************************/
@@ -95,38 +106,55 @@ class AffiliateHomeViewModelTest{
     /**************************** getAffiliatePerformance() *******************************************/
     @Test
     fun getAffiliatePerformance(){
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AFFILIATE_SHOP_ADP,
+                ""
+            )
+        } returns AFFILIATE_SHOP_ADP
+
         val affiliateUserPerformaListData: AffiliateUserPerformaListItemData = mockk(relaxed = true)
-        val metricData : AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics = mockk(relaxed = true)
         val defaultMetricData = AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics(
-            null,"","1",null,null,null,0,null
+            TOTAL_ITEMS_METRIC_TYPE,"","1",null,null,null,0,null
         )
         val performData = AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData(
             null,null,null,null, arrayListOf(defaultMetricData)
         )
         affiliateUserPerformaListData.getAffiliatePerformance.data?.userData = performData
         coEvery { affiliateUserPerformanceUseCase.affiliateUserperformance(any()) } returns affiliateUserPerformaListData
-
+        val ticker = AffiliateDateFilterResponse.Data.Ticker("info","")
+        val list =  arrayListOf(AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("","30 Hari Terakhir","LastThirtyDays","30"),
+            AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("","7 Hari Terakhir","LastSevenDays","7"))
+        val filterResponse = AffiliateDateFilterResponse(AffiliateDateFilterResponse.Data(
+            list,
+            arrayListOf(ticker)))
+        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() } returns filterResponse
         val affiliatePerformanceListData: AffiliatePerformanceListData = mockk(relaxed = true)
         val item : AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item = mockk(relaxed = true)
         val data = AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data(
             null,null,null,null,null,
             null, arrayListOf(item),null)
         affiliatePerformanceListData.getAffiliatePerformanceList?.data?.data = data
-        coEvery { affiliatePerformanceDataUseCase.affiliateItemPerformanceList(any(),any()) } returns affiliatePerformanceListData
-
-        val listResponse = affiliateHomeViewModel.convertDataToVisitables(affiliatePerformanceListData.getAffiliatePerformanceList?.data?.data,affiliateUserPerformaListData,
-            PAGE_ZERO)
+        coEvery { affiliatePerformanceDataUseCase.affiliateItemPerformanceList(any(),any(),any()) } returns affiliatePerformanceListData
 
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
-        assertEquals(affiliateHomeViewModel.getAffiliateItemCount().value,0)
+        assertEquals(affiliateHomeViewModel.noMoreDataAvailable().value,false)
 
-
+        val affiliatePerformanceListItemData: AffiliateUserPerformaListItemData = mockk(relaxed = true)
+        val itemTypes: AffiliatePerformanceItemTypeListData = mockk(relaxed = true)
+        coEvery { affiliatePerformanceDataUseCase.affiliateItemPerformanceList(any(),any(),any()) } returns affiliatePerformanceListData
+        coEvery { affiliateUserPerformanceUseCase.affiliateUserperformance(affiliateHomeViewModel.getSelectedDate()) } returns affiliatePerformanceListItemData
+        coEvery { affiliatePerformanceItemTypeUseCase.affiliatePerformanceItemTypeList() } returns itemTypes
+        affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, true)
+        assertEquals(affiliateHomeViewModel.noMoreDataAvailable().value,false)
+        assertEquals(affiliateHomeViewModel.getDataShimmerVisibility().value, false)
     }
 
     @Test
     fun getAffiliatePerformanceException() {
         val throwable = Throwable("Validate Data Exception")
         coEvery { affiliateUserPerformanceUseCase.affiliateUserperformance(any()) } throws throwable
+        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() } throws throwable
 
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
 

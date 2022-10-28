@@ -79,7 +79,7 @@ class ChooseAddressWidget : ConstraintLayout,
         getComponent().inject(this)
     }
 
-    private fun initObservers() {
+    private fun initChosenAddressObserver() {
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         if (fragment != null) {
             viewModel.getChosenAddress.observe(fragment.viewLifecycleOwner, {
@@ -99,10 +99,18 @@ class ChooseAddressWidget : ConstraintLayout,
                                 shopId = data.tokonowModel.shopId.toString(),
                                 warehouseId = data.tokonowModel.warehouseId.toString(),
                                 warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
-                                serviceType = data.tokonowModel.serviceType
+                                serviceType = data.tokonowModel.serviceType,
+                                lastUpdate = data.tokonowModel.lastUpdate
                             )
-                            chooseAddressPref?.setLocalCache(localData)
-                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                                // trigger home to refresh data
+                                chooseAddressWidgetListener?.onTokonowDataRefreshed()
+                            } else {
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            }
                         } else {
                             val data = it.data
                             val localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -116,16 +124,54 @@ class ChooseAddressWidget : ConstraintLayout,
                                 shopId = data.tokonowModel.shopId.toString(),
                                 warehouseId = data.tokonowModel.warehouseId.toString(),
                                 warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
-                                serviceType = data.tokonowModel.serviceType
+                                serviceType = data.tokonowModel.serviceType,
+                                lastUpdate = data.tokonowModel.lastUpdate
                             )
-                            chooseAddressPref?.setLocalCache(localData)
-                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true &&  ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                                // trigger home to refresh data
+                                chooseAddressWidgetListener?.onTokonowDataRefreshed()
+                            } else {
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            }
                         }
                     }
                     is Fail -> {
                         onLocalizingAddressError()
                     }
                 }
+                viewModel.isFirstLoad = false
+            })
+        }
+    }
+
+    private fun initRefreshTokonowObserver() {
+        val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+        if (fragment != null) {
+            viewModel.tokonowData.observe(fragment.viewLifecycleOwner, {
+                when (it) {
+                    is Success -> {
+                        val data = it.data
+                        val shouldRefresh = ChooseAddressUtils.refreshTokonowData(
+                            context = context,
+                            warehouses = TokonowWarehouseMapper.mapWarehouseItemToLocal(data.warehouses),
+                            warehouseId = data.warehouseId,
+                            serviceType = data.serviceType,
+                            lastUpdate = data.lastUpdate,
+                            shopId = data.shopId
+                        )
+                        // trigger home to refresh data
+                        if (viewModel.isFirstLoad && shouldRefresh) {
+                            chooseAddressWidgetListener?.onTokonowDataRefreshed()
+                        }
+                    }
+                    is Fail -> {
+                        // do nothing
+                    }
+                }
+                viewModel.isFirstLoad = false
             })
         }
     }
@@ -162,9 +208,17 @@ class ChooseAddressWidget : ConstraintLayout,
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
-        if (localData.address_id.isEmpty() || localData.version != LCA_VERSION) {
-            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
-            initObservers()
+        if (viewModel.isFirstLoad) {
+            if (localData.address_id.isEmpty() || localData.version != LCA_VERSION) {
+                initChosenAddressObserver()
+                chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+                    ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
+            } else if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true) {
+                initRefreshTokonowObserver()
+                viewModel.getTokonowData(localData)
+            } else {
+                viewModel.isFirstLoad = false
+            }
         }
     }
 
@@ -239,6 +293,10 @@ class ChooseAddressWidget : ConstraintLayout,
 
     override fun isSupportWarehouseLoc(): Boolean {
         return chooseAddressWidgetListener?.isSupportWarehouseLoc() ?: false
+    }
+
+    override fun isFromTokonowPage(): Boolean {
+        return chooseAddressWidgetListener?.isFromTokonowPage() ?: false
     }
 
     private fun onLocalizingAddressError() {
@@ -340,6 +398,25 @@ class ChooseAddressWidget : ConstraintLayout,
          */
         fun isSupportWarehouseLoc(): Boolean {
             return true
+        }
+
+        /**
+         * To differentiate feature that need to refresh tokonow data or not
+         */
+        fun isNeedToRefreshTokonowData(): Boolean {
+            return false
+        }
+
+        /**
+         * To trigger UI refresh after getting new tokonow warehouse data
+         */
+        fun onTokonowDataRefreshed() {}
+
+        /**
+         * To check from tokonow page or not
+         */
+        fun isFromTokonowPage(): Boolean {
+            return false
         }
     }
 }

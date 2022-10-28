@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+
+    <corners
+        android:bottomLeftRadius="@dimen/unify_space_32"
+        android:bottomRightRadius="@dimen/unify_space_32"
+        android:radius="@dimen/unify_space_64"
+        android:topLeftRadius="@dimen/unify_space_32"
+        android:topRightRadius="@dimen/unify_space_32" />
+
+    <solid android:color="@color/catalog_dms_floating_background" />
+
+    <padding
+        android:bottom="@dimen/unify_space_0"
+        android:left="@dimen/unify_space_0"
+        android:right="@dimen/unify_space_0"
+        android:top="@dimen/unify_space_0" />
+
+    <size
+        android:height="@dimen/unify_space_40"
+        android:width="@dimen/unify_space_128" />
+
+</shape>

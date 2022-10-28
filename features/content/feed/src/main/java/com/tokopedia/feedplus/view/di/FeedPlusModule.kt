@@ -7,21 +7,15 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi
-import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedAuthInterceptor
 import com.tokopedia.feedplus.data.api.FeedUrl
-import com.tokopedia.feedplus.view.listener.DynamicFeedContract
-import com.tokopedia.feedplus.view.presenter.DynamicFeedPresenter
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -29,8 +23,8 @@ import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -92,23 +86,14 @@ class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    fun providesTkpTkpdAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
+    fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @FeedPlusScope
     @Provides
-    fun providesTkpdRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideDynamicFeedPresenter(userSession: UserSessionInterface,
-                                    getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                    likeKolPostUseCase: LikeKolPostUseCase,
-                                    trackAffiliateClickUseCase: TrackAffiliateClickUseCase): DynamicFeedContract.Presenter {
-        return DynamicFeedPresenter(userSession, getDynamicFeedUseCase, likeKolPostUseCase, trackAffiliateClickUseCase)
+    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     //SHOP COMMON
@@ -160,13 +145,6 @@ class FeedPlusModule {
     @Provides
     fun provideBaseRepository(): BaseRepository {
         return BaseRepository()
-    }
-
-    @FeedPlusScope
-    @Provides
-    @Named(RawQueryKeyConstant.GQL_QUERY_FEED_DETAIL)
-    fun provideFeedDetailQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_feed_detail)
     }
 
     @FeedPlusScope

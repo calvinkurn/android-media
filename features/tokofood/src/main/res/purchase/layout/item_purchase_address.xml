@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_shipping_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/text_purchase_delivery_address"
+        app:layout_constraintEnd_toStartOf="@+id/chooseAddressButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/chooseAddressButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_purchase_choose_other_address"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_shipping_address" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_address_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/label_main_address"
+        app:layout_constraintTop_toBottomOf="@+id/divider_top"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Rumah" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_main_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="@string/text_purchase_main_address"
+        app:labelType="general_light_red"
+        app:layout_constraintBottom_toBottomOf="@+id/text_address_name"
+        app:layout_constraintStart_toEndOf="@+id/text_address_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_address_name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_receiver_name_and_phone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_address_name"
+        app:typographyType="display_3"
+        tools:text="Adrian (081234567890)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_address_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_receiver_name_and_phone"
+        app:typographyType="display_3"
+        tools:text="Tokopedia Tower Ciputra World 2, Jl. Prof. DR. Satrio No.Kav. 11, Setiabudi, Jakarta Selatan" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_address_detail" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

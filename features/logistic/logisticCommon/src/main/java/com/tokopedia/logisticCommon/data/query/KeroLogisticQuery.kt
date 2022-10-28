@@ -90,6 +90,8 @@ object KeroLogisticQuery {
               city_id
               province_id
               district_name
+              city_name
+              province_name
               postal_code
               latitude
               longitude
@@ -130,8 +132,10 @@ object KeroLogisticQuery {
               formatted_address
               city_id
               province_id
+              province_name
               district_id
               district_name
+              city_name
               postal_code
               latitude
               longitude
@@ -276,5 +280,81 @@ object KeroLogisticQuery {
             config
           }
       }
+    """.trimIndent()
+
+    val kero_addr_get_district_center = """
+        query kero_addr_get_district_center(${'$'}districtId: Int!) {
+            kero_addr_get_district_center(districtId:${'$'}districtId) {
+                district {
+                    district_id
+                    latitude
+                    longitude
+                }
+            }
+        }
+    """.trimIndent()
+
+
+    val kero_get_address_detail = """
+        query getAddressDetail(${'$'}input: KeroGetAddressInput!){
+            kero_get_address(input: ${'$'}input) {
+                data {
+                  addr_id
+                  receiver_name
+                  addr_name
+                  address_1
+                  address_2
+                  postal_code
+                  province
+                  city
+                  district
+                  phone
+                  province_name
+                  city_name
+                  district_name
+                  status
+                  country
+                  latitude
+                  longitude
+                  is_primary
+                  is_active
+                  is_whitelist
+                  address_detail_street
+                  address_detail_notes
+                }
+                status
+                server_process_time
+                config
+            }
+        }
+    """.trimIndent()
+
+    val kero_edit_address = """
+        mutation editAddress(${'$'}input:KeroAddressInput!) {
+          kero_edit_address(input:${'$'}input) {
+            data{
+              is_success
+              is_state_chosen_address_changed
+            }
+            status
+            config
+            server_process_time
+          }
+        }
+    """.trimIndent()
+
+    val pinpoint_validation = """
+        mutation pinpoint_validation(${'$'}district_id: Int, ${'$'}latitude: String, ${'$'}longitude: String, ${'$'}postal_code: String) {
+            pinpoint_validation(district_id: ${'$'}district_id, latitude: ${'$'}latitude, longitude: ${'$'}longitude, postal_code: ${'$'}postal_code) {
+                data {
+                    checksum
+                    district_id
+                    latitude
+                    longitude
+                    result
+                    result_text
+                }
+            }
+        }
     """.trimIndent()
 }

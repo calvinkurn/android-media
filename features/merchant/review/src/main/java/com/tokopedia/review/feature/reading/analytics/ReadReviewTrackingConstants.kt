@@ -14,6 +14,7 @@ object ReadReviewTrackingConstants {
     const val KEY_POSITION = "position"
     const val KEY_SHOP_ID = "shopId"
     const val KEY_PROMO_CLICK = "promoClick"
+    const val KEY_TRACKER_ID = "trackerId"
 
     const val BUSINESS_UNIT = "product detail page"
     const val PHYSICAL_GOODS = "physical goods"
@@ -57,7 +58,7 @@ object ReadReviewTrackingConstants {
     const val EVENT_LABEL_CLICK_IMAGE = "feedback_id:%s;"
     const val EVENT_LABEL_CLICK_REPORT_REVIEW = "feedback_id:%s;"
     const val EVENT_LABEL_IMPRESSION = "count_rating:%d;count_ulasan:%d;"
-    const val EVENT_LABEL_CLICK_USER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;"
+    const val EVENT_LABEL_CLICK_USER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;label:%s;"
 
     const val EVENT_CATEGORY = "product detail page - review"
     const val EVENT_CATEGORY_SHOP_REVIEW = "shop page - buyer - review"
@@ -72,4 +73,9 @@ object ReadReviewTrackingConstants {
     const val VARIANT = "variant"
     const val PRICE = "price"
     const val NONE = "none"
+
+    const val FILTER_NAME_SORT = "sort"
+
+    const val TRACKER_ID_CLICK_FILTER_CHIPS = "31902"
+    const val TRACKER_ID_CLICK_REVIEWER_NAME = "33900"
 }

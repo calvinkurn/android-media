@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.gone
@@ -16,7 +17,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -39,7 +40,9 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private var mListener: Listener? = null
 
-    private lateinit var viewModel: PlayBroadcastSummaryViewModel
+    private val viewModel: PlayBroadcastSummaryViewModel by activityViewModels {
+        (parentFragment as ViewModelFactoryProvider).getFactory()
+    }
 
     private var _binding: FragmentPlayBroadcastReportBinding? = null
     private val binding: FragmentPlayBroadcastReportBinding
@@ -54,11 +57,6 @@ class PlayBroadcastReportFragment @Inject constructor(
     )
 
     override fun getScreenName(): String = "Play Report Page"
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), (parentFragment as ViewModelFactoryProvider).getFactory()).get(PlayBroadcastSummaryViewModel::class.java)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentPlayBroadcastReportBinding.inflate(LayoutInflater.from(requireContext()), container, false)
@@ -158,18 +156,21 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
-         if (metricType.isGameParticipants) viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+         if (metricType.isGameParticipants) {
+             analytic.clickInteractiveParticipantDetail(
+                 channelID = viewModel.channelId,
+                 channelTitle = viewModel.channelTitle,
+             )
+             viewModel.submitAction(PlayBroadcastSummaryAction.ClickViewLeaderboard)
+         }
     }
 
     private fun openInteractiveLeaderboardSheet() {
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val leaderBoardBottomSheet = fragmentFactory.instantiate(
-            requireContext().classLoader,
-            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
-        leaderBoardBottomSheet.arguments = Bundle().apply {
-            putString(PlayInteractiveLeaderBoardBottomSheet.ARG_CHANNEL_ID, viewModel.channelId)
-        }
-        leaderBoardBottomSheet.show(childFragmentManager)
+        val leaderboardReportBottomSheet = PlayBroInteractiveBottomSheet.setupReportLeaderboard(
+            childFragmentManager,
+            requireContext().classLoader
+        )
+        leaderboardReportBottomSheet.show(childFragmentManager)
     }
 
     fun setListener(listener: Listener) {

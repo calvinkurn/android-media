@@ -70,13 +70,10 @@ class PlayParentViewModel constructor(
         get() = _observableFirstChannelEvent
     private val _observableFirstChannelEvent = MutableLiveData<Event<Unit>>()
 
-    val sourceType: String
-        get() = handle[PLAY_KEY_SOURCE_TYPE] ?: ""
-    
     val source: PlaySource
-        get() = PlaySource.getBySource(
-                sourceType = sourceType,
-                sourceId = handle[PLAY_KEY_SOURCE_ID]
+        get() = PlaySource(
+                type = handle[PLAY_KEY_SOURCE_TYPE] ?: "",
+                id = handle[PLAY_KEY_SOURCE_ID] ?: ""
         )
 
     val startingChannelId: String?
@@ -117,6 +114,11 @@ class PlayParentViewModel constructor(
 
     fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel with ID $channelId not found")
 
+    fun getNextChannel(currentChannelId: String) : String {
+        val index = playChannelStateStorage.getChannelList().indexOf(currentChannelId)
+        return playChannelStateStorage.getChannelList()[index + 1]
+    }
+
     fun setLatestChannelStorageData(
             channelId: String,
             data: PlayChannelData
@@ -151,7 +153,7 @@ class PlayParentViewModel constructor(
                         channelId = startingChannelId,
                         videoStartMillis = mVideoStartMillis?.toLong() ?: 0,
                         shouldTrack = shouldTrack?.toBoolean() ?: true,
-                        sourceType = source.key
+                        sourceType = source.type
                     )
                 ).forEach {
                     playChannelStateStorage.setData(it.id, it)

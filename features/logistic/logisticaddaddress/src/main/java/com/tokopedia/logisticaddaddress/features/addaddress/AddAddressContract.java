@@ -3,7 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.content.Context;
 
 import com.tokopedia.logisticCommon.data.entity.address.Destination;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticaddaddress.data.entity.OldEditAddressResponseData;
 
 /**
  * Created by fajarnuha on 03/12/18.
@@ -21,6 +21,8 @@ public interface AddAddressContract {
         void finishLoading();
 
         void finishActivity();
+
+        void finishActivityAfterEdit(OldEditAddressResponseData data);
 
         void showErrorToaster(String errorMessage);
 

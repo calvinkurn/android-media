@@ -6,20 +6,22 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/dp_30"
         android:layout_height="@dimen/dp_30"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="14dp"
-        app:corners="16" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/dp_56"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textSize="@dimen/sp_10"
-        app:corners="16" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
     <View
         android:layout_width="match_parent"

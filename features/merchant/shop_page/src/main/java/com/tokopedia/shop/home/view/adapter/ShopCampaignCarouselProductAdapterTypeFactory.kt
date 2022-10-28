@@ -40,6 +40,7 @@ class ShopCampaignCarouselProductAdapterTypeFactory(
             ShopHomeCampaignCarouselClickableBannerAreaViewHolder.LAYOUT -> {
                 ShopHomeCampaignCarouselClickableBannerAreaViewHolder(
                         parent,
+                        parentPosition,
                         shopHomeNewProductLaunchCampaignUiModel,
                         shopHomeCampaignNplWidgetListener
                 )

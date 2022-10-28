@@ -8,13 +8,21 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyModel
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 2/6/20.
  */
 
-class AutoAdsItemsEmptyViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoAdsItemsEmptyModel>(view) {
+class AutoAdsItemsEmptyViewHolder(val view: View) :
+    AutoAdsItemsViewHolder<AutoAdsItemsEmptyModel>(view) {
+
+    private val imageEmpty: ImageUnify = view.findViewById(R.id.image_empty)
+    private val textTitle: Typography = view.findViewById(R.id.text_title)
+    private val textDesc: Typography = view.findViewById(R.id.text_desc)
+    private val btnSubmit: UnifyButton = view.findViewById(R.id.btn_submit)
 
     companion object {
         @LayoutRes
@@ -22,12 +30,12 @@ class AutoAdsItemsEmptyViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoA
     }
 
     override fun bind(item: AutoAdsItemsEmptyModel, statsData: MutableList<WithoutGroupDataItem>) {
-        view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
-        view.text_title.text = view.context.getString(R.string.topads_dash_empty_non_group_title)
-        view.text_desc.text = view.context.getString(R.string.topads_dash_empty_non_group_desc)
-        view.btn_submit.text = view.context.getString(R.string.topads_dash_empty_non_group_butt)
+        imageEmpty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
+        textTitle.text = view.context.getString(R.string.topads_dash_empty_non_group_title)
+        textDesc.text = view.context.getString(R.string.topads_dash_empty_non_group_desc)
+        btnSubmit.text = view.context.getString(R.string.topads_dash_empty_non_group_butt)
 
-        view.btn_submit.setOnClickListener {
+        btnSubmit.setOnClickListener {
             RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
         }
     }

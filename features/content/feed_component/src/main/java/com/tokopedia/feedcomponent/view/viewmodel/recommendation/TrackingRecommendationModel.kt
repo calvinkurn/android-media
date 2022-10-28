@@ -10,7 +10,7 @@ data class TrackingRecommendationModel (
         val mediaType: String = "",
         val authorName: String = "",
         val authorType: String = "",
-        val authorId: Int = 0,
+        val authorId: String = "",
         val cardPosition: Int = 0,
-        val adId: Int = 0
+        val adId: String = ""
 )

@@ -11,17 +11,18 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.unifycomponents.setBodyText
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.layout_autocomplete_double_line_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 class SuggestionDoubleLineViewHolder(
@@ -32,9 +33,9 @@ class SuggestionDoubleLineViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_double_line_item
-
-        private const val FONT_LEVEL_14_SP = 2
     }
+
+    private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
 
     private var searchQueryStartIndexInKeyword = -1
 
@@ -47,47 +48,47 @@ class SuggestionDoubleLineViewHolder(
         bindLabel(item.data)
         bindShortcutButton(item.data)
         bindListener(item.data)
+        bindAdText(item.data)
     }
 
     private fun bindIconImage(item: SuggestionDoubleLineDataDataView) {
-        if (item.isBoldSquareType()) {
-            itemView.iconImage?.loadImageRounded(item.data.imageUrl, itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
+        val iconImage = binding?.iconImage ?: return
+        if (item.data.isCircleImage()) {
+            iconImage.loadImageCircle(item.data.imageUrl)
         } else {
-            itemView.iconImage?.loadImageCircle(item.data.imageUrl)
+            iconImage.loadImageRounded(item.data.imageUrl, itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
         }
     }
 
     private fun bindIconTitle(item: BaseSuggestionDataView) {
-        itemView.iconTitle?.shouldShowOrHideWithAction(item.iconTitle.isNotEmpty()) {
+        binding?.iconTitle?.shouldShowOrHideWithAction(item.iconTitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconTitle)
         }
     }
 
     private fun bindIconSubtitle(item: BaseSuggestionDataView) {
-        itemView.iconSubtitle?.shouldShowOrHideWithAction(item.iconSubtitle.isNotEmpty()) {
+        binding?.iconSubtitle?.shouldShowOrHideWithAction(item.iconSubtitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconSubtitle)
         }
     }
 
     private fun bindSubtitle(item: BaseSuggestionDataView) {
-        itemView.doubleLineSubtitle?.setTextAndCheckShow(getSubtitle(item))
+        binding?.doubleLineSubtitle?.setTextAndCheckShow(getSubtitle(item))
     }
 
     private fun getSubtitle(item: BaseSuggestionDataView): String {
-        val isAds = item.shopAdsDataView != null
-
-        return if (isAds) getString(com.tokopedia.topads.sdk.R.string.title_promote_by)
-        else MethodChecker.fromHtml(item.subtitle).toString()
+        return MethodChecker.fromHtml(item.subtitle).toString()
     }
 
     private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
         when {
-            item.isBoldText() -> {
+            item.data.isBoldAllText() -> {
+                bindAllBoldTextTitle(item.data)
+            }
+            else -> {
                 setSearchQueryStartIndexInKeyword(item.data)
                 bindBoldTextTitle(item.data)
             }
-            item.isBoldSquareType() -> bindAllBoldTextTitle(item.data)
-            else -> bindNormalTextTitle(item.data)
         }
     }
 
@@ -101,17 +102,20 @@ class SuggestionDoubleLineViewHolder(
     }
 
     private fun bindBoldTextTitle(item: BaseSuggestionDataView) {
-        itemView.doubleLineTitle?.weightType = Typography.BOLD
+        val doubleLineTitle = binding?.doubleLineTitle ?: return
         if (searchQueryStartIndexInKeyword == -1) {
-            itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
+            doubleLineTitle.setWeight(Typography.BOLD)
+            doubleLineTitle.text = MethodChecker.fromHtml(item.title)
         } else {
-            itemView.doubleLineTitle?.text = getHighlightedTitle(item)
+            doubleLineTitle.setWeight(Typography.REGULAR)
+            doubleLineTitle.text = getHighlightedTitle(item)
         }
     }
 
     private fun bindAllBoldTextTitle(item: BaseSuggestionDataView){
-        itemView.doubleLineTitle?.setBodyText(FONT_LEVEL_14_SP, true)
-        itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
+        val doubleLineTitle = binding?.doubleLineTitle ?: return
+        doubleLineTitle.setWeight(Typography.BOLD)
+        doubleLineTitle.text = MethodChecker.fromHtml(item.title)
     }
 
     private fun getHighlightedTitle(item: BaseSuggestionDataView): SpannableString {
@@ -145,33 +149,37 @@ class SuggestionDoubleLineViewHolder(
         )
     }
 
-    private fun bindNormalTextTitle(item: BaseSuggestionDataView) {
-        itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
-    }
-
     private fun bindLabel(item: BaseSuggestionDataView) {
-        itemView.doubleLineLabel?.setTextAndCheckShow(item.label)
-        if (itemView.doubleLineLabel.text.isNotEmpty()) {
-            itemView.doubleLineLabel?.setLabelType(0)
+        val doubleLineLabel = binding?.doubleLineLabel ?: return
+        doubleLineLabel.setTextAndCheckShow(item.label)
+        if (doubleLineLabel.text.isNotEmpty()) {
+            doubleLineLabel.setLabelType(0)
         }
     }
 
     private fun bindShortcutButton(item: BaseSuggestionDataView) {
-        itemView.actionShortcutButton?.shouldShowOrHideWithAction(item.shortcutImage.isNotEmpty()) {
+        binding?.actionShortcutButton?.shouldShowOrHideWithAction(item.shortcutImage.isNotEmpty()) {
             ImageHandler.loadImage2(it, item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
         }
     }
 
     private fun bindListener(item: BaseSuggestionDataView) {
-        itemView.autocompleteDoubleLineItem?.setOnClickListener {
+        binding?.autocompleteDoubleLineItem?.setOnClickListener {
             listener.onItemClicked(item)
         }
 
-        itemView.autocompleteDoubleLineItem?.addOnImpressionListener(item, object: ViewHintListener {
+        binding?.autocompleteDoubleLineItem?.addOnImpressionListener(item, object: ViewHintListener {
             override fun onViewHint() {
                 listener.onItemImpressed(item)
             }
         })
+    }
+
+    private fun bindAdText(item: BaseSuggestionDataView) {
+        val adText = binding?.adText ?: return
+        val isAds = item.shopAdsDataView != null
+
+        adText.showWithCondition(isAds)
     }
 
     private fun <T : View> T?.shouldShowOrHideWithAction(shouldShow: Boolean, action: (T) -> Unit) {

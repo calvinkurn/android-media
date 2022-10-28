@@ -1,12 +1,13 @@
 package com.tokopedia.play.broadcaster.view.fragment.summary
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryPr
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
@@ -25,7 +27,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on March 08, 2022
  */
 class PlayBroadcastSummaryFragment @Inject constructor(
-    private val fragmentFactory: FragmentFactory,
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val summaryViewModelFactory: PlayBroadcastSummaryViewModel.Factory,
 ) : PlayBaseBroadcastFragment(), ViewModelFactoryProvider {
 
@@ -33,7 +35,11 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private lateinit var summaryViewModelProviderFactory: ViewModelProvider.Factory
 
-    private lateinit var parentViewModel: PlayBroadcastViewModel
+    private val parentViewModel: PlayBroadcastViewModel by activityViewModels {
+        parentViewModelFactoryCreator.create(
+            requireActivity()
+        )
+    }
 
     private var _binding: FragmentPlayBroadcastSummaryBinding? = null
     private val binding: FragmentPlayBroadcastSummaryBinding
@@ -58,18 +64,13 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 ): T {
                     return summaryViewModelFactory.create(
                         parentViewModel.channelId,
+                        parentViewModel.channelTitle,
                         parentViewModel.productSectionList,
-                        parentViewModel.summaryLeaderboardInfo,
                     ) as T
                 }
             }
         }
         return summaryViewModelProviderFactory
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProvider(requireActivity())[PlayBroadcastViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -104,6 +105,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         if(!isDarkMode()) activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
+    @SuppressLint("ResourceFragmentDetector")
     private fun isDarkMode() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
     private fun setupInsets() {
@@ -116,6 +118,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun setupView() {
+        parentViewModel.setIsLiveStreamEnded()
         navigateToFragment(PlayBroadcastReportFragment::class.java)
     }
 

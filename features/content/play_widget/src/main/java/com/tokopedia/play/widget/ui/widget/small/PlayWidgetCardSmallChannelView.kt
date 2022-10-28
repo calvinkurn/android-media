@@ -8,9 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
@@ -104,7 +102,7 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         handleType(data.channelType)
         handleTotalView(data.channelType, data.totalView)
-        handleGiveaway(data.hasGiveaway)
+        handleGame(data.hasGame)
 
         tvTitle.text = data.title
         tvUpcoming.text = data.startTime
@@ -134,6 +132,7 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
             mListener?.onChannelClicked(this, data)
         }
     }
+
 
     fun setListener(listener: Listener?) {
         mListener = listener
@@ -169,8 +168,8 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
         else llTotalView.gone()
     }
 
-    private fun handleGiveaway(hasGiveaway: Boolean) {
-        if(hasGiveaway) ivGiveaway.visible()
+    private fun handleGame(hasGame: Boolean) {
+        if(hasGame) ivGiveaway.visible()
         else ivGiveaway.gone()
     }
 

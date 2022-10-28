@@ -9,7 +9,7 @@ import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class LatestReadingTopAdsDashboardRvAdapter :
+class LatestReadingTopAdsDashboardRvAdapter(private val itemClick : (String) -> Unit) :
     RecyclerView.Adapter<LatestReadingTopAdsDashboardRvAdapter.LatestReadingViewHolder>() {
 
     private val list = mutableListOf<TopAdsLatestReading.TopAdsLatestReadingItem.Article>()
@@ -26,6 +26,8 @@ class LatestReadingTopAdsDashboardRvAdapter :
             txtTitle.text = item.title
             txtDescription.text = item.description
             creditHistoryImage.setImageUrl(item.thumbnail)
+
+            itemView.setOnClickListener { itemClick.invoke(item.slug) }
         }
     }
 

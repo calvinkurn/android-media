@@ -35,7 +35,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.*
+import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
+import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
@@ -86,6 +88,10 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     }
 
     private fun initVar() {
+        playWidgetAnalyticsListenerImp.setOnClickChannelCard { channelId, position ->
+            playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard(channelId, position)
+        }
+
         playWidgetCoordinator = PlayWidgetCoordinatorVideoTab(this).apply {
             setListener(this@PlayFeedSeeMoreFragment)
             setAnalyticListener(playWidgetAnalyticsListenerImp)
@@ -172,7 +178,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
 
     private fun setupView(view: View) {
         adapter = PlaySeeMoreAdapter(
-                coordinator = playWidgetCoordinator
+            coordinator = playWidgetCoordinator
         )
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
@@ -213,6 +219,11 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
         const val DEFAULT_FILTER_CATEGORY = "Untukmu"
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 258
 
+        private const val REQUEST_CODE_PLAY_ROOM = 123
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
 
         fun createInstance(bundle: Bundle) : Fragment {
             val fragment = PlayFeedSeeMoreFragment()
@@ -224,7 +235,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         super.onWidgetOpenAppLink(view, appLink)
         val intent = RouteManager.getIntent(requireContext(), appLink)
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
     }
 
 
@@ -248,7 +259,12 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
                 else getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_remove_reminder), Toaster.TYPE_NORMAL)
 
         val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
-        adapter.updateItemInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)
+        adapter.updatePlayWidgetInfo(
+            adapterPositionForItem,
+            playWidgetFeedReminderInfoData.channelId,
+            null,
+            playWidgetFeedReminderInfoData.reminderType == PlayWidgetReminderType.Reminded
+        )
 
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -257,8 +273,22 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
            REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
                 val playWidgetFeedReminderInfoData = playFeedVideoTabViewModel.playWidgetReminderEvent.value
                 if (playWidgetFeedReminderInfoData != null) playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType, playWidgetFeedReminderInfoData.itemPosition)
-            }
+           }
+           REQUEST_CODE_PLAY_ROOM -> {
+               if(resultCode == Activity.RESULT_OK) {
+                   val selectedCard = playFeedVideoTabViewModel.selectedPlayWidgetCard
 
+                   val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: selectedCard.channelId
+                   val totalView = data?.extras?.getString(EXTRA_TOTAL_VIEW)
+                   val isReminderSet = data?.extras?.getBoolean(EXTRA_IS_REMINDER, false)
+
+                   val position = adapter.getPositionInList(channelId, selectedCard.position)
+
+                   adapter.updatePlayWidgetInfo(position, channelId, totalView, isReminderSet)
+
+                   playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard.Empty
+               }
+           }
         }
     }
 }

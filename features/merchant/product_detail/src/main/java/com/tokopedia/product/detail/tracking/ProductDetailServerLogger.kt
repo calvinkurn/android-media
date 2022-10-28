@@ -1,9 +1,13 @@
 package com.tokopedia.product.detail.tracking
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import org.json.JSONObject
 
 object ProductDetailServerLogger {
@@ -14,6 +18,7 @@ object ProductDetailServerLogger {
     private const val PDP_SUCCESS_GET_P2_STATE = "success get p2"
     private const val PDP_SUCCESS_GET_TOPADS_IS_ADS_STATE = "success get topads is ads"
     private const val PDP_SUCCESS_ATC_STATE = "success atc"
+    private const val PDP_AFFILIATE_COOKIE_HIT = "hit affiliate cookie"
     private const val PDP_ADDRESS_CHANGED_STATE = "address changed refresh pdp"
 
     private const val PRODUCT_ID_KEY = "productId"
@@ -26,6 +31,28 @@ object ProductDetailServerLogger {
     private const val ERROR_CODE_KEY = "errorCode"
     private const val IS_TOPADS_KEY = "isTopAds"
     private const val ATC_TYPE_KEY = "atcType"
+
+    private const val PDP_OPEN_FAIL = "PDP_OPEN_FAIL"
+
+    private const val TYPE_KEY = "type"
+    private const val DESC_KEY = "desc"
+    private const val ERR_KEY = "err"
+    private const val URI_KEY = "uri"
+
+    fun logNewRelicProductCannotOpen(uri: String, throwable: Throwable) {
+        ServerLogger.log(
+                Priority.P2,
+                PDP_OPEN_FAIL,
+                mapOf(
+                        TYPE_KEY to PDP_OPEN_FAIL,
+                        DESC_KEY to throwable.message.orEmpty(),
+                        URI_KEY to uri,
+                        ERR_KEY to Log.getStackTraceString(throwable)
+                                .take(ProductDetailConstant.LOG_MAX_LENGTH)
+                                .trim()
+                )
+        )
+    }
 
     fun logBreadCrumbFirstOpenPage(productId: String?,
                                    shopName: String?,
@@ -84,6 +111,15 @@ object ProductDetailServerLogger {
             put(ATC_TYPE_KEY, atcType)
         }
         logBreadCrumb(PDP_SUCCESS_ATC_STATE, jsonObject)
+    }
+
+    fun logBreadCrumbAffiliateCookie(isSuccess: Boolean,
+                                     errorMessage: String = "") {
+        val jsonObject = JSONObject().apply {
+            put(IS_SUCCESS_KEY, isSuccess)
+            put(ERROR_MESSAGE_KEY, errorMessage)
+        }
+        logBreadCrumb(PDP_AFFILIATE_COOKIE_HIT, jsonObject)
     }
 
     fun logBreadCrumbAddressChanged(context: Context?) {

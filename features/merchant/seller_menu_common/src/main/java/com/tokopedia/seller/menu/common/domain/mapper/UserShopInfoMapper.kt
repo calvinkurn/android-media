@@ -5,10 +5,7 @@ import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.seller.menu.common.constant.Constant
-import com.tokopedia.seller.menu.common.domain.entity.ShopInfoById
 import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
 import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.common.exception.SellerMenuException
@@ -51,7 +48,13 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
                 periodTypePmPro = periodTypePmPro,
                 isNewSeller = GoldMerchantUtil.isNewSeller(dateShopCreated),
                 isEligiblePm = goldGetPMShopInfo.isEligiblePm.orFalse(),
-                isEligiblePmPro = goldGetPMShopInfo.isEligiblePmPro.orFalse()
+                isEligiblePmPro = goldGetPMShopInfo.isEligiblePmPro.orFalse(),
+                statusInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel.StatusInfoUiModel(
+                    statusTitle = shopInfoByIDResult?.statusInfo?.statusTitle.orEmpty(),
+                    statusMessage = shopInfoByIDResult?.statusInfo?.statusMessage.orEmpty(),
+                    tickerType = shopInfoByIDResult?.statusInfo?.tickerType.orEmpty(),
+                    shopStatus = shopInfoByIDResult?.statusInfo?.shopStatus.orZero()
+                )
             )
         )
     }
@@ -66,7 +69,7 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
             }
             goldPMStatus.powerMerchant.pmTier == PMTier.PRO -> {
                 if (getPowerMerchantNotActive(statusPM)) {
-                    PowerMerchantProStatus.InActive
+                    PowerMerchantStatus.NotActive
                 } else {
                     when (shopGrade) {
                         PMProTier.ADVANCE -> {

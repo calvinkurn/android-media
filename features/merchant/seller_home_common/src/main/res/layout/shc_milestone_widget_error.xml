@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/containerShcMilestoneError"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -12,12 +13,11 @@
         android:id="@+id/tvShcMilestoneErrorStateTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:drawablePadding="8dp"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,54 +26,11 @@
         app:typographyWeight="bold"
         tools:text="Misi berjualan Tokopedia" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgMilestoneOnError"
-        android:layout_width="@dimen/shc_dimen_180dp"
-        android:layout_height="@dimen/shc_dimen_136dp"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:contentDescription="@string/shc_content_desc_image_error"
-        app:layout_constraintBottom_toTopOf="@id/tvMilestoneErrorMessage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneErrorStateTitle"
-        tools:src="@drawable/unify_globalerrors_connection" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvMilestoneErrorMessage"
-        android:layout_width="@dimen/layout_lvl0"
+    <com.tokopedia.sellerhomecommon.presentation.view.customview.WidgetErrorStateView
+        android:id="@+id/shcMilestoneErrorStateView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="@string/shc_failed_to_load_information"
-        android:textAlignment="center"
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgMilestoneOnError"
-        app:typographyWeight="bold" />
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="40dp" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnMilestoneError"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl5"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="@string/shc_failed_to_retry"
-        android:textAlignment="center"
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvMilestoneErrorMessage"
-        app:typographyWeight="reguler" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

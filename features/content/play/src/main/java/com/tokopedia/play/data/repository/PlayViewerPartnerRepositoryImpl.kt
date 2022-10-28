@@ -1,8 +1,7 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.domain.GetPartnerInfoUseCase
-import com.tokopedia.play.domain.PostFollowPartnerUseCase
+import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
@@ -13,15 +12,18 @@ import javax.inject.Inject
  * Created by jegul on 05/07/21
  */
 class PlayViewerPartnerRepositoryImpl @Inject constructor(
-        private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
-        private val postFollowPartnerUseCase: PostFollowPartnerUseCase,
-        private val mapper: PlayUiModelMapper,
-        private val dispatchers: CoroutineDispatchers,
+    private val getSellerInfoUsecase: GetSellerInfoUsecase,
+    private val postFollowPartnerUseCase: PostFollowPartnerUseCase,
+    private val getFollowingKOLUseCase: GetFollowingKOLUseCase,
+    private val postFollowKolUseCase: PostFollowKolUseCase,
+    private val postUnfollowKolUseCase: PostUnfollowKolUseCase,
+    private val mapper: PlayUiModelMapper,
+    private val dispatchers: CoroutineDispatchers,
 ) : PlayViewerPartnerRepository {
 
     override suspend fun getIsFollowingPartner(partnerId: Long): Boolean = withContext(dispatchers.io) {
-        val partnerInfo = getPartnerInfoUseCase.apply {
-            params = GetPartnerInfoUseCase.createParam(partnerId)
+        val partnerInfo = getSellerInfoUsecase.apply {
+            params = GetSellerInfoUsecase.createParam(partnerId)
         }.executeOnBackground()
         return@withContext mapper.mapPartnerInfo(partnerInfo)
     }
@@ -30,5 +32,25 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
         return@withContext postFollowPartnerUseCase.apply {
             params = PostFollowPartnerUseCase.createParam(shopId, followAction)
         }.executeOnBackground()
+    }
+
+    override suspend fun getFollowingKOL(followedKol: String): Pair<Boolean, String> = withContext(dispatchers.io){
+        val status = getFollowingKOLUseCase.apply {
+            setRequestParams(createParam(followedKol))
+        }.executeOnBackground()
+        return@withContext mapper.mapFollowingKol(status.response.followedKOLInfo)
+    }
+
+    override suspend fun postFollowKol(followedKol: String, followAction: PartnerFollowAction): Boolean = withContext(dispatchers.io){
+        return@withContext if (followAction == PartnerFollowAction.Follow){
+            postFollowKolUseCase.apply {
+                setRequestParams(createParam(followedKol))
+            }.executeOnBackground().followedKOLInfo.errorCode.isEmpty()
+        } else{
+            val response = postUnfollowKolUseCase.apply {
+                setRequestParams(createParam(followedKol))
+            }.executeOnBackground()
+            mapper.mapUnfollowKol(response)
+        }
     }
 }

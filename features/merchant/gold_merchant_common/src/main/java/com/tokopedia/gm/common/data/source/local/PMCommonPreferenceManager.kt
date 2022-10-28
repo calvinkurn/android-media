@@ -14,8 +14,6 @@ class PMCommonPreferenceManager @Inject constructor(
 ) {
     companion object {
         private const val PREF_NAME = "pm_common_shared_preferences"
-
-        const val KEY_RECOMMENDATION_COACH_MARK = "key_recommendation_coach_mark"
     }
 
     private val sp: SharedPreferences by lazy {

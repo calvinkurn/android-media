@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
@@ -74,7 +75,7 @@ class CategoryLevelsTopAdsVerificationTest {
             is MasterProductCardItemViewHolder -> {
                 try {
                     onView(withId(com.tokopedia.discovery2.R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<MasterProductCardItemViewHolder>(
-                            i,CommonActions.clickChildViewWithId(com.tokopedia.discovery2.R.id.cardViewProductCard)))
+                            i, ViewActions.click()))
                 } catch (e:Exception){
                     e.printStackTrace()
                 }

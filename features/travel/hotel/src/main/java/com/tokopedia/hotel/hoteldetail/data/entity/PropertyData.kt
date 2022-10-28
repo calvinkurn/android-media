@@ -11,16 +11,16 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class PropertyData(@SerializedName("id")
                    @Expose
-                   val id: Long = 0,
+                   val id: String = "0",
                    @SerializedName("regionId")
                    @Expose
-                   val regionId: Long = 0,
+                   val regionId: String = "0",
                    @SerializedName("districtId")
                    @Expose
-                   val districtId: Long = 0,
+                   val districtId: String = "0",
                    @SerializedName("typeId")
                    @Expose
-                   val typeId: Int = 0,
+                   val typeId: String = "0",
                    @SerializedName("typeName")
                    @Expose
                    val typeName: String = "",
@@ -95,7 +95,7 @@ class PropertyData(@SerializedName("id")
                    val licenseNumber: String = "",
                    @SerializedName("chainId")
                    @Expose
-                   val chainId: Int = 0,
+                   val chainId: String = "0",
                    @SerializedName("currency")
                    @Expose
                    val currency: String = "IDR",
@@ -104,4 +104,4 @@ class PropertyData(@SerializedName("id")
                    val boost: Int = 0,
                    @SerializedName("cityId")
                    @Expose
-                   val cityId: Int = 0) : Parcelable
+                   val cityId: String = "0") : Parcelable

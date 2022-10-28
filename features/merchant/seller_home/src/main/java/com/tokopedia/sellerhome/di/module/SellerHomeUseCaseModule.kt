@@ -2,17 +2,13 @@ package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetUserShopInfoUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.TopAdsDashboardDepositUseCase
+import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetTotalTokoMemberUseCase
 import com.tokopedia.sellerhomecommon.domain.mapper.AnnouncementMapper
 import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
 import com.tokopedia.sellerhomecommon.domain.mapper.CalendarMapper
@@ -116,9 +112,10 @@ class SellerHomeUseCaseModule {
     @Provides
     fun provideGetNotificationsUseCase(
         gqlRepository: GraphqlRepository,
-        mapper: NotificationMapper
+        mapper: NotificationMapper,
+        userSession: UserSessionInterface
     ): GetNotificationUseCase {
-        return GetNotificationUseCase(gqlRepository, mapper)
+        return GetNotificationUseCase(gqlRepository, mapper, userSession)
     }
 
     @SellerHomeScope
@@ -222,25 +219,18 @@ class SellerHomeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper, dispatchers)
 
+
     @SellerHomeScope
     @Provides
-    fun provideGetAllShopInfoUseCase(
-        userSession: UserSessionInterface,
-        balanceInfoUseCase: BalanceInfoUseCase,
-        getShopBadgeUseCase: GetShopBadgeUseCase,
-        getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
-        getUserShopInfoUseCase: GetUserShopInfoUseCase,
-        topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
+    fun provideShopMultilocWhitelistUseCase(
+        gqlRepository: GraphqlRepository,
         dispatchers: CoroutineDispatchers
-    ): GetAllShopInfoUseCase {
-        return GetAllShopInfoUseCase(
-            userSession,
-            balanceInfoUseCase,
-            getShopBadgeUseCase,
-            getShopTotalFollowersUseCase,
-            getUserShopInfoUseCase,
-            topAdsDashboardDepositUseCase,
-            dispatchers
-        )
-    }
+    ): ShopMultilocWhitelistUseCase = ShopMultilocWhitelistUseCase(gqlRepository, dispatchers)
+
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetTokomemberUseCase(
+        gqlRepository: GraphqlRepository
+    ): GetTotalTokoMemberUseCase = GetTotalTokoMemberUseCase(gqlRepository)
 }

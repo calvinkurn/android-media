@@ -13,9 +13,7 @@ import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
@@ -29,6 +27,7 @@ import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play_common.R as playCommonR
 
 /**
  * Created by kenny.hadisaputra on 24/01/22
@@ -56,6 +55,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
     private val llLoadingContainer: LinearLayout
     private val loaderLoading: LoaderUnify
     private val ivGiveaway: ImageView
+    private val ivPromoLabel: IconUnify
 
     private var mPlayer: PlayVideoPlayer? = null
     private var mListener: Listener? = null
@@ -79,10 +79,11 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
-        tvTotalView = view.findViewById(R.id.viewer)
+        tvTotalView = view.findViewById(playCommonR.id.viewer)
         llLoadingContainer = view.findViewById(R.id.ll_loading_container)
         loaderLoading = view.findViewById(R.id.loader_loading)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
+        ivPromoLabel = llPromoDetail.findViewById(R.id.promo_image)
 
         compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
         view.touchDelegate = compositeTouchDelegate
@@ -123,7 +124,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvTitle.text = data.title
         tvStartTime.text = data.startTime
         tvTotalView.text = data.totalView.totalViewFmt
-        ivGiveaway.visibility = if(data.hasGiveaway) View.VISIBLE else View.GONE
+        ivGiveaway.visibility = if(data.hasGame) View.VISIBLE else View.GONE
 
         setIconToggleReminder(data.reminderType)
         reminderBadge.setOnClickListener {
@@ -181,18 +182,25 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
                 tvOnlyLive.visibility = View.GONE
             }
             is PlayWidgetPromoType.Default -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.visibility = View.GONE
 
                 tvPromoDetail.text = promoType.promoText
                 llPromoDetail.visibility = View.VISIBLE
             }
             is PlayWidgetPromoType.LiveOnly -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.visibility = View.VISIBLE
 
                 tvPromoDetail.text = promoType.promoText
                 llPromoDetail.visibility = View.VISIBLE
             }
         }.exhaustive
+    }
+
+    private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
+        if(isRilisanSpesial) ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {

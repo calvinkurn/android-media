@@ -9,47 +9,52 @@
     android:layout_marginTop="@dimen/spacing_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/sortFilterShimmer1"
         android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
         android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
-        app:corners="32"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/sortFilterShimmer2"
         android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
         android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        app:corners="32"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/sortFilterShimmer1"
         app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/sortFilterShimmer3"
         android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
         android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        app:corners="32"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/sortFilterShimmer2"
         app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/sortFilterShimmer4"
         android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
         android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        app:corners="32"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/sortFilterShimmer3"
         app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/sortFilterShimmer5"
         android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
         android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        app:corners="32"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@id/sortFilterShimmer4"
         app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
 

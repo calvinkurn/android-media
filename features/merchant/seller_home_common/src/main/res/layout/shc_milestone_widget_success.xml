@@ -38,7 +38,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:background="@drawable/bg_circle_toggle_milestone_widget"
         app:icon_color_light_enable="@color/Unify_NN900"
-        app:icon_name="CHEVRON_UP"
+        app:icon_name="CHEVRON_DOWN"
         app:layout_constraintEnd_toStartOf="@+id/guidelineShcMilestoneEnd"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,9 +67,8 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneStart"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_default="wrap"
         app:layout_constraintWidth_max="wrap"
-        app:layout_constraintWidth_percent="0.70"
         app:typographyType="heading_5"
         tools:text="Misi berjualan tokopedia" />
 

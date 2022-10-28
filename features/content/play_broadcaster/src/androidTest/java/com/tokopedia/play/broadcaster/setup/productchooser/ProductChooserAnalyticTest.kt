@@ -4,15 +4,15 @@ import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.helper.contains
 import com.tokopedia.play.broadcaster.helper.containsEventAction
-import com.tokopedia.play.broadcaster.helper.delay
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
@@ -23,6 +23,7 @@ import org.junit.runner.RunWith
  * Created by kenny.hadisaputra on 04/03/22
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class ProductChooserAnalyticTest {
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
@@ -112,7 +113,8 @@ class ProductChooserAnalyticTest {
     fun testAnalytic_saveProduct() {
         val robot = createRobot()
 
-        robot.saveProducts()
+        robot.selectProduct(0)
+            .saveProducts()
 
         assertThat(
             cassavaTestRule.validate(analyticFile),

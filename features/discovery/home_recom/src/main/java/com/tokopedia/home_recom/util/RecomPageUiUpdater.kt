@@ -4,10 +4,10 @@ import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
-import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 /**
  * Created by yfsx on 01/09/21.
@@ -33,7 +33,7 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
         }
     }
 
-    fun updateRecomWithMinicartData(miniCart: MutableMap<String, MiniCartItem>?) {
+    fun updateRecomWithMinicartData(miniCart: MutableMap<MiniCartItemKey, MiniCartItem>?) {
         val newDataList = mutableListOf<HomeRecommendationDataModel>()
         dataList.filterIsInstance(RecommendationItemDataModel::class.java).forEach {
             val recomItem = it.productItem.copy()
@@ -42,10 +42,10 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
                 miniCart?.let { cartData ->
                     recomItem.updateItemCurrentStock(when {
                         recomItem.isProductHasParentID() -> {
-                            getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
+                            cartData.getMiniCartItemParentProduct(recomItem.parentID.toString())?.totalQuantity ?: 0
                         }
-                        cartData.containsKey(recomItem.productId.toString()) -> {
-                            cartData[recomItem.productId.toString()]?.quantity ?: 0
+                        cartData.containsKey(MiniCartItemKey(recomItem.productId.toString())) -> {
+                            cartData.getMiniCartItemProduct(recomItem.productId.toString())?.quantity ?: 0
                         }
                         else -> 0
                     })
@@ -79,15 +79,5 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
             }
         }
         dataList = newDataList
-    }
-
-    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
-        var variantTotalItems = 0
-        miniCart.values.forEach { miniCartItem ->
-            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
-                variantTotalItems += miniCartItem.quantity
-            }
-        }
-        return variantTotalItems
     }
 }

@@ -1,10 +1,19 @@
 package com.tokopedia.tokopedianow.home.domain.query
 
-internal object GetKeywordSearch {
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-    val QUERY = """
-        query universe_placeholder(${'$'}firstInstall: Boolean, ${'$'}uniqueId:String){
-            universe_placeholder(navsource:"tokonow", first_install:${'$'}firstInstall, unique_id:${'$'}uniqueId){
+internal object GetKeywordSearch: GqlQueryInterface {
+
+    private const val OPERATION_NAME = "universe_placeholder"
+
+    override fun getOperationNameList(): List<String> {
+        return listOf(OPERATION_NAME)
+    }
+
+    override fun getQuery(): String {
+        return """
+        query $OPERATION_NAME(${'$'}firstInstall: Boolean, ${'$'}uniqueId:String){
+            $OPERATION_NAME(navsource:"tokonow", first_install:${'$'}firstInstall, unique_id:${'$'}uniqueId){
                 data { 
                     placeholder 
                     keyword 
@@ -15,5 +24,10 @@ internal object GetKeywordSearch {
                 }
             }
         }
-    """.trimIndent()
+        """.trimIndent()
+    }
+
+    override fun getTopOperationName(): String {
+        return OPERATION_NAME
+    }
 }

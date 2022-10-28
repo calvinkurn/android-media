@@ -17,6 +17,8 @@ object TopAdsDashboardConstant {
     const val PARAM_AD_TYPES = "adTypes"
     const val PARAM_SOURCE = "source"
     const val PARAM_LEVEL = "level"
+    const val HEADLINE = "headline"
+    const val SOURCE_ANDROID_HEADLINE = "android.topads_headline"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3
@@ -69,7 +71,8 @@ object TopAdsDashboardConstant {
     const val NEG_KATA_KUNCI = "Kata Negatif"
     const val GRUP = "Grup"
     const val TANPA_GRUP = "Tanpa Grup"
-    const val DIHAPUS = "dihapus"
+    const val DIHAPUS = "Dihapus"
+    const val IKLAN_TOKO = "Iklan Toko"
     const val TOASTER_DURATION :Long = 2000
     const val EXPIRE = "expiryDate"
     const val IS_CHANGED = "isChanged"

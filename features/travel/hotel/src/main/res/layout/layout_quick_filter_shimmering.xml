@@ -10,39 +10,39 @@
     android:paddingBottom="@dimen/spacing_lvl3"
     android:weightSum="4">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
         android:layout_weight="1"
-        app:corners="16"
-        app:use_gradient="true" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
         android:layout_weight="1"
-        app:corners="16"
-        app:use_gradient="true" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
         android:layout_weight="1"
-        app:corners="16"
-        app:use_gradient="true" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
         android:layout_weight="1"
-        app:corners="16"
-        app:use_gradient="true" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
 </LinearLayout>

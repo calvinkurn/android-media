@@ -24,21 +24,8 @@ object CreateReviewImageMapper {
         return originalImages
     }
 
-    fun getEditedImages(originalImageUrl: MutableList<String>, originalImages: MutableList<String>, edited: MutableList<Boolean>): List<String> {
-        return originalImages.filter {
-            originalImageUrl.contains(it)
-        }.filterIndexed { index, _ -> !edited[index] }
-    }
-
-    fun getImageUrlList(imagePickerResult: MutableList<String>, edited: MutableList<Boolean>, pictureList: List<String>, originalImageUrl: MutableList<String>): MutableList<String> {
-        return imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (edited[index]) urlOrPath else pictureList.find { it == originalImageUrl[index] }
-                    ?: urlOrPath
-        }.toMutableList()
-    }
-
-    fun addDefaultModelIfLessThanFive(imageData: MutableList<BaseImageReviewUiModel>): MutableList<BaseImageReviewUiModel> {
-        if (imageData.size < 5 && !imageData.contains(DefaultImageReviewUiModel())) {
+    fun addDefaultModelIfLessThan(imageData: MutableList<Any>, min: Int): MutableList<Any> {
+        if (imageData.size < min && !imageData.contains(DefaultImageReviewUiModel())) {
             imageData.add(DefaultImageReviewUiModel())
         }
         return imageData

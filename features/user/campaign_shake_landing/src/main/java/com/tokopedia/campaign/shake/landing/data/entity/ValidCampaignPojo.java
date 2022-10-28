@@ -1,5 +1,7 @@
 package com.tokopedia.campaign.shake.landing.data.entity;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -22,6 +24,12 @@ public class ValidCampaignPojo {
     @SerializedName("title")
     private String title;
 
+    /**
+     * Need to suppress this false alarm,
+     * due is_valid need a boolean data type
+     * instead of Long or String (as suggestions).
+     */
+    @SuppressLint("Invalid Data Type")
     @SerializedName("is_valid")
     private boolean isValid;
 

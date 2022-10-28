@@ -53,7 +53,7 @@ object NetworkManager {
     }
 
     private fun getConnectionTransportType(context: Context): Int {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
             if (capabilities != null) {
@@ -82,7 +82,7 @@ object NetworkManager {
             when (getConnectionTransportType(context)) {
                 WIFI -> CONN_WIFI
                 MOBILE -> {
-                    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    val cm = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                     if (cm.activeNetworkInfo?.subtype == null) return CONN_UNKNOWN
                     return when (cm.activeNetworkInfo?.subtype) {
                         TelephonyManager.NETWORK_TYPE_GPRS, // 2G ~ 100 kbps

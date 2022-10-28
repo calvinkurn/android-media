@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
-import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
@@ -29,7 +28,7 @@ class CatalogDetailProductListingViewModel
                     private val getProductListUseCase: CatalogGetProductListUseCase) : ViewModel() {
 
     val mProductList = MutableLiveData<Result<List<CatalogProductItem>>>()
-    val mProductCount = MutableLiveData<String>()
+    val mProductCount = MutableLiveData<Int>()
     val mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     val mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
 
@@ -52,6 +51,7 @@ class CatalogDetailProductListingViewModel
     var categoryId = ""
     var brand  = ""
     var comparisonCardIsAdded = false
+    var lastSeenProductPosition = 0
 
     val list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 
@@ -83,7 +83,7 @@ class CatalogDetailProductListingViewModel
                 list.addAll(productList as ArrayList<Visitable<CatalogTypeFactory>>)
                 pageCount++
             }
-            mProductCount.value = searchProduct.data.totalData.toString()
+            mProductCount.value = searchProduct.data.totalData
         }
     }
 

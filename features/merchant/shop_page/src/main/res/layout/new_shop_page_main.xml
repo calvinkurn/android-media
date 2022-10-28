@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
@@ -10,99 +10,137 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <com.tokopedia.searchbar.navigation_component.NavToolbar
-        android:id="@+id/new_navigation_toolbar"
+    <LinearLayout
+        android:id="@+id/toolbar_container"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top"
-        android:minHeight="?actionBarSize"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:toolbarContentType="typeSearchbar"
-        app:toolbarBackButton="back"
-        app:toolbarInitialTheme="light"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingEnd="12dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:elevation="0dp"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance"
-        android:visibility="gone"
-        tools:visibility="visible"
-        tools:ignore="RtlSymmetry">
-
-        <FrameLayout
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/new_navigation_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:minHeight="?actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:toolbarContentType="typeSearchbar"
+            app:toolbarBackButton="back"
+            app:toolbarInitialTheme="light"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_your_shop"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="12dp"
-                android:layout_marginRight="12dp"
-                android:text="@string/text_your_shop"
-                android:textColor="@color/Unify_N700_96"
-                app:typographyType="heading_4" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingEnd="12dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:elevation="0dp"
+            app:subtitleTextAppearance="?subtitleTextAppearance"
+            app:titleTextAppearance="?titleTextAppearance"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:ignore="RtlSymmetry">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/searchBarLayout"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="12dp"
-                android:layout_marginRight="12dp"
-                android:background="@drawable/bg_shop_page_search"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/spacing_lvl2"
-                android:paddingTop="@dimen/spacing_lvl3"
-                android:paddingEnd="@dimen/spacing_lvl2"
-                android:paddingBottom="@dimen/spacing_lvl3">
+                android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_shop_search" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/searchBarText"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_your_shop"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:hint="@string/shop_menu_search_placeholder_text"
-                    android:lines="1" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginRight="12dp"
+                    android:text="@string/text_your_shop"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="heading_4" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/searchBarLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/bg_shop_page_search"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:paddingStart="4dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="4dp"
+                    android:paddingBottom="8dp">
 
-        </FrameLayout>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_shop_search" />
 
-    </androidx.appcompat.widget.Toolbar>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/searchBarText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:hint="@string/shop_menu_search_placeholder_text"
+                        android:lines="1" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </FrameLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+    </LinearLayout>
 
     <View
-        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/divider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_container"
+        app:layout_constraintBottom_toTopOf="@id/view_stub_content_layout"
         app:layout_constraintHorizontal_bias="0"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:background="@color/Unify_N75" />
 
     <ViewStub
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintBottom_toTopOf="@id/mini_cart"
         android:id="@+id/view_stub_content_layout"
+        app:layout_constraintRight_toRightOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout="@layout/new_shop_page_fragment_content_layout"
-        />
+        android:layout_height="0dp"
+        android:layout="@layout/new_shop_page_fragment_content_layout" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+    <com.tokopedia.minicart.common.widget.general.MiniCartGeneralWidget
+        android:id="@+id/mini_cart"
+        app:layout_constraintTop_toBottomOf="@id/view_stub_content_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_weight="0"
+        app:layout_constraintVertical_bias="1"
+        android:visibility="gone" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/shop_page_lottie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/divider"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

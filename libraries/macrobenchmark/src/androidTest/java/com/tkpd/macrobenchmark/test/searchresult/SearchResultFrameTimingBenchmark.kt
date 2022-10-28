@@ -6,7 +6,6 @@ import com.tkpd.macrobenchmark.base.BaseFrameTimingBenchmark
 import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
-import org.junit.Before
 import org.junit.runner.RunWith
 
 /**
@@ -20,6 +19,12 @@ import org.junit.runner.RunWith
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
 class SearchResultFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+    override fun setupEnvironment() {
+    }
+
+    override fun setupMock() {
+        MacroDevOps.setupEnvironment(MacroIntent.Mock.getSearchMockIntent())
+    }
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicRecyclerviewInteraction(
                 MacroIntent.SearchResult.PACKAGE_NAME,

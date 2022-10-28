@@ -37,8 +37,18 @@ val GQL_Affiliate_Commission: String = """query getAffiliateCommissionDetail(${"
         TextSize           
         DetailTitle             
         DetailTooltip          
-        DetailDescription     
+        DetailDescription
+        AdvancedTooltip {
+          TooltipType           
+          TextType              
+          TextStyle             
+          TextSize              
+          TooltipText           
+        }     
       }
+      CommissionType
+      PageType
+      AdditionalQueryKey
       Notes                  
       CreatedAt               
       CreatedAtFormatted      

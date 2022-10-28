@@ -1,0 +1,13 @@
+[
+  {
+    "data": {
+      "affiliateUserDetail": {
+        "IsRegistered": false,
+        "Title": "Affiliate",
+        "Redirection": {
+          "Android": "tokopedia://affiliate"
+        }
+      }
+    }
+  }
+]

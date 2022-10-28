@@ -2,31 +2,32 @@ package com.tokopedia.hotel.hoteldetail.presentation.activity
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Context
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
-import org.junit.After
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 /**
  * @author: astidhiyaa on 16/09/21.
  */
 abstract class BaseHotelPDPTest {
-    val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    @get:Rule
+    val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
     @Before
     fun setUp() {
-        gtmLogDBSource.deleteAll().subscribe()
         Intents.intending(IntentMatchers.anyIntent()).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK, null))
@@ -39,7 +40,7 @@ abstract class BaseHotelPDPTest {
         clickSeeRoomButton()
 
         Assert.assertThat(
-            getAnalyticsWithQuery(gtmLogDBSource, context, getTrackerFile()),
+            cassavaTestRule.validate(getTrackerFile()),
             hasAllSuccess()
         )
     }
@@ -68,9 +69,4 @@ abstract class BaseHotelPDPTest {
     abstract fun getTrackerFile(): String
 
     abstract fun scrollView()
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
-    }
 }

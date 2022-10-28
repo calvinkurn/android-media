@@ -7,7 +7,7 @@ import com.tokopedia.logger.utils.Priority
 object ProductTopAdsLogger {
     private const val TOPADS_PDP = "TOPADS_PDP"
 
-    const val MAX_LIMIT = 1000
+    const val MAX_LIMIT = 200
     const val TOPADS_PDP_TIMEOUT_EXCEEDED = "topads_pdp_timeout"
     const val TOPADS_PDP_HIT_DYNAMIC_SLOTTING = "topads_pdp_hit_dynamic_slotting"
     const val TOPADS_PDP_HIT_ADS_TRACKER = "topads_pdp_hit_ads_tracker"
@@ -32,11 +32,11 @@ object ProductTopAdsLogger {
         }
         ServerLogger.log(
             Priority.P2,
-            TOPADS_PDP_GENERAL_ERROR,
+            TOPADS_PDP,
             mapOf(
                 "action" to tag,
                 "productId" to productId,
-                "queryParam" to queryParam,
+                "queryParam" to queryParam.take(MAX_LIMIT),
                 "reason" to reasonValue,
                 "data" to dataValue
             )

@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login.behaviour.case
 
+import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -7,6 +8,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.*
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.Matchers.allOf
@@ -49,14 +51,13 @@ class LoginNegativeCase: LoginBase() {
     /* Disable button "Selanjutnya" when input text length is too long for phone number */
     fun phoneNumberTooLong() {
         val errorMsg = "Phone too long"
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(errors = arrayListOf(errorMsg))
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             inputEmailOrPhone("12345678901234567")
             clickSubmit()
-            isDisplayingGivenText(R.id.tv_error, errorMsg)
+            isDisplayingGivenText(errorMsg)
         }
     }
 
@@ -64,21 +65,20 @@ class LoginNegativeCase: LoginBase() {
     /* Got error from backend during register check */
     fun registerCheckError_BE() {
         val errorMsg = "got errors from be"
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(errors = arrayListOf(errorMsg))
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             inputEmailOrPhone("12345678901234567")
             clickSubmit()
-            isDisplayingSubGivenText(R.id.tv_error, errorMsg)
+            isDisplayingSubGivenText(errorMsg)
         }
     }
 
     @Test
     /* Show snackbar if discover providers is empty */
     fun forbiddenPage_discoverEmpty() {
-        isDefaultDiscover = false
+        fakeRepo.discoverConfig = Config.Error
         runTest {
             isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi (1005)")
         }
@@ -91,7 +91,7 @@ class LoginNegativeCase: LoginBase() {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
             clickSubmit()
-            isDisplayingGivenText(R.id.textinput_helper_text, "Kata sandi harus diisi")
+            isDisplayingGivenText("Kata sandi harus diisi")
         }
     }
 
@@ -101,7 +101,7 @@ class LoginNegativeCase: LoginBase() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
-            shouldBeDisabled(R.id.input_email_phone)
+            shouldBeDisabledWithInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)
         }
     }
 

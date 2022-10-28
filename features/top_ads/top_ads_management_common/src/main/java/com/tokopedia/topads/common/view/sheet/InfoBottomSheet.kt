@@ -8,10 +8,11 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.TopAdsRemoteImageUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_common_info_bs.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class InfoBottomSheet(
-    private val bottomSheetType: Int, private val isWhiteListUser: Boolean,
+    private val bottomSheetType: Int
 ) : BottomSheetUnify() {
 
     override fun onCreateView(
@@ -24,7 +25,7 @@ class InfoBottomSheet(
     private fun initChildLayout() {
         val contentView = View.inflate(
             context,
-            if (isWhiteListUser && bottomSheetType == TYPE_DASAR)
+            if (bottomSheetType == TYPE_DASAR)
                 R.layout.layout_topads_edit_split_bid_info_bs
             else
                 R.layout.topads_common_info_bs,
@@ -49,17 +50,17 @@ class InfoBottomSheet(
     }
 
     private fun initView() {
-        if (isWhiteListUser && bottomSheetType == TYPE_DASAR) {
-            image?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS2)
-            return
-        }
         context?.let {
             if (bottomSheetType == TYPE_DASAR) {
-                infoDesc?.text = getString(R.string.topads_create_bs_desc2)
-                image?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS2)
+                view?.findViewById<Typography>(R.id.infoDesc)?.text =
+                    getString(R.string.topads_create_bs_desc2)
+                view?.findViewById<ImageUnify>(R.id.image)
+                    ?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS2)
             } else {
-                infoDesc?.text = getString(R.string.topads_create_bs_desc1)
-                image?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS1)
+                view?.findViewById<Typography>(R.id.infoDesc)?.text =
+                    getString(R.string.topads_create_bs_desc1)
+                view?.findViewById<ImageUnify>(R.id.image)
+                    ?.setImageUrl(TopAdsRemoteImageUrl.CREATE_TIPS1)
             }
         }
     }

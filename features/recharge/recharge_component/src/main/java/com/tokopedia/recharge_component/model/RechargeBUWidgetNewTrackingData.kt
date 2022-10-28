@@ -31,4 +31,7 @@ data class RechargeBUWidgetNewTrackingData(
     @SerializedName("category_name")
     @Expose
     val categoryName: String = "",
+    @SerializedName("channel_id")
+    @Expose
+    val channelId: String = "",
 )

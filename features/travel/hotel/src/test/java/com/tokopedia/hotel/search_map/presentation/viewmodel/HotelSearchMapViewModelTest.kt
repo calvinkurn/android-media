@@ -6,22 +6,26 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.VisibleRegion
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.common.data.HotelTypeEnum
-import com.tokopedia.hotel.search_map.data.model.*
+import com.tokopedia.hotel.search_map.data.model.Filter
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
+import com.tokopedia.hotel.search_map.data.model.Property
+import com.tokopedia.hotel.search_map.data.model.PropertySearch
+import com.tokopedia.hotel.search_map.data.model.QuickFilter
+import com.tokopedia.hotel.search_map.data.model.Sort
 import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search_map.presentation.usecase.SearchPropertyUseCase
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,21 +34,11 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class HotelSearchMapViewModelTest {
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = object : CoroutineDispatchers {
-        override val main: CoroutineDispatcher
-            get() = Dispatchers.Unconfined
-        override val io: CoroutineDispatcher
-            get() = Dispatchers.Unconfined
-        override val default: CoroutineDispatcher
-            get() = Dispatchers.Unconfined
-        override val immediate: CoroutineDispatcher
-            get() = Dispatchers.Unconfined
-        override val computation: CoroutineDispatcher
-            get() = Dispatchers.Unconfined
-    }
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var hotelSearchMapViewModel: HotelSearchMapViewModel
 
     private val travelTickerCoroutineUseCase = mockk<TravelTickerCoroutineUseCase>()
@@ -203,11 +197,11 @@ class HotelSearchMapViewModelTest {
         //given
         val properties = listOf(Property(1), Property(2), Property(3))
         coEvery {
-            searchPropertyUseCase.execute(any() as String, any())
+            searchPropertyUseCase.execute(any() as DummyHotelGqlQueryInterfaceImpl, any())
         } returns Success(PropertySearch(properties))
 
         //when
-        hotelSearchMapViewModel.searchProperty(0, "")
+        hotelSearchMapViewModel.searchProperty(0, DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelSearchMapViewModel.liveSearchResult.value is Success)
@@ -218,11 +212,11 @@ class HotelSearchMapViewModelTest {
     fun searchProperty_shouldReturnFail() {
         //given
         coEvery {
-            searchPropertyUseCase.execute(any() as String, any())
+            searchPropertyUseCase.execute(any() as DummyHotelGqlQueryInterfaceImpl, any())
         } returns Fail(Throwable())
 
         //when
-        hotelSearchMapViewModel.searchProperty(0, "")
+        hotelSearchMapViewModel.searchProperty(0, DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelSearchMapViewModel.liveSearchResult.value is Fail)
@@ -445,6 +439,40 @@ class HotelSearchMapViewModelTest {
     }
 
     @Test
+    fun getMidPointWithZeroLatitude_shouldReturnSuccess() {
+        //given
+        val latitude = 0.0
+        val longitude = 12.03
+        val latLong = LatLng(latitude, longitude)
+
+        //when
+        hotelSearchMapViewModel.getMidPoint(latLong)
+
+        //then
+        val actual = hotelSearchMapViewModel.screenMidPoint.value
+        assert(actual is Success)
+        assert((actual as Success).data.longitude == latLong.longitude)
+        assert(actual.data.latitude == latLong.latitude)
+    }
+
+    @Test
+    fun getMidPointWithZeroLongitude_shouldReturnSuccess() {
+        //given
+        val latitude = 12.02
+        val longitude = 0.0
+        val latLong = LatLng(latitude, longitude)
+
+        //when
+        hotelSearchMapViewModel.getMidPoint(latLong)
+
+        //then
+        val actual = hotelSearchMapViewModel.screenMidPoint.value
+        assert(actual is Success)
+        assert((actual as Success).data.longitude == latLong.longitude)
+        assert(actual.data.latitude == latLong.latitude)
+    }
+
+    @Test
     fun getMidPoint_shouldReturnFail() {
         //given
         val latitude = 0.0
@@ -547,6 +575,36 @@ class HotelSearchMapViewModelTest {
     fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessAndContainsLatLong() {
         // given
         val deviceLocation = DeviceLocation(1.12345, 2.54321, 0)
+
+        // when
+        val onGetLocationFun = hotelSearchMapViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelSearchMapViewModel.latLong.value is Success)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.second == deviceLocation.latitude)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLatitude() {
+        // given
+        val deviceLocation = DeviceLocation(0.0, 2.54321, 0)
+
+        // when
+        val onGetLocationFun = hotelSearchMapViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelSearchMapViewModel.latLong.value is Success)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelSearchMapViewModel.latLong.value as Success).data.second == deviceLocation.latitude)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLongitude() {
+        // given
+        val deviceLocation = DeviceLocation(1.12345, 0.0, 0)
 
         // when
         val onGetLocationFun = hotelSearchMapViewModel.onGetLocation()

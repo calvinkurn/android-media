@@ -12,7 +12,6 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailUseCase
 import com.tokopedia.vouchercreation.product.share.domain.entity.ShopWithTopProducts
 import com.tokopedia.vouchercreation.product.share.domain.usecase.GetShopAndTopProductsUseCase
-import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.shop.voucherlist.model.remote.ChatBlastSellerMetadata
 import kotlinx.coroutines.withContext
@@ -25,13 +24,8 @@ class BroadcastCouponViewModel @Inject constructor(
     private val getCouponDetailUseCase: GetCouponDetailUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-
     private val _broadcastMetadata = MutableLiveData<Result<ChatBlastSellerMetadata>>()
     val broadcastMetadata: LiveData<Result<ChatBlastSellerMetadata>> = _broadcastMetadata
-
-    private val _shop = MutableLiveData<Result<ShopBasicDataResult>>()
-    val shop: LiveData<Result<ShopBasicDataResult>> = _shop
-
 
     private val _couponDetail = MutableLiveData<Result<CouponUiModel>>()
     val couponDetail: LiveData<Result<CouponUiModel>>
@@ -69,10 +63,7 @@ class BroadcastCouponViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    getShopAndTopProductsUseCase.execute(
-                        this,
-                        coupon
-                    )
+                    getShopAndTopProductsUseCase.execute(coupon)
                 }
                 _shopWithTopProducts.value = Success(result)
             },

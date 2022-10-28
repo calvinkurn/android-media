@@ -10,19 +10,25 @@ import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
 import com.tokopedia.play.model.PlaySocketResponseBuilder
+import com.tokopedia.play.model.PlayVideoModelBuilder
 import com.tokopedia.play.repo.PlayViewerMockRepository
 import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.util.millisFromNow
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.uimodel.action.InteractiveTapTapAction
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
+import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.every
@@ -46,10 +52,14 @@ class PlayTapInteractiveTest {
     private val socketResponseBuilder = PlaySocketResponseBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
+    private val videoBuilder = PlayVideoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
-            channelDetail = channelInfoBuilder.buildChannelDetail(
-                    channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
-            ),
+        channelDetail = channelInfoBuilder.buildChannelDetail(
+            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+        ),
+        videoMetaInfo = videoBuilder.buildVideoMeta(
+            videoPlayer = videoBuilder.buildCompleteGeneralVideoPlayer(),
+        )
     )
 
     private val socketFlow = MutableStateFlow<WebSocketAction>(
@@ -70,8 +80,16 @@ class PlayTapInteractiveTest {
 
         }
 
-        override fun setFinished(interactiveId: String) {
+        override fun setHasProcessedWinner(interactiveId: String) {
 
+        }
+
+        override fun save(model: InteractiveUiModel) {
+
+        }
+
+        override fun hasProcessedWinner(interactiveId: String): Boolean {
+            return false
         }
 
         override fun setJoined(interactiveId: String) {
@@ -91,37 +109,49 @@ class PlayTapInteractiveTest {
         }
     }
     private val mockPostInteractiveTapUseCase: PostInteractiveTapUseCase = mockk(relaxed = true)
+    private val mockCurrentInteractiveUseCase: GetCurrentInteractiveUseCase = mockk(relaxed = true)
 
-    private val interactiveRepo: PlayViewerInteractiveRepository = PlayViewerInteractiveRepositoryImpl(
-            getCurrentInteractiveUseCase = mockk(relaxed = true),
+    private val interactiveRepo: PlayViewerInteractiveRepository =
+        PlayViewerInteractiveRepositoryImpl(
+            getCurrentInteractiveUseCase = mockCurrentInteractiveUseCase,
             postInteractiveTapUseCase = mockPostInteractiveTapUseCase,
-            getInteractiveLeaderboardUseCase = mockk(relaxed = true),
+            getInteractiveViewerLeaderboardUseCase = mockk(relaxed = true),
+            answerQuizUseCase = mockk(relaxed = true),
             mapper = mockMapper,
             dispatchers = testDispatcher,
             interactiveStorage = mockInteractiveStorage
-    )
+        )
 
     private val repo = PlayViewerMockRepository.get(interactiveRepo = interactiveRepo)
 
+    private val mockRemoteConfig = mockk<RemoteConfig>(relaxed = true)
 
     init {
+        coEvery { mockCurrentInteractiveUseCase.executeOnBackground() } returns GetCurrentInteractiveResponse()
+        every { mockRemoteConfig.getBoolean(any(), any()) } returns true
         every { socket.listenAsFlow() } returns socketFlow
     }
 
     @Test
     fun `given tap is active and tap is success, when click tap, then user should have joined the tap`() {
-        val durationTap = 5000L
+        val durationTap = 5000L.millisFromNow()
         val title = "Giveaway"
-        coEvery { mockMapper.mapInteractive(any()) } returns PlayCurrentInteractiveModel(
-                timeStatus = PlayInteractiveTimeStatus.Live(durationTap),
-                title = title
+        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Giveaway(
+            id = "1",
+            title = title,
+            waitingDuration = 200L,
+            status = InteractiveUiModel.Giveaway.Status.Ongoing(
+                endTime = durationTap,
+            )
         )
+
         coEvery { mockPostInteractiveTapUseCase.executeOnBackground() } returns PostInteractiveTapResponse()
 
         givenPlayViewModelRobot(
-                playChannelWebSocket = socket,
-                repo = repo,
-                dispatchers = testDispatcher
+            playChannelWebSocket = socket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
         ) {
             createPage(mockChannelData)
             focusPage(mockChannelData)
@@ -129,7 +159,7 @@ class PlayTapInteractiveTest {
             mockInteractiveStorage.hasJoined(interactiveId)
                     .assertFalse()
         }.andThen {
-            viewModel.submitAction(InteractiveTapTapAction)
+            viewModel.submitAction(PlayViewerNewAction.TapGiveaway)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
                     .assertTrue()
@@ -138,11 +168,15 @@ class PlayTapInteractiveTest {
 
     @Test
     fun `given tap is active and tap is error, when click tap, then user should have not joined the tap`() {
-        val durationTap = 5000L
+        val durationTap = 5000L.millisFromNow()
         val title = "Giveaway"
-        coEvery { mockMapper.mapInteractive(any()) } returns PlayCurrentInteractiveModel(
-                timeStatus = PlayInteractiveTimeStatus.Live(durationTap),
-                title = title
+        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Giveaway(
+            id = "1",
+            title = title,
+            waitingDuration = 200L,
+            status = InteractiveUiModel.Giveaway.Status.Ongoing(
+                endTime = durationTap,
+            )
         )
         coEvery { mockPostInteractiveTapUseCase.executeOnBackground() } throws MessageErrorException("")
 
@@ -157,7 +191,7 @@ class PlayTapInteractiveTest {
             mockInteractiveStorage.hasJoined(interactiveId)
                     .assertFalse()
         }.andThen {
-            viewModel.submitAction(InteractiveTapTapAction)
+            viewModel.submitAction(PlayViewerNewAction.TapGiveaway)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
                     .assertFalse()

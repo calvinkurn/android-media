@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationMenuBinding
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 
@@ -37,6 +38,7 @@ class PreparationMenuView : ConstraintLayout {
         binding.clBroSetTitle.setOnClickListener { mListener?.onClickSetTitle() }
         binding.clBroSetCover.setOnClickListener { mListener?.onClickSetCover() }
         binding.clBroSetProduct.setOnClickListener { mListener?.onClickSetProduct() }
+        binding.clBroSetSchedule.setOnClickListener { mListener?.onClickSetSchedule() }
     }
 
     fun isSetTitleChecked(isChecked: Boolean) {
@@ -49,6 +51,14 @@ class PreparationMenuView : ConstraintLayout {
 
     fun isSetProductChecked(isChecked: Boolean) {
         binding.icBroProductChecked.visibility = if(isChecked) View.VISIBLE else View.INVISIBLE
+    }
+
+    fun isSetScheduleChecked(isChecked: Boolean) {
+        binding.icBroScheduleChecked.visibility = if(isChecked) View.VISIBLE else View.INVISIBLE
+    }
+
+    fun showScheduleMenu(shouldShow: Boolean) {
+        binding.clBroSetSchedule.showWithCondition(shouldShow)
     }
 
     fun setListener(listener: Listener) {
@@ -64,5 +74,6 @@ class PreparationMenuView : ConstraintLayout {
         fun onClickSetTitle()
         fun onClickSetCover()
         fun onClickSetProduct()
+        fun onClickSetSchedule()
     }
 }

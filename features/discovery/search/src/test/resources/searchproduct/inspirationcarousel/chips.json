@@ -993,7 +993,13 @@
                   "is_active": false,
                   "img_url": ""
                 },
-                "component_id": "03.02.01.01"
+                "component_id": "03.02.01.01",
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                }
               },
               {
                 "id": 219723600,
@@ -1015,7 +1021,13 @@
                   "is_active": false,
                   "img_url": ""
                 },
-                "component_id": "03.02.01.02"
+                "component_id": "03.02.01.02",
+                "ads": {
+                  "id": "123456",
+                  "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/",
+                  "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/",
+                  "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/"
+                }
               },
               {
                 "id": 219723612,
@@ -1037,7 +1049,13 @@
                   "is_active": false,
                   "img_url": ""
                 },
-                "component_id": "03.02.01.03"
+                "component_id": "03.02.01.03",
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                }
               },
               {
                 "id": 219723633,
@@ -1059,7 +1077,13 @@
                   "is_active": false,
                   "img_url": ""
                 },
-                "component_id": "03.02.01.04"
+                "component_id": "03.02.01.04",
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                }
               },
               {
                 "id": 219723611,
@@ -1081,7 +1105,13 @@
                   "is_active": false,
                   "img_url": ""
                 },
-                "component_id": "03.02.01.05"
+                "component_id": "03.02.01.05",
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                }
               }
             ]
           },
@@ -1157,6 +1187,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
@@ -1178,6 +1214,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
@@ -1199,6 +1241,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
@@ -1220,6 +1268,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
@@ -1241,6 +1295,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               }
             ]
@@ -1299,6 +1359,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
@@ -1320,6 +1386,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "123456",
+                  "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/",
+                  "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/",
+                  "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/"
                 }
               },
               {
@@ -1341,6 +1413,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
@@ -1362,6 +1440,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
@@ -1383,6 +1467,12 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               }
             ]

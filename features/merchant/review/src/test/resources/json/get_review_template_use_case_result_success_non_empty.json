@@ -1,0 +1,13 @@
+{
+  "data": {
+    "productrevGetListPersonalizedReviewTemplate": {
+      "templates": [
+        "Barang bagus.",
+        "Pengiriman cepat.",
+        "Penjual responsif",
+        "Harga kompetitif"
+      ],
+      "hasNext": false
+    }
+  }
+}

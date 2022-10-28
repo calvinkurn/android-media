@@ -1,16 +1,12 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase.create
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.data.request.GenerateImageParams
 import com.tokopedia.vouchercreation.product.create.data.response.GetProductsByProductIdResponse
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
-import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
+import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GenerateImageUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetMostSoldProductsUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
@@ -18,8 +14,8 @@ import com.tokopedia.vouchercreation.product.create.util.GenerateImageParamsBuil
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class CreateCouponFacadeUseCase @Inject constructor(
@@ -40,100 +36,91 @@ class CreateCouponFacadeUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        scope: CoroutineScope,
         isCreateMode: Boolean,
-        sourceId: String,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         allProducts: List<CouponProduct>,
         parentProductId: List<Long>
     ): Int {
-        val initiateCouponDeferred = scope.async { initiateCoupon(IS_UPDATE_MODE) }
-        val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
-        val topProductsDeferred = scope.async { getMostSoldProducts(parentProductId) }
+        return coroutineScope {
+            val initiateCouponDeferred = async { initiateCoupon(IS_UPDATE_MODE) }
+            val shopDeferred = async { getShopBasicDataUseCase.executeOnBackground() }
+            val topProductsDeferred = async { getMostSoldProducts(parentProductId) }
 
-        val shop = shopDeferred.await()
-        val coupon = initiateCouponDeferred.await()
-        val topProducts = topProductsDeferred.await()
+            val shop = shopDeferred.await()
+            val coupon = initiateCouponDeferred.await()
+            val topProducts = topProductsDeferred.await()
 
-        val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
+            val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
+            val warehouseId = topProducts.data.firstOrNull()?.warehouses?.firstOrNull()?.id.orEmpty()
 
-        val generateImageDeferred = scope.async {
-            generateImage(
-                sourceId,
-                isCreateMode,
-                coupon.voucherCodePrefix,
-                ImageRatio.HORIZONTAL,
-                couponInformation,
-                couponSettings,
-                shop,
-                topProductImageUrls
-            )
+            val generateImageDeferred = async {
+                generateImage(
+                    ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
+                    isCreateMode,
+                    coupon.voucherCodePrefix,
+                    ImageRatio.HORIZONTAL,
+                    couponInformation,
+                    couponSettings,
+                    shop,
+                    topProductImageUrls
+                )
+            }
+
+            val generateSquareImageDeferred = async {
+                generateImage(
+                    ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
+                    isCreateMode,
+                    coupon.voucherCodePrefix,
+                    ImageRatio.SQUARE,
+                    couponInformation,
+                    couponSettings,
+                    shop,
+                    topProductImageUrls
+                )
+            }
+
+            val generatePortraitImage = async {
+                generateImage(
+                    ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
+                    isCreateMode,
+                    coupon.voucherCodePrefix,
+                    ImageRatio.VERTICAL,
+                    couponInformation,
+                    couponSettings,
+                    shop,
+                    topProductImageUrls
+                )
+            }
+
+            val imageUrl = generateImageDeferred.await()
+            val squareImageUrl = generateSquareImageDeferred.await()
+            val portraitImageUrl = generatePortraitImage.await()
+
+            val createCouponDeferred = async {
+                val useCaseParam = CreateCouponUseCaseParam(
+                    couponInformation,
+                    couponSettings,
+                    allProducts,
+                    coupon.token,
+                    imageUrl,
+                    squareImageUrl,
+                    portraitImageUrl,
+                    warehouseId
+                )
+
+                createCoupon(useCaseParam)
+            }
+
+            return@coroutineScope createCouponDeferred.await()
         }
 
-        val generateSquareImageDeferred = scope.async {
-            generateImage(
-                sourceId,
-                isCreateMode,
-                coupon.voucherCodePrefix,
-                ImageRatio.SQUARE,
-                couponInformation,
-                couponSettings,
-                shop,
-                topProductImageUrls
-            )
-        }
-
-        val generatePortraitImage = scope.async {
-            generateImage(
-                sourceId,
-                isCreateMode,
-                coupon.voucherCodePrefix,
-                ImageRatio.VERTICAL,
-                couponInformation,
-                couponSettings,
-                shop,
-                topProductImageUrls
-            )
-        }
-
-        val imageUrl = generateImageDeferred.await()
-        val squareImageUrl = generateSquareImageDeferred.await()
-        val portraitImageUrl = generatePortraitImage.await()
-
-        val createCouponDeferred = scope.async {
-            createCoupon(
-                couponInformation,
-                couponSettings,
-                allProducts,
-                coupon.token,
-                imageUrl,
-                squareImageUrl,
-                portraitImageUrl
-            )
-        }
-
-        return createCouponDeferred.await()
     }
 
     private suspend fun createCoupon(
-        couponInformation: CouponInformation,
-        couponSettings: CouponSettings,
-        couponProducts: List<CouponProduct>,
-        token: String,
-        imageUrl: String,
-        imageSquare:String,
-        imagePortrait:String
+        useCaseParam: CreateCouponUseCaseParam
     ): Int {
-        val params = createCouponProductUseCase.createRequestParam(
-            couponInformation,
-            couponSettings,
-            couponProducts,
-            token,
-            imageUrl,
-            imageSquare,
-            imagePortrait
-        )
+        val params = createCouponProductUseCase.createRequestParam(useCaseParam)
         createCouponProductUseCase.params = params
         return createCouponProductUseCase.executeOnBackground()
     }
@@ -196,8 +183,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val modifiedParams = arrayListOf<GenerateImageParams>()
         modifiedParams.addAll(requestParams)
 
-        val imageGeneratorUseCase =
-            ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+        val imageGeneratorUseCase = GenerateImageUseCase(GraphqlInteractor.getInstance().graphqlRepository)
         val params = GenerateImageUseCase.createParam(sourceId, modifiedParams)
         imageGeneratorUseCase.params = params
         return imageGeneratorUseCase.executeOnBackground()

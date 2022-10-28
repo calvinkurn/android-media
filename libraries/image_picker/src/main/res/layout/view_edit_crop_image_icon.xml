@@ -30,6 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textColor="@color/selector_green"
+        android:textColor="@color/imagepicker_dms_selector_green"
         tools:text="Watermark"/>
 </LinearLayout>

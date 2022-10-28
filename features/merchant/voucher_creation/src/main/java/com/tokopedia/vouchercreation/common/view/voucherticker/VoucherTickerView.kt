@@ -2,11 +2,10 @@ package com.tokopedia.vouchercreation.common.view.voucherticker
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.vouchercreation.R
-import kotlinx.android.synthetic.main.view_mvc_voucher_ticker.view.*
+import com.tokopedia.vouchercreation.databinding.ViewMvcVoucherTickerBinding
 
 /**
  * Created By @ilhamsuaib on 10/05/20
@@ -14,31 +13,29 @@ import kotlinx.android.synthetic.main.view_mvc_voucher_ticker.view.*
 
 class VoucherTickerView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
 
-    init {
-        View.inflate(context, R.layout.view_mvc_voucher_ticker, this)
-    }
+    val binding: ViewMvcVoucherTickerBinding = ViewMvcVoucherTickerBinding.inflate(LayoutInflater.from(context), this, true)
 
     var title: String = ""
         set(value) {
-            tvMvcTickerTitle.text = value
+            binding.tvMvcTickerTitle.text = value
             field = value
         }
 
     var description: String = ""
         set(value) {
-            tvMvcTickerDescription.text = value
+            binding.tvMvcTickerDescription.text = value
             field = value
         }
 
     var nominal: String = ""
         set(value) {
-            tvMvcExpense.text = value
+            binding.tvMvcExpense.text = value
             field = value
         }
 
     fun setOnTooltipClick(callback: () -> Unit) {
-        mvcImgInfo.visible()
-        mvcImgInfo.setOnClickListener {
+        binding.mvcImgInfo.visible()
+        binding.mvcImgInfo.setOnClickListener {
             callback()
         }
     }

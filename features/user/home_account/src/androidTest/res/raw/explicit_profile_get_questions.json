@@ -1,0 +1,86 @@
+[
+  {
+    "data": {
+      "explicitprofileGetQuestion": {
+        "activeConfig": {
+          "value": false,
+          "detail": {
+            "configActive": false,
+            "templateActive": false
+          }
+        },
+        "template": {
+          "id": 1,
+          "property": {
+            "title": "Kami akan menampilkan lebih banyak rekomendasi kuliner sesuai mau kamu di Tokopedia NYAM! dan hasil pencarian.",
+            "image": "https://images.tokopedia.net/img/explicit/profile/tokopedia_nyam.png"
+          },
+          "name": "food_preference",
+          "description": "asking user's food preference",
+          "sections": [
+            {
+              "sectionID": 1,
+              "layout": "MultipleQuestions",
+              "property": {
+                "title": "Mau lihat kuliner jenis apa?",
+                "infoHeader": "Jenis kuliner"
+              },
+              "questions": [
+                {
+                  "questionId": 1,
+                  "answerId": 0,
+                  "questionType": "YesOrNo",
+                  "property": {
+                    "name": "Halal",
+                    "title": "Kamu hanya konsumsi kuliner halal?",
+                    "subtitle": "Kami bisa kasih rekomendasi buat kamu!",
+                    "infoContent": "Tidak mengandung babi, alkohol, dan bahan non-halal lainnya.",
+                    "image": "https://images.tokopedia.net/img/explicit/profile/halal_enabled.png",
+                    "options": [
+                      {
+                        "value": "yes",
+                        "caption": "Iya, Benar",
+                        "message": "Oke! Kami akan rekomendasiin kuliner halal di Tokopedia NYAM! & hasil pencarian."
+                      },
+                      {
+                        "value": "no",
+                        "caption": "Nggak",
+                        "message": "Sip! Kamu bisa atur rekomendasi kuliner lainnya di Preferensi Belanja."
+                      }
+                    ]
+                  },
+                  "answerValue": "no"
+                },
+                {
+                  "questionId": 2,
+                  "answerId": 0,
+                  "questionType": "YesOrNo",
+                  "property": {
+                    "name": "Vegan",
+                    "title": "Kamu hanya konsumsi kuliner vegan?",
+                    "subtitle": "Kami bisa kasih rekomendasi buat kamu!",
+                    "infoContent": "Tidak mengandung daging, susu, telur, dan produk olahan hewani lainnya.",
+                    "image": "https://images.tokopedia.net/img/explicit/profile/vegan_enabled.png",
+                    "options": [
+                      {
+                        "value": "yes",
+                        "caption": "Iya, Benar",
+                        "message": "Oke! Kami akan rekomendasiin kuliner vegan di Tokopedia NYAM! & hasil pencarian."
+                      },
+                      {
+                        "value": "no",
+                        "caption": "Nggak",
+                        "message": "Sip! Kamu bisa atur rekomendasi kuliner lainnya di Preferensi Belanja."
+                      }
+                    ]
+                  },
+                  "answerValue": "no"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+]

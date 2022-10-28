@@ -5,19 +5,21 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.video.ProductVideoPlayer
-import com.tokopedia.productcard.video.ProductVideoPlayerProvider
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.video_widget.VideoPlayer
+import com.tokopedia.video_widget.VideoPlayerProvider
 
 abstract class ProductItemViewHolder(
         itemView: View,
         protected val productListener: ProductListener,
-) : AbstractViewHolder<ProductItemDataView>(itemView), ProductVideoPlayerProvider {
+        override val isAutoplayEnabled: Boolean,
+) : AbstractViewHolder<ProductItemDataView>(itemView), VideoPlayerProvider {
 
     abstract val productCardView: IProductCardView?
 
@@ -26,6 +28,7 @@ abstract class ProductItemViewHolder(
     protected fun ProductItemDataView.toProductCardModel(
         productImage: String,
         isWideContent: Boolean,
+        productListType: ProductCardModel.ProductListType
     ): ProductCardModel {
         return ProductCardModel(
             productImageUrl = productImage,
@@ -39,11 +42,14 @@ abstract class ProductItemViewHolder(
             freeOngkir = freeOngkirDataView.toProductCardModelFreeOngkir(),
             isTopAds = isTopAds || isOrganicAds,
             countSoldRating = ratingString,
-            hasThreeDots = true,
+            hasThreeDots = !showButtonAtc,
             labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
             labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
             isWideContent = isWideContent,
-            customVideoURL = customVideoURL
+            customVideoURL = customVideoURL,
+            cardInteraction = true,
+            productListType = productListType,
+            hasAddToCartButton = showButtonAtc,
         )
     }
 
@@ -90,6 +96,6 @@ abstract class ProductItemViewHolder(
         productListener.productCardLifecycleObserver?.unregister(productCardView)
     }
 
-    override val productVideoPlayer : ProductVideoPlayer?
-        get() = productCardView?.getProductCardVideo()
+    override val videoPlayer: VideoPlayer?
+        get() = productCardView?.getVideoPlayerController()
 }

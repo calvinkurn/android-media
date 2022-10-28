@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:paddingLeft="16dp"
@@ -19,8 +19,8 @@
 
         <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/img_location_not_detected"
-            android:layout_width="@dimen/dp_200"
-            android:layout_height="@dimen/dp_140"
+            android:layout_width="200dp"
+            android:layout_height="140dp"
             android:layout_marginTop="24dp"
             app:remoteFileName="ic_location_not_detected.png"
             android:contentDescription="@string/invalid_img_description"
@@ -29,10 +29,10 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_25"
-            android:layout_marginStart="@dimen/dp_25"
-            android:layout_marginEnd="@dimen/dp_25"
-            android:layout_marginRight="@dimen/dp_25"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginRight="25dp"
             android:layout_marginTop="16dp"
             android:text="@string/undetected_location_desc"
             android:layout_gravity="center_horizontal"

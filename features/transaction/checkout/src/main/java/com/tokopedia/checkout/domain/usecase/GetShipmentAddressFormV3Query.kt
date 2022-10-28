@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.domain.usecase
 
-fun getQueryShipmentAddressFormV3(): String {
-    return """
-        query shipment_address_form_v3(${'$'}params: ShipmentAddressFormParams) {
+const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
+        """
+        query shipmentAddressFormV3(${'$'}params: ShipmentAddressFormParams) {
           shipment_address_form_v3(params: ${'$'}params) {
             status
             error_message
@@ -18,6 +18,14 @@ fun getQueryShipmentAddressFormV3(): String {
               is_ineligible_promo_dialog_enabled
               disabled_features
               donation_checkbox_status
+              image_upload {
+                show_image_upload
+                text
+                left_icon_url
+                right_icon_url
+                checkout_id
+                front_end_validation
+              }
               open_prerequisite_site
               eligible_new_shipping_experience
               pop_up_message
@@ -103,6 +111,7 @@ fun getQueryShipmentAddressFormV3(): String {
                   errors_unblocking
                   shipping_id
                   sp_id
+                  bo_code
                   is_insurance
                   is_fulfillment_service
                   toko_cabang {
@@ -120,6 +129,11 @@ fun getQueryShipmentAddressFormV3(): String {
                     }
                     free_shipping_extra {
                       eligible
+                      badge_url
+                    }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
                       badge_url
                     }
                     preorder {
@@ -322,6 +336,11 @@ fun getQueryShipmentAddressFormV3(): String {
                         eligible
                         badge_url
                       }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
+                        badge_url
+                      }
                       product_ticker {
                         show_ticker
                         message
@@ -333,6 +352,11 @@ fun getQueryShipmentAddressFormV3(): String {
                       product_alert_message
                       product_information
                       campaign_id
+                      ethical_drug {
+                        need_prescription
+                        icon_url
+                        text
+                      }
                     }
                   }
                   warehouse {
@@ -375,9 +399,15 @@ fun getQueryShipmentAddressFormV3(): String {
                   maximum_amount
                   basis_amount
                 }
+                hyperlink_text {
+                  text
+                  url
+                  is_show
+                }
               }
               tickers {
                 id
+                title
                 message
                 page
               }
@@ -531,6 +561,10 @@ fun getQueryShipmentAddressFormV3(): String {
                           sp_id
                         }
                       }
+                      poml_auto_applied
+                      bebas_ongkir_info {
+                        is_bo_unstack_enabled
+                      }
                     }
                     benefit_summary_info {
                       final_benefit_amount_str
@@ -589,8 +623,31 @@ fun getQueryShipmentAddressFormV3(): String {
                 only_greeting_card
                 invoice_not_sent_to_recipient
               }
+              upsell {
+                is_show
+                title
+                description
+                app_link
+                image
+              }
+              cart_data
+              upsell_v2 {
+                is_show
+                is_selected
+                price
+                price_fmt
+                duration
+                description
+                summary_info
+                image
+                app_link
+                button {
+                  text
+                }
+                id
+                additional_vertical_id
+                transaction_type
+              }
             }
           }
-        }
-    """.trimIndent()
-}
+        }"""

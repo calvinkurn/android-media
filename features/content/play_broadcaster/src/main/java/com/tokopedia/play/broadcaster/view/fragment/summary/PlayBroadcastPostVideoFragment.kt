@@ -52,7 +52,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private val binding: FragmentPlayBroadcastPostVideoBinding
         get() = _binding!!
 
-    private val tagListView by viewComponent { TagListViewComponent(it, binding.rvTagsRecommendation.id, this) }
+    private val tagListView by viewComponent { TagListViewComponent(it, binding.layoutTagRecommendation, this) }
 
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
@@ -155,7 +155,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                     is PlayBroadcastSummaryEvent.PostVideo -> {
                         when (val networkResult = it.networkResult) {
                             is NetworkResult.Loading -> binding.btnPostVideo.isLoading = true
-                            is NetworkResult.Success -> openShopPageWithBroadcastStatus(true)
+                            is NetworkResult.Success -> openShopPageWithBroadcastStatus()
                             is NetworkResult.Fail -> {
                                 binding.btnPostVideo.isLoading = false
                                 toaster.showError(
@@ -184,22 +184,26 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
     }
 
-    private fun renderTag(prev: TagUiState?, value: TagUiState) {
+    private fun renderTag(prev: NetworkResult<TagUiState>?, value: NetworkResult<TagUiState>) {
         if(prev == value) return
 
-        tagListView.setTags(value.tags.toList())
+        when(value) {
+            NetworkResult.Loading -> tagListView.setPlaceholder()
+            is NetworkResult.Success -> tagListView.setTags(value.data.tags.toList())
+            is NetworkResult.Fail -> tagListView.setError()
+        }
     }
 
-    private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {
+    private fun openShopPageWithBroadcastStatus() {
         if (activity?.callingActivity == null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
-                .putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
+                .putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, true)
             startActivity(intent)
             activity?.finish()
         } else {
             activity?.setResult(
                 Activity.RESULT_OK,
-                Intent().putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
+                Intent().putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, true)
             )
             activity?.finish()
         }
@@ -218,6 +222,10 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
         analytic.clickContentTag(tag.tag, !tag.isChosen)
         viewModel.submitAction(PlayBroadcastSummaryAction.ToggleTag(tag))
+    }
+
+    override fun onTagRefresh(view: TagListViewComponent) {
+        viewModel.submitAction(PlayBroadcastSummaryAction.RefreshLoadTag)
     }
 
     /**

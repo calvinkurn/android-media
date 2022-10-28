@@ -5,20 +5,22 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
+import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
+import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import kotlinx.coroutines.CoroutineScope
@@ -36,6 +38,7 @@ import kotlin.coroutines.CoroutineContext
 private const val TDN_SEARCH_INVENTORY_ID = "2"
 private const val TDN_SEARCH_ITEM_COUNT = 4
 private const val TDN_SEARCH_DIMENSION = 3
+private const val HEADLINE_IMPRESSION_COUNT_FIRST_PAGE = "0"
 
 class SearchProductFirstPageGqlUseCase(
         private val graphqlUseCase: GraphqlUseCase,
@@ -55,9 +58,11 @@ class SearchProductFirstPageGqlUseCase(
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
-        val headlineAdsParams = com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams(
-                requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
-                HEADLINE_ITEM_VALUE_FIRST_PAGE, "0")
+        val headlineAdsParams = createHeadlineParams(
+            requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
+            HEADLINE_ITEM_VALUE_FIRST_PAGE,
+            HEADLINE_IMPRESSION_COUNT_FIRST_PAGE
+        )
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)
@@ -74,8 +79,11 @@ class SearchProductFirstPageGqlUseCase(
         graphqlUseCase.addRequests(graphqlRequestList)
 
         val gqlSearchProductObservable = graphqlUseCase
-                .createObservable(RequestParams.EMPTY)
-                .map(searchProductModelMapper)
+            .createObservable(RequestParams.EMPTY)
+            .map(searchProductModelMapper)
+            .doOnNext {
+                searchLogger.logSearchDebug(query, getSortFilterParamsString(searchProductParams))
+            }
 
         val topAdsImageViewModelObservable = createTopAdsImageViewModelObservable(query)
 
@@ -96,11 +104,11 @@ class SearchProductFirstPageGqlUseCase(
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
     private fun createQuickFilterRequest(query: String, params: String) =
-            GraphqlRequest(
-                    QuickFilter(),
-                    QuickFilterModel::class.java,
-                    mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
-            )
+        GraphqlRequest(
+            QuickFilter(),
+            QuickFilterModel::class.java,
+            mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
         if (!requestParams.isSkipGlobalNav()) {
@@ -225,6 +233,7 @@ class SearchProductFirstPageGqlUseCase(
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
                         title
+                        chip_name
                         options {
                             name
                             key
@@ -270,6 +279,9 @@ class SearchProductFirstPageGqlUseCase(
                         see_all_applink
                         see_all_url
                         show_topads
+                        tracking_option
+                        component_id
+                        info
                         list {
                             category_name
                             name
@@ -281,6 +293,7 @@ class SearchProductFirstPageGqlUseCase(
                             strikethrough
                             background_url
                             logo_url
+                            component_id
                         }
                     }
                 }
@@ -298,6 +311,7 @@ class SearchProductFirstPageGqlUseCase(
                         tracking_option
                         options {
                             title
+                            subtitle
                             url
                             applink
                             banner_image_url
@@ -327,12 +341,15 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 original_price
                                 discount_percentage
+                                label
+                                discount
                               	badges {
                                     title
                                     image_url
                                     show
                                 }
                               	shop {
+                                    id
                                     name
                                     city
                                 }
@@ -346,6 +363,25 @@ class SearchProductFirstPageGqlUseCase(
                                     productWishlistUrl
                                     productViewUrl
                                 }
+                                customvideo_url
+                                bundle_id
+                                parent_id
+                                min_order
+                            }
+                            card_button {
+                                title
+                                applink
+                            }
+                            bundle {
+                                shop {
+                                    name
+                                    url
+                                }
+                                count_sold
+                                price
+                                original_price
+                                discount
+                                discount_percentage
                             }
                         }
                     }
@@ -387,12 +423,15 @@ class SearchProductFirstPageGqlUseCase(
                   title
                   description
                   category_id_l2
+                  applink
                   filters {
                     title
                     key
                     name
                     value
                   }
+                  tracking_option
+                  component_id
                 }
               }
             }"""

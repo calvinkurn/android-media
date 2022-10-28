@@ -20,5 +20,7 @@
         <domain includeSubdomains="false">mi-id.dnlsrv.com</domain>
         <domain includeSubdomains="false">xl.co.id</domain>
         <domain includeSubdomains="false">apigw.xl.co.id</domain>
+        <domain includeSubdomains="false">autohe.xl.co.id</domain>
+        <domain includeSubdomains="false">gateway.egw.xl.co.id</domain>
     </domain-config>
 </network-security-config>

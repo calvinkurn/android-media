@@ -2,7 +2,6 @@ package com.tokopedia.shop.home.view.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel.Header
 
 /**
  * Created by zulfikarrahman on 1/16/18.

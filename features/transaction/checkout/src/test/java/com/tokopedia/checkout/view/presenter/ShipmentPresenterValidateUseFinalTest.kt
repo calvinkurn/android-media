@@ -22,12 +22,29 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ErrorDetailUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashOptionUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashVoucherOrdersUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TickerInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
+import io.mockk.verify
+import io.mockk.verifyOrder
+import io.mockk.verifySequence
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -92,6 +109,9 @@ class ShipmentPresenterValidateUseFinalTest {
     @MockK
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
+    @MockK
+    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -107,7 +127,7 @@ class ShipmentPresenterValidateUseFinalTest {
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
@@ -123,6 +143,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -153,6 +174,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -162,7 +184,7 @@ class ShipmentPresenterValidateUseFinalTest {
 
         // Then
         verifyOrder {
-            view.showToastError(message)
+            view.showToastNormal(message)
             view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
@@ -190,6 +212,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -226,6 +249,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -256,6 +280,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -286,6 +311,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -323,6 +349,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -396,10 +423,11 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
         // When
@@ -491,7 +519,7 @@ class ShipmentPresenterValidateUseFinalTest {
         presenter.setLatValidateUseRequest(validateUsePromoRequest)
         val message = "error"
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(message))
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
         // When
@@ -504,6 +532,8 @@ class ShipmentPresenterValidateUseFinalTest {
             view.cancelAllCourierPromo()
             view.doResetButtonPromoCheckout()
         }
+
+        assertEquals(ValidateUsePromoRequest(orders = listOf(OrdersItem())), presenter.lastValidateUseRequest)
     }
 
 }

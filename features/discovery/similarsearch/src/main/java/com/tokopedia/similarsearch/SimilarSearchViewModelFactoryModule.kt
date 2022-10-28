@@ -10,8 +10,8 @@ import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCaseM
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -31,8 +31,8 @@ internal class SimilarSearchViewModelFactoryModule(
     fun provideSimilarSearchViewModelFactory(
             @Named(GET_SIMILAR_PRODUCT_USE_CASE)
             getSimilarProductsUseCase: UseCase<SimilarProductModel>,
-            addWishListUseCase: AddWishListUseCase,
-            removeWishListUseCase: RemoveWishListUseCase,
+            addToWishlistV2UseCase: AddToWishlistV2UseCase,
+            deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
             addToCartUseCase: AddToCartUseCase,
             userSession: UserSessionInterface,
             coroutineDispatchers: CoroutineDispatchers
@@ -41,8 +41,8 @@ internal class SimilarSearchViewModelFactoryModule(
                 coroutineDispatchers,
                 similarSearchQuery,
                 getSimilarProductsUseCase,
-                addWishListUseCase,
-                removeWishListUseCase,
+                addToWishlistV2UseCase,
+                deleteWishlistV2UseCase,
                 addToCartUseCase,
                 userSession
         )

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_bottom_sheet_image"
+        android:layout_width="280dp"
+        android:layout_height="210dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_bottom_sheet_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:gravity="center"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toBottomOf="@id/iu_bottom_sheet_image"
+        app:typographyType="heading_2"
+        tools:text="Verifikasi nomor HP dulu, yuk!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:gravity="center"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tpg_bottom_sheet_title"
+        tools:text="Biar akunmu lebih aman, kamu harus verifikasi nomor HP dulu sebelum memesan menu." />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_cta"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tpg_description"
+        tools:text="Verifikasi nomor HP" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

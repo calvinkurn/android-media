@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.search.result.product.ProductListParameterListener
+import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeListener
@@ -17,10 +18,12 @@ import com.tokopedia.track.TrackApp
 
 class InspirationWidgetListenerDelegate(
     context: Context?,
+    queryKeyProvider: QueryKeyProvider,
     private val filterController: FilterController,
     private val parameterListener: ProductListParameterListener,
 ): InspirationCardListener,
     InspirationSizeListener,
+    QueryKeyProvider by queryKeyProvider,
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
 
@@ -31,7 +34,7 @@ class InspirationWidgetListenerDelegate(
     }
 
     private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {
-        val label = "${option.inspirationCardType} - ${parameterListener.queryKey} - ${option.text}"
+        val label = "${option.inspirationCardType} - ${queryKey} - ${option.text}"
 
         InspirationWidgetTracking.trackEventClickInspirationCardOption(label)
     }

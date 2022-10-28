@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_grid.view.*
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by milhamj on 07/12/18.
@@ -103,7 +104,7 @@ class GridPostAdapter(private val contentPosition: Int,
             setImageMargins(listSize)
         }
 
-        fun bindProduct(postId: Int, item: GridItemViewModel, type: String, isFollowed: Boolean, shopId: String) {
+        fun bindProduct(postId: String, item: GridItemViewModel, type: String, isFollowed: Boolean, shopId: String) {
             itemView.extraProduct.background = null
             itemView.extraProduct.hide()
 
@@ -171,7 +172,7 @@ class GridPostAdapter(private val contentPosition: Int,
         }
 
         fun bindOthers(numberOfExtraProduct: Int, actionText: String,
-                       actionLink: String, postId: Int, type: String, isFollowed: Boolean, shopId: String) {
+                       actionLink: String, postId: String, type: String, isFollowed: Boolean, shopId: String) {
             val extra = "+$numberOfExtraProduct $actionText"
             itemView.extraProduct.background = ColorDrawable(
                     MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
@@ -201,19 +202,19 @@ class GridPostAdapter(private val contentPosition: Int,
         private fun setImageMargins(listSize: Int) {
             if (listSize == 1) {
                 itemView.productLayout.setMargin(0, 0, 0, 0)
-                itemView.tagTypeText.setPadding(itemView.getDimens(R.dimen.dp_16), 0, itemView.getDimens(R.dimen.dp_16), 0)
-                itemView.priceText.setPadding(itemView.getDimens(R.dimen.dp_16), 0, itemView.getDimens(R.dimen.dp_16), 0)
+                itemView.tagTypeText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl4), 0, itemView.getDimens(unifyR.dimen.spacing_lvl4), 0)
+                itemView.priceText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl4), 0, itemView.getDimens(unifyR.dimen.spacing_lvl4), 0)
             } else {
-                itemView.productLayout.setMargin(itemView.getDimens(R.dimen.dp_2), 0, itemView.getDimens(R.dimen.dp_2), 0)
-                itemView.tagTypeText.setPadding(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_4), 0)
-                itemView.priceText.setPadding(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_4), 0)
+                itemView.productLayout.setMargin(itemView.getDimens(unifyR.dimen.spacing_lvl1), 0, itemView.getDimens(unifyR.dimen.spacing_lvl1), 0)
+                itemView.tagTypeText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl2), 0, itemView.getDimens(unifyR.dimen.spacing_lvl2), 0)
+                itemView.priceText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl2), 0, itemView.getDimens(unifyR.dimen.spacing_lvl2), 0)
             }
         }
     }
 
     interface GridItemListener {
         fun onGridItemClick(
-            positionInFeed: Int, activityId: Int, productId: String,
+            positionInFeed: Int, activityId: String, productId: String,
             redirectLink: String, type: String, isFollowed: Boolean,
             shopId: String,
             feedXProducts: List<FeedXProduct>,

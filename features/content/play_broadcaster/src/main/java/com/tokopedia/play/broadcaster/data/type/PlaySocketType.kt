@@ -19,5 +19,6 @@ enum class PlaySocketEnum(val value: String) {
     Chat("MESG"),
     Freeze("FREEZE"),
     ChannelInteractive("CHANNEL_INTERACTIVE"),
+    ChannelQuiz("CHANNEL_QUIZ"),
     PinnedMessage("PINNED_MESSAGE"),
 }

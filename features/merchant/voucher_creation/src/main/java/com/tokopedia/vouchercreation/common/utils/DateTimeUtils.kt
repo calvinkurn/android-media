@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.shop.create.view.fragment.step.SetVoucherPeriodFragment
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -151,6 +152,16 @@ object DateTimeUtils {
                 add(Calendar.DATE, EXTRA_DAYS_COUPON)
             }
         } ?: GregorianCalendar()
+
+    fun GregorianCalendar.roundDate() {
+        val minute = get(Calendar.MINUTE)
+        if (minute <= MINUTE_INTERVAL) {
+            set(Calendar.MINUTE, MINUTE_INTERVAL)
+        } else {
+            set(Calendar.MINUTE, 0)
+            add(Calendar.HOUR, EXTRA_HOUR)
+        }
+    }
 
     internal fun getDisplayedDateString(context: Context?,
                                         startDate: String,

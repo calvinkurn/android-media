@@ -5,7 +5,7 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 
 fun createCategoryList(
-        categoryList: List<CategoryResponse> = listOf(createCategoryResponse())
+        categoryList: List<CategoryResponse> = listOf(createCategoryResponse(), createAdultCategoryResponse())
 ): CategoryListResponse {
     return CategoryListResponse(
             header = Header(),
@@ -16,8 +16,19 @@ fun createCategoryList(
 fun createCategoryResponse(): CategoryResponse {
         return CategoryResponse(
                 id = "1122",
-                name = "Category",
+                name = "Category 1",
                 url = "www.testing.com",
-                appLinks = "tokopedia://testing"
+                appLinks = "tokopedia://testing",
+                isAdult = 0
+        )
+}
+
+fun createAdultCategoryResponse(): CategoryResponse {
+        return CategoryResponse(
+                id = "1123",
+                name = "Category 2",
+                url = "www.testing.com",
+                appLinks = "tokopedia://testing",
+                isAdult = 1
         )
 }

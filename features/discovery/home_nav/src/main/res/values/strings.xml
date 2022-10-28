@@ -11,6 +11,7 @@
     <string name="content_desc_btn_wishlist">button wishlist</string>
     <string name="content_desc_btn_inbox">button inbox</string>
     <string name="content_desc_btn_notification">button notification</string>
+    <string name="content_desc_review">review star</string>
 
     <string name="title_category">Kategori</string>
     <string name="title_main_nav">Menu Utama</string>
@@ -40,8 +41,11 @@
     <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
 
     <string name="title_transaction_section">Aktivitas saya</string>
-    <string name="title_category_section">Semua Kategori</string>
+    <string name="title_all_category_section">Semua Kategori</string>
+    <string name="title_category_section">Kategori</string>
     <string name="title_helpcenter_section">Pusat bantuan</string>
+    <string name="title_wishlist_section">Wishlist</string>
+    <string name="title_favorite_shop_section">Toko yang di-follow</string>
     <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
@@ -50,6 +54,8 @@
     <string name="transaction_item_total_product">%s\nBarang</string>
     <string name="transaction_others_count">Transaksi\nLainnya</string>
     <string name="transaction_rupiah_value">Rp%s</string>
+    <string name="transaction_empty">Status belanjaanmu nanti bisa dicek di sini, lho!</string>
+    <string name="transaction_view_all">Lihat Semua</string>
 
     <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
     <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. &lt;a href="#"&gt;Buka Toko Gratis&lt;/a&gt;</string>
@@ -71,17 +77,43 @@
     <string name="error_state_bu_title">Gagal memuat menu ini</string>
     <string name="error_state_bu_description">Klik untuk coba lagi.</string>
 
-    <string name="error_state_transaction_title">Gagal memuat transaksi</string>
-    <string name="error_state_transaction_description">Klik untuk coba lagi.</string>
+    <string name="error_state_transaction_title">Konten gagal ditampilkan</string>
+    <string name="error_state_transaction_description">Klik ikon di samping buat coba lagi.</string>
 
     <string name="error_state_shop_info">Gagal Memuat</string>
 
     <string name="content_desc_image_transaction">image transaction</string>
     <string name="content_desc_image_payment">image payment</string>
+    <string name="content_desc_image_review">image review</string>
+    <string name="content_desc_image_empty_transaction">image empty transaction</string>
+    <string name="content_desc_affiliate">Affiliate</string>
     <string name="account_header_store_empty_shop">Mau mulai berbisnis?</string>
     <string name="account_header_store_title">Toko saya:</string>
+    <string name="account_header_register_store">Buka Toko Gratis</string>
+    <string name="account_header_register_affiliate">Daftar Affiliate</string>
 
     <string name="mainnav_wallet_app_format">%s • %s</string>
     <string name="mainnav_tokopoint_format">%s (%s)</string>
     <string name="mainnav_general_error">Gagal Memuat</string>
+
+    <string name="error_state_wishlist_title">Gagal memuat wishlist</string>
+    <string name="error_state_wishlist_description">Klik ikon sebelah untuk coba lagi</string>
+    <string name="empty_state_wishlist">Punya produk incaran? Tandai pakai ikon 💚, nanti akan muncul disini</string>
+
+    <string name="error_state_favorite_shop_title">Gagal memuat toko yang di-follow</string>
+    <string name="error_state_favorite_shop_description">Klik ikon sebelah untuk coba lagi</string>
+    <string name="empty_state_favorite_shop">Follow toko yang kamu suka biar dapat info produk &amp; promo terbaru!</string>
+    <string name="content_desc_image_empty_wishlist">image empty wishlist</string>
+    <string name="content_desc_image_empty_favorite_shop">image empty favorite shop</string>
+    <string name="content_desc_image_favorite_shop">image favorite shop</string>
+    <string name="content_desc_image_wishlist">image wishlist</string>
+    <string name="content_desc_image_shop_badge">image shop badge</string>
+
+
+    <string name="empty_state_non_logged_in_title">Akses berbagai fitur lewat satu halaman</string>
+    <string name="empty_state_non_logged_in_desc">Masuk atau daftar ke Tokopedia biar bisa lihat daftar transaksi, wishlist, dan toko yang kamu follow di sini!</string>
+
+    <string name="global_view_all">Lihat Semua</string>
+
+    <string name="wishlist_cashback">Cashback</string>
 </resources>

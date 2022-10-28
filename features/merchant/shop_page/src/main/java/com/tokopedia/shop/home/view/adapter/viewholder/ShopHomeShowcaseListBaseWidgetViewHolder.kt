@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeBaseEtalaseListWidgetBinding
 import com.tokopedia.shop.home.view.adapter.ShopHomeShowcaseListWidgetAdapter
@@ -68,7 +70,15 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
     }
 
     override fun bind(element: ShopHomeShowcaseListSliderUiModel) {
-        tvCarouselTitle?.text = element.header.title
+        tvCarouselTitle?.apply {
+            val title = element.header.title
+            text = title
+            if (title.isNotEmpty()) {
+                show()
+            } else {
+                hide()
+            }
+        }
         childWidgetAdapter.setShopHomeShowcaseListSliderUiModel(element)
         childWidgetAdapter.setParentPosition(adapterPosition)
         childWidgetAdapter.updateDataSet(element.showcaseListItem)

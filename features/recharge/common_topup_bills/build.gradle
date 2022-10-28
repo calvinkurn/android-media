@@ -19,11 +19,11 @@ buildscript {
 
 android {
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_11
     }
     buildFeatures {
         viewBinding true
@@ -71,7 +71,6 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.viewPager2)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
     //Unit Test
     testImplementation rootProject.ext.testDependencies.mockk

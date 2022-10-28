@@ -11,9 +11,8 @@ class CategoryRecommendationMapper @Inject constructor() {
                 ListItemUnify(
                         title = it.name.orEmpty(),
                         description = ""
-                ).apply {
-                    setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-                    listActionText = (it.id ?: 0L).toString()
+                ).apply { setVariant(null, ListItemUnify.RADIO_BUTTON, null)
+                    listActionText = it.id
                     isBold = false
                 }
             }.orEmpty()

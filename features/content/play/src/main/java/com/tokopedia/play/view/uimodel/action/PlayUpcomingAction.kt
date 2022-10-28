@@ -10,7 +10,6 @@ sealed class PlayUpcomingAction
 /**
  * Upcoming
  */
-object ImpressUpcomingChannel: PlayUpcomingAction()
 object ClickUpcomingButton: PlayUpcomingAction()
 object UpcomingTimerFinish: PlayUpcomingAction()
 
@@ -18,7 +17,7 @@ object UpcomingTimerFinish: PlayUpcomingAction()
  * Upcoming Interaction
  */
 object ClickFollowUpcomingAction: PlayUpcomingAction()
-object ClickPartnerNameUpcomingAction: PlayUpcomingAction()
+data class ClickPartnerNameUpcomingAction(val appLink: String): PlayUpcomingAction()
 object ClickShareUpcomingAction: PlayUpcomingAction()
 
 /**
@@ -26,10 +25,14 @@ object ClickShareUpcomingAction: PlayUpcomingAction()
  */
 data class ClickSharingOptionUpcomingAction(val shareModel: ShareModel): PlayUpcomingAction()
 object ShowShareExperienceUpcomingAction: PlayUpcomingAction()
-object CloseSharingOptionUpcomingAction: PlayUpcomingAction()
 object ScreenshotTakenUpcomingAction: PlayUpcomingAction()
-data class SharePermissionUpcomingAction(val label: String): PlayUpcomingAction()
 object CopyLinkUpcomingAction: PlayUpcomingAction()
 
 data class OpenUpcomingPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayUpcomingAction()
+
+/**
+ * Description
+ */
+object ExpandDescriptionUpcomingAction : PlayUpcomingAction()
+object TapCover : PlayUpcomingAction()
 

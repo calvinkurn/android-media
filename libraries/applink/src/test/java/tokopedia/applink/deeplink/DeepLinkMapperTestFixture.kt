@@ -8,9 +8,11 @@ import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
-import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkObject
@@ -27,14 +29,20 @@ open class DeepLinkMapperTestFixture {
     @Before
     open fun setup() {
         context = ApplicationProvider.getApplicationContext()
-        mockkObject(DeeplinkMapperUohOrder)
+        mockkObject(DeeplinkMapperUoh)
         mockkObject(DeeplinkMapperMerchant)
         mockkObject(DeeplinkMapperHome)
         mockkObject(DeeplinkMapperAccount)
         mockkObject(DeeplinkMapper)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
+        setAllowingDebugToolsFalse()
         reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
+    }
+
+    open fun setAllowingDebugToolsFalse(){
+        GlobalConfig.DEBUG = false
+        GlobalConfig.ENABLE_DISTRIBUTION = false
     }
 
     @After
@@ -76,6 +84,12 @@ open class DeepLinkMapperTestFixture {
         extras.forEach {
             assertEquals(uri.getQueryParameter(it.first), it.second)
         }
+    }
+
+    protected fun foodRollenceEnabler(){
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_FOOD, "")
+        } returns RollenceKey.KEY_ROLLENCE_FOOD
     }
 }
 

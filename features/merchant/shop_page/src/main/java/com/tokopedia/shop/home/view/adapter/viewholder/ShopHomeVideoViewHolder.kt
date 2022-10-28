@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.Group
-import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -15,10 +14,11 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
 import com.tokopedia.shop.home.HomeConstant
-import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -30,7 +30,6 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
 class ShopHomeVideoViewHolder(
         val view: View,
-        private val previousViewHolder: AbstractViewHolder<*>?,
         private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), View.OnClickListener {
 
@@ -41,7 +40,7 @@ class ShopHomeVideoViewHolder(
     }
     private val viewBinding: WidgetShopPageVideoYoutubeBinding? by viewBinding()
     private var youTubeThumbnailShopPageImageUnify: ShopCarouselBannerImageUnify? = null
-    private var loaderImageView: LoaderImageView? = null
+    private var loaderImageView: LoaderUnify? = null
     private var youTubeVideoModel: ShopHomeDisplayWidgetUiModel? = null
 
     private var btnYoutubePlayer: AppCompatImageView? = null
@@ -105,11 +104,6 @@ class ShopHomeVideoViewHolder(
         textViewTitle?.apply {
             if (model.header.title.isEmpty()) {
                 hide()
-                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
-                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
-                    }
-                }
             } else {
                 text = model.header.title
                 show()

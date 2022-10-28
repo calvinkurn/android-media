@@ -9,8 +9,9 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselOptionInfoBinding
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationCarouselOptionInfoViewHolder(
@@ -34,6 +35,8 @@ class InspirationCarouselOptionInfoViewHolder(
 
         bindProductName(productOption.name)
         bindProductDesc(productOption.description)
+
+        bindCardInteraction()
     }
 
     private fun bindProductImage(imgUrl: String) {
@@ -82,5 +85,9 @@ class InspirationCarouselOptionInfoViewHolder(
             val product = item.product.getOrNull(0) ?: return@setOnClickListener
             inspirationCarouselListener.onInspirationCarouselInfoProductClicked(product)
         }
+    }
+
+    private fun bindCardInteraction() {
+        binding?.optionInfoCardView?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
     }
 }

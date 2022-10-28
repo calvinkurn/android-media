@@ -32,6 +32,7 @@ import com.tokopedia.play_common.sse.PlayChannelSSEImpl
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.product.detail.common.VariantConstant.QUERY_VARIANT
@@ -184,4 +185,8 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun providePlayShareExperience(@ApplicationContext context: Context): PlayShareExperience =
         PlayShareExperienceImpl(context)
+
+    @PlayScope
+    @Provides
+    fun providePlayMetrics(): PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
 }

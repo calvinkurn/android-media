@@ -14,7 +14,8 @@
         android:layout_marginTop="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        app:typographyType="heading_5"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
 

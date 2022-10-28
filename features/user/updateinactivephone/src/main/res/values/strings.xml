@@ -20,7 +20,7 @@
   <string name="text_onboarding_id_card_description_3">Posisikan kartu identitas di dalam bingkai foto dan pastikan informasi terlihat jelas.</string>
   <string name="text_onboarding_selfie_description">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
   <string name="text_form_title">Hasil fotomu</string>
-  <string name="text_form_button">Upload Data</string>
+  <string name="text_form_button">Ajukan Ubah Nomor HP</string>
   <string name="text_form_input_phone_number">Masukan nomor HP baru</string>
   <string name="text_form_input_phone_number_description">Nomor ini akan terhubung dengan akun Tokopedia pilihanmu.</string>
   <string name="text_form_id_card">Kartu Identitas</string>
@@ -58,5 +58,15 @@
   <string name="expedited_onboarding_description">Kamu perlu masukkan PIN Tokopedia &amp; kode verifikasi yang dikirim ke e-mail.</string>
   <string name="expedited_title_success_page">Nomor HP-mu sudah diubah!</string>
   <string name="expedited_description_success_page">Kamu bisa pakai nomor ini buat verifikasi atau masuk ke Tokopedia.</string>
+
+  <!-- INPUT OLD PHONE NUMBER -->
+  <string name="ipn_required">Wajib diisi.</string>
+  <string name="ipn_too_short">Min. 9 digit.</string>
+  <string name="ipn_too_long">Maks. 15 digit.</string>
+  <string name="ipn_number_not_registered">Nomor ini tidak terdaftar di Tokopedia.</string>
+  <string name="ipn_toolbar_title">Ubah Nomor HP</string>
+  <string name="ipn_title">Masukkan nomor HP lama</string>
+  <string name="ipn_old_phone_number">Nomor HP lama</string>
+  <string name="ipn_next">Lanjut</string>
 
 </resources>

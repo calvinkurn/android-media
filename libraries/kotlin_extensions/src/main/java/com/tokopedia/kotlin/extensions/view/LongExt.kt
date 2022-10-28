@@ -1,5 +1,6 @@
 package com.tokopedia.kotlin.extensions.view
 
+import java.util.Date
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -7,6 +8,18 @@ import kotlin.math.pow
  * Created by jegul on 31/01/20
  */
 
+
+const val THOUSAND_EXPONENT = 3
+
+
+fun Long.toDate(): Date {
+    return Date(this)
+}
+
+
+/**
+ * Convert to non-nullable
+ */
 fun Long?.orZero(): Long = this ?: 0
 
 /**
@@ -24,7 +37,7 @@ fun Long.toAmountString(
         separator: String = ",",
         withSpacing: Boolean = false
 ): String {
-    val exponent = 3
+    val exponent = THOUSAND_EXPONENT
     val multiplier: Long = 10L.pow(exponent)
     for ((index, suffix) in ascendingSuffix.withIndex()) {
         val nextPowerOfTen = 10.pow(index * exponent) * multiplier
@@ -60,3 +73,9 @@ fun Long.toAmountStringByDivider(
         append(suffix)
     }
 }
+
+fun Long?.isZero(): Boolean = this?.let { it == 0L } ?: false
+fun Long?.isMoreThanZero(): Boolean = this?.let { it > 0L } ?: false
+fun Long?.isLessThanZero(): Boolean = this?.let { it < 0L } ?: false
+fun Long?.isOdd(): Boolean = this?.let { it % 2L == 1L } ?: false
+fun Long?.isEven(): Boolean = this?.let { it % 2L == 0L } ?: false

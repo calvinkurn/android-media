@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.roomlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
@@ -13,7 +14,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.impl.annotations.MockK
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,10 +33,10 @@ class HotelRoomListViewModelTest {
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var hotelRoomListViewModel: HotelRoomListViewModel
 
-    @RelaxedMockK
+    @MockK
     lateinit var getHotelRoomListUseCase: GetHotelRoomListUseCase
 
-    @RelaxedMockK
+    @MockK
     lateinit var hotelAddToCartUseCase: HotelAddToCartUseCase
 
     @Before
@@ -79,7 +80,7 @@ class HotelRoomListViewModelTest {
 
         //when
         hotelRoomListViewModel.roomList = hotelRooms
-        hotelRoomListViewModel.getRoomList("", HotelRoomListPageModel())
+        hotelRoomListViewModel.getRoomList(DummyHotelGqlQueryInterfaceImpl(), HotelRoomListPageModel())
 
         //then
         assert(hotelRoomListViewModel.roomList.size == 3)
@@ -95,7 +96,7 @@ class HotelRoomListViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        hotelRoomListViewModel.getRoomList("", HotelRoomListPageModel(), false)
+        hotelRoomListViewModel.getRoomList(DummyHotelGqlQueryInterfaceImpl(), HotelRoomListPageModel(), false)
 
         //then
         assert(hotelRoomListViewModel.roomListResult.value is Success)
@@ -162,6 +163,49 @@ class HotelRoomListViewModelTest {
     }
 
     @Test
+    fun clickFilter_isFreeCancellableButNotFreeBreakfast_shouldShowCorrectData() {
+        //given
+        val roomList = mutableListOf<HotelRoom>()
+        roomList.add(HotelRoom(roomId = "1", breakfastInfo = HotelRoom.RoomBreakfastInfo(isBreakfastIncluded = true), refundInfo = HotelRoom.RefundInfo(isRefundable = true)))
+        roomList.add(HotelRoom(roomId = "2", breakfastInfo = HotelRoom.RoomBreakfastInfo(isBreakfastIncluded = true), refundInfo = HotelRoom.RefundInfo(isRefundable = false)))
+        roomList.add(HotelRoom(roomId = "3", breakfastInfo = HotelRoom.RoomBreakfastInfo(isBreakfastIncluded = false), refundInfo = HotelRoom.RefundInfo(isRefundable = true)))
+        roomList.add(HotelRoom(roomId = "4", breakfastInfo = HotelRoom.RoomBreakfastInfo(isBreakfastIncluded = false), refundInfo = HotelRoom.RefundInfo(isRefundable = false)))
+
+        //when
+        hotelRoomListViewModel.roomList = roomList
+        hotelRoomListViewModel.clickFilter(clickFreeCancelable = true, clickFreeBreakfast = false)
+
+        //then
+        assert(hotelRoomListViewModel.filterFreeCancelable)
+        assert(!hotelRoomListViewModel.filterFreeBreakfast)
+        assert(hotelRoomListViewModel.isFilter)
+        assert(hotelRoomListViewModel.roomListResult.value is Success)
+        assert((hotelRoomListViewModel.roomListResult.value as Success<MutableList<HotelRoom>>).data.size == 2)
+    }
+
+    @Test
+    fun clickFilter_isFreeBreakFastButNotCancellable_shouldShowCorrectData() {
+        //given
+        val roomList = mutableListOf<HotelRoom>()
+        roomList.add(HotelRoom(roomId = "1", breakfastInfo = HotelRoom.RoomBreakfastInfo(isBreakfastIncluded = true), refundInfo = HotelRoom.RefundInfo(isRefundable = true)))
+        roomList.add(HotelRoom(roomId = "2", breakfastInfo = HotelRoom.RoomBreakfastInfo(isBreakfastIncluded = true), refundInfo = HotelRoom.RefundInfo(isRefundable = false)))
+        roomList.add(HotelRoom(roomId = "3", breakfastInfo = HotelRoom.RoomBreakfastInfo(isBreakfastIncluded = false), refundInfo = HotelRoom.RefundInfo(isRefundable = true)))
+        roomList.add(HotelRoom(roomId = "4", breakfastInfo = HotelRoom.RoomBreakfastInfo(isBreakfastIncluded = false), refundInfo = HotelRoom.RefundInfo(isRefundable = false)))
+
+        //when
+        hotelRoomListViewModel.roomList = roomList
+        hotelRoomListViewModel.clickFilter(clickFreeCancelable = false, clickFreeBreakfast = true)
+
+        //then
+        assert(!hotelRoomListViewModel.filterFreeCancelable)
+        assert(hotelRoomListViewModel.filterFreeBreakfast)
+        assert(hotelRoomListViewModel.isFilter)
+        assert(hotelRoomListViewModel.roomListResult.value is Success)
+        assert((hotelRoomListViewModel.roomListResult.value as Success<MutableList<HotelRoom>>).data.size == 2)
+    }
+
+
+    @Test
     fun clickFilter_ifNotRefundableAndNotFreeBfast_shouldShowCorrectData() {
         //given
         val roomList = mutableListOf<HotelRoom>()
@@ -188,7 +232,7 @@ class HotelRoomListViewModelTest {
         coEvery { hotelAddToCartUseCase.execute(any(), any()) } returns Success(HotelAddCartData.Response(HotelAddCartData("aab")))
 
         //when
-        hotelRoomListViewModel.addToCart("", HotelAddCartParam())
+        hotelRoomListViewModel.addToCart(DummyHotelGqlQueryInterfaceImpl(), HotelAddCartParam())
 
         //then
         assert(hotelRoomListViewModel.addCartResponseResult.value is Success)
@@ -201,7 +245,7 @@ class HotelRoomListViewModelTest {
         coEvery { hotelAddToCartUseCase.execute(any(), any()) } returns Fail(Throwable())
 
         //when
-        hotelRoomListViewModel.addToCart("", HotelAddCartParam())
+        hotelRoomListViewModel.addToCart(DummyHotelGqlQueryInterfaceImpl(), HotelAddCartParam())
 
         //then
         assert(hotelRoomListViewModel.addCartResponseResult.value is Fail)

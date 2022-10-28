@@ -19,12 +19,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
+import com.tokopedia.review.common.ReviewInboxConstants.REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION
 import com.tokopedia.review.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
@@ -70,6 +73,7 @@ class ReviewPendingFragment :
     IncentiveOvoListener {
 
     companion object {
+        private const val CAROUSEL_WINNER_TITLE = "Hai, Juara Ulasan"
         const val PARAM_RATING = "rating"
         const val CREATE_REVIEW_REQUEST_CODE = 420
         const val INBOX_SOURCE = "inbox"
@@ -304,6 +308,10 @@ class ReviewPendingFragment :
         return false
     }
 
+    override fun onDismissIncentiveBottomSheet() {
+
+    }
+
     override fun onClickCloseThankYouBottomSheet() {
         // No Op
     }
@@ -318,6 +326,10 @@ class ReviewPendingFragment :
     override fun onReviewCredibilityWidgetClicked(appLink: String, title: String, position: Int) {
         if (appLink.isBlank()) {
             goToCredibility()
+            ReviewPendingTracking.trackClickCheckReviewContribution(
+                isCompetitionWinner = title.contains(CAROUSEL_WINNER_TITLE),
+                userId = viewModel.getUserId()
+            )
         } else {
             RouteManager.route(context, appLink)
         }
@@ -363,8 +375,11 @@ class ReviewPendingFragment :
     }
 
     private fun setupErrorPage() {
-        binding?.reviewPendingConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
-            getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
+        binding?.reviewPendingConnectionError?.run {
+            reviewConnectionErrorRetryButton.setOnClickListener {
+                getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
+            }
+            reviewImageError.loadImage(REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION)
         }
     }
 
@@ -559,16 +574,12 @@ class ReviewPendingFragment :
         ) ?: ReviewInboxConstants.DEFAULT_SOURCE
     }
 
-    private fun goToHome() {
-        RouteManager.route(context, ApplinkConst.HOME)
-    }
-
     private fun goToCredibility() {
         RouteManager.route(
             context,
             ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
             viewModel.getUserId(),
-            INBOX_SOURCE
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_INBOX
         )
     }
 

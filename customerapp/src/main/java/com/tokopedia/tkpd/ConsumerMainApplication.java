@@ -58,6 +58,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        GlobalConfig.ENABLE_MACROBENCHMARK_UTIL = BuildConfig.ENABLE_MACROBENCHMARK_UTIL;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.IS_PREINSTALL = BuildConfig.IS_PREINSTALL;
@@ -123,16 +124,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     private boolean checkForceLightMode() {
-        AbTestPlatform abTest = getAbTestPlatform();
-
-        boolean forceLightRollence = false;
-        if (abTest != null) {
-            forceLightRollence = abTest
-                    .getString(RollenceKey.USER_DARK_MODE_TOGGLE, "")
-                    .isEmpty();
-        }
-
-        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false) || forceLightRollence) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
             return true;

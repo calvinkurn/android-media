@@ -26,6 +26,7 @@ data class OrderShop(
         var isFreeOngkir: Boolean = false,
         var isFreeOngkirExtra: Boolean = false,
         var freeOngkirImg: String = "",
+        var isFreeOngkirPlus: Boolean = false, // flag for plus badge tracker
         var preOrderLabel: String = "",
         var shopAlertMessage: String = "",
         var unblockingErrorMessage: String = "",

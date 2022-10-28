@@ -2,8 +2,8 @@ package com.tokopedia.play.view.storage
 
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
  * Created by jegul on 19/01/21
@@ -32,7 +32,7 @@ data class PlayChannelData(
     val pinnedInfo: PlayPinnedInfoUiModel,
     val quickReplyInfo: PlayQuickReplyInfoUiModel,
     val videoMetaInfo: PlayVideoMetaInfoUiModel,
-    val leaderboardInfo: PlayLeaderboardWrapperUiModel,
+    val leaderboard: LeaderboardUiModel,
     val upcomingInfo: PlayUpcomingUiModel,
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,

@@ -14,4 +14,5 @@ import dagger.Component
 @ProductManageListScope
 interface ProductManageListComponentStub: ProductManageListComponent {
     fun inject(fragment: ProductManageSellerFragmentStub)
+
 }

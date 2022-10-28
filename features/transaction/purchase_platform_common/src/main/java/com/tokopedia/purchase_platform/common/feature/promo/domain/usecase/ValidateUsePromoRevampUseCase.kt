@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -19,8 +20,10 @@ class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext priv
     private var paramValidateUse: ValidateUsePromoRequest? = null
 
     companion object {
-        const val PARAM_PROMO = "promo"
-        const val PARAM_PARAMS = "params"
+        private const val PARAM_PROMO = "promo"
+        private const val PARAM_PARAMS = "params"
+
+        private const val QUERY_VALIDATE_USE = "ValidateUseQuery"
     }
 
     fun setParam(param: ValidateUsePromoRequest): ValidateUsePromoRevampUseCase {
@@ -37,10 +40,11 @@ class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext priv
         )
     }
 
+    @GqlQuery(QUERY_VALIDATE_USE, VALIDATE_USE_QUERY)
     override suspend fun executeOnBackground(): ValidateUsePromoRevampUiModel {
         val param = paramValidateUse?.copy() ?: throw RuntimeException("Param has not been initialized")
 
-        val request = GraphqlRequest(VALIDATE_USE_QUERY, ValidateUseResponse::class.java, getParams(param))
+        val request = GraphqlRequest(ValidateUseQuery(), ValidateUseResponse::class.java, getParams(param))
         val validateUseGqlResponse = graphqlRepository.response(listOf(request)).getSuccessData<ValidateUseResponse>()
 
         return ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseGqlResponse.validateUsePromoRevamp)

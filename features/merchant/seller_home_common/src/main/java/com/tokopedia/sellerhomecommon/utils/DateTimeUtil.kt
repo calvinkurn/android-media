@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.utils
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -11,6 +12,8 @@ import java.util.concurrent.TimeUnit
 
 object DateTimeUtil {
 
+    private const val COUNTRY_ID = "ID"
+    private const val LANGUAGE_ID = "in"
     const val FORMAT_DD_MMM_YYYY = "dd MMM yyyy"
     const val FORMAT_HH_MM = "HH:mm"
     const val FORMAT_DD_MM_YYYY = "dd-MM-yyyy"
@@ -19,13 +22,7 @@ object DateTimeUtil {
     const val FORMAT_DD = "dd"
     const val FORMAT_MMM = "MMM"
     const val FORMAT_HOUR_24 = "HH:00"
-    const val ZERO = 0
     val ONE_DAY_MILLIS: Long = TimeUnit.DAYS.toMillis(1)
-    private const val DEFAULT_TIME_MILLIS = 0L
-
-    fun getLocale(): Locale {
-        return Locale("id")
-    }
 
     fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
         val sdf = SimpleDateFormat(pattern, locale)
@@ -80,7 +77,12 @@ object DateTimeUtil {
             val date = sdf.parse(dateStr)
             date?.time.orZero()
         } catch (e: Exception) {
-            DEFAULT_TIME_MILLIS
+            Timber.e(e)
+            Date().time
         }
+    }
+
+    private fun getLocale(): Locale {
+        return Locale(LANGUAGE_ID, COUNTRY_ID)
     }
 }

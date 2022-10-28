@@ -1,10 +1,8 @@
 package com.tokopedia.devicefingerprint.submitdevice.utils
 
-import android.util.Base64
-import com.google.gson.Gson
-import com.tokopedia.devicefingerprint.submitdevice.payload.DeviceInfoPayload
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RSA
+import com.tokopedia.encryption.utils.Constants
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
@@ -24,9 +22,7 @@ class ContentCreator @Inject constructor(
         // Create key from 32-byte random byte array, encrypted with RSA using publicKey
         val secretKeyInString = RandomHelper.randomString(32)
         val publicKey = rsa.stringToPublicKey(publicKeyString)
-        val key = rsa.encrypt(secretKeyInString, publicKey, "RSA/ECB/PKCS1Padding") { bytes ->
-            Base64.encodeToString(bytes, Base64.DEFAULT)
-        }
+        val key = rsa.encrypt(secretKeyInString, publicKey, Constants.RSA_PKCS1_ALGORITHM)
 
         // Create iv
         val ivInString = RandomHelper.randomNumber(16)
@@ -34,9 +30,7 @@ class ContentCreator @Inject constructor(
         // Encrypt deviceInfoPayload using AES-256-CBC, with iv and secret key generated earlier
         val aesEncryptorCBC = AESEncryptorCBC(ivInString)
         val secretKey = aesEncryptorCBC.generateKey(secretKeyInString)
-        val encryptedPayload = aesEncryptorCBC.encrypt(payLoad, secretKey) { bytes ->
-            Base64.encodeToString(bytes, Base64.DEFAULT)
-        }
+        val encryptedPayload = aesEncryptorCBC.encrypt(payLoad, secretKey)
 
         return "${key}${ivInString}${encryptedPayload}".replace("\n", "")
     }

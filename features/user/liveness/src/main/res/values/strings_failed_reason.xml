@@ -2,6 +2,8 @@
 <resources>
 
     <string name="liveness_failed_reason_timeout_title">Yaa, waktu habis</string>
+    <string name="liveness_failed_reason_face_missing_title">Gagal verifikasi wajah</string>
+    <string name="liveness_failed_reason_face_missing_description">Pastikan wajahmu berada di lingkaran selama proses verifikasi</string>
     <string name="liveness_failed_reason_timeout">Kamu telah melebihi batas waktu.\n Coba lagi dan ikuti instruksinya, ya.</string>
 
     <string name="liveness_failed_reason_facemissing_blink_mouth">No face detected,\n please avoid fast motion and find a brighter place</string>

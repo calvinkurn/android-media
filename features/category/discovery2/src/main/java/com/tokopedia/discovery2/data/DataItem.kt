@@ -5,6 +5,8 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.data.productbundling.BundleDetails
+import com.tokopedia.discovery2.data.productbundling.BundleProducts
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
@@ -298,6 +300,12 @@ data class DataItem(
         @SerializedName("shop_location")
         var shopLocation: String? = "",
 
+        @SerializedName("shop_url_desktop")
+        var shopURLDesktop: String? = "",
+
+        @SerializedName("url_desktop")
+        var productURLDesktop: String? = "",
+
         @SerializedName("discount_percentage")
         var discountPercentage: String? = "",
 
@@ -382,6 +390,9 @@ data class DataItem(
         @SerializedName("labels")
         var labelsGroupList: List<LabelsGroup>? = null,
 
+        @SerializedName("active_product_card")
+        var isActiveProductCard: Boolean? = null,
+
         @SerializedName("carousel_component_id")
         var flashTimerTargetComponent: String = "",
 
@@ -401,7 +412,7 @@ data class DataItem(
         var titleLogoUrl: String? = null,
 
         @SerializedName("notify_campaign_id")
-        var notifyCampaignId: Int = 0,
+        var notifyCampaignId: String = "",
 
         @SerializedName("hasAddToCartButton")
         var hasATC: Boolean = false,
@@ -439,8 +450,17 @@ data class DataItem(
         @SerializedName("show_timer")
         var showTimer: Boolean? = null,
 
+        @SerializedName("show_three_dots_button")
+        var show3Dots: Boolean? = null,
+
+        @SerializedName("atc_button_cta")
+        var atcButtonCTA: String? = null,
+
         @SerializedName("time_description")
         val timeDescription: String? = null,
+
+        @SerializedName("template_name")
+        var templateName: String? = "",
 
         var quantity: Int = 0,
 
@@ -449,6 +469,27 @@ data class DataItem(
 
         @SerializedName("catalog_slugs")
         var catalogSlug : List<String?>? = null,
+
+        @SerializedName("bundle_details")
+        var bundleDetails : List<BundleDetails?>? = null,
+
+        @SerializedName("bundle_group_id")
+        var bundleGroupId : Long? = null,
+
+        @SerializedName("bundle_name")
+        var bundleName : String? = "",
+
+        @SerializedName("bundle_products")
+        var bundleProducts : List<BundleProducts?>? = null,
+
+        @SerializedName("bundle_type")
+        var bundleType : String? = "",
+
+        @SerializedName("widget_home_banner")
+        val widgetHomeBanner: String? = "",
+
+        @SerializedName("gtm_item_name")
+        var gtmItemName : String? = "",
 
         @field:SerializedName("products")
         val products: List<ProductsItem?>? = null,
@@ -476,11 +517,19 @@ data class DataItem(
 
         var tabName: String? = "",
 
+        var componentPromoName: String? = "",
+
         var hasNotifyMe: Boolean = false,
 
         var departmentID: Int = 0,
 
         var hasThreeDots: Boolean = false,
+
+        var hasThreeDotsWishlist: Boolean = false,
+
+        var hasATCWishlist: Boolean = false,
+
+        var hasSimilarProductWishlist: Boolean? = null,
 
         var isWishList: Boolean = false,
 

@@ -15,33 +15,37 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/image"
             android:layout_width="104dp"
             android:layout_height="52dp"
             android:layout_marginTop="16dp"
-            app:corners="@integer/corner_radius_shimmering"/>
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            app:loader_corner_radius="@dimen/corner_radius_shimmering"
+            app:loader_type="rect" />
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_marginStart="8dp"
             android:id="@+id/image2"
             android:layout_width="104dp"
             android:layout_height="52dp"
             android:layout_marginTop="16dp"
-            app:corners="@integer/corner_radius_shimmering"/>
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            app:loader_type="rect"
+            app:loader_corner_radius="@dimen/corner_radius_shimmering"/>
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_marginStart="8dp"
             android:id="@+id/image3"
             android:layout_width="104dp"
             android:layout_height="52dp"
             android:layout_marginTop="16dp"
-            app:corners="@integer/corner_radius_shimmering"/>
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            app:loader_type="rect"
+            app:loader_corner_radius="@dimen/corner_radius_shimmering"/>
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_marginStart="8dp"
             android:id="@+id/image4"
             android:layout_width="104dp"
             android:layout_height="52dp"
             android:layout_marginTop="16dp"
-            app:corners="@integer/corner_radius_shimmering"/>
+            app:loader_type="rect"
+            app:loader_corner_radius="@dimen/corner_radius_shimmering"/>
     </LinearLayout>
 
     <LinearLayout

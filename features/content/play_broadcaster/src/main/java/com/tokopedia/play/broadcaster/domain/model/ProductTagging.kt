@@ -17,7 +17,7 @@ data class ProductTagging(
 
     data class Product(
             @SerializedName("id")
-            val id: Long,
+            val id: String,
 
             @SerializedName("image_url")
             val imageUrl: String,
@@ -44,6 +44,6 @@ data class ProductTagging(
             val priceFormatted: String = "",
 
             @SerializedName("discount")
-            val discount: Int = 0,
+            val discount: Long = 0L,
     )
 }

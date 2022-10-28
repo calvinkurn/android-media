@@ -13,6 +13,12 @@ buildscript {
     }
 }
 
+android{
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
@@ -49,7 +55,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
 
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModel

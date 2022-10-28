@@ -8,11 +8,13 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/background_loader"
         android:layout_width="match_parent"
         android:layout_height="@dimen/recharge_custom_product_shimmering_height"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 
     <FrameLayout
         android:layout_width="match_parent"

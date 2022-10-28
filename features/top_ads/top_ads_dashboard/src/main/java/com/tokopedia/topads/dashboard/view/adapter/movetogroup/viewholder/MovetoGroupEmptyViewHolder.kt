@@ -6,20 +6,24 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyModel
-import kotlinx.android.synthetic.main.topads_dash_no_search_result.view.*
+import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * Created by Pika on 7/6/20.
  */
-class MovetoGroupEmptyViewHolder(val view: View) : MovetoGroupViewHolder<MovetoGroupEmptyModel>(view) {
+class MovetoGroupEmptyViewHolder(val view: View) :
+    MovetoGroupViewHolder<MovetoGroupEmptyModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_no_search_result
     }
 
-    override fun bind(item: MovetoGroupEmptyModel, lastSelected: Int, countList: MutableList<CountDataItem>) {
-        view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
+    override fun bind(
+        item: MovetoGroupEmptyModel, lastSelected: Int, countList: MutableList<CountDataItem>,
+    ) {
+        view.findViewById<ImageUnify>(R.id.image_empty)
+            .setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
     }
 
 }

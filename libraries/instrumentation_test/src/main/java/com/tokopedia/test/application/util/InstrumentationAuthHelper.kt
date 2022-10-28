@@ -123,7 +123,7 @@ object InstrumentationAuthHelper {
                     DataSource.getAccountService(application as InstrumentationTestApp).info.asObservable()
                 }
                 .map { userInfoData ->
-                    if (userInfoData == null || userInfoData.userId.toString().isEmpty()) {
+                    if (userInfoData == null || userInfoData.userId.isEmpty()) {
                         throw (RuntimeException("Error get user data"))
                     } else {
                         userInfoData
@@ -131,7 +131,7 @@ object InstrumentationAuthHelper {
                 }
                 .doOnNext {
                     if (!userSession.isLoggedIn) {
-                        userSession.setTempUserId(it.userId.toString())
+                        userSession.setTempUserId(it.userId)
                         userSession.tempPhoneNumber = it.phone
                         userSession.setTempLoginName(it.fullName)
                         userSession.setTempLoginEmail(it.email)
@@ -142,9 +142,9 @@ object InstrumentationAuthHelper {
                 }
                 .flatMap {
                     val map = mapOf(
-                            "user_id" to it.userId.toString(),
+                            "user_id" to it.userId,
                             "device_id" to DataSource.MOCK_DEVICE_ID,
-                            "hash" to InstrumentationAuthHelper.getHash(it.userId.toString()),
+                            "hash" to getHash(it.userId),
                             "os_type" to "1",
                             "device_time" to (Date().time / 1000).toString()
                     )
@@ -163,9 +163,9 @@ object InstrumentationAuthHelper {
                 .doOnNext { makeLoginPojo ->
                     // bypass sec pojo
                     userSession.setLoginSession(true,
-                            makeLoginPojo.userId.toString(),
+                            makeLoginPojo.userId,
                             makeLoginPojo.fullName,
-                            makeLoginPojo.shopId.toString(),
+                            makeLoginPojo.shopId,
                             true,
                             makeLoginPojo.shopName,
                             userSession.tempEmail,

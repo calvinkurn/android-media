@@ -55,7 +55,6 @@
                     layout="@layout/item_voucher_game_banner_shimmering"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginLeft="@dimen/unify_space_16"
                     android:layout_marginRight="@dimen/unify_space_16"
                     android:visibility="gone" />
@@ -64,8 +63,9 @@
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/unify_space_16"
-                    android:layout_marginRight="@dimen/unify_space_8"
+                    android:layout_marginTop="@dimen/spacing_lvl5"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
                     android:clipToPadding="false" />
 
             </LinearLayout>

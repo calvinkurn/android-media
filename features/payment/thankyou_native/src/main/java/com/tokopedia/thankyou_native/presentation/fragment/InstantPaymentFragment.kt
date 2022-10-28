@@ -10,8 +10,6 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
@@ -83,23 +81,10 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showCharacterAnimation()
         context?.let {
             checkCreditCardRegisteredForRBA(it)
         }
         observeViewModel()
-    }
-
-    private fun showCharacterAnimation() {
-        context?.let {
-            val lottieTask = LottieCompositionFactory.fromAsset(context, CHARACTER_LOADER_JSON_ZIP_FILE)
-            lottieTask?.addListener { result: LottieComposition? ->
-                result?.let {
-                    lottieAnimationView?.setComposition(result)
-                    lottieAnimationView?.playAnimation()
-                }
-            }
-        }
     }
 
     override fun onPause() {
@@ -124,21 +109,24 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitle.isNullOrBlank()) {
+
+        setUpIllustration()
+
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.title.isNullOrBlank()) {
             tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
         } else {
-            tv_payment_success.text = thanksPageData.thanksCustomization.customTitle
+            tv_payment_success.text = thanksPageData.customDataMessage.title
         }
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customSubtitle.isNullOrBlank()) {
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.subtitle.isNullOrBlank()) {
             tv_payment_success_check_order.text = getString(R.string.thank_instant_payment_check_order)
         } else {
-            tv_payment_success_check_order.text = thanksPageData.thanksCustomization.customSubtitle
+            tv_payment_success_check_order.text = thanksPageData.customDataMessage.subtitle
         }
 
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitleOrderButton.isNullOrBlank()) {
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.titleOrderButton.isNullOrBlank()) {
             btn_see_transaction_list.text = getString(R.string.thank_see_transaction_list)
         } else {
-            btn_see_transaction_list.text = thanksPageData.thanksCustomization.customTitleOrderButton
+            btn_see_transaction_list.text = thanksPageData.customDataMessage.titleOrderButton
         }
 
         if (thanksPageData.gatewayImage.isNotEmpty()) {
@@ -178,11 +166,11 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         clPaymentMethod.setOnClickListener { openInvoiceDetail(thanksPageData) }
 
         btn_see_transaction_list.setOnClickListener {
-            if (thanksPageData.thanksCustomization == null
-                    || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
+            if (thanksPageData.customDataAppLink == null
+                    || thanksPageData.customDataAppLink.order.isNullOrBlank()) {
                 gotoOrderList()
             } else {
-                gotoOrderList(thanksPageData.thanksCustomization.customOrderUrlApp)
+                gotoOrderList(thanksPageData.customDataAppLink.order)
             }
         }
         setUpHomeButton(btnShopAgain)

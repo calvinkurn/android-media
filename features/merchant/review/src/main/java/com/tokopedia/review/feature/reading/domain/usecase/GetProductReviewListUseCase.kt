@@ -39,10 +39,16 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
                     fullName
                     image
                     url
+                    label
                   }
                   imageAttachments {
+                    attachmentID
                     imageThumbnailUrl
                     imageUrl
+                  }
+                  videoAttachments {
+                    attachmentID
+                    videoUrl
                   }
                   likeDislike {
                     totalLike

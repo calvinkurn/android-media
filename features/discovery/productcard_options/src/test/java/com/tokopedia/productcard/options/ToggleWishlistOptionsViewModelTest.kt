@@ -2,16 +2,14 @@ package com.tokopedia.productcard.options
 
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.testutils.TestException
-import com.tokopedia.productcard.options.testutils.complete
-import com.tokopedia.productcard.options.testutils.error
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase.WISHSLIST_URL
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import io.mockk.CapturingSlot
-import io.mockk.every
-import io.mockk.slot
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import io.mockk.*
 import org.junit.Test
-import rx.Subscriber
 
 internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTestFixtures() {
     
@@ -63,13 +61,13 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
     }
 
     @Test
-    fun `Add Wishlist Non-TopAds Product Success`() {
+    fun `Add WishlistV2 Non-TopAds Product Success`() {
         val userId = "123456"
         val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
 
         `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
         `Given user is logged in`(userId)
-        `Given add wishlist API will be successful`(userId)
+        `Given add wishlistV2 GQL will be successful`()
 
         `When Click save to wishlist`()
 
@@ -82,14 +80,11 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         every { userSession.userId }.returns(userId)
     }
 
-    private fun `Given add wishlist API will be successful`(userId: String) {
-        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
+    private fun `Given add wishlistV2 GQL will be successful`() {
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
-        every {
-            addWishListUseCase.createObservable(productId, userId, any())
-        }.answers {
-            thirdArg<WishListActionListener>().onSuccessAddWishlist(firstArg())
-        }
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
     }
 
     private fun `Then assert product card options model has wishlist result with isUserLoggedIn = true, isAddWishlist = true, and isSuccess = true`() {
@@ -112,13 +107,13 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
     }
 
     @Test
-    fun `Add Wishlist Non-TopAds Product Failed and handled in onErrorAddWishlist`() {
+    fun `Add WishlistV2 Non-TopAds Product Failed and handled in onErrorAddWishlist`() {
         val userId = "123456"
         val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
 
         `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
         `Given user is logged in`(userId)
-        `Given add wishlist API will fail`(userId)
+        `Given add wishlistV2 GQL will fail`()
 
         `When Click save to wishlist`()
 
@@ -126,14 +121,33 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         `Then assert product card options model has wishlist result with isUserLoggin = true, isAddWishlist = true, and isSuccess = false`()
     }
 
-    private fun `Given add wishlist API will fail`(userId: String) {
-        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
+    @Test
+    fun `Remove WishlistV2 Non-TopAds Product Failed and handled in onErrorRemoveWishlist`() {
+        val userId = "123456"
+        val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
 
-        every {
-            addWishListUseCase.createObservable(productId, userId, any())
-        }.answers {
-            thirdArg<WishListActionListener>().onErrorAddWishList("error from backend", firstArg())
-        }
+        `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
+        `Given user is logged in`(userId)
+        `Given remove wishlistV2 GQL will fail`()
+
+        `When Click delete from wishlist`()
+
+        `Then should post wishlist event`()
+        `Then assert product card options model has wishlist result with isUserLoggin = true, isAddWishlist = false, and isSuccess = false`()
+    }
+
+    private fun `Given add wishlistV2 GQL will fail`() {
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+    }
+
+    private fun `Given remove wishlistV2 GQL will fail`() {
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
     }
 
     private fun `Then assert product card options model has wishlist result with isUserLoggin = true, isAddWishlist = true, and isSuccess = false`() {
@@ -154,29 +168,22 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         )
     }
 
-    @Test
-    fun `Add Wishlist Non-TopAds Product Failed and throw Exception`() {
-        val userId = "123456"
-        val testException = TestException()
-        val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
+    private fun `Then assert product card options model has wishlist result with isUserLoggin = true, isAddWishlist = false, and isSuccess = false`() {
+        val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult!!
 
-        `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
-        `Given user is logged in`(userId)
-        `Given add wishlist API will fail with exception`(userId, testException)
+        wishlistResult.isUserLoggedIn.shouldBe(
+            true,
+            "Wishlist result isUserLoggedIn should be true"
+        )
+        wishlistResult.isSuccess.shouldBe(
+            false,
+            "Wishlist result isSuccess should be false"
+        )
 
-        `When Click save to wishlist`()
-
-        `Then assert error stack trace is printed`(testException)
-        `Then should post wishlist event`()
-        `Then assert product card options model has wishlist result with isUserLoggedIn = true, isAddWishlist = true and isSuccess = false`()
-    }
-
-    private fun `Given add wishlist API will fail with exception`(userId: String, testException: Exception) {
-        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
-
-        every {
-            addWishListUseCase.createObservable(productId, userId, any())
-        }.throws(testException)
+        wishlistResult.isAddWishlist.shouldBe(
+            false,
+            "Wishlist result isAddWishlist should be false"
+        )
     }
 
     private fun `Then assert error stack trace is printed`(testException: TestException) {
@@ -203,38 +210,6 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         )
     }
 
-    @Test
-    fun `Add Wishlist TopAds Product Success`() {
-        val userId = "123456"
-        val topAdsWishlistUrl = "https://dummy_topads_url_for_wishlist"
-        val topAdsWishlistRequestParams = slot<RequestParams>()
-        val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(
-                hasWishlist = true,
-                isWishlisted = false,
-                productId = "12345",
-                isTopAds = true,
-                topAdsWishlistUrl = topAdsWishlistUrl
-        )
-
-        `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
-        `Given user is logged in`(userId)
-        `Given add TopAds wishlist API will be successful`(topAdsWishlistRequestParams)
-
-        `When Click save to wishlist`()
-
-        `Then verify TopAds wishlist API is called with correct parameters`(topAdsWishlistRequestParams, topAdsWishlistUrl)
-        `Then should post wishlist event`()
-        `Then assert product card options model has wishlist result with isUserLoggedIn = true, isAddWishlist = true, and isSuccess = true`()
-    }
-
-    private fun `Given add TopAds wishlist API will be successful`(topAdsWishlistRequestParams: CapturingSlot<RequestParams>) {
-        every {
-            topAdsWishlistUseCase.execute(capture(topAdsWishlistRequestParams), any())
-        } answers {
-            secondArg<Subscriber<Boolean>>().complete(true)
-        }
-    }
-
     private fun `Then verify TopAds wishlist API is called with correct parameters`(
             topAdsWishlistRequestParams: CapturingSlot<RequestParams>,
             topAdsWishlistUrl: String
@@ -243,38 +218,6 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         val wishlistUrl = requestParams.getString(WISHSLIST_URL, "")
 
         wishlistUrl shouldBe topAdsWishlistUrl
-    }
-
-    @Test
-    fun `Add Wishlist TopAds Product Failed and throw Exception`() {
-        val userId = "123456"
-        val topAdsWishlistUrl = "https://dummy_topads_url_for_wishlist"
-        val testException = TestException()
-        val topAdsWishlistRequestParams = slot<RequestParams>()
-        val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(
-                hasWishlist = true,
-                isWishlisted = false,
-                productId = "12345",
-                isTopAds = true,
-                topAdsWishlistUrl = topAdsWishlistUrl
-        )
-
-        `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
-        `Given user is logged in`(userId)
-        `Given add TopAds wishlist API will fail`(topAdsWishlistRequestParams, testException)
-
-        `When Click save to wishlist`()
-
-        `Then assert error stack trace is printed`(testException)
-        `Then should post wishlist event`()
-    }
-
-    private fun `Given add TopAds wishlist API will fail`(topAdsWishlistRequestParams: CapturingSlot<RequestParams>, testException: Exception) {
-        every {
-            topAdsWishlistUseCase.execute(capture(topAdsWishlistRequestParams), any())
-        } answers {
-            secondArg<Subscriber<Boolean>>().error(testException)
-        }
     }
 
     @Test
@@ -296,13 +239,13 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
     }
 
     @Test
-    fun `Delete Product from Wishlist Success`() {
+    fun `Delete Product from WishlistV2 Success`() {
         val userId = "123456"
         val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
 
         `Given Product Card Options View Model`(productCardOptionsModelWishlisted)
         `Given user is logged in`(userId)
-        `Given remove wishlist API will be successful`(userId)
+        `Given remove wishlistV2 API will be successful`()
 
         `When Click delete from wishlist`()
 
@@ -310,14 +253,11 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         `Then assert product card options model has wishlist result with isAddWishlist = false and isSuccess = true`()
     }
 
-    private fun `Given remove wishlist API will be successful`(userId: String) {
-        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
+    private fun `Given remove wishlistV2 API will be successful`() {
+        val resultRemoveWishlistV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
-        every {
-            removeWishListUseCase.createObservable(productId, userId, any())
-        }.answers {
-            thirdArg<WishListActionListener>().onSuccessRemoveWishlist(firstArg())
-        }
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultRemoveWishlistV2)
     }
 
     private fun `Then assert product card options model has wishlist result with isAddWishlist = false and isSuccess = true`() {
@@ -339,31 +279,6 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         )
     }
 
-    @Test
-    fun `Delete Wishlist Product Failed and handled in onErrorRemoveWishlist`() {
-        val userId = "123456"
-        val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
-
-        `Given Product Card Options View Model`(productCardOptionsModelWishlisted)
-        `Given user is logged in`(userId)
-        `Given remove wishlist API will fail`(userId)
-
-        `When Click delete from wishlist`()
-
-        `Then should post wishlist event`()
-        `Then assert product card options model has wishlist result with isAddWishlist = false and isSuccess = false`()
-    }
-
-    private fun `Given remove wishlist API will fail`(userId: String) {
-        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
-
-        every {
-            removeWishListUseCase.createObservable(productId, userId, any())
-        }.answers {
-            thirdArg<WishListActionListener>().onErrorRemoveWishlist("error from backend", firstArg())
-        }
-    }
-
     private fun `Then assert product card options model has wishlist result with isAddWishlist = false and isSuccess = false`() {
         val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult!!
 
@@ -381,30 +296,5 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
                 false,
                 "Wishlist result isAddWishlist should be false"
         )
-    }
-
-    @Test
-    fun `Delete Wishlist Product Failed`() {
-        val userId = "123456"
-        val testException = TestException()
-        val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
-
-        `Given Product Card Options View Model`(productCardOptionsModelWishlisted)
-        `Given user is logged in`(userId)
-        `Given remove wishlist API will fail`(userId, testException)
-
-        `When Click delete from wishlist`()
-
-        `Then assert error stack trace is printed`(testException)
-        `Then should post wishlist event`()
-        `Then assert product card options model has wishlist result with isAddWishlist = false and isSuccess = false`()
-    }
-
-    private fun `Given remove wishlist API will fail`(userId: String, testException: Exception) {
-        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
-
-        every {
-            removeWishListUseCase.createObservable(productId, userId, any())
-        }.throws(testException)
     }
 }

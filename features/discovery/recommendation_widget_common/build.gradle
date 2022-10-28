@@ -54,7 +54,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
 
@@ -63,6 +62,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
 
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     
@@ -74,6 +75,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting

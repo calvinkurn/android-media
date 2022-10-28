@@ -14,9 +14,11 @@ import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommend
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.common.data.model.usp.UniqueSellingPointTokoCabang
+import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
+import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -137,9 +139,15 @@ data class ProductInfoP2Data(
 
         @SerializedName("ticker")
         @Expose
-        var ticker: ProductTicker = ProductTicker()
+        var ticker: ProductTicker = ProductTicker(),
 
+        @SerializedName("navBar")
+        @Expose
+        var navBar: NavBar = NavBar(),
 
+        @SerializedName("shopFinishRate")
+        @Expose
+        var shopFinishRate: ShopFinishRate = ShopFinishRate()
 ) {
     data class Response(
             @SerializedName("pdpGetData")

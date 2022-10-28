@@ -3,6 +3,7 @@ package com.tokopedia.play.view.measurement.bounds.manager.chatlistheight
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
 import com.tokopedia.play.util.measureWithTimeout
@@ -13,6 +14,7 @@ import com.tokopedia.play_common.util.extension.*
 import com.tokopedia.unifycomponents.R as unifyR
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlin.math.max
 
 /**
  * Created by jegul on 02/09/20
@@ -78,7 +80,7 @@ class PortraitChatListHeightManager(
 
         try {
             val measuredHeight = if (videoOrientation.isHorizontal) measureHorizontalVideoChatMode(maxTopPosition, hasQuickReply)
-            else measurePinnedVerticalVideo()
+            else measurePinnedVerticalVideoChatMode()
 
             val currentHeight = chatListHeightMap[key]
             chatListHeightMap[key] = if (currentHeight != null && currentHeight.height == measuredHeight) {
@@ -144,6 +146,14 @@ class PortraitChatListHeightManager(
     }
 
     private suspend fun measurePinnedVerticalVideo(): Float = coroutineScope {
+        measureWithTimeout { rvChatList.awaitPreDraw() }
+        val halfScreenHeight = (getScreenHeight() / 2).toFloat()
+        val maxHeight = max(rvChatList.globalVisibleRect.bottom - halfScreenHeight, maxVerticalChatHeight)
+        rvChatList.setMaxHeight(maxHeight)
+        maxHeight
+    }
+
+    private suspend fun measurePinnedVerticalVideoChatMode(): Float = coroutineScope {
         rvChatList.setMaxHeight(maxVerticalChatHeight)
         maxVerticalChatHeight
     }

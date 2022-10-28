@@ -1,22 +1,71 @@
 package com.tokopedia.globalnavwidget
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
+import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogAdapter
+import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogItemDecoration
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.global_nav_widget_layout.view.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 class GlobalNavWidget: BaseCustomView {
+    private val globalNavContainerLayout: LinearLayout? by lazy(NONE) {
+        findViewById(R.id.globalNavContainerLayout)
+    }
+    private val globalNavTitleLayout: LinearLayout? by lazy(NONE) {
+        findViewById(R.id.globalNavTitleLayout)
+    }
+    private val globalNavTitle: Typography? by lazy(NONE) {
+        findViewById(R.id.globalNavTitle)
+    }
+    private val globalNavSeeAllButton: Typography? by lazy(NONE) {
+        findViewById(R.id.globalNavSeeAllButton)
+    }
+    private val globalNavInfo: Typography? by lazy(NONE) {
+        findViewById(R.id.globalNavInfo)
+    }
+    private val globalNavPillRecyclerView: RecyclerView? by lazy(NONE) {
+        findViewById(R.id.globalNavPillRecyclerView)
+    }
+    private val globalNavCardRecyclerView: RecyclerView? by lazy(NONE) {
+        findViewById(R.id.globalNavCardRecyclerView)
+    }
+    private val singleGlobalNavCard: CardView? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavCard)
+    }
+    private val singleGlobalNavIcon: AppCompatImageView? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavIcon)
+    }
+    private val singleGlobalNavImage: AppCompatImageView? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavImage)
+    }
+    private val singleGlobalNavCategory: Typography? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavCategory)
+    }
+    private val singleGlobalNavTitle: Typography? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavTitle)
+    }
+    private val singleGlobalNavSubtitleInfoLayout: ConstraintLayout? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavSubtitleInfoLayout)
+    }
+    private val singleGlobalNavSubtitle: Typography? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavSubtitle)
+    }
+    private val singleGlobalNavInfo: Typography? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavInfo)
+    }
 
     private val backgroundGradientColorList = intArrayOf(-0x51a, -0x1a0a01, -0x140011, -0x1511)
 
@@ -75,6 +124,7 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun hideGlobalNavListContainer() {
         globalNavTitleLayout?.visibility = View.GONE
+        globalNavInfo?.visibility = View.GONE
         globalNavCardRecyclerView?.visibility = View.GONE
         globalNavPillRecyclerView?.visibility = View.GONE
     }
@@ -190,6 +240,8 @@ class GlobalNavWidget: BaseCustomView {
     private fun handleGlobalNav(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
         setBackground(globalNavWidgetModel.background)
         setGlobalNavTitle(globalNavWidgetModel.title)
+        setGlobalNavInfo(globalNavWidgetModel.info)
+        setSeeAllText(globalNavWidgetModel.navTemplate)
         setSeeAllButtonListener(globalNavWidgetModel, globalNavWidgetListener)
         setGlobalNavContent(globalNavWidgetModel, globalNavWidgetListener)
     }
@@ -198,7 +250,23 @@ class GlobalNavWidget: BaseCustomView {
         globalNavTitle?.text = MethodChecker.fromHtml(title)
     }
 
-    private fun setSeeAllButtonListener(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
+    private fun setGlobalNavInfo(info: String) {
+        globalNavInfo?.shouldShowWithAction(info.isNotEmpty()) {
+            it.text = info
+        }
+    }
+
+    private fun setSeeAllText(navTemplate: String) {
+        if (navTemplate == GlobalNavWidgetConstant.NAV_TEMPLATE_CATALOG)
+            globalNavSeeAllButton?.text = context.getString(R.string.global_nav_see_catalog)
+        else
+            globalNavSeeAllButton?.text = context.getString(R.string.global_nav_see_all_text)
+    }
+
+    private fun setSeeAllButtonListener(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
         val shouldShowSeeAllButton = globalNavWidgetModel.clickSeeAllApplink.isNotEmpty()
 
         globalNavSeeAllButton?.shouldShowWithAction(shouldShowSeeAllButton) { globalNavSeeAllButton ->
@@ -213,7 +281,10 @@ class GlobalNavWidget: BaseCustomView {
             globalNavWidgetListener: GlobalNavWidgetListener
     ) {
         when(globalNavWidgetModel.navTemplate) {
-            GlobalNavWidgetConstant.NAV_TEMPLATE_CARD -> handleGlobalNavCardTemplate(globalNavWidgetModel, globalNavWidgetListener)
+            GlobalNavWidgetConstant.NAV_TEMPLATE_CARD ->
+                handleGlobalNavCardTemplate(globalNavWidgetModel, globalNavWidgetListener)
+            GlobalNavWidgetConstant.NAV_TEMPLATE_CATALOG ->
+                handleGlobalNavCatalogTemplate(globalNavWidgetModel, globalNavWidgetListener)
             else -> handleGlobalNavDefaultTemplate(globalNavWidgetModel, globalNavWidgetListener)
         }
     }
@@ -266,6 +337,13 @@ class GlobalNavWidget: BaseCustomView {
         )
     }
 
+    private fun createGlobalNavWidgetCatalogItemDecoration(): RecyclerView.ItemDecoration {
+        return GlobalNavWidgetCatalogItemDecoration(
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+        )
+    }
+
     private fun handleGlobalNavDefaultTemplate(
             globalNavWidgetModel: GlobalNavWidgetModel,
             globalNavWidgetListener: GlobalNavWidgetListener
@@ -300,5 +378,39 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun createPillRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return GridLayoutManager(context, GLOBAL_NAV_SPAN_COUNT, GridLayoutManager.VERTICAL, false)
+    }
+
+    private fun handleGlobalNavCatalogTemplate(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
+        hideListPillContent()
+        setListCatalogContent(globalNavWidgetModel, globalNavWidgetListener)
+    }
+
+    private fun setListCatalogContent(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
+        globalNavCardRecyclerView?.visibility = View.VISIBLE
+        globalNavCardRecyclerView?.adapter = createCatalogAdapter(
+            globalNavWidgetModel,
+            globalNavWidgetListener
+        )
+        globalNavCardRecyclerView?.layoutManager = createCardRecyclerViewLayoutManager()
+
+        if (globalNavCardRecyclerView?.itemDecorationCount == 0) {
+            globalNavCardRecyclerView?.addItemDecoration(createGlobalNavWidgetCatalogItemDecoration())
+        }
+    }
+
+    private fun createCatalogAdapter(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener
+    ): RecyclerView.Adapter<*> {
+        val catalogAdapter = GlobalNavWidgetCatalogAdapter(globalNavWidgetModel, globalNavWidgetListener)
+        catalogAdapter.setItemList(globalNavWidgetModel.itemList)
+
+        return catalogAdapter
     }
 }

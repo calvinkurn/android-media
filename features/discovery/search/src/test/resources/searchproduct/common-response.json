@@ -8,11 +8,15 @@
       "additionalParams": "",
       "errorMessage": "",
       "defaultView": 1,
-      "component_id": "01.02.02.01"
+      "component_id": "01.02.02.01",
+      "meta": {
+        "productListType": "var_reposition"
+      }
     },
     "data": {
       "isQuerySafe": true,
       "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "backendFilters": "fcity=123,234#456&official=true",
       "redirection": {
         "redirectApplink": ""
       },

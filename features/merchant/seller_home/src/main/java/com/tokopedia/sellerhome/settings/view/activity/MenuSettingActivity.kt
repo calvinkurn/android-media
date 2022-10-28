@@ -11,7 +11,7 @@ import com.tokopedia.sellerhome.settings.view.fragment.MenuSettingFragment
 
 class MenuSettingActivity : BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment? =
+    override fun getNewFragment(): Fragment =
         MenuSettingFragment.createInstance()
 
     override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {

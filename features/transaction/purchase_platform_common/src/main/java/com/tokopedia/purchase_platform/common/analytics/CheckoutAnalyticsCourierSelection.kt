@@ -57,6 +57,20 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
+    fun eventClickAtcCourierSelectionInsuranceInfoTooltip(userId: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_CX,
+            ConstantTransactionAnalytics.EventCategory.INSURANCE_INFO_TOOLTIP,
+            ConstantTransactionAnalytics.EventAction.CLICK_INSURANCE_INFO_TOOLTIP,
+            ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_INSURANCE_INFO_TOOLTIP
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
     fun eventClickAtcCourierSelectionClickDropship() {
         sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
@@ -130,6 +144,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     fun sendEnhancedECommerceCheckout(cartMap: Map<String, Any>,
                                       tradeInCustomDimension: Map<String, String>?,
                                       transactionId: String?,
+                                      userId: String,
+                                      promoFlag: Boolean,
                                       eventCategory: String,
                                       eventAction: String,
                                       eventLabel: String) {
@@ -141,12 +157,15 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
         dataLayer[ConstantTransactionAnalytics.Key.E_COMMERCE] = cartMap
         dataLayer[ConstantTransactionAnalytics.Key.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        dataLayer[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         if (tradeInCustomDimension != null && tradeInCustomDimension.isNotEmpty()) {
             dataLayer.putAll(tradeInCustomDimension)
         }
         if (transactionId?.isNotEmpty() == true) {
             dataLayer[ConstantTransactionAnalytics.Key.PAYMENT_ID] = transactionId
         }
+        dataLayer[ExtraKey.USER_ID] = userId
+        dataLayer[ExtraKey.PROMO_FLAG] = promoFlag.toString()
         sendEnhancedEcommerce(dataLayer)
     }
 
@@ -746,6 +765,71 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewGotoplusTicker() {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_GOTOPLUS_TICKER,
+                ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.VIEW_GOTOPLUS_TICKER_COURIER_SELECTION
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewGotoplusUpsellTicker() {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_GOTOPLUS_UPSELL_TICKER,
+                ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.VIEW_GOTOPLUS_UPSELL_TICKER
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickGotoplusUpsellTicker() {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.CLICK_PP,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_GOTOPLUS_UPSELL_TICKER,
+                ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_GOTOPLUS_UPSELL_TICKER
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewNewUpsell(isSelected: Boolean) {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                if (isSelected) ConstantTransactionAnalytics.EventAction.VIEW_GOTOPLUS_CROSS_SELL_BATAL else ConstantTransactionAnalytics.EventAction.VIEW_GOTOPLUS_CROSS_SELL_CEK_PLUS,
+                ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = if (isSelected) ConstantTransactionAnalytics.TrackerId.VIEW_GOTOPLUS_CROSS_SELL_BATAL else ConstantTransactionAnalytics.TrackerId.VIEW_GOTOPLUS_CROSS_SELL_CEK_PLUS
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickNewUpsell(isSelected: Boolean) {
+        val gtmData = getGtmData(
+                ConstantTransactionAnalytics.EventName.CLICK_PP,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                if (isSelected) ConstantTransactionAnalytics.EventAction.CLICK_GOTOPLUS_CROSS_SELL_BATAL else ConstantTransactionAnalytics.EventAction.CLICK_GOTOPLUS_CROSS_SELL_CEK_PLUS,
+                ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = if (isSelected) ConstantTransactionAnalytics.TrackerId.CLICK_GOTOPLUS_CROSS_SELL_BATAL else ConstantTransactionAnalytics.TrackerId.CLICK_GOTOPLUS_CROSS_SELL_CEK_PLUS
         sendGeneralEvent(gtmData)
     }
 }

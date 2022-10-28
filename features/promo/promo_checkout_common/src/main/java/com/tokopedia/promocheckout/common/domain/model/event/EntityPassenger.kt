@@ -15,13 +15,13 @@ data class EntityPassenger(
         val helpText: String = "",
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "0",
         @SerializedName("name")
         @Expose
         val name: String = "",
         @SerializedName("product_id")
         @Expose
-        val productId: Int = 0,
+        val productId: String = "0",
         @SerializedName("required")
         @Expose
         val required: String = "",

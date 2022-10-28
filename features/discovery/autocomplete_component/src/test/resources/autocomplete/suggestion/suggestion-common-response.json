@@ -21,7 +21,8 @@
         "tracking_option": 3,
         "tracking": {
           "code": ""
-        }
+        },
+        "suggestion_id": ""
       },
       {
         "template": "list_single_line",
@@ -41,7 +42,8 @@
         "tracking_option": 3,
         "tracking": {
           "code": "123"
-        }
+        },
+        "suggestion_id": ""
       },
       {
         "template": "list_single_line",
@@ -61,7 +63,8 @@
         "tracking_option": 3,
         "tracking": {
           "code": ""
-        }
+        },
+        "suggestion_id": ""
       },
       {
         "template": "list_single_line",
@@ -81,7 +84,8 @@
         "tracking_option": 3,
         "tracking": {
           "code": ""
-        }
+        },
+        "suggestion_id": ""
       },
       {
         "template": "header",
@@ -121,7 +125,8 @@
         "tracking_option": 3,
         "tracking": {
           "code": ""
-        }
+        },
+        "suggestion_id": "12345"
       },
       {
         "template": "list_double_line",
@@ -141,7 +146,8 @@
         "tracking_option": 3,
         "tracking": {
           "code": ""
-        }
+        },
+        "suggestion_id": "12346"
       },
       {
         "template": "header",

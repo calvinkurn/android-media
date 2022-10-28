@@ -1,5 +1,7 @@
 package com.tokopedia.digital_deals.view.model;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Rating {
@@ -8,10 +10,10 @@ public class Rating {
     private String feedback;
 
     @SerializedName("user_id")
-    private int userId;
+    private long userId;
 
     @SerializedName("product_id")
-    private int productId;
+    private long productId;
 
     @SerializedName("rating")
     private int rating;
@@ -28,19 +30,19 @@ public class Rating {
         return feedback;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 

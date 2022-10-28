@@ -13,7 +13,7 @@ class PlayUserWinnerStatusMapper @Inject constructor() {
 
     fun mapUserWinnerStatus(userWinnerStatus: UserWinnerStatus) = PlayUserWinnerStatusUiModel (
         channelId = userWinnerStatus.channelId,
-        interactiveId = userWinnerStatus.interactiveId,
+        interactiveId = userWinnerStatus.interactiveId.toString(),
         userId = userWinnerStatus.userId,
         name = userWinnerStatus.name,
         imageUrl = userWinnerStatus.imageUrl,

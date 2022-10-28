@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class Feed (
     @SerializedName("id")
     @Expose
-    val id: Int = 0,
+    val id: String = "",
     @SerializedName("createTime")
     @Expose
     val createTime: String = "",

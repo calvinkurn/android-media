@@ -4,13 +4,18 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.topads.common.R
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
-import kotlinx.android.synthetic.main.topads_edit_select_layout_product_filter_list_item.view.*
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Author errysuprayogi on 11,November,2019
  */
-class EtalaseItemViewHolder(val view: View, var actionClick: ((pos:Int) -> Unit)?): EtalaseViewHolder<EtalaseItemViewModel>(view) {
+class EtalaseItemViewHolder(val view: View, var actionClick: ((pos: Int) -> Unit)?) :
+    EtalaseViewHolder<EtalaseItemUiModel>(view) {
+
+    val title: Typography? = view.findViewById(R.id.title)
+    val check: ImageUnify? = view.findViewById(R.id.check)
 
     companion object {
         @LayoutRes
@@ -23,14 +28,15 @@ class EtalaseItemViewHolder(val view: View, var actionClick: ((pos:Int) -> Unit)
         }
     }
 
-    override fun bind(item: EtalaseItemViewModel) {
+    override fun bind(item: EtalaseItemUiModel) {
         item.let {
-            view.title.text = it.result.name
-            view.check.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_ic_check))
-            if(item.checked){
-                view.check.visibility = View.VISIBLE
+            title?.text = it.result.name
+            check?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                R.drawable.topads_ic_check))
+            if (item.checked) {
+                check?.visibility = View.VISIBLE
             } else {
-                view.check.visibility = View.INVISIBLE
+                check?.visibility = View.INVISIBLE
             }
         }
     }

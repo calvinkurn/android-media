@@ -6,6 +6,8 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
@@ -29,7 +31,6 @@ class TokoNowCategoryGridViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_category_grid
-        private const val GRID_SPAN_COUNT = 2
     }
 
     private var binding: ItemTokopedianowHomeCategoryGridBinding? by viewBinding()
@@ -59,8 +60,8 @@ class TokoNowCategoryGridViewHolder(
         listener?.onAllCategoryClicked()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: String) {
-        listener?.onCategoryClicked(position, categoryId)
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) {
+        listener?.onCategoryClicked(position, categoryId, headerName, categoryName)
     }
 
     private fun initView() {
@@ -90,6 +91,12 @@ class TokoNowCategoryGridViewHolder(
             layoutManager = GridLayoutManager(context, data.categoryListUiModel?.gridSpanCount ?: 1, RecyclerView.HORIZONTAL, false)
         }
 
+        itemView.addOnImpressionListener(data, object : ViewHintListener {
+            override fun onViewHint() {
+                listener?.onCategoryImpression(data)
+            }
+        })
+
         adapter.submitList(data.categoryListUiModel?.categoryList.orEmpty())
 
         categoryShimmering?.hide()
@@ -118,6 +125,7 @@ class TokoNowCategoryGridViewHolder(
     interface TokoNowCategoryGridListener {
         fun onCategoryRetried()
         fun onAllCategoryClicked()
-        fun onCategoryClicked(position: Int, categoryId: String)
+        fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String)
+        fun onCategoryImpression(data: TokoNowCategoryGridUiModel)
     }
 }

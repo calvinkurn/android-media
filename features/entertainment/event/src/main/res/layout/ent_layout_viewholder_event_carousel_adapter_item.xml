@@ -91,7 +91,8 @@
             android:textColor="@color/Unify_T500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/event_location"
-            app:typographyType="heading_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="display_1"
             tools:text="20\nSEP" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

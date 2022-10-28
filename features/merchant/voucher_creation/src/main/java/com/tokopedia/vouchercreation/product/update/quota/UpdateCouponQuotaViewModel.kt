@@ -41,7 +41,7 @@ class UpdateCouponQuotaViewModel @Inject constructor(
         object QuotaIsZero : QuotaState()
         data class BelowMinQuota(val minQuota: Int) : QuotaState()
         data class ExceedMaxAllowedQuota(val maxQuota: Int) : QuotaState()
-        data class Valid(val newQuota: Int) : QuotaState()
+        object Valid : QuotaState()
     }
 
     fun updateQuota(voucherId: Int, quota: Int) {
@@ -75,7 +75,7 @@ class UpdateCouponQuotaViewModel @Inject constructor(
             return
         }
 
-        _validInput.value = QuotaState.Valid(newQuota)
+        _validInput.value = QuotaState.Valid
     }
 
 

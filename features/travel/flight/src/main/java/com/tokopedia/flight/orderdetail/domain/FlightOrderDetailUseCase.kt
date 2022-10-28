@@ -5,8 +5,25 @@ import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCan
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
-import com.tokopedia.flight.orderdetail.data.*
-import com.tokopedia.flight.orderdetail.presentation.model.*
+import com.tokopedia.flight.orderdetail.data.FlightOrderDetailEntity
+import com.tokopedia.flight.orderdetail.data.OrderDetailCancellation
+import com.tokopedia.flight.orderdetail.data.OrderDetailJourney
+import com.tokopedia.flight.orderdetail.data.OrderDetailPassenger
+import com.tokopedia.flight.orderdetail.data.QueryOrderDetail
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailActionButtonModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailAmenityModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailCancellationModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailConditionalInfoModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailFareModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailFreeAmenityModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailInsuranceModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerCancelStatusModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPaymentModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailRouteModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailWebCheckInModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -31,7 +48,7 @@ class FlightOrderDetailUseCase @Inject constructor(
         useCase.clearRequest()
 
         val params = mapOf(PARAM_DATA to mapOf(PARAM_INVOICE_ID to invoiceId))
-        val graphqlRequest = GraphqlRequest(FlightOrderDetailGqlConst.QUERY_ORDER_DETAIL,
+        val graphqlRequest = GraphqlRequest(QueryOrderDetail(),
                 FlightOrderDetailEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 
@@ -51,7 +68,7 @@ class FlightOrderDetailUseCase @Inject constructor(
         useCase.clearRequest()
 
         val params = mapOf(PARAM_DATA to mapOf(PARAM_INVOICE_ID to invoiceId))
-        val graphqlRequest = GraphqlRequest(FlightOrderDetailGqlConst.QUERY_ORDER_DETAIL,
+        val graphqlRequest = GraphqlRequest(QueryOrderDetail(),
                 FlightOrderDetailEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 
@@ -349,7 +366,7 @@ class FlightOrderDetailUseCase @Inject constructor(
     private fun transformOrderDetailToCancellationList(data: FlightOrderDetailEntity.OrderDetailData): List<FlightOrderCancellationListModel> =
             data.let {
                 val cancellationList = arrayListOf<FlightOrderCancellationListModel>()
-                val journeyIdMapToDepartureArrivalId = hashMapOf<Int, Pair<String, String>>()
+                val journeyIdMapToDepartureArrivalId = hashMapOf<String, Pair<String, String>>()
 
                 data.flight.journeys.map { journey ->
                     journeyIdMapToDepartureArrivalId.put(journey.id, Pair(journey.departureId, journey.arrivalId))
@@ -385,7 +402,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                                                cancellationDetailList: List<OrderDetailCancellation.OrderDetailCancelDetail>)
             : List<FlightOrderDetailJourneyModel> {
 
-        val journeyIdList = arrayListOf<Int>()
+        val journeyIdList = arrayListOf<String>()
         val transformedJourneyList = arrayListOf<FlightOrderDetailJourneyModel>()
 
         journeyList.map { journey ->
@@ -400,7 +417,7 @@ class FlightOrderDetailUseCase @Inject constructor(
         return transformedJourneyList
     }
 
-    private fun transformPassengerToCancellation(journeyIdMapToDepartureArrivalId: Map<Int, Pair<String, String>>,
+    private fun transformPassengerToCancellation(journeyIdMapToDepartureArrivalId: Map<String, Pair<String, String>>,
                                                  passengerList: List<OrderDetailPassenger>,
                                                  cancellationDetailList: List<OrderDetailCancellation.OrderDetailCancelDetail>)
             : List<FlightOrderCancellationDetailPassengerModel> {

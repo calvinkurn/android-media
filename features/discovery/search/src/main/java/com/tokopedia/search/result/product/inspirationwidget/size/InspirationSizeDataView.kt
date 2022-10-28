@@ -1,20 +1,22 @@
 package com.tokopedia.search.result.product.inspirationwidget.size
 
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetOption
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetFilter
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWidgetOption
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.separator.VerticalSeparable
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 
 class InspirationSizeDataView(
     override val data: InspirationWidgetDataView = InspirationWidgetDataView(),
     val optionSizeData: List<InspirationSizeOptionDataView> = listOf(),
+    override val verticalSeparator: VerticalSeparator = VerticalSeparator.Both,
 ): InspirationWidgetVisitable {
 
-    override val hasTopSeparator = true
-
-    override val hasBottomSeparator = true
+    override fun addTopSeparator(): VerticalSeparable = this
+    override fun addBottomSeparator(): VerticalSeparable = this
 
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)

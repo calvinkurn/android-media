@@ -1,12 +1,24 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.cartcommon.data.response.deletecart.Data
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.mvcwidget.ResultStatus
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
+import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
@@ -72,17 +84,20 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     @Test
-    fun `check whether response get product list data success is not null`() {
+    fun `check whether response get product list data success is not null with direct purchase true`() {
         runBlocking {
 
-            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+                data = listOf(ShopProduct(), ShopProduct())
+            )
             viewModelShopPageProductListViewModel.getProductListData(
                     anyString(),
                     anyInt(),
                     anyInt(),
                     anyString(),
                     ShopProductFilterParameter(),
-                    addressWidgetData
+                    addressWidgetData,
+                    mockIsDirectPurchaseTrue
             )
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -91,6 +106,38 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
             Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
+            assert((viewModelShopPageProductListViewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
+                it.isEnableDirectPurchase
+            } == mockIsDirectPurchaseTrue)
+        }
+    }
+
+    @Test
+    fun `check whether response get product list data success is not null with direct purchase false`() {
+        runBlocking {
+
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+                data = listOf(ShopProduct(), ShopProduct())
+            )
+            viewModelShopPageProductListViewModel.getProductListData(
+                anyString(),
+                anyInt(),
+                anyInt(),
+                anyString(),
+                ShopProductFilterParameter(),
+                addressWidgetData,
+                mockIsDirectPurchaseFalse
+            )
+
+            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
+
+            verifyGetShopProductUseCaseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
+            Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
+            assert((viewModelShopPageProductListViewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
+                it.isEnableDirectPurchase
+            } == mockIsDirectPurchaseFalse)
         }
     }
 
@@ -107,7 +154,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     anyInt(),
                     anyString(),
                     ShopProductFilterParameter(),
-                    addressWidgetData
+                    addressWidgetData,
+                    mockIsDirectPurchaseTrue
             )
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -123,7 +171,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response  get product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData)
+            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData, mockIsDirectPurchaseTrue)
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
@@ -284,9 +332,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -431,7 +480,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                 "123",
                 productPerPage = mockProductPerPage,
                 ShopProduct.GetShopProduct(data = listOf(ShopProduct())
-        ))
+        ),mockIsDirectPurchaseTrue)
         Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
     }
 
@@ -559,9 +608,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -619,9 +669,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -678,9 +729,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -735,9 +787,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = false,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -794,9 +847,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseFalse
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -854,9 +908,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -913,9 +968,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -971,9 +1027,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
             assert(viewModelShopPageProductListViewModel.membershipData.value == null)
         }
@@ -1020,9 +1077,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
             assert(viewModelShopPageProductListViewModel.merchantVoucherData.value == null)
         }
@@ -1069,9 +1127,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = true,
+                    isShopWidgetAlreadyShown = true,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
             assert(viewModelShopPageProductListViewModel.merchantVoucherData.value == null)
             assert(viewModelShopPageProductListViewModel.shopProductFeaturedData.value == null)
@@ -1110,7 +1169,6 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             } returns getShopProductUseCase
             val observer = mockk<Observer<Result<MembershipStampProgressUiModel>>>(relaxed = true)
             viewModelShopPageProductListViewModel.membershipData.observeForever(observer)
-            val slot = slot<Result<MembershipStampProgressUiModel>>()
             every { observer.onChanged(any<Success<MembershipStampProgressUiModel>>()) } throws Exception()
             viewModelShopPageProductListViewModel.getBuyerViewContentData(
                     shopId = "123",
@@ -1124,9 +1182,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             highlighted = true,
                             etalaseRules = listOf()
                     )),
-                    isShowNewShopHomeTab = false,
+                    isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchaseTrue
             )
             assert(viewModelShopPageProductListViewModel.productListData.value is Fail)
         }
@@ -1276,5 +1335,371 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
     private fun verifyGetMerchantVoucerUseCaseCalled() {
         coVerify { mvcSummaryUseCase.getResponse(any())}
+    }
+
+
+    @Test
+    fun `when call getShopProductDataWithUpdatedQuantity with mocked mini cart data, then product in cart should match with mini cart data`() {
+        val mockMiniCartSimplifiedData = getMockMiniCartSimplifiedData()
+        val mockShopProductListData = getMockShopProductData()
+        viewModelShopPageProductListViewModel.setMiniCartData(mockMiniCartSimplifiedData)
+        viewModelShopPageProductListViewModel.getShopProductDataWithUpdatedQuantity(
+            mockShopProductListData
+        )
+        viewModelShopPageProductListViewModel.updatedShopProductListQuantityData.value?.onEach { shopProductUiModel ->
+            when (shopProductUiModel) {
+                is ShopProductUiModel -> {
+                    checkProductListDataShouldMatchWithMatchedMiniCartData(
+                        shopProductUiModel,
+                        mockMiniCartSimplifiedData
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getMatchedMiniCartItem(
+        shopProductUiModel: ShopProductUiModel,
+        miniCartData: MiniCartSimplifiedData
+    ): List<MiniCartItem.MiniCartItemProduct> {
+        return miniCartData.let { miniCartSimplifiedData ->
+            val isVariant = shopProductUiModel.isVariant
+            val listMatchedMiniCartItemProduct = if (isVariant) {
+                miniCartSimplifiedData.miniCartItems.values.filterIsInstance<MiniCartItem.MiniCartItemProduct>()
+                    .filter { it.productParentId == shopProductUiModel.parentId }
+            } else {
+                val childProductId = shopProductUiModel.id
+                miniCartSimplifiedData.miniCartItems.getMiniCartItemProduct(childProductId)?.let {
+                    listOf(it)
+                }.orEmpty()
+            }
+            listMatchedMiniCartItemProduct.filter { !it.isError }
+        }
+    }
+
+    private fun checkProductListDataShouldMatchWithMatchedMiniCartData(
+        shopProductUiModel: ShopProductUiModel,
+        miniCartSimplifiedData: MiniCartSimplifiedData
+    ) {
+        val matchedMiniCartItem = getMatchedMiniCartItem(
+            shopProductUiModel,
+            miniCartSimplifiedData
+        )
+        if (matchedMiniCartItem.isNotEmpty()) {
+            val quantityOnMiniCart = matchedMiniCartItem.sumOf { it.quantity }
+            assert(quantityOnMiniCart == shopProductUiModel.productInCart)
+        } else {
+            assert(shopProductUiModel.productInCart.isZero())
+        }
+    }
+
+    @Test
+    fun `when call getShopProductDataWithUpdatedQuantity without mocked mini cart data, then product in cart should be zero`() {
+        val mockShopProductListData = getMockShopProductData()
+        viewModelShopPageProductListViewModel.getShopProductDataWithUpdatedQuantity(mockShopProductListData)
+        viewModelShopPageProductListViewModel.updatedShopProductListQuantityData.value?.onEach {shopProductUiModel ->
+            when(shopProductUiModel){
+                is ShopProductUiModel -> {
+                    assert(shopProductUiModel.productInCart.isZero())
+                }
+            }
+        }
+    }
+
+    private fun getMockShopProductData(): MutableList<Visitable<*>> {
+        return mutableListOf(
+            ShopProductUiModel().apply {
+                id = "1"
+                productInCart = 3
+            },
+            ShopProductUiModel().apply {
+                id = "8"
+            },
+            ShopProductUiModel().apply {
+                parentId = "12"
+                isVariant = true
+            },
+            ShopProductUiModel().apply {
+                parentId = "13"
+                isVariant = true
+            },
+            ShopProductUiModel().apply {
+                parentId = "14"
+                isVariant = true
+            },
+            ShopProductUiModel(),
+            ShopProductEtalaseTitleUiModel("","")
+        )
+    }
+
+    private fun getMockMiniCartSimplifiedData(): MiniCartSimplifiedData {
+        return MiniCartSimplifiedData(
+            miniCartItems = hashMapOf(
+                MiniCartItemKey("1") to MiniCartItem.MiniCartItemProduct(
+                    productId = "1",
+                    quantity = 3
+                ),
+                MiniCartItemKey("2") to MiniCartItem.MiniCartItemProduct(
+                    productId = "2",
+                    productParentId = "12",
+                    quantity = 5
+                ),
+                MiniCartItemKey("3") to MiniCartItem.MiniCartItemProduct(
+                    productId = "3",
+                    productParentId = "12",
+                    quantity = 5
+                ),
+                MiniCartItemKey("4") to MiniCartItem.MiniCartItemProduct(
+                    productId = "4",
+                    productParentId = "13",
+                    quantity = 5,
+                    isError = true
+                ),
+                MiniCartItemKey("5") to MiniCartItem.MiniCartItemProduct(
+                    productId = "5",
+                    productParentId = "13",
+                    quantity = 5
+                ),
+                MiniCartItemKey("6") to MiniCartItem.MiniCartItemProduct(
+                    productId = "6",
+                    productParentId = "14",
+                    quantity = 5,
+                    isError = true
+                ),
+                MiniCartItemKey("7") to MiniCartItem.MiniCartItemProduct(
+                    productId = "7",
+                    productParentId = "14",
+                    quantity = 5,
+                    isError = true
+                ),
+                MiniCartItemKey("8") to MiniCartItem.MiniCartItemProduct(
+                    productId = "8",
+                    isError = true
+                ),
+                MiniCartItemKey("9") to MiniCartItem.MiniCartItemParentProduct()
+            )
+        )
+    }
+
+    @Test
+    fun `when call handleAtcFlow on add item to cart state is success, then miniCartAdd value should be success` (){
+        val mockQuantity  = 5
+        val mockComponentName  = "Product"
+        val mockShopProductUiModel = ShopProductUiModel().apply {
+            id = "33"
+            name= "product name"
+            displayedPrice = "100"
+        }
+        every {
+            addToCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(AddToCartDataModel) -> Unit>().invoke(
+                AddToCartDataModel(
+                    data = DataModel(
+                        success = 1,
+                        productId = 33
+                    )
+                )
+            )
+        }
+        viewModelShopPageProductListViewModel.setMiniCartData(getMockMiniCartSimplifiedData())
+        viewModelShopPageProductListViewModel.handleAtcFlow(
+            mockQuantity,
+            mockShopId,
+            mockComponentName,
+            mockShopProductUiModel
+        )
+        assert(viewModelShopPageProductListViewModel.miniCartAdd.value is Success)
+        assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
+    }
+
+    @Test
+    fun `when call handleAtcFlow on add item to cart state is error, then miniCartAdd value should be fail` (){
+        val mockQuantity  = 5
+        val mockComponentName  = "Product"
+        val mockShopProductUiModel = ShopProductUiModel().apply {
+            id = "33"
+            name= "product name"
+            displayedPrice = "100"
+        }
+        every {
+            addToCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(Exception())
+        }
+        viewModelShopPageProductListViewModel.setMiniCartData(getMockMiniCartSimplifiedData())
+        viewModelShopPageProductListViewModel.handleAtcFlow(
+            mockQuantity,
+            mockShopId,
+            mockComponentName,
+            mockShopProductUiModel
+        )
+        assert(viewModelShopPageProductListViewModel.miniCartAdd.value is Fail)
+    }
+
+    @Test
+    fun `when call handleAtcFlow on remove item from cart state is success, then miniCartRemove value should be success` (){
+        val mockQuantity  = 0
+        val mockComponentName  = "Product"
+        val mockShopProductUiModel = ShopProductUiModel().apply {
+            id = "1"
+            name= "product name"
+            displayedPrice = "100"
+        }
+        every {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(
+                RemoveFromCartData(
+                    data = Data(
+                        success = 1
+                    )
+                )
+            )
+        }
+        viewModelShopPageProductListViewModel.setMiniCartData(getMockMiniCartSimplifiedData())
+        viewModelShopPageProductListViewModel.handleAtcFlow(
+            mockQuantity,
+            mockShopId,
+            mockComponentName,
+            mockShopProductUiModel
+        )
+        assert(viewModelShopPageProductListViewModel.miniCartRemove.value is Success)
+        assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.REMOVE)
+    }
+
+    @Test
+    fun `when call handleAtcFlow on remove item from cart state is error, then miniCartRemove value should be fail` (){
+        val mockQuantity  = 0
+        val mockComponentName  = "Product"
+        val mockShopProductUiModel = ShopProductUiModel().apply {
+            id = "1"
+            name= "product name"
+            displayedPrice = "100"
+        }
+        every {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(Exception())
+        }
+        viewModelShopPageProductListViewModel.setMiniCartData(getMockMiniCartSimplifiedData())
+        viewModelShopPageProductListViewModel.handleAtcFlow(
+            mockQuantity,
+            mockShopId,
+            mockComponentName,
+            mockShopProductUiModel
+        )
+        assert(viewModelShopPageProductListViewModel.miniCartRemove.value is Fail)
+    }
+
+    @Test
+    fun `when call handleAtcFlow on update add item from cart state is success, then miniCartRemove value should be success` (){
+        val mockQuantity  = 10
+        val mockComponentName  = "Product"
+        val mockShopProductUiModel = ShopProductUiModel().apply {
+            id = "1"
+            productInCart = 5
+            name= "product name"
+            displayedPrice = "100"
+        }
+        every {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(
+                UpdateCartV2Data(
+                    data = com.tokopedia.cartcommon.data.response.updatecart.Data(
+                        status = true
+                    )
+                )
+            )
+        }
+        viewModelShopPageProductListViewModel.setMiniCartData(getMockMiniCartSimplifiedData())
+        viewModelShopPageProductListViewModel.handleAtcFlow(
+            mockQuantity,
+            mockShopId,
+            mockComponentName,
+            mockShopProductUiModel
+        )
+        assert(viewModelShopPageProductListViewModel.miniCartUpdate.value is Success)
+        assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
+    }
+
+    @Test
+    fun `when call handleAtcFlow on update remove item from cart state is success, then miniCartRemove value should be success` (){
+        val mockQuantity  = 2
+        val mockComponentName  = "Product"
+        val mockShopProductUiModel = ShopProductUiModel().apply {
+            id = "1"
+            productInCart = 5
+            name= "product name"
+            displayedPrice = "100"
+        }
+        every {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(
+                UpdateCartV2Data(
+                    data = com.tokopedia.cartcommon.data.response.updatecart.Data(
+                        status = true
+                    )
+                )
+            )
+        }
+        viewModelShopPageProductListViewModel.setMiniCartData(getMockMiniCartSimplifiedData())
+        viewModelShopPageProductListViewModel.handleAtcFlow(
+            mockQuantity,
+            mockShopId,
+            mockComponentName,
+            mockShopProductUiModel
+        )
+        assert(viewModelShopPageProductListViewModel.miniCartUpdate.value is Success)
+        assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_REMOVE)
+    }
+
+    @Test
+    fun `when call handleAtcFlow on update item from cart state is success, then miniCartRemove value should be fail` (){
+        val mockQuantity  = 2
+        val mockComponentName  = "Product"
+        val mockShopProductUiModel = ShopProductUiModel().apply {
+            id = "1"
+            productInCart = 5
+            name= "product name"
+            displayedPrice = "100"
+        }
+        every {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(Exception())
+        }
+        viewModelShopPageProductListViewModel.setMiniCartData(getMockMiniCartSimplifiedData())
+        viewModelShopPageProductListViewModel.handleAtcFlow(
+            mockQuantity,
+            mockShopId,
+            mockComponentName,
+            mockShopProductUiModel
+        )
+        assert(viewModelShopPageProductListViewModel.miniCartUpdate.value is Fail)
+    }
+
+    @Test
+    fun `when call handleAtcFlow without set mini cart data, then miniCartAdd, miniCartRemove ,miniCartUpdate and shopPageAtcTracker value should be null` (){
+        val mockQuantity  = 2
+        val mockComponentName  = "Product"
+        val mockShopProductUiModel = ShopProductUiModel().apply {
+            id = "1"
+            productInCart = 5
+            name= "product name"
+            displayedPrice = "100"
+        }
+        viewModelShopPageProductListViewModel.handleAtcFlow(
+            mockQuantity,
+            mockShopId,
+            mockComponentName,
+            mockShopProductUiModel
+        )
+        assert(viewModelShopPageProductListViewModel.miniCartAdd.value == null)
+        assert(viewModelShopPageProductListViewModel.miniCartUpdate.value == null)
+        assert(viewModelShopPageProductListViewModel.miniCartUpdate.value == null)
+        assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value == null)
     }
 }

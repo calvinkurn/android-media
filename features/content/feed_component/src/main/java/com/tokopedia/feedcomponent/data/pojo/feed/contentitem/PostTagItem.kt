@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.data.pojo.feed.contentitem
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
@@ -16,6 +17,7 @@ data class PostTagItem(
         @Expose
         var text: String = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         var price: String = "",

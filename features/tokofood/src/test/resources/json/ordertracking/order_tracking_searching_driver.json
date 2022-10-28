@@ -1,0 +1,27 @@
+{
+  "tokofoodOrderDetail": {
+    "orderStatus": {
+      "status": "SEARCHING_DRIVER",
+      "title": "Pesananmu sudah dikonfirmasi",
+      "subtitle": "Kami bakal segera cariin driver",
+      "iconName": "cook"
+    },
+    "eta": {
+      "label": "Estimasi tiba pukul",
+      "time": "12:45 - 12:48"
+    },
+    "additionalTickerInfo": [
+      {
+        "level": "info",
+        "appText": "This will be text for cancelation reason <a href='tokopedia://order/123'>This will be link/action</a>"
+      }
+    ],
+    "invoice": {
+      "invoiceNumber": "INV/20181011/XVI/X/55069657",
+      "gofoodOrderNumber": "F-1468046953"
+    },
+    "payment": {
+      "paymentDate": "19 Maret 2022, 20:04"
+    }
+  }
+}

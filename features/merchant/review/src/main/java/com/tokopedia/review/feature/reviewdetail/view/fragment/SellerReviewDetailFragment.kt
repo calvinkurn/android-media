@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -29,7 +30,6 @@ import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -38,6 +38,7 @@ import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringCo
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewUtil
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.common.util.getKeyByValue
 import com.tokopedia.review.common.util.setSelectedFilterOrSort
 import com.tokopedia.review.common.util.toggle
@@ -45,6 +46,7 @@ import com.tokopedia.review.databinding.FragmentSellerReviewDetailBinding
 import com.tokopedia.review.databinding.ItemOverallReviewDetailBinding
 import com.tokopedia.review.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
+import com.tokopedia.review.feature.reviewdetail.di.qualifier.ReviewDetailGson
 import com.tokopedia.review.feature.reviewdetail.util.SellerReviewDetailPreference
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.review.feature.reviewdetail.view.adapter.OverallRatingDetailListener
@@ -66,6 +68,11 @@ import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductLi
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewcommon.extension.put
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -76,6 +83,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -101,12 +110,14 @@ class SellerReviewDetailFragment :
     private var viewModelProductReviewDetail: ProductReviewDetailViewModel? = null
 
     @Inject
+    @ReviewDetailGson
+    lateinit var gson: Gson
+
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var tracking: ProductReviewDetailTracking
-
-    private var cacheManager: SaveInstanceCacheManager? = null
 
     private var linearLayoutManager: LinearLayoutManager? = null
     private val reviewSellerDetailAdapter by lazy {
@@ -117,8 +128,15 @@ class SellerReviewDetailFragment :
 
     private var binding by autoClearedNullable<FragmentSellerReviewDetailBinding>()
 
-    private val sellerReviewDetailTypeFactory by lazy {
-        SellerReviewDetailAdapterTypeFactory(this, this, this, this)
+    private val sellerReviewDetailTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
+        SellerReviewDetailAdapterTypeFactory(
+            listener = this,
+            overallRatingDetailListener = this,
+            productFeedbackDetailListener = this,
+            ratingAndTopicsDetailListener = this,
+            reviewMediaThumbnailListener = ReviewMediaThumbnailListener(),
+            reviewMediaThumbnailRecycledViewPool = RecyclerView.RecycledViewPool()
+        )
     }
 
     private val coachMark: CoachMark by lazy {
@@ -183,7 +201,7 @@ class SellerReviewDetailFragment :
 
     private fun initFilterData() {
         val filterDetailList: Array<String> =
-            resources.getStringArray(R.array.filter_review_detail_array)
+            context?.resources?.getStringArray(R.array.filter_review_detail_array) ?: emptyArray()
         viewModelProductReviewDetail?.filterPeriod =
             ReviewConstants.mapFilterReviewDetail().getKeyByValue(chipFilterBundle)
         positionFilterPeriod =
@@ -432,7 +450,7 @@ class SellerReviewDetailFragment :
                     coachMarkShow()
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData()
+                    onErrorGetReviewDetailData(it.throwable)
                 }
             }
         })
@@ -444,7 +462,7 @@ class SellerReviewDetailFragment :
                     onSuccessGetFeedbackReviewListData(it.data)
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData()
+                    onErrorGetReviewDetailData(it.throwable)
                 }
             }
         })
@@ -464,22 +482,27 @@ class SellerReviewDetailFragment :
         updateScrollListenerState(data.hasNext)
     }
 
-    private fun onErrorGetReviewDetailData() {
+    private fun onErrorGetReviewDetailData(throwable: Throwable) {
         swipeToRefresh?.isRefreshing = false
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {
             binding?.globalErrorReviewDetail?.apply {
-                setType(GlobalError.SERVER_ERROR)
+                if (throwable is SocketTimeoutException || throwable is UnknownHostException) {
+                    setType(GlobalError.NO_CONNECTION)
+                } else {
+                    setType(GlobalError.SERVER_ERROR)
+                }
                 setActionClickListener {
                     loadInitialData()
                 }
+                errorDescription.text = throwable.getErrorMessage(context)
                 show()
             }
             reviewSellerDetailAdapter.removeReviewNotFound()
             binding?.rvRatingDetail?.hide()
         } else {
             onErrorLoadMoreToaster(
-                getString(R.string.error_message_load_more_review_product),
+                throwable.getErrorMessage(context, getString(R.string.error_message_load_more_review_product)),
                 getString(R.string.action_retry_toaster_review_product)
             )
         }
@@ -490,17 +513,18 @@ class SellerReviewDetailFragment :
             Toaster.build(
                 it,
                 message,
+                duration = Toaster.LENGTH_INDEFINITE,
                 actionText = action,
                 type = Toaster.TYPE_ERROR,
                 clickListener = {
                     loadInitialData()
-                })
+                }).show()
         }
     }
 
     override fun onFilterPeriodClicked(view: View, title: String) {
         val filterDetailList: Array<String> =
-            resources.getStringArray(R.array.filter_review_detail_array)
+            context?.resources?.getStringArray(R.array.filter_review_detail_array) ?: emptyArray()
         val filterDetailItemUnify =
             SellerReviewProductListMapper.mapToItemUnifyList(filterDetailList)
         filterPeriodDetailUnify?.setData(filterDetailItemUnify)
@@ -610,15 +634,6 @@ class SellerReviewDetailFragment :
         optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean
     ) {
         this.variantName = data.variantName.orEmpty()
-        val feedbackReplyUiModel =
-            ProductReplyUiModel(productID, productImageUrl, productName, variantName)
-
-        cacheManager = context?.let {
-            SaveInstanceCacheManager(it, true).apply {
-                put(SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, data)
-                put(SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, feedbackReplyUiModel)
-            }
-        }
 
         tracking.eventClickOptionFeedbackReview(
             userSession.shopId.orEmpty(),
@@ -653,6 +668,15 @@ class SellerReviewDetailFragment :
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
                         0 -> {
+                            val cacheManager = SaveInstanceCacheManager(
+                                context = requireContext(),
+                                generateObjectId = true
+                            ).apply {
+                                put(customId = SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, objectToPut = data, gson = gson)
+                                put(customId = SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, objectToPut = ProductReplyUiModel(productID, productImageUrl, productName, variantName), gson = gson)
+                                put(customId = SellerReviewReplyFragment.EXTRA_SHOP_ID, objectToPut = userSession.shopId.orEmpty(), gson = gson)
+                                put(customId = SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, objectToPut = isEmptyReply, gson = gson)
+                            }
                             startActivity(
                                 Intent(
                                     context,
@@ -660,15 +684,7 @@ class SellerReviewDetailFragment :
                                 ).apply {
                                     putExtra(
                                         SellerReviewReplyFragment.CACHE_OBJECT_ID,
-                                        cacheManager?.id
-                                    )
-                                    putExtra(
-                                        SellerReviewReplyFragment.EXTRA_SHOP_ID,
-                                        userSession.shopId.orEmpty()
-                                    )
-                                    putExtra(
-                                        SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW,
-                                        isEmptyReply
+                                        cacheManager.id
                                     )
                                 })
                             bottomSheetOptionFeedback?.dismiss()
@@ -700,27 +716,31 @@ class SellerReviewDetailFragment :
         }
     }
 
-    override fun onImageItemClicked(
-        imageUrls: List<String>,
-        thumbnailsUrl: List<String>,
+    fun onImageItemClicked(
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
         feedbackId: String,
+        productID: String,
         position: Int
     ) {
         context?.run {
             tracking.eventClickImagePreviewSlider(
                 feedbackId,
-                thumbnailsUrl.getOrNull(position).orEmpty(),
+                reviewMediaThumbnailUiModel.mediaThumbnails.getOrNull(position)?.getAttachmentID().orEmpty(),
                 position.toString()
             )
-            startActivity(
-                ImagePreviewSliderActivity.getCallingIntent(
-                    context = this,
-                    title = toolbarTitle,
-                    imageUrls = imageUrls,
-                    imageThumbnailUrls = thumbnailsUrl,
-                    imagePosition = position
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context = this,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
+                productID = productID,
+                shopID = "",
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position.inc(),
+                showSeeMore = false,
+                preloadedDetailedReviewMediaResult = SellerReviewProductDetailMapper.mapReviewMediaData(
+                    reviewMediaThumbnailUiModel
                 )
-            )
+            ).run { startActivity(this) }
         }
     }
 
@@ -826,4 +846,16 @@ class SellerReviewDetailFragment :
         sharedPreference = SellerReviewDetailPreference(context)
     }
 
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            reviewSellerDetailAdapter.findFeedbackContainingThumbnail(item)?.let {
+                onImageItemClicked(
+                    it.reviewMediaThumbnail,
+                    it.feedbackID,
+                    it.productID,
+                    position
+                )
+            }
+        }
+    }
 }

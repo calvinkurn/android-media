@@ -4,7 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.util.FileUtil
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
@@ -38,9 +39,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
@@ -63,12 +66,12 @@ class NotificationViewModelTest {
     private val markAsReadUseCase: MarkNotificationAsReadUseCase = mockk(relaxed = true)
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
     private val getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true)
-    private val addWishListUseCase: AddWishListUseCase = mockk(relaxed = true)
     private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase = mockk(relaxed = true)
-    private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val notifOrderListUseCase: NotifOrderListUseCase = mockk(relaxed = true)
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
+    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk(relaxed = true)
 
     private val dispatcher = CoroutineTestDispatchersProvider
 
@@ -90,9 +93,9 @@ class NotificationViewModelTest {
             markAsReadUseCase,
             topAdsImageViewUseCase,
             getRecommendationUseCase,
-            addWishListUseCase,
+            addToWishlistV2UseCase,
+            deleteWishlistV2UseCase,
             topAdsWishlishedUseCase,
-            removeWishListUseCase,
             userSessionInterface,
             addToCartUseCase,
             notifOrderListUseCase,
@@ -234,7 +237,7 @@ class NotificationViewModelTest {
         // then
         verifyOrder {
             notificationItemsObserver.onChanged(Success(expectedValue))
-            topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView.first()))
+            topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView))
         }
     }
 
@@ -644,97 +647,63 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `addWishList test if is topAds and should return called addWishListTopAds`() {
-        testAddWishList(true, "addWishListTopAds")
+    fun `verify add to wishlistV2 returns success` () {
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommItem, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
-    fun `addWishList test if is not topAds and should return called addWishListNormal`() {
-        // given
-        val viewModelSpyk = spyk(viewModel, recordPrivateCalls = true)
-        val recommItem = RecommendationItem(isTopAds = false)
-        val callback: (Boolean, Throwable?) -> Unit = { _, _ -> }
+    fun `verify add to wishlistV2 returns fail` () {
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val mockThrowable = mockk<Throwable>("fail")
 
-        // when
-        viewModelSpyk.addWishlist(recommItem, callback)
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
-        // then
-        verify(exactly = 1) {
-            viewModelSpyk.addWishListNormal(recommItem.productId.toString(), any())
-        }
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommItem, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
-    fun normal_wishlist_should_call_onSuccessAddWishlist_when_success() {
-        // given
-        val expectedResultId = "123"
-        var result: String? = null
-        val wishListActionListener = object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-            override fun onSuccessAddWishlist(productId: String?) {
-                result = productId
-            }
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-        }
+    fun `verify remove wishlistV2 returns success`(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
-        every {
-            addWishListUseCase.createObservable(any(), any(), any())
-        } answers {
-            wishListActionListener.onSuccessAddWishlist(expectedResultId)
-        }
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
 
-        // when
-        viewModel.addWishListNormal("123", wishListActionListener)
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishlistV2(recommItem, mockListener)
 
-        // then
-        assertEquals(expectedResultId, result)
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
-    fun normal_wishlist_should_call_onErrorAddWishList_when_error() {
-        // given
-        val expectedResultId = "123"
-        val expectedResult = "Oops!"
-        var result: String? = null
-        var resultId: String? = null
-        val wishListActionListener = object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                result = errorMessage
-                resultId = productId
-            }
-            override fun onSuccessAddWishlist(productId: String?) {}
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-        }
+    fun `verify remove wishlistV2 returns fail`(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val mockThrowable = mockk<Throwable>("fail")
 
-        every {
-            addWishListUseCase.createObservable(any(), any(), any())
-        } answers {
-            wishListActionListener.onErrorAddWishList(expectedResult, expectedResultId)
-        }
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
-        // when
-        viewModel.addWishListNormal("123", wishListActionListener)
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishlistV2(recommItem, mockListener)
 
-        // then
-        assertEquals(expectedResultId, resultId)
-        assertEquals(expectedResult, result)
-    }
-
-    @Test
-    fun `removeWishList should remove a wish list item properly`() {
-        // given
-        val callback: (Boolean, Throwable?) -> Unit = { _, _ -> }
-        val recommItem = RecommendationItem()
-
-        every { removeWishListUseCase.createObservable(any(), any(), any()) } returns Unit
-
-        // when
-        viewModel.removeWishList(recommItem, callback)
-
-        // then
-        verify(exactly = 1) { removeWishListUseCase.createObservable(any(), any(), any()) }
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -742,12 +711,12 @@ class NotificationViewModelTest {
         // Given
         val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
         val successAtc = getSuccessAtcModel()
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(successAtc)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
 
         // When
-        viewModel.addProductToCart(RequestParams(), onSuccess, {})
+        viewModel.addProductToCart(AddToCartRequestParams(), onSuccess, {})
 
         // Then
         verify(exactly = 1) {
@@ -756,19 +725,20 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `when success addProductToCart but status success is 0`() {
+    fun `when success addProductToCart but status success is 0 and with error message`() {
         // Given
         val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
         val successAtc = getSuccessAtcModel().apply {
             this.data.success = 0
+            this.errorMessage = arrayListOf("Error message")
         }
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(successAtc)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
 
         // When
-        viewModel.addProductToCart(RequestParams(), onSuccess, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), onSuccess, onError)
 
         // Then
         verify(exactly = 1) {
@@ -777,16 +747,58 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `when error addProductToCart`() {
+    fun `when success addProductToCart but status success is 0 and with data message`() {
         // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
-        val errorAtc = getErrorAtcModel()
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(errorAtc)
+        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
+        val successAtc = getSuccessAtcModel().apply {
+            this.data.success = 0
+            this.data.message = arrayListOf("Data Message")
+        }
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
 
         // When
-        viewModel.addProductToCart(RequestParams(), {}, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), onSuccess, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke(any())
+        }
+    }
+
+    @Test
+    fun `when success addProductToCart but status success is 0 and no data & error message`() {
+        // Given
+        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
+        val successAtc = getSuccessAtcModel().apply {
+            this.data.success = 0
+        }
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
+
+        // When
+        viewModel.addProductToCart(AddToCartRequestParams(), onSuccess, onError)
+
+        // Then
+        verify(exactly = 0) {
+            onError.invoke(any())
+        }
+    }
+
+    @Test
+    fun `when error addProductToCart`() {
+        // Given
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
+        val errorAtc = getErrorAtcModel()
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns errorAtc
+        // When
+        viewModel.addProductToCart(AddToCartRequestParams(), {}, onError)
 
         // Then
         verify(exactly = 1) {
@@ -797,14 +809,14 @@ class NotificationViewModelTest {
     @Test
     fun `when error throwable addProductToCart`() {
         // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
         val errorMsg = "Gagal menambahkan produk"
-        every {
-            addToCartUseCase.createObservable(any())
-        } throws IllegalStateException(errorMsg)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } throws Throwable(errorMsg)
 
         // When
-        viewModel.addProductToCart(RequestParams(), {}, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), {}, onError)
 
         // Then
         verify(exactly = 1) {
@@ -815,14 +827,14 @@ class NotificationViewModelTest {
     @Test
     fun `when error throwable addProductToCart but empty message`() {
         // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
         val expectedThrowable = Throwable(message = null)
-        every {
-            addToCartUseCase.createObservable(any())
+        coEvery {
+            addToCartUseCase.executeOnBackground()
         } throws expectedThrowable
 
         // When
-        viewModel.addProductToCart(RequestParams(), {}, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), {}, onError)
 
         // Then
         verify(exactly = 0) {
@@ -967,7 +979,7 @@ class NotificationViewModelTest {
         val testCallback: ((Boolean, Throwable?) -> Unit) = mockk(relaxed = true)
         val expectedResponse = WishlistModel().apply {
             val successData = WishlistModel.Data()
-            successData.setSuccess(true)
+            successData.isSuccess = true
             data = successData
         }
         every {
@@ -1018,19 +1030,6 @@ class NotificationViewModelTest {
     @After
     fun tearDown() {
         viewModel.cancelAllUseCase()
-    }
-
-    private fun testAddWishList(isTopAds: Boolean, methodName: String) {
-        // given
-        val viewModelSpyk = spyk(viewModel, recordPrivateCalls = true)
-        val recommItem = RecommendationItem(isTopAds = isTopAds)
-        val callback: (Boolean, Throwable?) -> Unit = { _, _ -> }
-
-        // when
-        viewModelSpyk.addWishlist(recommItem, callback)
-
-        // then
-        verify(exactly = 1) { viewModelSpyk[methodName](recommItem, callback) }
     }
 
     companion object {

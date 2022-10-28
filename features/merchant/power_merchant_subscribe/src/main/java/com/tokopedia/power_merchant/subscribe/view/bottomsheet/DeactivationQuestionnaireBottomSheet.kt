@@ -13,15 +13,17 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
+import com.tokopedia.gm.common.presentation.model.DeactivationResultUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
-import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetPmDeactivationQuestionnaireBinding
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.view.activity.FallbackActivity
 import com.tokopedia.power_merchant.subscribe.view.adapter.QuestionnaireAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
@@ -79,7 +81,7 @@ class DeactivationQuestionnaireBottomSheet :
 
     private val questionnaireAdapter by lazy {
         BaseListAdapter<QuestionnaireUiModel, QuestionnaireAdapterFactoryImpl>(
-            QuestionnaireAdapterFactoryImpl()
+            QuestionnaireAdapterFactoryImpl(::setOnQuestionnaireSelected)
         )
     }
     private var onDeactivationSuccess: (() -> Unit)? = null
@@ -159,7 +161,7 @@ class DeactivationQuestionnaireBottomSheet :
     }
 
     private fun observePmDeactivationStatus() {
-        mViewModel.isSuccessDeactivate.observe(viewLifecycleOwner, Observer {
+        mViewModel.pmDeactivateStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> setOnDeactivationSuccess(it.data)
                 is Fail -> {
@@ -182,13 +184,22 @@ class DeactivationQuestionnaireBottomSheet :
         }
     }
 
-    private fun setOnDeactivationSuccess(isSuccess: Boolean) {
-        if (isSuccess) {
-            hideButtonProgress()
-            onDeactivationSuccess?.invoke()
+    private fun setOnDeactivationSuccess(data: DeactivationResultUiModel) {
+        when {
+            data.errorCode.isBlank() -> {
+                hideButtonProgress()
+                onDeactivationSuccess?.invoke()
+                dismiss()
+            }
+            data.shouldUpdateApp() -> openFallbackPage()
+            else -> setOnDeactivationFail(RuntimeException())
+        }
+    }
+
+    private fun openFallbackPage() {
+        context?.let {
+            FallbackActivity.startActivity(it)
             dismiss()
-        } else {
-            setOnDeactivationFail(RuntimeException())
         }
     }
 
@@ -200,11 +211,6 @@ class DeactivationQuestionnaireBottomSheet :
         binding?.progressPmDeactivation?.visible()
         val pmTireType = getPmTireType()
         mViewModel.getPMCancellationQuestionnaireData(pmTireType, isFirstLoad)
-    }
-
-    private fun getCurrentPmTireType(): Int {
-        return arguments?.getInt(KEY_CURRENT_PM_TIRE_TYPE, PMConstant.ShopTierType.POWER_MERCHANT)
-            ?: PMConstant.ShopTierType.POWER_MERCHANT
     }
 
     private fun getPmTireType(): Int {
@@ -221,11 +227,11 @@ class DeactivationQuestionnaireBottomSheet :
         view?.let {
             Toaster.toasterCustomBottomHeight =
                 it.context.resources.getDimensionPixelSize(R.dimen.pm_spacing_100dp)
-            Toaster.build(it.rootView, message, duration, Toaster.TYPE_ERROR, ctaText,
-                View.OnClickListener {
-                    action()
-                }
-            ).show()
+            Toaster.build(
+                it.rootView, message, duration, Toaster.TYPE_ERROR, ctaText
+            ) {
+                action()
+            }.show()
         }
     }
 
@@ -248,12 +254,32 @@ class DeactivationQuestionnaireBottomSheet :
             ).parseAsHtml()
             nestedScrollPmDeactivation.visible()
             containerPmFooterDeactivation.visible()
+            tvPmDeactivateTnc.text = getString(
+                R.string.pm_tnc_description_pm_deactivation
+            ).parseAsHtml()
+            tvPmDeactivateTnc.setOnClickListener {
+                showTncBottomSheet()
+            }
         }
+    }
+
+    private fun showTncBottomSheet() {
+        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
+        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun setOnQuestionnaireSelected() {
+        binding?.btnPmDeactivationSubmit?.isEnabled = questionnaireAdapter.data
+            .all { !it.isNoAnswer() }
     }
 
     private fun submitDeactivationPm() {
         val answers = mutableListOf<PMCancellationQuestionnaireAnswerModel>()
-        var isNoAnswer = false
+
         questionnaireAdapter.data.forEach {
             when (it) {
                 is QuestionnaireUiModel.QuestionnaireRatingUiModel -> {
@@ -271,43 +297,21 @@ class DeactivationQuestionnaireBottomSheet :
                     answers.add(answer)
                 }
             }
-
-            if (!isNoAnswer) {
-                isNoAnswer = it.isNoAnswer()
-            }
         }
 
-        if (isNoAnswer) {
+        val hasAnswerGiven = questionnaireAdapter.data.all { !it.isNoAnswer() }
+        if (!hasAnswerGiven) {
             val errorMessage = getString(R.string.pm_all_questionnaire_must_be_answered)
             val ctaText = getString(R.string.power_merchant_ok_label)
             showToaster(errorMessage, ctaText, Snackbar.LENGTH_LONG) {
                 getDeactivationQuestionnaire(false)
             }
-            isNoAnswer = false
             return
         }
 
         showButtonProgress()
-        val currentShopTire = getShopTire(getCurrentPmTireType())
-        val nextShopTire = getNextShopTire(getPmTireType())
-        mViewModel.submitPmDeactivation(answers, currentShopTire, nextShopTire)
+        mViewModel.submitPmDeactivation(answers)
         powerMerchantTracking.sendEventClickSubmitQuestionnaire()
-    }
-
-    private fun getNextShopTire(pmTireType: Int): Int {
-        return if (pmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
-            PMConstant.ShopTierType.POWER_MERCHANT
-        } else {
-            PMConstant.ShopTierType.REGULAR_MERCHANT
-        }
-    }
-
-    private fun getShopTire(pmTireType: Int): Int {
-        return when (pmTireType) {
-            PMConstant.PMTierType.POWER_MERCHANT -> PMConstant.ShopTierType.POWER_MERCHANT
-            PMConstant.PMTierType.POWER_MERCHANT_PRO -> PMConstant.ShopTierType.POWER_MERCHANT_PRO
-            else -> PMConstant.ShopTierType.NA
-        }
     }
 
     private fun showButtonProgress() = binding?.run {

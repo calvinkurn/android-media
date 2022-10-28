@@ -1,17 +1,18 @@
 package com.tokopedia.loginregister.discover.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.query.DiscoverQuery
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-open class DiscoverUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
-    dispatcher: CoroutineDispatcher
-) : CoroutineUseCase<String, DiscoverPojo>(dispatcher) {
+class DiscoverUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<String, DiscoverPojo>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
         return DiscoverQuery.query

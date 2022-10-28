@@ -8,8 +8,8 @@ import com.tokopedia.similarsearch.testutils.stubExecute
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -22,8 +22,8 @@ internal abstract class SimilarSearchTestFixtures {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     val getSimilarProductsUseCase = mockk<UseCase<SimilarProductModel>>(relaxed = true)
-    val addWishListUseCase = mockk<AddWishListUseCase>(relaxed = true)
-    val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
+    val addToWishlistV2UseCase = mockk<AddToWishlistV2UseCase>(relaxed = true)
+    val deleteWishlistV2UseCase = mockk<DeleteWishlistV2UseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val addToCartUseCase = mockk<rxUseCase<AddToCartDataModel>>(relaxed = true)
     lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -38,8 +38,8 @@ internal abstract class SimilarSearchTestFixtures {
             CoroutineTestDispatchersProvider,
             getSimilarSearchQuery(),
             getSimilarProductsUseCase,
-            addWishListUseCase,
-            removeWishListUseCase,
+            addToWishlistV2UseCase,
+            deleteWishlistV2UseCase,
             addToCartUseCase,
             userSession
         )

@@ -22,6 +22,7 @@ import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
+import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -47,11 +48,12 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelProvider) }
+
+    private lateinit var registrationSharedViewModel: AffiliateRegistrationSharedViewModel
 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
-
-    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
 
     override fun getViewModelType(): Class<AffiliateTermsAndConditionViewModel> {
         return AffiliateTermsAndConditionViewModel::class.java
@@ -66,8 +68,22 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registrationSharedViewModel = viewModelFragmentProvider.get(AffiliateRegistrationSharedViewModel::class.java)
+        getChannel(savedInstanceState)
         initObserver()
     }
+
+    private fun getChannel(savedInstanceState: Bundle?) {
+        if(registrationSharedViewModel.listOfChannels.isNullOrEmpty()){
+            savedInstanceState?.getSerializable(CHANNEL_LIST)?.let {
+                channels = it as ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>
+            }
+        }
+        else{
+            channels = registrationSharedViewModel.listOfChannels
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,9 +94,6 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? AffiliateActivityInterface)?.let {
-            affiliateNavigationInterface = it
-        }
         afterViewCreated()
     }
 
@@ -141,7 +154,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             customView(customView)
             setNavigationOnClickListener {
                 sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_BACK)
-                affiliateNavigationInterface?.handleBackButton(false)
+                activity?.onBackPressed()
             }
         }
 
@@ -150,7 +163,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     private fun initObserver() {
         affiliateTermsAndConditionViewModel.getOnBoardingData().observe(this, { onBoardingData ->
             if(onBoardingData.data?.status == REGISTRATION_SUCCESS){
-                affiliateNavigationInterface?.onRegistrationSuccessful()
+               registrationSharedViewModel.onRegisterationSuccess()
             }else {
                 view?.let {
                     Toaster.build(it, getString(com.tokopedia.affiliate_toko.R.string.affiliate_registeration_error),
@@ -188,10 +201,6 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         affiliateAdapter.addMoreData(data)
     }
 
-    fun setChannels(listOfChannels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
-        channels = listOfChannels
-    }
-
     override fun initInject() {
         getComponent().injectTermAndConditionFragment(this)
     }
@@ -201,8 +210,15 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build()
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable(CHANNEL_LIST,registrationSharedViewModel.listOfChannels)
+        super.onSaveInstanceState(outState)
+    }
+
     companion object {
+        const val TAG = "AffiliateTermsAndConditionFragment"
         const val REGISTRATION_SUCCESS = 1
+        const val CHANNEL_LIST = "channel_list"
         fun getFragmentInstance(): AffiliateTermsAndConditionFragment {
             return AffiliateTermsAndConditionFragment()
         }

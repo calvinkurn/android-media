@@ -20,16 +20,29 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
-import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cart.view.uimodel.PromoSummaryData
+import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
@@ -43,7 +56,7 @@ object CartUiModelMapper {
     private const val BUNDLE_NO_VARIANT_CONST = -1
 
     fun mapTickerAnnouncementUiModel(ticker: Ticker): TickerAnnouncementHolderData {
-        return TickerAnnouncementHolderData(id = ticker.id, message = ticker.message)
+        return TickerAnnouncementHolderData(id = ticker.id, title = ticker.title, message = ticker.message)
     }
 
     fun mapChooseAddressUiModel(): CartChooseAddressHolderData {
@@ -124,17 +137,8 @@ object CartUiModelMapper {
                 preOrderInfo = availableGroup.shipmentInformation.preorder.duration
                 incidentInfo = availableGroup.shop.shopAlertMessage
                 isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
-                freeShippingBadgeUrl = when {
-                    availableGroup.shipmentInformation.freeShippingExtra.eligible -> {
-                        availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
-                    }
-                    availableGroup.shipmentInformation.freeShipping.eligible -> {
-                        availableGroup.shipmentInformation.freeShipping.badgeUrl
-                    }
-                    else -> {
-                        ""
-                    }
-                }
+                freeShippingBadgeUrl = availableGroup.shipmentInformation.freeShippingGeneral.badgeUrl
+                isFreeShippingPlus = availableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                 maximumWeightWording = availableGroup.shop.maximumWeightWording
                 maximumShippingWeight = availableGroup.shop.maximumShippingWeight
                 if (availableGroup.checkboxState) {
@@ -164,6 +168,13 @@ object CartUiModelMapper {
                 if (availableGroup.giftingAddOn.addOnIds.isNotEmpty()) {
                     addOnId = availableGroup.giftingAddOn.addOnIds[0]
                 }
+                warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero()
+                isPo = availableGroup.shipmentInformation.preorder.isPreorder
+                poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString() ?: "0"
+                boCode = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
+                    it.uniqueId == cartString && it.shippingId > 0 &&
+                    it.spId > 0 && it.type == "logistic"
+                }?.code ?: ""
             }
             cartShopHolderDataList.add(shopUiModel)
         }
@@ -267,24 +278,19 @@ object CartUiModelMapper {
                     preOrderInfo = unavailableGroup.shipmentInformation.preorder.duration
                     incidentInfo = unavailableGroup.shop.shopAlertMessage
                     isFreeShippingExtra = unavailableGroup.shipmentInformation.freeShippingExtra.eligible
-                    freeShippingBadgeUrl = when {
-                        unavailableGroup.shipmentInformation.freeShippingExtra.eligible -> {
-                            unavailableGroup.shipmentInformation.freeShippingExtra.badgeUrl
-                        }
-                        unavailableGroup.shipmentInformation.freeShipping.eligible -> {
-                            unavailableGroup.shipmentInformation.freeShipping.badgeUrl
-                        }
-                        else -> {
-                            ""
-                        }
-                    }
+                    freeShippingBadgeUrl = unavailableGroup.shipmentInformation.freeShippingGeneral.badgeUrl
+                    isFreeShippingPlus = unavailableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                     maximumWeightWording = unavailableGroup.shop.maximumWeightWording
                     maximumShippingWeight = unavailableGroup.shop.maximumShippingWeight
+                    shopTypeInfo = unavailableGroup.shop.shopTypeInfo
                     isAllSelected = false
                     isPartialSelected = false
                     isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
                     isCollapsed = isCollapsible
                     isError = true
+                    warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()
+                    isPo = unavailableGroup.shipmentInformation.preorder.isPreorder
+                    poDuration = unavailableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString() ?: "0"
                 }
                 unavailableSectionList.add(shopUiModel)
             }
@@ -368,6 +374,9 @@ object CartUiModelMapper {
                 actionsData = cartData.availableSection.actions
                 isError = false
             }
+            needPrescription = product.ethicalDrug.needPrescription
+            butuhResepText = product.ethicalDrug.text
+            butuhResepIconUrl = product.ethicalDrug.iconUrl
             isSelected = product.isCheckboxState
             productName = product.productName
             productImage = product.productImage.imageSrc100Square
@@ -390,6 +399,7 @@ object CartUiModelMapper {
             productCashBack = product.productCashback
             notes = product.productNotes
             originalNotes = notes
+            placeholderNote = cartData.placeholderNote
             maxNotesLength = cartData.maxCharNote
             isBundlingItem = cartDetail.bundleDetail.bundleId.isNotBlankOrZero()
             if (isBundlingItem) {
@@ -406,8 +416,8 @@ object CartUiModelMapper {
                 bundleType = cartDetail.bundleDetail.bundleType
                 bundleGroupId = cartDetail.bundleDetail.bundleGroupId
                 val tmpBundleQuantity = when {
-                    minOrder > cartDetail.bundleDetail.bundleQty -> minOrder
                     maxOrder < cartDetail.bundleDetail.bundleQty -> maxOrder
+                    minOrder > cartDetail.bundleDetail.bundleQty -> minOrder
                     else -> cartDetail.bundleDetail.bundleQty
                 }
                 bundleQuantity = tmpBundleQuantity
@@ -419,6 +429,7 @@ object CartUiModelMapper {
                 bundleOriginalPrice = cartDetail.bundleDetail.bundleOriginalPrice
                 editBundleApplink = cartDetail.bundleDetail.editBundleApplink
                 bundleIconUrl = cartDetail.bundleDetail.bundleIconUrl
+                bundleGrayscaleIconUrl = cartDetail.bundleDetail.bundleGrayscaleIconUrl
                 bundlingItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
                     CartItemHolderData.BUNDLING_ITEM_HEADER
                 } else if (cartDetail.products.lastOrNull()?.productId == productId) {
@@ -435,11 +446,12 @@ object CartUiModelMapper {
                 } else {
                     min(product.productMaxOrder, product.productInvenageValue)
                 }
-                quantity = if (product.productSwitchInvenage == 0) {
-                    product.productQuantity
-                } else {
-                    min(product.productQuantity, product.productInvenageValue)
+                val tmpQuantity = when {
+                    maxOrder < product.productQuantity -> maxOrder
+                    minOrder > product.productQuantity -> minOrder
+                    else -> product.productQuantity
                 }
+                quantity = tmpQuantity
             }
             originalQty = quantity
             categoryId = product.categoryId
@@ -451,6 +463,7 @@ object CartUiModelMapper {
             promoDetails = promoAnalyticsData.second
             isFreeShippingExtra = product.freeShippingExtra.eligible
             isFreeShipping = product.freeShipping.eligible
+            freeShippingName = product.freeShippingGeneral.boName
             campaignId = product.campaignId
             warehouseId = product.warehouseId
         }
@@ -554,7 +567,8 @@ object CartUiModelMapper {
         return LastApplyAdditionalInfoUiModel(
                 messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
                 errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail),
-                emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo)
+                emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo),
+                usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries),
         )
     }
 
@@ -575,6 +589,18 @@ object CartUiModelMapper {
                 message = promoEmptyCartInfo.message,
                 detail = promoEmptyCartInfo.detail
         )
+    }
+
+    private fun mapUsageSummaries(promoUsageSummaries: List<UsageSummaries>): List<LastApplyUsageSummariesUiModel> {
+        return promoUsageSummaries.map {
+            LastApplyUsageSummariesUiModel(
+                    description = it.desc,
+                    type = it.type,
+                    amountStr = it.amountStr,
+                    amount = it.amount,
+                    currencyDetailsStr = it.currencyDetailsStr
+            )
+        }
     }
 
     fun mapSummaryTransactionUiModel(cartData: CartData): SummaryTransactionUiModel {

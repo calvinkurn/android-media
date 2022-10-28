@@ -72,10 +72,63 @@ abstract class BaseNotification internal constructor(
             }
 
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            builder.setSmallIcon(drawableIcon)
+            setGroup(builder)
             setSoundProperties(builder)
             setNotificationIcon(builder)
             return builder
         }
+
+    protected val noLargeIconNotificationBuilder: NotificationCompat.Builder
+        get() {
+            val channelID = notificationChannelController.getChannelID(
+                baseNotificationModel.channelName,
+                baseNotificationModel.soundFileName
+            )
+
+            val builder: NotificationCompat.Builder = NotificationCompat.Builder(
+                context, channelID
+            )
+
+            if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
+                builder.setSubText(baseNotificationModel.subText)
+            }
+
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            builder.setSmallIcon(drawableIcon)
+            setGroup(builder)
+            setSoundProperties(builder)
+            return builder
+        }
+
+     internal val summaryNotificationBuilder: Notification?
+        get() {
+            val channelID = notificationChannelController.getChannelID(
+                baseNotificationModel.channelName,
+                baseNotificationModel.soundFileName
+            )
+            val builder: NotificationCompat.Builder = NotificationCompat.Builder(
+                context, channelID
+            )
+            builder.setSmallIcon(drawableIcon)
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            builder.setStyle(NotificationCompat.InboxStyle()
+                .setSummaryText(baseNotificationModel.subText))
+            setGroup(builder)
+            builder.setGroupSummary(true)
+            setSoundProperties(builder)
+            return builder.build()
+        }
+
+    private fun setGroup(builder: NotificationCompat.Builder) {
+        baseNotificationModel.groupId.let { id ->
+            if(id.toString().isNotBlank() && id != 0) {
+                val groupKey = id.toString()
+                builder.setGroup(groupKey)
+            }
+        }
+
+    }
 
     /*
     *
@@ -118,7 +171,6 @@ abstract class BaseNotification internal constructor(
         } else {
             builder.setLargeIcon(getBitmap(baseNotificationModel.icon))
         }
-        builder.setSmallIcon(drawableIcon)
     }
 
     internal val drawableIcon: Int
@@ -132,6 +184,10 @@ abstract class BaseNotification internal constructor(
 
     internal val bitmapLargeIcon: Bitmap
         get() = createBitmap()
+
+    fun getApplicationName(context: Context): String {
+        return context.getString(context.applicationInfo.labelRes)
+    }
 
     override fun defaultIcon(): Bitmap {
         return bitmapLargeIcon

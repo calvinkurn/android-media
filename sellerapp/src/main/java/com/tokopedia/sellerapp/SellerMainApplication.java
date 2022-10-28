@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.work.Configuration;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -48,7 +50,6 @@ import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerfeedback.SellerFeedbackScreenshot;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
@@ -65,6 +66,9 @@ import javax.crypto.SecretKey;
 import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
+import timber.log.Timber;
+
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -96,7 +100,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
-        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp_ramadhan;
+        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
@@ -112,6 +116,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initCacheManager();
         initEmbrace();
 
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            new Cassava.Builder(this).initialize();
+        }
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -129,11 +136,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
-        TokoPatch.init(this);
 
         Loader.init(this);
         setEmbraceUserId();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
+
+        showDevOptNotification();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -247,15 +255,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             String version = versions.getFirst();
             String suffixVersion = versions.getSecond();
 
-            if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
-                GlobalConfig.VERSION_NAME = version;
-                com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
-                com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-            } else {
+            if (TextUtils.isEmpty(suffixVersion)) {
                 GlobalConfig.VERSION_NAME = pInfo.versionName;
-                com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
+            } else {
+                GlobalConfig.VERSION_NAME = version;
+                GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
             }
-            com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = pInfo.versionName;// save raw version name
+            GlobalConfig.RAW_VERSION_NAME = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -343,5 +349,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             map.put("error", Log.getStackTraceString(throwable));
             ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
         }).build();
+    }
+
+    private void showDevOptNotification() {
+        new DevOptNotificationManager(this).start();
     }
 }

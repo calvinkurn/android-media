@@ -3,8 +3,8 @@ package com.tokopedia.play.model
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
  * Created by jegul on 09/02/21
@@ -31,7 +31,7 @@ class PlayChannelDataModelBuilder {
         quickReplyInfo: PlayQuickReplyInfoUiModel = uiModelBuilder.buildQuickReply(),
         videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
         status: PlayStatusUiModel = uiModelBuilder.buildStatus(),
-        leaderboardInfo: PlayLeaderboardWrapperUiModel = PlayLeaderboardWrapperUiModel.Unknown,
+        leaderboardInfo: LeaderboardUiModel = uiModelBuilder.buildLeaderboard(),
         upcomingInfo: PlayUpcomingUiModel = upcomingInfoBuilder.buildUpcomingInfo(),
         tagItems: TagItemUiModel = uiModelBuilder.buildTagItem()
     ) = PlayChannelData(
@@ -43,7 +43,7 @@ class PlayChannelDataModelBuilder {
         quickReplyInfo = quickReplyInfo,
         videoMetaInfo = videoMetaInfo,
         status = status,
-        leaderboardInfo = leaderboardInfo,
+        leaderboard = leaderboardInfo,
         channelReportInfo = channelReportInfo,
         upcomingInfo = upcomingInfo,
         tagItems = tagItems,

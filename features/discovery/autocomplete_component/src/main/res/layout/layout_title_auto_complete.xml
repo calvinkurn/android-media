@@ -15,7 +15,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="heading_4"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
         tools:text="Toko" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -32,7 +33,7 @@
         android:text="@string/delete_all"
         android:textColor="@color/Unify_R500"
         android:background="?attr/selectableItemBackgroundBorderless"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         android:visibility="gone"/>
 
@@ -50,7 +51,7 @@
         android:text="@string/refresh"
         android:textColor="@color/Unify_G500"
         android:background="?attr/selectableItemBackgroundBorderless"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         android:visibility="gone"/>
 

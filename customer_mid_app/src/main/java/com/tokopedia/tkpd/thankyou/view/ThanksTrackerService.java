@@ -6,8 +6,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.tkpd.thankyou.di.component.DaggerThanksTrackerComponent;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 
@@ -60,10 +59,9 @@ public class ThanksTrackerService extends JobIntentService {
     }
 
     private void initInjection() {
-        AppComponent appComponent = ((MainApplication) getApplication()).getAppComponent();
         DaggerThanksTrackerComponent component =
                 (DaggerThanksTrackerComponent) DaggerThanksTrackerComponent.builder()
-                        .appComponent(appComponent)
+                        .baseAppComponent(((MainApplication) getApplication()).getBaseAppComponent())
                         .build();
 
         component.inject(this);

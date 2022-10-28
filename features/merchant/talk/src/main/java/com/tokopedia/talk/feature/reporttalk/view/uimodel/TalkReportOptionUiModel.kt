@@ -7,5 +7,6 @@ data class TalkReportOptionUiModel(
         var position : Int = 0,
         var reportTitle : String = "",
         var reportReason : String = "",
-        var isChecked : Boolean = false
+        var isChecked : Boolean = false,
+        var isEnabled : Boolean = true
 )

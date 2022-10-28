@@ -9,7 +9,7 @@ import com.tokopedia.product.manage.common.feature.list.data.model.filter.Produc
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
@@ -17,7 +17,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.Partia
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.*
 import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
@@ -115,7 +115,6 @@ open class SellerMenuViewModelTestFixture {
 
     protected fun createShopSettingsResponse(
             totalFollowers: Long = 35000,
-            topAdsBalance: Float = 2000f,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
             successPair: Pair<Boolean, Boolean> = true to true
@@ -136,8 +135,7 @@ open class SellerMenuViewModelTestFixture {
         val topAdsInfoResponse =
             if (topAdsInfoSuccess) {
                 PartialTopAdsSettingSuccessInfo(
-                    OthersBalance(),
-                    topAdsBalance
+                    OthersBalance()
                 )
             } else {
                 PartialSettingFail
@@ -148,7 +146,6 @@ open class SellerMenuViewModelTestFixture {
 
     protected fun createShopInfoUiModel(
             totalFollowers: Long = 35000,
-            topAdsBalance: Float = 2000f,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
             shopScore: Long = 70,
@@ -162,8 +159,7 @@ open class SellerMenuViewModelTestFixture {
         )
 
         val topAdsInfoResponse = PartialTopAdsSettingSuccessInfo(
-                OthersBalance(),
-                topAdsBalance
+                OthersBalance()
         )
 
         return ShopInfoUiModel(SettingShopInfoUiModel(

@@ -1,6 +1,5 @@
 package com.tokopedia.digital_checkout.presentation.activity
 
-import android.content.Context
 import android.net.Uri
 import android.view.MotionEvent
 import androidx.fragment.app.Fragment
@@ -9,9 +8,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_ATC_SOURCE
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_CLIENT_NUMBER
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_DEVICE_ID
@@ -26,7 +25,7 @@ import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponentInstance
 import com.tokopedia.digital_checkout.presentation.fragment.DigitalCartFragment
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 /**
  * @author by jessica on 07/01/21
@@ -40,7 +39,7 @@ open class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheck
 
         uriData?.let { uri ->
             if (uri.queryParameterNames.size > 0) {
-                cartPassData = processIntentDataCheckoutFromApplink(applicationContext, uriData)
+                cartPassData = processIntentDataCheckoutFromApplink(uriData)
                 subParams = processIntentDataSubscription(uriData)
             } else if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL && uri.getQueryParameter(DeeplinkMapperDigital.IS_FROM_WIDGET_PARAM).isNullOrEmpty()) {
                 cartPassData = intent.getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA)
@@ -51,7 +50,7 @@ open class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheck
         return Fragment()
     }
 
-    private fun processIntentDataCheckoutFromApplink(context: Context, uriData: Uri): DigitalCheckoutPassData? {
+    private fun processIntentDataCheckoutFromApplink(uriData: Uri): DigitalCheckoutPassData? {
         val passData = DigitalCheckoutPassData()
         passData.categoryId = uriData.getQueryParameter(PARAM_CATEGORY_ID)
         passData.orderId = uriData.getQueryParameter(PARAM_ORDER_ID)
@@ -59,10 +58,10 @@ open class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheck
         passData.operatorId = uriData.getQueryParameter(PARAM_OPERATOR_ID)
         passData.productId = uriData.getQueryParameter(PARAM_PRODUCT_ID)
         passData.isPromo = uriData.getQueryParameter(PARAM_IS_PROMO)
-        passData.deviceId = uriData.getQueryParameter(PARAM_DEVICE_ID)?.toIntOrNull() ?: 5
+        passData.deviceId = uriData.getQueryParameter(PARAM_DEVICE_ID)?.toIntSafely() ?: DigitalCheckoutPassData.DEFAULT_DEVICE_ID
+        passData.atcSource = uriData.getQueryParameter(PARAM_ATC_SOURCE)
         val instantCheckoutParam = uriData.getQueryParameter(PARAM_INSTANT_CHECKOUT)
         passData.instantCheckout = instantCheckoutParam ?: "0"
-        passData.idemPotencyKey = generateATokenRechargeCheckout(context)
 
         val fields: HashMap<String, String> = HashMap()
         val parameters = uriData.queryParameterNames
@@ -93,14 +92,6 @@ open class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheck
         }
 
         return subParams
-    }
-
-    private fun generateATokenRechargeCheckout(context: Context): String? {
-        val timeMillis = System.currentTimeMillis().toString()
-        val token = AuthHelper.getMD5Hash(timeMillis)
-        val userSession = UserSession(context)
-        return String.format(getString(R.string.digital_cart_generate_token_checkout),
-                userSession.userId, if (token.isEmpty()) timeMillis else token)
     }
 
     override fun getComponent(): DigitalCheckoutComponent {

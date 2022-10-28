@@ -61,6 +61,7 @@
                         android:paddingStart="@dimen/unify_space_16"
                         android:paddingTop="@dimen/unify_space_8"
                         android:paddingEnd="@dimen/unify_space_16"
+                        android:contentDescription="@string/mvc_dropdown"
                         android:paddingBottom="@dimen/unify_space_8"
                         android:src="@drawable/ic_chevron_up"
                         app:layout_constraintBottom_toBottomOf="@+id/typography5"
@@ -769,7 +770,7 @@
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="filled" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgTermAndConditions"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -777,6 +778,7 @@
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 android:layout_marginBottom="@dimen/layout_lvl3"
+                app:typographyType="body_2"
                 android:gravity="center"
                 android:text="@string/coupon_product_terms_and_condition"
                 app:layout_constraintBottom_toBottomOf="parent"

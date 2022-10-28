@@ -22,6 +22,7 @@ import rx.Subscriber
 /**
  * @author by yfsx on 20/06/18.
  */
+@Deprecated("please use com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase")
 class GetWhitelistUseCase @Inject
 constructor(@ApplicationContext private val context: Context) : GraphqlUseCase() {
 

@@ -44,7 +44,7 @@ data class MerchantVoucherModel(
         val finishTime: String = "",
         @Expose
         @SerializedName("voucher_id")
-        val voucherId: Int = 0,
+        val voucherId: String = "",
         @Expose
         @SerializedName("voucher_image")
         val voucherImage: String = "",

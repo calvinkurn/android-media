@@ -27,14 +27,16 @@ import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.ContainerUnify
 import java.util.*
 
 @SuppressLint("SyntheticAccessor")
-class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListener) : AbstractViewHolder<NewBusinessUnitWidgetDataModel>(view){
+class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListener,
+                            cardInteraction: Boolean = false
+) : AbstractViewHolder<NewBusinessUnitWidgetDataModel>(view){
     private val errorBuWidget = view.findViewById<LocalLoad>(R.id.error_bu_widget)
     private val tabLayout = view.findViewById<TabsUnify>(R.id.tab_layout)
     private val containerUnify= view.findViewById<ContainerUnify>(R.id.container_unify)
@@ -63,7 +65,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         override fun putEnhanceEcommerce(tracker: HashMap<String, Any>) {
             listener.putEEToTrackingQueue(tracker)
         }
-    })
+    }, cardInteraction)
 
     private val tabChangeListener = object : BaseOnTabSelectedListener<TabLayout.Tab>{
         override fun onTabReselected(p0: TabLayout.Tab?) {}

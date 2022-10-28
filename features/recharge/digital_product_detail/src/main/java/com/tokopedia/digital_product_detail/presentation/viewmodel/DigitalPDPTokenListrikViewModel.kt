@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
@@ -14,19 +13,23 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_AUTOCOMPLETE
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -65,13 +68,20 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
-    val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
-        get() = _favoriteNumberData
+    private val _favoriteChipsData =
+        MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
+    val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>>
+        get() = _favoriteChipsData
 
-    private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
-    val autoCompleteData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
+    private val _autoCompleteData =
+        MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
+    val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>>
         get() = _autoCompleteData
+
+    private val _prefillData =
+        MutableLiveData<RechargeNetworkResult<PrefillModel>>()
+    val prefillData: LiveData<RechargeNetworkResult<PrefillModel>>
+        get() = _prefillData
 
     private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
     val observableDenomData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
@@ -90,11 +100,12 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
         get() = _catalogSelectGroup
 
-    private val _recommendationData = MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
+    private val _recommendationData =
+        MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
     val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
         get() = _recommendationData
 
-    fun setMenuDetailLoading(){
+    fun setMenuDetailLoading() {
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
 
@@ -107,53 +118,43 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun setRechargeCatalogInputMultiTabLoading(){
+    fun setRechargeCatalogInputMultiTabLoading() {
         _observableDenomData.value = RechargeNetworkResult.Loading
     }
 
-    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
+    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String) {
         catalogProductJob = viewModelScope.launch {
             launchCatchError(block = {
                 delay(DELAY_MULTI_TAB)
                 val denomGrid = repo.getProductTokenListrikDenomGrid(menuId, operator, clientNumber)
                 _observableDenomData.value = RechargeNetworkResult.Success(denomGrid)
-            }){
+            }) {
                 if (it !is CancellationException)
                     _observableDenomData.value = RechargeNetworkResult.Fail(it)
             }
         }
     }
 
-    fun setFavoriteNumberLoading(){
-        _favoriteNumberData.value = RechargeNetworkResult.Loading
+    fun setFavoriteNumberLoading() {
+        _favoriteChipsData.value = RechargeNetworkResult.Loading
     }
 
-    fun getFavoriteNumber(categoryIds: List<Int>, operatorIds: List<Int>) {
+    fun getFavoriteNumbers(
+        categoryIds: List<Int>,
+        operatorIds: List<Int>,
+        favoriteNumberTypes: List<FavoriteNumberType>
+    ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val favoriteNumber = repo.getFavoriteNumberChips(categoryIds, operatorIds)
-            _favoriteNumberData.value = RechargeNetworkResult.Success(
-                favoriteNumber.persoFavoriteNumber.items)
+            val data = repo.getFavoriteNumbers(favoriteNumberTypes, categoryIds, operatorIds)
+            _favoriteChipsData.value = RechargeNetworkResult.Success(data.favoriteChips)
+            _autoCompleteData.value = RechargeNetworkResult.Success(data.autoCompletes)
+            _prefillData.value = RechargeNetworkResult.Success(data.prefill)
         }) {
-            _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
+            // this section is not reachable due to no fail scenario
         }
     }
 
-    fun setAutoCompleteLoading() {
-        _autoCompleteData.value = RechargeNetworkResult.Loading
-    }
-
-    fun getAutoComplete(categoryIds: List<Int>, operatorIds: List<Int>) {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
-            delay(DELAY_AUTOCOMPLETE) // temporary solution to fix race condition
-            val favoriteNumberList = repo.getFavoriteNumberList(categoryIds, operatorIds)
-            _autoCompleteData.value = RechargeNetworkResult.Success(
-                favoriteNumberList.persoFavoriteNumber.items)
-        }) {
-            _autoCompleteData.value = RechargeNetworkResult.Fail(it)
-        }
-    }
-
-    fun setOperatorSelectGroupLoading(){
+    fun setOperatorSelectGroupLoading() {
         _catalogSelectGroup.value = RechargeNetworkResult.Loading
     }
 
@@ -187,16 +188,25 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         _addToCartResult.value = RechargeNetworkResult.Loading
     }
 
-    fun addToCart(digitalIdentifierParam: RequestBodyIdentifier,
-                  digitalSubscriptionParams: DigitalSubscriptionParams,
-                  userId: String
-    ){
+    fun addToCart(
+        digitalIdentifierParam: RequestBodyIdentifier,
+        digitalSubscriptionParams: DigitalSubscriptionParams,
+        userId: String,
+        isUseGql: Boolean
+    ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
+            val categoryIdAtc = repo.addToCart(
+                digitalCheckoutPassData,
+                digitalIdentifierParam,
+                digitalSubscriptionParams,
+                userId,
+                isUseGql
+            )
             _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
+                _addToCartResult.value =
+                    RechargeNetworkResult.Fail(MessageErrorException(it.message))
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
@@ -207,17 +217,31 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         _recommendationData.value = RechargeNetworkResult.Loading
     }
 
-    fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
+    fun getRecommendations(
+        clientNumbers: List<String>,
+        dgCategoryIds: List<Int>,
+        dgOperatorIds: List<Int>
+    ) {
         recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
-            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds)
+            val recommendations = repo.getRecommendations(
+                clientNumbers,
+                dgCategoryIds,
+                dgOperatorIds,
+                DigitalPDPConstant.RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT,
+            )
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
             _recommendationData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
-    fun updateCheckoutPassData(denomData: DenomData, idemPotencyKeyActive: String, clientNumberWidget: String, operatorActiveId: String){
+    fun updateCheckoutPassData(
+        denomData: DenomData,
+        idemPotencyKeyActive: String,
+        clientNumberWidget: String,
+        operatorActiveId: String
+    ) {
         digitalCheckoutPassData.apply {
             categoryId = denomData.categoryId
             clientNumber = clientNumberWidget
@@ -243,29 +267,29 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun updateCategoryCheckoutPassData(categoryId: String){
+    fun updateCategoryCheckoutPassData(categoryId: String) {
         digitalCheckoutPassData.categoryId = categoryId
     }
 
     fun validateClientNumber(clientNumber: String) {
         validatorJob = viewModelScope.launch {
-                var errorMessage = ""
-                for (validation in validators) {
-                    val phoneIsValid = Pattern.compile(validation.rule)
-                        .matcher(clientNumber).matches()
-                    if (!phoneIsValid) {
-                        errorMessage = validation.message
-                    }
+            var errorMessage = ""
+            for (validation in validators) {
+                val phoneIsValid = Pattern.compile(validation.rule)
+                    .matcher(clientNumber).matches()
+                if (!phoneIsValid) {
+                    errorMessage = validation.message
                 }
-                isEligibleToBuy = errorMessage.isEmpty()
-                delay(VALIDATOR_DELAY_TIME)
-                _clientNumberValidatorMsg.value = errorMessage
+            }
+            isEligibleToBuy = errorMessage.isEmpty()
+            delay(VALIDATOR_DELAY_TIME)
+            _clientNumberValidatorMsg.value = errorMessage
         }
     }
 
-    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String){
+    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String) {
         var denomData: DenomData? = null
-        listDenomData.forEachIndexed{ index, activeDenomData ->
+        listDenomData.forEachIndexed { index, activeDenomData ->
             if (productId.equals(activeDenomData.id)) denomData = activeDenomData
         }
 
@@ -274,26 +298,28 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedPositionId(listDenomData: List<DenomData>): Int?{
-        var selectedProductPositionId : Int? = null
+    fun getSelectedPositionId(listDenomData: List<DenomData>): Int? {
+        var selectedProductPositionId: Int? = null
         listDenomData.forEachIndexed { index, denomData ->
             if (denomData.id.equals(selectedGridProduct.denomData.id, false)
-                && selectedGridProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
+                && selectedGridProduct.denomData.id.isNotEmpty()
+            ) selectedProductPositionId = index
         }
         return selectedProductPositionId
     }
 
-    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean = (selectedGridProduct.denomData.id.isNotEmpty()
-            && selectedGridProduct.position >= 0
-            && selectedGridProduct.denomWidgetEnum == layoutType
-            && isEligibleToBuy)
+    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean =
+        (selectedGridProduct.denomData.id.isNotEmpty()
+                && selectedGridProduct.position >= 0
+                && selectedGridProduct.denomWidgetEnum == layoutType
+                && isEligibleToBuy)
 
-    fun onResetSelectedProduct(){
+    fun onResetSelectedProduct() {
         selectedGridProduct = SelectedProduct()
     }
 
     fun getListInfo(): List<String> {
-        return if (operatorData.id.isNotEmpty()){
+        return if (operatorData.id.isNotEmpty()) {
             operatorData.attributes.operatorDescriptions
         } else listOf()
     }

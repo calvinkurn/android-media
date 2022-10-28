@@ -33,7 +33,7 @@
             android:hint="Pilih Tanggal   "
             android:textSize="16sp"
             android:textStyle="bold"
-            app:backgroundTint="@color/bg_unify_tint_color" />
+            app:backgroundTint="@color/travelcalendar_dms_bg_unify_tint_color" />
 
         <com.tokopedia.unifyprinciples.Typography
             app:typographyType="small"
@@ -62,7 +62,7 @@
             android:hint="   Pilih Tanggal"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:backgroundTint="@color/bg_unify_tint_color" />
+            app:backgroundTint="@color/travelcalendar_dms_bg_unify_tint_color" />
 
     </RelativeLayout>
 

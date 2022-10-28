@@ -20,17 +20,17 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
-import com.tokopedia.loginregister.login.behaviour.activity.ChangeNameActivityStub
-import com.tokopedia.loginregister.login.behaviour.activity.ChooseAccountActivityStub
-import com.tokopedia.loginregister.login.behaviour.activity.VerificationActivityStub
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.LoginToken
@@ -48,19 +48,24 @@ class LoginNormalCase : LoginBase() {
     /* Go to verification page if phone exist */
     @Test
     fun gotoVerificationFragment_IfPhoneExist() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = true,
             userID = "123456",
             registerType = "phone",
             view = "082242454504"
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK,
+                    Intent()
+                )
+            )
             inputEmailOrPhone("082242454504")
             clickSubmit()
-            intended(hasComponent(VerificationActivityStub::class.java.name))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 
@@ -94,21 +99,20 @@ class LoginNormalCase : LoginBase() {
     fun showSocialMediaBottomSheet_True() {
         runTest {
             clickSocmedButton()
-            shouldBeDisplayed(R.id.socmed_container)
+            shouldBeDisplayed(R.id.providerName)
         }
     }
 
     /* Show not registered dialog if email not registered */
     @Test
     fun showNotRegisteredDialog_IfEmailNotRegistered() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = false,
             userID = "0",
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com"
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -135,51 +139,30 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
-    fun mockVerificationSuccess() {
-        val mockVerificationResult = Intent().apply {
-            putExtras(Bundle().apply {
-                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
-            })
-        }
-        intending(hasComponent(VerificationActivityStub::class.java.name)).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                mockVerificationResult
-            )
-        )
-    }
-
-    private fun mockChooseAccountSuccess() {
-        intending(hasComponent(ChooseAccountActivityStub::class.java.name)).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                null
-            )
-        )
-    }
-
     /* Check if RegisterInitialActivity is launching when Daftar button in dialog clicked */
     @Test
     fun goToRegisterInitial_IfNotRegistered() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = false,
             userID = "0",
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com"
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
                 Instrumentation.ActivityResult(
                     Activity.RESULT_OK,
-                    Intent()
+                    Intent().apply {
+                        putExtras(Bundle().apply {
+                            putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
+                            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
+                            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+                        })
+                    }
                 )
             )
-            mockVerificationSuccess()
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
 
@@ -189,50 +172,45 @@ class LoginNormalCase : LoginBase() {
                 .perform(click())
 
 
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 
     /* Check if activity is finished when login success */
     @Test
     fun finishActivityIfLoginSuccess() {
-        isDefaultRegisterCheck = false
-        val regCheck = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = true,
             userID = "123456",
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com",
             isPending = false
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         val loginToken = LoginToken(accessToken = "abc123")
         val loginPojo = LoginTokenPojo(loginToken)
         loginTokenUseCaseStub.response = loginPojo
 
         runTest {
-            mockVerificationSuccess()
-            mockChooseAccountSuccess()
-
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
             inputPassword("test123")
             clickSubmit()
-            assertTrue(activity.isFinishing)
+            assertTrue(activityTestRule.activity.isFinishing)
         }
     }
 
     @Test
     fun gotoChangeNameIfLoginSuccess() {
-        isDefaultRegisterCheck = false
-        val regCheck = RegisterCheckData(
+        val data = RegisterCheckPojo(RegisterCheckData(
             isExist = true,
             userID = "123456",
             registerType = "email",
             view = "yoris.prayogo@tokopedia.com",
             isPending = false
-        )
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
+        ))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         val loginToken = LoginToken(accessToken = "abc123")
         val loginPojo = LoginTokenPojo(loginToken)
@@ -246,28 +224,32 @@ class LoginNormalCase : LoginBase() {
         val profilePojo = ProfilePojo(profileInfo)
         getProfileUseCaseStub.response = profilePojo
 
-
         runTest {
-            mockVerificationSuccess()
-            mockChooseAccountSuccess()
+            intending(hasData(ApplinkConst.ADD_NAME_PROFILE)).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().apply {
+                    putExtras(Bundle().apply {
+                        putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
+                        putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
+                        putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+                    })
+                })
+            )
 
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
             inputPassword("test123")
             clickSubmit()
-            intended(hasComponent(ChangeNameActivityStub::class.java.name))
+            intended(hasData(ApplinkConst.ADD_NAME_PROFILE))
         }
     }
 
-    /* Check if ForgotPasswordActivity is launching when Daftar button clicked */
     @Test
-    fun openTokopediaCarePage() {
+    fun whenForgotPasswordIsClicked_TheApplinkPageIsLaunched() {
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD)).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_OK, Intent())
+            intending(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
             )
             clickForgotPass()
-            intended(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD))
         }
     }
 
@@ -284,7 +266,7 @@ class LoginNormalCase : LoginBase() {
         checkEmailExtensionShownAfterAddAt()
         onView(withId(R.id.input_email_phone))
             .perform(pressKey(KeyEvent.KEYCODE_DEL))
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo")
+        isDisplayingGivenText("yoris.prayogo")
         isEmailExtensionDismissed()
         inputEmailOrPhone("@")
         isEmailExtensionDisplayed()
@@ -302,7 +284,7 @@ class LoginNormalCase : LoginBase() {
                         clickOnViewChild(R.id.textEmailExtension)
                     )
             )
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@gmail.com")
+        isDisplayingGivenText("yoris.prayogo@gmail.com")
     }
 
     @Test
@@ -321,7 +303,7 @@ class LoginNormalCase : LoginBase() {
                         clickOnViewChild(R.id.textEmailExtension)
                     )
             )
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@outlook.com")
+        isDisplayingGivenText("yoris.prayogo@outlook.com")
     }
 
     @Test

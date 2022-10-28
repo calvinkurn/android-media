@@ -31,12 +31,13 @@ class IncentiveOvoBottomSheet: BottomSheetUnify(),
 
     companion object {
         private const val BOTTOM_SHEET_WRAPPER_TOP_PADDING = 16
+        const val TAG = "IncentiveOvoBottomSheet"
     }
 
     private var incentiveOvoListener: IncentiveOvoListener? = null
     private val binding by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoTncBottomSheetBinding.inflate(LayoutInflater.from(requireContext())) }
     private val incentiveOvoIllustrationMapper by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationMapper() }
-    private val illustrationLayoutManager by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationLayoutManager(requireContext()) }
+    private val illustrationLayoutManager by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationLayoutManager(binding.root.context) }
     private val illustrationAdapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoIllustrationAdapterTypeFactory() }
     private val illustrationAdapter by lazy(LazyThreadSafetyMode.NONE) { BaseAdapter(illustrationAdapterTypeFactory) }
     private val tncAdapter by lazy(LazyThreadSafetyMode.NONE) { IncentiveOvoTnCAdapter(emptyList(), this) }
@@ -117,6 +118,7 @@ class IncentiveOvoBottomSheet: BottomSheetUnify(),
         category: String
     ) {
         setOnDismissListener {
+            incentiveOvoListener?.onDismissIncentiveBottomSheet()
             trackerData?.let {
                 IncentiveOvoTracking.eventDismissTncBottomSheet(
                     message = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description ?: ".",

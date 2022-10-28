@@ -8,6 +8,8 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.banner.BannerGQLRepository
 import com.tokopedia.discovery2.repository.banner.BannerRepository
+import com.tokopedia.discovery2.repository.bannerinfinite.BannerInfiniteGQLRepository
+import com.tokopedia.discovery2.repository.bannerinfinite.BannerInfiniteRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
@@ -24,6 +26,8 @@ import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRep
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
 import com.tokopedia.discovery2.repository.mycoupon.MyCouponGQLRepository
 import com.tokopedia.discovery2.repository.mycoupon.MyCouponRepository
+import com.tokopedia.discovery2.repository.productbundling.ProductBundlingGQLRepository
+import com.tokopedia.discovery2.repository.productbundling.ProductBundlingRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
@@ -183,6 +187,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
+    fun provideProductBundlingRepository(): ProductBundlingRepository {
+        return ProductBundlingGQLRepository()
+    }
+
+    @Provides
     fun provideSectionRepository():SectionRepository{
         return SectionGQLRepository()
     }
@@ -190,6 +199,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideMyCouponRepository(@ApplicationContext context: Context): MyCouponRepository {
         return MyCouponGQLRepository(provideGetStringMethod(context))
+    }
+
+    @Provides
+    fun provideBannerInfiniteRepository(): BannerInfiniteRepository {
+        return BannerInfiniteGQLRepository()
     }
 
     @DiscoveryScope

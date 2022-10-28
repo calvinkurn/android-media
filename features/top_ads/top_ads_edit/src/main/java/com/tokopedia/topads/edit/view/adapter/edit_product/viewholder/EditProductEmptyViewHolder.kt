@@ -5,12 +5,14 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProductEmptyViewModel
-import kotlinx.android.synthetic.main.topads_edit_select_layout_product_list_item_no_product.view.*
+import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * Created by Pika on 8/4/20.
  */
 class EditProductEmptyViewHolder(val view: View) : EditProductViewHolder<EditProductEmptyViewModel>(view) {
+
+    private val imageView : ImageUnify = view.findViewById(R.id.imageView8)
 
     companion object {
         @LayoutRes
@@ -18,7 +20,7 @@ class EditProductEmptyViewHolder(val view: View) : EditProductViewHolder<EditPro
     }
 
     override fun bind(item: EditProductEmptyViewModel) {
-        view.imageView8.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.no_products))
+        imageView.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.no_products))
     }
 
 }

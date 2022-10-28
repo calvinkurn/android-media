@@ -13,12 +13,13 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -45,7 +46,7 @@ abstract class BaseAtcVariantViewModelTest {
     lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
 
     @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @RelaxedMockK
     lateinit var updateCartUseCase: UpdateCartUseCase
@@ -61,8 +62,9 @@ abstract class BaseAtcVariantViewModelTest {
 
     val viewModel by lazy {
         AtcVariantViewModel(CoroutineTestDispatchersProvider, aggregatorMiniCartUseCase,
-                addToCartUseCase, addToCartOcsUseCase,
-                addToCartOccUseCase, addWishListUseCase, updateCartUseCase, deleteCartUseCase, toggleFavoriteUseCase)
+                addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase,
+                addToWishlistV2UseCase, updateCartUseCase,
+                deleteCartUseCase, toggleFavoriteUseCase)
     }
 
     @Before
@@ -126,31 +128,33 @@ abstract class BaseAtcVariantViewModelTest {
 
     fun decideFailValueHitGqlAggregator() {
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false, any(), any())
         } throws Throwable()
 
         viewModel.decideInitialValue(ProductVariantBottomSheetParams(), true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false, any(), any())
         }
 
         Assert.assertTrue(viewModel.initialData.value is Fail)
         Assert.assertTrue(viewModel.buttonData.value is Fail)
     }
 
-    fun decideSuccessValueHitGqlAggregator(productId: String, isTokoNow: Boolean) {
+    fun decideSuccessValueHitGqlAggregator(productId: String,
+                                           isTokoNow: Boolean,
+                                           showQtyEditor: Boolean) {
         val mockData = AtcVariantJsonHelper.generateAggregatorData(isTokoNow)
-        val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow)
+        val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow, showQtyEditor)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow, any(), any())
         } returns mockData
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow, any(), any())
         }
     }
 
@@ -186,7 +190,7 @@ abstract class BaseAtcVariantViewModelTest {
                 is VariantHeaderDataModel -> {
                     Assert.assertEquals(it.productId, expectedSelectedProductId)
                     Assert.assertEquals(it.headerData.productMainPrice, expectedSelectedMainPrice)
-                    Assert.assertEquals(it.headerData.productDiscountedPercentage, 0)
+                    Assert.assertEquals(it.headerData.productDiscountedPercentage, Float.ZERO)
                     Assert.assertEquals(it.headerData.productStockFmt, expectedSelectedStockFmt)
                     Assert.assertTrue(it.listOfVariantTitle.containsAll(expectedVariantName))
                     Assert.assertEquals(it.cashBackPercentage, cashBackPercentage)

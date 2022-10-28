@@ -15,12 +15,12 @@ buildscript {
 
 android {
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     defaultConfig {
@@ -63,6 +63,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
+    implementation projectOrAar(rootProject.ext.features.feedComponent)
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
@@ -97,8 +99,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.transition
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.flexBoxLayout
-    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.fragmentKtx
 
     implementation rootProject.ext.networkDependencies.glide
 
@@ -106,12 +108,14 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.datepicker
-    implementation rootProject.ext.unifyDependencies.icons
 
     implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
+
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 
@@ -136,6 +140,7 @@ dependencies {
         exclude group: 'com.google.android.gms'
         exclude group: 'com.google.firebase'
     }
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 }
 
 project.ext {

@@ -33,11 +33,41 @@ data class Author(
 
         @SerializedName("type")
         @Expose
-        val type: String = ""
+        val type: String = "",
+
+        @SerializedName("post")
+        @Expose
+        val post: PostConfig = PostConfig(),
+
+        @SerializedName("livestream")
+        @Expose
+        val livestream: LivestreamConfig = LivestreamConfig(),
 ) {
+
+        data class PostConfig(
+                @SerializedName("enable")
+                @Expose
+                val hasAcceptTnc: Boolean = false,
+
+                @SerializedName("has_username")
+                @Expose
+                val hasUsername: Boolean = false,
+        )
+
+        data class LivestreamConfig(
+                @SerializedName("enable")
+                @Expose
+                val hasAcceptTnc: Boolean = false,
+
+                @SerializedName("has_username")
+                @Expose
+                val hasUsername: Boolean = false,
+        )
+
     companion object {
         var TYPE_AFFILIATE = "affiliate"
         var TYPE_SHOP = "content-shop"
+        var TYPE_USER = "content-user"
         var KEY_POST_TOKO = "Post Toko"
     }
 }

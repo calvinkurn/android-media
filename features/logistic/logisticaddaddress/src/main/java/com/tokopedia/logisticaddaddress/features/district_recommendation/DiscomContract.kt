@@ -12,7 +12,7 @@ interface DiscomContract {
         fun setLoadingState(active: Boolean)
         fun showEmpty()
         fun setResultDistrict(data: Data, lat: Double, long: Double)
-        fun showToasterError()
+        fun showToasterError(message: String)
     }
 
     interface Presenter {

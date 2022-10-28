@@ -5,17 +5,18 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.ProductCardModel.NonVariant
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
-import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getAddToCartQuantity
+import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
+import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 
 object HomeRepurchaseMapper {
 
@@ -42,14 +43,16 @@ object HomeRepurchaseMapper {
         response: RepurchaseData,
         miniCartData: MiniCartSimplifiedData? = null
     ): List<TokoNowProductCardUiModel> {
-        return response.products.map {
+        return response.products.mapIndexed { index, repurchaseProduct ->
             TokoNowProductCardUiModel(
-                it.id,
-                it.shop.id,
-                it.maxOrder,
-                it.parentProductId,
-                createProductCardModel(it, miniCartData),
-                TokoNowLayoutType.REPURCHASE_PRODUCT
+                repurchaseProduct.id,
+                repurchaseProduct.shop.id,
+                repurchaseProduct.maxOrder,
+                repurchaseProduct.parentProductId,
+                createProductCardModel(repurchaseProduct, miniCartData),
+                TokoNowLayoutType.REPURCHASE_PRODUCT,
+                index + ADDITIONAL_POSITION,
+                response.title
             )
         }
     }

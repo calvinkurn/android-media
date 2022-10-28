@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:gravity="center_horizontal">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/cardPreviewContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <FrameLayout
+                android:id="@+id/cvShop"
+                android:layout_width="296dp"
+                android:layout_height="166dp"
+                android:layout_margin="@dimen/unify_space_4"
+                android:background="@drawable/tm_bg_round_corner"
+                app:cardCornerRadius="@dimen/unify_space_8"
+                app:cardElevation="@dimen/dp_0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/ivShopContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/ivShopIcon"
+                        android:layout_width="@dimen/unify_space_40"
+                        android:layout_height="@dimen/unify_space_40"
+                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:layout_marginTop="@dimen/unify_space_8"
+                        app:unify_image_type ="circle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/ivShopIconMark"
+                        android:layout_width="@dimen/tm_cmn_dp_20"
+                        android:layout_height="@dimen/tm_cmn_dp_20"
+                        app:layout_constraintEnd_toEndOf="@+id/ivShopIcon"
+                        app:layout_constraintStart_toEndOf="@+id/ivShopIcon"
+                        app:srcCompat="@drawable/tm_check_mark"
+                        app:layout_constraintBottom_toBottomOf="@+id/ivShopIcon"
+                        android:layout_marginBottom="@dimen/unify_space_4" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvShopName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:maxWidth="@dimen/tm_cmn_dp_108"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        tools:text="kkkkkkkkkkkkkkkkkkkkkkkk"
+                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:textColor="@color/Unify_N0"
+                        app:layout_constraintBottom_toBottomOf="@id/ivShopIcon"
+                        app:layout_constraintStart_toEndOf="@id/ivShopIcon"
+                        app:layout_constraintTop_toTopOf="@id/ivShopIcon"
+                        app:typographyType="heading_5" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvShopMemberName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/unify_space_12"
+                        android:text="Nama Member"
+                        android:textColor="@color/Unify_N0"
+                        app:layout_constraintStart_toStartOf="@id/ivShopIcon"
+                        app:layout_constraintTop_toBottomOf="@id/ivShopIcon"
+                        app:typographyType="heading_2" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvShopStartDateLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_28"
+                        android:text="@string/tm_cmn_datestart_label"
+                        android:textColor="@color/Unify_N0"
+                        app:layout_constraintStart_toStartOf="@id/ivShopIcon"
+                        app:layout_constraintTop_toBottomOf="@id/tvShopMemberName"
+                        app:typographyType="small" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvShopStartDateValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tm_cmn_datestart_value"
+                        app:typographyWeight="bold"
+                        android:textColor="@color/Unify_N0"
+                        app:layout_constraintStart_toStartOf="@id/ivShopIcon"
+                        app:layout_constraintTop_toBottomOf="@id/tvShopStartDateLabel"
+                        app:typographyType="display_2" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvShopEndDateLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_100"
+                        android:layout_marginTop="@dimen/dp_28"
+                        android:text="@string/tm_cmn_dateend_label"
+                        android:textColor="@color/Unify_N0"
+                        app:layout_constraintStart_toEndOf="@id/tvShopStartDateLabel"
+                        app:layout_constraintTop_toBottomOf="@id/tvShopMemberName"
+                        app:typographyType="small" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvShopEndDateValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tm_cmn_dateend_value"
+                        app:typographyWeight="bold"
+                        android:textColor="@color/Unify_N0"
+                        app:layout_constraintStart_toStartOf="@id/tvShopEndDateLabel"
+                        app:layout_constraintTop_toBottomOf="@id/tvShopEndDateLabel"
+                        app:typographyType="display_2" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </FrameLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/cvShop"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="-3dp"
+                app:layout_constraintRight_toRightOf="@id/cvShop"
+                app:layout_constraintTop_toTopOf="@id/cvShop">
+
+                <FrameLayout
+                    android:id="@+id/containerBadge"
+                    android:layout_width="88dp"
+                    android:layout_height="38dp"
+                    android:background="@drawable/tm_dash_badge_premium" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvShopType"
+                    android:layout_width="88dp"
+                    android:layout_height="38dp"
+                    android:layout_marginTop="-4dp"
+                    android:gravity="center"
+                    android:textColor="@color/Unify_N0"
+                    app:typographyType="heading_5"
+                    tools:text="Premium" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDescMembership"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardPreviewContainer"
+            android:layout_width="wrap_content"
+            tools:text="Preview kartu member Premium (Level 1)."
+            android:layout_marginTop="@dimen/unify_space_8"
+            app:typographyType="small"
+            android:textColor="@color/Unify_NN950"
+            android:layout_height="wrap_content"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

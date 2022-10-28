@@ -35,7 +35,10 @@ import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.tracker.CouponPreviewTracker
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.EXTRA_DAYS_COUPON
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getCouponMaxEndDate
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.isBeforeRollout
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.roundDate
 import com.tokopedia.vouchercreation.common.utils.HyperlinkClickHandler
 import com.tokopedia.vouchercreation.common.utils.setFragmentToUnifyBgColor
 import com.tokopedia.vouchercreation.databinding.FragmentCouponPreviewBinding
@@ -64,6 +67,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
         private const val EMPTY_STATE_REMOTE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/voucher_creation/DilarangMasukImage.png"
         private const val ERROR_MESSAGE_CODE_EXCEED_MAX_COUPON_CREATION_LIMIT = "Kupon Aktif maksimal"
+        private const val MARGIN_BUTTON = 24
 
         fun newInstance(
             onNavigateToCouponInformationPage: () -> Unit,
@@ -663,7 +667,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         val url = UrlConstant.SELLER_HOSTNAME + UrlConstant.PRODUCT_COUPON
         tracker.sendReadArticleClickEvent(getString(R.string.read_article), url)
         val encodedUrl = URLEncoder.encode(url, "utf-8")
-        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        val route = String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)
     }
 
@@ -671,7 +675,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         if (!isAdded) return
         val url = UrlConstant.HOSTNAME + UrlConstant.PRODUCT_COUPON_TERM_AND_CONDITION
         val encodedUrl = URLEncoder.encode(url, "utf-8")
-        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        val route = String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)
     }
 
@@ -708,7 +712,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.btnCreateCoupon.isLoading = true
         binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
-        val isCreateMode = viewModel.isCreateMode(pageMode)
+        val isCreateMode = viewModel.isCreateMode(pageMode) || viewModel.isDuplicateMode(pageMode)
         val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
 
         viewModel.createCoupon(
@@ -768,10 +772,11 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun displayCouponPreviewBottomSheet() {
         val isCreateMode = viewModel.isCreateMode(pageMode)
+        val isDuplicateMode = viewModel.isDuplicateMode(pageMode)
         val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
 
         val bottomSheet = CouponImagePreviewBottomSheet.newInstance(
-            isCreateMode,
+            isCreateMode || isDuplicateMode,
             couponInformation ?: return,
             couponSettings ?: return,
             parentProductIds
@@ -837,7 +842,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
 
     private fun updateButtonConstraint() {
         val set = ConstraintSet()
-        val margin = 24
+        val margin = MARGIN_BUTTON
         set.clone(binding.layout)
         set.connect(
             binding.btnPreviewCouponImage.id,
@@ -870,15 +875,15 @@ class CouponPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun getCouponDefaultStartDate() : Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.HOUR_OF_DAY, COUPON_START_DATE_OFFSET_IN_HOUR)
+        val calendar = context?.getMinStartDate() ?: GregorianCalendar()
+        calendar.roundDate()
         return calendar.time
     }
 
     private fun getCouponDefaultEndDate(): Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, EXTRA_DAYS_COUPON)
-        return calendar.time
+        val startDate = GregorianCalendar().apply { time = getCouponDefaultStartDate() }
+        val endDate = getCouponMaxEndDate(startDate)
+        return endDate.time
     }
 
     private fun getCouponDefaultStartDateBeforeRollout() : Date {

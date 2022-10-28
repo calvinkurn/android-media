@@ -13,12 +13,12 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -34,10 +34,10 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     lateinit var userSessionInterface: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @RelaxedMockK
-    lateinit var removeWishListUseCase: RemoveWishListUseCase
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
 
     @RelaxedMockK
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
@@ -46,9 +46,8 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     lateinit var addToCartUseCase: AddToCartUseCase
 
     private val viewModel by lazy {
-        AddToCartDoneViewModel(userSessionInterface, addWishListUseCase,
-                removeWishListUseCase, getRecommendationUseCase,
-                addToCartUseCase, CoroutineTestDispatchersProvider)
+        AddToCartDoneViewModel(userSessionInterface, addToWishlistV2UseCase, deleteWishlistV2UseCase,
+                getRecommendationUseCase, addToCartUseCase, CoroutineTestDispatchersProvider)
     }
 
     @Test
@@ -112,67 +111,6 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     }
 
     @Test
-    fun `success add product to wishlist`() {
-        val productId = "123"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishList(productId) { it, throwable ->
-            Assert.assertEquals(it, true)
-            Assert.assertEquals(throwable, null)
-        }
-    }
-
-    @Test
-    fun `error add product to wishlist`() {
-        val productId = ""
-        val errorMessage = "hehe"
-
-        every {
-            (addWishListUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList(errorMessage, productId)
-        }
-
-        viewModel.addWishList(productId) { it, throwable ->
-            Assert.assertEquals(it, false)
-            Assert.assertTrue(throwable?.message == errorMessage)
-        }
-    }
-
-    @Test
-    fun `success remove product to wishlist`() {
-        val productId = "123"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.removeWishList(productId) { it, throwable ->
-            Assert.assertEquals(it, true)
-            Assert.assertEquals(throwable, null)
-        }
-    }
-
-    @Test
-    fun `error remove product to wishlist`() {
-        val productId = "123"
-        val errorMessage = "hehe"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorRemoveWishlist(errorMessage, productId)
-        }
-
-        viewModel.removeWishList(productId) { it, throwable ->
-            Assert.assertEquals(it, false)
-            Assert.assertTrue(throwable?.message == errorMessage)
-        }
-    }
-
-    @Test
     fun `add to cart success`() = runBlocking {
         val data = AddToCartDoneRecommendationItemDataModel(RecommendationItem(), true)
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
@@ -184,5 +122,66 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
         viewModel.addToCart(data)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns success` () {
+        val productId = "123"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishListV2(productId, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail` () {
+        val productId = "123"
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishListV2(productId, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns success`(){
+        val productId = "123"
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishListV2(productId, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns fail`(){
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishListV2(productId, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 }

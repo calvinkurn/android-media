@@ -130,6 +130,16 @@
     },
     "dot_menus": [
       {
+        "key": "pod_details",
+        "display_name": "Lihat Bukti Pengiriman",
+        "url": "tokopedia://shipping/pod/166843102?image_id=kero-045e700b-8c43-470a-90f6-f23ec41c84f5&description=",
+        "popup": {
+          "title": "",
+          "body": "",
+          "action_button": []
+        }
+      },
+      {
         "key": "help",
         "display_name": "Bantuan",
         "url": "https://staging.tokopedia.com/help/reference-article?invoice_type_id=1&refnum=INV%2F20210608%2FMPL%2F20534843&refnum_id=166843102&transaction_type_id=2&uoh=true",

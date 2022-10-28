@@ -3,10 +3,13 @@ package com.tokopedia.shop.common.util
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ClickableSpan
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.Date
+import java.util.Calendar
 
 /**
  * Created by Rafli Syam on 03/05/2021
@@ -21,6 +24,13 @@ object OperationalHoursUtil {
     private const val FRIDAY = "Jumat"
     private const val SATURDAY = "Sabtu"
     private const val SUNDAY = "Minggu"
+    private const val MONDAY_ID = 1
+    private const val TUESDAY_ID = 2
+    private const val WEDNESDAY_ID = 3
+    private const val THURSDAY_ID = 4
+    private const val FRIDAY_ID = 5
+    private const val SATURDAY_ID = 6
+    private const val SUNDAY_ID = 7
 
     // Time Constant
     const val MIN_START_TIME = "00:00:00"
@@ -30,9 +40,11 @@ object OperationalHoursUtil {
     private const val YEAR_INDEX = 2
     private const val SUBSTRING_HOUR_TIME_INDEX = 2
     private const val SUBSTRING_END_TIME_INDEX = 5
+    private const val SUBSTRING_START_MINUTE_TIME_INDEX = 3
+    private const val SUBSTRING_END_MINUTE_TIME_INDEX = 5
 
     // DateTime format
-    private const val ALL_DAY_HOURS = "24 Jam"
+    private const val ALL_DAY_HOURS = "24 jam"
     private const val DEFAULT_TIMEZONE = "WIB"
     const val ALL_DAY = "Buka $ALL_DAY_HOURS"
     const val HOLIDAY = "Libur rutin"
@@ -51,6 +63,7 @@ object OperationalHoursUtil {
     private const val DEFAULT_HOUR = 23
     private const val DEFAULT_MINUTE = 59
     private const val DEFAULT_SECONDS = 59
+    private const val TWO_DIGIT_NUMBER_THRESHOLD = 10
     private val defaultLocale = Locale(INDONESIA_LANGUAGE_ID, INDONESIA_COUNTRY_ID)
     private val defaultLocalFormatter = SimpleDateFormat("d MMMM yyyy", defaultLocale)
     private val defaultLocalFormatterShort = SimpleDateFormat("d MMM yyyy", defaultLocale)
@@ -60,14 +73,14 @@ object OperationalHoursUtil {
      * Day of operational represent as Int: 1 (Monday) - 7 (Sunday)
      * https://tokopedia.atlassian.net/wiki/spaces/MC/pages/742297683/Shop+Operational+Hours+-+GQL+Query#Get-Shop-Operational-Hours
      */
-    private val daylistMap: Map<Int, String> = mapOf(
-            1 to MONDAY,
-            2 to TUESDAY,
-            3 to WEDNESDAY,
-            4 to THURSDAY,
-            5 to FRIDAY,
-            6 to SATURDAY,
-            7 to SUNDAY
+    private val dayListMap: Map<Int, String> = mapOf(
+        MONDAY_ID to MONDAY,
+        TUESDAY_ID to TUESDAY,
+        WEDNESDAY_ID to WEDNESDAY,
+        THURSDAY_ID to THURSDAY,
+        FRIDAY_ID to FRIDAY,
+        SATURDAY_ID to SATURDAY,
+        SUNDAY_ID to SUNDAY
     )
 
     /**
@@ -75,7 +88,7 @@ object OperationalHoursUtil {
      * @return [String]
      */
     fun getDayName(dayId: Int): String {
-        return daylistMap[dayId] ?: ""
+        return dayListMap[dayId] ?: ""
     }
 
     /**
@@ -83,10 +96,17 @@ object OperationalHoursUtil {
      * @return [Int]
      */
     fun getOrdinalDate(dayOfWeek: Int): Int {
-        return if (dayOfWeek == 1) {
-            dayOfWeek + 6
+        // dayOfWeek is based from Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+        // which return format 1 - 7 from Sunday to Saturday
+        // so we have to convert it to 1 - 7 from Monday to Sunday format
+        return if (dayOfWeek == Int.ONE) {
+            // if dayOfWeek is Sunday -> 1, return 7
+            SUNDAY_ID
         }
-        else dayOfWeek - 1
+        else {
+            // else the value of dayOfWeek will be decrement by 1 to match expected format
+            dayOfWeek - Int.ONE
+        }
     }
 
     /**
@@ -131,7 +151,7 @@ object OperationalHoursUtil {
      * @return [String]
      */
     fun getMinuteFromFormattedTime(time: String): String {
-        return time.substring(3, 5)
+        return time.substring(SUBSTRING_START_MINUTE_TIME_INDEX, SUBSTRING_END_MINUTE_TIME_INDEX)
     }
 
     /**
@@ -142,10 +162,10 @@ object OperationalHoursUtil {
     fun generateServerDateTimeFormat(selectedHour: Int, selectedMinutes: Int): String {
         var newSelectedHour = selectedHour.toString()
         var newSelectedMinutes = selectedMinutes.toString()
-        if (selectedHour < 10) {
+        if (selectedHour < TWO_DIGIT_NUMBER_THRESHOLD) {
             newSelectedHour = "0$selectedHour"
         }
-        if (selectedMinutes < 10) {
+        if (selectedMinutes < TWO_DIGIT_NUMBER_THRESHOLD) {
             newSelectedMinutes = "0$selectedMinutes"
         }
         return "$newSelectedHour:$newSelectedMinutes:00"
@@ -244,15 +264,15 @@ object OperationalHoursUtil {
     }
 
     /**
-     * if seller never set ops hour before,
+     * if the sellers never set ops hour before,
      * then backend will return empty list
-     * so our apps will show default "24 Jam" everyday
+     * so our apps will show default "24 Jam" for everyday in a week
      * @return [MutableList]
      */
     fun generateDefaultOpsHourList(): MutableList<ShopOperationalHour> {
         return mutableListOf<ShopOperationalHour>().let { list ->
-            // 1 represent MONDAY , 7 represent SUNDAY
-            for (i in 1..7) {
+            // set monday to sunday ops hour to 24 hours
+            for (i in MONDAY_ID..SUNDAY_ID) {
                 list.add(ShopOperationalHour(
                         day = i,
                         startTime = MIN_START_TIME,

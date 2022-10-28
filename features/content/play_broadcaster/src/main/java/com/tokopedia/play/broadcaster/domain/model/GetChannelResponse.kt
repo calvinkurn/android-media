@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 
@@ -117,6 +118,7 @@ data class GetChannelResponse(
             val originalPrice: String = "",
             @SerializedName("priceFmt")
             val priceFmt: String = "",
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             val price: String = "",
             @SerializedName("discount")

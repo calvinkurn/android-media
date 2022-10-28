@@ -44,6 +44,8 @@
     <dimen name="play_widget_badge_height">20dp</dimen>
     <dimen name="play_widget_more_action_size">@dimen/play_widget_badge_height</dimen>
 
+    <dimen name="play_widget_medium_margin_without_background">10dp</dimen>
+
     <!--Contextual Promo-->
     <dimen name="play_widget_card_small_promo_radius">4dp</dimen>
 
@@ -54,5 +56,4 @@
     <dimen name="play_widget_card_large_height">284dp</dimen>
 
     <dimen name="play_widget_card_jumbo_height">410dp</dimen>
-
 </resources>

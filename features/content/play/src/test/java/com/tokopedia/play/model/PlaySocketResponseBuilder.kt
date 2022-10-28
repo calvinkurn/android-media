@@ -198,6 +198,33 @@ class PlaySocketResponseBuilder {
         }
     """.trimIndent()
 
+    private val channelQuizActive = """
+    {
+      "type": "CHANNEL_QUIZ",
+      "data": {
+        "channel_id": "123456",
+        "interactive_id": "234567",
+        "interactive_type": 1, 
+        "status": 1, 
+        "question": "Kapan Indonesia Raya merdeka?",
+        "countdown_end": 30,
+        "prize": "sepasang sepatu",
+        "choices": [
+          {
+            "id": "345678",
+            "text": "17 Agustus 2022"
+          },
+          {
+            "id": "456789",
+            "text": "18 Agustus 2023"
+          }
+        ],
+        "waiting_duration": 15
+      }
+    }
+    """.trimIndent()
+    //we dont fetch correct bcz Channel_Quiz only send once when user enters room with quiz already started, user hasnt answer yet but already given answer would be weird
+
     fun buildChannelInteractiveResponse(isExist: Boolean = true): WebSocketResponse = gson.fromJson(
             if (isExist) channelInteractiveExistStatus else channelInteractiveNotExistStatus,
             WebSocketResponse::class.java
@@ -206,4 +233,6 @@ class PlaySocketResponseBuilder {
     fun buildProductTagResponse(): WebSocketResponse = gson.fromJson(
             productTag, WebSocketResponse::class.java
     )
+
+    fun buildQuiz(): WebSocketResponse = gson.fromJson(channelQuizActive, WebSocketResponse::class.java)
 }

@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/unify_space_12">
+    android:paddingBottom="@dimen/unify_space_12"
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtTitleArticleTopAdsEducation"
@@ -14,7 +16,7 @@
         android:layout_marginStart="@dimen/topads_dashboard_dp_6"
         android:text="@string/topads_education_article_frag_title"
         android:textSize="@dimen/fontSize_lvl4"
-        android:textColor="@color/light_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:layout_marginTop="@dimen/unify_space_12"
         app:layout_goneMarginTop="@dimen/unify_space_0"
         app:layout_constraintStart_toStartOf="parent"

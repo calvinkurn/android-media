@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
@@ -24,12 +25,14 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
 
     fun generateUserSettingMenu(): SettingDataView {
         return SettingDataView(context?.getString(R.string.menu_account_section_title_account_setting), mutableListOf(
-                CommonDataView(applink = ApplinkConstInternalLogistic.MANAGE_ADDRESS, title = context?.getString(R.string.menu_account_title_address_list), body = context?.getString(R.string.menu_account_desc_address), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.SHOP, id = AccountConstants.SettingCode.SETTING_ACCOUNT_ADDRESS_ID),
+                CommonDataView(applink = ApplinkConstInternalLogistic.MANAGE_ADDRESS_FROM_ACCOUNT, title = context?.getString(R.string.menu_account_title_address_list), body = context?.getString(R.string.menu_account_desc_address), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.SHOP, id = AccountConstants.SettingCode.SETTING_ACCOUNT_ADDRESS_ID),
                 CommonDataView(applink = ApplinkConstInternalGlobal.SETTING_BANK, title = context?.getString(R.string.menu_account_title_bank), body = context?.getString(R.string.menu_account_desc_bank), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.FINANCE, id = AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID),
-                CommonDataView(applink = ApplinkConstInternalGlobal.PAYMENT_SETTING, title = context?.getString(R.string.menu_account_title_instant_payment), body = context?.getString(R.string.menu_account_desc_instant_payment), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.CARD, id = AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT),
-                CommonDataView(applink = ApplinkConstInternalGlobal.ACCOUNT_SETTING, title = context?.getString(R.string.menu_account_title_security), body = context?.getString(R.string.menu_account_desc_security), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LOCK, id = AccountConstants.SettingCode.SETTING_SECURITY),
+                CommonDataView(applink = ApplinkConstInternalUserPlatform.PAYMENT_SETTING, title = context.getString(R.string.menu_account_title_instant_payment), body = context.getString(R.string.menu_account_desc_instant_payment), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.CARD, id = AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT),
+                CommonDataView(applink = ApplinkConstInternalUserPlatform.ACCOUNT_SETTING, title = context.getString(R.string.menu_account_title_security), body = context.getString(R.string.menu_account_desc_security), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LOCK, id = AccountConstants.SettingCode.SETTING_SECURITY),
                 CommonDataView(applink = ApplinkConst.SETTING_NOTIFICATION, title = context?.getString(R.string.menu_account_title_notification), body = context?.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BELL_RING, id = AccountConstants.SettingCode.SETTING_NOTIFICATION),
-                CommonDataView(applink = ApplinkConstInternalGlobal.LINK_ACCOUNT, title = context?.getString(R.string.menu_account_title_account_link), body = context?.getString(R.string.menu_account_desc_account_link), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LINK, id = AccountConstants.SettingCode.SETTING_LINK_ACCOUNT, labelText = "BARU")
+                CommonDataView(applink = ApplinkConstInternalUserPlatform.LINK_ACCOUNT, title = context.getString(R.string.menu_account_title_account_link), body = context.getString(R.string.menu_account_desc_account_link), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LINK, id = AccountConstants.SettingCode.SETTING_LINK_ACCOUNT),
+                CommonDataView(applink = ApplinkConstInternalUserPlatform.PRIVACY_ACCOUNT, title = context.getString(R.string.menu_account_title_privacy_account), body = context.getString(R.string.menu_account_desc_privacy_account), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.GLOBE, id = AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT),
+                CommonDataView(applink = ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE, title = context?.getString(R.string.menu_account_title_explicit_profile), body = context?.getString(R.string.menu_account_desc_explicit_profile), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.SHOPPING_BAG, id = AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE)
         ), isExpanded = true)
     }
 

@@ -6,6 +6,7 @@ interface CampaignStockTypeFactory {
     fun type(model: ActiveProductSwitchUiModel): Int
     fun type(model: TotalStockEditorUiModel): Int
     fun type(model: ReservedEventInfoUiModel): Int
+    fun type(model: VariantReservedEventInfoUiModel): Int
     fun type(model: SellableStockProductUIModel): Int
     fun type(model: ReservedStockRedirectionUiModel): Int
     fun type(model: CampaignStockTickerUiModel): Int

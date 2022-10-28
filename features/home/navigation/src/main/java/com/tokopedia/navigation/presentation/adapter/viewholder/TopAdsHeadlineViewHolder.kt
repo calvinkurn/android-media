@@ -44,7 +44,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     private fun onSuccessResponse(cpmModel: CpmModel) {
         topadsHeadlineUiModel?.run {
             this.cpmModel = cpmModel
-            showHeadlineView(cpmModel)
+            showHeadlineView(cpmModel, index)
         }
     }
 
@@ -58,16 +58,16 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         hideHeadlineView()
         topadsHeadlineUiModel?.run {
             if (cpmModel != null) {
-                showHeadlineView(cpmModel!!)
+                showHeadlineView(cpmModel!!, index)
             } else {
                 fetchTopadsHeadlineAds(topadsHeadlineUiModel?.topadsHeadLinePage ?: 0)
             }
         }
     }
 
-    private fun showHeadlineView(cpmModel: CpmModel) {
+    private fun showHeadlineView(cpmModel: CpmModel, index: Int) {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
-        topadsHeadlineView.displayAds(cpmModel)
+        topadsHeadlineView.displayAds(cpmModel,index)
     }
 }

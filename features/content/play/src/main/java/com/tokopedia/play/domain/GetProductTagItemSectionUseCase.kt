@@ -25,6 +25,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
 
     companion object {
         private const val CHANNEL_ID = "channelID"
+        private const val WAREHOUSE_ID = "warehouseID"
         private const val REQUEST_PARAM = "req"
         const val QUERY_NAME = "GetProductTagItemSectionUseCaseQuery"
         const val QUERY = """
@@ -62,6 +63,8 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                     web_link: WebLink
                     min_quantity: MinQuantity
                     is_free_shipping: IsFreeShipping
+                    is_toko_now: IsTokoNow
+                    is_pinned: IsPinned
                   }
                 }
                 vouchers{
@@ -88,9 +91,10 @@ class GetProductTagItemSectionUseCase @Inject constructor(
             }
         """
 
-        fun createParam(channelId: String): RequestParams {
+        fun createParam(channelId: String, warehouseId: String): RequestParams {
             val params = mapOf(
-                CHANNEL_ID to channelId
+                CHANNEL_ID to channelId,
+                WAREHOUSE_ID to warehouseId
             )
             return RequestParams.create().apply {
                 putObject(REQUEST_PARAM, params)

@@ -35,60 +35,14 @@
             app:tickerType="warning" />
     </RelativeLayout>
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgPmHeaderBackdrop"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/gmc_dimen_76dp"
-        android:orientation="horizontal"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tickerPmContainer"
-        app:unify_image_corner_radius="0"
-        tools:src="@tools:sample/avatars" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgPmHeaderImage"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        app:layout_constraintBottom_toBottomOf="@+id/imgPmHeaderBackdrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imgPmHeaderBackdrop"
-        tools:src="@tools:sample/avatars" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmHeaderDesc"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="@+id/imgPmHeaderImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgPmHeaderImage"
-        app:layout_constraintTop_toTopOf="@+id/imgPmHeaderImage"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="@string/pm_registration_header_pm" />
-
-    <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/tabPmSubscription"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgPmHeaderBackdrop"
-        tools:layout_height="40dp" />
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPagerPmSubscription"
+    <FrameLayout
+        android:id="@+id/framePmFragment"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintBottom_toTopOf="@+id/pmRegistrationFooterView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabPmSubscription" />
+        app:layout_constraintTop_toBottomOf="@+id/tickerPmContainer" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderPmSubscription"

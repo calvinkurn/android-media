@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmMembershipPassingGrade"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Selamat! Kamu sudah melewati keanggotaan ini dan berhak mendapatkan paket keuntungan lebih di PM PRO Advanced." />
+
+    <com.tokopedia.power_merchant.subscribe.view.viewcomponent.MembershipPmCheckListView
+        android:id="@+id/membershipChecklistPmView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipPassingGrade"
+        tools:layout_height="100dp" />
+
+    <com.tokopedia.power_merchant.subscribe.view.viewcomponent.MembershipPmProCheckListView
+        android:id="@+id/membershipChecklistPmProView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/membershipChecklistPmView"
+        tools:layout_height="100dp" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerPmMembership"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/membershipChecklistPmProView" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmGradeBenefitTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/pm_grade_benefit_widget_section"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerPmMembership"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPmGradeBenefit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmGradeBenefitTitle"
+        app:layout_constraintVertical_bias="0"
+        tools:itemCount="4"
+        tools:listitem="@layout/item_pm_grade_benefit" />
+</androidx.constraintlayout.widget.ConstraintLayout>

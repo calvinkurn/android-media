@@ -55,7 +55,9 @@ class ProductDetailDevActivity : BaseActivity() {
         val shopIdVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_shopid_vbs)
         val saveAfterCloseEditText = findViewById<TextFieldUnify>(R.id.pdp_save_after_close_atc_vbs)
         val dismissAfterAtc = findViewById<TextFieldUnify>(R.id.pdp_dismiss_after_atc_vbs)
+        val extParamsEditText = findViewById<TextFieldUnify>(R.id.pdp_ext_param_vbs)
         val toggleTokoNow = findViewById<CheckBox>(R.id.toggle_is_tokonow)
+        val toggleQtyEditor = findViewById<CheckBox>(R.id.toggle_show_qty_editor)
         val spinnerPageSource = findViewById<Spinner>(R.id.page_source_spinner)
 
         val listOfPageSource: List<String> = VariantPageSource.values().toList().map {
@@ -68,10 +70,12 @@ class ProductDetailDevActivity : BaseActivity() {
 
         findViewById<UnifyButton>(R.id.pdp_vbs_btn).setOnClickListener {
             val isTokonow = toggleTokoNow.isChecked
+            val showQtyEditor = toggleQtyEditor.isChecked
             val dismissAfterAtcData = dismissAfterAtc.textFieldInput.text.toString().toBoolean()
             val saveAfterClose = saveAfterCloseEditText.textFieldInput.text.toString().toBoolean()
 
             val productId = productIdVbsEditText.textFieldInput.text.toString()
+            val extParams = extParamsEditText.textFieldInput.text.toString()
             val shopId = shopIdVbsEditText.textFieldInput.text.toString()
             val pageSource = VariantPageSource.values().firstOrNull {
                 it.source == spinnerPageSource.selectedItem.toString()
@@ -86,10 +90,18 @@ class ProductDetailDevActivity : BaseActivity() {
                     trackerCdListName = "",
                     dismissAfterTransaction = dismissAfterAtcData,
                     saveAfterClose = saveAfterClose,
+                    extParams = extParams,
+                    showQuantityEditor = showQtyEditor,
                     startActivitResult = { data, _ ->
                         startActivity(data)
                     }
             )
+        }
+
+        val educationalType = findViewById<TextFieldUnify>(R.id.pdp_educational_type)
+        findViewById<UnifyButton>(R.id.pdp_educational_btn).setOnClickListener {
+            val typeData = educationalType.textFieldInput.text.toString()
+            RouteManager.route(this, ApplinkConst.PRODUCT_EDUCATIONAL, typeData)
         }
     }
 }

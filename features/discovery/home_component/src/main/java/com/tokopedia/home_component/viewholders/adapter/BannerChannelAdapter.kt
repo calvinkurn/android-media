@@ -10,6 +10,7 @@ import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageVie
 import com.tokopedia.home_component.R
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * A Pager Adapter that supports infinite loop.
@@ -18,13 +19,19 @@ import com.tokopedia.kotlin.model.ImpressHolder
  */
 @Suppress("unused")
 @SuppressLint("SyntheticAccessor")
-class BannerChannelAdapter(itemList: List<BannerItemModel>, private val bannerItemListener: BannerItemListener) : RecyclerView.Adapter<BannerChannelImageViewHolder>() {
+class BannerChannelAdapter(
+    itemList: List<BannerItemModel>,
+    private val bannerItemListener: BannerItemListener,
+    private val cardInteraction: Boolean = false
+) : RecyclerView.Adapter<BannerChannelImageViewHolder>() {
     private var itemList: List<BannerItemModel> = listOf()
     private var imageRatio = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerChannelImageViewHolder {
         val layout = if (itemCount > 1) R.layout.layout_banner_channel_item else R.layout.layout_banner_channel_item_full
-        return BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), bannerItemListener)
+        val viewHolder = BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), bannerItemListener)
+        viewHolder.cardUnify.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
+        return viewHolder
     }
 
     val listCount: Int
@@ -62,9 +69,12 @@ class BannerChannelImageViewHolder(itemView: View, val listener: BannerItemListe
     companion object{
         private const val FPM_HOMEPAGE_BANNER = "banner_component_channel"
     }
+
+    val cardUnify: CardUnify2 = itemView.findViewById(R.id.banner_card)
+
     fun bind(item: BannerItemModel, imageRatio: String = "") {
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.url)
-        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).setOnClickListener { listener.onClick(adapterPosition) }
+        itemView.setOnClickListener { listener.onClick(adapterPosition) }
         itemView.addOnImpressionListener(item) {
             listener.onImpressed(adapterPosition)
         }

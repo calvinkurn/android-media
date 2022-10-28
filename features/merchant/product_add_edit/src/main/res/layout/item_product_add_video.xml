@@ -30,7 +30,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgPlay"
                 android:layout_width="@dimen/layout_lvl4"
                 android:layout_height="wrap_content"
@@ -45,7 +45,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/Unify_N700_96"
@@ -59,7 +58,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:maxLines="2"

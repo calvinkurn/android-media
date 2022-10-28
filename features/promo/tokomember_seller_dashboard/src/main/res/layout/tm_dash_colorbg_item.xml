@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/unify_space_8"
+    tools:ignore="MissingDefaultResource">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/colorBg"
+        android:layout_gravity="center"
+        android:layout_width="120dp"
+        android:layout_height="60dp" />
+
+    <View
+        android:id="@+id/viewBgSelector"
+        android:layout_width="@dimen/unify_space_128"
+        android:layout_height="@dimen/tm_dash_dp_68"
+        android:visibility="invisible"
+        android:background="@drawable/tm_dash_item_selector"/>
+
+</androidx.cardview.widget.CardView>

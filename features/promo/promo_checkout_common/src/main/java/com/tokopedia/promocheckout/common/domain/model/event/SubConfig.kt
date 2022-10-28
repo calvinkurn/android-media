@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class SubConfig(
         @SerializedName("category_id")
         @Expose
-        val categoryId: Int = 0,
+        val categoryId: String = "0",
         @SerializedName("child_category_ids")
         @Expose
         val childCategoryIds: String = "",

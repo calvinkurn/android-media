@@ -49,6 +49,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.reputationCommon)
+    implementation projectOrAar(rootProject.ext.features.reviewCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -69,7 +70,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.viewPager2
 

@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.gms.cast.framework.CastContext
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -18,8 +16,7 @@ import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
-import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
@@ -212,7 +209,7 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onSwipeNextPage() {
-        playPreference.setOnboardingShown(viewModel.userId)
+        playPreference.setCoachMark(userId = viewModel.userId)
     }
 
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -222,13 +219,15 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun inject() {
-        DaggerPlayComponent.builder()
-                .baseAppComponent(
-                        (applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(this))
-                .build()
-                .inject(this)
+        PlayInjector.get(this)
+            .inject(this)
+//        DaggerPlayComponent.builder()
+//                .baseAppComponent(
+//                        (applicationContext as BaseMainApplication).baseAppComponent
+//                )
+//                .playModule(PlayModule(this))
+//                .build()
+//                .inject(this)
     }
 
     private fun setupViewModel() {
@@ -281,6 +280,7 @@ class PlayActivity : BaseActivity(),
     private fun observeFirstChannelEvent() {
         viewModel.observableFirstChannelEvent.observe(this, EventObserver {
             swipeContainerView.reset()
+            playPreference.setCoachMark(userId = viewModel.userId, isFirstChannel = true)
         })
     }
 

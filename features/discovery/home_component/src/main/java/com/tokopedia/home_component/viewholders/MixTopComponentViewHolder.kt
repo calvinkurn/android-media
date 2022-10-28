@@ -58,7 +58,8 @@ import kotlinx.coroutines.launch
 class MixTopComponentViewHolder(
         itemView: View,
         val homeComponentListener: HomeComponentListener?,
-        val mixTopComponentListener: MixTopComponentListener?
+        val mixTopComponentListener: MixTopComponentListener?,
+        private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<MixTopDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
     private var binding: GlobalDcMixTopBinding? by viewBinding()
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
@@ -97,7 +98,7 @@ class MixTopComponentViewHolder(
         setChannelDivider(element = element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
-                mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
+                mixTopComponentListener?.onMixTopImpressed(element.channelModel, element.channelModel.verticalPosition)
             }
         }
     }
@@ -108,11 +109,11 @@ class MixTopComponentViewHolder(
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         if (!isCacheData)
-            mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
+            mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, channel.verticalPosition, position)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        mixTopComponentListener?.onProductCardClicked(channel, channelGrid, adapterPosition, position, applink)
+        mixTopComponentListener?.onProductCardClicked(channel, channelGrid, channel.verticalPosition, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -214,7 +215,7 @@ class MixTopComponentViewHolder(
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
         startSnapHelper.attachToRecyclerView(recyclerView)
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
         adapter = MixTopComponentAdapter(visitables, typeFactoryImpl)
         recyclerView.adapter = adapter
     }
@@ -305,7 +306,7 @@ class MixTopComponentViewHolder(
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ChannelModelMapper.mapToProductCardModel(element),
+                    ChannelModelMapper.mapToProductCardModel(element, cardInteraction),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
@@ -337,7 +338,7 @@ class MixTopComponentViewHolder(
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                homeComponentListener?.onChannelExpired(channelModel, channelModel.verticalPosition, element)
             }
         })
     }

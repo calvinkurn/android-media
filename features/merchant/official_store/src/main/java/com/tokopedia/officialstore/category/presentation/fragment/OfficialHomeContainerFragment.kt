@@ -16,16 +16,22 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.*
+import com.tokopedia.officialstore.ApplinkConstant
+import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_CONTAINER
+import com.tokopedia.officialstore.OfficialStoreInstance
+import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
@@ -41,6 +47,7 @@ import com.tokopedia.officialstore.category.presentation.widget.OfficialCategori
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.databinding.FragmentOfficialHomeBinding
 import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.isRunningTest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -52,7 +59,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
-import java.util.*
 import javax.inject.Inject
 
 class OfficialHomeContainerFragment
@@ -67,6 +73,8 @@ class OfficialHomeContainerFragment
         const val KEY_CATEGORY = "key_category"
         const val PARAM_ACTIVITY_OFFICIAL_STORE = "param_activity_official_store"
         const val PARAM_HOME = "home"
+        private const val FORMAT_APPLINK_SEARCHBAR = "%s&hint=%s"
+        private const val START_THRESHOLD_COLLAPSE_CATEGORIES = 30
     }
 
     private var binding: FragmentOfficialHomeBinding? by viewBinding()
@@ -90,6 +98,7 @@ class OfficialHomeContainerFragment
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private var selectedCategory: Category? = null
     private var activityOfficialStore = ""
+    private var thresholdScrollVertical: Int = START_THRESHOLD_COLLAPSE_CATEGORIES
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
@@ -166,14 +175,17 @@ class OfficialHomeContainerFragment
     }
 
     // config collapse & expand tablayout
-    override fun onContentScrolled(dy: Int) {
+    override fun onContentScrolled(dy: Int, totalScrollVertical: Int) {
         if(dy == 0) return
 
-        tabLayout?.adjustTabCollapseOnScrolled(dy)
-        chooseAddressView?.adjustViewCollapseOnScrolled(
+        if (totalScrollVertical >= thresholdScrollVertical || chooseAddressView?.isExpand == false) {
+            tabLayout?.adjustTabCollapseOnScrolled(dy)
+            chooseAddressView?.adjustViewCollapseOnScrolled(
                 dy = dy,
-                whenWidgetGone = {binding?.osDivider?.gone()},
-                whenWidgetShow = {binding?.osDivider?.show()})
+                whenWidgetGone = { binding?.osDivider?.gone() },
+                whenWidgetShow = { binding?.osDivider?.show() }
+            )
+        }
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -303,6 +315,8 @@ class OfficialHomeContainerFragment
         tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
         val categorySelected = getSelectedCategoryId(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
+        tabLayout?.setMeasuredHeight()
+        thresholdScrollVertical += tabLayout?.getMeasureHeight() ?: 0
         selectedCategory = tabAdapter.categoryList.getOrNull(tabLayout?.getTabAt(categorySelected)?.position.toZeroIfNull())
 
         if(!officialStoreCategories.isCache){
@@ -362,6 +376,10 @@ class OfficialHomeContainerFragment
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
+        if (!isRunningTest()) {
+            loadingCategoryLayout?.visible()
+            binding?.viewContentLoading?.containerLoadingContent?.visible()
+        }
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
@@ -377,6 +395,7 @@ class OfficialHomeContainerFragment
                             override fun onGlobalLayout() {
                                 it.viewTreeObserver.removeOnGlobalLayoutListener(this)
                                 it.setMeasuredHeight()
+                                thresholdScrollVertical += it.getMeasureHeight()
                             }
                         })
                     },
@@ -411,7 +430,10 @@ class OfficialHomeContainerFragment
             setIcon(getToolbarIcons())
             setupSearchbar(
                     hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
-                    applink = ApplinkConstant.OFFICIAL_SEARCHBAR
+                    applink = FORMAT_APPLINK_SEARCHBAR.format(
+                        ApplinkConstant.OFFICIAL_SEARCHBAR,
+                        getString(R.string.os_query_search)
+                    )
             )
             show()
         }
@@ -485,14 +507,18 @@ class OfficialHomeContainerFragment
 
     private fun isAddressDataChanged(): Boolean {
         var isAddressChanged = false
-        chooseAddressData.toLocalCacheModel().let {
-            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
-        }
+        context?.let { context ->
+            chooseAddressData.toLocalCacheModel().let {
+                isAddressChanged =
+                    ChooseAddressUtils.isLocalizingAddressHasUpdated(context, it)
+            }
 
-        if (isAddressChanged) {
-            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-            chooseAddressData = OSChooseAddressData(isActive = true)
+            if (isAddressChanged) {
+                val localChooseAddressData =
+                    ChooseAddressUtils.getLocalizingAddressData(context)
+                chooseAddressData = OSChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
+            }
         }
         return isAddressChanged
     }

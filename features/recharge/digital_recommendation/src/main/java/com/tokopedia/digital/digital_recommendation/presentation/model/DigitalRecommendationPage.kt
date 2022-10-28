@@ -6,5 +6,7 @@ package com.tokopedia.digital.digital_recommendation.presentation.model
 enum class DigitalRecommendationPage {
     PHYSICAL_GOODS,
     DIGITAL_GOODS,
+    DG_THANK_YOU_PAGE,
+    PG_THANK_YOU_PAGE,
     RECOMMENDATION_SKELETON
 }

@@ -56,12 +56,14 @@ object SuggestionRequestUtils {
                 tracking_option
                 component_id
                 child_items {
+                  component_id
                   template
                   type
                   applink
                   url
                   title
                 }
+                suggestion_id
               }
             }
             top_shops{
@@ -97,6 +99,10 @@ object SuggestionRequestUtils {
                         }
                         badges {
                             image_url
+                        }
+                        shop {
+                            id
+                            location
                         }
                     }
                 }

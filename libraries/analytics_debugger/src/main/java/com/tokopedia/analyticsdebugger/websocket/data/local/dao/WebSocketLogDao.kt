@@ -2,6 +2,7 @@ package com.tokopedia.analyticsdebugger.websocket.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.tokopedia.analyticsdebugger.websocket.data.local.entity.WebSocketLogEntity
 
@@ -12,7 +13,7 @@ import com.tokopedia.analyticsdebugger.websocket.data.local.entity.WebSocketLogE
 @Dao
 interface WebSocketLogDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(websocketLog: WebSocketLogEntity)
 
     @Query("DELETE FROM websocket_log")

@@ -17,7 +17,11 @@ data class Media(
         @SerializedName("URLThumbnail")
         val uRLThumbnail: String = "",
         @SerializedName("videoURLAndroid")
-        val videoURLAndroid: String = ""
+        val videoURLAndroid: String = "",
+        @SerializedName("variantOptionID")
+        val variantOptionId: String = "",
+        @SerializedName("URLMaxRes")
+        val urlHD: String = ""
 ) {
     var id: String = ""
 }

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragment.AdContentFragment">
+    tools:context=".view.fragment.AdContentFragment"
+    android:background="@color/Unify_Background">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -14,6 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/Unify_Background"
         tools:context=".view.fragment.AdContentFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:text="@string/topads_headline_ad_content_name_header"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_NN1000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -74,7 +76,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
                 android:text="@string/topads_headline_product_not_selected"
-                android:textColor="@color/bright_red"
+                android:textColor="@color/top_ads_headline_dms_error_red"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/productImagePreviewWidget"
@@ -91,7 +93,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/topads_headline_promotional_message"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_NN1000"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/productPickerErrorText"
                 app:typographyType="heading_4"
@@ -121,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:text="@string/topads_headline_ad_preview_text"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_NN1000"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/promotionalMessageInputText"
                 app:typographyType="heading_4"
