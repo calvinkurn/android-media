@@ -8,9 +8,6 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Produ
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PromoStacking
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesDetailData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
 import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel
@@ -155,8 +152,12 @@ class ShippingDurationConverter @Inject constructor() {
         val shippingCourierUiModels: MutableList<ShippingCourierUiModel> = ArrayList()
         for (productData in productDataList) {
             addShippingCourierViewModel(
-                shippingDurationUiModel, ratesId,
-                shippingCourierUiModels, productData, blackboxInfo, preOrderModel
+                shippingDurationUiModel,
+                ratesId,
+                shippingCourierUiModels,
+                productData,
+                blackboxInfo,
+                preOrderModel
             )
         }
         return shippingCourierUiModels
@@ -166,7 +167,8 @@ class ShippingDurationConverter @Inject constructor() {
         shippingDurationUiModel: ShippingDurationUiModel,
         ratesId: String,
         shippingCourierUiModels: MutableList<ShippingCourierUiModel>,
-        productData: ProductData, blackboxInfo: String,
+        productData: ProductData,
+        blackboxInfo: String,
         preOrderModel: PreOrderModel?
     ) {
         val shippingCourierUiModel = ShippingCourierUiModel()

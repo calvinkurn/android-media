@@ -125,7 +125,7 @@ class ShippingCourierConverter @Inject constructor() {
         return courierItemData
     }
 
-    fun convertToCourierItemData(shippingCourierUiModel: ShippingCourierUiModel, data: LogisticPromoUiModel): CourierItemData {
+    fun convertToCourierItemDataWithPromo(shippingCourierUiModel: ShippingCourierUiModel, data: LogisticPromoUiModel): CourierItemData {
         val courierData = convertToCourierItemData(shippingCourierUiModel)
         courierData.logPromoCode = data.promoCode
         courierData.logPromoMsg = data.disableText

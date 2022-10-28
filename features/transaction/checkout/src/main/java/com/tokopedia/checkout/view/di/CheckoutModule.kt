@@ -26,7 +26,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticcart.scheduledelivery.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
@@ -103,8 +102,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                  gson: Gson,
                                  executorSchedulers: ExecutorSchedulers,
-                                 eligibleForAddressUseCase: EligibleForAddressUseCase,
-                                 getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+                                 eligibleForAddressUseCase: EligibleForAddressUseCase
     ): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutGqlUseCase, getShipmentAddressFormV3UseCase,
@@ -116,7 +114,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 analyticsPurchaseProtection, checkoutAnalytics,
                 shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
                 validateUsePromoRevampUseCase, gson,
-                executorSchedulers, eligibleForAddressUseCase, getRatesWithScheduleUseCase)
+                executorSchedulers, eligibleForAddressUseCase)
     }
 
     @Provides

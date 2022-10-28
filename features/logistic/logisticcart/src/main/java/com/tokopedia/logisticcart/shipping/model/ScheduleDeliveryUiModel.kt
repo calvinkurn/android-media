@@ -28,49 +28,47 @@ data class ScheduleDeliveryUiModel(
         scheduleDate: String,
         timeslotId: Long
     ) {
-        if (scheduleDate != "" && timeslotId != 0L) {
-            getSelectedDeliveryServices(scheduleDate, timeslotId) { isSelected, recommendScheduleDate, recommendDeliveryProduct ->
-                this.isSelected = isSelected
-                this.scheduleDate = recommendScheduleDate
-                this.timeslotId = recommendDeliveryProduct.id
-                this.deliveryProduct = recommendDeliveryProduct
-            }
-        } else {
-            getSelectedDeliveryServicesRecommend { recommendScheduleDate, recommendDeliveryProduct ->
-                this.isSelected = false
-                this.scheduleDate = recommendScheduleDate
-                this.timeslotId = recommendDeliveryProduct.id
-                this.deliveryProduct = recommendDeliveryProduct
-            }
+        getSelectedDeliveryServices(
+            scheduleDate,
+            timeslotId
+        ) { selectedScheduleDate, selectedDeliveryProduct, isSelectedProduct ->
+            this.isSelected = isSelectedProduct
+            this.scheduleDate = selectedScheduleDate
+            this.timeslotId = selectedDeliveryProduct.id
+            this.deliveryProduct = selectedDeliveryProduct
         }
     }
 
     private fun getSelectedDeliveryServicesRecommend(
-        callback: (scheduleDate: String, deliveryProduct: DeliveryProduct) -> Unit
+        callback: (scheduleDate: String, deliveryProduct: DeliveryProduct, isSelectedProduct: Boolean) -> Unit
     ) {
         deliveryServices.forEach { deliveryService ->
             val deliveryProduct = deliveryService.deliveryProducts.find { it.recommend }
             if (deliveryProduct != null) {
-                callback(deliveryService.id, deliveryProduct)
+                callback(deliveryService.id, deliveryProduct, isSelected)
                 return
             }
         }
     }
 
     private fun getSelectedDeliveryServices(
-        scheduleDate: String, timeslotId: Long,
-        callback: (isSelected: Boolean, scheduleDate: String, deliveryProduct: DeliveryProduct) -> Unit,
+        scheduleDate: String,
+        timeslotId: Long,
+        callback: (selectedScheduleDate: String, selectedDeliveryProduct: DeliveryProduct, isSelectedProduct: Boolean) -> Unit
     ) {
-        val deliveryService = deliveryServices.find { it.id == scheduleDate }
-        val deliveryProduct = deliveryService?.deliveryProducts?.find { it.id == timeslotId }
-
-        if (deliveryService != null && deliveryProduct != null) {
-            callback(true, deliveryService.id, deliveryProduct)
-        }
-        else {
-            getSelectedDeliveryServicesRecommend { date, product ->
-                callback(false, date, product)
+        if (scheduleDate != null && timeslotId != null) {
+            val deliveryService = deliveryServices.find { it.id == scheduleDate }
+            val deliveryProduct = deliveryService?.deliveryProducts?.find {
+                it.id == timeslotId && it.available
             }
+
+            if (deliveryService != null && deliveryProduct != null) {
+                callback(deliveryService.id, deliveryProduct, true)
+            } else {
+                getSelectedDeliveryServicesRecommend(callback)
+            }
+        } else {
+            getSelectedDeliveryServicesRecommend(callback)
         }
     }
 }

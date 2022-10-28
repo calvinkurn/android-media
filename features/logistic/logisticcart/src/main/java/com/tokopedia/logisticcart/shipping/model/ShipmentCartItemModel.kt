@@ -115,8 +115,8 @@ class ShipmentCartItemModel(
         // Flag for tracking
         var isHasShownCourierError: Boolean = false,
 
-        // Scheduled Delivery
-        var isShowScheduleDelivery : Boolean = false,
+        // Schedule delivery
+        var isShowScheduleDelivery: Boolean = false,
         var scheduleDate: String = "",
         var timeslotId: Long = 0L,
         var validationMetadata: String = "",

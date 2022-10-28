@@ -513,7 +513,6 @@ internal fun ratesQuery() = """
     }
 """.trimIndent()
 
-
 internal fun scheduleDeliveryQuery() = """
     query scheduleDelivery(${"$"}param : ScheduleDeliveryParam!) {
       scheduleDelivery(input: ${"$"}param) {

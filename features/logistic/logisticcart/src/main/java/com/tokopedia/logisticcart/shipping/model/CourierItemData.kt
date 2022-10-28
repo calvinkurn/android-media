@@ -73,7 +73,7 @@ class CourierItemData(
     val selectedShipper: SelectedShipperModel
         get() = getSelectedShipperData()
 
-    private fun getSelectedShipperData() : SelectedShipperModel {
+    private fun getSelectedShipperData(): SelectedShipperModel {
         return SelectedShipperModel(
             shipperId = shipperId,
             shipperProductId = shipperProductId,
