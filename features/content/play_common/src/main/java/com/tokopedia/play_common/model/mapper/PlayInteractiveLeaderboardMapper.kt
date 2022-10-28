@@ -23,7 +23,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor(private val decodeHtm
             add(
                 LeaderboardGameUiModel.Header(
                     id = it.interactiveId,
-                    reward = decodeHtml.transform(it.reward),
+                    reward = if (getLeaderboardType(it) == LeadeboardType.Quiz) "" else decodeHtml.transform(it.reward),
                     leaderBoardType = getLeaderboardType(it),
                     title = if (getLeaderboardType(it) == LeadeboardType.Quiz) decodeHtml.transform(
                         it.question

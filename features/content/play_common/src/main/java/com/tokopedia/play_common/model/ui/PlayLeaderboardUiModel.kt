@@ -10,7 +10,8 @@ import java.util.Calendar
 
 sealed class LeaderboardGameUiModel {
     data class Header(
-        val title: String, val reward: String = "",
+        val title: String,
+        val reward: String = "", //only for Giveaway
         val endsIn: Calendar? = null,
         val leaderBoardType: LeadeboardType = LeadeboardType.Unknown,
         val id: String,

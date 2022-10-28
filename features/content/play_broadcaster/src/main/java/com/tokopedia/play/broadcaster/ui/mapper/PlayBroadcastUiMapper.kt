@@ -454,7 +454,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             )
         }
         return mutableListOf<LeaderboardGameUiModel>().apply {
-            add(LeaderboardGameUiModel.Header(title = dataUiModel.question, reward = dataUiModel.reward, endsIn = endTime, leaderBoardType = LeadeboardType.Quiz,id = dataUiModel.interactiveId))
+            add(LeaderboardGameUiModel.Header(title = dataUiModel.question, endsIn = endTime, leaderBoardType = LeadeboardType.Quiz,id = dataUiModel.interactiveId))
             addAll(choices)
         }
     }
@@ -501,7 +501,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         }
     }
 
-    @ExperimentalStdlibApi
+    @OptIn(ExperimentalStdlibApi::class)
     override fun mapLeaderBoardWithSlot(
         response: GetSellerLeaderboardSlotResponse,
         allowChat: Boolean
@@ -512,7 +512,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 add(
                     LeaderboardGameUiModel.Header(
                         id = it.interactiveId,
-                        reward = textTransformer.transform(it.reward),
+                        reward = if (getLeaderboardType(it.type) == LeadeboardType.Quiz) "" else textTransformer.transform(it.reward),
                         leaderBoardType = getLeaderboardType(it.type),
                         title = it.getSlotTitle()
                     )
