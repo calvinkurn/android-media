@@ -126,8 +126,8 @@ class ProductBundleSingleViewHolder(
 
         bundleDetailAdapter.setSelectionListener { selectedBundle ->
             renderBundlePriceDetails(selectedBundle)
-            bundle.selectedBundleId = selectedBundle.bundleId
-            bundle.selectedBundleApplink = selectedBundle.applink
+            bundleDetail.selectedBundleId = selectedBundle.bundleId
+            bundleDetail.selectedBundleApplink = selectedBundle.applink
             listener?.onTrackSingleVariantChange(
                 product,
                 selectedBundle,
