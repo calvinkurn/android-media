@@ -14,7 +14,7 @@ data class ScheduleDeliveryUiModel(
     val hidden: Boolean = false,
     val title: String = "",
     val text: String = "",
-    val notice: Notice? = null,
+    val notice: Notice = Notice(),
     val deliveryServices: List<DeliveryService> = arrayListOf(),
     // service id
     var scheduleDate: String = "",
@@ -22,6 +22,8 @@ data class ScheduleDeliveryUiModel(
     var timeslotId: Long = 0L,
     // selected delivery products
     var deliveryProduct: DeliveryProduct? = null,
+    // show coach mark
+    var isNeedShowCoachMark: Boolean = false,
 ) : Parcelable {
 
     fun setScheduleDateAndTimeslotId(

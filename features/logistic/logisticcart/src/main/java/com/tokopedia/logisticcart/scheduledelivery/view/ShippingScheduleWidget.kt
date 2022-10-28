@@ -6,15 +6,19 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
 import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.schedule_slot.bottomsheet.ScheduleSlotBottomSheet
+import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.scheduledelivery.preference.ScheduleDeliveryPreferences
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -35,6 +39,7 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     interface ShippingScheduleWidgetListener {
         fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel)
+        fun getFragmentManager(): FragmentManager?
     }
 
     init {
@@ -159,6 +164,30 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     private fun openScheduleDeliveryBottomSheet(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
         // open schedule delivery bottom sheet
+        scheduleDeliveryUiModel?.let {
+            val bottomsheetUiModel = ScheduleDeliveryMapper.mapResponseToUiModel(
+                it.deliveryServices,
+                it.scheduleDate,
+                it.deliveryProduct ?: DeliveryProduct(),
+                it.notice
+            )
+            mListener?.getFragmentManager()?.let { fragmentManager ->
+
+                val bottomsheet =
+                    ScheduleSlotBottomSheet.show(fragmentManager, bottomsheetUiModel)
+                bottomsheet.setListener(object :
+                    ScheduleSlotBottomSheet.ScheduleSlotBottomSheetListener {
+                    override fun onChooseTimeListener(timeId: Long, dateId: String) {
+                        scheduleDeliveryUiModel.setScheduleDateAndTimeslotId(
+                            scheduleDate = dateId,
+                            timeslotId = timeId
+                        )
+                    }
+                })
+
+            }
+
+        }
     }
 
     private fun removeScheduleWidgetViews() {

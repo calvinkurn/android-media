@@ -8,6 +8,10 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Produ
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PromoStacking
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesDetailData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
 import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel
@@ -70,6 +74,130 @@ class ShippingDurationConverter @Inject constructor() {
             }
         }
         return shippingRecommendationData
+    }
+
+    // todo delete this
+    private fun mockAdditionalDeliveryData(): AdditionalDeliveryData {
+        return AdditionalDeliveryData(
+            recommendAdditionalShipper = true,
+            deliveryType = 0,
+            available = true,
+            hidden = false,
+            title = "Jadwal lainnya",
+            text = "",
+            notice = Notice(
+                title = "Kirim sesuai jadwal",
+                text = "Bebas atur kapan pesanan tiba sesuai kebutuhanmu. Layanan ini baru tersedia untuk pesanan Tokopedia NOW!."
+            ),
+
+            deliveryServices = arrayListOf(
+                DeliveryService(
+                    title = "Hari ini, 20 Sep",
+                    titleLabel = "Hari ini",
+                    id = "2022-09-20T00:00:00Z",
+                    shipperId = 10,
+                    available = true,
+                    hidden = false,
+                    deliveryProducts = arrayListOf(
+                        DeliveryProduct(
+                            title = "Tiba 14:00 - 16:00",
+                            textEta = "Tiba hari ini, 14:00 - 16:00",
+                            id = 2022092014123, // timeslot_id from schelly
+                            finalPrice = 0.0,
+                            realPrice = 10000.0,
+                            textFinalPrice = "Rp0",
+                            textRealPrice = "Rp10.000",
+                            text = "Sisa 3 slot",
+                            shipperId = 10,
+                            shipperProductId = 28,
+                            available = true,
+                            hidden = false,
+                            recommend = true
+                        ),
+                        DeliveryProduct(
+                            title = "Tiba 15:00 - 17:00",
+                            textEta = "Tiba hari ini, 15:00 - 17:00",
+                            id = 2022092814123, // timeslot_id from schelly
+                            finalPrice = 0.0,
+                            realPrice = 10000.0,
+                            textFinalPrice = "Rp0",
+                            textRealPrice = "Rp10.000",
+                            text = "",
+                            shipperId = 10,
+                            shipperProductId = 28,
+                            available = true,
+                            hidden = false,
+                            recommend = false
+                        )
+                    )
+                ),
+                DeliveryService(
+                    title = "Hari ini, 20 Sep",
+                    titleLabel = "Hari ini",
+                    id = "2022-09-20T00:00:00Z",
+                    shipperId = 10,
+                    available = false,
+                    hidden = false,
+                    deliveryProducts = arrayListOf(
+                        DeliveryProduct(
+                            title = "Tiba 14:00 - 16:00",
+                            textEta = "Tiba hari ini, 14:00 - 16:00",
+                            id = 2022092014123, // timeslot_id from schelly
+                            finalPrice = 0.0,
+                            realPrice = 10000.0,
+                            textFinalPrice = "Rp0",
+                            textRealPrice = "Rp10.000",
+                            text = "Sisa 3 slot",
+                            shipperId = 10,
+                            shipperProductId = 28,
+                            available = true,
+                            hidden = false,
+                            recommend = true
+                        ),
+                        DeliveryProduct(
+                            title = "Tiba 15:00 - 17:00",
+                            textEta = "Tiba hari ini, 15:00 - 17:00",
+                            id = 2022092814123, // timeslot_id from schelly
+                            finalPrice = 0.0,
+                            realPrice = 10000.0,
+                            textFinalPrice = "Rp0",
+                            textRealPrice = "Rp10.000",
+                            text = "",
+                            shipperId = 10,
+                            shipperProductId = 28,
+                            available = true,
+                            hidden = false,
+                            recommend = false
+                        )
+                    )
+                ),
+                DeliveryService(
+                    title = "Besok, 21 Sep",
+                    titleLabel = "Hari ini",
+                    id = "2022-09-21T00:00:00Z",
+                    shipperId = 10,
+                    available = true,
+                    hidden = false,
+                    deliveryProducts = arrayListOf(
+                        DeliveryProduct(
+                            title = "Tiba 14:00 - 16:00",
+                            textEta = "Tiba hari ini, 14:00 - 16:00",
+                            id = 2022092014133, // timeslot_id from schelly
+                            finalPrice = 0.0,
+                            realPrice = 10000.0,
+                            textFinalPrice = "Rp0",
+                            textRealPrice = "Rp10.000",
+                            text = "Sisa 3 slot",
+                            shipperId = 10,
+                            shipperProductId = 28,
+                            available = true,
+                            hidden = false,
+                            recommend = false
+                        )
+                    )
+                )
+            )
+        )
     }
 
     private fun convertShippingDuration(ratesDetailData: RatesDetailData): List<ShippingDurationUiModel> {
