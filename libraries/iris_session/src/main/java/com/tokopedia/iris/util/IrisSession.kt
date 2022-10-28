@@ -21,7 +21,6 @@ class IrisSession(val context: Context) : Session {
 
     // variable to hold last time Iris Session is accessed
     private var lastTrackingActivity: Long = 0L
-
     // variable to hold last time Iris Session is accessed (from shared Preference)
     private var lastTrackingActivityPref: Long = 0L
 
@@ -29,8 +28,7 @@ class IrisSession(val context: Context) : Session {
         const val THRESHOLD_EXPIRED_IF_NO_ACTIVITY = 1_800_000L //30 minutes
         const val ONE_DAY_MILLIS = 86_400_000L
         const val GMT_MILLIS = 25_200_000L // 7 hours
-        const val THRESHOLD_UPDATE_LAST_ACTIVITY =
-            10_000L // 10 seconds to prevent burst update shared pref
+        const val THRESHOLD_UPDATE_LAST_ACTIVITY = 10_000L // 10 seconds to prevent burst update shared pref
     }
 
     /**
