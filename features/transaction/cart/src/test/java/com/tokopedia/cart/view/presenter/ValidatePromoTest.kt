@@ -51,6 +51,7 @@ class ValidatePromoTest : BaseCartTest() {
             clearCacheAutoApplyStackUseCase.setParams(any())
         }
         assertEquals("", shopList[0].boCode)
+        assertEquals(false, shopList[0].promoCodes.contains("asdf"))
     }
 
     @Test
@@ -148,5 +149,6 @@ class ValidatePromoTest : BaseCartTest() {
             clearCacheAutoApplyStackUseCase.setParams(any())
         }
         assertEquals("", shopList[0].boCode)
+        assertEquals(false, shopList[0].promoCodes.contains("asdf"))
     }
 }

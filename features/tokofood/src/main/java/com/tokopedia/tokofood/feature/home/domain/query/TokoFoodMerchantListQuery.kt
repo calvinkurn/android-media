@@ -30,6 +30,10 @@ object TokoFoodMerchantListQuery: GqlQueryInterface {
               branchApplink
               isClosed
               addressLocality
+              additionalData {
+                topTextBanner
+                discountIcon
+              }
             }
           }
         }

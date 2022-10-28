@@ -153,7 +153,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
         }
         if (thanksPageData.additionalInfo.bankName.isNotBlank()) {
             tvBankName.text =
-                "${thanksPageData.additionalInfo.bankName} ${thanksPageData.additionalInfo.bankBranch}"
+                "${thanksPageData.additionalInfo.bankBranch}"
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }

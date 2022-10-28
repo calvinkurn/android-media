@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 
 class Timer(private val endDate: Date) {
 
-    private lateinit var timer : CountDownTimer
+    private var timer : CountDownTimer? = null
     private var onTicked : (String) -> Unit = {}
 
     companion object {
@@ -30,7 +30,7 @@ class Timer(private val endDate: Date) {
                 onTicked(formattedTime)
             }
         }
-        timer.start()
+        timer?.start()
     }
 
     fun setOnTickListener(onTicked : (String) -> Unit) {
@@ -38,7 +38,7 @@ class Timer(private val endDate: Date) {
     }
 
     fun stopCountdown() {
-        timer.cancel()
+        timer?.cancel()
     }
 
     private fun findDateDifferenceInMillis(endDate: Date) : Long {
