@@ -178,6 +178,7 @@ ext {
             design            : "com.google.android.material:material:${materialVersion}",
             swipeRefresh      : "androidx.swiperefreshlayout:swiperefreshlayout:${swipeRefreshVersion}",
             cardViewV7        : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
+            androidCore       : "androidx.core:core:${androidxCoreVersion}",
             exifinterface     : "androidx.exifinterface:exifinterface:${exifInterfaceVersion}",
             constraintLayout  : "androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}",
             preferenceV7      : "androidx.preference:preference:${supportLibraryVersion}",
