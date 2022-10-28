@@ -1,43 +1,43 @@
-package com.tokopedia.tkpd.activitylifecyclecallback
+package com.tokopedia.trackingoptimizer.activitylifecyclecallback
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import javax.inject.Inject
 
-class ConsumerMainActivityLifecycleCallbackHandler(private val application: Application) :
-    Application.ActivityLifecycleCallbacks {
+class TrackingQueueActivityLifecycleCallback(val context: Context) : Application.ActivityLifecycleCallbacks {
 
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
+    private val trackingQueue: TrackingQueue by lazy {
+        TrackingQueue(context)
+    }
 
     override fun onActivityCreated(p0: Activity, p1: Bundle?) {
-        TODO("Not yet implemented")
+        //no op
     }
 
     override fun onActivityStarted(p0: Activity) {
-        TODO("Not yet implemented")
+        //no op
     }
 
     override fun onActivityResumed(p0: Activity) {
-        TODO("Not yet implemented")
+        //no op
     }
 
     override fun onActivityPaused(p0: Activity) {
-        TODO("Not yet implemented")
+        trackingQueue.sendAll()
     }
 
     override fun onActivityStopped(p0: Activity) {
-        TODO("Not yet implemented")
+        //no op
     }
 
     override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
-        TODO("Not yet implemented")
+        //no op
     }
 
     override fun onActivityDestroyed(p0: Activity) {
-        TODO("Not yet implemented")
+        //no op
     }
 
 }

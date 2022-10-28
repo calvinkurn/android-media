@@ -46,11 +46,13 @@ import kotlin.coroutines.CoroutineContext
 
 class TrackingQueue(val context: Context) : CoroutineScope {
 
+    private var hasTrackingQueue = false
+
     override val coroutineContext: CoroutineContext
         get() = TrackingExecutors.executor + TrackingExecutors.handler
 
     val newTrackingRepository: TrackRepositoryImpl<TrackingRegularDbModel, TrackingEEDbModel,
-            TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
+        TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
         TrackRepository(context)
     }
 
@@ -66,29 +68,36 @@ class TrackingQueue(val context: Context) : CoroutineScope {
         launch {
             newTrackingRepository.put(map)
         }
+        hasTrackingQueue = true
     }
 
     /**
      * to store the EE tracking into db, along with custom dimension
      * Usually the map for enhanceECommerce is in form "ecommerce":<value>
      */
-    fun putEETracking(event: EventModel,
-                      enhanceECommerceMap: HashMap<String, Any>,
-                      customDimension: HashMap<String, Any>? = null) {
+    fun putEETracking(
+        event: EventModel,
+        enhanceECommerceMap: HashMap<String, Any>,
+        customDimension: HashMap<String, Any>? = null
+    ) {
         launch {
             newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
         }
+        hasTrackingQueue = true
     }
 
     /**
      * to store the EE tracking into db, with no custom dimension
      * Usually the map for enhanceECommerce is in form "ecommerce":<value>
      */
-    fun putEETracking(map: HashMap<String, Any>? = null,
-                      enhanceECommerceMap: HashMap<String, Any>?) {
+    fun putEETracking(
+        map: HashMap<String, Any>? = null,
+        enhanceECommerceMap: HashMap<String, Any>?
+    ) {
         launch {
             newTrackingRepository.putEE(map, enhanceECommerceMap)
         }
+        hasTrackingQueue = true
     }
 
     /**
@@ -98,7 +107,10 @@ class TrackingQueue(val context: Context) : CoroutineScope {
     fun sendAll() {
         //send all tracking in db to gtm
         try {
-            SendTrackQueueService.start(context)
+            if (hasTrackingQueue){
+                SendTrackQueueService.start(context)
+                hasTrackingQueue = false
+            }
         } catch (e: Throwable) {
             // prevent illegal state exception when service is launch when app in background (in O)
         }
