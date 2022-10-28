@@ -1,8 +1,8 @@
 package com.tokopedia.tokochat.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
@@ -19,18 +19,33 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
+import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
 import com.tokopedia.tokochat.domain.response.extension.TokoChatImageResult
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUrlUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import javax.inject.Inject
@@ -45,7 +60,8 @@ class TokoChatViewModel @Inject constructor(
     private val getTokoChatBackgroundUseCase: GetTokoChatBackgroundUseCase,
     private val getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase,
     private val profileUseCase: TokoChatMutationProfileUseCase,
-    private val getImageUrlUseCase: TokoChatGetImageUrlUseCase,
+    private val getTokoChatOrderProgressUseCase: TokoChatOrderProgressUseCase,
+    private val getImageUrlUseCase: TokoChatGetImageUseCase,
     private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -65,9 +81,41 @@ class TokoChatViewModel @Inject constructor(
     val chatRoomTicker: LiveData<Result<TokochatRoomTickerResponse>>
         get() = _chatRoomTicker
 
+    private val _orderTransactionStatus = MutableLiveData<Result<TokoChatOrderProgressResponse>>()
+    val orderTransactionStatus: LiveData<Result<TokoChatOrderProgressResponse>>
+        get() = _orderTransactionStatus
+
+    private val _updateOrderTransactionStatus =
+        MutableSharedFlow<Result<TokoChatOrderProgressResponse>>(replay = Int.ONE)
+
+    val updateOrderTransactionStatus: SharedFlow<Result<TokoChatOrderProgressResponse>> =
+        _updateOrderTransactionStatus
+
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable>
         get() = _error
+
+    val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
+
+    init {
+        viewModelScope.launch {
+            orderStatusParamFlow
+                .debounce(DELAY_UPDATE_ORDER_STATE)
+                .flatMapLatest { (orderId, serviceType) ->
+                    if (orderId.isNotBlank() && serviceType.isNotBlank()) {
+                        fetchOrderStatusUseCase(orderId, serviceType).catch {
+                            emit(Fail(it))
+                        }
+                    } else {
+                        emptyFlow()
+                    }
+                }
+                .flowOn(dispatcher.io)
+                .collectLatest {
+                    _updateOrderTransactionStatus.emit(it)
+                }
+        }
+    }
 
     fun sendMessage(channelId: String, text: String) {
         try {
@@ -254,6 +302,34 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
+    /*
+    * Order Transaction Section
+     */
+    fun loadOrderCompletedStatus(orderId: String, serviceType: String) {
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(orderId, serviceType))
+            }
+            _orderTransactionStatus.value = Success(result)
+        }, onError = {
+            _orderTransactionStatus.value = Fail(it)
+        })
+    }
+
+    fun updateOrderStatusParam(orderStatusParam: Pair<String, String>) {
+        orderStatusParamFlow.tryEmit(orderStatusParam)
+    }
+
+    private fun fetchOrderStatusUseCase(
+        orderId: String,
+        serviceType: String,
+    ): Flow<Result<TokoChatOrderProgressResponse>> {
+        return flow {
+            val result = getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(orderId, serviceType))
+            emit(Success(result))
+        }
+    }
+
     fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
         return try {
             chatChannelUseCase.getLiveChannel(channelId)
@@ -270,12 +346,16 @@ class TokoChatViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val imageUrlResponse = getImageUrlUseCase(
-                TokoChatGetImageUrlUseCase.Param(imageId, channelId)
+                TokoChatGetImageUseCase.Param(imageId, channelId)
             )
             val imageResult = getImageUrlUseCase.getImage(imageUrlResponse.data.url)
             onSuccess(imageUrlResponse, imageResult)
-         }, onError = {
+        }, onError = {
             _error.value = it
         })
+    }
+
+    companion object {
+        const val DELAY_UPDATE_ORDER_STATE = 5000L
     }
 }

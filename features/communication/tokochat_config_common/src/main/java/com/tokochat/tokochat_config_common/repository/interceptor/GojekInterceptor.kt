@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.data.interceptor
+package com.tokochat.tokochat_config_common.repository.interceptor
 
 import okhttp3.Interceptor
 import okhttp3.Request

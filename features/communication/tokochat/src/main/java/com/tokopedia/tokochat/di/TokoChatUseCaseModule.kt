@@ -1,14 +1,16 @@
 package com.tokopedia.tokochat.di
 
-import com.gojek.courier.CourierConnection
 import android.content.Context
+import com.gojek.courier.CourierConnection
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokochat.data.repository.TokoChatRepository
+import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUrlUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
@@ -77,18 +79,18 @@ object TokoChatUseCaseModule {
     @TokoChatScope
     @Provides
     fun provideMutationProfileUseCase(
-        repository: TokoChatRepository,
-        courierConnection: CourierConnection
+        @TokoChatQualifier courierConnection: CourierConnection,
+        repository: TokoChatRepository
     ): TokoChatMutationProfileUseCase {
-        return TokoChatMutationProfileUseCase(repository, courierConnection)
+        return TokoChatMutationProfileUseCase(courierConnection, repository)
     }
 
     @TokoChatScope
     @Provides
-    fun provideGetImageUrlUseCase(
-        repository: TokoChatRepository,
+    fun provideGetImageUseCase(
+        repository: TokoChatImageRepository,
         dispatchers: CoroutineDispatchers
-    ): TokoChatGetImageUrlUseCase {
-        return TokoChatGetImageUrlUseCase(repository, dispatchers)
+    ): TokoChatGetImageUseCase {
+        return TokoChatGetImageUseCase(repository, dispatchers)
     }
 }

@@ -34,6 +34,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
@@ -64,7 +65,10 @@ import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
+import com.tokopedia.topchat.chatlist.view.listener.ChatListTickerListener
+import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
@@ -90,7 +94,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-    ChatListItemListener, LifecycleOwner {
+    ChatListItemListener, LifecycleOwner, ChatListTickerListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -305,6 +309,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                     onSuccessGetChatList(it.data.data)
                     if (GlobalConfig.isSellerApp() && isFirstPage())  {
                         chatItemListViewModel.getOperationalInsight(userSession.shopId)
+                    } else if (!GlobalConfig.isSellerApp() && isFirstPage()) {
+                        chatItemListViewModel.getChatListTicker()
                     }
                 }
                 is Fail -> onFailGetChatList(it.throwable)
@@ -350,6 +356,37 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
             }
+        }
+
+        chatItemListViewModel.chatListTicker.observe(viewLifecycleOwner) { result ->
+            if (result is Success) {
+                val tickerChatListIndex = adapter?.list?.indexOfFirst { it -> it is ChatListTickerUiModel }
+
+                if (tickerChatListIndex == RecyclerView.NO_POSITION) {
+                    setChatListTickerBuyer(result.data)
+                    setChatListTickerSeller(result.data)
+                }
+            }
+        }
+    }
+
+    private fun setChatListTickerBuyer(result: ChatListTickerResponse.ChatListTicker) {
+        if (result.tickerBuyer.enable && !isTabSeller()) {
+            val tickerChatListBuyer = ChatListTickerUiModel(
+                result.tickerBuyer.message,
+                result.tickerBuyer.tickerType
+            )
+            adapter?.addElement(Int.ZERO, tickerChatListBuyer)
+        }
+    }
+
+    private fun setChatListTickerSeller(result: ChatListTickerResponse.ChatListTicker) {
+        if (result.tickerSeller.enable && isTabSeller()) {
+            val tickerChatListSeller = ChatListTickerUiModel(
+                result.tickerSeller.message,
+                result.tickerSeller.tickerType
+            )
+            adapter?.addElement(Int.ZERO, tickerChatListSeller)
         }
     }
 
@@ -465,7 +502,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     override fun getAdapterTypeFactory(): ChatListTypeFactoryImpl {
-        return ChatListTypeFactoryImpl(this, chatListAnalytics)
+        return ChatListTypeFactoryImpl(this, chatListAnalytics, this)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -480,6 +517,13 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
+    }
+
+
+    override fun onChatListTickerClicked() {
+        context?.let {
+            RouteManager.route(it, ApplinkConst.TokoFood.TOKOFOOD_ORDER)
+        }
     }
 
     private fun showFilterDialog() {

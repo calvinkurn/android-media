@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.util
+package com.tokochat.tokochat_config_common.util
 
 import com.gojek.courier.auth.cache.TokenCachingMechanism
 import com.gojek.courier.config.CourierRemoteConfig

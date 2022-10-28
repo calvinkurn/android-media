@@ -1,6 +1,6 @@
 package com.tokopedia.tokochat.domain.usecase
 
-import com.tokopedia.tokochat.data.repository.TokoChatRepository
+import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import javax.inject.Inject
 
 class TokoChatRegistrationChannelUseCase @Inject constructor(

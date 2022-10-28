@@ -16,12 +16,12 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
@@ -220,6 +220,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
+        removeTokoChat();
         DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
@@ -253,6 +254,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(this);
         userSession.logoutSession();
+        removeTokoChat();
     }
 
     public void checkIfForceLogoutMustShow() {
@@ -338,4 +340,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
+    protected void removeTokoChat() {
+        if (getApplication() instanceof BaseMainApplication) {
+            ((BaseMainApplication) getApplication()).getTokoChatConnection().disconnect();
+        }
+    }
 }

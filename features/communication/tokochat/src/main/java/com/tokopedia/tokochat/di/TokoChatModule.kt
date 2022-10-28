@@ -1,27 +1,14 @@
 package com.tokopedia.tokochat.di
 
 import android.content.Context
-import com.gojek.conversations.courier.BabbleCourierClient
-import com.gojek.courier.CourierConnection
-import com.gojek.courier.config.CourierRemoteConfig
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.tokochat.util.TokoChatCourierStateObservable
-import com.tokopedia.tokochat.data.repository.courier.TokoChatBabbleCourierImpl
-import com.tokopedia.tokochat.data.repository.courier.TokoChatCourierClientProvider
-import com.tokopedia.tokochat.data.repository.TokoChatRepository
+import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
-import com.tokopedia.tokochat.di.TokoChatNetworkModule.RETROFIT_TOKOCHAT
-import com.tokopedia.tokochat.util.TokoChatCourierRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import retrofit2.Retrofit
-import javax.inject.Named
 
 @Module
 object TokoChatModule {
@@ -34,57 +21,10 @@ object TokoChatModule {
 
     @TokoChatScope
     @Provides
-    fun provideTokoChatRepository(
-        @Named(RETROFIT_TOKOCHAT) retrofit: Retrofit,
-        @ApplicationContext context: Context,
-        babbleCourierClient: BabbleCourierClient,
+    fun provideTokoChatImageRepository(
         tokoChatImageApi: TokoChatImageApi,
         tokoChatDownloadImageApi: TokoChatDownloadImageApi
-    ): TokoChatRepository {
-        return TokoChatRepository(
-            retrofit, context, babbleCourierClient, tokoChatImageApi, tokoChatDownloadImageApi)
-    }
-
-    @TokoChatScope
-    @Provides
-    fun provideTokoChatBabbleCourier(
-        courierConnection: CourierConnection,
-        courierStateObservable: TokoChatCourierStateObservable,
-        remoteConfig: RemoteConfig
-    ): BabbleCourierClient {
-        return TokoChatBabbleCourierImpl(
-            courierConnection, courierStateObservable, remoteConfig)
-    }
-
-    @TokoChatScope
-    @Provides
-    fun provideTokoChatCourierConnection(
-        @ApplicationContext context: Context,
-        gson: Gson,
-        @Named(RETROFIT_TOKOCHAT) retrofit: Retrofit,
-        userSession: UserSessionInterface,
-        courierRemoteConfig: CourierRemoteConfig
-    ): CourierConnection {
-        val provider = TokoChatCourierClientProvider(
-            context, gson, retrofit, userSession, courierRemoteConfig
-        )
-        return provider.initializeCourierConnection()
-    }
-
-
-    @TokoChatScope
-    @Provides
-    fun provideTokoChatCourierRemoteConfig(
-        remoteConfig: RemoteConfig
-    ): CourierRemoteConfig {
-        return TokoChatCourierRemoteConfigImpl(remoteConfig)
-    }
-
-    @TokoChatScope
-    @Provides
-    fun providesRemoteConfig(
-        @ApplicationContext context: Context
-    ): RemoteConfig {
-        return FirebaseRemoteConfigImpl(context)
+    ): TokoChatImageRepository {
+        return TokoChatImageRepository(tokoChatImageApi, tokoChatDownloadImageApi)
     }
 }

@@ -2,10 +2,10 @@ package com.tokopedia.tokochat.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.tokochat.data.interceptor.GojekInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -20,71 +20,20 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Named
 
 @Module
-object TokoChatNetworkModule {
-
-    //TODO: Move this to TokopediaUrl
-    const val BASE_URL = "https://integration-api.gojekapi.com/"
+object TokoChatImageAttachmentNetworkModule {
 
     private const val NET_READ_TIMEOUT = 300
     private const val NET_WRITE_TIMEOUT = 300
     private const val NET_CONNECT_TIMEOUT = 300
     private const val NET_RETRY = 3
 
-    const val RETROFIT_TOKOCHAT = "retrofit_tokochat"
     private const val RETROFIT_TOKOCHAT_DOWNLOAD_IMAGE = "retrofit_tokochat_download_image"
-    private const val OKHTTP_TOKOCHAT = "okhttp_tokochat"
     private const val OKHTTP_TOKOCHAT_DOWNLOAD_IMAGE = "okhttp_tokochat_download_image"
-
-    @TokoChatScope
-    @Provides
-    @Named(RETROFIT_TOKOCHAT)
-    fun provideChatRetrofit(
-        retrofitBuilder: Retrofit.Builder,
-        @Named(OKHTTP_TOKOCHAT) okHttpClient: OkHttpClient
-    ): Retrofit {
-        return retrofitBuilder
-            .baseUrl(BASE_URL)
-            .addConverterFactory(StringResponseConverter())
-            .client(okHttpClient).build()
-    }
-
-    @TokoChatScope
-    @Provides
-    @Named(OKHTTP_TOKOCHAT)
-    fun provideOkHttpClient(
-        retryPolicy: OkHttpRetryPolicy,
-        loggingInterceptor: HttpLoggingInterceptor,
-        errorResponseInterceptor: ErrorResponseInterceptor,
-        chuckerInterceptor: ChuckerInterceptor,
-        gojekInterceptor: GojekInterceptor
-    ): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-        builder.addInterceptor(errorResponseInterceptor)
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-            builder.addInterceptor(loggingInterceptor)
-            builder.addInterceptor(chuckerInterceptor)
-        }
-
-        builder.addInterceptor(gojekInterceptor)
-
-        builder.readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-        builder.connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-        builder.writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-        return builder.build()
-    }
 
     @TokoChatScope
     @Provides
     fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
         return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
-    }
-
-    @TokoChatScope
-    @Provides
-    fun provideGojekInterceptor(): GojekInterceptor {
-        return GojekInterceptor()
     }
 
     @TokoChatScope
@@ -101,7 +50,7 @@ object TokoChatNetworkModule {
 
     @TokoChatScope
     @Provides
-    fun provideTokoChatImageApi(@Named(RETROFIT_TOKOCHAT) retrofit: Retrofit): TokoChatImageApi {
+    fun provideTokoChatImageApi(@TokoChatQualifier retrofit: Retrofit): TokoChatImageApi {
         return retrofit.create(TokoChatImageApi::class.java)
     }
 
