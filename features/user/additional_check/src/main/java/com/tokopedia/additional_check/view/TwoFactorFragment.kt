@@ -201,6 +201,10 @@ class TwoFactorFragment: BaseDaggerFragment() {
                     }
                     validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
                     goToAddPin(validateToken)
+                } else {
+                    if (isImprove2FA()) {
+                        activity?.finish()
+                    }
                 }
             }
         }
