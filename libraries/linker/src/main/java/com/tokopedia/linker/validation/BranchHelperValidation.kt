@@ -1,5 +1,6 @@
 package com.tokopedia.linker.validation
 
+import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import com.tokopedia.linker.LinkerConstants
@@ -8,6 +9,10 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.PaymentData
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONException
@@ -285,7 +290,12 @@ class BranchHelperValidation {
         logging(messageMap)
     }
 
-    fun sendBranchSuccessDataLogs(referringParams: JSONObject?, branchUrl: String) {
+    fun sendBranchSuccessDataLogs(context: Context, referringParams: JSONObject?, branchUrl: String) {
+        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SEND_SUCCESS_LOG_BRANCH, true)) {
+            return
+        }
+
         val messageMap = HashMap<String, String>()
         messageMap[BRANCH_URL] = branchUrl
         messageMap[BRANCH_LOG_TYPE] = BRANCH_FLOW_ON_CLICK_LINK

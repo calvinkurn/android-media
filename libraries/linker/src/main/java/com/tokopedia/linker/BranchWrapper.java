@@ -203,7 +203,7 @@ public class BranchWrapper implements WrapperInterface {
                     if (!TextUtils.isEmpty(deeplink)) {
                         logNonBranchLinkData(context, referringParams);
                     }
-                    helper.sendBranchSuccessDataLogs(referringParams, branchUrl);
+                    helper.sendBranchSuccessDataLogs(context, referringParams, branchUrl);
                 } else {
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
