@@ -817,17 +817,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun userCarouselImpression(
-        activityId: String,
-        media: FeedXMedia,
-        positionInFeed: Int,
-        postType: String,
-        isFollowed: Boolean,
-        shopId: String,
-        postPosition: Int,
-        cpmData: CpmData,
-        products: List<Product>
-    ) {
+    override fun userCarouselImpression(feedXCard: FeedXCard, positionInFeed: Int) {
     }
 
     override fun userGridPostImpression(
@@ -1003,13 +993,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         )
     }
 
-    override fun onReadMoreClicked(
-            postId: String,
-            shopId: String,
-            type: String,
-            isFollowed: Boolean,
-            mediaType: String
-    ) {
+    override fun onReadMoreClicked(card: FeedXCard, positionInFeed: Int) {
     }
 
     override fun onImageClicked(card: FeedXCard) {
@@ -1039,7 +1023,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
+    override fun muteUnmuteVideo(
+        card: FeedXCard,
+        mute: Boolean,
+        positionInFeed: Int,
+        mediaType: String
+    ) {
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {

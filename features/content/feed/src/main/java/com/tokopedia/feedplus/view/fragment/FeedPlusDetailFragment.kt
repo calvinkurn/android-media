@@ -161,12 +161,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                                         Toaster.TYPE_NORMAL,
                                         getString(R.string.feed_go_to_cart),
                                         View.OnClickListener {
-                                            feedAnalytics.eventOnTagSheetItemBuyClicked(
-                                                    data.activityId,
-                                                    data.postType,
-                                                    data.isFollowed,
-                                                    data.shopId
-                                            )
                                             onAddToCartSuccess()
                                         }).show()
                             }
@@ -522,12 +516,21 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         activityId: String
     ) {
         feedAnalytics.eventonShareProductClicked(
-                activityId,
-                item.id,
-                item.postType,
-                item.isFollowed,
-                item.shopId,
-                ""
+                FeedTrackerData(
+                postId = activityId,
+                productId = item.id,
+                postType = item.postType,
+                isFollowed = item.isFollowed,
+                shopId = item.shopId,
+                media = FeedXMedia(),
+                mediaType =  "",
+                product = FeedXProduct(),
+                campaignStatus = "",
+                contentSlotValue = contentSlotValue,
+                mediaIndex = 0,
+                positionInFeed = 0,
+                trackerId = ""
+                )
         )
 
         val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
@@ -577,7 +580,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     postTagItem.authorName,
                     type,
                     isFollowed,
-                    ""
+                    "",
+                    contentScore = contentSlotValue
                 )
             else
                 feedAnalytics.eventAddToCartFeedVOD(
@@ -590,7 +594,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     shopName,
                     type,
                     isFollowed,
-                    ""
+                    "",
+                    contentScore = contentSlotValue
                 )
         } else {
             feedAnalytics.sendClickAddToCartAsgcProductDetail(
@@ -601,7 +606,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 postTagItem.name,
                 postTagItem.price.toString(),
                 1,
-                shopName
+                shopName,
+                contentScore = contentSlotValue
             )
         }
         if (userSession.isLoggedIn) {
@@ -676,7 +682,22 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             Toaster.TYPE_NORMAL,
             getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
             View.OnClickListener {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = getTrackerCampaignStatusSuffix() )
+                feedAnalytics.eventOnTagSheetItemBuyClicked (
+                    FeedTrackerData(
+                        postId = activityId,
+                        postType = type,
+                        isFollowed = isFollowed,
+                        shopId = shopId,
+                        campaignStatus = getTrackerCampaignStatusSuffix(),
+                        contentSlotValue = contentSlotValue,
+                        mediaIndex = 0 ,
+                        media = FeedXMedia(),
+                        mediaType = "",
+                        positionInFeed = positionInFeed,
+                        product = FeedXProduct(),
+                        productId = "",
+                        trackerId = ""
+                    ))
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
         adapter.notifyItemChanged(rowNumber, FeedDetailViewHolder.PAYLOAD_CLICK_WISHLIST)
