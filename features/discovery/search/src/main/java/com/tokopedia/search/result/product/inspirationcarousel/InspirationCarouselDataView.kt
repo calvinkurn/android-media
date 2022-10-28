@@ -238,6 +238,7 @@ class InspirationCarouselDataView(
                     "shop_id", shopId,
                     "shop_name", shopName,
                     "shop_type", "none / other",
+                    "variant", "none / other",
                 )
             }
 

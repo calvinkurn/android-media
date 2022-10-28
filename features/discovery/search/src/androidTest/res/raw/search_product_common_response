@@ -10,7 +10,12 @@
           "errorMessage": "",
           "additionalParams": "",
           "keywordProcess": "2",
-          "componentId": "01.02.01.01"
+          "componentId": "01.02.01.01",
+          "meta": {
+            "productListType": "",
+            "isPostProcessing": false,
+            "showButtonAtc": true
+          }
         },
         "data": {
           "isQuerySafe": true,
@@ -1563,50 +1568,318 @@
       "searchInspirationCarouselV2": {
         "data": [
           {
-            "title": "Pilih sesuai budget-mu",
-            "type": "price_range",
-            "position": 12,
-            "layout": "list",
+            "title": "",
+            "position": 4,
+            "layout": "product_list_atc",
             "options": [
               {
-                "title": "Di bawah Rp1,6 jt",
-                "url": "https://www.tokopedia.com/search?pmax=1600000&pmin=900001&q=samsung&source=search&st=product",
-                "applink": "tokopedia://search?pmax=1600000&pmin=900001&q=samsung&source=search&st=product",
+                "title": "Checkout sekaligus, hemat ongkirnya!",
+                "subtitle": "Beli sekalian dari toko yang ada di keranjangmu.",
+                "identifier": "",
+                "meta": "",
+                "component_id": "03.43.01.00",
                 "product": [
                   {
-                    "id": 568409755,
-                    "name": "Samsung Galaxy A10s 2/32 Garansi Resmi SEIN BNIB SEGEL",
-                    "price": 1541000,
-                    "price_str": "Rp 1.541.000",
-                    "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/9/24/11291539/11291539_79d6a4f8-34bb-4e37-8ee2-7cf130a2506d_700_700",
+                    "id": 3747018003,
+                    "parent_id": 0,
+                    "name": "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
+                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
+                    "image_url_300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
+                    "url": "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
                     "rating": 5,
-                    "count_review": 2,
-                    "url": "https://www.tokopedia.com/rajaponselcom/samsung-galaxy-a10s-2-32-garansi-resmi-sein-bnib-segel?trkid=f%3DCa3054L000P1W0S0Sh00Co0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dsamsung_bmexp%3D37_po%3D1_catid%3D3054_bmexp%3D37",
-                    "applink": "tokopedia://product/568409755?trkid=f=Ca3054L000P1W0S0Sh00Co0Po0Fr0Cb0_src=search_page=1_ob=203_q=samsung_bmexp=37_po=1_catid=3054_bmexp=37",
-                    "description": []
-                  }
-                ]
-              },
-              {
-                "title": "Rp1,6 jt - Rp3 jt",
-                "url": "https://www.tokopedia.com/search?pmax=3000000&pmin=1600001&q=samsung&source=search&st=product",
-                "applink": "tokopedia://search?pmax=3000000&pmin=1600001&q=samsung&source=search&st=product",
-                "product": [
+                    "count_review": 19,
+                    "count_sold": "Terjual 37",
+                    "rating_average": "4.9",
+                    "applink": "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
+                    "min_order": 1,
+                    "label_groups": [
+                      {
+                        "position": "promo",
+                        "title": "Cashback",
+                        "type": "lightGreen",
+                        "url": ""
+                      },
+                      {
+                        "position": "integrity",
+                        "title": "Terjual 37",
+                        "type": "textDarkGrey",
+                        "url": ""
+                      },
+                      {
+                        "position": "eta",
+                        "title": "Tiba 9 - 13 Sep",
+                        "type": "textDarkGrey",
+                        "url": ""
+                      }
+                    ],
+                    "badges": [
+                      {
+                        "title": "Official Store",
+                        "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                        "show": true
+                      }
+                    ],
+                    "free_ongkir": {
+                      "is_active": false,
+                      "img_url": ""
+                    },
+                    "ads": {
+                      "id": "",
+                      "product_click_url": "",
+                      "product_wishlist_url": "",
+                      "shop_click_url": "",
+                      "product_view_url": ""
+                    },
+                    "shop": {
+                      "id": 7951058,
+                      "name": "iPason Technology Indonesia",
+                      "city": "Jakarta Barat"
+                    },
+                    "discount_start": "2022-05-23T17:11:06Z",
+                    "discount_expired": "2023-05-23T17:11:06Z",
+                    "discount_percentage": 13,
+                    "original_price": "Rp235.000",
+                    "discount": "",
+                    "customvideo_url": "",
+                    "price": 204000,
+                    "description": [],
+                    "component_id": "03.43.01.01",
+                    "wishlist": false,
+                    "label": "",
+                    "bundle_id": 0
+                  },
                   {
-                    "id": 519018460,
-                    "name": "SAMSUNG GALAXY M10 RAM 2/16 GARANSI RESMI 1 TAHUN",
-                    "price": 1800000,
-                    "price_str": "Rp 1.800.000",
-                    "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/7/25/4009535/4009535_d4da89db-ef7e-4006-b59b-c8bf371989c6_700_700.jpg",
+                    "id": 2773621125,
+                    "parent_id": 123123,
+                    "name": "Edifier R1080BT Wireless Bluetooth Small Speaker Subwoofer 2.0 Wooden",
+                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/b49a8c30-53ed-4b17-bc61-7d11ccb75cdf.jpg",
+                    "image_url_300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/31/b49a8c30-53ed-4b17-bc61-7d11ccb75cdf.jpg",
+                    "url": "https://www.tokopedia.com/ipason/edifier-r1080bt-wireless-bluetooth-small-speaker-subwoofer-2-0-wooden-white",
                     "rating": 5,
-                    "count_review": 6,
-                    "url": "https://www.tokopedia.com/langitcelluar/samsung-galaxy-m10-ram-2-16-garansi-resmi-1-tahun-hitam?trkid=f%3DCa3054L000P1W0S0Sh00Co0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dsamsung_bmexp%3D37_po%3D1_catid%3D3054_bmexp%3D37",
-                    "applink": "tokopedia://product/519018460?trkid=f=Ca3054L000P1W0S0Sh00Co0Po0Fr0Cb0_src=search_page=1_ob=203_q=samsung_bmexp=37_po=1_catid=3054_bmexp=37",
-                    "description": []
+                    "count_review": 63,
+                    "count_sold": "Terjual 89",
+                    "rating_average": "5.0",
+                    "applink": "tokopedia://product/2773621125?extParam=ivf%3Dfalse%26src%3Dsearch",
+                    "min_order": 1,
+                    "label_groups": [
+                      {
+                        "position": "promo",
+                        "title": "Cashback",
+                        "type": "lightGreen",
+                        "url": ""
+                      },
+                      {
+                        "position": "integrity",
+                        "title": "Terjual 89",
+                        "type": "textDarkGrey",
+                        "url": ""
+                      },
+                      {
+                        "position": "eta",
+                        "title": "Tiba 9 - 13 Sep",
+                        "type": "textDarkGrey",
+                        "url": ""
+                      }
+                    ],
+                    "badges": [
+                      {
+                        "title": "Official Store",
+                        "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                        "show": true
+                      }
+                    ],
+                    "free_ongkir": {
+                      "is_active": false,
+                      "img_url": ""
+                    },
+                    "ads": {
+                      "id": "",
+                      "product_click_url": "",
+                      "product_wishlist_url": "",
+                      "shop_click_url": "",
+                      "product_view_url": ""
+                    },
+                    "shop": {
+                      "id": 7951058,
+                      "name": "iPason Technology Indonesia",
+                      "city": "Jakarta Barat"
+                    },
+                    "discount_start": "2022-05-23T17:11:06Z",
+                    "discount_expired": "2023-05-23T17:11:06Z",
+                    "discount_percentage": 18,
+                    "original_price": "Rp1.170.000",
+                    "discount": "",
+                    "customvideo_url": "",
+                    "price": 955000,
+                    "description": [],
+                    "component_id": "03.43.01.02",
+                    "wishlist": false,
+                    "label": "",
+                    "bundle_id": 0
+                  },
+                  {
+                    "id": 3746739530,
+                    "parent_id": 0,
+                    "name": "EDIFIER MP230 Wooden Tabletop Bluetooth Speaker piano-like key button",
+                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/5b1fb2eb-ef81-47c2-8662-4c39081ecb9a.jpg",
+                    "image_url_300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/31/5b1fb2eb-ef81-47c2-8662-4c39081ecb9a.jpg",
+                    "url": "https://www.tokopedia.com/ipason/edifier-mp230-wooden-tabletop-bluetooth-speaker-piano-like-key-button",
+                    "rating": 5,
+                    "count_review": 9,
+                    "count_sold": "Terjual 10",
+                    "rating_average": "4.8",
+                    "applink": "tokopedia://product/3746739530?extParam=ivf%3Dfalse%26src%3Dsearch",
+                    "min_order": 1,
+                    "label_groups": [
+                      {
+                        "position": "promo",
+                        "title": "Cashback",
+                        "type": "lightGreen",
+                        "url": ""
+                      },
+                      {
+                        "position": "integrity",
+                        "title": "Terjual 10",
+                        "type": "textDarkGrey",
+                        "url": ""
+                      },
+                      {
+                        "position": "eta",
+                        "title": "Tiba 9 - 13 Sep",
+                        "type": "textDarkGrey",
+                        "url": ""
+                      }
+                    ],
+                    "badges": [
+                      {
+                        "title": "Official Store",
+                        "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                        "show": true
+                      }
+                    ],
+                    "free_ongkir": {
+                      "is_active": false,
+                      "img_url": ""
+                    },
+                    "ads": {
+                      "id": "",
+                      "product_click_url": "",
+                      "product_wishlist_url": "",
+                      "shop_click_url": "",
+                      "product_view_url": ""
+                    },
+                    "shop": {
+                      "id": 7951058,
+                      "name": "iPason Technology Indonesia",
+                      "city": "Jakarta Barat"
+                    },
+                    "discount_start": "2022-05-23T17:11:06Z",
+                    "discount_expired": "2023-05-23T17:11:06Z",
+                    "discount_percentage": 5,
+                    "original_price": "Rp980.000",
+                    "discount": "",
+                    "customvideo_url": "",
+                    "price": 931000,
+                    "description": [],
+                    "component_id": "03.43.01.03",
+                    "wishlist": false,
+                    "label": "",
+                    "bundle_id": 0
+                  },
+                  {
+                    "id": 2773406581,
+                    "parent_id": 123123,
+                    "name": "Edifier R1380DB Brown Wooden enclosure Professional Bookshelf Speakers",
+                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/c9a7ba55-02f9-4150-aa98-422bdf904153.jpg",
+                    "image_url_300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/31/c9a7ba55-02f9-4150-aa98-422bdf904153.jpg",
+                    "url": "https://www.tokopedia.com/ipason/edifier-r1380db-brown-wooden-enclosure-professional-bookshelf-speakers-black",
+                    "rating": 5,
+                    "count_review": 38,
+                    "count_sold": "Terjual 65",
+                    "rating_average": "5.0",
+                    "applink": "tokopedia://product/2773406581?extParam=ivf%3Dfalse%26src%3Dsearch",
+                    "min_order": 1,
+                    "label_groups": [
+                      {
+                        "position": "promo",
+                        "title": "Cashback",
+                        "type": "lightGreen",
+                        "url": ""
+                      },
+                      {
+                        "position": "integrity",
+                        "title": "Terjual 65",
+                        "type": "textDarkGrey",
+                        "url": ""
+                      },
+                      {
+                        "position": "eta",
+                        "title": "Tiba 9 - 13 Sep",
+                        "type": "textDarkGrey",
+                        "url": ""
+                      }
+                    ],
+                    "badges": [
+                      {
+                        "title": "Official Store",
+                        "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                        "show": true
+                      }
+                    ],
+                    "free_ongkir": {
+                      "is_active": false,
+                      "img_url": ""
+                    },
+                    "ads": {
+                      "id": "",
+                      "product_click_url": "",
+                      "product_wishlist_url": "",
+                      "shop_click_url": "",
+                      "product_view_url": ""
+                    },
+                    "shop": {
+                      "id": 7951058,
+                      "name": "iPason Technology Indonesia",
+                      "city": "Jakarta Barat"
+                    },
+                    "discount_start": "2022-03-30T15:37:52Z",
+                    "discount_expired": "2023-03-30T15:37:52Z",
+                    "discount_percentage": 15,
+                    "original_price": "Rp2.049.999",
+                    "discount": "",
+                    "customvideo_url": "",
+                    "price": 1742499,
+                    "description": [],
+                    "component_id": "03.43.01.04",
+                    "wishlist": false,
+                    "label": "",
+                    "bundle_id": 0
                   }
-                ]
+                ],
+                "applink": "",
+                "url": "",
+                "banner_image_url": "",
+                "banner_link_url": "",
+                "banner_applink_url": "",
+                "card_button": {
+                  "title": "",
+                  "applink": ""
+                },
+                "bundle": {
+                  "shop": {
+                    "name": "",
+                    "url": ""
+                  },
+                  "count_sold": "",
+                  "price": 0,
+                  "original_price": "",
+                  "discount": "",
+                  "discount_percentage": 0
+                }
               }
-            ]
+            ],
+            "type": "same_shop",
+            "tracking_option": "3"
           }
         ]
       }

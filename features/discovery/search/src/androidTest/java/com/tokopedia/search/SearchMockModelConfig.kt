@@ -6,7 +6,7 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
 internal class SearchMockModelConfig(
-        private val mockModel: Int = R.raw.search_product_common_response
+    private val mockModel: Int = R.raw.search_product_common_response
 ): MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -18,6 +18,7 @@ internal class SearchMockModelConfig(
     }
 
     private fun createMapOfMockResponse(context: Context) = mapOf(
-            "SearchProduct" to getRawString(context, mockModel)
+        "SearchProduct" to getRawString(context, mockModel),
+        "add_to_cart_v2" to getRawString(context, R.raw.search_product_atc_success)
     )
 }

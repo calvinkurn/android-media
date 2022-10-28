@@ -107,6 +107,7 @@ import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.FragmentProvider
+import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.SmallGridSpanCount
 import com.tokopedia.search.utils.UrlParamUtils
@@ -887,6 +888,8 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onAddToCartClick(item: ProductItemDataView) {
+        SearchIdlingResource.increment()
+
         presenter?.onProductAddToCart(item)
     }
 
@@ -923,6 +926,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 if (isSuccess) RouteManager.route(context, ApplinkConst.CART)
             }.show()
         }
+
+        SearchIdlingResource.decrement()
     }
 
     override fun openVariantBottomSheet(data: ProductItemDataView) {
@@ -938,6 +943,8 @@ class ProductListFragment: BaseDaggerFragment(),
             presenter?.trackProductClick(data)
             sendGTMTrackingProductATC(data, it.cartId)
         }
+
+        SearchIdlingResource.decrement()
     }
     //endregion
 
