@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.view.viewmodel
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -411,10 +412,22 @@ class ChatItemListViewModel @Inject constructor(
         return "${OPERATIONAL_INSIGHT_NEXT_MONDAY}_${userSession.userId}"
     }
 
+    fun shouldShowBubbleTicker(): Boolean {
+        return sharedPref.getBoolean(getTickerPrefName(), true) &&
+            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+    }
+
+    fun saveTickerPref(prefName: String) {
+        sharedPref.edit()
+            .putBoolean(BUBBLE_TICKER_PREF_NAME, false)
+            .apply()
+    }
+
     companion object {
         private const val SELLER_FILTER_THRESHOLD = 3
         private const val ONE_MILLION = 1_000_000L
         const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
+        const val BUBBLE_TICKER_PREF_NAME = "topchat_seller_bubble_chat_ticker"
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,
