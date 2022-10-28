@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
 import com.tokopedia.logisticcart.shipping.model.*
 import javax.inject.Inject
 
@@ -17,7 +18,10 @@ class ShippingCourierConverter @Inject constructor() {
         }
     }
 
-    fun convertToCourierItemData(shippingCourierUiModel: ShippingCourierUiModel?): CourierItemData {
+    fun convertToCourierItemData(
+        shippingCourierUiModel: ShippingCourierUiModel?,
+        shippingRecommendationData: ShippingRecommendationData? = null
+    ): CourierItemData {
         val courierItemData = CourierItemData()
         shippingCourierUiModel?.let {
             courierItemData.shipperId = it.productData.shipperId
@@ -107,10 +111,16 @@ class ShippingCourierConverter @Inject constructor() {
                 courierItemData.etaErrorCode = it.productData.estimatedTimeArrival.errorCode
             }
         }
+
+        /*Schedule Delivery*/
+        shippingRecommendationData?.additionalDeliveryData?.takeIf { it.hidden.not() }?.apply {
+            courierItemData.scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel()
+        }
+
         return courierItemData
     }
 
-    fun convertToCourierItemData(shippingCourierUiModel: ShippingCourierUiModel, data: LogisticPromoUiModel): CourierItemData {
+    fun convertToCourierItemDataWithPromo(shippingCourierUiModel: ShippingCourierUiModel, data: LogisticPromoUiModel): CourierItemData {
         val courierData = convertToCourierItemData(shippingCourierUiModel)
         courierData.logPromoCode = data.promoCode
         courierData.logPromoMsg = data.disableText
@@ -128,5 +138,23 @@ class ShippingCourierConverter @Inject constructor() {
         courierData.shippingSubsidy = data.shippingSubsidy
         courierData.boCampaignId = data.boCampaignId
         return courierData
+    }
+
+    private fun AdditionalDeliveryData.convertToScheduleDeliveryUiModel(
+        scheduleDate: String? = null,
+        timeslotId: Long? = null
+    ): ScheduleDeliveryUiModel {
+
+        return ScheduleDeliveryUiModel(
+            isSelected = recommendAdditionalShipper,
+            available = available,
+            hidden = hidden,
+            title = title,
+            text = text,
+            notice = notice,
+            deliveryServices = deliveryServices
+        ).apply {
+            setScheduleDateAndTimeslotId(scheduleDate, timeslotId)
+        }
     }
 }

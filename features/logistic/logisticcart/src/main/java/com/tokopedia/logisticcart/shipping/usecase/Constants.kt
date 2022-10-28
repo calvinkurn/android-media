@@ -513,4 +513,15 @@ internal fun ratesQuery() = """
     }
 """.trimIndent()
 
+internal fun scheduleDeliveryQuery() = """
+    query scheduleDelivery(${"$"}param : ScheduleDeliveryParam!) {
+      scheduleDelivery(input: ${"$"}param) {
+        schedule_delivery_data {
+            rates_validation
+            additional_delivery_data
+        }
+      }
+    }
+""".trimIndent()
+
 internal const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan. Ulangi beberapa saat lagi"

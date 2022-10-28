@@ -79,6 +79,7 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase;
+import com.tokopedia.logisticcart.scheduledelivery.model.ScheduleDeliveryParam;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;

@@ -8,6 +8,8 @@ import kotlinx.parcelize.Parcelize
 class DeliveryProduct(
     @SerializedName("title")
     val title: String = "",
+    @SerializedName("text_eta")
+    val textEta: String = "",
     @SerializedName("id")
     val id: Long = 0L,
     @SerializedName("shipper_id")
@@ -15,9 +17,9 @@ class DeliveryProduct(
     @SerializedName("shipper_product_id")
     val shipperProductId: Long = 0L,
     @SerializedName("final_price")
-    val finalPrice: Double? = 0.0,
+    val finalPrice: Double = 0.0,
     @SerializedName("real_price")
-    val realPrice: Double? = 0.0,
+    val realPrice: Double = 0.0,
     @SerializedName("text_final_price")
     val textFinalPrice: String = "",
     @SerializedName("text_real_price")
@@ -32,4 +34,8 @@ class DeliveryProduct(
     val text: String = "",
     @SerializedName("promo_code")
     val promoCode: String = "",
+    @SerializedName("promo_text")
+    val promoText: String = "",
+    @SerializedName("free_shipping_metadata")
+    val freeShippingMetadata: String = ""
 ) : Parcelable
