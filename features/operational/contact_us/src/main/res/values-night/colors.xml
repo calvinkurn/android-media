@@ -5,4 +5,9 @@
     <color name="contact_us_dms_detail_date">#808FA1</color>
     <color name="contact_us_dms_detail_divider">#3D444F</color>
     <color name="contact_us_dms_thumbs_up_down_bg_color">#2D323A</color>
+    <color name="contact_us_dms_detail_header_text">#DCE4ED</color>
+    <color name="contact_us_dms_detail_view_txn">#03AC0E</color>
+    <color name="contact_us_dms_detail_header_divider">#3D444F</color>
+    <color name="contact_us_dms_complain_text">#808FA1</color>
+    <color name="contact_us_dms_complain_bg">#2ABF70</color>
 </resources>

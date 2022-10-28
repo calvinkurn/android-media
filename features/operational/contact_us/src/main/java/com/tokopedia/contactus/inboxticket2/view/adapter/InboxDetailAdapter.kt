@@ -153,7 +153,7 @@ class InboxDetailAdapter(private val mContext: Context,
                 ratingThumbsUp.hide()
             } else if (item.rating != null && item.rating == KEY_LIKED) {
                 ratingThumbsUp.show()
-                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.contact_us_g_500))
+                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.contact_us_dms_detail_view_txn))
                 ratingThumbsDown.hide()
             }
             if (position == commentList.size - 1 || !commentList[position].isCollapsed || searchMode) {
@@ -200,7 +200,7 @@ class InboxDetailAdapter(private val mContext: Context,
             }
             ratingThumbsUp.setOnClickListener {
                 if (item.rating != null && !(item.rating == KEY_LIKED || item.rating == KEY_DIS_LIKED)) {
-                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.contact_us_g_500))
+                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.contact_us_dms_detail_view_txn))
                     ratingThumbsDown.hide()
                     mPresenter.onClick(true, position, item.id ?: "")
                     sendGTMEvent(InboxTicketTracking.Label.EventHelpful)
