@@ -144,7 +144,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        hideLoadingView()
+        hideLoadingView(allowStateLoss = true)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -349,9 +349,11 @@ class PlayBottomSheetFragment @Inject constructor(
             .showNow(childFragmentManager)
     }
 
-    private fun hideLoadingView() {
+    private fun hideLoadingView(allowStateLoss: Boolean = false) {
         val loadingDialog = getLoadingDialogFragment()
-        loadingDialog?.dismiss()
+
+        if (!allowStateLoss) loadingDialog?.dismiss()
+        else loadingDialog?.dismissAllowingStateLoss()
     }
 
     private fun shouldOpenProductDetail(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int) {
