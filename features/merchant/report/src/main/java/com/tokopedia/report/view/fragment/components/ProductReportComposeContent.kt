@@ -50,6 +50,7 @@ fun ProductReportComposeContent(
                     key = { it.value }
                 ) { item ->
                     ProductReportReasonItem(
+                        modifier = Modifier.tag("product_report_item:${item.value}"),
                         reason = item,
                         subtitleVisible = uiState.isSubtitleVisible(reason = item),
                         onClick = {

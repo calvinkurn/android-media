@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.searchresult
+package com.tkpd.macrobenchmark.test.product_report
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
@@ -22,10 +22,6 @@ import org.junit.runners.Parameterized
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
 class ProductReportStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
-    @Before
-    fun setupEnvironment() {
-        MacroDevOps.setupEnvironment(MacroIntent.ProductReport.getStartupIntent())
-    }
 
     override fun getIntent() = MacroIntent.ProductReport.getStartupIntent()
 

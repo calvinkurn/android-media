@@ -123,7 +123,7 @@ object MacroIntent {
             return intent
         }
 
-        fun getCampaignListFrameTimingIntent(): Intent {
+        fun getFrameTimingIntent(): Intent {
             return getStartupIntent().apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
         }
     }
