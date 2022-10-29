@@ -118,9 +118,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private val totalSubmittedProduct by lazy {
-        arguments?.getLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT).orZero()
-    }
+    private var totalSubmittedProduct: Long = Int.ZERO.toLong()
 
     //coachmark
     private val coachMark by lazy {
@@ -177,6 +175,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupProductSubmissionCount()
         setupChooseProductRedirection()
         observeCampaignDetail()
         observeUiEffect()
@@ -365,6 +364,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupProductSubmissionCount() {
+        totalSubmittedProduct = arguments?.getLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT).orZero()
+    }
+
     private fun showProductSubmissionResultToaster(flashSaleName: String) {
         if (totalSubmittedProduct.isMoreThanZero()) {
             doOnDelayFinished(DELAY) {
@@ -378,6 +381,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                         getString(R.string.stfs_oke_label)
                     )
                 }
+                totalSubmittedProduct = Int.ZERO.toLong()
             }
         }
     }
@@ -1059,7 +1063,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     com.tokopedia.unifyprinciples.R.color.Unify_RN50
                 )
             )
-//            imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_INELIGIBLE_URL)
             tpgCardMidTitle.text =
                 getString(R.string.stft_flash_sale_performace_card_title_label_rejected)
             tpgCardMidDesctiption.text =

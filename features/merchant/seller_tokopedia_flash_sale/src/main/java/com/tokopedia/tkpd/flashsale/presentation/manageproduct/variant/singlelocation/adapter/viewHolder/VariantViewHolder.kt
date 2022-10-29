@@ -15,7 +15,7 @@ class VariantViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private fun Number?.toStringOrEmpty() =
-        if (this == null || this == Int.ZERO) "" else toString()
+        if (this == null || this.toLong() == Int.ZERO.toLong()) "" else toString()
 
     private fun TextFieldUnify2.setTextIfNotFocus(text: String) {
         if (!editText.isFocused) {
@@ -97,6 +97,11 @@ class VariantViewHolder(
                     )
                 )
 
+                if (textFieldPriceDiscountPercentage.editText.text.isNotEmpty() ||
+                    textFieldPriceDiscountNominal.editText.text.isNotEmpty()) {
+                    triggerListener(product, discount)
+                }
+
                 textFieldPriceDiscountNominal.textInputLayout.editText?.afterTextChanged {
                     discount?.price = it.digitsOnly()
                     val discountPercent =
@@ -133,7 +138,6 @@ class VariantViewHolder(
                     }
                 }
             }
-            triggerListener(product, discount)
         }
     }
 
