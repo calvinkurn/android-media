@@ -101,7 +101,10 @@ class OneLinersViewHolder(
                     label = content.linkText + content.linkText
                 )
             }
-            renderCoachMark()
+
+            iconRightArrow?.addOnImpressionListener(element.impressHolder) {
+                renderCoachMark()
+            }
         }
     }
 
