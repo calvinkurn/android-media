@@ -102,7 +102,7 @@ class OneLinersViewHolder(
                 )
             }
 
-            iconRightArrow?.addOnImpressionListener(element.impressHolder) {
+            iconRightArrow?.addOnImpressionListener(element.impressIconRight) {
                 renderCoachMark()
             }
         }
