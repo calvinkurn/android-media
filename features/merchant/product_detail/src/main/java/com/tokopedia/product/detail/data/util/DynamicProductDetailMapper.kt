@@ -32,6 +32,8 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -50,12 +52,12 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulRevie
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
@@ -64,8 +66,10 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.share.ProductData
@@ -86,8 +90,6 @@ import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
 object DynamicProductDetailMapper {
-
-    private const val PDP_SOURCE_AFFILIATE = "pdp"
 
     /**
      * Map network data into UI data by type, just assign type and name here. The data will be assigned in fragment
@@ -211,8 +213,26 @@ object DynamicProductDetailMapper {
                                         categoryList = carouselData.categoryCarouselList))
                     }
                 }
-                ProductDetailConstant.PRODUCT_BUNDLING -> {
-                    listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                PRODUCT_BUNDLING -> {
+                    if (component.componentName == GLOBAL_BUNDLING) {
+                        val bundlingData = component.componentData.firstOrNull()
+                        if (bundlingData != null) {
+                            listOfComponent.add(
+                                GlobalBundlingDataModel(
+                                    type = component.type,
+                                    name = component.componentName,
+                                    data = generateGlobalBundlingData(bundlingData)
+                                )
+                            )
+                        }
+                    } else if (component.componentName == PRODUCT_BUNDLING) {
+                        listOfComponent.add(
+                            ProductBundlingDataModel(
+                                type = component.type,
+                                name = component.componentName
+                            )
+                        )
+                    }
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
@@ -304,14 +324,15 @@ object DynamicProductDetailMapper {
             it.componentName == componentName
         }?.componentData?.map {
             OneLinersContent(
-                    productID = it.productId,
-                    content = it.oneLinerContent,
-                    linkText = it.linkText,
-                    color = it.color,
-                    applink = it.applink,
-                    separator = it.separator,
-                    icon = it.icon,
-                    isVisible = it.isVisible
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible,
+                eduLink = it.eduLink
             )
         }?.associateBy { it.productID }
     }
@@ -670,6 +691,15 @@ object DynamicProductDetailMapper {
                     stockQty = productInfo.getFinalStock().toIntOrZero()
                 )
             )
+        )
+    }
+
+    private fun generateGlobalBundlingData(bundlingData: ComponentData): GlobalBundling {
+        return GlobalBundling(
+            title = bundlingData.title,
+            widgetType = bundlingData.widgetType,
+            productId = bundlingData.productId,
+            whId = bundlingData.whId
         )
     }
 }

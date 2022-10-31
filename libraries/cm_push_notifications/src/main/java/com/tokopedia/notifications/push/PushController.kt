@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.logger.ServerLogger
@@ -238,7 +239,9 @@ class PushController(val context: Context) : CoroutineScope {
 
     private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel){
         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) return
-        if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH) {
+        if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH &&
+            NotificationManagerCompat.from(context).areNotificationsEnabled()
+        ) {
             IrisAnalyticsEvents.sendPushEvent(
                 context,
                 IrisAnalyticsEvents.PUSH_RECEIVED,

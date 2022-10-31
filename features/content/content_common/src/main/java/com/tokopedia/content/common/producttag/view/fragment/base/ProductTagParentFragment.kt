@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -40,13 +41,16 @@ import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagSour
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.producttag.view.viewmodel.factory.ProductTagViewModelFactory
+import com.tokopedia.content.common.util.getParentFragmentByInstance
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -58,6 +62,7 @@ import com.tokopedia.abstraction.R as abstractionR
 class ProductTagParentFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
+    private val dispatchers: CoroutineDispatchers,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"
@@ -456,14 +461,23 @@ class ProductTagParentFragment @Inject constructor(
         if(isShow) {
             coachmark = CoachMark2(activity as Context)
 
-            coachmark?.showCoachMark(arrayListOf(
-                CoachMark2Item(
-                    binding.tvCcProductTagProductSource,
-                    getString(R.string.content_creation_search_coachmark_header),
-                    getString(R.string.content_creation_search_coachmark_desc),
-                    CoachMark2.POSITION_BOTTOM
-                )
-            ))
+            viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
+                val isParentBottomSheet = getParentFragmentByInstance<BottomSheetUnify>() != null
+                if(isParentBottomSheet) {
+                    withContext(dispatchers.computation) {
+                        delay(COACHMARK_DELAY)
+                    }
+                }
+
+                coachmark?.showCoachMark(arrayListOf(
+                    CoachMark2Item(
+                        binding.tvCcProductTagProductSource,
+                        getString(R.string.content_creation_search_coachmark_header),
+                        getString(R.string.content_creation_search_coachmark_desc),
+                        CoachMark2.POSITION_BOTTOM
+                    )
+                ))
+            }
         }
     }
 
@@ -502,6 +516,8 @@ class ProductTagParentFragment @Inject constructor(
 
         private const val PRODUCT = "product"
         private const val SHOP = "shop"
+
+        private const val COACHMARK_DELAY = 1000L
 
         fun findFragment(fragmentManager: FragmentManager): ProductTagParentFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment

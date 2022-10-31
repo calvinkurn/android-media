@@ -13,13 +13,14 @@ class TokofoodPromoRibbonView @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var binding: LayoutTokofoodPromoRibbonBinding? = null
+    private var currentRibbonText: String = ""
 
-    init {
-        binding = LayoutTokofoodPromoRibbonBinding.inflate(
-            LayoutInflater.from(context),
-            this,
-            true
-        )
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (binding == null) {
+            initBinding()
+            setRibbonText(currentRibbonText)
+        }
     }
 
     override fun onDetachedFromWindow() {
@@ -29,6 +30,15 @@ class TokofoodPromoRibbonView @JvmOverloads constructor(
 
     fun setRibbonText(ribbonText: String) {
         binding?.tvTokofoodPromoName?.text = ribbonText
+        currentRibbonText = ribbonText
+    }
+
+    private fun initBinding() {
+        binding = LayoutTokofoodPromoRibbonBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
     }
 
 }
