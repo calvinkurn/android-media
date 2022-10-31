@@ -28,7 +28,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -362,7 +361,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private fun addBubbleChatTicker() {
         val chatListTicker: ChatListTickerUiModel = ChatListTickerUiModel(
             message = getString(com.tokopedia.topchat.R.string.topchat_bubble_ticker_message),
-            applink = ApplinkConstInternalGlobal.TOPCHAT_BUBBLE_ACTIVATION
+            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
         ).apply {
             this.showCloseButton = true
             this.sharedPreferenceKey = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME

@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatsetting.data.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.data.ChatGearChatList
 import com.tokopedia.topchat.chatsetting.data.ChatGearChatListResponse
@@ -43,7 +43,7 @@ class ChatSettingMapper @Inject constructor(
                         BubbleChat.Settings.TITLE),
                     description = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_desc, BubbleChat.Settings.DESCRIPTION),
                     label = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_label, BubbleChat.Settings.LABEL),
-                    link = ApplinkConstInternalGlobal.TOPCHAT_BUBBLE_ACTIVATION
+                    link = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
                 ))
             }
             visitables.add(ChatSettingDividerUiModel())
