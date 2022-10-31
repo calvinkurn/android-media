@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -13,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselW
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeProductRecomBinding
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PRODUCT_RECOM_OOC
@@ -23,7 +25,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeProductRecomViewHolder(
     itemView: View,
     private val tokoNowView: TokoNowView? = null,
-    private val listener: HomeProductRecomListener? = null
+    private val listener: HomeProductRecomListener? = null,
+    private val rtrListener: RealTimeRecommendationListener? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener {
 
@@ -55,6 +58,14 @@ class HomeProductRecomViewHolder(
             val spaceZero = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
             val spaceSixTeen = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             binding?.carouselProductRecom?.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
+        }
+        renderRealTimeRecommendation(element)
+    }
+
+    private fun renderRealTimeRecommendation(element: HomeProductRecomUiModel) {
+        binding?.realTimeRecommendationCarousel?.apply {
+            listener = rtrListener
+            bind(element.realTimeRecom)
         }
     }
 

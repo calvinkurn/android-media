@@ -6,6 +6,7 @@ import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 
@@ -18,9 +19,7 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
         val newItem = newList[newItemPosition]
 
         return if (oldItem is HomeProductRecomUiModel && newItem is HomeProductRecomUiModel) {
-            oldItem.recomWidget == newItem.recomWidget
-        } else if (oldItem is HomeLayoutUiModel && newItem is HomeLayoutUiModel) {
-            oldItem.visitableId == newItem.visitableId
+            oldItem.id == newItem.id
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.visitableId() == newItem.visitableId()
         } else if (oldItem is TokoNowRepurchaseUiModel && newItem is TokoNowRepurchaseUiModel) {
@@ -29,6 +28,10 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
             oldItem.id == newItem.id
         } else if (oldItem is HomeSharingReferralWidgetUiModel && newItem is HomeSharingReferralWidgetUiModel) {
             oldItem.id == newItem.id
+        } else if (oldItem is HomeLeftCarouselAtcUiModel && newItem is HomeLeftCarouselAtcUiModel) {
+            oldItem.id == newItem.id
+        } else if (oldItem is HomeLayoutUiModel && newItem is HomeLayoutUiModel) {
+            oldItem.visitableId == newItem.visitableId
         } else {
             oldItem == newItem
         }

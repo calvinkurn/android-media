@@ -17,6 +17,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderCustomView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
@@ -36,7 +37,8 @@ import kotlin.math.abs
 class HomeLeftCarouselAtcViewHolder (
     itemView: View,
     private val homeLeftCarouselAtcCallback: HomeLeftCarouselAtcCallback? = null,
-    private val tokoNowView: TokoNowView? = null
+    private val tokoNowView: TokoNowView? = null,
+    private val rtrListener: RealTimeRecommendationListener? = null
 ) : AbstractViewHolder<HomeLeftCarouselAtcUiModel>(itemView), CoroutineScope,
     TokoNowDynamicHeaderCustomView.HeaderCustomViewListener {
 
@@ -84,6 +86,9 @@ class HomeLeftCarouselAtcViewHolder (
                 calculateParallaxImage(dx)
             }
         })
+        rvProduct?.adapter = adapter
+        setHeightRecyclerView()
+        setLayoutManager()
     }
 
     override val coroutineContext = masterJob + Dispatchers.Main
@@ -103,9 +108,19 @@ class HomeLeftCarouselAtcViewHolder (
         setupBackgroundColor(
             backgroundColorArray = element.backgroundColorArray
         )
+        setupRealTimeRecommendation(
+            element = element
+        )
         onLeftCarouselImpressed(
             element = element
         )
+    }
+
+    private fun setupRealTimeRecommendation(element: HomeLeftCarouselAtcUiModel) {
+        binding?.realTimeRecommendationCarousel?.apply {
+            listener = rtrListener
+            bind(element.realTimeRecom)
+        }
     }
 
     override fun onSeeAllClicked(appLink: String) {
@@ -131,10 +146,7 @@ class HomeLeftCarouselAtcViewHolder (
     }
 
     private fun setupRecyclerView(element: HomeLeftCarouselAtcUiModel) {
-        setLayoutManager()
         restoreInstanceStateToLayoutManager()
-        setHeightRecyclerView()
-        rvProduct?.adapter = adapter
         submitList(element)
         setHeightProductCard(element)
     }
@@ -229,7 +241,7 @@ class HomeLeftCarouselAtcViewHolder (
     }
 
     private fun setLayoutManager() {
-        layoutManager = object : LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false) {
+        layoutManager = object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
             override fun requestChildRectangleOnScreen(
                 parent: RecyclerView,
                 child: View,

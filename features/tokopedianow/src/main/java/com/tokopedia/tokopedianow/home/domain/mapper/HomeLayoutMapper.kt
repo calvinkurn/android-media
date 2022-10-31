@@ -20,14 +20,14 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.ED
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MEDIUM_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MEDIUM_PLAY_WIDGET
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -47,7 +47,10 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCat
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselAtcMapper.mapToLeftCarouselAtc
+import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapToLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
+import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToMediumPlayWidget
+import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmallPlayWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapProductRecomDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingEducationUiModel
@@ -58,9 +61,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemInde
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
-import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapToLeftCarousel
-import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToMediumPlayWidget
-import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmallPlayWidget
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
@@ -473,8 +473,17 @@ object HomeLayoutMapper {
             val layout = homeLayoutItemUiModel.layout
             val uiModel = layout as HomeProductRecomUiModel
             if (!uiModel.recomWidget.recommendationItemList.isNullOrEmpty()) {
+                val realTimeRecom = uiModel.realTimeRecom
+                val rtrItemList = realTimeRecom.widget?.recommendationItemList
+                    .orEmpty().toMutableList()
+
                 val recom = uiModel.recomWidget
                 val recommendationItemList = recom.recommendationItemList.toMutableList()
+
+                val rtrItem = rtrItemList.firstOrNull {
+                    it.productId.toString() == productId
+                }
+
                 val recommendationItem = recommendationItemList.firstOrNull {
                     it.productId.toString() == productId
                 }
@@ -482,14 +491,20 @@ object HomeLayoutMapper {
                 if (recommendationItem?.quantity == quantity) return
 
                 val index = recommendationItemList.indexOf(recommendationItem)
+                val rtrIndex = rtrItemList.indexOf(rtrItem)
 
                 recommendationItemList.getOrNull(index)?.copy(quantity = quantity)?.let {
                     recommendationItemList[index] = it
                 }
 
+                rtrItemList.getOrNull(rtrIndex)?.copy(quantity = quantity)?.let {
+                    rtrItemList[rtrIndex] = it
+                }
+
                 updateItemById(layout.getVisitableId()) {
                     val updatedRecom = recom.copy(recommendationItemList = recommendationItemList)
-                    val updatedUiModel = uiModel.copy(recomWidget = updatedRecom)
+                    val updatedRtr = realTimeRecom.copy(widget = realTimeRecom.widget?.copy(recommendationItemList = rtrItemList))
+                    val updatedUiModel = uiModel.copy(recomWidget = updatedRecom, realTimeRecom = updatedRtr)
                     homeLayoutItemUiModel.copy(layout = updatedUiModel)
                 }
             }
@@ -510,7 +525,23 @@ object HomeLayoutMapper {
                     false
                 }
             }
+
+            val realTimeRecom = layoutUiModel.realTimeRecom
+            val rtrItemList = realTimeRecom.widget?.recommendationItemList
+                .orEmpty().toMutableList()
+            val rtrItem = rtrItemList.firstOrNull {
+                it.productId.toString() == productId
+            }
+            val rtrProductUiModel = rtrItemList.firstOrNull { it.productId.toString() == productId }
+
             val index = layoutUiModel.productList.indexOf(productUiModel)
+            val rtrIndex = rtrItemList.indexOf(rtrItem)
+
+            updateItemById(layout.getVisitableId()) {
+                rtrProductUiModel?.copy(quantity = quantity)?.let { rtrItemList[rtrIndex] = it }
+                val rtrWidget = realTimeRecom.widget?.copy(recommendationItemList = rtrItemList)
+                copy(layout = layoutUiModel.copy(realTimeRecom = realTimeRecom.copy(widget = rtrWidget)))
+            }
 
             (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.productCardModel?.run {
                 when {

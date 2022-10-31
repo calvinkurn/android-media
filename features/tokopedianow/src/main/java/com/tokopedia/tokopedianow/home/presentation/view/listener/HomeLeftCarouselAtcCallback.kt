@@ -46,6 +46,7 @@ class HomeLeftCarouselAtcCallback (
     ) {
         if (userSession.isLoggedIn) {
             viewModel.addProductToCart(
+                channelId = product.channelId,
                 productId = product.id.orEmpty(),
                 quantity = quantity,
                 shopId = product.shopId,

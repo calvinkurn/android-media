@@ -91,6 +91,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MA
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -152,6 +153,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewMod
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -252,7 +254,8 @@ class TokoNowHomeFragment: Fragment(),
                 homeSwitcherListener = createHomeSwitcherListener(),
                 homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
-                playWidgetCoordinator = createPlayWidgetCoordinator()
+                playWidgetCoordinator = createPlayWidgetCoordinator(),
+                rtrListener = createRealTimeRecommendationListener()
             ),
             differ = HomeListDiffer()
         )
@@ -497,6 +500,7 @@ class TokoNowHomeFragment: Fragment(),
     ) {
         if (userSession.isLoggedIn) {
             viewModelTokoNow.addProductToCart(
+                channelId,
                 recomItem.productId.toString(),
                 quantity,
                 recomItem.shopId.toString(),
@@ -526,6 +530,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
             viewModelTokoNow.addProductToCart(
+                data.channelId,
                 data.productId,
                 quantity,
                 data.shopId,
@@ -1013,6 +1018,7 @@ class TokoNowHomeFragment: Fragment(),
                 adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
+                itemAnimator = null
             }
 
             rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
@@ -1920,6 +1926,10 @@ class TokoNowHomeFragment: Fragment(),
         }
         this.playWidgetCoordinator = playWidgetCoordinator
         return playWidgetCoordinator
+    }
+
+    private fun createRealTimeRecommendationListener(): RealTimeRecommendationListener {
+        return HomeRealTimeRecommendationListener(this, viewModelTokoNow, userSession)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

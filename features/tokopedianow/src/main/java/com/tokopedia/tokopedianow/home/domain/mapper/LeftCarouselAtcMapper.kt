@@ -5,20 +5,36 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getBooleanValue
+import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getStringValue
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
+import com.tokopedia.tokopedianow.home.constant.HomeRealTimeRecomParam.PARAM_RTR_INTERACTION
+import com.tokopedia.tokopedianow.home.constant.HomeRealTimeRecomParam.PARAM_RTR_PAGENAME
 import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelModel
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getAddToCartQuantity
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSpaceUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 
+/**
+ * RTR: Real Time Recommendation
+ * https://docs.google.com/document/d/1p6D0cPs2gZx50cEe50P9MVSTKPXhhS385uauk1Kmoys/edit?usp=sharing
+ */
 object LeftCarouselAtcMapper {
 
     private const val DEFAULT_PARENT_PRODUCT_ID = "0"
+    private const val DEFAULT_TITLE = ""
 
     fun mapToLeftCarouselAtc(
         response: HomeLayoutResponse,
@@ -55,6 +71,7 @@ object LeftCarouselAtcMapper {
                     recommendationType = channelGrid.recommendationType,
                     warehouseId = channelGrid.warehouseId,
                     campaignCode = channelGrid.campaignCode,
+                    categoryBreadcrumbs = channelGrid.categoryBreadcrumbs,
                     productCardModel = mapToProductCardModel(channelGrid, miniCartData),
                     position = index + ADDITIONAL_POSITION
                 )
@@ -73,6 +90,10 @@ object LeftCarouselAtcMapper {
             )
         }
 
+        val widgetParam = channelModel.widgetParam
+        val pageName = widgetParam.getStringValue(PARAM_RTR_PAGENAME)
+        val enableRTR = widgetParam.getBooleanValue(PARAM_RTR_INTERACTION)
+
         val layout = HomeLeftCarouselAtcUiModel(
             id = channelModel.id,
             name = channelModel.name,
@@ -89,6 +110,12 @@ object LeftCarouselAtcMapper {
             backgroundColorArray = channelModel.channelBanner.gradientColor,
             imageBanner = channelModel.channelBanner.imageUrl,
             imageBannerAppLink = channelModel.channelBanner.applink,
+            realTimeRecom = HomeRealTimeRecomUiModel(
+                channelId = channelModel.id,
+                pageName = pageName,
+                enabled = enableRTR,
+                type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
+            )
         )
 
         return HomeLayoutItemUiModel(
@@ -98,7 +125,7 @@ object LeftCarouselAtcMapper {
     }
 
     private fun mapToProductCardModel(channelGrid: ChannelGrid, miniCartData: MiniCartSimplifiedData? = null): ProductCardModel {
-        val quantity = HomeLayoutMapper.getAddToCartQuantity(channelGrid.id, miniCartData)
+        val quantity = getAddToCartQuantity(channelGrid.id, miniCartData)
 
         return if (isVariant(channelGrid.parentProductId)) {
             ProductCardModel(
@@ -164,6 +191,67 @@ object LeftCarouselAtcMapper {
                     maxQuantity = channelGrid.stock
                 ) else null
             )
+        }
+    }
+
+    fun mapLeftAtcRTR(
+        item: HomeLeftCarouselAtcUiModel,
+        recomWidget: RecommendationWidget,
+        parentProduct: HomeLeftCarouselAtcProductCardUiModel,
+        miniCartData: MiniCartSimplifiedData?
+    ): HomeLayoutItemUiModel {
+        val recommendationItemList = mapCartQuantityToRecomItem(recomWidget, miniCartData)
+        val realTimeRecomWidget = recomWidget.copy(
+            title = DEFAULT_TITLE,
+            recommendationItemList = recommendationItemList
+        )
+        val productCardModel = parentProduct.productCardModel
+
+        val realTimeRecom = item.realTimeRecom.copy(
+            parentProductId = parentProduct.id.toString(),
+            productImageUrl = productCardModel.productImageUrl,
+            category = parentProduct.categoryBreadcrumbs,
+            widget = realTimeRecomWidget,
+            widgetState = RealTimeRecomWidgetState.READY,
+            carouselState = RecommendationCarouselData.STATE_READY,
+            type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
+        )
+
+        val homeRtrWidgetItem = item.copy(realTimeRecom = realTimeRecom)
+        return HomeLayoutItemUiModel(homeRtrWidgetItem, HomeLayoutItemState.LOADED)
+    }
+
+    fun mapLeftAtcRealTimeRecomState(
+        productId: String,
+        state: RealTimeRecomWidgetState,
+        item: HomeLeftCarouselAtcUiModel
+    ): HomeLayoutItemUiModel {
+        val realTimeRecom = item.realTimeRecom.copy(parentProductId = productId, widgetState = state)
+        val homeRtrWidgetItem = item.copy(realTimeRecom = realTimeRecom)
+        return HomeLayoutItemUiModel(homeRtrWidgetItem, HomeLayoutItemState.LOADED)
+    }
+
+    fun mapLoadingLeftAtcRTR(item: HomeLeftCarouselAtcUiModel): HomeLayoutItemUiModel {
+        val realTimeRecom = item.realTimeRecom.copy(
+            widgetState = RealTimeRecomWidgetState.READY,
+            carouselState = RecommendationCarouselData.STATE_LOADING
+        )
+        val homeRtrWidgetItem = item.copy(realTimeRecom = realTimeRecom)
+        return HomeLayoutItemUiModel(homeRtrWidgetItem, HomeLayoutItemState.LOADED)
+    }
+
+    fun removeLeftAtcRTR(item: HomeLeftCarouselAtcUiModel): HomeLayoutItemUiModel {
+        val recomWidget = item.copy(realTimeRecom = item.realTimeRecom.copy(widget = null))
+        return HomeLayoutItemUiModel(recomWidget, HomeLayoutItemState.LOADED)
+    }
+
+    private fun mapCartQuantityToRecomItem(
+        recomWidget: RecommendationWidget,
+        miniCartData: MiniCartSimplifiedData?
+    ): List<RecommendationItem> {
+        return recomWidget.recommendationItemList.map {
+            val quantity = getAddToCartQuantity(it.productId.toString(), miniCartData)
+            it.copy(quantity = quantity)
         }
     }
 
