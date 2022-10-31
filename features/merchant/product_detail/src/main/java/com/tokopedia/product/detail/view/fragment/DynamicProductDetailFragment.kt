@@ -57,8 +57,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
@@ -433,8 +431,6 @@ open class DynamicProductDetailFragment :
             CoachMarkProductPref(it, CoachMarkProductPref.PRODUCT_DETAIL_AR_PAGE_COACHMARK)
         }
     }
-
-    private var coachMarkArView: CoachMark2? = null
 
     private val pdpCoachmarkHelper by lazy(LazyThreadSafetyMode.NONE) {
         context?.let {
@@ -2631,26 +2627,15 @@ open class DynamicProductDetailFragment :
     }
 
     override fun showArCoachMark(view: ConstraintLayout?) {
-        context?.let {
-            val shouldShowCoachMark = coachMarkArPref?.getCoachMarkState() == false
-            if (view != null && shouldShowCoachMark) {
-                val coachMarkList = arrayListOf<CoachMark2Item>()
-                coachMarkArView = CoachMark2(it)
-                coachMarkList.add(CoachMark2Item(view,
-                        it.getString(R.string.pdp_ar_coachmark_title),
-                        it.getString(R.string.pdp_ar_coachmark_desc), CoachMark2.POSITION_TOP))
-                coachMarkArView?.showCoachMark(coachMarkList, null, 0)
-                coachMarkArPref?.setCoachMarkState(true)
-            }
-        }
+        pdpCoachmarkHelper?.showCoachMarkAr(view)
     }
 
     override fun hideArCoachMark() {
-        context?.let {
-            if (coachMarkArView != null && coachMarkArView?.isShowing == true) {
-                coachMarkArView?.hideCoachMark()
-            }
-        }
+//        context?.let {
+//            if (coachMarkArView != null && coachMarkArView?.isShowing == true) {
+//                coachMarkArView?.hideCoachMark()
+//            }
+//        }
     }
 
     private fun openBottomSheetTopAds() {

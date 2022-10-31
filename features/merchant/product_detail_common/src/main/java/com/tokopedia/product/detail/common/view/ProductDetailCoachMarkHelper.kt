@@ -36,6 +36,24 @@ class ProductDetailCoachMarkHelper(context: Context) {
         }
     }
 
+    fun showCoachMarkAr(targetView: View?) {
+        val shouldShowCoachMark = getCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK) == false
+
+        if (targetView != null && shouldShowCoachMark) {
+            initCoachMarkView(targetView.context)
+
+            val coachMarkList = arrayListOf<CoachMark2Item>()
+            coachMarkList.add(CoachMark2Item(targetView,
+                targetView.context.getString(R.string.pdp_ar_coachmark_title),
+                targetView.context.getString(R.string.pdp_ar_coachmark_desc),
+                CoachMark2.POSITION_TOP)
+            )
+
+            coachMarkView?.showCoachMark(coachMarkList, null, 0)
+            setCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK, true)
+        }
+    }
+
     private fun setCoachMarkState(key: String, state: Boolean) {
         editor?.putBoolean(key, state)
         editor?.apply()
@@ -54,5 +72,6 @@ class ProductDetailCoachMarkHelper(context: Context) {
     companion object {
         private const val PREF_NAME = "pdp_coachmark"
         private const val PDP_HAMPERS_COACHMARK_EXTRA = "pdp_hampers_coachmark"
+        private const val PRODUCT_DETAIL_AR_PAGE_COACHMARK = "coach_mark_pdp_ar_page"
     }
 }

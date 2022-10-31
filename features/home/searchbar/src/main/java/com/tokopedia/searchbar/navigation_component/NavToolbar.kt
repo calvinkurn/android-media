@@ -699,7 +699,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun setCustomBackButton(icon: Int = IconUnify.ARROW_BACK, color: Int) {
-        nav_icon_back.setImage(newIconId = icon,
+        navIconBack.setImage(newIconId = icon,
                 newLightEnable = color,
                 newLightDisable = color,
                 newDarkDisable = color,
