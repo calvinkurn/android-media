@@ -37,7 +37,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="4dp"
-        android:background="@color/Unify_N0"
+        android:background="?selectableItemBackground"
         android:contentDescription="@string/tokochat_content_desc_header_menu"
         android:visibility="gone"
         app:icon_name="MENU_KEBAB_VERTICAL"
@@ -50,7 +50,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="9dp"
         android:layout_marginEnd="60dp"
-        android:layout_toEndOf="@+id/tokochat_layout_photo_container"
+        android:layout_toEndOf="@id/tokochat_layout_header_photo_container"
         android:gravity="center_vertical"
         android:visibility="gone"
         tools:visibility="visible">

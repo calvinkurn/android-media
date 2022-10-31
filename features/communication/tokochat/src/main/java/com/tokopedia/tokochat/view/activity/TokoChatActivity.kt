@@ -2,7 +2,6 @@ package com.tokopedia.tokochat.view.activity
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -59,6 +58,9 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     private fun initializeTokoChatComponent(): TokoChatComponent {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .tokoChatConfigComponent(
+                (application as BaseMainApplication).tokoChatConnection.tokoChatConfigComponent
+            )
             .tokoChatContextModule(TokoChatContextModule(this))
             .build().also {
                 tokoChatComponent = it
@@ -66,7 +68,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     override fun getComponent(): TokoChatComponent {
-        return tokoChatComponent?: initializeTokoChatComponent()
+        return tokoChatComponent ?: initializeTokoChatComponent()
     }
 
     override fun getNewFragment(): Fragment {
@@ -103,9 +105,13 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     private fun getFragmentBundle(): Bundle {
         val source = intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE)?: ""
         val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK)?: ""
+        val tkpdOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_TKPD) ?: ""
+        val isFromTokoFoodPostPurchase = intent?.getBooleanExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, false) ?: false
         return Bundle().apply {
             putString(ApplinkConst.TokoChat.PARAM_SOURCE, source)
             putString(ApplinkConst.TokoChat.ORDER_ID_GOJEK, gojekOrderId)
+            putString(ApplinkConst.TokoChat.ORDER_ID_TKPD, tkpdOrderId)
+            putBoolean(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, isFromTokoFoodPostPurchase)
         }
     }
 }

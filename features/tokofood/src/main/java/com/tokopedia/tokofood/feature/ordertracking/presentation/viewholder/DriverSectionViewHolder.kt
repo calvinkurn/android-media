@@ -1,14 +1,18 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 
 import android.content.Context
+import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -18,6 +22,7 @@ import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHo
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.DriverInformationAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
+import com.tokopedia.unifycomponents.NotificationUnify
 
 class DriverSectionViewHolder(
     view: View,
@@ -37,7 +42,7 @@ class DriverSectionViewHolder(
             setDriverPhotoUrl(element.photoUrl)
             setLicensePlatNumber(element.licensePlateNumber)
             setupDriverCall(element.isCallable)
-            setupDriverChat(element.isEnableChat, element.goFoodOrderNumber)
+            setupDriverChat(element.isEnableChat, element.goFoodOrderNumber, element.badgeCounter)
             setupDriverInformationAdapter(element.driverInformationList)
         }
     }
@@ -59,9 +64,14 @@ class DriverSectionViewHolder(
                     binding.setupDriverCall(newItem.isCallable)
                 }
                 if (oldItem.isEnableChat != newItem.isEnableChat ||
-                    oldItem.goFoodOrderNumber != newItem.goFoodOrderNumber
+                    oldItem.goFoodOrderNumber != newItem.goFoodOrderNumber ||
+                    oldItem.badgeCounter != newItem.badgeCounter
                 ) {
-                    binding.setupDriverChat(newItem.isEnableChat, newItem.goFoodOrderNumber)
+                    binding.setupDriverChat(
+                        newItem.isEnableChat,
+                        newItem.goFoodOrderNumber,
+                        newItem.badgeCounter
+                    )
                 }
             }
         }
@@ -99,16 +109,45 @@ class DriverSectionViewHolder(
 
     private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverChat(
         isEnableChat: Boolean,
-        goFoodOrderNumber: String
+        goFoodOrderNumber: String,
+        badgeCounter: Int,
     ) {
         icDriverChat.run {
             if (isShowDriverChat()) {
-                show()
+                if (badgeCounter.isZero() || badgeCounter.isLessThanZero()) {
+                    notificationRef.show()
+
+                    notificationRef.setNotification(
+                        notif = badgeCounter.toString(),
+                        notificationType = NotificationUnify.NONE_TYPE,
+                        colorType = NotificationUnify.COLOR_PRIMARY
+                    )
+
+                    notificationGravity = Gravity.TOP or Gravity.END
+                } else {
+                    notificationRef.hide()
+
+                    notificationRef.setNotification(
+                        notif = badgeCounter.toString(),
+                        notificationType = NotificationUnify.COUNTER_TYPE,
+                        colorType = NotificationUnify.COLOR_PRIMARY
+                    )
+
+                    notificationGravity = Gravity.TOP or Gravity.END
+                }
+
                 var (isClickableCall, chatIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
                 chatIconColor = if(chatIconColor != Int.ZERO) chatIconColor else null
 
                 isClickable = isClickableCall
-                setImage(IconUnify.CHAT, chatIconColor, chatIconColor)
+
+                val drawable = getIconUnifyDrawable(
+                    context = context,
+                    iconId = IconUnify.CALL,
+                    assetColor = chatIconColor
+                )
+
+                imageDrawable = drawable
 
                 if (isClickableCall) {
                     setOnClickListener {

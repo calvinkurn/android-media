@@ -211,6 +211,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearDataStore()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
+        removeTokoChat()
+
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
                 val mIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN).apply {
