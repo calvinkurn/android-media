@@ -195,7 +195,10 @@ class KycUploadViewModelTest {
     fun `Register - Failed and get error header response`() {
         val kycResponse = KycResponse().apply {
             header?.errorCode = "9999"
-            header?.message = mutableListOf("Error message on header")
+            header?.message = mutableListOf(
+                "Error message on header 1",
+                "Error message on header 2"
+            )
         }
 
         provideEveryUseCase(kycResponse)
@@ -466,7 +469,33 @@ class KycUploadViewModelTest {
     }
 
     @Test
-    fun `send logger`() {
-        viewModel.sendLoadTimeUploadLog("", 0L)
+    fun `test sharedPref null`() {
+        coEvery {
+            sharedPreference.getByteArrayCache(any())
+        } returns null
+
+        uploadWithEncrypt()
+        assert(viewModel.kycResponseLiveData.value is Fail)
+    }
+
+    @Test
+    fun `error on header but empty message`() {
+        val kycResponse = KycResponse().apply {
+            header?.message = mutableListOf("")
+            header?.errorCode = null
+        }
+
+        provideEveryUseCase(kycResponse)
+        provideEverySuccessEncrypt()
+        provideEverySuccessDecrypted(originalImagePath)
+
+        coEvery {
+            sharedPreference.getByteArrayCache(any())
+        } answers {
+            encryptedImagePath.encodeToByteArray()
+        }
+
+        uploadWithEncrypt()
+        assert(viewModel.kycResponseLiveData.value is Fail)
     }
 }

@@ -152,7 +152,7 @@ open class PickerActivity : BaseActivity()
         onPageSourceNotFound(pickerParam)
 
         if(pickerParam.isEditorEnabled()){
-            editorParam = intent?.getParcelableExtra(EXTRA_EDITOR_PARAM)?: EditorParam()
+            editorParam = pickerParam.getEditorParam() ?: EditorParam()
         }
 
         // get data from uri query parameter
