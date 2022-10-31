@@ -3,15 +3,12 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.UtilsTest
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
-import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -142,7 +139,7 @@ class ProductCardCarouselViewModelTest {
         val componentsItem = ComponentsItem(id = "1")
         val list = ArrayList<ComponentsItem>()
         list.add(componentsItem)
-        every {  viewModel.getProductList() } returns list
+        every { viewModel.getProductList() } returns list
         viewModel.refreshProductCarouselError()
         assert(viewModel.getProductCarouselItemsListData().value != null)
     }
@@ -176,11 +173,14 @@ class ProductCardCarouselViewModelTest {
 
     @Test
     fun `test for reset Component`() {
-        every { componentsItem.noOfPagesLoaded } returns 0
-        every { componentsItem.pageLoadedCounter } returns 1
+        val componentsItemLocal = spyk(ComponentsItem(id = "2"))
+         var viewModel: ProductCardCarouselViewModel =
+            spyk(ProductCardCarouselViewModel(application, componentsItemLocal, 99))
+        componentsItemLocal.noOfPagesLoaded = 5
+        componentsItemLocal.pageLoadedCounter = 5
         viewModel.resetComponent()
-        assert(viewModel.components.noOfPagesLoaded == 0)
-        assert(viewModel.components.pageLoadedCounter == 1)
+        assert(componentsItemLocal.noOfPagesLoaded == 0)
+        assert(componentsItemLocal.pageLoadedCounter == 1)
     }
 
     @Test
@@ -195,7 +195,7 @@ class ProductCardCarouselViewModelTest {
         val componentsItem = ComponentsItem(id = "1")
         val list = ArrayList<ComponentsItem>()
         list.add(componentsItem)
-        every {  viewModel.getProductList() } returns list
+        every { viewModel.getProductList() } returns list
         viewModel.refreshProductCarouselError()
         assert(viewModel.getProductCarouselItemsListData().value?.size == 2)
     }
@@ -205,7 +205,7 @@ class ProductCardCarouselViewModelTest {
         val componentsItemNew = ComponentsItem(id = "1")
         val list = ArrayList<ComponentsItem>()
         list.add(componentsItemNew)
-        every {  viewModel.getProductList() } returns list
+        every { viewModel.getProductList() } returns list
         every { componentsItem.properties?.mixLeft?.bannerImageUrlMobile } returns "false"
         viewModel.fetchCarouselPaginatedProducts()
         assert(viewModel.getProductCarouselItemsListData().value?.size == 3)
@@ -219,10 +219,14 @@ class ProductCardCarouselViewModelTest {
         val list = ArrayList<ComponentsItem>()
         list.add(componentsItemNew)
 
-        every {  viewModel.getProductList() } returns list
+        every { viewModel.getProductList() } returns list
         every { componentsItem.properties?.mixLeft?.bannerImageUrlMobile } returns "false"
-        every { Utils.nextPageAvailable(componentsItem,10) } returns true
-        coEvery { productCardsUseCase.getCarouselPaginatedData(componentsItem.id,componentsItem.pageEndPoint,10) } returns true
+        every { Utils.nextPageAvailable(componentsItem, 10) } returns true
+        coEvery {
+            productCardsUseCase.getCarouselPaginatedData(
+                componentsItem.id, componentsItem.pageEndPoint, 10
+            )
+        } returns true
 
         viewModel.fetchCarouselPaginatedProducts()
 
