@@ -10,11 +10,12 @@ import com.tokopedia.profilecompletion.changegender.view.activity.ChangeGenderAc
 import com.tokopedia.profilecompletion.changename.view.ChangeNameActivity
 import com.tokopedia.profilecompletion.common.helper.checkToasterShowing
 import com.tokopedia.profilecompletion.common.helper.clickChildWithViewId
-import com.tokopedia.profilecompletion.common.helper.clickSubmitButton
+import com.tokopedia.profilecompletion.common.helper.clickOnView
 import com.tokopedia.profilecompletion.common.helper.clickViewHolder
 import com.tokopedia.profilecompletion.common.helper.goToAnotherActivity
 import com.tokopedia.profilecompletion.common.helper.isViewsExists
 import com.tokopedia.profilecompletion.common.helper.isViewsNotExists
+import com.tokopedia.profilecompletion.common.helper.scrollDown
 import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
@@ -50,7 +51,9 @@ class ProfileInfoInstrumentTest {
     @Test
     fun header_profile_appear() {
         runTest {
-            isViewsExists(listOf(R.id.profileInfoImageSubtitle, R.id.profileInfoImageUnify, R.id.text_close_account))
+            isViewsExists(listOf(R.id.profileInfoImageSubtitle, R.id.profileInfoImageUnify))
+            scrollDown(R.id.text_close_account)
+            isViewsExists(listOf(R.id.text_close_account))
         }
     }
 
@@ -121,7 +124,8 @@ class ProfileInfoInstrumentTest {
     @Test
     fun click_close_account_then_user_not_eligible() {
         runTest {
-            clickSubmitButton(R.id.text_close_account)
+            scrollDown(R.id.text_close_account)
+            clickOnView(R.id.text_close_account)
 
             isViewsExists(
                 listOf(
