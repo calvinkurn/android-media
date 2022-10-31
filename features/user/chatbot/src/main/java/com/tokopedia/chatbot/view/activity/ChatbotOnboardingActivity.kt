@@ -36,7 +36,6 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         setContentView(_viewBinding!!.root)
         initInjector()
         setUpListeners()
-        checkVideoUploadOnboardingStatus()
         val ratioY = calculateRatiosForGuideline()
         setUpReplyBubbleGuideline(ratioY)
         checkReplyBubbleOnboardingStatus()
@@ -52,10 +51,7 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
-        val givenX = intent.getIntExtra(X_COORDINATE, DIMEN_DEFAULT)
         val givenY = intent.getIntExtra(Y_COORDINATE, DIMEN_DEFAULT)
-        val ratioX: Float = (givenX.toFloat() / width.toFloat())
         val ratioY: Float = (givenY.toFloat() / height.toFloat())
         return ratioY + RATIO_CONSTANT
     }
@@ -92,6 +88,8 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
                 getBindingView().replyBubbleHolder,
                 this
             )
+        } else {
+            checkVideoUploadOnboardingStatus()
         }
     }
 
@@ -115,6 +113,7 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
 
     override fun dismissReplyBubbleOnBoarding() {
         replyBubbleOnboardingDismissed = true
+        checkVideoUploadOnboardingStatus()
         checkToCloseOnboardingActivity()
     }
 
@@ -139,7 +138,6 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     }
 
     companion object {
-        private const val X_COORDINATE = "x-coordinate"
         private const val Y_COORDINATE = "y-coordinate"
         private const val ZERO_RATIO = 0F
         private const val DIMEN_DEFAULT = 0
