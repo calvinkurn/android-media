@@ -109,7 +109,7 @@ class DriverSectionViewHolder(
     private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverChat(
         isEnableChat: Boolean,
         goFoodOrderNumber: String,
-        badgeCounter: Int,
+        badgeCounter: Int?,
     ) {
         icDriverChat.run {
             if (isShowDriverChat()) {
@@ -125,14 +125,6 @@ class DriverSectionViewHolder(
                     notificationGravity = Gravity.TOP or Gravity.END
                 } else {
                     notificationRef.hide()
-
-                    notificationRef.setNotification(
-                        notif = badgeCounter.toString(),
-                        notificationType = NotificationUnify.COUNTER_TYPE,
-                        colorType = NotificationUnify.COLOR_PRIMARY
-                    )
-
-                    notificationGravity = Gravity.TOP or Gravity.END
                 }
 
                 var (isClickableCall, chatIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
