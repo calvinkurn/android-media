@@ -22,9 +22,9 @@ class CdnMonitoringInterceptor(private val applicationContext: Context): Interce
         return response
     }
 
-    private fun setCdnNameUserSession(cdnName: String, imageUrl: String) {
+    private fun setCdnNameUserSession(cdnName: String, assetUrl: String) {
         val userSession = UserSession(applicationContext)
         userSession.cdnName = cdnName
-        userSession.cdnAssetUrl = imageUrl
+        userSession.cdnAssetUrl = assetUrl
     }
 }
