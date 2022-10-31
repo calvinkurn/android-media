@@ -377,7 +377,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                                     it.data.animatedInfoList
                                 ),
                                 shopId = shopId,
-                                source = MvcSource.DEFAULT
+                                source = MvcSource.SHOP
                             )
                             mvcWidget.show()
                         } else {

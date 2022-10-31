@@ -116,7 +116,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                                 it.data.animatedInfoList
                             ),
                             shopId = shopId,
-                            source = MvcSource.DEFAULT
+                            source = MvcSource.SHOP
                         )
                         binding?.merchantVoucherWidgetPostTag?.show()
                     } else {
