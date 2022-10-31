@@ -16,7 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
-import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
@@ -772,7 +772,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check wishlist appLink then should return tokopedia internal wishlist in customerapp`() {
         every {
-            DeeplinkMapperPurchasePlatform.isUsingWishlistCollection(context)
+            DeeplinkMapperWishlist.isUsingWishlistCollection(context)
         } returns false
 
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
@@ -782,7 +782,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check new wishlist appLink then should return tokopedia internal new wish list in customerapp`() {
         every {
-            DeeplinkMapperPurchasePlatform.isUsingWishlistCollection(context)
+            DeeplinkMapperWishlist.isUsingWishlistCollection(context)
         } returns false
 
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
@@ -792,7 +792,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check wishlist appLink then should return tokopedia internal wishlist collection in customerapp`() {
         every {
-            DeeplinkMapperPurchasePlatform.isUsingWishlistCollection(context)
+            DeeplinkMapperWishlist.isUsingWishlistCollection(context)
         } returns true
 
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist-collection"
@@ -802,7 +802,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check new wishlist appLink then should return tokopedia internal wishlist collection in customerapp`() {
         every {
-            DeeplinkMapperPurchasePlatform.isUsingWishlistCollection(context)
+            DeeplinkMapperWishlist.isUsingWishlistCollection(context)
         } returns true
 
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist-collection"
