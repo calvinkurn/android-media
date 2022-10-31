@@ -110,7 +110,7 @@ class PlayPinnedProductAnalyticTest {
     fun onClicked_pinnedProduct_in_ProductCarousel() {
         val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
 
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
 
         val robot = createRobot()
         with(robot) {
@@ -127,7 +127,7 @@ class PlayPinnedProductAnalyticTest {
     fun onImpressed_pinnedProduct_in_ProductCarousel() {
         val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
 
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
 
         val robot = createRobot()
         with(robot) {
@@ -145,7 +145,7 @@ class PlayPinnedProductAnalyticTest {
         val cartId = "123"
 
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
 
         val robot = createRobot()
@@ -165,7 +165,7 @@ class PlayPinnedProductAnalyticTest {
         val cartId = "123"
 
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
 
         val robot = createRobot()
@@ -185,7 +185,7 @@ class PlayPinnedProductAnalyticTest {
         val cartId = "123"
 
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
 
         val robot = createRobot()
@@ -205,7 +205,7 @@ class PlayPinnedProductAnalyticTest {
         val cartId = "123"
 
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
 
         val robot = createRobot()
