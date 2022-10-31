@@ -2322,9 +2322,11 @@ open class ProductManageFragment :
 
     private fun goToEditProduct(productId: String) {
         context?.let {
-            val intent =
-                RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_EDIT, productId)
-            startActivityForResult(intent, REQUEST_CODE_EDIT_PRODUCT)
+            if (!viewModel.shopStatus.value?.isOnModerationMode().orFalse()){
+                val intent =
+                    RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_EDIT, productId)
+                startActivityForResult(intent, REQUEST_CODE_EDIT_PRODUCT)
+            }
         }
     }
 
