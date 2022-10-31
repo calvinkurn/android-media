@@ -64,20 +64,6 @@ private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
     }
 }
 
-
-@Preview(name = "Sort Filter Item (Selected)")
-@Composable
-fun NestSortFilterItemSelectedPreview() {
-    NestSortFilterItem(SortFilter("Lokasi", true, {}))
-}
-
-@Preview(name = "Sort Filter Item (Default)")
-@Composable
-fun NestSortFilterItemPreview() {
-    NestSortFilterItem(SortFilter("Lokasi", false, {}))
-}
-
-
 @Composable
 private fun NestSortFilterItem(sortFilter: SortFilter) {
     //Implementation are specifically to cater SELECTED and NORMAL type chips only
@@ -139,6 +125,18 @@ private fun NestSortFilterItem(sortFilter: SortFilter) {
     }
 }
 
+
+@Preview(name = "Sort Filter Item (Selected)")
+@Composable
+fun NestSortFilterItemSelectedPreview() {
+    NestSortFilterItem(SortFilter("Lokasi", true, {}))
+}
+
+@Preview(name = "Sort Filter Item (Default)")
+@Composable
+fun NestSortFilterItemPreview() {
+    NestSortFilterItem(SortFilter("Lokasi", false, {}))
+}
 
 @Preview(name = "Sort Filter")
 @Composable

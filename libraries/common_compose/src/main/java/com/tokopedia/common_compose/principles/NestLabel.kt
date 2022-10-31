@@ -69,3 +69,25 @@ fun NestLabelRedPreview() {
         nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_RED
     )
 }
+
+@Preview(name = "Label (Orange)")
+@Composable
+fun NestLabelOrangePreview() {
+    NestLabel(
+        Modifier,
+        labelText = "Menunggu Ulasan",
+        nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_ORANGE
+    )
+}
+
+@Preview(name = "Label (Grey)")
+@Composable
+fun NestLabelGreyPreview() {
+    NestLabel(
+        Modifier,
+        labelText = "Menunggu Kurir",
+        nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREY
+    )
+}
+
+

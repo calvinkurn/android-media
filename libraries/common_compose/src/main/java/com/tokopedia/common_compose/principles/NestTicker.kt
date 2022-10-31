@@ -163,19 +163,20 @@ fun NestTickerAnnouncementPreview() {
     }
 }
 
-@Preview(name = "Ticker Announcement [Dark]", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Ticker [Description Only]")
 @Composable
-fun NestTickerDarkAnnouncementPreview() {
+fun DescriptionOnlyTicker() {
     NestTheme {
         NestTicker(
             modifier = Modifier,
-            title = "Info",
+            title = "",
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
             onDismissed = {},
             style = TickerStyle.Announcement
         )
     }
 }
+
 
 @Preview(name = "Ticker Warning")
 @Composable
@@ -191,19 +192,7 @@ fun NestTickerWarningPreview() {
     }
 }
 
-@Preview(name = "Ticker Warning [Dark]", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun NestTickerDarkWarningPreview() {
-    NestTheme {
-        NestTicker(
-            modifier = Modifier,
-            title = "Info",
-            description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
-            onDismissed = {},
-            style = TickerStyle.Warning
-        )
-    }
-}
+
 
 @Preview(name = "Ticker Error")
 @Composable
@@ -215,36 +204,6 @@ fun NestTickerErrorPreview() {
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
             onDismissed = {},
             style = TickerStyle.Error
-        )
-    }
-}
-
-
-@Preview(name = "Ticker Error [Dark]", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun NestTickerErrorDarkPreview() {
-    NestTheme {
-        NestTicker(
-            modifier = Modifier,
-            title = "Info",
-            description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
-            onDismissed = {},
-            style = TickerStyle.Error
-        )
-    }
-
-}
-
-@Preview(name = "Ticker [Description Only]")
-@Composable
-fun DescriptionOnlyTicker() {
-    NestTheme {
-        NestTicker(
-            modifier = Modifier,
-            title = "",
-            description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
-            onDismissed = {},
-            style = TickerStyle.Announcement
         )
     }
 }
