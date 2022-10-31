@@ -208,7 +208,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun openCompletePaymentWeb(model: BasePaymentModel) {
-        sendEventToAnalytics(PmsEvents.CompletePayment(model.gatewayName))
+        sendEventToAnalytics(PmsEvents.CompletePayment(model))
         startActivity(Intent(activity, CompletePayment::class.java).apply {
             putExtra(COMPLETE_PAYMENT_URL_KEY, (model as CreditCardPaymentModel).paymentUrl)
         })

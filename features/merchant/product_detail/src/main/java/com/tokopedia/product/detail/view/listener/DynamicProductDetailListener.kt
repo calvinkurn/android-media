@@ -94,6 +94,11 @@ interface DynamicProductDetailListener {
      * OneLinerViewHolder
      */
     fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
+    fun onClickInformationIconAtStockAssurance(
+        componentTrackDataModel: ComponentTrackDataModel,
+        appLink: String,
+        label: String
+    )
 
     /**
      * ProductDiscussionViewHolder

@@ -42,7 +42,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeIniti
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerImageViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CMHomeWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
@@ -199,8 +198,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     private val productLayout = HashSet(
             listOf(
                     DynamicHomeChannel.Channels.LAYOUT_3_IMAGE,
-                    DynamicHomeChannel.Channels.LAYOUT_SPRINT,
-                    DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
+                    DynamicHomeChannel.Channels.LAYOUT_SPRINT)
     )
 
     private val bannerLayout = HashSet(
@@ -463,11 +461,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> CategoryWidgetV2ViewHolder.LAYOUT
 
             /**
-             * refer to gif banner layout com.tokopedia.home.R.layout#banner_image
-             */
-            DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> BannerImageViewHolder.LAYOUT
-
-            /**
              * refer to popular keyword layout com.tokopedia.home.R.layout#layout_popular_image
              */
             DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> PopularKeywordViewHolder.LAYOUT
@@ -503,7 +496,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
             HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener, cardInteraction = true)
-            BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener, cardInteraction = true)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
