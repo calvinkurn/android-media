@@ -184,9 +184,6 @@
     <string name="pdp_tokocabang_label">TokoCabang</string>
     <string name="pdp_bold_html_builder"><![CDATA[<b>%1s</b>]]></string>
 
-    <string name="pdp_ar_coachmark_title">Ayo coba barang ini dari HP-mu</string>
-    <string name="pdp_ar_coachmark_desc">Cek dulu supaya kamu makin yakin dengan kualitas barangnya!</string>
-
     <string name="pdp_pcs_builder">%1d pcs</string>
     <string name="pdp_total_stock_static">Jumlah Barang:</string>
 

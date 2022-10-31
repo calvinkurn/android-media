@@ -62,4 +62,8 @@
     <string name="pdp_common_gallery_default_selected">Gambar tidak tersedia untuk varian yang dipilih. Coba tanya detailnya ke penjual, ya.</string>
 
     <string name="pdp_common_oke">Oke</string>
+
+    <string name="pdp_ar_coachmark_title">Ayo coba barang ini dari HP-mu</string>
+    <string name="pdp_ar_coachmark_desc">Cek dulu supaya kamu makin yakin dengan kualitas barangnya!</string>
+
 </resources>
