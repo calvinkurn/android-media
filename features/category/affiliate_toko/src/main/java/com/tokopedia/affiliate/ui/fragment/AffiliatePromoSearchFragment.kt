@@ -16,7 +16,6 @@ import com.tokopedia.affiliate.ON_REVIEWED
 import com.tokopedia.affiliate.SYSTEM_DOWN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
-import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
@@ -166,7 +165,6 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
     private fun onGetAffiliateSearchData(affiliateSearchData: AffiliateSearchData) {
         resetAdapter()
         if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
-            showData(true)
             if (affiliateSearchData.searchAffiliate?.data?.error?.errorType == 1) {
                 view?.rootView?.let {
                     Toaster.build(
@@ -176,17 +174,17 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
                         Toaster.TYPE_ERROR
                     ).show()
                 }
-                view?.findViewById<Group>(R.id.view_initial_info)?.show()
                 sendSearchEvent(AffiliateAnalytics.LabelKeys.NOT_URL)
             } else {
-                showData(false)
                 affiliateSearchData.searchAffiliate?.data?.error?.let {
                     adapter.addElement(AffiliatePromotionErrorCardModel(it))
                 }
                 val errorLabel =
                     when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
-                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND -> AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
-                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE -> AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
+                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
+                            AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
+                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
+                            AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
                         AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS -> AffiliateAnalytics.LabelKeys.NON_PM_OS_SHOP
                         else -> AffiliateAnalytics.LabelKeys.NOT_URL
                     }
@@ -194,7 +192,6 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             }
         } else {
             affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.let { cards ->
-                showData(false)
                 view?.findViewById<Typography>(R.id.promotion_card_title)?.text = cards.title
                 cards.items?.forEach {
                     it?.let {
@@ -219,6 +216,8 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             adapter = null
             adapter = this@AffiliatePromoSearchFragment.adapter
         }
+        view?.findViewById<Group>(R.id.view_initial_info)?.hide()
+        view?.findViewById<RecyclerView>(R.id.promotion_recycler_view)?.show()
     }
 
 
@@ -230,13 +229,6 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             eventLabel,
             userSessionInterface?.userId.orEmpty()
         )
-    }
-
-    private fun showData(isInitialState: Boolean) {
-        view?.findViewById<Group>(R.id.view_initial_info)?.apply {
-            if (isInitialState) show() else hide()
-        }
-        view?.findViewById<RecyclerView>(R.id.promotion_recycler_view)?.show()
     }
 
     override fun onEditState(state: Boolean) {
@@ -286,12 +278,8 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
         }
     }
 
-    private fun disableSearchButton() {
-        view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.isEnabled = false
-    }
-
     override fun onSystemDown() {
-        disableSearchButton()
+        view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.isEnabled = false
         affiliatePromoViewModel?.setValidateUserType(SYSTEM_DOWN)
         affiliatePromoViewModel?.getAnnouncementInformation()
     }
@@ -325,11 +313,10 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
     }
 
     override fun initInject() {
-        getComponent().injectPromoSearchFragment(this)
+        DaggerAffiliateComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build().injectPromoSearchFragment(this)
     }
-
-    private fun getComponent(): AffiliateComponent = DaggerAffiliateComponent.builder()
-        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build()
 
     override fun getViewModelType(): Class<AffiliatePromoViewModel> {
         return AffiliatePromoViewModel::class.java
