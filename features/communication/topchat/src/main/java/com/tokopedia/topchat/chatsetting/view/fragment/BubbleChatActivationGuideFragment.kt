@@ -89,8 +89,8 @@ class BubbleChatActivationGuideFragment: Fragment() {
             BubbleActivationGuideUiModel(
                 imageUrl = BubbleChat.Url.BUBBLE_ACTIVATION_GUIDE_1,
                 desc = getString(com.tokopedia.topchat.R.string.topchat_bubble_activation_guide_1_desc),
-                detailInformationUrl = BubbleChat.Url.BUBBLE_ACTIVATION_GUIDE_1,
-                descDetailInformation = BubbleChat.Url.BUBBLE_CHAT_ENTRY_POINT
+                detailInformationUrl = BubbleChat.Url.BUBBLE_CHAT_ENTRY_POINT,
+                descDetailInformation = getString(com.tokopedia.topchat.R.string.topchat_bubble_activation_guide_1_desc_sample_icon)
             ),
             BubbleActivationGuideUiModel(
                 imageUrl = BubbleChat.Url.BUBBLE_ACTIVATION_GUIDE_2,

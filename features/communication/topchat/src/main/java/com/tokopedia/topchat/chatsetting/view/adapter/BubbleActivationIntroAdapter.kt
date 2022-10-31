@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.chatsetting.view.uimodel.BubbleActivationIntroUiModel
 import com.tokopedia.topchat.databinding.ItemTopchatBubbleActivationIntroBinding
 
@@ -46,6 +48,7 @@ class BubbleActivationIntroAdapter: RecyclerView.Adapter<BubbleActivationIntroAd
         fun bind(uiModel: BubbleActivationIntroUiModel) {
             setImageUrl(uiModel.imageUrl)
             setBenefitText(uiModel.benefitText)
+            setDivider()
         }
 
         private fun setImageUrl(imageUrl: String) {
@@ -54,6 +57,10 @@ class BubbleActivationIntroAdapter: RecyclerView.Adapter<BubbleActivationIntroAd
 
         private fun setBenefitText(benefitText: String) {
             binding.tvItemTopchatBubbleIntro.text = MethodChecker.fromHtml(benefitText)
+        }
+
+        private fun setDivider() {
+            binding.dividerItemTopchatBubbleIntro.showWithCondition(bindingAdapterPosition.isZero())
         }
 
     }

@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="16dp">
+    android:paddingHorizontal="16dp"
+    android:paddingTop="16dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_item_topchat_bubble_intro"
@@ -23,5 +24,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_2"
         tools:text="@string/topchat_bubble_activation_benefit_1"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_item_topchat_bubble_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="img_item_topchat_bubble_intro, tv_item_topchat_bubble_intro"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_item_topchat_bubble_intro"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/barrier_item_topchat_bubble_intro"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
