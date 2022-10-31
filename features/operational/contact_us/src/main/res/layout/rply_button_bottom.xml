@@ -5,11 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:src="@drawable/top_shadow_gradient" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
