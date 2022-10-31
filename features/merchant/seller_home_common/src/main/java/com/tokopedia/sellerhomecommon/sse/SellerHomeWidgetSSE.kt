@@ -11,7 +11,7 @@ interface SellerHomeWidgetSSE {
 
     fun connect(page: String, dataKeys: List<String>)
 
-    fun close()
+    fun closeSse()
 
     fun listen(): Flow<WidgetSSEModel>
 }

@@ -26,11 +26,6 @@ class SellerHomeWidgetSSEImpl(
 ) : SellerHomeWidgetSSE {
 
     companion object {
-        private val URL = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            "https://sse-staging.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
-        } else {
-            "https://sse.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
-        }
         private const val DATA_KEY_SEPARATOR = ","
         private const val HEADER_AUTHORIZATION = "Accounts-Authorization"
         private const val HEADER_X_DEVICE = "X-Device"
@@ -44,8 +39,9 @@ class SellerHomeWidgetSSEImpl(
     override fun connect(page: String, dataKeys: List<String>) {
         printLog("SSE Connecting...")
 
+        val baseSseUrl = getBaseSseUrl()
         val dataKey = dataKeys.joinToString(DATA_KEY_SEPARATOR)
-        val url = String.format(URL, page, dataKey)
+        val url = String.format(baseSseUrl, page, dataKey)
         val authorization = String.format(BEARER, userSession.accessToken)
         val xDevice = String.format(ANDROID_VERSION, GlobalConfig.VERSION_NAME)
 
@@ -54,8 +50,28 @@ class SellerHomeWidgetSSEImpl(
             .addHeader(HEADER_AUTHORIZATION, authorization)
             .build()
 
-        close()
-        sse = OkSse().newServerSentEvent(request, object : ServerSentEvent.Listener {
+        closeSse()
+        sse = OkSse().newServerSentEvent(request, getSseEventListener(request))
+    }
+
+    override fun closeSse() {
+        sse?.close()
+    }
+
+    override fun listen(): Flow<WidgetSSEModel> {
+        return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io)
+    }
+
+    private fun getBaseSseUrl(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            "https://sse-staging.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+        } else {
+            "https://sse.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+        }
+    }
+
+    private fun getSseEventListener(request: Request): ServerSentEvent.Listener {
+        return object : ServerSentEvent.Listener {
 
             override fun onOpen(sse: ServerSentEvent, response: Response) {
                 printLog("SellerHomeWidgetSSE : onOpen")
@@ -97,15 +113,7 @@ class SellerHomeWidgetSSEImpl(
                 printLog("SellerHomeWidgetSSE : onPreRetry")
                 return request
             }
-        })
-    }
-
-    override fun close() {
-        sse?.close()
-    }
-
-    override fun listen(): Flow<WidgetSSEModel> {
-        return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io)
+        }
     }
 
     private fun printLog(s: String) {

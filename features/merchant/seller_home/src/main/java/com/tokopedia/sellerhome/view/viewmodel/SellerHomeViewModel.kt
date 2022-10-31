@@ -575,6 +575,6 @@ class SellerHomeViewModel @Inject constructor(
 
     private fun stopSSE() {
         sseJob?.cancel()
-        widgetSse.get().close()
+        widgetSse.get().closeSse()
     }
 }
