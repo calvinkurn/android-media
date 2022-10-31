@@ -353,7 +353,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     lateinit var viewModel: Lazy<HomeRevampViewModel>
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
-    private lateinit var root: ConstraintLayout
+    private lateinit var root: FrameLayout
     private lateinit var refreshLayout: LottieSwipeRefreshLayout
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
@@ -546,7 +546,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
-        val view = inflater.inflate(R.layout.fragment_home_revamp_2, container, false)
+        val view = inflater.inflate(R.layout.fragment_home_revamp, container, false)
         BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
             PAGE_NAME_FPI_HOME, this, object : OnFrameListener {
@@ -2272,7 +2272,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
-        val params = floatingEggButtonFragment.view?.layoutParams as ConstraintLayout.LayoutParams
+        val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
         if (stickyLoginView?.isShowing() == true) {
             stickyLoginView?.height?.let { params.setMargins(DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, it) }
             val positionEgg = IntArray(POSITION_ARRAY_CONTAINER_SIZE)
@@ -2629,14 +2629,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun changeStatusBarToDark() {
-//        mainParentStatusBarListener?.requestStatusBarDark()
-//        navToolbar?.setMargin(0, -4, 0, 0)
+        mainParentStatusBarListener?.requestStatusBarDark()
+        navToolbar?.setMargin(0, -4, 0, 0)
     }
 
     override fun changeStatusBarToLight() {
-//        if (isLightThemeStatusBar) {
-//            mainParentStatusBarListener?.requestStatusBarLight()
-//        }
-//        navToolbar?.setMargin(0, 0, 0, 0)
+        if (isLightThemeStatusBar) {
+            mainParentStatusBarListener?.requestStatusBarLight()
+        }
+        navToolbar?.setMargin(0, 0, 0, 0)
     }
 }
