@@ -68,7 +68,6 @@ object ProductDetailTestUtil {
             p2UiData.shopRating = shopRating.ratingScore
             p2UiData.productView = productView
             p2UiData.wishlistCount = wishlistCount
-            p2UiData.isGoApotik = shopFeature.isGoApotik
             p2UiData.shopBadge = shopBadge.badge
             p2UiData.shopCommitment = shopCommitment.shopCommitment
             p2UiData.productPurchaseProtectionInfo = productPurchaseProtectionInfo
