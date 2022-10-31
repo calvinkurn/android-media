@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
-import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetModel
 
 /**
  * created by fachrizalmrsln on 14/10/22
@@ -15,11 +15,11 @@ class ShopRecomWidgetCarousel(
     itemView: View,
     private val shopRecomWidgetCallback: ShopRecomWidgetCallback,
     private val lifecycleOwner: LifecycleOwner
-) : AbstractViewHolder<ShopRecomWidgetViewModel>(itemView), ShopRecomWidgetCallback {
+) : AbstractViewHolder<ShopRecomWidgetModel>(itemView), ShopRecomWidgetCallback {
 
     private val shopRecomWidgetCarousel = itemView as ShopRecomWidget
 
-    override fun bind(element: ShopRecomWidgetViewModel?) {
+    override fun bind(element: ShopRecomWidgetModel?) {
         val data = element?.shopRecomUiModel ?: return
         shopRecomWidgetCarousel.setListener(lifecycleOwner, shopRecomWidgetCallback)
         shopRecomWidgetCarousel.setData(data.title, data.items)

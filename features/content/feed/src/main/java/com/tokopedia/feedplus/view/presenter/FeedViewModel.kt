@@ -38,7 +38,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
@@ -140,8 +140,8 @@ class FeedViewModel @Inject constructor(
     val playWidgetModel: LiveData<Result<CarouselPlayCardViewModel>>
         get() = _playWidgetModel
 
-    private val _shopRecom = MutableStateFlow(ShopRecomWidgetViewModel())
-    val shopRecom: StateFlow<ShopRecomWidgetViewModel>
+    private val _shopRecom = MutableStateFlow(ShopRecomWidgetModel())
+    val shopRecom: StateFlow<ShopRecomWidgetModel>
         get() = _shopRecom
 
     private val _asgcReminderButtonInitialStatus = MutableLiveData<Result<FeedAsgcCampaignResponseModel>>()
@@ -829,22 +829,22 @@ class FeedViewModel @Inject constructor(
             val request = requestShopRecomWidget()
             _shopRecom.value = request
         }, onError = {
-            _shopRecom.value = ShopRecomWidgetViewModel()
+            _shopRecom.value = ShopRecomWidgetModel()
         })
     }
 
     private fun shouldGetShopRecomWidget(model: DynamicFeedDomainModel): Boolean {
-        return model.postList.any { it is ShopRecomWidgetViewModel }
+        return model.postList.any { it is ShopRecomWidgetModel }
     }
 
-    private suspend fun requestShopRecomWidget(): ShopRecomWidgetViewModel {
+    private suspend fun requestShopRecomWidget(): ShopRecomWidgetModel {
         val response = shopRecomUseCase.executeOnBackground(
             screenName = VAL_SCREEN_NAME_FEED_UPDATE,
             limit = VAL_LIMIT,
             cursor = VAL_CURSOR
         )
         val uiModel = shopRecomMapper.mapShopRecom(response)
-        return ShopRecomWidgetViewModel(uiModel)
+        return ShopRecomWidgetModel(uiModel)
     }
 
     fun handleClickFollowButtonShopRecom(itemId: Long) {

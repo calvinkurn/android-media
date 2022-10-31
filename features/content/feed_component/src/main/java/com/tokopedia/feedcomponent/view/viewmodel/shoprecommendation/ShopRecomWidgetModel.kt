@@ -7,7 +7,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 /**
  * created by fachrizalmrsln on 14/10/22
  */
-data class ShopRecomWidgetViewModel(
+data class ShopRecomWidgetModel(
     val shopRecomUiModel: ShopRecomUiModel = ShopRecomUiModel(),
     val onError: String = ""
 ) : Visitable<DynamicFeedTypeFactory> {

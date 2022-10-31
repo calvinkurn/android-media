@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.view.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -14,7 +13,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadline
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
@@ -243,14 +242,14 @@ class FeedPlusAdapter(
     }
 
     fun removeShopRecomWidget() {
-        val shopRecomWidget = list.firstOrNull { it is ShopRecomWidgetViewModel }
+        val shopRecomWidget = list.firstOrNull { it is ShopRecomWidgetModel }
         if (shopRecomWidget != null) remove(shopRecomWidget)
     }
 
-    fun updateShopRecomWidget(newModel: ShopRecomWidgetViewModel) {
+    fun updateShopRecomWidget(newModel: ShopRecomWidgetModel) {
         var position = 0
         val newList = list.mapIndexed { index, visitable ->
-            if (visitable is ShopRecomWidgetViewModel) {
+            if (visitable is ShopRecomWidgetModel) {
                 position = index
                 newModel
             }
