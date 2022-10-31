@@ -40,7 +40,11 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.HelpFullBottomSheet.Cl
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
-import com.tokopedia.imagepicker.common.*
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -475,7 +479,12 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     override fun setSubmitButtonEnabled(enabled: Boolean) {
         isSendButtonEnabled = enabled
         if (enabled) {
-            ivSendButton.setColorFilter(ContextCompat.getColor(this, R.color.contact_us_green_nob))
+            ivSendButton.setColorFilter(
+                ContextCompat.getColor(
+                    this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
+            )
         } else {
             ivSendButton.clearColorFilter()
         }
