@@ -532,9 +532,16 @@ public interface ApplinkConst {
         String SELLER_SHOP_FLASH_SALE = "sellerapp://shop-flash-sale";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
         String TOKOMEMBER = "sellerapp://tokomember";
+        String TOKOMEMBER_PROGRAM_LIST = "sellerapp://tokomember/program-list";
+        String TOKOMEMBER_COUPON_LIST = "sellerapp://tokomember/coupon-list";
+        String TOKOMEMBER_PROGRAM_CREATION = "sellerapp://tokomember/program-creation";
+        String TOKOMEMBER_COUPON_CREATION = "sellerapp://tokomember/coupon-creation";
+        String TOKOMEMBER_PROGRAM_EXTENSION = "sellerapp://tokomember/program-extension/{program_id}";
         String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
+        String PRODUCT_MANAGE = "sellerapp://product/manage";
+
     }
 
     interface TokopediaNow {
@@ -627,6 +634,12 @@ public interface ApplinkConst {
 
         // chat source page
         String SOURCE_CHAT_SEARCH = "chat_search";
+    }
+
+    interface Tokomember{
+        String MAIN_PATH = "sellerapp://tokomember";
+        String PROGRAM_EXTENSION = "/tokomember/program-extension";
+        String COUPON_DETAIL = "/tokomember/coupon-detail";
     }
 
     interface AttachInvoice {

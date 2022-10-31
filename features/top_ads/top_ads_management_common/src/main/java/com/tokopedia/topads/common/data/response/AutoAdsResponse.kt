@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class AutoAdsResponse(
 
-        @field:SerializedName("topAdsGetAutoAds")
+        @field:SerializedName("topAdsGetAutoAdsV2")
         val topAdsGetAutoAds: TopAdsGetAutoAds = TopAdsGetAutoAds()
 ) {
     data class TopAdsGetAutoAds(
@@ -14,16 +14,16 @@ data class AutoAdsResponse(
     ) {
         data class Data(
 
-                @field:SerializedName("shop_id")
-                val shopId: Int = 0,
+                @field:SerializedName("shopID")
+                val shopId: String = "0",
 
-                @field:SerializedName("status_desc")
+                @field:SerializedName("statusDesc")
                 val statusDesc: String = "",
 
-                @field:SerializedName("daily_usage")
+                @field:SerializedName("dailyUsage")
                 val dailyUsage: Int = 0,
 
-                @field:SerializedName("daily_budget")
+                @field:SerializedName("dailyBudget")
                 val dailyBudget: Int = 0,
 
                 @field:SerializedName("status")

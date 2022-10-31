@@ -28,6 +28,8 @@ import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.util.util.DataMapper
+import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
@@ -122,6 +124,21 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private val feedProductTagSharingHelper by lazy(LazyThreadSafetyMode.NONE) {
+        FeedProductTagSharingHelper(
+            fragmentManager = childFragmentManager,
+            fragment = this,
+            listener = object : FeedProductTagSharingHelper.Listener {
+                override fun onErrorCreatingUrl(linkerError: LinkerError?) {
+                    showToast(
+                        message = linkerError?.errorMessage ?: getString(R.string.default_request_error_unknown),
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -468,19 +485,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         val sheet = ProductActionBottomSheet.newInstance(bundle)
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
         sheet.shareProductCB = {
-            onShareProduct(
-                item.id,
-                item.text,
-                desc,
-                item.weblink,
-                item.imgUrl,
-                finalID,
-                item.postType,
-                item.isFollowed,
-                item.shopId,
-                item.applink,
-                item.isTopads
-            )
+            onShareProduct(item, finalID)
         }
         sheet.addToCartCB = {
             onTagSheetItemBuy(
@@ -549,51 +554,40 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     private fun onShareProduct(
-        id: String,
-        title: String,
-        description: String,
-        url: String,
-        imageUrl: String,
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        applink: String,
-        isTopads: Boolean = false
+        item: FeedDetailProductModel,
+        activityId: String
     ) {
         feedAnalytics.eventonShareProductClicked(
-            activityId,
-            id,
-            type,
-            isFollowed, shopId, ""
+                activityId,
+                item.id,
+                item.postType,
+                item.isFollowed,
+                item.shopId,
+                ""
         )
 
-        val urlString: String = if (isTopads) {
-            String.format(getString(R.string.feed_share_pdp), id)
-        } else {
-            url
-        }
-        activity?.let {
-            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id)
-                .setName(title)
-                .setDescription(description)
-                .setImgUri(imageUrl)
-                .setUri(url)
-                .setDeepLink(applink)
-                .setType(LinkerData.FEED_TYPE)
-                .setDesktopUrl(urlString)
+        val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
+            .setId(item.id)
+            .setName(item.text)
+            .setDescription(item.description)
+            .setImgUri(item.imgUrl)
+            .setUri(item.weblink)
+            .setDeepLink(item.applink)
+            .setType(LinkerData.FEED_TYPE)
+            .setDesktopUrl(item.weblink)
 
-            shareData = linkerBuilder.build()
-            val linkerShareData = DataMapper().getLinkerShareData(shareData)
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(
-                    0,
-                    linkerShareData,
-                    this
-                )
-            )
-        }
+        shareData = linkerBuilder.build()
 
+        feedProductTagSharingHelper.show(
+            productTagShareModel = FeedProductTagSharingHelper.Model(
+                title = item.text,
+                imageUrl = item.imgUrl,
+                productName = item.product.name,
+                shopName = item.shopName,
+                priceFmt = item.priceFmt
+            ),
+            shareData = shareData
+        )
     }
 
     private fun onTagSheetItemBuy(
@@ -768,7 +762,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
         else {
             Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
-
         }
     }
 

@@ -228,7 +228,7 @@ class EditorDetailViewModelTest  {
         )
 
         // Then
-        assertEquals(editorParam.editorToolsList.size, viewModel.editorParam.value?.editorToolsList?.size)
+        assertEquals(editorParam.editorToolsList().size, viewModel.editorParam.value?.editorToolsList()?.size)
     }
 
     @Test
