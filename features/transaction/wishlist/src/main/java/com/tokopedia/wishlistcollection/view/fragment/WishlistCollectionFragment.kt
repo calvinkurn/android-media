@@ -584,6 +584,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 is Success -> {
                     if (result.data.data.success && result.data.status == OK) {
                         collectionViewModel.getWishlistCollectionSharingData(_collectionIdShared.toLongOrZero())
+                        getWishlistCollections()
                     } else if (result.data.errorMessage.isNotEmpty()) {
                         showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
                     } else {
