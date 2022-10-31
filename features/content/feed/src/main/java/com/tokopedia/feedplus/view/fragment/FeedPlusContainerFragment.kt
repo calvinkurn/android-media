@@ -606,18 +606,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun renderCompleteFab() {
         hideAllFab()
 
-        val items = arrayListOf<FloatingButtonItem>()
+        try {
+            val items = arrayListOf<FloatingButtonItem>()
 
-        if(viewModel.isShowLiveButton) items.add(createLiveFab())
-        if(viewModel.isShowPostButton) items.add(createPostFab())
+            if(viewModel.isShowLiveButton) items.add(createLiveFab())
+            if(viewModel.isShowPostButton) items.add(createPostFab())
 
-        if (items.isNotEmpty() && userSession.isLoggedIn) {
-            fabFeed.addItem(items)
-            feedFloatingButton.show()
-            showCreatePostOnBoarding()
-        } else {
-            feedFloatingButton.hide()
-        }
+            if (items.isNotEmpty() && userSession.isLoggedIn) {
+                fabFeed.addItem(items)
+                feedFloatingButton.show()
+                showCreatePostOnBoarding()
+            } else feedFloatingButton.hide()
+        } catch (e: Exception) {}
     }
 
     private fun createLiveFab(): FloatingButtonItem {
