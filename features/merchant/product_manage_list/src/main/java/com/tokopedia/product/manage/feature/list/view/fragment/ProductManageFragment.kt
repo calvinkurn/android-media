@@ -222,9 +222,6 @@ open class ProductManageFragment :
     @Inject
     lateinit var productManageSession: ProductManageSession
 
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
-
     protected var binding by autoClearedNullable<FragmentProductManageSellerBinding>()
 
     private var shopDomain: String = ""
