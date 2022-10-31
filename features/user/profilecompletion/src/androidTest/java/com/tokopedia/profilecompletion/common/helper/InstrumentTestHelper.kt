@@ -36,6 +36,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import java.lang.reflect.Type
 
@@ -91,6 +92,12 @@ fun checkToasterShowing(message: String) {
 fun isViewsExists(resIds: List<Int>) {
     resIds.forEach { id ->
         Espresso.onView(withId(id)).check(matches(isDisplayed()))
+    }
+}
+
+fun isViewsNotExists(vararg resIds: Int) {
+    resIds.forEach { id ->
+        Espresso.onView(withId(id)).check(matches(not(isDisplayed())))
     }
 }
 
