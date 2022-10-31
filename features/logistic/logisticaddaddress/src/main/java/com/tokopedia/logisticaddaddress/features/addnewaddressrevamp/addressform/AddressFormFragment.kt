@@ -1183,7 +1183,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             saveDataModel?.isTokonowRequest = viewModel.isTokonow
             if (isPositiveFlow) {
                 if (formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                    saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text} (${formAddress.etCourierNote.textFieldInput.text})"
+                    saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text}"
                     saveDataModel?.address1Notes = formAddress.etCourierNote.textFieldInput.text.toString()
                 } else {
                     saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text}"
@@ -1192,7 +1192,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 saveDataModel?.isAnaPositive = PARAM_ANA_POSITIVE
             } else {
                 if (formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                    saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text} (${formAddressNegative.etCourierNote.textFieldInput.text})"
+                    saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text}"
                     saveDataModel?.address1Notes = formAddressNegative.etCourierNote.textFieldInput.text.toString()
 
                 } else {
