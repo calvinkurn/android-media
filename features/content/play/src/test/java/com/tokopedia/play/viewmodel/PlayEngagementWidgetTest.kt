@@ -314,6 +314,29 @@ class PlayEngagementWidgetTest {
         }
     }
 
+    @Test
+    fun `game - when only game exist but ended - hide`() {
+        every { socket.listenAsFlow() } returns socketFlow
+
+        coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
+            status = InteractiveUiModel.Giveaway.Status.Finished
+        )
+
+        createPlayViewModelRobot(
+            repo = repo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+            playChannelWebSocket = socket
+        ).use {
+            it.createPage(mockChannelData)
+            it.focusPage(mockChannelData)
+
+            val state = it.recordState {}
+            state.engagement.data.assertEmpty()
+            state.engagement.shouldShow.assertFalse()
+        }
+    }
+
     /**
      * Both
      */
