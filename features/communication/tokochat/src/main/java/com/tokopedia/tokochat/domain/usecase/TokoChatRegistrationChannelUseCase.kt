@@ -1,10 +1,11 @@
 package com.tokopedia.tokochat.domain.usecase
 
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import javax.inject.Inject
 
 class TokoChatRegistrationChannelUseCase @Inject constructor(
-    private val repository: TokoChatRepository
+    @TokoChatQualifier private val repository: TokoChatRepository
 ) {
     fun registerActiveChannel(channelUrl: String) {
         repository.getConversationRepository().softRegisterChannel(channelUrl)

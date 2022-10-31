@@ -4,8 +4,9 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import javax.inject.Inject
 
-class GojekInterceptor : Interceptor {
+class GojekInterceptor @Inject constructor() : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val newRequest: Request.Builder = chain.request().newBuilder()

@@ -81,7 +81,7 @@ object TokoChatConfigNetworkModule {
         @TokoChatQualifier loggingInterceptor: HttpLoggingInterceptor,
         @TokoChatQualifier errorResponseInterceptor: ErrorResponseInterceptor,
         @TokoChatQualifier chuckerInterceptor: ChuckerInterceptor,
-        @TokoChatQualifier gojekInterceptor: GojekInterceptor
+        gojekInterceptor: GojekInterceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(errorResponseInterceptor)
@@ -118,12 +118,6 @@ object TokoChatConfigNetworkModule {
         @TokoChatQualifier context: Context
     ): ChuckerInterceptor {
         return ChuckerInterceptor(context)
-    }
-
-    @Provides
-    @TokoChatQualifier
-    fun provideGojekInterceptor(): GojekInterceptor {
-        return GojekInterceptor()
     }
 
     @Provides

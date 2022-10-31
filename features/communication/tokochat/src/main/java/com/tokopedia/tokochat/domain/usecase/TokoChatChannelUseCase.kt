@@ -5,11 +5,12 @@ import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import javax.inject.Inject
 
 class TokoChatChannelUseCase @Inject constructor(
-    private val repository: TokoChatRepository
+    @TokoChatQualifier private val repository: TokoChatRepository
 ) {
 
     fun initGroupBookingChat(
