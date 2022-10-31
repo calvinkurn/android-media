@@ -608,35 +608,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         val items = arrayListOf<FloatingButtonItem>()
 
-        if(userSession.isLoggedIn && userSession.hasShop()) {
-            items.add(createCreateLiveFab())
-        }
-
-        if(viewModel.isShowPostButton) {
-            items.add(
-                FloatingButtonItem(
-                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-                    title = getString(R.string.feed_fab_create_post),
-                    listener = {
-                        try {
-                            fabFeed.menuOpen = false
-                            entryPointAnalytic.clickCreatePostEntryPoint()
-
-                            val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                            intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                            intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
-                            intent.putExtra(BundleData.TITLE, getString(feedComponentR.string.feed_post_sebagai))
-                            intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                            startActivity(intent)
-                            TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-
-                        } catch (e: Exception) {
-                            Timber.e(e)
-                        }
-                    }
-                )
-            )
-        }
+        if(viewModel.isShowLiveButton) items.add(createLiveFab())
+        if(viewModel.isShowPostButton) items.add(createPostFab())
 
         if (items.isNotEmpty() && userSession.isLoggedIn) {
             fabFeed.addItem(items)
@@ -645,6 +618,38 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         } else {
             feedFloatingButton.hide()
         }
+    }
+
+    private fun createLiveFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            title = getString(R.string.feed_fab_create_live),
+            listener = {
+                fabFeed.menuOpen = false
+                entryPointAnalytic.clickCreateLiveEntryPoint()
+
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
+            }
+        )
+    }
+
+    private fun createPostFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
+            title = getString(R.string.feed_fab_create_post),
+            listener = {
+                fabFeed.menuOpen = false
+                entryPointAnalytic.clickCreatePostEntryPoint()
+
+                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
+                intent.putExtra(BundleData.TITLE, getString(feedComponentR.string.feed_post_sebagai))
+                intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                startActivity(intent)
+                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+            }
+        )
     }
 
     private fun renderUserProfileEntryPoint(userAccount: Author?) {
@@ -690,19 +695,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun dismissUserProfileCoachMark() {
         affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
         ivFeedUser?.let { coachMarkHelper.dismissCoachmark(it) }
-    }
-
-    private fun createCreateLiveFab(): FloatingButtonItem {
-        return FloatingButtonItem(
-            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
-            title = getString(R.string.feed_fab_create_live),
-            listener = {
-                fabFeed.menuOpen = false
-                entryPointAnalytic.clickCreateLiveEntryPoint()
-
-                RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
-            }
-        )
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
