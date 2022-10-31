@@ -40,6 +40,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_PREPARE_METRICS
@@ -61,6 +62,7 @@ import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE_IMPROVEMENT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SHOP_LOCATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
@@ -347,6 +349,7 @@ class AddEditProductPreviewFragment :
         if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> updateImageListFromIntentData(data)
+                REQUEST_CODE_IMAGE_IMPROVEMENT -> updateImageListFromPicker(data)
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> updateVariantFromIntentData(data)
                 REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT -> updateVariantFromIntentData(data)
                 REQUEST_CODE_SHOP_LOCATION -> updateShopLocationFromIntentData(data)
@@ -1224,6 +1227,26 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun updateImageListFromPicker(data: Intent) {
+        val result = MediaPicker.result(data)
+        val imagePickerResult = result.editedImages as ArrayList
+        val originalImageUrl = result.originalPaths as ArrayList
+        if (imagePickerResult.size > 0) {
+            val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
+                viewModel.isDuplicate ||
+                viewModel.productInputModel.value != null
+            // update the product pictures in the preview page
+            // this should be executed when the user press "Ubah" on stepper in add or edit or duplicate product
+            if (shouldUpdatePhotosInsteadMoveToDetail) {
+                viewModel.updateProductPhotos(imagePickerResult, originalImageUrl)
+            } else {
+                // this only executed when we came from empty stepper page (add product)
+                val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
+                moveToDetailFragment(newProductInputModel, true)
+            }
+        }
+    }
+
     private fun updateShopLocationFromIntentData(data: Intent) {
         showLoading()
         data.let { intent ->
@@ -1342,13 +1365,23 @@ class AddEditProductPreviewFragment :
             val isAdding = viewModel.isAdding || !isEditing()
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                 if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
-                        ?: urlOrPath
+                    ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
-            val intent = ImagePickerAddEditNavigation.getIntent(
+
+            /*if (RollenceUtil.getImagePickerRollence()) {
+                val intent = ImagePickerAddEditNavigation.getIntent(
                     requireContext(), ArrayList(imageUrlOrPathList), maxProductPhotoCount,
-                    isAdding)
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+                    isAdding
+                )
+                startActivityForResult(intent, REQUEST_CODE_IMAGE)
+            } else {*/
+                val intent = ImagePickerAddEditNavigation.getIntent(
+                    requireContext(), maxProductPhotoCount,
+                    ArrayList(imageUrlOrPathList)
+                )
+                startActivityForResult(intent, REQUEST_CODE_IMAGE_IMPROVEMENT)
+            //}
         }
     }
 

@@ -595,6 +595,25 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
     }
 
+    fun updateProductPhotos(imagePickerResult: MutableList<String>, originalImageUrl: MutableList<String>): DetailInputModel {
+        val cleanResult = ArrayList(cleanProductPhotoUrl(imagePickerResult, originalImageUrl))
+        val pictureList = productInputModel.detailInputModel.pictureList.filter {
+            cleanResult.contains(it.urlOriginal)
+        }
+
+        val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
+            pictureList.find { it.urlOriginal == cleanResult[index] }?.urlThumbnail
+                ?: urlOrPath
+        }
+
+        this.productPhotoPaths = imageUrlOrPathList.toMutableList()
+
+        return DetailInputModel().apply {
+            this.pictureList = pictureList
+            this.imageUrlOrPathList = imageUrlOrPathList
+        }
+    }
+
     fun updateProductShowCases(selectedShowcaseList: ArrayList<ShowcaseItemPicker>) {
         productShowCases = selectedShowcaseList
     }

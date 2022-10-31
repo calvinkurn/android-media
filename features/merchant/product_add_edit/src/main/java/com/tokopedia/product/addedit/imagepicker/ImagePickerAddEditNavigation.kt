@@ -7,6 +7,15 @@ import android.os.Bundle
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.*
+import com.tokopedia.picker.common.*
+import com.tokopedia.picker.common.ImageRatioType
+import com.tokopedia.picker.common.types.EditorToolType.Companion.BRIGHTNESS
+import com.tokopedia.picker.common.types.EditorToolType.Companion.CONTRAST
+import com.tokopedia.picker.common.types.EditorToolType.Companion.CROP
+import com.tokopedia.picker.common.types.EditorToolType.Companion.REMOVE_BACKGROUND
+import com.tokopedia.picker.common.types.EditorToolType.Companion.ROTATE
+import com.tokopedia.picker.common.types.EditorToolType.Companion.WATERMARK
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
@@ -15,8 +24,10 @@ import com.tokopedia.product.addedit.tracking.ProductAddEditImageTracking
 import com.tokopedia.product.addedit.tracking.ProductEditChooseImageTracking
 import com.tokopedia.product.addedit.tracking.ProductEditEditImageTracking
 import com.tokopedia.user.session.UserSession
+import java.io.File
 
 object ImagePickerAddEditNavigation {
+    const val NONE_VIDEO_UPLOAD =0
     fun getIntent(context: Context, imageUrlOrPathList: List<String>, maxImageCount: Int, isAdding: Boolean): Intent {
         val builder = createImagePickerBuilder(context, ArrayList(imageUrlOrPathList), maxImageCount)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER)
@@ -24,6 +35,28 @@ object ImagePickerAddEditNavigation {
         intent.putParamPageSource(ImagePickerPageSource.ADD_EDIT_PRODUCT_PAGE)
         setUpTrackingForImagePicker(context, isAdding)
         return intent
+    }
+
+    fun getIntent(context: Context, maxImageCount: Int, imageFile : ArrayList<String> = arrayListOf()): Intent {
+        val filesImage = arrayListOf<File>()
+        imageFile.forEach {uri ->
+            filesImage.add(File(uri))
+        }
+        return MediaPicker.intent(context) {
+            pageSource(PageSource.AddEditProduct)
+            multipleSelectionMode()
+            modeType(ModeType.IMAGE_ONLY)
+            maxMediaItem(maxImageCount)
+            maxVideoItem(NONE_VIDEO_UPLOAD)
+            cameraRatio(CameraRatio.Square)
+            includeMedias(filesImage)
+            withEditor(true)
+        }.apply {
+            putExtra(EXTRA_EDITOR_PARAM, EditorParam().apply {
+                autoCropRatio = ImageRatioType.RATIO_1_1
+                editorToolsList = arrayListOf(BRIGHTNESS, CONTRAST, CROP, ROTATE, REMOVE_BACKGROUND, WATERMARK)
+            })
+        }
     }
 
     @SuppressLint("WrongConstant")

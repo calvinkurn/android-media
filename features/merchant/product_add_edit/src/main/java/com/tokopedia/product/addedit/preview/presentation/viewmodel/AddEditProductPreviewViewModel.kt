@@ -272,6 +272,25 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
+    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>) {
+        val cleanResult = ArrayList(cleanProductPhotoUrl(imagePickerResult, originalImageUrl))
+        productInputModel.value?.let {
+            val pictureList = it.detailInputModel.pictureList.filter { pictureInputModel ->
+                cleanResult.contains(pictureInputModel.urlOriginal)
+            }
+
+            val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
+                    val picture = pictureList.find { pict -> pict.urlOriginal == cleanResult[index] }?.urlThumbnail.toString()
+                    if(picture != "null" && picture.isNotBlank()) {
+                        return@mapIndexed picture
+                    }
+                urlOrPath
+            }
+
+            this.mImageUrlOrPathList.value = imageUrlOrPathList.toMutableList()
+        }
+    }
+
     fun updateProductPhotos(imageUrlOrPathList: List<String>, pictureList: List<PictureInputModel>) {
         try {
             mImageUrlOrPathList.value = imageUrlOrPathList.map { urlOrPath ->
