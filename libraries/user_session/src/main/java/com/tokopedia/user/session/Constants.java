@@ -73,6 +73,7 @@ public class Constants {
     * CDN MONITORING
      */
     public static final String CDN_NAME = "cdn_name";
+    public static final String CDN_ASSET_URL = "cdn_asset_url";
 
     public static HashSet<String> PII_DATA_SET = SetsKt.hashSetOf(
             "FULL_NAME_v2",

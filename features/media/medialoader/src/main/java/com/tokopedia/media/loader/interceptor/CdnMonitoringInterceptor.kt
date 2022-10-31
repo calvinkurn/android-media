@@ -11,16 +11,20 @@ class CdnMonitoringInterceptor(private val applicationContext: Context): Interce
 
         val response = chain.proceed(chain.request())
 
+        val imageUrl = chain.request().url.toString()
+
         val cdnName: String = response.header("x-tkpd-cdn-name", "") ?: ""
-        if (cdnName.isNotBlank()) {
-            setCdnNameUserSession(cdnName)
+
+        if (cdnName.isNotBlank() && imageUrl.isNotBlank()) {
+            setCdnNameUserSession(cdnName, imageUrl)
         }
 
         return response
     }
 
-    private fun setCdnNameUserSession(cdnName: String) {
+    private fun setCdnNameUserSession(cdnName: String, imageUrl: String) {
         val userSession = UserSession(applicationContext)
         userSession.cdnName = cdnName
+        userSession.cdnAssetUrl = imageUrl
     }
 }

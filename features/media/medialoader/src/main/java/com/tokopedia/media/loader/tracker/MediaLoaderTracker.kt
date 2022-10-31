@@ -122,11 +122,13 @@ object MediaLoaderTracker : CoroutineScope {
             map[CDN_NAME_KEY] = userSession.cdnName
             map[CDN_ERROR_DETAIL] = "localizedMessage=${exception?.localizedMessage}, cause=${exception?.cause}, rootCauses=${exception?.rootCauses}"
 
-            ServerLogger.log(
-                priority = Priority.P1,
-                tag = TAG_CDN_MONITORING,
-                message = map
-            )
+            if (userSession.cdnAssetUrl == url) {
+                ServerLogger.log(
+                    priority = Priority.P1,
+                    tag = TAG_CDN_MONITORING,
+                    message = map
+                )
+            }
         }, onError = {})
     }
 

@@ -4,6 +4,7 @@ import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
 import static com.tokopedia.user.session.Constants.ADVERTISINGID;
 import static com.tokopedia.user.session.Constants.ANDROID_ID;
 import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
+import static com.tokopedia.user.session.Constants.CDN_ASSET_URL;
 import static com.tokopedia.user.session.Constants.CDN_NAME;
 import static com.tokopedia.user.session.Constants.EMAIL;
 import static com.tokopedia.user.session.Constants.FULL_NAME;
@@ -509,6 +510,16 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     @Override
     public void setCdnName(String cdnName) {
         setString(LOGIN_SESSION, CDN_NAME, cdnName);
+    }
+
+    @Override
+    public String getCdnAssetUrl() {
+        return getAndTrimOldString(LOGIN_SESSION, CDN_ASSET_URL, "");
+    }
+
+    @Override
+    public void setCdnAssetUrl(String cdnAssetUrl) {
+        setString(LOGIN_SESSION, CDN_ASSET_URL, cdnAssetUrl);
     }
 
     @Override
