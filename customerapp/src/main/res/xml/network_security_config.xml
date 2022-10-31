@@ -14,6 +14,8 @@
         <domain includeSubdomains="true">wst.laku6.com</domain>
         <domain includeSubdomains="true">gojek.com</domain>
         <domain includeSubdomains="true">grab.com</domain>
+        <domain includeSubdomains="true">35.198.223.102</domain>
+
 
         <!--    Need to be whitelisted for silent verification    -->
         <domain includeSubdomains="false">wso2am-prod-gdhsi-h3g.dhubckh.com</domain>
