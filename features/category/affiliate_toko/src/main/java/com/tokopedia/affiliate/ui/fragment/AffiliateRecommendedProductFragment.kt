@@ -65,15 +65,17 @@ class AffiliateRecommendedProductFragment :
     private lateinit var affiliateRecommendedProductViewModel: AffiliateRecommendedProductViewModel
     private val adapter: AffiliateAdapter =
         AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this))
+    private var affiliatePromoInterface : AffiliatePromoInterface? = null
     private var identifier = BOUGHT_IDENTIFIER
 
     companion object {
         private const val GRID_SPAN_COUNT: Int = 2
         const val BOUGHT_IDENTIFIER = "recent_purchase"
         const val LAST_VIEWED_IDENTIFIER = "recent_view"
-        fun getFragmentInstance(recommendationType: String): Fragment {
+        fun getFragmentInstance(recommendationType: String, promoInterface : AffiliatePromoInterface): Fragment {
             return AffiliateRecommendedProductFragment().apply {
                 identifier = recommendationType
+                affiliatePromoInterface = promoInterface
             }
         }
     }
@@ -100,7 +102,6 @@ class AffiliateRecommendedProductFragment :
     private fun afterViewCreated() {
         setUpRecyclerView()
         setUpEmptyState()
-        sendScreenEvent()
         affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier, PAGE_ZERO)
     }
 
@@ -119,7 +120,9 @@ class AffiliateRecommendedProductFragment :
                     getString(R.string.affiliate_no_product_seen_on_tokopedia_yet_content)
             }
             errorAction.text = getString(R.string.affiliate_paste_link)
-
+            errorAction.setOnClickListener {
+                affiliatePromoInterface?.enterLinkButtonClicked()
+            }
         }
     }
 
@@ -160,7 +163,9 @@ class AffiliateRecommendedProductFragment :
         }
     }
 
-    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+    private fun getEndlessRecyclerViewListener(
+        recyclerViewLayoutManager: RecyclerView.LayoutManager
+    ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (recommendationHasNextPage) {
@@ -189,7 +194,8 @@ class AffiliateRecommendedProductFragment :
                 label = "$itemID - {$it}"
             }
             val action =
-                if (identifier == BOUGHT_IDENTIFIER) AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DIBELI else AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DILIHAT
+                if (identifier == BOUGHT_IDENTIFIER) AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DIBELI
+                else AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_PERNAH_DILIHAT
             AffiliateAnalytics.trackEventImpression(
                 AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
                 action,
@@ -301,10 +307,6 @@ class AffiliateRecommendedProductFragment :
         affiliateRecommendedProductViewModel = viewModel as AffiliateRecommendedProductViewModel
     }
 
-    private fun sendScreenEvent() {
-
-    }
-
     override fun onPromotionClick(
         itemID: String,
         itemName: String,
@@ -317,7 +319,8 @@ class AffiliateRecommendedProductFragment :
     ) {
         pushPromosikanEvent(itemID, itemName, position, commison)
         val origin =
-            if (identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
+            if (identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA
+            else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
         AffiliatePromotionBottomSheet.newInstance(
             AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
             null, null,
@@ -354,7 +357,6 @@ class AffiliateRecommendedProductFragment :
         )
     }
 
-    override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) {
+    override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) = Unit
 
-    }
 }

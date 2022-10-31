@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.ui.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -26,6 +27,7 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
@@ -49,7 +51,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>() {
+class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
+    AffiliatePromoInterface {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -118,7 +121,8 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>() 
     }
 
     fun handleBack() {
-        if (view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.isVisible == true) (activity as? AffiliateActivity)?.handleBackButton(
+        if (view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.isVisible == true) (
+            activity as? AffiliateActivity)?.handleBackButton(
             false
         )
         else showDefaultState()
@@ -138,12 +142,14 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>() 
         activity?.let {
             tabFragments.add(
                 AffiliateRecommendedProductFragment.getFragmentInstance(
-                    AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER
+                    AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER,
+                    this
                 )
             )
             tabFragments.add(
                 AffiliateRecommendedProductFragment.getFragmentInstance(
-                    AffiliateRecommendedProductFragment.LAST_VIEWED_IDENTIFIER
+                    AffiliateRecommendedProductFragment.LAST_VIEWED_IDENTIFIER,
+                    this
                 )
             )
             val adapter =
@@ -155,7 +161,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>() 
                 }.attach()
             }
             tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
+                override fun onTabReselected(tab: TabLayout.Tab?) = Unit
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
                     tab?.position?.let { adapter.setUnSelectView(tab) }
@@ -347,4 +353,12 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>() 
         affiliatePromoViewModel.setValidateUserType(ON_REGISTERED)
     }
 
+    override fun enterLinkButtonClicked() {
+        startActivity(Intent(context, AffiliatePromoSearchActivity::class.java))
+    }
+
+}
+
+interface AffiliatePromoInterface {
+    fun enterLinkButtonClicked()
 }

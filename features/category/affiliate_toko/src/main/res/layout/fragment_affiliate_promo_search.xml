@@ -125,7 +125,7 @@
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/step_one_barrier"
-        app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/icon/step2.png" />
+        app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/icon/Promosikan-step3.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/paste_info_step_two"
