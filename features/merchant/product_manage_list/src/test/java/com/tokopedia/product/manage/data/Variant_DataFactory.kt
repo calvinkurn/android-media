@@ -1,3 +1,4 @@
+// ktlint-disable filename
 package com.tokopedia.product.manage.data
 
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess

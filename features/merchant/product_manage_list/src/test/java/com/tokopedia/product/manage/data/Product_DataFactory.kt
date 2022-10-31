@@ -1,3 +1,4 @@
+// ktlint-disable filename
 package com.tokopedia.product.manage.data
 
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
@@ -22,9 +23,9 @@ fun createProduct(
     topAds: ProductTopAds? = null,
     isCampaign: Boolean = false,
     campaignTypeList: List<ProductCampaignType>? = emptyList(),
-    suspendLevel:Int = 0
+    suspendLevel: Int = 0
 ): Product {
-    return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds, isCampaign, campaignTypeList,suspendLevel)
+    return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds, isCampaign, campaignTypeList, suspendLevel)
 }
 
 fun createProductUiModel(
@@ -47,10 +48,10 @@ fun createProductUiModel(
     isCampaign: Boolean = false,
     campaignTypeList: List<ProductCampaignType>? = emptyList(),
     isProductBundling: Boolean = false,
-    suspendLevel:Int = 0,
-    hasStockAlert:Boolean = false,
+    suspendLevel: Int = 0,
+    hasStockAlert: Boolean = false,
     stockAlertActive: Boolean = false,
-    stockAlertCount:Int = 0,
+    stockAlertCount: Int = 0,
     maxStock: Int? = null,
     isShopModerate: Boolean = false
 ): ProductUiModel {
