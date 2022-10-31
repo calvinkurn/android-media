@@ -71,6 +71,7 @@
                 android:text="@string/you_have_new_feed"
                 android:textColor="@color/Unify_N700_44"
                 android:textSize="12sp" />
+
         </LinearLayout>
 
     </RelativeLayout>
