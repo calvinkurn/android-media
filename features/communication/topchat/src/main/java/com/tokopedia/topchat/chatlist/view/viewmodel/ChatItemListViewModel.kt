@@ -13,6 +13,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.R
@@ -84,6 +87,7 @@ class ChatItemListViewModel @Inject constructor(
     private val operationalInsightUseCase: GetOperationalInsightUseCase,
     private val sharedPref: SharedPreferences,
     private val userSession: UserSessionInterface,
+    private val abTestPlatform: AbTestPlatform,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), ChatItemListContract {
 
@@ -414,13 +418,24 @@ class ChatItemListViewModel @Inject constructor(
 
     fun shouldShowBubbleTicker(): Boolean {
         return sharedPref.getBoolean(getTickerPrefName(), true) &&
-            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) &&
+            getRollenceIsBubbleChatEnabled()
     }
 
     fun saveTickerPref(prefName: String) {
         sharedPref.edit()
             .putBoolean(prefName, false)
             .apply()
+    }
+
+    private fun getRollenceIsBubbleChatEnabled(): Boolean {
+        return try {
+            abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
+            ) == RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
+        } catch (e: Exception) {
+            true
+        }
     }
 
     companion object {
