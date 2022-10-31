@@ -11,11 +11,23 @@ data class ReferralEvaluateJoinResponse(
     data class GamiReferralEvaluateJoinResponse(
         @Expose
         @SerializedName("resultStatus")
-        val resultStatus: ValidateReferralUserResponse.GamiReferralValidateUser.ResultStatus,
+        val resultStatus: ResultStatus,
         @Expose
         @SerializedName("asset")
         val asset: GamiReferralEvaluateAsset
     ) {
+        data class ResultStatus(
+            @Expose
+            @SerializedName("code")
+            val code: String,
+            @Expose
+            @SerializedName("message")
+            val message: List<String>,
+            @Expose
+            @SerializedName("reason")
+            val reason: String
+        )
+
         data class GamiReferralEvaluateAsset(
             @SerializedName("logoImageUrl")
             val logoImageUrl: String,

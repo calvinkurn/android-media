@@ -24,6 +24,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.kotlin.extensions.orFalse
@@ -212,6 +213,7 @@ class TokoNowHomeFragment: Fragment(),
         const val SUCCESS_CODE = "200"
         const val KEY_IS_OPEN_MINICART_LIST = "isMiniCartOpen"
         const val KEY_SERVICE_TYPE = "service_type"
+        const val URL_IMAGE_DIALOG_REFERRAL = "https://images.tokopedia.net/img/tokonow/referral/surprise gift.png"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -330,6 +332,7 @@ class TokoNowHomeFragment: Fragment(),
         updateCurrentPageLocalCacheModelData()
         switchServiceOrLoadLayout()
         initScreenShotDetector()
+        showDialogReceiverReferral()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -1920,6 +1923,20 @@ class TokoNowHomeFragment: Fragment(),
         }
         this.playWidgetCoordinator = playWidgetCoordinator
         return playWidgetCoordinator
+    }
+
+    private fun showDialogReceiverReferral() {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+            dialog.setTitle("Kamu dapat kupon cashback 25rb dari temanmu")
+            dialog.setDescription("Segera pakai kupon di transaksi pertamamu, ya!(S&K berlaku")
+            dialog.setPrimaryCTAText("Mulai Belanja")
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.setImageUrl(URL_IMAGE_DIALOG_REFERRAL)
+            dialog.show()
+        }
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

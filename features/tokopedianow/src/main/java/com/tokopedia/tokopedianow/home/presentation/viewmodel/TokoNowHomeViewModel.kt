@@ -131,6 +131,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     companion object {
         private const val DEFAULT_INDEX = 1
+        private const val SUCCESS_CODE = "200"
     }
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -612,7 +613,11 @@ class TokoNowHomeViewModel @Inject constructor(
     fun getReceiverHomeDialog(referralData: String) {
         launchCatchError(block = {
             val data = referralEvaluateJoinUseCase.execute(referralData)
-            if (data.gamiReferralEvaluteJoinResponse.resultStatus.code = ME)
+            if (data.gamiReferralEvaluteJoinResponse.resultStatus.code == SUCCESS_CODE) {
+                _referralEvaluate.postValue(Success(data.gamiReferralEvaluteJoinResponse.asset.toHomeReceiverDialogUiModel()))
+            } else {
+                _referralEvaluate.postValue(Fail(Exception("fail with status code ${data.gamiReferralEvaluteJoinResponse.resultStatus.code}")))
+            }
         }, onError = {
             _referralEvaluate.postValue(Fail(it))
         })
