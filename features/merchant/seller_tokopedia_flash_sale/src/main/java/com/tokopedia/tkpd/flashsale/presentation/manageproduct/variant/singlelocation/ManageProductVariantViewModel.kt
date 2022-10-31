@@ -23,7 +23,7 @@ class ManageProductVariantViewModel @Inject constructor(
     private val tracker: ManageProductVariantTracker
 ) : BaseViewModel(dispatchers.main) {
 
-    private lateinit var productData: ReservedProduct.Product
+    private var productData = ReservedProduct.Product()
 
     private val _isInputPageValid: MutableLiveData<Boolean> = MutableLiveData()
     val isInputPageValid: LiveData<Boolean>
