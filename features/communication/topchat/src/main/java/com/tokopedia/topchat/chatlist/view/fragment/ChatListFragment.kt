@@ -34,6 +34,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -374,7 +375,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         if (result.tickerBuyer.enable && !isTabSeller()) {
             val tickerChatListBuyer = ChatListTickerUiModel(
                 result.tickerBuyer.message,
-                result.tickerBuyer.tickerType
+                result.tickerBuyer.tickerType,
+                appLink = ApplinkConst.TokoFood.TOKOFOOD_ORDER
             )
             adapter?.addElement(Int.ZERO, tickerChatListBuyer)
         }
@@ -384,7 +386,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         if (result.tickerSeller.enable && isTabSeller()) {
             val tickerChatListSeller = ChatListTickerUiModel(
                 result.tickerSeller.message,
-                result.tickerSeller.tickerType
+                result.tickerSeller.tickerType,
+                appLink = String.EMPTY
             )
             adapter?.addElement(Int.ZERO, tickerChatListSeller)
         }
@@ -520,9 +523,11 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
 
-    override fun onChatListTickerClicked() {
-        context?.let {
-            RouteManager.route(it, ApplinkConst.TokoFood.TOKOFOOD_ORDER)
+    override fun onChatListTickerClicked(appLink: String) {
+        if (appLink.isNotBlank()) {
+            context?.let {
+                RouteManager.route(it, appLink)
+            }
         }
     }
 
