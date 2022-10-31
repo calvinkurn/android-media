@@ -3,7 +3,6 @@ package com.tokopedia.iris.util
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.util.Base64
-import com.tokopedia.kotlin.extensions.backgroundCommit
 import java.nio.charset.Charset
 import java.util.*
 
@@ -108,7 +107,7 @@ class IrisSession(val context: Context) : Session {
 
     private fun setPrefSessionId(id: String) {
         editor.putString(KEY_SESSION_ID, id)
-        editor.backgroundCommit()
+        editor.apply()
     }
 
     /**
@@ -119,14 +118,14 @@ class IrisSession(val context: Context) : Session {
         if (timestamp - lastTrackingActivityPref > THRESHOLD_UPDATE_LAST_ACTIVITY) {
             lastTrackingActivityPref = timestamp
             editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
-            editor.backgroundCommit()
+            editor.apply()
         }
     }
 
     private fun setInitialVisit(initialVisit: Long) {
-        this@IrisSession.initialVisit = initialVisit
+        this.initialVisit = initialVisit
         timestampOfDayChanged = generateNextDayGMT7(initialVisit)
         editor.putLong(KEY_INITIAL_VISIT, initialVisit)
-        editor.backgroundCommit()
+        editor.apply()
     }
 }
