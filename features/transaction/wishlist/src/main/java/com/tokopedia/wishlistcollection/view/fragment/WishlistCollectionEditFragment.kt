@@ -365,6 +365,14 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
                             ApplinkConstInternalPurchasePlatform.NEED_FINISH_ACTIVITY,
                             true
                         )
+                        intent.putExtra(
+                            ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+                            true
+                        )
+                        intent.putExtra(
+                            ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER,
+                            result.data.data.message
+                        )
                         activity?.setResult(Activity.RESULT_OK, intent)
                         activity?.finish()
                     } else {

@@ -2805,6 +2805,27 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 false
             )
             if (isFinishActivity == true) {
+                val isSuccess = data.getBooleanExtra(
+                    ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+                    false
+                )
+                val messageToaster =
+                    data.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
+
+                val intent = Intent()
+                intent.putExtra(
+                    ApplinkConstInternalPurchasePlatform.NEED_FINISH_ACTIVITY,
+                    true
+                )
+                intent.putExtra(
+                    ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+                    isSuccess
+                )
+                intent.putExtra(
+                    ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER,
+                    messageToaster
+                )
+                activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             } else {
                 doRefresh()
