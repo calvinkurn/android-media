@@ -35,6 +35,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -62,6 +63,8 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
+import com.tokopedia.topchat.chatlist.view.listener.ChatListTickerListener
+import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
@@ -91,7 +94,7 @@ import javax.inject.Inject
  * @author : Steven 2019-08-06
  */
 open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-    ChatListItemListener, LifecycleOwner, InboxFragment {
+    ChatListItemListener, ChatListTickerListener, LifecycleOwner, InboxFragment {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -468,7 +471,34 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         viewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
+            } else if (viewModel.shouldShowBubbleTicker()) {
+                addBubbleChatTicker()
             }
+        }
+    }
+
+    private fun addBubbleChatTicker() {
+        val chatListTicker: ChatListTickerUiModel = ChatListTickerUiModel(
+            message = getString(com.tokopedia.topchat.R.string.topchat_bubble_ticker_message),
+            applink = "" //TODO applink
+        ).apply {
+            this.showCloseButton = true
+            this.sharedPreferenceKey = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME
+        }
+        adapter?.addElement(Int.ZERO, chatListTicker)
+    }
+
+    override fun onChatListTickerClicked(applink: String) {
+        context?.let {
+            if (applink.isNotBlank()) {
+                RouteManager.route(it, applink)
+            }
+        }
+    }
+
+    override fun onDismissTicker(element: ChatListTickerUiModel) {
+        if (element.sharedPreferenceKey.isNotBlank()) {
+            viewModel.saveTickerPref(ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME)
         }
     }
 
@@ -613,7 +643,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun getAdapterTypeFactory(): ChatListTypeFactoryImpl {
-        return ChatListTypeFactoryImpl(this, chatListAnalytics)
+        return ChatListTypeFactoryImpl(this, this, chatListAnalytics)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {

@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.viewmodel
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -32,6 +33,7 @@ import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCas
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.BUBBLE_TICKER_PREF_NAME
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.OPERATIONAL_INSIGHT_NEXT_MONDAY
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
@@ -45,10 +47,13 @@ import io.mockk.*
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 class ChatItemListViewModelTest {
 
@@ -1072,9 +1077,103 @@ class ChatItemListViewModelTest {
         )
     }
 
+    @Test
+    fun should_show_bubble_ticker_on_android_11_and_true_on_shared_pref() {
+        // Given
+        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
+        every {
+            sharedPref.getBoolean(any(), any())
+        } returns true
+
+        // When
+        val result = viewModel.shouldShowBubbleTicker()
+
+        // Then
+        assertEquals(result, true)
+    }
+
+    @Test
+    fun should_not_show_bubble_ticker_on_android_below_11_and_true_on_shared_pref() {
+        // Given
+        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 29)
+        every {
+            sharedPref.getBoolean(any(), any())
+        } returns true
+
+        // When
+        val result = viewModel.shouldShowBubbleTicker()
+
+        // Then
+        assertEquals(result, false)
+    }
+
+    @Test
+    fun should_not_show_bubble_ticker_on_android_11_and_false_on_shared_pref() {
+        // Given
+        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
+        every {
+            sharedPref.getBoolean(any(), any())
+        } returns false
+
+        // When
+        val result = viewModel.shouldShowBubbleTicker()
+
+        // Then
+        assertEquals(result, false)
+    }
+
+    @Test
+    fun should_not_show_bubble_ticker_on_android_bewlo_11_and_false_on_shared_pref() {
+        // Given
+        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 29)
+        every {
+            sharedPref.getBoolean(any(), any())
+        } returns false
+
+        // When
+        val result = viewModel.shouldShowBubbleTicker()
+
+        // Then
+        assertEquals(result, false)
+    }
+
+    @Test
+    fun test_save_ticker_pref() {
+        // Given
+        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
+        every {
+            sharedPref.getBoolean(any(), any())
+        } returns false
+
+        // When
+        viewModel.saveTickerPref(BUBBLE_TICKER_PREF_NAME)
+        val result = viewModel.shouldShowBubbleTicker()
+
+        // Then
+        assertEquals(result, false)
+    }
+
+    // Mock the OS Build Version
+    @Throws(Exception::class)
+    private fun setFinalStatic(field: Field, newValue: Any) {
+        field.isAccessible = true
+
+        val modifiersField = Field::class.java.getDeclaredField("modifiers")
+        modifiersField.isAccessible = true
+        modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
+
+        field.set(null, newValue)
+    }
+
+    @After
+    fun tearDown() {
+        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 0)
+    }
+
     companion object {
         private const val exMessageId = "190378584"
         private const val shopId = "testShopId1"
+        private const val SDK_INT = "SDK_INT"
         private val getChatList: ChatListPojo = FileUtil.parse(
                 "/success_get_chat_list.json",
                 ChatListPojo::class.java
