@@ -23,7 +23,7 @@ dependencies {
 
     // Gojek dependencies
     api rootProject.ext.miscDependencies.conversation
-    api files('libs/courier-client-0.0.4.1-release.aar')
+    api rootProject.ext.miscDependencies.courierClient
     implementation rootProject.ext.miscDependencies.courierMessageAdapter
     implementation rootProject.ext.miscDependencies.courierStreamAdapter
     implementation rootProject.ext.miscDependencies.courierAuth
