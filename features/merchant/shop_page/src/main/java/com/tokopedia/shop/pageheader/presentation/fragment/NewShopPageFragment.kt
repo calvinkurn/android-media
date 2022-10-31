@@ -3005,7 +3005,6 @@ class NewShopPageFragment :
             shopProfileImgUrl = shopPageHeaderDataModel?.avatar.orEmpty(),
             shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
             shopLocation = shopPageHeaderDataModel?.location.orEmpty(),
-            productCount = initialProductListSize
         )
 
         // shop type / badge
@@ -3109,6 +3108,7 @@ class NewShopPageFragment :
                     shopPageParamModel.productPrice5 = productPrice5
                     shopPageParamModel.productImage6 = productImage6
                     shopPageParamModel.productPrice6 = productPrice6
+                    shopPageParamModel.productCount = PRODUCT_LIST_IMG_GENERATOR_MAX_SIZE
                 }
                 isHasThreeProducts -> {
                     val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
@@ -3126,6 +3126,7 @@ class NewShopPageFragment :
                     shopPageParamModel.productPrice2 = productPrice2
                     shopPageParamModel.productImage3 = productImage3
                     shopPageParamModel.productPrice3 = productPrice3
+                    shopPageParamModel.productCount = PRODUCT_LIST_INDEX_THREE
                 }
                 isHasTwoProducts -> {
                     val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
@@ -3138,6 +3139,7 @@ class NewShopPageFragment :
                     shopPageParamModel.productPrice1 = productPrice1
                     shopPageParamModel.productImage2 = productImage2
                     shopPageParamModel.productPrice2 = productPrice2
+                    shopPageParamModel.productCount = PRODUCT_LIST_INDEX_TWO
                 }
                 isHasOneProduct -> {
                     val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
@@ -3145,8 +3147,8 @@ class NewShopPageFragment :
                     val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
                     shopPageParamModel.productImage1 = productImage1
                     shopPageParamModel.productPrice1 = productPrice1
+                    shopPageParamModel.productCount = PRODUCT_LIST_INDEX_ONE
                 }
-
             }
         }
         universalShareBottomSheet?.setImageGeneratorParam(shopPageParamModel)
