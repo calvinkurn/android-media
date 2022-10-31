@@ -71,6 +71,8 @@ class ShippingDurationConverter @Inject constructor() {
                 // Has service / duration list
                 shippingRecommendationData.shippingDurationUiModels =
                     convertShippingDuration(ratesData.ratesDetailData)
+                // todo delete this, for dev only
+                shippingRecommendationData.additionalDeliveryData = mockAdditionalDeliveryData()
             }
         }
         return shippingRecommendationData
@@ -117,7 +119,7 @@ class ShippingDurationConverter @Inject constructor() {
                         DeliveryProduct(
                             title = "Tiba 15:00 - 17:00",
                             textEta = "Tiba hari ini, 15:00 - 17:00",
-                            id = 2022092814123, // timeslot_id from schelly
+                            id = 2022092814124, // timeslot_id from schelly
                             finalPrice = 0.0,
                             realPrice = 10000.0,
                             textFinalPrice = "Rp0",
@@ -142,7 +144,7 @@ class ShippingDurationConverter @Inject constructor() {
                         DeliveryProduct(
                             title = "Tiba 14:00 - 16:00",
                             textEta = "Tiba hari ini, 14:00 - 16:00",
-                            id = 2022092014123, // timeslot_id from schelly
+                            id = 2022092014125, // timeslot_id from schelly
                             finalPrice = 0.0,
                             realPrice = 10000.0,
                             textFinalPrice = "Rp0",
@@ -157,7 +159,7 @@ class ShippingDurationConverter @Inject constructor() {
                         DeliveryProduct(
                             title = "Tiba 15:00 - 17:00",
                             textEta = "Tiba hari ini, 15:00 - 17:00",
-                            id = 2022092814123, // timeslot_id from schelly
+                            id = 2022092814126, // timeslot_id from schelly
                             finalPrice = 0.0,
                             realPrice = 10000.0,
                             textFinalPrice = "Rp0",
@@ -182,7 +184,7 @@ class ShippingDurationConverter @Inject constructor() {
                         DeliveryProduct(
                             title = "Tiba 14:00 - 16:00",
                             textEta = "Tiba hari ini, 14:00 - 16:00",
-                            id = 2022092014133, // timeslot_id from schelly
+                            id = 2022092014137, // timeslot_id from schelly
                             finalPrice = 0.0,
                             realPrice = 10000.0,
                             textFinalPrice = "Rp0",
