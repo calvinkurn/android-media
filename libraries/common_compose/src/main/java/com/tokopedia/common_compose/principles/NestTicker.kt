@@ -80,14 +80,14 @@ fun NestTicker(
                 if (title.isNotEmpty()) {
                     NestTypography(
                         text = title.toString(),
-                        textStyle = NestTheme.typography.heading5
+                        textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN950)
                     )
                 }
 
                 if (description.isNotEmpty()) {
                     NestTypography(
                         text = description.toString(),
-                        textStyle = NestTheme.typography.paragraph3
+                        textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN950)
                     )
                 }
             }
