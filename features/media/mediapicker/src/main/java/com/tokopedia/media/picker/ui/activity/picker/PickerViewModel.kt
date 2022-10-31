@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
-import com.tokopedia.media.picker.data.repository.AlbumRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaRepository
 import com.tokopedia.picker.common.observer.EventFlowFactory
