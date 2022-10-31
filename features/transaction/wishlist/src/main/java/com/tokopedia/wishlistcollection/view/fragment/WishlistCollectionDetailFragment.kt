@@ -2800,18 +2800,26 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST
             || requestCode == EDIT_WISHLIST_COLLECTION_REQUEST_CODE
             && data != null) {
-            doRefresh()
-            val isSuccess = data?.getBooleanExtra(
-                ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+            val isFinishActivity = data?.getBooleanExtra(
+                ApplinkConstInternalPurchasePlatform.NEED_FINISH_ACTIVITY,
                 false
             )
-            val messageToaster =
-                data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
-
-            if (isSuccess == true) {
-                messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
+            if (isFinishActivity == true) {
+                activity?.finish()
             } else {
-                messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
+                doRefresh()
+                val isSuccess = data?.getBooleanExtra(
+                    ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+                    false
+                )
+                val messageToaster =
+                    data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
+
+                if (isSuccess == true) {
+                    messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
+                } else {
+                    messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
+                }
             }
         } else if (requestCode == REQUEST_CODE_GO_TO_COLLECTION_DETAIL) {
             doRefresh()

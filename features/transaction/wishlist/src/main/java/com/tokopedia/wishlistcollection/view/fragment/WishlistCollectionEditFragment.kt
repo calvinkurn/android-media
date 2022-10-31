@@ -362,12 +362,8 @@ class WishlistCollectionEditFragment: BaseDaggerFragment(),
                     if (result.data.status == WishlistCollectionFragment.OK && result.data.data.success) {
                         val intent = Intent()
                         intent.putExtra(
-                            ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+                            ApplinkConstInternalPurchasePlatform.NEED_FINISH_ACTIVITY,
                             true
-                        )
-                        intent.putExtra(
-                            ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER,
-                            result.data.data.message
                         )
                         activity?.setResult(Activity.RESULT_OK, intent)
                         activity?.finish()
