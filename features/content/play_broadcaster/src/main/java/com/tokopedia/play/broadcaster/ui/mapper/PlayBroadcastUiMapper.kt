@@ -92,10 +92,10 @@ class PlayBroadcastUiMapper @Inject constructor(
     }
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
-            LiveStreamInfoUiModel(
-                    ingestUrl = media.ingestUrl,
+        LiveStreamInfoUiModel(
+            ingestUrl = media.ingestUrl,
 
-        )
+            )
 
     override fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel> =
         if (authorType == TYPE_SHOP) {
@@ -396,7 +396,10 @@ class PlayBroadcastUiMapper @Inject constructor(
         )
     }
 
-    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse, interactiveId: String): QuizDetailDataUiModel {
+    override fun mapQuizDetail(
+        response: GetInteractiveQuizDetailResponse,
+        interactiveId: String
+    ): QuizDetailDataUiModel {
         return with(response.playInteractiveQuizDetail) {
             QuizDetailDataUiModel(
                 question = textTransformer.transform(question),
@@ -415,11 +418,9 @@ class PlayBroadcastUiMapper @Inject constructor(
         }
     }
 
-    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel {
-        return PlayLeaderboardUiModel(
-            title = textTransformer.transform(dataUiModel.question),
-            reward = textTransformer.transform(dataUiModel.reward),
-            choices = dataUiModel.choices.mapIndexed { index, choice ->
+    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel, endTime: Calendar?): List<LeaderboardGameUiModel> {
+        val choices = dataUiModel.choices.mapIndexed { index, choice ->
+            LeaderboardGameUiModel.QuizOption(
                 QuizChoicesUiModel(
                     index = index,
                     id = choice.id,
@@ -433,14 +434,12 @@ class PlayBroadcastUiMapper @Inject constructor(
                     interactiveId = dataUiModel.interactiveId,
                     interactiveTitle = textTransformer.transform(dataUiModel.question),
                 )
-            },
-            endsIn = dataUiModel.countDownEnd,
-            otherParticipant = 0,
-            otherParticipantText = "",
-            winners = emptyList(),
-            leaderBoardType = LeadeboardType.Quiz,
-            id = dataUiModel.interactiveId,
-        )
+            )
+        }
+        return mutableListOf<LeaderboardGameUiModel>().apply {
+            add(LeaderboardGameUiModel.Header(title = dataUiModel.question, endsIn = endTime, leaderBoardType = LeadeboardType.Quiz,id = dataUiModel.interactiveId))
+            addAll(choices)
+        }
     }
 
     override fun mapChoiceDetail(
@@ -485,57 +484,81 @@ class PlayBroadcastUiMapper @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     override fun mapLeaderBoardWithSlot(
         response: GetSellerLeaderboardSlotResponse,
         allowChat: Boolean
-    ): List<PlayLeaderboardUiModel> {
-        return response.data.slots.map { slot ->
-            PlayLeaderboardUiModel(
-                title = slot.getSlotTitle(),
-                winners = slot.winner.mapIndexed { index, winner ->
-                    PlayWinnerUiModel(
-                        rank = index + 1,
-                        id = winner.userID,
-                        name = winner.userName,
-                        imageUrl = winner.imageUrl,
-                        allowChat = { allowChat },
-                        topChatMessage =
-                        if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
-                            response.data.config.topchatMessage
-                                .replace(FORMAT_FIRST_NAME, winner.userName)
-                                .replace(FORMAT_TITLE, slot.getSlotTitle())
-                        else
-                            response.data.config.topchatMessageQuiz
-                                .replace(FORMAT_FIRST_NAME, winner.userName)
-                                .replace(FORMAT_TITLE, slot.getSlotTitle())
-                        ,
+    ): List<LeaderboardGameUiModel> {
+        return buildList {
+            response.data.slots.forEach {
+                //Header
+                add(
+                    LeaderboardGameUiModel.Header(
+                        id = it.interactiveId,
+                        reward = if (getLeaderboardType(it.type) == LeadeboardType.Quiz) "" else textTransformer.transform(it.reward),
+                        leaderBoardType = getLeaderboardType(it.type),
+                        title = it.getSlotTitle()
                     )
-                },
-                choices = slot.choices.mapIndexed { index, choice ->
-                    QuizChoicesUiModel(
-                        index = index,
-                        id = choice.id,
-                        text = textTransformer.transform(choice.text),
-                        type = PlayQuizOptionState.Participant(
-                            alphabet = generateAlphabetChoices(index),
-                            isCorrect = choice.isCorrectAnswer,
-                            count = choice.participantCount.toString(),
-                            showArrow = true
-                        ),
-                        interactiveId = slot.interactiveId,
-                        interactiveTitle = slot.getSlotTitle()
+                )
+
+                // Quiz if any
+                if (it.choices.isNotEmpty()) addAll(it.choices.mapIndexed { index, choice ->
+                    LeaderboardGameUiModel.QuizOption(
+                        QuizChoicesUiModel(
+                            index = index,
+                            id = choice.id,
+                            text = textTransformer.transform(choice.text),
+                            type = PlayQuizOptionState.Participant(
+                                alphabet = generateAlphabetChoices(index),
+                                isCorrect = choice.isCorrectAnswer,
+                                count = choice.participantCount.toString(),
+                                showArrow = true
+                            ),
+                            interactiveId = it.interactiveId,
+                            interactiveTitle = it.getSlotTitle()
+                        )
                     )
-                },
-                otherParticipantText = slot.otherParticipantCountText,
-                otherParticipant = slot.otherParticipantCount.toLong(),
-                reward = textTransformer.transform(slot.reward),
-                leaderBoardType = getLeaderboardType(slot.type),
-                id = slot.interactiveId,
-            )
+                })
+
+                //Winner if any
+                if (it.winner.isNotEmpty()) addAll(
+                    it.winner.mapIndexed { index, winner ->
+                        LeaderboardGameUiModel.Winner(
+                            rank = index + 1,
+                            id = winner.userID,
+                            name = winner.userName,
+                            imageUrl = winner.imageUrl,
+                            allowChat = { allowChat },
+                            topChatMessage =
+                            if (getLeaderboardType(it.type) == LeadeboardType.Giveaway)
+                                response.data.config.topchatMessage
+                                    .replace(FORMAT_FIRST_NAME, winner.userName)
+                                    .replace(FORMAT_TITLE, it.getSlotTitle())
+                            else
+                                response.data.config.topchatMessageQuiz
+                                    .replace(FORMAT_FIRST_NAME, winner.userName)
+                                    .replace(FORMAT_TITLE, it.getSlotTitle()),
+                        )
+                    }
+                )
+                // need to add topChat
+
+                //Footer
+                add(
+                    LeaderboardGameUiModel.Footer(
+                        otherParticipantText = it.otherParticipantCountText,
+                        otherParticipant = it.otherParticipantCount.toLong(),
+                        leaderBoardType = getLeaderboardType(it.type),
+                        totalParticipant = it.winner.size.toLong(),
+                        emptyLeaderBoardCopyText = it.otherParticipantCountText,
+                        id = it.interactiveId,
+                    )
+                )
+            }
         }
     }
 
-    private fun GetSellerLeaderboardSlotResponse.SlotData.getSlotTitle() : String {
+    private fun GetSellerLeaderboardSlotResponse.SlotData.getSlotTitle(): String {
         return if (getLeaderboardType(this.type) == LeadeboardType.Giveaway)
             this.title
         else textTransformer.transform(
