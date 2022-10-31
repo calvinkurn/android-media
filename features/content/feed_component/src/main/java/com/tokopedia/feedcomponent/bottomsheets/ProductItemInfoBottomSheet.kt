@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +21,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -33,6 +34,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     private var viewModelFactory: ViewModelProvider.Factory? = null
     private var viewModel: FeedProductItemInfoViewModel? = null
+    private var customMvcTracker: MvcTrackerImpl? = null
 
     private lateinit var listProducts: List<FeedXProduct>
     private var listener: Listener? = null
@@ -116,7 +118,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                                 it.data.animatedInfoList
                             ),
                             shopId = shopId,
-                            source = MvcSource.SHOP
+                            source = MvcSource.SHOP,
+                            mvcTrackerImpl = customMvcTracker ?: DefaultMvcTrackerImpl()
                         )
                         binding?.merchantVoucherWidgetPostTag?.show()
                     } else {
@@ -198,7 +201,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         fragmentManager: FragmentManager,
         listener: Listener?,
         productBottomSheetData: ProductBottomSheetData,
-        viewModelFactory: ViewModelProvider.Factory
+        viewModelFactory: ViewModelProvider.Factory,
+        customMvcTracker: MvcTrackerImpl? = null
     ) {
         this.listProducts = productBottomSheetData.products
         this.listener = listener
@@ -213,6 +217,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.saleType = productBottomSheetData.saleType
         this.saleStatus = productBottomSheetData.saleStatus
         this.viewModelFactory = viewModelFactory
+        this.customMvcTracker = customMvcTracker
 
         show(fragmentManager, "")
     }
