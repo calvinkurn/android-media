@@ -5,15 +5,15 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.tokochat_common.view.adapter.viewholder.ticker.TokoChatReminderTickerViewHolder
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
-import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 
 class TokoChatReminderTickerDelegate(
     private val listener: TokochatReminderTickerListener
-): TypedAdapterDelegate<TokochatReminderTickerUiModel, Any, TokoChatReminderTickerViewHolder>(
+): TypedAdapterDelegate<TokoChatReminderTickerUiModel, Any, TokoChatReminderTickerViewHolder>(
     TokoChatReminderTickerViewHolder.LAYOUT
 ) {
     override fun onBindViewHolder(
-        item: TokochatReminderTickerUiModel,
+        item: TokoChatReminderTickerUiModel,
         holder: TokoChatReminderTickerViewHolder
     ) {
         holder.bind(item)

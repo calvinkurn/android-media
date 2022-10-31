@@ -2,13 +2,15 @@ package com.tokopedia.tokochat.di
 
 import android.content.Context
 import com.gojek.courier.CourierConnection
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatGetAllChannelsUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
@@ -41,14 +43,6 @@ object TokoChatUseCaseModule {
         repository: TokoChatRepository
     ): TokoChatGetChatHistoryUseCase {
         return TokoChatGetChatHistoryUseCase(repository)
-    }
-
-    @TokoChatScope
-    @Provides
-    fun provideGetAllChannelsUseCase(
-        repository: TokoChatRepository
-    ): TokoChatGetAllChannelsUseCase {
-        return TokoChatGetAllChannelsUseCase(repository)
     }
 
     @TokoChatScope
@@ -89,5 +83,14 @@ object TokoChatUseCaseModule {
         repository: TokoChatRepository
     ): TokoChatMutationProfileUseCase {
         return TokoChatMutationProfileUseCase(courierConnection, repository)
+    }
+
+    @TokoChatScope
+    @Provides
+    fun provideGetImageUseCase(
+        repository: TokoChatImageRepository,
+        dispatchers: CoroutineDispatchers
+    ): TokoChatGetImageUseCase {
+        return TokoChatGetImageUseCase(repository, dispatchers)
     }
 }
