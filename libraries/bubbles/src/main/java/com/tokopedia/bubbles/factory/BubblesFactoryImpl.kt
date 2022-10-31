@@ -1,12 +1,12 @@
 package com.tokopedia.bubbles.factory
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
@@ -74,10 +74,6 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         }
     }
 
-    override fun sendImpressionTracking(historyModels: List<BubbleHistoryItemModel>) {
-        TODO("Not yet implemented")
-    }
-
     override fun getBitmapWidth(): Int {
         return context.resources.getDimensionPixelSize(com.tokopedia.bubbles.R.dimen.bubble_image_width)
             .orZero()
@@ -105,7 +101,6 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         }
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     private fun getPendingIntent(
         applinks: String,
         bundle: Bundle
@@ -115,8 +110,16 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
             context,
             REQUEST_BUBBLE,
             bubbleChatIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            flagUpdateCurrent()
         )
+    }
+
+    private fun flagUpdateCurrent(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
     }
 
     private fun createBubbleChatIntent(

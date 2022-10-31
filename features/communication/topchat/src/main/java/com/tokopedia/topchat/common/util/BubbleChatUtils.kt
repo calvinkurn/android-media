@@ -6,3 +6,9 @@ object BubbleChatUrl {
     const val BUBBLE_ACTIVATION_GUIDE_3 = "https://images.tokopedia.net/img/android/topchat/iv_bubble_activation_guide_3_url.png"
     const val BUBBLE_CHAT_ENTRY_POINT = "https://images.tokopedia.net/img/android/tokochat/iv_bubble_chat_entry_point_url.png"
 }
+
+object BubbleSettings {
+    const val LABEL = "BARU"
+    const val DESCRIPTION = "Akses ruang chat dengan pembeli jadi lebih mudah dan cepat dengan sekali klik."
+    const val TITLE = "Bubbles"
+}

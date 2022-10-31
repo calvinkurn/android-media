@@ -274,6 +274,10 @@ yang ditemukan</string>
 
     <string name="topchat_bubble_activation_guide_seller_edu_label">Mau tahu lebih lanjut seputar fitur Bubbles? &lt;a href="#"&gt;Baca Artikel&lt;/a&gt;</string>
     <string name="topchat_bubble_activation_guide_button_title">Cek Pengaturan Bubbles</string>
+    
+    <string name="topchat_bubble_settings_title">Bubbles</string>
+    <string name="topchat_bubble_settings_desc">Akses ruang chat dengan pembeli jadi lebih mudah dan cepat dengan sekali klik.</string>
+    <string name="topchat_bubble_settings_label">BARU</string>
 
     <string name="topchat_bubble_ticker_message">Mau balas dan akses ruang chat dengan pembeli lebih cepat? &lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 </resources>
