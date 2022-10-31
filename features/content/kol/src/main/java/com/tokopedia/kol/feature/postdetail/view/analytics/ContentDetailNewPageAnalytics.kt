@@ -1293,7 +1293,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
      * Send all pending analytics in trackingQueue
      */
     fun sendPendingAnalytics() {
-        trackingQueue.sendAll()
+        //no longer need to call trackingQueue.sendAll() manually
     }
 
 

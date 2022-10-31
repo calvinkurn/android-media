@@ -43,7 +43,6 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        trackingQueue?.sendAll()
     }
 
     private fun processData(data: ProductDetailGallery) {

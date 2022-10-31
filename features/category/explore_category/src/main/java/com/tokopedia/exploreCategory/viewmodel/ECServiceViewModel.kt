@@ -78,7 +78,6 @@ class ECServiceViewModel @Inject constructor(
 
     override fun doOnPause() {
         super.doOnPause()
-        trackingQueue.sendAll()
     }
 
 }

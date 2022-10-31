@@ -43,7 +43,6 @@ class RecommendationLifeCycleAware constructor(
     fun onPause() {
         TopAdsGtmTracker.getInstance().eventInboxProductView(trackingQueue)
         topAdsAnalytic.eventInboxTopAdsProductView(trackingQueue)
-        trackingQueue?.sendAll()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

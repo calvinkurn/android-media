@@ -349,7 +349,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onPause() {
         super.onPause()
-        trackingQueue?.sendAll()
     }
 
     override fun getAdapterTypeFactory(): SimilarProductRecommendationTypeFactoryImpl = adapterFactory

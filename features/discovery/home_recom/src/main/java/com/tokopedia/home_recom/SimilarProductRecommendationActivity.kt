@@ -69,7 +69,6 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
      */
     override fun onPause() {
         super.onPause()
-        TrackingQueue(this).sendAll()
     }
 
     /**

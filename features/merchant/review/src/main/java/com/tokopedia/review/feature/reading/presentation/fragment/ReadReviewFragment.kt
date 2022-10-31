@@ -150,9 +150,6 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
 
     override fun onPause() {
         super.onPause()
-        if (::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
-        }
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int {

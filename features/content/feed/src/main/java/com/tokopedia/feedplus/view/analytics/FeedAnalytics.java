@@ -99,7 +99,7 @@ public class FeedAnalytics {
      * Send all pending analytics in trackingQueue
      */
     public void sendPendingAnalytics() {
-        trackingQueue.sendAll();
+        //no longer need to call trackingQueue.sendAll() manually
     }
 
     private void trackEnhancedEcommerceEvent(

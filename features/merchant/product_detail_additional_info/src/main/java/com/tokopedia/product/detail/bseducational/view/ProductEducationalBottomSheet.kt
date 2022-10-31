@@ -108,9 +108,6 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
 
     override fun onPause() {
         super.onPause()
-        if (::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
-        }
     }
 
     private fun observeData() {

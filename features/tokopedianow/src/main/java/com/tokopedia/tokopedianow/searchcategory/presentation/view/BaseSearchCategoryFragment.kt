@@ -858,8 +858,6 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onPause() {
         super.onPause()
-
-        trackingQueue?.sendAll()
     }
 
     override fun onResume() {

@@ -906,7 +906,6 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
         catalogLinearLayoutManager?.removeAllHandlers()
     }
 

@@ -308,7 +308,6 @@ class PlayUserInteractionFragment @Inject constructor(
         productAnalyticHelper.sendImpressedFeaturedProducts(
             partner = playViewModel.latestCompleteChannelData.partnerInfo.type
         )
-        analytic.getTrackingQueue().sendAll()
         analyticManager.sendPendingTrackers(
             partnerType = playViewModel.latestCompleteChannelData.partnerInfo.type
         )

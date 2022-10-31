@@ -237,7 +237,6 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     override fun onPause() {
         super.onPause()
-        trackingQueue?.sendAll()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

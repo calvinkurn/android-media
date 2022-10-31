@@ -33,7 +33,7 @@ open class OldShopPageTrackingUser(
     }
 
     fun sendAllTrackingQueue() {
-        trackingQueue.sendAll()
+        //no longer need to call trackingQueue.sendAll() manually
     }
 
     private fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, shopId: String, startIndex: Int): List<Any> {

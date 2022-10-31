@@ -161,6 +161,6 @@ class ReviewGalleryTracking @Inject constructor(
     }
 
     fun sendQueuedTrackers() {
-        trackingQueue.sendAll()
+        //no longer need to call trackingQueue.sendAll() manually
     }
 }

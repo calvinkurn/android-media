@@ -2277,6 +2277,5 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
     }
 }

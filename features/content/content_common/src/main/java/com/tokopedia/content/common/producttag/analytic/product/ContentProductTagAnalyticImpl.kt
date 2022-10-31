@@ -255,7 +255,7 @@ class ContentProductTagAnalyticImpl @Inject constructor(
     }
 
     override fun sendAll() {
-        trackingQueue.sendAll()
+
     }
 
     private fun sendClickEvent(action: String, label: String = "") {

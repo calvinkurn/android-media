@@ -1174,7 +1174,6 @@ class DiscoveryFragment :
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(false)
     }
 
@@ -1183,7 +1182,6 @@ class DiscoveryFragment :
     }
 
     private fun refreshPage() {
-        trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(true)
         miniCartData = null
         resetAnchorTabs()

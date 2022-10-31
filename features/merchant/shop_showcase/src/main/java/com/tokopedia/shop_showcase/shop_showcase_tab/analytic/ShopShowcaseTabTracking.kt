@@ -21,7 +21,7 @@ class ShopShowcaseTabTracking(private val trackingQueue: TrackingQueue) {
     }
 
     fun sendAllTrackingQueue() {
-        trackingQueue.sendAll()
+        //no longer need to call trackingQueue.sendAll() manually
     }
 
     fun clickFeaturedShowcaseItem(

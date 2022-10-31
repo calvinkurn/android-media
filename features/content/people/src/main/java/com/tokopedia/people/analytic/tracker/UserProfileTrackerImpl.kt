@@ -896,7 +896,7 @@ class UserProfileTrackerImpl @Inject constructor(
     }
 
     override fun sendAll() {
-        trackingQueue.sendAll()
+        //no longer need to call trackingQueue.sendAll() manually
     }
 
     private fun convertToPromotion(

@@ -807,7 +807,7 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun sendAll() {
-        trackingQueue.sendAll()
+        //no longer need to call trackingQueue.sendAll() manually
     }
 
     fun flashSaleCardImpression(

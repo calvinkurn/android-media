@@ -21,7 +21,7 @@ open class ShopWidgetTracker(val trackingQueue: TrackingQueue) {
     }
 
     fun sendAllTrackingQueue() {
-        trackingQueue.sendAll()
+        //no longer need to call trackingQueue.sendAll() manually
     }
 
     private fun createMap(event: String?, category: String?, action: String?, label: String?,

@@ -174,7 +174,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
     }
 
     override fun onStop() {

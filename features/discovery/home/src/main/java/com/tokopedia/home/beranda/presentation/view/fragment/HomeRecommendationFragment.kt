@@ -177,7 +177,6 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
             trackingQueue,
             tabName.toLowerCase(Locale.ROOT), userSessionInterface.isLoggedIn
         )
-        trackingQueue.sendAll()
         super.onPause()
     }
 

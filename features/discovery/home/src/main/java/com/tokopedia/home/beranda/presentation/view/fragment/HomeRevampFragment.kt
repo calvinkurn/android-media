@@ -987,7 +987,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         super.onPause()
         adapter?.onPausePlayWidget(shouldPausePlay)
         adapter?.onPauseBanner()
-        getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }

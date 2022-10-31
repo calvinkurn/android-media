@@ -259,9 +259,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     override fun onPause() {
         super.onPause()
-        if (::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
-        }
     }
 
     override fun getRecyclerView(view: View?): RecyclerView? {

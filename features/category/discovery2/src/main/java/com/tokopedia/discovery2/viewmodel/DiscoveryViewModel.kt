@@ -355,7 +355,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     override fun doOnPause() {
         super.doOnPause()
-        trackingQueue.sendAll()
     }
 
     override fun doOnDestroy() {

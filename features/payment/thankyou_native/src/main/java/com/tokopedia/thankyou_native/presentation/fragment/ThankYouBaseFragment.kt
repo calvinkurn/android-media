@@ -151,7 +151,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun onPause() {
         super.onPause()
-        digitalRecomTrackingQueue?.sendAll()
     }
 
 

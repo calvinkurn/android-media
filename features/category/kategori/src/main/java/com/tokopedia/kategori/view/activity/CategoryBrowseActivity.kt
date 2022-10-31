@@ -65,7 +65,6 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun onPause() {
         super.onPause()
-        getActivityTrackingQueue().sendAll()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
