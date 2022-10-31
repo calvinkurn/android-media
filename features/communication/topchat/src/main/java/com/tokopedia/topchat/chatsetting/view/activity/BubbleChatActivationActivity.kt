@@ -1,12 +1,13 @@
 package com.tokopedia.topchat.chatsetting.view.activity
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.topchat.chatlist.di.ChatListComponent
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
-import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
+import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
+import com.tokopedia.topchat.chatsetting.di.ChatSettingModule
+import com.tokopedia.topchat.chatsetting.di.DaggerChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.fragment.BubbleChatActivationGuideFragment
 import com.tokopedia.topchat.chatsetting.view.fragment.BubbleChatActivationIntroFragment
 import com.tokopedia.topchat.common.network.TopchatCacheManager
@@ -14,7 +15,7 @@ import com.tokopedia.topchat.common.util.BubbleChat
 import javax.inject.Inject
 
 class BubbleChatActivationActivity : BaseSimpleActivity(),
-    BubbleChatActivationIntroFragment.Listener, HasComponent<ChatListComponent> {
+    BubbleChatActivationIntroFragment.Listener, HasComponent<ChatSettingComponent> {
 
     @Inject
     lateinit var topChatCacheManager: TopchatCacheManager
@@ -34,11 +35,19 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
         }
     }
 
-    override fun getComponent(): ChatListComponent {
-        return DaggerChatListComponent.builder()
+    override fun getComponent(): ChatSettingComponent {
+        return DaggerChatSettingComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .chatListContextModule(ChatListContextModule(this))
+            .chatSettingModule(ChatSettingModule(this))
             .build()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
+        getToolbarTitle()?.let { toolbarTitle ->
+            title = toolbarTitle
+        }
+        super.onCreate(savedInstanceState)
     }
 
     override fun onDestroy() {
@@ -52,8 +61,20 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
         setIntroButtonFinishClicked()
     }
 
+    private fun getToolbarTitle(): String? {
+        return try {
+            getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_title)
+        } catch (ex: Exception) {
+            null
+        }
+    }
+
     private fun getIsBubbleIntroFinished(): Boolean {
-        return topChatCacheManager.loadCache(BubbleChat.Key.FINISH_INTRO, Boolean::class.java)
+        return try {
+            topChatCacheManager.loadCache(BubbleChat.Key.FINISH_INTRO, Boolean::class.java) ?: false
+        } catch (ex: Exception) {
+            false
+        }
     }
 
     private fun navigateToGuideFragment() {
@@ -64,7 +85,7 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
     }
 
     private fun setIntroButtonFinishClicked() {
-        topChatCacheManager.saveState(BubbleChat.Key.FINISH_INTRO, true)
+        topChatCacheManager.saveCache(BubbleChat.Key.FINISH_INTRO, true.toString())
     }
 
     companion object {
