@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.schedule_slot.uimodel
+package com.tokopedia.logisticcart.scheduledelivery.view.uimodel
 
 interface ScheduleSlotTypeViewHolder {
     fun type(model: ChooseDateUiModel): Int

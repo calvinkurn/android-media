@@ -1,11 +1,11 @@
-package com.tokopedia.logisticcart.schedule_slot.viewholder
+package com.tokopedia.logisticcart.scheduledelivery.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.logisticcart.databinding.ViewholderTitleSectionBinding
-import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
-import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.TitleSectionUiModel
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 
 class TitleSectionViewHolder(
     private val viewBinding: ViewholderTitleSectionBinding,

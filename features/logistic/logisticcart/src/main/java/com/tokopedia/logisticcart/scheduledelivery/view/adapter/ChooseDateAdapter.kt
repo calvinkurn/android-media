@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.schedule_slot.adapter
+package com.tokopedia.logisticcart.scheduledelivery.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ItemDateCardBinding
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
-import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ButtonDateUiModel
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 import com.tokopedia.unifycomponents.CardUnify2
 
 class ChooseDateAdapter(

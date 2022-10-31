@@ -1,16 +1,16 @@
-package com.tokopedia.logisticcart.schedule_slot.utils
+package com.tokopedia.logisticcart.scheduledelivery.utils
 
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
 import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
-import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetInfoUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseDateUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.BottomSheetInfoUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.BottomSheetUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ButtonDateUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseDateUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.TitleSectionUiModel
 
 object ScheduleDeliveryMapper {
 

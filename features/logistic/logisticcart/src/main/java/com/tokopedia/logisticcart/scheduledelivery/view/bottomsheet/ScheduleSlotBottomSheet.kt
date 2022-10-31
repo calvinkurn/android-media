@@ -1,8 +1,7 @@
-package com.tokopedia.logisticcart.schedule_slot.bottomsheet
+package com.tokopedia.logisticcart.scheduledelivery.view.bottomsheet
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +9,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.LayoutBottomsheetScheduleSlotBinding
-import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotAdapter
-import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotTypeFactory
-import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
-import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
+import com.tokopedia.logisticcart.scheduledelivery.view.adapter.ScheduleSlotAdapter
+import com.tokopedia.logisticcart.scheduledelivery.view.adapter.ScheduleSlotTypeFactory
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.BottomSheetUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ButtonDateUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiModel
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)

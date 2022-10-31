@@ -1,13 +1,13 @@
-package com.tokopedia.logisticcart.schedule_slot.viewholder
+package com.tokopedia.logisticcart.scheduledelivery.view.viewholder
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
-import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
-import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiModel
+import com.tokopedia.logisticcart.scheduledelivery.utils.DividerType
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticcart.databinding.ViewholderChooseTimeBinding

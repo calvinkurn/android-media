@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.schedule_slot.uimodel
+package com.tokopedia.logisticcart.scheduledelivery.view.uimodel
 
 data class BottomSheetInfoUiModel(
     val title: String = "",

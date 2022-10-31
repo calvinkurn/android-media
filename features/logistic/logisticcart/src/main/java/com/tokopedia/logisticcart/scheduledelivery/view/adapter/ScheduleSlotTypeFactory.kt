@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.schedule_slot.adapter
+package com.tokopedia.logisticcart.scheduledelivery.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +9,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.logisticcart.databinding.ViewholderChooseDateBinding
 import com.tokopedia.logisticcart.databinding.ViewholderChooseTimeBinding
 import com.tokopedia.logisticcart.databinding.ViewholderTitleSectionBinding
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseDateUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ScheduleSlotTypeViewHolder
-import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
-import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
-import com.tokopedia.logisticcart.schedule_slot.viewholder.ChooseDateViewHolder
-import com.tokopedia.logisticcart.schedule_slot.viewholder.ChooseTimeViewHolder
-import com.tokopedia.logisticcart.schedule_slot.viewholder.TitleSectionViewHolder
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseDateUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ScheduleSlotTypeViewHolder
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.TitleSectionUiModel
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
+import com.tokopedia.logisticcart.scheduledelivery.view.viewholder.ChooseDateViewHolder
+import com.tokopedia.logisticcart.scheduledelivery.view.viewholder.ChooseTimeViewHolder
+import com.tokopedia.logisticcart.scheduledelivery.view.viewholder.TitleSectionViewHolder
 
 class ScheduleSlotTypeFactory(val listener: ScheduleSlotListener) : BaseAdapterTypeFactory(),
     ScheduleSlotTypeViewHolder {

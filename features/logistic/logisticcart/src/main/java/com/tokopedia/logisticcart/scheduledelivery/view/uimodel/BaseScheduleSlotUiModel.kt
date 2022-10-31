@@ -1,8 +1,8 @@
-package com.tokopedia.logisticcart.schedule_slot.uimodel
+package com.tokopedia.logisticcart.scheduledelivery.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotTypeFactory
-import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
+import com.tokopedia.logisticcart.scheduledelivery.view.adapter.ScheduleSlotTypeFactory
+import com.tokopedia.logisticcart.scheduledelivery.utils.DividerType
 
 interface  BaseScheduleSlotUiModel<T> :  Visitable<ScheduleSlotTypeFactory>  {
     val title: String

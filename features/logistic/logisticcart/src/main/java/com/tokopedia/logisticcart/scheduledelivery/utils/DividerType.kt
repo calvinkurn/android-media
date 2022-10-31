@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.schedule_slot.utils
+package com.tokopedia.logisticcart.scheduledelivery.utils
 
 enum class DividerType {
     THIN,

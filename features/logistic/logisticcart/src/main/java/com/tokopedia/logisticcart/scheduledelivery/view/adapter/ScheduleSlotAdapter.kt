@@ -1,10 +1,10 @@
-package com.tokopedia.logisticcart.schedule_slot.adapter
+package com.tokopedia.logisticcart.scheduledelivery.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.logisticcart.schedule_slot.uimodel.BaseScheduleSlotUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
-import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.BaseScheduleSlotUiModel
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.BottomSheetUiModel
+import com.tokopedia.logisticcart.scheduledelivery.utils.DividerType
 
 class ScheduleSlotAdapter(private val factory: ScheduleSlotTypeFactory)
     : BaseListAdapter<Visitable<*>, ScheduleSlotTypeFactory>(factory) {

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.schedule_slot.viewholder
+package com.tokopedia.logisticcart.scheduledelivery.view.viewholder
 
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ViewholderChooseDateBinding
-import com.tokopedia.logisticcart.schedule_slot.adapter.ChooseDateAdapter
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseDateUiModel
-import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
+import com.tokopedia.logisticcart.scheduledelivery.view.adapter.ChooseDateAdapter
+import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseDateUiModel
+import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 
 class ChooseDateViewHolder(
     private val viewBinding: ViewholderChooseDateBinding,
