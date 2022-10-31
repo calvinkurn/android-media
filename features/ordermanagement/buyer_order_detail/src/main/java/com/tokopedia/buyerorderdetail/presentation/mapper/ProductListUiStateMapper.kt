@@ -434,7 +434,7 @@ object ProductListUiStateMapper {
     ): ProductListUiModel.ProductUiModel.Insurance? {
         return insuranceDetailData?.protections?.let { protectionProducts ->
             protectionProducts.find {
-                it?.productID == productId
+                it?.productID == productId && it.isBundle != true
             }?.let { protectionProduct ->
                 val iconUrl = protectionProduct.protectionConfig?.icon?.label
                 val label = protectionProduct.protectionConfig?.wording?.id?.label
@@ -454,7 +454,7 @@ object ProductListUiStateMapper {
     ): ProductListUiModel.ProductUiModel.Insurance? {
         return insuranceDetailData?.protections?.let { protectionProducts ->
             protectionProducts.find {
-                it?.productID == productId && it.bundleID == bundleId
+                it?.productID == productId && it.isBundle == true && it.bundleID == bundleId
             }?.let { protectionProduct ->
                 val iconUrl = protectionProduct.protectionConfig?.icon?.label
                 val label = protectionProduct.protectionConfig?.wording?.id?.label
