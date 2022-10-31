@@ -5,7 +5,7 @@ import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRe
 import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
 import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
-import com.tokopedia.content.common.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
+import com.tokopedia.content.common.onboarding.view.uimodel.state.UGCOnboardingUiState
 import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.flow.*
@@ -28,14 +28,14 @@ class UGCCompleteOnboardingStrategy @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<UGCOnboardingUiEvent>()
 
-    override val uiState: Flow<FeedUGCOnboardingUiState> = combine(
+    override val uiState: Flow<UGCOnboardingUiState> = combine(
         _username,
         _usernameState,
         _isCheckTnc,
         _isSubmit,
         _hasAcceptTnc,
     ) { username, usernameState, isCheckTnc, isSubmit, hasAcceptTnc ->
-        FeedUGCOnboardingUiState(
+        UGCOnboardingUiState(
             username = username,
             usernameState = usernameState,
             isCheckTnc = isCheckTnc,

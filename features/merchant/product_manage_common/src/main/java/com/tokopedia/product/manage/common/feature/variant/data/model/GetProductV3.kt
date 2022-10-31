@@ -21,6 +21,9 @@ data class GetProductV3 (
     @SerializedName("stock")
     val stock: Int,
     @Expose
+    @SerializedName("notifymeCount")
+    val notifymeCount: Int,
+    @Expose
     @SerializedName("variant")
     val variant: Variant
 ) {
