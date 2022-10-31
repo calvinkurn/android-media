@@ -45,25 +45,33 @@
         app:tickerType="information"
         app:closeButtonVisibility="gone"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/collection_delete_button"
+    <!--need linear layout to set white background, prevent overlay with other layout-->
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost"
-        android:text="@string/collection_item_kebab_menu_2"
-        android:textColor="@color/Unify_NN600"
-        android:layout_marginTop="20dp"/>
+        android:orientation="vertical"
+        android:background="@color/Unify_Static_White">
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/collection_save_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@id/collection_delete_button"
-        android:text="@string/collection_save_to_existing_collection"/>
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/collection_save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/collection_save_to_existing_collection"
+            android:layout_marginTop="10dp"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/collection_delete_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            android:text="@string/collection_item_kebab_menu_2"
+            android:textColor="@color/Unify_NN600"
+            android:layout_marginTop="20dp"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
