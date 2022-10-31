@@ -33,7 +33,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.SingleClick
@@ -553,7 +553,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                 }
             }
         } else {
-            SingleClick.doSomethingBeforeTime(delayInterval = 300) {
+            SingleClick.doSomethingBeforeTime(interval = 300) {
                 viewModel?.doAtc()
             }
         }

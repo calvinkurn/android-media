@@ -228,7 +228,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
                                   productName: String,
                                   isSelected: Boolean,
                                   selectedMfeProduct: MFEMakeupProduct) {
-        SingleClick.doSomethingBeforeTime(delayInterval = 100) {
+        SingleClick.doSomethingBeforeTime(interval = 100) {
             isSelectVariant(productId)
             viewModel?.onVariantClicked(
                     data = bottomComparissonView?.adapter?.getCurrentArImageDatas() ?: listOf(),
