@@ -3,7 +3,7 @@ package com.tokopedia.content.common.onboarding.view.uimodel.state
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-data class FeedUGCOnboardingUiState(
+data class UGCOnboardingUiState(
     val username: String,
     val usernameState: UsernameState,
     val isCheckTnc: Boolean,

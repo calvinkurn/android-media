@@ -27,19 +27,15 @@ object DeeplinkMapperTokoFood {
 
     fun mapperInternalApplinkTokoFood(uri: Uri): String {
         val url = uri.toString()
-        if (isGoToFoodPage()){
-            return when {
-                url.startsWith(ApplinkConst.TokoFood.HOME) || url.startsWith(ApplinkConst.TokoFood.GOFOOD) -> getTokoFoodHomeInternalAppLink()
-                url.startsWith(ApplinkConst.TokoFood.CATEGORY) -> getTokoFoodCategoryInternalAppLink(uri)
-                isMatchPattern(ApplinkConst.TokoFood.POST_PURCHASE, uri) -> getTokoFoodPostPurchaseInternalAppLink(uri)
-                isMatchPattern(ApplinkConst.TokoFood.MERCHANT, uri) -> getTokoFoodMerchantInternalAppLink(
+        return when {
+            url.startsWith(ApplinkConst.TokoFood.HOME) || url.startsWith(ApplinkConst.TokoFood.GOFOOD) -> getTokoFoodHomeInternalAppLink()
+            url.startsWith(ApplinkConst.TokoFood.CATEGORY) -> getTokoFoodCategoryInternalAppLink(uri)
+            isMatchPattern(ApplinkConst.TokoFood.POST_PURCHASE, uri) -> getTokoFoodPostPurchaseInternalAppLink(uri)
+            isMatchPattern(ApplinkConst.TokoFood.MERCHANT, uri) -> getTokoFoodMerchantInternalAppLink(
                     getUriIdList(ApplinkConst.TokoFood.MERCHANT, uri), uri)
-                url.startsWith(ApplinkConst.TokoFood.TOKOFOOD_ORDER) -> { ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD }
-                url.startsWith(ApplinkConst.TokoFood.SEARCH) -> ApplinkConstInternalTokoFood.SEARCH
-                else -> url
-            }
-        } else {
-            return ApplinkConsInternalHome.HOME_NAVIGATION
+            url.startsWith(ApplinkConst.TokoFood.TOKOFOOD_ORDER) -> { ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD }
+            url.startsWith(ApplinkConst.TokoFood.SEARCH) -> ApplinkConstInternalTokoFood.SEARCH
+            else -> url
         }
     }
 
@@ -80,16 +76,6 @@ object DeeplinkMapperTokoFood {
             .appendQueryParameter(SORT_BY_PARAM, sortBy)
             .appendQueryParameter(BRAND_UID_PARAM, brandUId)
             .build().toString()
-    }
-
-    private fun isGoToFoodPage(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_FOOD, ""
-            ) == RollenceKey.KEY_ROLLENCE_FOOD
-        } catch (e: Exception) {
-            true
-        }
     }
 
     private fun getUriIdList(pattern:String, uri: Uri): List<String>? {

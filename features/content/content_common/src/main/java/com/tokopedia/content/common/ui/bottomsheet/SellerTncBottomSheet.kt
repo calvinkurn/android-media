@@ -46,6 +46,11 @@ class SellerTncBottomSheet : BottomSheetUnify() {
                 })
             }
 
+        setCloseClickListener {
+            dismiss()
+            mListener?.clickCloseIcon()
+        }
+
         setChild(view)
         bottomSheet to view
 

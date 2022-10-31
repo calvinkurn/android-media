@@ -72,11 +72,11 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayVideoFragment @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic,
-        private val pipSessionStorage: PiPSessionStorage,
-        private val playLog: PlayLog
+    private val dispatchers: CoroutineDispatchers,
+    private val pipAnalytic: PlayPiPAnalytic,
+    private val analytic: PlayAnalytic,
+    private val pipSessionStorage: PiPSessionStorage,
+    private val playLog: PlayLog
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
