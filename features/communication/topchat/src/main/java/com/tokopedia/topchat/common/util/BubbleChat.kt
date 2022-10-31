@@ -16,4 +16,10 @@ object BubbleChat {
         const val FINISH_INTRO = "finish_intro"
     }
 
+    object Settings {
+        const val LABEL = "BARU"
+        const val DESCRIPTION = "Akses ruang chat dengan pembeli jadi lebih mudah dan cepat dengan sekali klik."
+        const val TITLE = "Bubbles"
+    }
+
 }

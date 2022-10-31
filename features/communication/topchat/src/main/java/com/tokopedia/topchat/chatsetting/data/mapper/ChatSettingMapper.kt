@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatsetting.data.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.data.ChatGearChatList
 import com.tokopedia.topchat.chatsetting.data.ChatGearChatListResponse
@@ -10,7 +11,7 @@ import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingSellerUiModel
 import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingTitleUiModel
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
-import com.tokopedia.topchat.common.util.BubbleSettings
+import com.tokopedia.topchat.common.util.BubbleChat
 import com.tokopedia.topchat.common.util.Utils.isBubbleChatEnabled
 import javax.inject.Inject
 
@@ -39,11 +40,10 @@ class ChatSettingMapper @Inject constructor(
             if (isBubbleChatEnabled()) {
                 visitables.add(ChatSettingSellerUiModel(
                     alias = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_title,
-                        BubbleSettings.TITLE),
-                    description = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_desc, BubbleSettings.DESCRIPTION),
-                    label = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_label, BubbleSettings.LABEL),
-                    //todo will update after reivin added the bubble applink
-                    link = ""
+                        BubbleChat.Settings.TITLE),
+                    description = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_desc, BubbleChat.Settings.DESCRIPTION),
+                    label = getString(com.tokopedia.topchat.R.string.topchat_bubble_settings_label, BubbleChat.Settings.LABEL),
+                    link = ApplinkConstInternalGlobal.TOPCHAT_BUBBLE_ACTIVATION
                 ))
             }
             visitables.add(ChatSettingDividerUiModel())
