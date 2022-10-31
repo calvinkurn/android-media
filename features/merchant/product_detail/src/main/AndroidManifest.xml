@@ -18,7 +18,7 @@
             android:label="@string/title_activity_product_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
