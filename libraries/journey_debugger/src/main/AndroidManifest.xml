@@ -16,8 +16,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".ui.activity.JourneyDebuggerDetailActivity"
-            android:theme="@style/Theme.AppCompat.Light"/>
+            android:name=".ui.activity.JourneyDebuggerDetailActivity" />
     </application>
 
 </manifest>
