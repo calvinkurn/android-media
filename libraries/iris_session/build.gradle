@@ -1,3 +1,2 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-dependencies { implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions) }
