@@ -17,7 +17,7 @@
 
         <activity
             android:name=".ui.activity.JourneyDebuggerDetailActivity"
-            android:theme="@style/Theme.Green" />
+            android:theme="@style/Theme.AppCompat.Light"/>
     </application>
 
 </manifest>
