@@ -26,7 +26,6 @@ import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 class TokopediaWatchActivity : AppCompatActivity(),
     DataClient.OnDataChangedListener{
