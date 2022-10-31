@@ -38,6 +38,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_NEED_REFRESH
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
@@ -188,6 +189,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.OneLinersTracking
 import com.tokopedia.product.detail.tracking.PageErrorTracker
 import com.tokopedia.product.detail.tracking.PageErrorTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
@@ -3853,7 +3855,8 @@ open class DynamicProductDetailFragment :
             )
         resultIntent.putExtra(ProductDetailConstant.WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
         resultIntent.putExtra("product_id", productId)
-        activity?.let { it.setResult(Activity.RESULT_CANCELED, resultIntent) }
+        resultIntent.putExtra(BOOLEAN_EXTRA_NEED_REFRESH, true)
+        activity?.let { it.setResult(Activity.RESULT_OK, resultIntent) }
     }
 
     private fun gotoEditProduct() {
@@ -5244,6 +5247,20 @@ open class DynamicProductDetailFragment :
         startActivity(intent)
     }
 
+    override fun onClickActionButtonBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        val productInfoP1 = viewModel.getDynamicProductInfoP1
+        DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
+            bundleId,
+            bundleType,
+            productInfoP1,
+            componentTrackDataModel
+        )
+    }
+
     override fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
@@ -5398,15 +5415,28 @@ open class DynamicProductDetailFragment :
         componentTrackDataModel: ComponentTrackDataModel,
         label: String
     ) {
-        DynamicProductDetailTracking.Impression
-            .eventOneLinerImpression(
-                trackingQueue = trackingQueue,
-                componentTrackDataModel = componentTrackDataModel,
-                productInfo = viewModel.getDynamicProductInfoP1,
-                userId = viewModel.userId,
-                lcaWarehouseId = getLcaWarehouseId(),
-                label = label
-            )
+        OneLinersTracking.onImpression(
+            trackingQueue = trackingQueue,
+            componentTrackDataModel = componentTrackDataModel,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            userId = viewModel.userId,
+            lcaWarehouseId = getLcaWarehouseId(),
+            label = label
+        )
+    }
+
+    override fun onClickInformationIconAtStockAssurance(
+        componentTrackDataModel: ComponentTrackDataModel,
+        appLink: String,
+        label: String
+    ) {
+        goToEducational(url = appLink)
+
+        OneLinersTracking.clickInformationButton(
+            component = componentTrackDataModel,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            eventLabel = label
+        )
     }
 
     override fun onImpressPageNotFound() {

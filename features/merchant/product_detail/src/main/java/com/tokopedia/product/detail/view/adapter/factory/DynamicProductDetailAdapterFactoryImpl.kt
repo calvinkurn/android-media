@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
@@ -44,6 +45,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.GlobalBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.LoadingViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
@@ -216,6 +218,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return LoadingViewHolder.LAYOUT
     }
 
+    override fun type(data: GlobalBundlingDataModel): Int {
+        return GlobalBundlingViewHolder.LAYOUT
+    }
+
     override fun type(data: ProductShopAdditionalDataModel): Int {
         return ProductShopAdditionalViewHolder.LAYOUT
     }
@@ -280,6 +286,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(view, listener)
             ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT -> ProductRecommendationVerticalPlaceholderViewHolder(view, listener)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
+            GlobalBundlingViewHolder.LAYOUT -> GlobalBundlingViewHolder(view, listener)
             ProductShopAdditionalViewHolder.LAYOUT -> ProductShopAdditionalViewHolder(
                 view = view,
                 listener = listener

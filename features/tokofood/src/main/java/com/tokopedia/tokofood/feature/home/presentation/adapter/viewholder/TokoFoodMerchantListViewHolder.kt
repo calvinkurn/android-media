@@ -108,15 +108,11 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setPromoInfo(promo: String, additionalData: AdditionalData) {
-        if (promo.isNullOrEmpty()){
-            promoRibbon?.hide()
+        setPromoRibbonLabel(additionalData.topTextBanner)
+        if (promo.isBlank()){
             ivMerchantDiskon?.hide()
             tvMerchantDiskon?.hide()
         } else {
-            promoRibbon?.run {
-                show()
-                setRibbonText(additionalData.topTextBanner)
-            }
             ivMerchantDiskon?.run {
                 show()
                 setImageUrl(additionalData.discountIcon)
@@ -124,6 +120,17 @@ class TokoFoodMerchantListViewHolder (
             tvMerchantDiskon?.run {
                 show()
                 text = promo
+            }
+        }
+    }
+
+    private fun setPromoRibbonLabel(topTextBanner: String) {
+        if (topTextBanner.isBlank()) {
+            promoRibbon?.hide()
+        } else {
+            promoRibbon?.run {
+                show()
+                setRibbonText(topTextBanner)
             }
         }
     }

@@ -98,6 +98,7 @@ object ProductDetailConstant {
     const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
     const val PRODUCT_BUNDLING = "product_bundling"
+    const val GLOBAL_BUNDLING = "global_bundling"
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
     const val FINTECH_WIDGET_TYPE = "chips_carousel"
