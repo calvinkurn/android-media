@@ -25,7 +25,7 @@ internal object NotificationHelper {
 
     fun show(context: Context, data: JourneyLogModel) {
         showNotif(context, NOTIF_ID_JOURNEY_DEBUGGER, NOTIF_TITLE_JOURNEY_DEBUGGER,
-                data.journey, data.data, JourneyDebuggerActivity.newInstance(context))
+                formatDataExcerpt(data.journey), data.journey, JourneyDebuggerActivity.newInstance(context))
     }
 
     private fun showNotif(context: Context, notifId: Int, contentTitle: String,
