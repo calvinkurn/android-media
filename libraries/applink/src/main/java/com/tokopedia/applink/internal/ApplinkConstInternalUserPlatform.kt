@@ -348,4 +348,109 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val TELEPHONY_MASKING = "$NEW_INTERNAL_USER/telephony-masking"
 
+    /**
+     * ## KYC Param | projectId
+     * This param is used to identify the source
+     **/
+    const val PARAM_PROJECT_ID = "projectId"
+
+    /**
+     * ## KYC Param | showIntro
+     * This param is used for show intro & thank you page (wrapper)
+     **/
+    const val PARAM_SHOW_INTRO = "showIntro"
+
+    /**
+     * ## KYC Param | redirectUrl
+     * This param is used to redirect webview after user success KYC
+     **/
+    const val PARAM_REDIRECT_URL = "redirectUrl"
+
+    /**
+     * ## KYC Param | callBack
+     * This param is used to add applink callback when user is verified
+     **/
+    const val PARAM_CALL_BACK = "callBack"
+
+    /**
+     * ## KYC Param | type
+     * This param used for specify the flow of kyc
+     * @value:
+     *  - ktpOnly = [KYC_TYPE_KTP_ONLY] | not ready yet
+     *  - selfieOnly = [KYC_TYPE_SELFIE_ONLY]  | not ready yet
+     *  - livenessOnly = [KYC_TYPE_LIVENESS_ONLY]  | not ready yet
+     *  - ktpWithSelfie = [KYC_TYPE_KTP_WITH_SELFIE]
+     *  - ktpWithLiveness = [KYC_TYPE_KTP_WITH_LIVENESS]  | not ready yet, but this is default flow
+     **/
+    const val PARAM_KYC_TYPE = "type"
+
+    /** Param value for [PARAM_KYC_TYPE] **/
+    const val KYC_TYPE_KTP_ONLY = "ktpOnly"
+    const val KYC_TYPE_SELFIE_ONLY = "selfieOnly"
+    const val KYC_TYPE_LIVENESS_ONLY = "livenessOnly"
+    const val KYC_TYPE_KTP_WITH_SELFIE = "ktpWithSelfie"
+    const val KYC_TYPE_KTP_WITH_LIVENESS = "ktpWithLiveness"
+
+    /**
+     * KYC Internal Base Applink
+     */
+    private const val KYC_BASE_APPLINK = "${NEW_INTERNAL_USER}/user-identification"
+    const val KYC_ONLY_BASE = "$KYC_BASE_APPLINK-only"
+
+    /**
+     * ## KYC - Info
+     * ### Open KYC Info page
+     *
+     * @class       : UserIdentificationInfoActivity
+     * @Applink     : tokopedia-android-internal://user/user-identification-info?projectId={projectId}
+     * @param
+     *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     **/
+    const val KYC_INFO_BASE = "$KYC_BASE_APPLINK-info"
+    const val KYC_INFO = "$KYC_INFO_BASE?$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}"
+
+    /**
+     * ## KYC - Form
+     * ### Open KYC submission form
+     *
+     * @class       : UserIdentificationFormActivity
+     * @Applink     : tokopedia-android-internal://user/user-identification-form?projectId={projectId}
+     * @param
+     *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     *  - redirectUrl  : optional | String | ref: [PARAM_REDIRECT_URL]
+     **/
+    const val KYC_FORM_BASE = "$KYC_BASE_APPLINK-form"
+    const val KYC_FORM = "$KYC_FORM_BASE?" +
+        "$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}&" +
+        "$PARAM_REDIRECT_URL={$PARAM_REDIRECT_URL}"
+
+    /**
+     * ## KYC - Ala carte
+     * ### Open KYC Ala Carte features depend on param
+     *
+     * @class       : UserIdentificationFormActivity
+     * @Applink     : tokopedia-android-internal://user/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}
+     * @param
+     *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     *  - showIntro    : required | Boolean | false | ref: [PARAM_SHOW_INTRO]
+     *  - redirectUrl  : optional | String | ref: [PARAM_REDIRECT_URL]
+     *  - type         : optional | String | ref: [PARAM_KYC_TYPE]
+     **/
+    const val KYC_ALA_CARTE = "$KYC_ONLY_BASE?" +
+        "$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}&" +
+        "$PARAM_SHOW_INTRO={$PARAM_SHOW_INTRO}&" +
+        "$PARAM_REDIRECT_URL={$PARAM_REDIRECT_URL}&" +
+        "$PARAM_KYC_TYPE={$PARAM_KYC_TYPE}"
+
+    /**
+     * ## KYC - Liveness
+     * ### Open Liveness page directly
+     *
+     * @class       : LivenessActivity
+     * @Applink     : tokopedia-android-internal://user/liveness-detection?projectId={projectId}
+     * @param
+     *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     **/
+    const val KYC_LIVENESS_BASE = "${NEW_INTERNAL_USER}/liveness-detection"
+    const val KYC_LIVENESS = "$KYC_LIVENESS_BASE?$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}"
 }

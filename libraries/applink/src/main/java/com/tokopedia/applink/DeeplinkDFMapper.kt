@@ -57,15 +57,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_SIMPLE
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V1
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V3
@@ -170,6 +166,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_NA
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.FORGOT_PASSWORD
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_ALA_CARTE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_FORM
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_INFO
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_LIVENESS
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER
 import com.tokopedia.applink.review.ReviewApplinkConst
@@ -530,9 +530,9 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(FORGOT_PASSWORD) }, DF_BASE, R.string.applink_change_password))
             add(DFP({ it.startsWith(SETTING_BANK) }, DF_USER_SETTINGS, R.string.applink_setting_bank_title, { DFWebviewFallbackUrl.USER_SETTING_BANK }))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DF_BASE, R.string.notif_settings_title))
-            add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_INFO) }, DF_USER_SETTINGS, R.string.user_identification_common_title))
-            add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_FORM) }, DF_USER_SETTINGS, R.string.user_identification_form_title))
-            add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_INFO_SIMPLE) }, DF_USER_SETTINGS, R.string.user_identification_info_simple))
+            add(DFP({ it.startsWithPattern(KYC_INFO) }, DF_USER_SETTINGS, R.string.user_identification_common_title))
+            add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_USER_SETTINGS, R.string.user_identification_form_title))
+            add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_USER_SETTINGS, R.string.user_identification_info_simple))
             add(DFP({ it.startsWith(ORDER_HISTORY) || it.startsWithPattern(ApplinkConstInternalMarketplace.ORDER_HISTORY) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalMarketplace.TOPCHAT)
@@ -546,7 +546,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ADD_TALK) }, DF_BASE, R.string.talk_title))
 
             add(DFP({ it.startsWith(ADD_FINGERPRINT_ONBOARDING) }, DF_BASE, R.string.fingerprint_onboarding))
-            add(DFP({ it.startsWithPattern(LIVENESS_DETECTION) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
+            add(DFP({ it.startsWithPattern(KYC_LIVENESS) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
             add(DFP({
                     it.startsWith(ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC) ||
                     it.startsWith(ApplinkConstInternalUserPlatform.BIOMETRIC_SETTING)
@@ -677,8 +677,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST)
                     || it.startsWith(RESERVED_STOCK_BASE) }, DF_BASE_SELLER_APP, R.string.title_applink_product_manage))
-            add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_FORM) }, DF_BASE_SELLER_APP, R.string.user_identification_common_title))
-            add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_INFO_SIMPLE) }, DF_BASE_SELLER_APP, R.string.user_identification_info_simple))
+            add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_BASE_SELLER_APP, R.string.user_identification_common_title))
+            add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_BASE_SELLER_APP, R.string.user_identification_info_simple))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_SELLER) ||
                         it.startsWith(TOPADS_DASHBOARD_INTERNAL)

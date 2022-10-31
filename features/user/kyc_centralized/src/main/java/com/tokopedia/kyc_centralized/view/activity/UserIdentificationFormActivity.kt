@@ -19,7 +19,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
@@ -58,14 +59,14 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         intent?.data?.let {
             projectId = it.getQueryParameter(
-                ApplinkConstInternalGlobal.PARAM_PROJECT_ID
+                PARAM_PROJECT_ID
             )?.toIntOrZero() ?: KycStatus.DEFAULT.code
-            kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+            kycType = it.getQueryParameter(PARAM_KYC_TYPE).orEmpty()
+            intent.putExtra(PARAM_PROJECT_ID, projectId)
         }
 
         if (kycType.isEmpty()) {
-            kycType = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            kycType = intent?.extras?.getString(PARAM_KYC_TYPE).orEmpty()
         }
 
         analytics = UserIdentificationCommonAnalytics.createInstance(projectId)

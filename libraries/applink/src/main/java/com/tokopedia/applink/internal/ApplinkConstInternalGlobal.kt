@@ -58,33 +58,34 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     const val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection?projectId={projectId}"
+    // delete flag
+//    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection?projectId={projectId}"
 
-    const val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
+//    const val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
 
     // UserIdentificationInfoActivity
     // tokopedia-android-internal://global/user-identification-info
-    @JvmField
-    val USER_IDENTIFICATION_INFO = "$USER_IDENTIFICATION_INFO_BASE?projectId={projectId}"
+//    @JvmField
+//    val USER_IDENTIFICATION_INFO = "$USER_IDENTIFICATION_INFO_BASE?projectId={projectId}"
 
-    const val PARAM_SOURCE_KYC_SELLER = "seller"
+//    const val PARAM_SOURCE_KYC_SELLER = "seller"
 
-    const val USER_IDENTIFICATION_FORM_BASE = "$INTERNAL_GLOBAL/user-identification-form"
+//    const val USER_IDENTIFICATION_FORM_BASE = "$INTERNAL_GLOBAL/user-identification-form"
 
     // UserIdentificationFormActivity
     // tokopedia-android-internal://global/user-identification-form
-    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&redirectUrl={redirectUrl}"
-    const val PARAM_PROJECT_ID = "projectId"
+//    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&redirectUrl={redirectUrl}"
+//    const val PARAM_PROJECT_ID = "projectId"
 
-    const val PARAM_CALL_BACK = "callBack"
+//    const val PARAM_CALL_BACK = "callBack"
 
     // UserIdentificationInfoSimpleActivity
     // tokopedia-android-internal://global/user-identification-only
-    @JvmField
-    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}"
-    const val PARAM_SHOW_INTRO = "showIntro"
-    const val PARAM_REDIRECT_URL = "redirectUrl"
-    const val PARAM_KYC_TYPE = "type"
+//    @JvmField
+//    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}"
+//    const val PARAM_SHOW_INTRO = "showIntro"
+//    const val PARAM_REDIRECT_URL = "redirectUrl"
+//    const val PARAM_KYC_TYPE = "type"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk

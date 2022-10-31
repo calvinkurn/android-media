@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,7 +26,9 @@ import com.tokopedia.utils.permission.request
 /**
  * @author by alvinatin on 02/11/18.
  */
-class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>(), UserIdentificationFormActivity.Listener {
+class UserIdentificationFormKtpFragment :
+    BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>(),
+    UserIdentificationFormActivity.Listener {
 
     private var permissionCheckerHelper = PermissionCheckerHelper()
 
@@ -49,7 +52,7 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         viewBinding?.formOnboardingImage?.loadImage(KycUrl.SCAN_KTP)
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
-                    .updateToolbarTitle(getString(R.string.title_kyc_info))
+                .updateToolbarTitle(getString(R.string.title_kyc_info))
         }
 
         if (isKycSelfie) {
@@ -63,17 +66,31 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         viewBinding?.title?.setText(R.string.ktp_title)
         viewBinding?.subtitle?.text = MethodChecker.fromHtml(getString(R.string.ktp_subtitle))
         viewBinding?.subtitle?.gravity = Gravity.LEFT
-        viewBinding?.layoutInfoBullet?.let { context?.let { context ->
-                (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(getString(R.string.ktp_body_1), context, it)
-            }
-        }
-        viewBinding?.layoutInfoBullet?.let { context?.let { context ->
-        (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(getString(R.string.ktp_body_2), context, it)
+        viewBinding?.layoutInfoBullet?.let {
+            context?.let { context ->
+                (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(
+                    getString(R.string.ktp_body_1),
+                    context,
+                    it
+                )
             }
         }
         viewBinding?.layoutInfoBullet?.let {
             context?.let { context ->
-                (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(getString(R.string.ktp_body_3), context, it)
+                (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(
+                    getString(R.string.ktp_body_2),
+                    context,
+                    it
+                )
+            }
+        }
+        viewBinding?.layoutInfoBullet?.let {
+            context?.let { context ->
+                (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(
+                    getString(R.string.ktp_body_3),
+                    context,
+                    it
+                )
             }
         }
     }
@@ -100,8 +117,8 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
     private fun checkPermission(isGranted: () -> Unit) {
         activity?.let {
             permissionCheckerHelper.request(it, arrayOf(
-                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+                PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
             ), granted = {
                 isGranted.invoke()
             }, denied = {
@@ -118,7 +135,7 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         fun createInstance(kycType: String): Fragment {
             return UserIdentificationFormKtpFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+                    putString(PARAM_KYC_TYPE, kycType)
                 }
             }
         }

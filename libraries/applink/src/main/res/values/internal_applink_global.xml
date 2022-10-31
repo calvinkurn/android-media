@@ -18,9 +18,6 @@
     <string name="path_add_talk">/add-talk</string>
     <string name="path_talk_seller_settings">/talk-seller-settings/</string>
     <string name="path_shop_talk">/shop-talk/.*\\/</string>
-    <string name="path_user_identification_info">/user-identification-info</string>
-    <string name="path_user_identification_form">/user-identification-form</string>
-    <string name="path_user_identification_only">/user-identification-only</string>
     <string name="path_change_phone_number">/change-phone-number</string>
     <string name="path_silent_verif">/silent-verification</string>
     <string name="path_otp_validator">/otp-validator</string>

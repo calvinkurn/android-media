@@ -100,4 +100,9 @@
     <!--Telephony Masking-->
     <string name="path_telephony_masking">/telephony-masking</string>
 
+    <!-- KYC & LIVENESS -->
+    <string name="path_user_identification_info">/user-identification-info</string>
+    <string name="path_user_identification_form">/user-identification-form</string>
+    <string name="path_user_identification_only">/user-identification-only</string>
+
 </resources>
