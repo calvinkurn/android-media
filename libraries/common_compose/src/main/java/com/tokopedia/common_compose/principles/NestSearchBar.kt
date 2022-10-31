@@ -28,7 +28,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.ui.LocalNestColor
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
@@ -39,8 +38,8 @@ fun NestSearchBar(
     onSearchBarCleared: () -> Unit = {},
     onKeyboardSearchAction: (String) -> Unit
 ) {
-    val borderColor = LocalNestColor.current.NN._200
-    val searchIconColor = LocalNestColor.current.NN._500
+    val borderColor = NestTheme.colors.NN._200
+    val searchIconColor = NestTheme.colors.NN._500
 
     var text by remember { mutableStateOf("") }
 

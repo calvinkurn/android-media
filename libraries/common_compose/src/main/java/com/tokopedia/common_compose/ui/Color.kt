@@ -15,8 +15,6 @@ interface NestColor {
     val PN: ColorPalette
     val BN: ColorPalette
     val TN: ColorPalette
-    val Static: StaticColor get() = StaticColor
-    val Custom: Any?
 }
 
 class NestLightColor internal constructor(
@@ -26,8 +24,7 @@ class NestLightColor internal constructor(
     override val YN: ColorPalette = NestYN.light,
     override val PN: ColorPalette = NestPN.light,
     override val BN: ColorPalette = NestBN.light,
-    override val TN: ColorPalette = NestTN.light,
-    override val Custom: Any? = null
+    override val TN: ColorPalette = NestTN.light
 ) : NestColor
 
 class NestDarkColor internal constructor(
@@ -37,8 +34,7 @@ class NestDarkColor internal constructor(
     override val YN: ColorPalette = NestYN.dark,
     override val PN: ColorPalette = NestPN.dark,
     override val BN: ColorPalette = NestBN.dark,
-    override val TN: ColorPalette = NestTN.dark,
-    override val Custom: Any? = null
+    override val TN: ColorPalette = NestTN.dark
 ) : NestColor
 
 interface ColorMode<T> {
@@ -70,11 +66,6 @@ abstract class LightColorPalette : ColorPalette {
 abstract class DarkColorPalette : ColorPalette {
     override val _0: Color = Color(0xFF121212)
     override val _1000: Color = Color(0xFFFFFFFF)
-}
-
-object StaticColor {
-    val blank: Color = Color(0xFF000000)
-    val white: Color = Color(0xFFFFFFFF)
 }
 
 object NestNN : ColorMode<ColorPalette> {
