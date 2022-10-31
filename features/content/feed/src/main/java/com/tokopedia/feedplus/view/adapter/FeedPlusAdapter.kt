@@ -223,11 +223,10 @@ class FeedPlusAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun updateListAndNotify(newList: List<Visitable<*>>) {
+    private fun updateListAndNotify(newList: List<Visitable<*>>, position: Int) {
         list.clear()
         list.addAll(newList)
-        notifyDataSetChanged()
+        notifyItemChanged(position)
     }
 
     fun removePlayWidget() {
@@ -249,11 +248,15 @@ class FeedPlusAdapter(
     }
 
     fun updateShopRecomWidget(newModel: ShopRecomWidgetViewModel) {
-        val newList = list.map {
-            if (it is ShopRecomWidgetViewModel) newModel
-            else it
+        var position = 0
+        val newList = list.mapIndexed { index, visitable ->
+            if (visitable is ShopRecomWidgetViewModel) {
+                position = index
+                newModel
+            }
+            else visitable
         }
-        updateListAndNotify(newList)
+        updateListAndNotify(newList, position)
     }
 
     fun showShimmer() {
