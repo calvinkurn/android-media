@@ -7,8 +7,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
@@ -29,35 +27,35 @@ class RepurchaseProductViewHolder(
     private var binding: ItemTokopedianowProductGridCardBinding? by viewBinding()
 
     override fun bind(item: RepurchaseProductUiModel) {
-        binding?.tokoNowGridProductCard?.apply {
-            setProductModel(item.productCard)
-
-            setOnClickListener {
-                goToProductDetail(item)
-                listener?.onClickProduct(item, item.position)
-            }
-
-            setAddVariantClickListener {
-                listener?.onAddToCartVariant(item)
-            }
-
-            setSimilarProductClickListener {
-                goToCategoryPage(item)
-                listener?.onClickSimilarProduct()
-            }
-
-            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
-                override fun onQuantityChanged(quantity: Int) {
-                    listener?.onAddToCartNonVariant(item, quantity)
-                }
-            })
-
-            setImageProductViewHintListener(item, object: ViewHintListener {
-                override fun onViewHint() {
-                    listener?.onProductImpressed(item)
-                }
-            })
-        }
+//        binding?.tokoNowGridProductCard?.apply {
+//            setProductModel(item.productCard)
+//
+//            setOnClickListener {
+//                goToProductDetail(item)
+//                listener?.onClickProduct(item, item.position)
+//            }
+//
+//            setAddVariantClickListener {
+//                listener?.onAddToCartVariant(item)
+//            }
+//
+//            setSimilarProductClickListener {
+//                goToCategoryPage(item)
+//                listener?.onClickSimilarProduct()
+//            }
+//
+//            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+//                override fun onQuantityChanged(quantity: Int) {
+//                    listener?.onAddToCartNonVariant(item, quantity)
+//                }
+//            })
+//
+//            setImageProductViewHintListener(item, object: ViewHintListener {
+//                override fun onViewHint() {
+//                    listener?.onProductImpressed(item)
+//                }
+//            })
+//        }
     }
 
     private fun goToCategoryPage(item: RepurchaseProductUiModel) {

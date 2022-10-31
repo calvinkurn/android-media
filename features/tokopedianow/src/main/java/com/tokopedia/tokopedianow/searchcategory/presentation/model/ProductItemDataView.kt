@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 data class ProductItemDataView(
@@ -22,6 +23,7 @@ data class ProductItemDataView(
         val sourceEngine: String = "",
         val boosterList: String = "",
         val position: Int = 0,
+        val productCardModel: TokoNowProductCardViewUiModel
 ): Visitable<BaseSearchCategoryTypeFactory>, ImpressHolder() {
 
     val discountPercentageString

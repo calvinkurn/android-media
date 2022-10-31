@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.presentation.adapter.differ
+package com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable

@@ -8,6 +8,7 @@ data class TokoNowProductCardViewUiModel(
     val orderQuantity: Int = 0,
     val price: String = "",
     val discount: String = "",
+    val discountInt: Int = 0,
     val slashPrice: String = "",
     val name: String = "",
     val rating: String = "",

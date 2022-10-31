@@ -245,5 +245,7 @@
 
     <string name="tokopedianow_content_description_quantity_editor_view_add">tombol tambah</string>
     <string name="tokopedianow_content_description_quantity_editor_view_sub">tombol kurang</string>
+
     <string name="tokopedianow_product_card_similar_product">Produk Serupa</string>
+    <string name="tokopedianow_product_card_percentage">%d%%</string>
 </resources>

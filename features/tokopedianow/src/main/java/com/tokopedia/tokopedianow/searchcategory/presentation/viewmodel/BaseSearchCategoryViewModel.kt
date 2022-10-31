@@ -33,7 +33,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -77,6 +76,7 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
+import com.tokopedia.tokopedianow.searchcategory.domain.mapper.ProductItemMapper.mapResponseToProductItem
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.mapChooseAddressToQuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
@@ -88,15 +88,12 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilt
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -131,11 +128,6 @@ abstract class BaseSearchCategoryViewModel(
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
         protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
-
-    companion object {
-        private const val LABEL_GROUP_TYPE_TRANSPARENTBLACK = "transparentBlack"
-        private const val LABEL_GROUP_POSITION_STATUS = "status"
-    }
 
     protected var chooseAddressDataView = ChooseAddressDataView()
     protected val loadingMoreModel = LoadingMoreModel()
@@ -662,59 +654,15 @@ abstract class BaseSearchCategoryViewModel(
         contentVisitableList: MutableList<Visitable<*>>,
         productList: List<Product>,
     ) {
-        val productListDataView = productList.mapIndexed(::mapToProductItemDataView)
-
+        val productListDataView = productList.mapIndexed { index, product ->
+            mapResponseToProductItem(
+                index = index,
+                product = product,
+                cartService = cartService
+            )
+        }
         contentVisitableList.addAll(productListDataView)
     }
-
-    protected open fun mapToProductItemDataView(index: Int, product: Product): ProductItemDataView {
-        val isOos = product.labelGroupList.any { it.position == LABEL_GROUP_POSITION_STATUS && it.type == LABEL_GROUP_TYPE_TRANSPARENTBLACK } || product.stock.isZero()
-        return ProductItemDataView(
-                id = product.id,
-                imageUrl300 = product.imageUrl300,
-                name = product.name,
-                price = product.price,
-                priceInt = product.priceInt,
-                discountPercentage = product.discountPercentage,
-                originalPrice = product.originalPrice,
-                parentId = product.parentId,
-                shop = ProductItemDataView.Shop(
-                        id = product.shop.id,
-                        name = product.shop.name,
-                ),
-                ratingAverage = product.ratingAverage,
-                variantATC = if (isOos) null else createVariantATCDataView(product),
-                nonVariantATC = if (isOos) null else createNonVariantATCDataView(product),
-                labelGroupDataViewList = product.labelGroupList.map(::mapToLabelGroupDataView),
-                labelGroupVariantDataViewList = product.labelGroupVariantList.map { labelGroupVariant ->
-                    LabelGroupVariantDataView(
-                            title = labelGroupVariant.title,
-                            type = labelGroupVariant.type,
-                            typeVariant = labelGroupVariant.typeVariant,
-                            hexColor = labelGroupVariant.hexColor,
-                    )
-                },
-                sourceEngine = product.sourceEngine,
-                boosterList = product.boosterList,
-                position = currentProductPosition++,
-        )
-    }
-
-    protected open fun createVariantATCDataView(product: Product) =
-            if (product.childs.isNotEmpty())
-                VariantATCDataView(
-                        quantity = cartService.getProductQuantity(product.id, product.parentId)
-                )
-            else null
-
-    protected open fun createNonVariantATCDataView(product: Product) =
-            if (product.childs.isEmpty())
-                NonVariantATCDataView(
-                        minQuantity = product.minOrder,
-                        maxQuantity = product.maxOrder,
-                        quantity = cartService.getProductQuantity(product.id, product.parentId)
-                )
-            else null
 
     protected open fun mapToLabelGroupDataView(labelGroup: ProductLabelGroup) =
         LabelGroupDataView(

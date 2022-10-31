@@ -31,45 +31,32 @@ class ProductItemViewHolder(
     override fun bind(element: ProductItemDataView?) {
         element ?: return
 
-        binding?.tokoNowGridProductCard?.apply {
-            setProductModel(
-                ProductCardModel(
-                    productImageUrl = element.imageUrl300,
-                    productName = element.name,
-                    formattedPrice = element.price,
-                    slashedPrice = element.originalPrice,
-                    discountPercentage = element.discountPercentageString,
-                    countSoldRating = element.ratingAverage,
-                    labelGroupList = element.labelGroupDataViewList.mapToLabelGroup(),
-                    labelGroupVariantList = element.labelGroupVariantDataViewList.mapToLabelGroupVariant(),
-                    variant = element.variantATC?.mapToVariant(),
-                    nonVariant = element.nonVariantATC?.mapToNonVariant(),
-                )
-            )
+        binding?.productCard?.apply {
+            setData(element.productCardModel)
 
-            setImageProductViewHintListener(element, object: ViewHintListener {
-                override fun onViewHint() {
-                    productItemListener.onProductImpressed(element)
-                }
-            })
-
-            setOnClickListener {
-                productItemListener.onProductClick(element)
-            }
-
-            setAddVariantClickListener {
-                productItemListener.onProductChooseVariantClicked(element)
-            }
-
-            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
-                override fun onQuantityChanged(quantity: Int) {
-                    productItemListener.onProductNonVariantQuantityChanged(element, quantity)
-                }
-            })
+//            setImageProductViewHintListener(element, object: ViewHintListener {
+//                override fun onViewHint() {
+//                    productItemListener.onProductImpressed(element)
+//                }
+//            })
+//
+//            setOnClickListener {
+//                productItemListener.onProductClick(element)
+//            }
+//
+//            setAddVariantClickListener {
+//                productItemListener.onProductChooseVariantClicked(element)
+//            }
+//
+//            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+//                override fun onQuantityChanged(quantity: Int) {
+//                    productItemListener.onProductNonVariantQuantityChanged(element, quantity)
+//                }
+//            })
         }
     }
 
     override fun onViewRecycled() {
-        binding?.tokoNowGridProductCard?.recycle()
+//        binding?.tokoNowGridProductCard?.recycle()
     }
 }

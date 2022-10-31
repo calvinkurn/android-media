@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -20,25 +21,11 @@ open class SearchCategoryAdapter(
     BaseSearchCategoryTypeFactory>(typeFactory, SearchCategoryDiffUtil()),
     StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
-    protected open val notFullSpanLayout = listOf(R.layout.item_tokopedianow_product_grid_card)
     var onStickySingleHeaderListener: OnStickySingleHeaderListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = onCreateViewItem(parent, viewType)
-
-        setFullSpan(view, viewType)
-
         return typeFactory.createViewHolder(view, viewType)
-    }
-
-    protected open fun setFullSpan(view: View, viewType: Int) {
-        val layoutParams = view.layoutParams
-        if (layoutParams !is StaggeredGridLayoutManager.LayoutParams) return
-        layoutParams.isFullSpan = isFullSpan(viewType)
-    }
-
-    protected open fun isFullSpan(viewType: Int): Boolean {
-        return !notFullSpanLayout.contains(viewType)
     }
 
     override val stickyHeaderPosition: Int

@@ -15,9 +15,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -40,8 +39,8 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -78,13 +77,13 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
+import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
-import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
@@ -100,6 +99,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherW
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -132,10 +132,11 @@ abstract class BaseSearchCategoryFragment:
     TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener {
 
     companion object {
-        protected const val DEFAULT_SPAN_COUNT = 2
-        protected const val REQUEST_CODE_LOGIN = 69
+        private const val SPAN_COUNT = 3
+        private const val PRODUCT_FILLED_BASED_ON_SPAN = 1
+        private const val REQUEST_CODE_LOGIN = 69
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
-        const val DEFAULT_POSITION = 0
+        private const val DEFAULT_POSITION = 0
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -151,7 +152,7 @@ abstract class BaseSearchCategoryFragment:
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
     protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
     protected var trackingQueue: TrackingQueue? = null
-    protected var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    protected var gridLayoutManager: GridLayoutManager? = null
 
     protected var container: ConstraintLayout? = null
     protected var navToolbar: NavToolbar? = null
@@ -436,25 +437,30 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureRecyclerView() {
-        staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
-        staggeredGridLayoutManager?.gapStrategy = GAP_HANDLING_NONE
-
-        staggeredGridLayoutManager?.let {
-            endlessScrollListener =  createEndlessScrollListener(it)
-        }
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
-
-        recyclerView?.adapter = searchCategoryAdapter
-        recyclerView?.layoutManager = staggeredGridLayoutManager
-        recyclerView?.addProductItemDecoration()
-
-        endlessScrollListener?.let {
-            recyclerView?.addOnScrollListener(it)
+        gridLayoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
+            endlessScrollListener =  createEndlessScrollListener(this)
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when (searchCategoryAdapter?.getItemViewType(position)) {
+                        ProductItemViewHolder.LAYOUT -> PRODUCT_FILLED_BASED_ON_SPAN
+                        else -> SPAN_COUNT
+                    }
+                }
+            }
         }
-        recyclerView?.addOnScrollListener(createNavToolbarShadowOnScrollListener())
+        recyclerView?.apply {
+            adapter = searchCategoryAdapter
+            layoutManager = gridLayoutManager
+            addProductItemDecoration()
+            addOnScrollListener(createNavToolbarShadowOnScrollListener())
+            endlessScrollListener?.let {
+                addOnScrollListener(it)
+            }
+        }
     }
 
-    private fun createEndlessScrollListener(layoutManager: StaggeredGridLayoutManager) =
+    private fun createEndlessScrollListener(layoutManager: GridLayoutManager) =
             object : EndlessRecyclerViewScrollListener(layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     onLoadMore()
@@ -1092,7 +1098,7 @@ abstract class BaseSearchCategoryFragment:
                     )
 
                     //Refresh the page
-                    staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
+                    gridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
                     refreshLayout()
 
                     //Show toaster

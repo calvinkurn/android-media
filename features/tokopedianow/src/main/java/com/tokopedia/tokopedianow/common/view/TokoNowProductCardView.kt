@@ -13,6 +13,7 @@ import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.show
@@ -78,6 +79,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
             )
             initPromoLabel(
                 discount = model.discount,
+                discountInt = model.discountInt,
                 labelGroup = model.getPriceLabelGroup()
             )
             initSlashPriceTypography(
@@ -163,12 +165,13 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initPromoLabel(
         discount: String,
+        discountInt: Int,
         labelGroup: LabelGroup?
     ) {
-        val isDiscountNotBlank = discount.isNotBlank()
+        val isDiscountNotBlank = discount.isNotBlank() || !discountInt.isZero()
         promoLabel.showIfWithBlock(isDiscountNotBlank || labelGroup != null) {
             if (isDiscountNotBlank) {
-                text = discount
+                text = if (discountInt.isZero()) discount else context.getString(R.string.tokopedianow_product_card_percentage, discountInt)
                 adjustLabelType(LIGHT_RED)
             } else {
                 labelGroup?.let { labelGroup ->
