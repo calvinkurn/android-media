@@ -61,11 +61,8 @@ class ProductCarouselUiView(
         }
     }
 
-    private val layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-            sendImpression()
-        }
+    private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     }
 
     private val defaultItemDecoration = ProductFeaturedItemDecoration(context)

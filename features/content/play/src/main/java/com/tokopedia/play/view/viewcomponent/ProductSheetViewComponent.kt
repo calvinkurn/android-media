@@ -156,11 +156,8 @@ class ProductSheetViewComponent(
         }
     }
 
-    private val linearLayoutManager = object : LinearLayoutManager(rvProductList.context, RecyclerView.VERTICAL, false) {
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-            sendImpression()
-        }
+    private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        LinearLayoutManager(rvProductList.context, RecyclerView.VERTICAL, false)
     }
 
     init {
