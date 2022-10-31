@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.inboxcommon.RoleType.Companion.BUYER
 import com.tokopedia.inboxcommon.RoleType.Companion.SELLER
 import com.tokopedia.inboxcommon.util.FileUtil
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RollenceKey
@@ -1089,7 +1090,7 @@ class ChatItemListViewModelTest {
             sharedPref.getBoolean(any(), any())
         } returns true
         every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT)
+            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
         } returns RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
 
         // When
@@ -1107,7 +1108,7 @@ class ChatItemListViewModelTest {
             sharedPref.getBoolean(any(), any())
         } returns true
         every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT)
+            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
         } returns RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
 
         // When
@@ -1125,7 +1126,7 @@ class ChatItemListViewModelTest {
             sharedPref.getBoolean(any(), any())
         } returns false
         every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT)
+            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
         } returns RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
 
         // When
@@ -1143,7 +1144,7 @@ class ChatItemListViewModelTest {
             sharedPref.getBoolean(any(), any())
         } returns false
         every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT)
+            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
         } returns RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
 
         // When
@@ -1161,7 +1162,7 @@ class ChatItemListViewModelTest {
             sharedPref.getBoolean(any(), any())
         } returns true
         every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT)
+            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
         } returns ""
 
         // When
@@ -1179,14 +1180,14 @@ class ChatItemListViewModelTest {
             sharedPref.getBoolean(any(), any())
         } returns true
         every {
-            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT)
+            abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY)
         } throws MessageErrorException()
 
         // When
         val result = viewModel.shouldShowBubbleTicker()
 
         // Then
-        assertEquals(result, false)
+        assertEquals(result, true)
     }
 
     @Test

@@ -6,6 +6,7 @@ import android.os.Build
 import android.text.method.LinkMovementMethod
 import android.view.Display
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -81,7 +82,7 @@ object Utils {
     private fun getIsBubbleChatRollenceEnabled(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
+                RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY
             ) == RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
         } catch (e: Exception) {
             true

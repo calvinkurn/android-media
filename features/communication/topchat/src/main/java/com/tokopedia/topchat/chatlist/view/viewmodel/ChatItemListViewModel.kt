@@ -12,6 +12,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -431,7 +432,7 @@ class ChatItemListViewModel @Inject constructor(
     private fun getRollenceIsBubbleChatEnabled(): Boolean {
         return try {
             abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
+                RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY
             ) == RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
         } catch (e: Exception) {
             true
