@@ -6,7 +6,10 @@ import android.os.Build
 import android.text.method.LinkMovementMethod
 import android.view.Display
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -72,8 +75,19 @@ object Utils {
         }
     }
 
-    //this bubble will be shown within sellerapp and OS version 11/above
-    fun isBubbleChatEnabled() = GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+    //this bubble will be shown within sellerapp, OS version 11/above, and if rollence enabled
+    fun isBubbleChatEnabled() =
+        GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && getIsBubbleChatRollenceEnabled()
+
+    private fun getIsBubbleChatRollenceEnabled(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY
+            ) == RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
+        } catch (e: Exception) {
+            true
+        }
+    }
 
     fun Activity?.isFromBubble(): Boolean {
         return try {

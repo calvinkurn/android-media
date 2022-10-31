@@ -22,7 +22,9 @@ import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
@@ -185,8 +187,21 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private boolean isEnableBubble() {
         boolean isEnableBubble =
                 GlobalConfig.isSellerApp() &&
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                getIsBubbleRollenceEnabled();
         return isEnableBubble;
+    }
+
+    private boolean getIsBubbleRollenceEnabled() {
+        boolean isRollenceEnabled;
+        try {
+            isRollenceEnabled = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
+                    RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, ""
+            ).equals(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT);
+        } catch (Exception exception) {
+            isRollenceEnabled = true;
+        }
+        return isRollenceEnabled;
     }
 
 }

@@ -57,7 +57,7 @@ class BubbleActivationGuideAdapter :
         }
 
         private fun ItemTopchatBubbleActivationGuideBinding.setBubbleActivationContent(item: BubbleActivationGuideUiModel) {
-            topchatIvBubbleActivationGuide.loadImage(item.imageUrl)
+            topchatIvBubbleActivationGuide.setImageUrl(item.imageUrl, BUBBLE_ACTIVATION_GUIDE_RATIO)
             topchatTvBubbleActivationGuideDesc.text = MethodChecker.fromHtml(item.desc)
         }
 
@@ -79,4 +79,9 @@ class BubbleActivationGuideAdapter :
             }
         }
     }
+
+    companion object {
+        private const val BUBBLE_ACTIVATION_GUIDE_RATIO = 0.4f
+    }
+
 }

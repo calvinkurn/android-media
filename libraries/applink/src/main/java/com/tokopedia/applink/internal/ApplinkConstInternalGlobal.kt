@@ -245,7 +245,6 @@ object ApplinkConstInternalGlobal {
     const val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
 
 
-
     //ReferralPhoneNumberVerificationActivity
     // tokopedia-android-internal://global/setting-referral-phone-verification
     const val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"

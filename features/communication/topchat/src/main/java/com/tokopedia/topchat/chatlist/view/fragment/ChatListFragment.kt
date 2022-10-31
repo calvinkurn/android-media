@@ -361,7 +361,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private fun addBubbleChatTicker() {
         val chatListTicker: ChatListTickerUiModel = ChatListTickerUiModel(
             message = getString(com.tokopedia.topchat.R.string.topchat_bubble_ticker_message),
-            applink = "" //TODO applink
+            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
         ).apply {
             this.showCloseButton = true
             this.sharedPreferenceKey = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME
