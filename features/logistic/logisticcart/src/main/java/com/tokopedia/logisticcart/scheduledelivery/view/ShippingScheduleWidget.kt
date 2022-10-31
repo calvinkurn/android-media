@@ -153,7 +153,7 @@ class ShippingScheduleWidget : ConstraintLayout {
             val bottomsheetUiModel = ScheduleDeliveryMapper.mapResponseToUiModel(
                 it.deliveryServices,
                 it.scheduleDate,
-                it.deliveryProduct ?: DeliveryProduct(),
+                it.deliveryProduct,
                 it.notice
             )
             mListener?.getFragmentManager()?.let { fragmentManager ->

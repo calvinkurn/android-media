@@ -17,7 +17,7 @@ object ScheduleDeliveryMapper {
     fun mapResponseToUiModel(
         deliveryServices: List<DeliveryService>,
         selectedDateId: String,
-        selectedTimeSlot: DeliveryProduct,
+        selectedTimeSlot: DeliveryProduct?,
         notice: Notice
     ): BottomSheetUiModel {
         val buttonDateUiModel = generateDateUiModel(
@@ -51,7 +51,7 @@ object ScheduleDeliveryMapper {
 
     private fun generateDateUiModel(
         deliveryServices: List<DeliveryService>,
-        selectedTimeSlot: DeliveryProduct,
+        selectedTimeSlot: DeliveryProduct?,
         selectedDateId: String
     ): List<ButtonDateUiModel> {
         val dateUiModel = mutableListOf<ButtonDateUiModel>()
@@ -84,7 +84,7 @@ object ScheduleDeliveryMapper {
     private fun generateTimeUiModel(
         timeOptions: List<DeliveryProduct>,
         dayId: String,
-        selectedTimeSlot: DeliveryProduct,
+        selectedTimeSlot: DeliveryProduct?,
         isDateSelected: Boolean
     ): List<ChooseTimeUiModel> {
         return timeOptions.filter { !it.hidden }.map { time ->
@@ -92,7 +92,7 @@ object ScheduleDeliveryMapper {
                 content = time.generateTimeTitle(),
                 note = time.text,
                 isEnabled = time.available,
-                isSelected = isDateSelected && time.id == selectedTimeSlot.id,
+                isSelected = time.available && (isDateSelected && time.id == selectedTimeSlot?.id),
                 timeId = time.id,
                 dateId = dayId
             )
