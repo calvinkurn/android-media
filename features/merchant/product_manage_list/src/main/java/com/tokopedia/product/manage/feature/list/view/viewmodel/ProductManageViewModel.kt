@@ -48,6 +48,8 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -93,6 +95,7 @@ class ProductManageViewModel @Inject constructor(
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val getStatusShop: GetStatusShopUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
+    private val remoteConfig: FirebaseRemoteConfigImpl,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -300,7 +303,6 @@ class ProductManageViewModel @Inject constructor(
         })
     }
 
-
     fun getProductList(
         shopId: String,
         filterOptions: List<FilterOption>? = null,
@@ -398,7 +400,14 @@ class ProductManageViewModel @Inject constructor(
 
     fun getTickerData() {
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        _tickerData.value = tickerStaticDataProvider.getTickers(isMultiLocationShop,_shopStatus.value?.shopStatus.orEmpty())
+        val isShowTickerNotifyMe =
+            remoteConfig.getBoolean(ENABLE_TICKER_NOTIFY_ME, true)
+        _tickerData.value =
+            tickerStaticDataProvider.getTickers(
+                isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty(),
+                isShowTickerNotifyMe
+            )
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {

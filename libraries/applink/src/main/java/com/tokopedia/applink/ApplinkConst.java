@@ -540,6 +540,8 @@ public interface ApplinkConst {
         String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
+        String PRODUCT_MANAGE = "sellerapp://product/manage";
+
     }
 
     interface TokopediaNow {

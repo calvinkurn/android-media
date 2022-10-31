@@ -16,6 +16,7 @@ import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDat
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -97,6 +98,9 @@ open class ProductManageViewModelTestFixture {
     @RelaxedMockK
     lateinit var getStatusShopUseCase: GetStatusShopUseCase
 
+    @RelaxedMockK
+    lateinit var remoteConfigImpl: FirebaseRemoteConfigImpl
+
     protected lateinit var viewModel: ProductManageViewModel
 
     @Before
@@ -125,6 +129,7 @@ open class ProductManageViewModelTestFixture {
             getMaxStockThresholdUseCase,
             getStatusShopUseCase,
             tickerStaticDataProvider,
+            remoteConfigImpl,
             CoroutineTestDispatchersProvider
         )
     }

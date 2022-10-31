@@ -360,6 +360,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     fun showSearchResultState(keyword: String) {
         this.searchResultViewUpdateListener?.showSearchResultView()
         this.keyword = keyword
+        viewModel.resetFilterSearch()
         viewModel.setKeyword(keyword)
     }
 

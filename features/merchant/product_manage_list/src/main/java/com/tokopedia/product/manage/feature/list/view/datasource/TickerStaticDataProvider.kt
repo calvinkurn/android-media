@@ -9,6 +9,19 @@ import javax.inject.Inject
 
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
 
+    private fun MutableList<TickerData>.addNotifyMeTicker(isShowTickerNotifyMe: Boolean) {
+        if (isShowTickerNotifyMe) {
+            add(
+                TickerData(
+                    title = resourceProvider.getTickerNotifyMeTitle(),
+                    description = resourceProvider.getTickerNotifyMeDescription(),
+                    type = Ticker.TYPE_ANNOUNCEMENT,
+                    isFromHtml = true
+                )
+            )
+        }
+    }
+
     private fun MutableList<TickerData>.addMaxStockTicker() {
         add(
             TickerData(
@@ -19,7 +32,6 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             )
         )
     }
-
     private fun MutableList<TickerData>.addMultiLocationTicker(multiLocationSeller: Boolean) {
         if (multiLocationSeller) {
             add(
@@ -33,7 +45,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         }
     }
 
-    fun getTickers(multiLocationSeller: Boolean, statusShop: String): List<TickerData> {
+    fun getTickers(multiLocationSeller: Boolean, statusShop: String, isShowTickerNotifyMe: Boolean): List<TickerData> {
         return when (statusShop.toIntSafely()) {
             ON_MODERATED_STAGE -> {
                 getTickerShopModerate()

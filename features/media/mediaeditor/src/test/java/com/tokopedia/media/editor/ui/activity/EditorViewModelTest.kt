@@ -121,13 +121,13 @@ class EditorViewModelTest {
         val editorParam = EditorParam().apply {
             withRemoveBackground()
         }
-        val totalTools = editorParam.editorToolsList.size
+        val totalTools = editorParam.editorToolsList().size
 
         // When
         viewModel.setEditorParam(editorParam)
 
         // Then
-        assertEquals(totalTools, viewModel.editorParam.value?.editorToolsList?.size)
+        assertEquals(totalTools, viewModel.editorParam.value?.editorToolsList()?.size)
     }
 
     @Test

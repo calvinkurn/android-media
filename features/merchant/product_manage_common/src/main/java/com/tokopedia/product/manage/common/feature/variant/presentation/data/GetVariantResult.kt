@@ -7,6 +7,7 @@ import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
 
 data class GetVariantResult(
         val productName: String,
+        val notifymeCount: Int,
         val variants: List<ProductVariant>,
         val selections: List<Selection>,
         val sizeCharts: List<Picture>
