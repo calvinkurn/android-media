@@ -196,7 +196,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         boolean isRollenceEnabled;
         try {
             isRollenceEnabled = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                    RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, ""
+                    RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
             ).equals(RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT);
         } catch (Exception exception) {
             isRollenceEnabled = true;
