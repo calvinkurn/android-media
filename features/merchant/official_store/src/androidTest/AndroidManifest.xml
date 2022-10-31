@@ -6,7 +6,9 @@
 
     <application
         android:label="Official Store Test"
-        tools:replace="android:label">
+        tools:replace="android:label"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true">
         <activity
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:name=".environment.InstrumentationOfficialStoreTestActivity"/>

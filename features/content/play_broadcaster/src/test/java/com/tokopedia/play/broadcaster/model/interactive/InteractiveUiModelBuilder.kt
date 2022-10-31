@@ -111,6 +111,8 @@ class InteractiveUiModelBuilder {
         maxChoiceLength: Int = 5,
         availableStartTimeInMs: List<Long> = List(5) { it.toLong() },
         eligibleStartTimeInMs: List<Long> = List(5) { it.toLong() },
+        showPrizeCoachMark: Boolean = true,
+        isGiftActive: Boolean = false,
     ) = QuizConfigUiModel(
         isActive = isActive,
         maxTitleLength = maxTitleLength,
@@ -119,6 +121,7 @@ class InteractiveUiModelBuilder {
         maxChoiceLength = maxChoiceLength,
         availableStartTimeInMs = availableStartTimeInMs,
         eligibleStartTimeInMs = eligibleStartTimeInMs,
+        isGiftActive = isGiftActive,
     )
 
     fun buildGiveaway(

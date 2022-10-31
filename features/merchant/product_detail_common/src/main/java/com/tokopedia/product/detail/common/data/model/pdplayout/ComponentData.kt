@@ -107,6 +107,8 @@ data class ComponentData(
     val color: String = "",
     @SerializedName("isVisible")
     val isVisible: Boolean = true,
+    @SerializedName("eduLink")
+    val eduLink: EduLinkData = EduLinkData(),
     //endregioncopy
 
     //region category carousel

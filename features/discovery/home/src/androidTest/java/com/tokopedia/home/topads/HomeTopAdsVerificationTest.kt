@@ -172,6 +172,8 @@ class HomeTopAdsVerificationTest {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
             }
             is FeaturedShopViewHolder -> {
+                waitForData()
+                waitForData()
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is HomeRecommendationFeedViewHolder -> {

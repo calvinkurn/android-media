@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/itemTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/itemButtonLayout"
+        app:layout_constraintTop_toTopOf="@+id/itemButtonLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/itemButtonLayout"
+        app:typographyType="display_2"
+        tools:text="Consent Categories" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/itemTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        app:timer_unify_single_text="Otomatis nonaktif dalam:"
+        app:timer_unify_single_variant="informative"
+        app:timer_unify_single_textWidth="full_radius"
+        app:timer_unify_single_type="day"
+        app:timer_unify_single_remainingDays="4"
+        app:layout_constraintTop_toBottomOf="@+id/itemTitle"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/itemDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemTimer"
+        app:typographyType="paragraph_3"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam feugiat metus ac. Dengan aktifkan penggunaan data ini, kamu menyetujui Syarat &amp; Ketentuan."/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/itemButtonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/itemTextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/itemIconButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Aktif" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/itemIconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
