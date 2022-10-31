@@ -55,12 +55,6 @@ class ProductCarouselUiView(
         }
     )
 
-    private val scrollListener = object: RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
-        }
-    }
-
     private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
         LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     }
@@ -73,7 +67,6 @@ class ProductCarouselUiView(
         binding.rvProductFeatured.adapter = adapter
 
         binding.rvProductFeatured.addItemDecoration(defaultItemDecoration)
-        binding.rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
     fun setProducts(
@@ -116,10 +109,6 @@ class ProductCarouselUiView(
 
     fun hide() {
         binding.root.gone()
-    }
-
-    fun cleanUp() {
-        binding.rvProductFeatured.removeOnScrollListener(scrollListener)
     }
 
     private fun getPlaceholder() = List(3) { PlayProductUiModel.Placeholder }
