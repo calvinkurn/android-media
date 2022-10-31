@@ -1,6 +1,6 @@
 package com.tokopedia.common_compose.principles
 
-import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,24 +15,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.ui.NestBN200
-import com.tokopedia.common_compose.ui.NestBN400
-import com.tokopedia.common_compose.ui.NestBN50
-import com.tokopedia.common_compose.ui.NestNN900
-import com.tokopedia.common_compose.ui.NestRN200
-import com.tokopedia.common_compose.ui.NestRN400
-import com.tokopedia.common_compose.ui.NestRN50
 import com.tokopedia.common_compose.ui.NestTheme
-import com.tokopedia.common_compose.ui.NestYN200
-import com.tokopedia.common_compose.ui.NestYN400
-import com.tokopedia.common_compose.ui.NestYN50
 
 @Composable
 fun NestTicker(
@@ -40,8 +28,30 @@ fun NestTicker(
     title: CharSequence,
     description: CharSequence,
     onDismissed: () -> Unit = {},
-    style: TickerStyle = TickerStyle.Default
+    type: TickerType
 ) {
+
+   val style = when(type) {
+       TickerType.WARNING -> TickerColor(
+           backgroundColor = NestTheme.colors.YN50,
+           strokeColor = NestTheme.colors.YN200,
+           iconColor = NestTheme.colors.YN400,
+           closeIconColor = NestTheme.colors.NN900
+       )
+       TickerType.ANNOUNCEMENT -> TickerColor(
+           backgroundColor = NestTheme.colors.BN50,
+           strokeColor = NestTheme.colors.BN200,
+           iconColor = NestTheme.colors.BN400,
+           closeIconColor = NestTheme.colors.NN900
+       )
+       TickerType.ERROR -> TickerColor(
+           backgroundColor = NestTheme.colors.RN50,
+           strokeColor = NestTheme.colors.RN200,
+           iconColor = NestTheme.colors.RN400,
+           closeIconColor = NestTheme.colors.NN900
+       )
+   }
+
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(6.dp),
@@ -101,53 +111,18 @@ fun NestTicker(
 
 }
 
-@Immutable
-class TickerStyle internal constructor(
+
+data class TickerColor(
      val backgroundColor: Color,
      val strokeColor: Color,
      val iconColor: Color,
      val closeIconColor: Color
-) {
-
-    companion object {
-        @Stable
-        val Announcement = TickerStyle(
-            backgroundColor = NestBN50,
-            strokeColor = NestBN200,
-            iconColor = NestBN400,
-            closeIconColor = NestNN900
-        )
-        @Stable
-        val Error = TickerStyle(
-            backgroundColor = NestRN50,
-            strokeColor = NestRN200,
-            iconColor = NestRN400,
-            closeIconColor = NestNN900
-        )
-        @Stable
-        val Warning = TickerStyle(
-            backgroundColor = NestYN50,
-            strokeColor = NestYN200,
-            iconColor = NestYN400,
-            closeIconColor = NestNN900
-        )
-
-        @Stable
-        val Default = Warning
-    }
-
-    fun copy(
-        backgroundColor: Color = this.backgroundColor,
-        strokeColor: Color = this.strokeColor,
-        iconColor: Color = this.iconColor,
-        closeIconColor: Color = this.closeIconColor
-    ): TickerStyle {
-        return TickerStyle(backgroundColor, strokeColor, iconColor, closeIconColor)
-    }
+)
+enum class TickerType {
+    WARNING,
+    ANNOUNCEMENT,
+    ERROR
 }
-
-
-
 
 @Preview(name = "Ticker Announcement")
 @Composable
@@ -158,10 +133,25 @@ fun NestTickerAnnouncementPreview() {
             title = "Info",
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
             onDismissed = {},
-            style = TickerStyle.Announcement
+            type = TickerType.ANNOUNCEMENT
         )
     }
 }
+
+@Preview(name = "Ticker Announcement [Dark]", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun NestTickerAnnouncementDarkPreview() {
+    NestTheme {
+        NestTicker(
+            modifier = Modifier,
+            title = "Info",
+            description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
+            onDismissed = {},
+            type = TickerType.ANNOUNCEMENT
+        )
+    }
+}
+
 
 @Preview(name = "Ticker [Description Only]")
 @Composable
@@ -172,7 +162,7 @@ fun DescriptionOnlyTicker() {
             title = "",
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
             onDismissed = {},
-            style = TickerStyle.Announcement
+            type = TickerType.ANNOUNCEMENT
         )
     }
 }
@@ -187,7 +177,7 @@ fun NestTickerWarningPreview() {
             title = "Info",
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
             onDismissed = {},
-            style = TickerStyle.Warning
+            type = TickerType.WARNING
         )
     }
 }
@@ -203,7 +193,7 @@ fun NestTickerErrorPreview() {
             title = "Info",
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
             onDismissed = {},
-            style = TickerStyle.Error
+            type = TickerType.ERROR
         )
     }
 }
