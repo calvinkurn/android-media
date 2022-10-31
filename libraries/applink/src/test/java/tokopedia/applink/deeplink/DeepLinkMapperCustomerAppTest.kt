@@ -1713,35 +1713,35 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check kyc no param appLink then should return tokopedia internal kyc in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/user-identification-info"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-info"
         assertEqualsDeepLinkMapper(ApplinkConst.KYC_NO_PARAM, expectedDeepLink)
     }
 
     @Test
     fun `check kyc param appLink then should return tokopedia internal kyc in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/user-identification-info?projectId=1"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-info?projectId=1"
         assertEqualsDeepLinkMapper(ApplinkConst.KYC_NO_PARAM + "?projectId=1", expectedDeepLink)
     }
 
     @Test
     fun `check kyc appLink then appLink should return tokopedia internal kyc in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/user-identification-info?projectId=1"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-info?projectId=1"
         assertEqualsDeepLinkMapper(ApplinkConst.KYC, expectedDeepLink)
     }
 
     @Test
     fun `check kyc form no param appLink then should return tokopedia internal kyc form in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/user-identification-form"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-form"
         assertEqualsDeepLinkMapper(ApplinkConst.KYC_FORM_NO_PARAM, expectedDeepLink)
     }
 
     @Test
     fun `check kyc form appLink then should return tokopedia internal kyc form in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/user-identification-form?projectId=12345"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-form?projectId=12345"
         val appLink = UriUtil.buildUri(ApplinkConst.KYC_FORM, "12345")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -2263,7 +2263,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check KYC_FORM_ONLY_NO_PARAM customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/user-identification-only/abc/def"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-only/abc/def"
         assertEqualsDeepLinkMapper(
             ApplinkConst.KYC_FORM_ONLY_NO_PARAM + "/abc/def",
             expectedDeepLink
