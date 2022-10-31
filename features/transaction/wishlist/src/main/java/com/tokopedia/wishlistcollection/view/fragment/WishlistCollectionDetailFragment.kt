@@ -569,7 +569,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         if (isBulkAddShow) {
                             updateCustomToolbarSubTitle(collectionNameDestination)
                         } else {
-                            updateToolbarTitle(toolbarTitle)
+                            if (collectionDetail.description.isNotEmpty()) {
+                                updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
+                            } else {
+                                updateToolbarTitle(toolbarTitle)
+                            }
                         }
 
                         if (currPage == 1 && collectionDetail.sortFilters.isNotEmpty()) {
@@ -1126,11 +1130,26 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         val subtitleLayout: Typography
         val customToolbar = View.inflate(context, Rv2.layout.toolbar_custom_add_bulk, null).also {
             subtitleLayout =
-                it.findViewById<com.tokopedia.unifyprinciples.Typography>(Rv2.id.toolbar_subtitle)
+                it.findViewById(Rv2.id.toolbar_subtitle)
         }
         binding?.run {
             wishlistCollectionDetailNavtoolbar.setCustomViewContentView(customToolbar)
             wishlistCollectionDetailNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
+            subtitleLayout.text = subtitle
+        }
+    }
+
+    private fun updateCustomToolbarTitleAndSubTitle(title: String, subtitle: String) {
+        val titleLayout: Typography
+        val subtitleLayout: Typography
+        val customToolbar = View.inflate(context, Rv2.layout.toolbar_custom_add_bulk, null).also {
+            titleLayout = it.findViewById(Rv2.id.toolbar_title)
+            subtitleLayout = it.findViewById(Rv2.id.toolbar_subtitle)
+        }
+        binding?.run {
+            wishlistCollectionDetailNavtoolbar.setCustomViewContentView(customToolbar)
+            wishlistCollectionDetailNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
+            titleLayout.text = title
             subtitleLayout.text = subtitle
         }
     }

@@ -39,6 +39,9 @@ data class GetWishlistCollectionItemsResponse(
 		@SerializedName("count_removable_items")
 		val countRemovableItems: Int = 0,
 
+        @SerializedName("description")
+        val description: String = "",
+
 		@SerializedName("empty_state")
 		val emptyState: EmptyState = EmptyState(),
 
