@@ -49,13 +49,14 @@ class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs
     init {
         context.theme.obtainStyledAttributes(attrs, R.styleable.LottieSwipeRefreshLayout, defStyle, 0).let { style ->
             val layout = LinearLayout(context)
-            layout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+//            layout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 //            layout.background = ColorDrawable(resources.getColor(R.color.GeneralDarkBlue))
 //            background = ColorDrawable(resources.getColor(R.color.GeneralDarkBlue))
             animationFile = style.getResourceId(R.styleable.LottieSwipeRefreshLayout_lottie_rawRes, -1)
-            addView(layout)
-            layout.addView(lottieAnimationView)
+//            addView(layout)
+//            layout.addView(lottieAnimationView)
 //            addView()
+            addView(lottieAnimationView)
             style.recycle()
         }
 
