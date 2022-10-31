@@ -18,8 +18,6 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
     private val dbSource: JourneyLogDBSource
     private val cache: LocalCacheHandler
 
-    private var journey = ""
-
     override val isNotificationEnabled: Boolean
         get() = cache.getBoolean(IS_JOURNEY_DEBUGGER_NOTIF_ENABLED, false)!!
 
@@ -29,8 +27,6 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
     }
 
     override fun save(journey: String) {
-
-        this.journey = journey
 
         if (TextUtils.isEmpty(journey)) {
             return
@@ -48,8 +44,6 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
-        journey = ""
     }
 
     override fun wipe() {
