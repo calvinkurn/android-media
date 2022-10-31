@@ -554,7 +554,12 @@ class UserProfileFragment @Inject constructor(
             listener = {
                 mainBinding.fabUp.menuOpen = false
 
-                // TODO on-boarding for `Buat Live` will be in the next phase
+                // TODO onboarding for `Buat Live` will be in the next phase
+//                if (viewModel.needOnboarding) {
+//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
+//                    openUGCOnboardingBottomSheet()
+//                } else goToCreateLiveStream()
+
                 goToCreateLiveStream()
             }
         )
