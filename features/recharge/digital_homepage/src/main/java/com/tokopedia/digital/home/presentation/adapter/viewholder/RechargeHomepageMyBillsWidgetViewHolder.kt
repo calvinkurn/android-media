@@ -20,6 +20,8 @@ import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeItemSp
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 
 
@@ -35,15 +37,24 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_my_bills
 
-        private const val ITEMS_MARGIN = 10
+        private const val ITEMS_MARGIN = 8
     }
 
     override fun bind(element: RechargeHomepageMyBillsWidgetModel) {
         val binding = ViewRechargeHomeMyBillsBinding.bind(itemView)
 
-        binding.tvTitle.text = element.section.title
+        if (element.section.items.isNotEmpty()) {
+            with(binding) {
+                shimmerMyBills.root.gone()
+                container.visible()
+                tvTitle.text = element.section.title
 
-        initItems(binding, element.section)
+                initItems(this, element.section)
+            }
+        } else {
+            binding.shimmerMyBills.root.visible()
+            binding.container.gone()
+        }
     }
 
     private fun initItems(
