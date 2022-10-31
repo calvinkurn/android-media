@@ -11,12 +11,12 @@ class CdnMonitoringInterceptor(private val applicationContext: Context): Interce
 
         val response = chain.proceed(chain.request())
 
-        val imageUrl = chain.request().url.toString()
+        val assetUrl = chain.request().url.toString()
 
         val cdnName: String = response.header("x-tkpd-cdn-name", "") ?: ""
 
-        if (cdnName.isNotBlank() && imageUrl.isNotBlank()) {
-            setCdnNameUserSession(cdnName, imageUrl)
+        if (cdnName.isNotBlank() && assetUrl.isNotBlank()) {
+            setCdnNameUserSession(cdnName, assetUrl)
         }
 
         return response
