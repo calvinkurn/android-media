@@ -553,11 +553,9 @@ class UserProfileFragment @Inject constructor(
             title = getString(feedComponentR.string.feed_fab_create_live),
             listener = {
                 mainBinding.fabUp.menuOpen = false
-                if (viewModel.needOnboarding) {
-                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
-                    openUGCOnboardingBottomSheet()
-                }
-                else goToCreateLiveStream()
+
+                // TODO on-boarding for `Buat Live` will be in the next phase
+                goToCreateLiveStream()
             }
         )
     }
