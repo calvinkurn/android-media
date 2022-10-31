@@ -14,7 +14,7 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWENTY_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWO_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ZERO_DP
 import com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 
 object TokoChatMessageBubbleViewHolderBinder {
@@ -90,7 +90,7 @@ object TokoChatMessageBubbleViewHolderBinder {
     }
 
     fun bindChatMessage(
-        chat: TokoChatMessageBubbleBaseUiModel,
+        chat: TokoChatMessageBubbleUiModel,
         tokoChatMessageChatLayout: TokoChatMessageChatLayout?
     ) {
         val htmlMessage = MethodChecker.fromHtml(chat.messageText)
@@ -99,7 +99,7 @@ object TokoChatMessageBubbleViewHolderBinder {
     }
 
     fun bindHour(
-        uiModel: TokoChatMessageBubbleBaseUiModel,
+        uiModel: TokoChatMessageBubbleUiModel,
         tokoChatMessageChatLayout: TokoChatMessageChatLayout?
     ) {
         val hourTime = getHourTime(uiModel.messageTime)
@@ -115,7 +115,7 @@ object TokoChatMessageBubbleViewHolderBinder {
     }
 
     fun bindChatReadStatus(
-        element: TokoChatMessageBubbleBaseUiModel,
+        element: TokoChatMessageBubbleUiModel,
         tokoChatMessageChatLayout: TokoChatMessageChatLayout?
     ) {
         tokoChatMessageChatLayout?.checkMark?.let {
@@ -123,7 +123,7 @@ object TokoChatMessageBubbleViewHolderBinder {
         }
     }
 
-    private fun bindChatReadStatus(element: TokoChatMessageBubbleBaseUiModel, checkMark: ImageUnify) {
+    private fun bindChatReadStatus(element: TokoChatMessageBubbleUiModel, checkMark: ImageUnify) {
         if (element.isSender) {
             checkMark.show()
             val imageResource = when {

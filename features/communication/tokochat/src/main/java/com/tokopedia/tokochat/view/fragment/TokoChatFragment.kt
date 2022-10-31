@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -29,6 +31,7 @@ import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatErrorLogger
+import com.tokopedia.tokochat.util.TokoChatViewUtil.loadByteArrayImage
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderUiModel
@@ -41,12 +44,15 @@ import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
+import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatOrderProgressUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -60,7 +66,8 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     TokoChatTypingListener,
     TokoChatReplyTextListener,
     TokochatReminderTickerListener,
-    TokoChatTransactionOrderWidget.Listener {
+    TokoChatTransactionOrderWidget.Listener,
+    TokoChatImageAttachmentListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -78,7 +85,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     private var firstTimeOpen = true
     private var isFromTokoFoodPostPurchase = false
 
-    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
+    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this, this)
 
     override fun getScreenName(): String = TAG
 
@@ -94,11 +101,6 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         super.initViews(view, savedInstanceState)
         setDataFromArguments(savedInstanceState)
         setupBackground()
-        //todo isShowReplySection need to flag from sdk
-        setupReplySection(
-            true,
-            getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
-        )
         initializeChatProfile()
         initGroupBooking(savedInstanceState)
         loadTransactionWidget()
@@ -304,7 +306,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         observe(viewModel.chatRoomTicker) {
             when (it) {
                 is Success -> {
-                    val ticker = TokochatReminderTickerUiModel(
+                    val ticker = TokoChatReminderTickerUiModel(
                         it.data.tokochatRoomTicker.message,
                         it.data.tokochatRoomTicker.tickerType
                     )
@@ -312,7 +314,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
                     // If the ticker is not in list, manually add ticker
                     if (adapter.getItems().getOrNull(adapter.itemCount - Int.ONE)
-                            !is TokochatReminderTickerUiModel
+                            !is TokoChatReminderTickerUiModel
                     ) {
                         adapter.addItem(adapter.itemCount, ticker)
                         adapter.notifyItemInserted(adapter.itemCount)
@@ -387,6 +389,29 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         )
     }
 
+    private fun observeLiveChannel() {
+        observe(viewModel.getLiveChannel(channelId)) {
+            it?.let { channel ->
+                // Show bottom sheet if channel expires
+                if (channel.expiresAt < System.currentTimeMillis()) {
+
+                } else {
+                    // Check if channel is read only
+                    if (channel.readOnly || (channel.readModeStartsAt?: 0) < System.currentTimeMillis()) {
+                        // Hide reply component
+                        setupReplySection(
+                            false,
+                            getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
+                        )
+                    } else {
+                        // Show reply component
+                        setupReplySection(true)
+                    }
+                }
+            }
+        }
+    }
+
     private fun setShowTransactionLocalLoad() {
         baseBinding?.tokochatTransactionOrder?.showLocalLoadTransaction()
     }
@@ -427,7 +452,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         bottomSheetMaskingPhoneNumber.show(childFragmentManager)
     }
 
-    private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String) {
+    private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String = "") {
         baseBinding?.tokochatReplyBox?.run {
             shouldShowWithAction(isShowReplySection) {
                 this.initLayout(this@TokoChatFragment, this@TokoChatFragment)
@@ -485,6 +510,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         viewModel.getGroupBookingChannel(channelId)
         removeShimmering()
         observeChatHistory()
+        observeLiveChannel()
     }
 
     override fun onLoadMore() {
@@ -544,7 +570,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
      * Listeners
      */
 
-    override fun trackSeenTicker(element: TokochatReminderTickerUiModel) {
+    override fun trackSeenTicker(element: TokoChatReminderTickerUiModel) {
         // TODO: Tracker
     }
 
@@ -565,7 +591,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     }
 
     override fun onClickLinkReminderTicker(
-        element: TokochatReminderTickerUiModel,
+        element: TokoChatReminderTickerUiModel,
         linkUrl: String
     ) {
         if (linkUrl.isNotEmpty()) {
@@ -575,9 +601,26 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         }
     }
 
-    override fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int) {
+    override fun onCloseReminderTicker(element: TokoChatReminderTickerUiModel, position: Int) {
         adapter.removeItem(element)
-        mapper.setFirstTicker(null)
+        if (position == adapter.itemCount) {
+            mapper.setFirstTicker(null)
+        }
+    }
+
+    override fun loadImage(
+        imageView: ImageView,
+        element: TokoChatImageBubbleUiModel,
+        loader: LoaderUnify?
+    ) {
+        viewModel.getImageWithId(element.imageId, channelId) { imageResult, responseBody ->
+            element.updateImageUrl(imageResult.data?.url?: "")
+            context?.let { ctx ->
+                loadByteArrayImage(ctx, imageView, responseBody.byteStream()) {
+                    loader?.hide()
+                }
+            }
+        }
     }
 
     private fun logExceptionTokoChat(
