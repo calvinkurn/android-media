@@ -24,12 +24,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.analytics.tracker.FeedMerchantVoucherAnalyticTracker
 import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
-import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
@@ -49,8 +48,6 @@ import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
@@ -100,6 +97,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var shareData: LinkerData
     private var lastScrollPosition: Int = -1
 
+    private var customMvcTracker: FeedMerchantVoucherAnalyticTracker =
+        FeedMerchantVoucherAnalyticTracker()
+
     companion object {
         const val KEY_OTHER = "lainnya"
         private const val CAMPAIGN_UPCOMING_TRACKER_SUFFIX = "pre"
@@ -132,7 +132,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             listener = object : FeedProductTagSharingHelper.Listener {
                 override fun onErrorCreatingUrl(linkerError: LinkerError?) {
                     showToast(
-                        message = linkerError?.errorMessage ?: getString(R.string.default_request_error_unknown),
+                        message = linkerError?.errorMessage
+                            ?: getString(R.string.default_request_error_unknown),
                         type = Toaster.TYPE_ERROR
                     )
                 }
@@ -389,12 +390,18 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 when (it) {
                     is Success -> {
                         if (it.data.animatedInfoList?.isNotEmpty() == true) {
+
+                            customMvcTracker.activityId = activityId
+                            customMvcTracker.status = getTrackerCampaignStatusSuffix()
+                            // TODO : Add Content Score
+
                             mvcWidget.setData(
                                 mvcData = MvcData(
                                     it.data.animatedInfoList
                                 ),
                                 shopId = shopId,
-                                source = MvcSource.SHOP
+                                source = MvcSource.SHOP,
+                                mvcTrackerImpl = customMvcTracker
                             )
                             mvcWidget.show()
                         } else {
@@ -558,12 +565,12 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         activityId: String
     ) {
         feedAnalytics.eventonShareProductClicked(
-                activityId,
-                item.id,
-                item.postType,
-                item.isFollowed,
-                item.shopId,
-                ""
+            activityId,
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            ""
         )
 
         val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
