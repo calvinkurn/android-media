@@ -68,6 +68,9 @@ object RollenceKey {
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
+    // Bubbles
+    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat"
+
     object PdpToolbar {
         const val key = "pdp_dyn_container"
         const val transparent = "var_container"
