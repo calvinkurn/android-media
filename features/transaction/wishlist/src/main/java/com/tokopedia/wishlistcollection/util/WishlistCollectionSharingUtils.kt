@@ -45,7 +45,7 @@ class WishlistCollectionSharingUtils() {
                     feature = shareModel.feature
                     channel = shareModel.channel
                     campaign = shareModel.campaign
-                    ogTitle = "Wishlist ${data.totalItem}"
+                    ogTitle = "Koleksi ${data.collection.name}"
                     ogDescription = data.collection.owner.name
                     if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                         ogImageUrl = shareModel.ogImgUrl
