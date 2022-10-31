@@ -83,6 +83,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SUCCESS_CODE
@@ -96,6 +97,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -121,6 +123,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getQuestWidgetListUseCase: GetQuestWidgetListUseCase,
     private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     private val getHomeReferralUseCase: GetHomeReferralUseCase,
+    private val referralEvaluateJoinUseCase: ReferralEvaluateJoinUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
@@ -162,6 +165,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _invalidatePlayImpression
     val updateToolbarNotification: LiveData<Boolean>
         get() = _updateToolbarNotification
+    val referralEvaluate: LiveData<Result<HomeReceiverReferralDialogUiModel>>
+        get() = _referralEvaluate
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -179,6 +184,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _homeSwitchServiceTracker = MutableLiveData<HomeSwitchServiceTracker>()
     private val _invalidatePlayImpression = MutableLiveData<Boolean>()
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
+    private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -598,6 +604,18 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
+    }
+
+    /**
+     * get dialog data after user click link referral
+     */
+    fun getReceiverHomeDialog(referralData: String) {
+        launchCatchError(block = {
+            val data = referralEvaluateJoinUseCase.execute(referralData)
+            if (data.gamiReferralEvaluteJoinResponse.resultStatus.code = ME)
+        }, onError = {
+            _referralEvaluate.postValue(Fail(it))
+        })
     }
 
     /**

@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.home.domain.query
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.tokopedianow.home.domain.usecase.ValidateReferralUserUseCase
 
-internal object ValidateReferralUser: GqlQueryInterface {
+object ValidateReferralUser: GqlQueryInterface {
 
     private const val OPERATION_NAME = "gamiReferralValidateUser"
 
