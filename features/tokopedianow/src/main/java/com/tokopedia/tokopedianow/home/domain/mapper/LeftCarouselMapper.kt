@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcU
 
 object LeftCarouselMapper {
     private const val DEFAULT_PARENT_PRODUCT_ID = "0"
+    private const val DEFAULT_MAX_ORDER = 0
 
     fun mapResponseToLeftCarousel(
         response: HomeLayoutResponse,
@@ -106,7 +107,7 @@ object LeftCarouselMapper {
         progressBarLabelColor = channelGrid.labelTextColor,
         progressBarPercentage = channelGrid.soldPercentage,
         isVariant = channelGrid.parentProductId != DEFAULT_PARENT_PRODUCT_ID && channelGrid.parentProductId.isNotBlank(),
-        needToShowQuantityEditor = channelGrid.minOrder < channelGrid.maxOrder,
+        needToShowQuantityEditor = channelGrid.minOrder <= channelGrid.maxOrder && channelGrid.maxOrder != DEFAULT_MAX_ORDER,
         labelGroupList = channelGrid.labelGroup.map {
             LabelGroup(
                 position = it.position,
