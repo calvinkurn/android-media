@@ -100,7 +100,7 @@ class AffiliateStickyHeaderView : FrameLayout, OnStickyHeaderListener {
                     linearLayoutManager?.isViewPartiallyVisible(
                         view,
                         true,
-                        false
+                        true
                     )
                 } ?: false
 
