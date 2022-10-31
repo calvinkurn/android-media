@@ -725,6 +725,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             when (result) {
                 is Success -> {
                     if (result.data.data.success && result.data.status == OK) {
+                        doRefresh()
                         getCollectionSharingData()
                     } else if (result.data.errorMessage.isNotEmpty()) {
                         showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
