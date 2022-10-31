@@ -68,6 +68,7 @@ class ProductViewModelMapper {
             searchProductModel.getProductListType(),
             externalReference,
             searchProductData.keywordIntention,
+            searchProductModel.isShowButtonAtc,
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
@@ -127,6 +128,7 @@ class ProductViewModelMapper {
             productListType: String,
             externalReference: String,
             keywordIntention: Int,
+            showButtonAtc: Boolean,
     ): List<ProductItemDataView> {
         return productModels.mapIndexed { index, productModel ->
             val position = lastProductItemPosition + index + 1
@@ -139,6 +141,7 @@ class ProductViewModelMapper {
                 productListType,
                 externalReference,
                 keywordIntention,
+                showButtonAtc
             )
         }
     }
@@ -152,6 +155,7 @@ class ProductViewModelMapper {
             productListType: String,
             externalReference: String,
             keywordIntention: Int,
+            showButtonAtc: Boolean,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
         productItem.productID = productModel.id
@@ -197,6 +201,8 @@ class ProductViewModelMapper {
         productItem.productListType = productListType
         productItem.dimension131 = externalReference
         productItem.keywordIntention = keywordIntention
+        productItem.showButtonAtc = showButtonAtc
+        productItem.parentId = productModel.parentId
         return productItem
     }
 

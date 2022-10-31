@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTableColumnHtml"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingStart="4dp"
+        android:paddingLeft="4dp"
+        android:paddingEnd="4dp"
+        android:paddingRight="4dp"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        tools:text="Text Of Table" />
+
+    <ImageView
+        android:contentDescription="@null"
+        android:id="@+id/icon"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="6dp" />
+</LinearLayout>

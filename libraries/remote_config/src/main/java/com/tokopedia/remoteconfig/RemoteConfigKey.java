@@ -298,4 +298,6 @@ public class RemoteConfigKey {
     public static final String SEARCH_DEBUG_LOG = "android_search_debug_enable";
 
     public static final String HOME_USE_GQL_FED_QUERY = "android_home_use_gql_fed_query";
+
+    public static final String ENABLE_TICKER_NOTIFY_ME = "android_show_ticker_notify_me";
 }
