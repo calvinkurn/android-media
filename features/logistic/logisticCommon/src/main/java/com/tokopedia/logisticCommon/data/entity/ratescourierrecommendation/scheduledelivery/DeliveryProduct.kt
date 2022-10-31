@@ -2,6 +2,8 @@ package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.sche
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlStrikethroughText
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -38,4 +40,17 @@ class DeliveryProduct(
     val promoText: String = "",
     @SerializedName("free_shipping_metadata")
     val freeShippingMetadata: String = ""
-) : Parcelable
+) : Parcelable {
+    fun getFormattedPrice(): String {
+        return StringBuilder().apply {
+            if (realPrice != finalPrice) {
+                appendHtmlBoldText(" (${textFinalPrice} ")
+                appendHtmlStrikethroughText(textRealPrice)
+                appendHtmlBoldText(")")
+            } else {
+                appendHtmlBoldText(" (${textFinalPrice})")
+            }
+
+        }.toString()
+    }
+}

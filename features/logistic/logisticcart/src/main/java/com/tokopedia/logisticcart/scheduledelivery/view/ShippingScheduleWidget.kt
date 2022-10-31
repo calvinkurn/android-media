@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
@@ -137,29 +138,13 @@ class ShippingScheduleWidget : ConstraintLayout {
         val text = StringBuilder().apply {
             appendHtmlBoldText(title)
             if (available) {
-                if (deliveryProduct?.realPrice != deliveryProduct?.finalPrice) {
-                    appendHtmlBoldText(" (${deliveryProduct?.textFinalPrice} ")
-                    appendHtmlStrikethroughText("${deliveryProduct?.textRealPrice}")
-                    appendHtmlBoldText(")")
-                } else {
-                    appendHtmlBoldText(" (${deliveryProduct?.textFinalPrice})")
+                deliveryProduct?.let {
+                    product -> append(product.getFormattedPrice())
                 }
             }
         }.toString()
 
         return HtmlLinkHelper(context, text).spannedString ?: ""
-    }
-
-    private fun StringBuilder.appendHtmlBoldText(text: String) {
-        if (text.isNotBlank()) {
-            append(String.format(HTML_BOLD_FORMAT, text))
-        }
-    }
-
-    private fun StringBuilder.appendHtmlStrikethroughText(text: String) {
-        if (text.isNotBlank()) {
-            append(String.format(HTML_STRIKETHROUGH_FORMAT, text))
-        }
     }
 
     private fun openScheduleDeliveryBottomSheet(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
@@ -182,6 +167,7 @@ class ShippingScheduleWidget : ConstraintLayout {
                             scheduleDate = dateId,
                             timeslotId = timeId
                         )
+                        mListener?.onChangeScheduleDelivery(it)
                     }
                 })
 
@@ -322,8 +308,6 @@ class ShippingScheduleWidget : ConstraintLayout {
     }
 
     companion object {
-        const val HTML_BOLD_FORMAT = "<b>%s</b>"
-        private const val HTML_STRIKETHROUGH_FORMAT = "<s>%s</s>"
         private const val DELAY_SHOWING_COACHMARK: Long = 300
     }
 }

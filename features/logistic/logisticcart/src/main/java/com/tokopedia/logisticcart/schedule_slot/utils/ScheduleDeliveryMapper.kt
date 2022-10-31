@@ -4,6 +4,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetInfoUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
@@ -88,7 +89,7 @@ object ScheduleDeliveryMapper {
     ): List<ChooseTimeUiModel> {
         return timeOptions.filter { !it.hidden }.map { time ->
             ChooseTimeUiModel(
-                content = generateTimeTitle(time),
+                content = time.generateTimeTitle(),
                 note = time.text,
                 isEnabled = time.available,
                 isSelected = isDateSelected && time.id == selectedTimeSlot.id,
@@ -98,15 +99,12 @@ object ScheduleDeliveryMapper {
         }
     }
 
-    private fun generateTimeTitle(time: DeliveryProduct): String {
-        val timeTitle = time.title
-        return if (!time.available) {
-            "<b>$timeTitle</b>"
-        } else if (time.finalPrice == time.realPrice) {
-            // check price
-            "<b>" + timeTitle + " (${time.textFinalPrice})</b>"
-        } else {
-            "<b>" + timeTitle + " (${time.textFinalPrice}</b> <s>${time.textRealPrice}</s><b>)</b>"
-        }
+    private fun DeliveryProduct.generateTimeTitle(): String {
+        return StringBuilder().apply {
+            appendHtmlBoldText(title)
+            if (available) {
+                append(getFormattedPrice())
+            }
+        }.toString()
     }
 }
