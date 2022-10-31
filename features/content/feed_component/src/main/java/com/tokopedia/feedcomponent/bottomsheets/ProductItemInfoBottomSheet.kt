@@ -118,7 +118,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                                 it.data.animatedInfoList
                             ),
                             shopId = shopId,
-                            source = MvcSource.SHOP,
+                            source = MvcSource.FEED_BOTTOM_SHEET,
                             mvcTrackerImpl = customMvcTracker ?: DefaultMvcTrackerImpl()
                         )
                         binding?.merchantVoucherWidgetPostTag?.show()

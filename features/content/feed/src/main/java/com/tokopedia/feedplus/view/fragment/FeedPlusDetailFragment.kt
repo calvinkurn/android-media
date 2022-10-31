@@ -400,7 +400,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                                     it.data.animatedInfoList
                                 ),
                                 shopId = shopId,
-                                source = MvcSource.SHOP,
+                                source = MvcSource.FEED_PRODUCT_DETAIL,
                                 mvcTrackerImpl = customMvcTracker
                             )
                             mvcWidget.show()
