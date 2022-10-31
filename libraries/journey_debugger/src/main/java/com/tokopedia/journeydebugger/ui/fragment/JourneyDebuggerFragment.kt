@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.journeydebugger.R
 import com.tokopedia.journeydebugger.di.JourneyDebuggerComponent
+import com.tokopedia.journeydebugger.di.DaggerJourneyDebuggerComponent
 import com.tokopedia.journeydebugger.ui.activity.JourneyDebuggerDetailActivity
 import com.tokopedia.journeydebugger.ui.adapter.JourneyDebuggerTypeFactory
 import com.tokopedia.journeydebugger.ui.model.JourneyDebuggerUIModel
