@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.view.adapter.BubbleActivationGuideAdapter
 import com.tokopedia.topchat.chatsetting.view.uimodel.BubbleActivationGuideUiModel
-import com.tokopedia.topchat.common.util.BubbleChatUrl
+import com.tokopedia.topchat.common.util.BubbleChat
 import com.tokopedia.topchat.common.util.Utils.isBubbleChatEnabled
 import com.tokopedia.topchat.common.util.Utils.setTextMakeHyperlink
 import com.tokopedia.topchat.databinding.FragmentBubbleChatActivationGuideBinding
@@ -87,19 +87,19 @@ class BubbleChatActivationGuideFragment: Fragment() {
     private fun getBubbleActivationGuideList(): List<BubbleActivationGuideUiModel> {
         return listOf(
             BubbleActivationGuideUiModel(
-                imageUrl = BubbleChatUrl.BUBBLE_ACTIVATION_GUIDE_1,
+                imageUrl = BubbleChat.Url.BUBBLE_ACTIVATION_GUIDE_1,
                 desc = getString(com.tokopedia.topchat.R.string.topchat_bubble_activation_guide_1_desc),
-                detailInformationUrl = BubbleChatUrl.BUBBLE_ACTIVATION_GUIDE_1,
-                descDetailInformation = BubbleChatUrl.BUBBLE_CHAT_ENTRY_POINT
+                detailInformationUrl = BubbleChat.Url.BUBBLE_ACTIVATION_GUIDE_1,
+                descDetailInformation = BubbleChat.Url.BUBBLE_CHAT_ENTRY_POINT
             ),
             BubbleActivationGuideUiModel(
-                imageUrl = BubbleChatUrl.BUBBLE_ACTIVATION_GUIDE_2,
+                imageUrl = BubbleChat.Url.BUBBLE_ACTIVATION_GUIDE_2,
                 desc = getString(com.tokopedia.topchat.R.string.topchat_bubble_activation_guide_2_desc),
                 detailInformationUrl = String.EMPTY,
                 descDetailInformation = String.EMPTY
             ),
             BubbleActivationGuideUiModel(
-                imageUrl = BubbleChatUrl.BUBBLE_ACTIVATION_GUIDE_3,
+                imageUrl = BubbleChat.Url.BUBBLE_ACTIVATION_GUIDE_3,
                 desc = getString(com.tokopedia.topchat.R.string.topchat_bubble_activation_guide_3_desc),
                 detailInformationUrl = String.EMPTY,
                 descDetailInformation = String.EMPTY

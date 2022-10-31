@@ -244,7 +244,9 @@ object ApplinkConstInternalGlobal {
      */
     const val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
 
-
+    // BubbleChatActivationActivity
+    // tokopedia-android-internal://global/bubble-activation
+    const val TOPCHAT_BUBBLE_ACTIVATION = "$INTERNAL_GLOBAL/bubble-activation"
 
     //ReferralPhoneNumberVerificationActivity
     // tokopedia-android-internal://global/setting-referral-phone-verification
