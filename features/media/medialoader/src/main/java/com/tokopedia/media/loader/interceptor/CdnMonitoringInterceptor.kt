@@ -16,13 +16,13 @@ class CdnMonitoringInterceptor(private val applicationContext: Context): Interce
         val cdnName: String = response.header("x-tkpd-cdn-name", "") ?: ""
 
         if (cdnName.isNotBlank() && assetUrl.isNotBlank()) {
-            setCdnNameUserSession(cdnName, assetUrl)
+            setCdnAttrsUserSession(cdnName, assetUrl)
         }
 
         return response
     }
 
-    private fun setCdnNameUserSession(cdnName: String, assetUrl: String) {
+    private fun setCdnAttrsUserSession(cdnName: String, assetUrl: String) {
         val userSession = UserSession(applicationContext)
         userSession.cdnName = cdnName
         userSession.cdnAssetUrl = assetUrl
