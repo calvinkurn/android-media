@@ -13,10 +13,8 @@ import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.recom.PlayGeneralVideoPlayerParams
-import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
+import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -50,10 +48,19 @@ class PlayEngagementUiTest {
                 uiModelBuilder.buildChannelData(
                     id = channelId,
                     tagItems = uiModelBuilder.buildTagItem(
+                        voucher = uiModelBuilder.buildVoucherModel(
+                            voucherList = listOf(uiModelBuilder.buildMerchantVoucher(), uiModelBuilder.buildMerchantVoucher(highlighted = false))
+                        ),
                         product = uiModelBuilder.buildProductModel(
                             canShow = true,
+                            productList = listOf(
+                                uiModelBuilder.buildProductSection(
+                                    productList = listOf(uiModelBuilder.buildProduct("Warung"))
+                                )
+                            )
                         )
                     ),
+                    status = uiModelBuilder.buildStatus(channelStatus = PlayChannelStatus(statusType = PlayStatusType.Active, statusSource = PlayStatusSource.Network, waitingDuration = 100)),
                     videoMetaInfo = PlayVideoMetaInfoUiModel(
                       videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
                             params = PlayGeneralVideoPlayerParams(
@@ -93,11 +100,14 @@ class PlayEngagementUiTest {
 
     @Test
     fun clickVoucher_openBottomSheetCoupon () {
-        val items = uiModelBuilder.buildTagItem(
+        val tagItems = uiModelBuilder.buildTagItem(
+           product = uiModelBuilder.buildProductModel( productList = listOf(uiModelBuilder.buildProductSection(
+               productList = listOf(uiModelBuilder.buildProduct("Warung"))
+           ))),
             voucher = uiModelBuilder.buildVoucherModel(
                 voucherList = listOf(uiModelBuilder.buildMerchantVoucher(), uiModelBuilder.buildMerchantVoucher(highlighted = true))
             )
         )
-        coEvery { repo.getTagItem(any(), any(), any()) } returns items
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
     }
 }
