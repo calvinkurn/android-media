@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.view.analytics
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author.Companion.TYPE_AFFILIATE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
-import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Ecommerce.getEcommerceClick
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Ecommerce.getEcommerceView
@@ -13,9 +12,13 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.Exception
+import java.util.*
 import javax.inject.Inject
-import java.util.HashMap
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.indices
+import kotlin.collections.set
 
 /**
  * @author by astidhiyaa on 30/08/22
@@ -409,24 +412,39 @@ class FeedAnalytics @Inject constructor(
         shopId: String,
         activityId: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        trackerId: String,
+        campaignStatus: String
     ) {
         val eventAction = ACTION_CLICK_PRODUCT + " - " + getPostType(type, isFollowed)
-        trackEnhancedEcommerceEvent(
-            DataLayer.mapOf(
-                EVENT_NAME, PRODUCT_CLICK,
-                EVENT_CATEGORY, CONTENT_FEED_TIMELINE_BOTTOM_SHEET,
-                EVENT_ACTION, eventAction,
-                EVENT_LABEL, activityId + " - " + shopId + " - " + product.productId,
-                KEY_USER_ID, userId,
-                KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
-                EVENT_ECOMMERCE, getProductEcommerceClick(
-                    product,
-                    "/feed - " + getPostType(type, isFollowed)
-                )
-            ) as HashMap<String, Any>?
+        val eventLabel = if (campaignStatus.isEmpty()) {
+            activityId + " - " + shopId + " - " + product.productId
+        } else {
+            activityId + " - " + shopId + " - " + product.productId + " - " + campaignStatus
+        }
+        val map = DataLayer.mapOf(
+            EVENT_NAME,
+            PRODUCT_CLICK,
+            EVENT_CATEGORY,
+            CONTENT_FEED_TIMELINE_DETAIL,
+            EVENT_ACTION,
+            eventAction,
+            EVENT_LABEL,
+            eventLabel,
+            KEY_USER_ID,
+            userId,
+            KEY_BUSINESS_UNIT_EVENT,
+            KEY_BUSINESS_UNIT,
+            KEY_CURRENT_SITE_EVENT,
+            KEY_CURRENT_SITE,
+            EVENT_ECOMMERCE,
+            getProductEcommerceClick(
+                product,
+                "/feed - " + getPostType(type, isFollowed)
+            )
         )
+        if (trackerId.isNotEmpty()) map[KEY_TRACKER_ID] = trackerId
+        trackEnhancedEcommerceEvent(map as HashMap<String, Any>?)
     }
 
     fun eventNewPostClick() {
@@ -620,6 +638,7 @@ class FeedAnalytics @Inject constructor(
         private const val EVENT_ACTION = "eventAction"
         private const val EVENT_LABEL = "eventLabel"
         private const val EVENT_ECOMMERCE = "ecommerce"
+        private const val KEY_TRACKER_ID = "trackerId"
         private const val KEY_USER_ID = "userId"
         private const val KEY_USER_ID_MOD = "userIdmodulo"
         private const val KEY_BUSINESS_UNIT = "content"
