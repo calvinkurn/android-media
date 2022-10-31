@@ -107,6 +107,7 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         if (replyBubbleOnboardingDismissed && videoBubbleOnBoardingDismissed) {
             val intent = Intent(this, ChatbotActivity::class.java)
             startActivity(intent)
+            setResult(RESULT_OK)
             finish()
         }
     }
@@ -141,6 +142,6 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         private const val Y_COORDINATE = "y-coordinate"
         private const val ZERO_RATIO = 0F
         private const val DIMEN_DEFAULT = 0
-        private const val RATIO_CONSTANT = 0.05F
+        private const val RATIO_CONSTANT = 0F
     }
 }

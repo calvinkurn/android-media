@@ -6,6 +6,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
 import com.tokopedia.chatbot.view.util.OnboardingDismissListener
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2.Companion.POSITION_TOP
 import com.tokopedia.coachmark.CoachMark2Item
 import javax.inject.Inject
 
@@ -45,7 +46,7 @@ class ReplyBubbleOnBoarding @Inject constructor(
             coachMark = CoachMark2(it)
             coachMarkItem.add(
                 CoachMark2Item(
-                    anchor!!, title, description
+                    anchor!!, title, description, POSITION_TOP
                 )
             )
             coachMark?.showCoachMark(coachMarkItem, null)
@@ -63,6 +64,11 @@ class ReplyBubbleOnBoarding @Inject constructor(
 
     fun hasBeenShown(): Boolean {
         return cacheManager.loadPreviousState(CHATBOT_REPLY_BUBBLE_ONBOARDING)
+    }
+
+    //TODO revert
+    fun markAsShowedNot() {
+        cacheManager.saveState(CHATBOT_REPLY_BUBBLE_ONBOARDING, false)
     }
 
     fun flush() {

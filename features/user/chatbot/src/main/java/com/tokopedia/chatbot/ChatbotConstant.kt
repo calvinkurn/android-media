@@ -7,12 +7,12 @@ object ChatbotConstant {
     const val REQUEST_CODE_CHAT_VIDEO = 116
     const val REQUEST_SUBMIT_FEEDBACK = 909
     const val REQUEST_SUBMIT_CSAT = 911
+    const val REQUEST_CODE_CHATBOT_ONBOARDING = 117
     const val ONE_SECOND_IN_MILLISECONDS = 1000
     const val MODE_AGENT = "agent"
     const val MODE_BOT = "bot"
     const val TOKOPEDIA_CARE = "Tokopedia Care"
     const val TANYA = "Tanya"
-    const val REPLY_AGENT_NAME = "{.Name}"
     const val RENDER_INVOICE_LIST_AND_BUTTON_ACTION = 1
 
     object CsatRating {

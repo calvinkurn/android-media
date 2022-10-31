@@ -60,6 +60,11 @@ class VideoUploadOnBoarding @Inject constructor(
         cacheManager.saveState(CHATBOT_VIDEO_UPLOAD_ONBOARDING, true)
     }
 
+    //TODO revert
+    fun markAsShowedNot() {
+        cacheManager.saveState(CHATBOT_VIDEO_UPLOAD_ONBOARDING, false)
+    }
+
     fun hasBeenShown(): Boolean {
         return cacheManager.loadPreviousState(CHATBOT_VIDEO_UPLOAD_ONBOARDING)
     }

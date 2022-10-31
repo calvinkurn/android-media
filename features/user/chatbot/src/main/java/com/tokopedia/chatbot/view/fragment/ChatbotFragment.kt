@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +23,6 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -68,6 +70,7 @@ import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_THREE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_TWO
 import com.tokopedia.chatbot.ChatbotConstant.ONE_SECOND_IN_MILLISECONDS
+import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHATBOT_ONBOARDING
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_VIDEO
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
@@ -286,6 +289,7 @@ class ChatbotFragment :
         private const val DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 0
         private const val X_COORDINATE = "x-coordinate"
         private const val Y_COORDINATE = "y-coordinate"
+        private const val ZERO_POSITION = 0
     }
 
     override fun initInjector() {
@@ -646,14 +650,19 @@ class ChatbotFragment :
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
         val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
 
-        if (hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
+//        if (hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
+//            return
+//        }
+        if(xForReplyBubbleOnboarding ==0 && yForReplyBubbleOnboarding == 0)
             return
-        }
 
+        //TODO revert
+        videoUploadOnBoarding.markAsShowedNot()
+        replyBubbleOnBoarding.markAsShowedNot()
         val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
         intent.putExtra(X_COORDINATE, xForReplyBubbleOnboarding)
         intent.putExtra(Y_COORDINATE, yForReplyBubbleOnboarding)
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_CODE_CHATBOT_ONBOARDING)
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -902,6 +911,7 @@ class ChatbotFragment :
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
         getViewState()?.onCheckToHideQuickReply(visitable)
+        checkReplyBubbleOnboardingStatus()
     }
 
     private fun manageVideoBubble() {
@@ -1013,8 +1023,16 @@ class ChatbotFragment :
             REQUEST_CODE_CHAT_VIDEO -> onPickedAttachVideo(resultCode,data)
             REQUEST_SUBMIT_FEEDBACK -> if (resultCode == Activity.RESULT_OK) submitRating(data)
             REQUEST_SUBMIT_CSAT -> submitCsat(resultCode, data)
+            REQUEST_CODE_CHATBOT_ONBOARDING -> backFromOnboardingActivity()
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun backFromOnboardingActivity() {
+        //TODO revert this
+        videoUploadOnBoarding.markAsShowedNot()
+        replyBubbleOnBoarding.markAsShowedNot()
+        smoothScrollToPosition(ZERO_POSITION)
     }
 
     private fun submitCsat(resultCode: Int, data: Intent?) {
@@ -1702,12 +1720,19 @@ class ChatbotFragment :
     }
 
     private fun checkReplyBubbleOnboardingStatus() {
-        recyclerView?.doOnLayout {
-            val location = IntArray(2)
-            recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark())
-                ?.getLocationOnScreen(location)
-            xForReplyBubbleOnboarding = location[0]
-            yForReplyBubbleOnboarding = location[1]
+//        recyclerView?.doOnLayout {
+//            val location = IntArray(2)
+////            recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark())
+////                ?.getLocationOnScreen(location)
+////            xForReplyBubbleOnboarding = location[0]
+////            yForReplyBubbleOnboarding = location[1]
+        if (!replyBubbleOnBoarding.hasBeenShown()) {
+            val position = getPositionToAnchorReplyBubbleCoachmark()
+            Log.d("FATAL", "checkReplyBubbleOnboardingStatus: $position")
+            if (position != RecyclerView.NO_POSITION)
+                smoothScrollToPosition(position)
+//
+//        }
         }
     }
 
@@ -1736,6 +1761,7 @@ class ChatbotFragment :
         }
     }
 
+    private val handler = Handler(Looper.getMainLooper())
     private fun initRecyclerViewListener() {
         rvScrollListener = object : RecyclerViewScrollListener((recyclerView?.layoutManager as LinearLayoutManager)) {
             override fun loadMoreTop() {
@@ -1746,6 +1772,35 @@ class ChatbotFragment :
             override fun loadMoreDown() {
                 showBottomLoading()
                 presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+            }
+
+            override fun scrollDone() {
+                if(!isConnectedToAgent)
+                    return
+                if (true) {
+                    val position = getPositionToAnchorReplyBubbleCoachmark()
+                    handler.postDelayed(
+                        {
+                            val location = IntArray(2)
+                            Log.d(
+                                "EREN",
+                                "initRecyclerViewListener: ${
+                                    recyclerView?.getChildAt(position)
+                                        ?.getLocationOnScreen(location)
+                                }"
+                            )
+
+                            Log.d(
+                                "EREN",
+                                "initRecyclerViewListener: " + location[0] + "    " + location[1]
+                            )
+                            xForReplyBubbleOnboarding = location[0]
+                            yForReplyBubbleOnboarding = location[1]
+                            goToOnboardingActivity()
+                        }, 1000L
+                    )
+
+                }
             }
 
         }.also {
@@ -1766,6 +1821,7 @@ class ChatbotFragment :
     }
 
     private fun hideTopLoading() {
+        Log.d("EREN", "hideTopLoading: a")
         hideLoading()
     }
 
@@ -1984,5 +2040,6 @@ class ChatbotFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
+        handler.removeCallbacksAndMessages(null)
     }
 }
