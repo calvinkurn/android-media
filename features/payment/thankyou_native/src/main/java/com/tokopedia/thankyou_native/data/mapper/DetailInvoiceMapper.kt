@@ -2,13 +2,13 @@ package com.tokopedia.thankyou_native.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.PREV_ORDER_AMOUNT_VA
-import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.presentation.adapter.model.*
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.THANK_STACKED_CASHBACK_TITLE
 import com.tokopedia.thankyou_native.domain.model.AddOnItem
 import com.tokopedia.thankyou_native.domain.model.BundleGroupItem
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.presentation.adapter.model.*
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
@@ -31,7 +31,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         thanksPageData.shopOrder.forEach { shopOrder ->
             shopOrder.purchaseItemList.forEach {
                 totalPrice += it.totalPrice
-                totalItemCount += 1
+                totalItemCount += it.quantity
             }
         }
 
@@ -43,8 +43,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
         thanksPageData.paymentDeductions?.filter {
             (it.itemName == PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT) ||
-                    (it.itemName == PaymentDeductionKey.TOTAL_DISCOUNT)
-
+                (it.itemName == PaymentDeductionKey.TOTAL_DISCOUNT)
         }?.forEach {
             invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr, true))
         }
@@ -58,23 +57,26 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         thanksPageData.feeDetailList?.forEach {
             fee += it.amount
             val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false)
-            totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr,it.showTooltip,it.tooltipTitle,it.tooltipDesc))
+            totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr, it.showTooltip, it.tooltipTitle, it.tooltipDesc))
         }
         if (thanksPageData.combinedAmount > 0) {
             getPreviousVAOrderAmount(fee)?.let {
                 totalFee.feeDetailList.add(it)
             }
         }
-        if (totalFee.feeDetailList.isNotEmpty())
+        if (totalFee.feeDetailList.isNotEmpty()) {
             visitableList.add(totalFee)
+        }
     }
 
     private fun getPreviousVAOrderAmount(totalFee: Long): FeeDetail? {
-         if (thanksPageData.combinedAmount > 0) {
+        if (thanksPageData.combinedAmount > 0) {
             val previousAmount = thanksPageData.combinedAmount - thanksPageData.amount
-            if(previousAmount>0){
-                val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(previousAmount,
-                    false)
+            if (previousAmount > 0) {
+                val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    previousAmount,
+                    false
+                )
                 return FeeDetail(PREV_ORDER_AMOUNT_VA, formattedAmountStr)
             }
         }
@@ -91,18 +93,31 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             }
         }
         thanksPageData.paymentDetails?.forEach { paymentDetail ->
-            val amountStr = if(paymentDetail.amountCombine > 0)
-                                paymentDetail.amountCombineStr
-                            else paymentDetail.amountStr
-            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName,
-                    amountStr, paymentDetail.gatewayCode))
+            val amountStr = if (paymentDetail.amountCombine > 0) {
+                paymentDetail.amountCombineStr
+            } else {
+                paymentDetail.amountStr
+            }
+            paymentModeMapList.add(
+                PaymentModeMap(
+                    paymentDetail.gatewayName,
+                    amountStr,
+                    paymentDetail.gatewayCode
+                )
+            )
         }
 
-        val totalPayment: String = if (thanksPageData.combinedAmount > 0)
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.combinedAmount,
-                    false)
-        else CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.amount,
-                false)
+        val totalPayment: String = if (thanksPageData.combinedAmount > 0) {
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                thanksPageData.combinedAmount,
+                false
+            )
+        } else {
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                thanksPageData.amount,
+                false
+            )
+        }
 
         val paymentInfo = PaymentInfo(totalPayment, paymentModeList = paymentModeMapList)
         visitableList.add(paymentInfo)
@@ -115,14 +130,30 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             when (it.itemName) {
                 PaymentDeductionKey.CASH_BACK_OVO_POINT -> {
                     isCashBackOVOPoint = true
-                    cashBackMapList.add(CashBackMap(it.itemDesc,
-                            it.amountStr, null))
+                    cashBackMapList.add(
+                        CashBackMap(
+                            it.itemDesc,
+                            it.amountStr,
+                            null
+                        )
+                    )
                 }
-                PaymentDeductionKey.POTENTIAL_CASH_BACK -> cashBackMapList.add(CashBackMap(it.itemDesc,
-                        it.amountStr, null, isBBICashBack = true))
+                PaymentDeductionKey.POTENTIAL_CASH_BACK -> cashBackMapList.add(
+                    CashBackMap(
+                        it.itemDesc,
+                        it.amountStr,
+                        null,
+                        isBBICashBack = true
+                    )
+                )
                 PaymentDeductionKey.CASHBACK_STACKED -> {
-                    val cashBackMap = CashBackMap(THANK_STACKED_CASHBACK_TITLE, it.amountStr,
-                            it.itemDesc, isBBICashBack = false, isStackedCashBack = true)
+                    val cashBackMap = CashBackMap(
+                        THANK_STACKED_CASHBACK_TITLE,
+                        it.amountStr,
+                        it.itemDesc,
+                        isBBICashBack = false,
+                        isStackedCashBack = true
+                    )
                     if (cashBackMapList.size > 0) {
                         val tempCashBackList = arrayListOf<CashBackMap>()
                         tempCashBackList.add(cashBackMap)
@@ -146,43 +177,47 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     * @param: bundleMap: to enable O(1) access of bundleData while looping item_list from bundle_group_id
     * */
     private fun createShopsSummery(thanksPageData: ThanksPageData) {
-        if (thanksPageData.shopOrder.isNotEmpty())
+        if (thanksPageData.shopOrder.isNotEmpty()) {
             visitableList.add(PurchasedProductTag())
+        }
         var currentIndex = 0
         val bundleToProductMap = mutableMapOf<String, ArrayList<OrderedItem>>()
         var bundleMap: MutableMap<String, BundleGroupItem>
         thanksPageData.shopOrder.forEach { shopOrder ->
 
-            if (currentIndex > 0)
+            if (currentIndex > 0) {
                 visitableList.add(ShopDivider())
+            }
             val orderedItemList = arrayListOf<OrderedItem>()
             var totalProductProtectionForShop = 0.0
 
             // Map population
-            bundleMap = shopOrder.bundleGroupList.associateBy({it.groupId}, {it}).toMutableMap()
+            bundleMap = shopOrder.bundleGroupList.associateBy({ it.groupId }, { it }).toMutableMap()
 
             // Map population
             shopOrder.purchaseItemList.forEach { purchasedItem ->
                 val bundleGroupId = purchasedItem.bundleGroupId
                 if (bundleGroupId.isNotEmpty()) {
-                    if (bundleToProductMap.containsKey(bundleGroupId))
+                    if (bundleToProductMap.containsKey(bundleGroupId)) {
                         bundleToProductMap[bundleGroupId]?.add(createOrderItemFromPurchase(purchasedItem, purchasedItem.addOnList))
-                     else bundleToProductMap[bundleGroupId] = arrayListOf(createOrderItemFromPurchase(purchasedItem, purchasedItem.addOnList))
+                    } else {
+                        bundleToProductMap[bundleGroupId] = arrayListOf(createOrderItemFromPurchase(purchasedItem, purchasedItem.addOnList))
+                    }
                 }
             }
 
             shopOrder.purchaseItemList.forEach { purchasedItem ->
                 val bundleGroupId = purchasedItem.bundleGroupId
                 // Normal Product
-                if (bundleGroupId.isEmpty())
+                if (bundleGroupId.isEmpty()) {
                     orderedItemList.add(createOrderItemFromPurchase(purchasedItem, purchasedItem.addOnList, OrderItemType.SINGLE_PRODUCT))
-                else {
+                } else {
                     if (bundleToProductMap.containsKey(bundleGroupId)) {
                         // add bundle data name
                         // add product data having same bundle Id
                         // prevent same products from re-calculation in the current loop
                         orderedItemList.add(createOrderItemFromBundle(bundleMap[bundleGroupId]))
-                        orderedItemList.addAll(bundleToProductMap[bundleGroupId]?: arrayListOf())
+                        orderedItemList.addAll(bundleToProductMap[bundleGroupId] ?: arrayListOf())
                         bundleToProductMap.remove(bundleGroupId)
                     }
                 }
@@ -202,27 +237,35 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
             val shippingDurationOrETA = if (shopOrder.logisticETA.isNullOrBlank()) {
                 if (shopOrder.logisticDuration.isNullOrBlank()) "" else shopOrder.logisticDuration
-            } else shopOrder.logisticETA
+            } else {
+                shopOrder.logisticETA
+            }
 
-            val shippingInfo = if (shippingDurationOrETA.isBlank())
+            val shippingInfo = if (shippingDurationOrETA.isBlank()) {
                 shopOrder.logisticType
-            else shopOrder.logisticType + "\n" + shippingDurationOrETA
+            } else {
+                shopOrder.logisticType + "\n" + shippingDurationOrETA
+            }
 
             val shopInvoice = ShopInvoice(
-                    shopOrder.storeName,
-                    orderedItemList,
-                    discountFromMerchant,
-                    if (totalProductProtectionForShop > 0.0)
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(totalProductProtectionForShop,
-                                false)
-                    else null,
-                    if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
-                    shippingInfo,
-                    logisticDiscountStr,
-                    if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
-                    shopOrder.address,
-                    // add order level add-ons here
-                    OrderLevelAddOn(shopOrder.addOnSectionDescription,shopOrder.addOnItemList)
+                shopOrder.storeName,
+                orderedItemList,
+                discountFromMerchant,
+                if (totalProductProtectionForShop > 0.0) {
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        totalProductProtectionForShop,
+                        false
+                    )
+                } else {
+                    null
+                },
+                if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
+                shippingInfo,
+                logisticDiscountStr,
+                if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
+                shopOrder.address,
+                // add order level add-ons here
+                OrderLevelAddOn(shopOrder.addOnSectionDescription, shopOrder.addOnItemList)
             )
             visitableList.add(shopInvoice)
             currentIndex++
@@ -232,8 +275,16 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }
     }
 
-    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, addOnList: ArrayList<AddOnItem>, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.variant, purchasedItem.quantity,
-        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct, orderItemType, addOnList)
+    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, addOnList: ArrayList<AddOnItem>, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(
+        purchasedItem.productName,
+        purchasedItem.variant,
+        purchasedItem.quantity,
+        purchasedItem.priceStr,
+        purchasedItem.totalPriceStr,
+        purchasedItem.isBBIProduct,
+        orderItemType,
+        addOnList
+    )
 
     private fun createOrderItemFromBundle(bundleGroupItem: BundleGroupItem?) = OrderedItem(
         bundleGroupItem?.bundleTitle ?: "",
@@ -241,8 +292,10 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         null,
         bundleGroupItem?.totalPrice.toString(),
         bundleGroupItem?.totalPriceStr ?: "",
-        false, OrderItemType.BUNDLE, null)
-
+        false,
+        OrderItemType.BUNDLE,
+        null
+    )
 }
 
 object PromoDataKey {
@@ -276,4 +329,3 @@ object PaymentDeductionKey {
     const val THANK_STACKED_CASHBACK_TITLE = "Dapat cashback senilai"
     const val PREV_ORDER_AMOUNT_VA = "Total Transaksi Sebelumnya"
 }
-
