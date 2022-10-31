@@ -60,9 +60,6 @@ class ProductCarouselViewHolder private constructor() {
                 binding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
-        /**
-         * Need to make sure that first index is ATC if product is pinned
-         */
         private fun UnifyButton.configButton(button: ProductButtonUiModel){
             //Setup Text
             text = button.text
@@ -85,7 +82,10 @@ class ProductCarouselViewHolder private constructor() {
             binding.labelOos.showWithCondition(item.stock == OutOfStock)
             binding.viewOverlayOos.showWithCondition(item.stock == OutOfStock)
 
-            //Buttons
+            /**
+             * Buttons
+             * First button must be ATC
+             */
             binding.btnAtc.showWithCondition(item.buttons.isNotEmpty())
             binding.btnBuy.showWithCondition(item.buttons.isNotEmpty())
             binding.btnAtc.configButton(item.buttons.find { it.type == ProductButtonType.ATC }.orDefault())
