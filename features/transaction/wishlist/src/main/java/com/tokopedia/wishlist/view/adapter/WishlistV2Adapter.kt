@@ -86,6 +86,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onChangeCollectionName()
         fun goToMyWishlist()
         fun goToHome()
+        fun goToEditWishlistCollectionPage()
     }
 
     init { setHasStableIds(true) }

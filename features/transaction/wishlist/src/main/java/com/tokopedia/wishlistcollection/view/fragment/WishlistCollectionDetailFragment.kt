@@ -2233,6 +2233,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         RouteManager.route(context, ApplinkConst.HOME)
     }
 
+    override fun goToEditWishlistCollectionPage() {
+        goToEditCollectionPage()
+    }
+
     private fun showUpdateWishlistCollectionNameBottomSheet(
         collectionId: String,
         collectionName: String
@@ -3036,6 +3040,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onEditCollection(collectionId: String, collectionName: String, actionText: String) {
         bottomSheetCollectionSettings.dismiss()
+        goToEditCollectionPage()
+    }
+
+    private fun goToEditCollectionPage() {
         val intent = Intent(context, WishlistCollectionEditActivity::class.java)
         intent.putExtra(WishlistCollectionConsts.COLLECTION_ID, collectionId)
         intent.putExtra(WishlistCollectionConsts.COLLECTION_NAME, collectionName)

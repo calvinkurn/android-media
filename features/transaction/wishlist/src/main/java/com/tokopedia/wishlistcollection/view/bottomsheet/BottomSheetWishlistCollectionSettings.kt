@@ -78,21 +78,6 @@ class BottomSheetWishlistCollectionSettings: BottomSheetUnify() {
                 _collectionId = collectionId
                 _collectionName = collectionName
             }
-            /*llKebabMenu1.setOnClickListener {
-                dismiss()
-                actionListener?.onChangeCollectionName(collectionId, collectionName)
-                WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(wishlistCollectionSettingTvMenu1.text.toString())
-            }
-            llKebabMenu2.setOnClickListener {
-                dismiss()
-                actionListener?.onManageCollectionItems()
-                WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(wishlistCollectionSettingTvMenu2.text.toString())
-            }
-            llKebabMenu3.setOnClickListener {
-                dismiss()
-                actionListener?.onDeleteCollectionItem(collectionId, collectionName)
-                WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(wishlistCollectionSettingTvMenu3.text.toString())
-            }*/
         }
         setChild(binding?.root)
     }
