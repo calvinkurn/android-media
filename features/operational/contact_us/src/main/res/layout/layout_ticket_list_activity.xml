@@ -35,7 +35,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="16dp"
-                android:background="@color/contact_us_transparent"
+                android:background="@color/contact_us_dms_transparent"
                 android:hint="Cari..."
                 android:textColor="@color/Unify_N700_96"
                 android:textColorHint="@color/contact_us_dms_no_ticket_text"

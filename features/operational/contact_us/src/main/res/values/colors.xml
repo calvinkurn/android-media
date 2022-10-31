@@ -53,11 +53,6 @@
     <color name="contact_us_green_500">#259b24</color>
     <color name="contact_us_green_nob">#42b549</color>
     <color name="contact_us_red_600">#dd191d</color>
-    <color name="contact_us_y_200">#fff0b3</color>
-    <color name="contact_us_orange_500">#fa591d</color>
-    <color name="contact_us_r_100">#ffeaef</color>
-    <color name="contact_us_r_400">#ff5c84</color>
-    <color name="contact_us_grey_200">#f1f1f1</color>
     <color name="contact_us_black_38">#60000000</color>
 
     <color name="contact_us_dms_detail_background">#FFFFFF</color>
@@ -77,8 +72,9 @@
     <color name="contact_us_dms_detail_edit_text_bg">#0AF4F5F7</color>
     <color name="contact_us_dms_detail_hint_bg">#7031353B</color>
     <color name="contact_us_dms_no_ticket_text">#60000000</color>
-    <color name="contact_us_transparent">#00000000</color>
+    <color name="contact_us_dms_transparent">#00000000</color>
     <color name="contact_us_dms_no_ticket_view">#1e000000</color>
     <color name="contact_us_dms_priority_color">#9342ED</color>
+
 
 </resources>
