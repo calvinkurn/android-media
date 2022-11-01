@@ -505,7 +505,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_count_text,
                         it.uploadedImageCount
                     )
-                    it.leftIconUrl = UploadPrescriptionViewHolder.EPharmacyCountImageUrl
                     it.isError = false
                 }
                 adapter.uploadPrescription = it
