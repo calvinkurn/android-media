@@ -814,7 +814,8 @@ class ShopHomeViewModel @Inject constructor(
                     ShopUtil.isMyShop(shopId, userSessionShopId),
                     isLogin,
                     isThematicWidgetShown,
-                    isEnableDirectPurchase
+                    isEnableDirectPurchase,
+                    shopId
             )
             updateProductCardQuantity(listShopHomeWidget.toMutableList())
             val mapShopHomeWidgetData = mutableMapOf<Pair<String, String>, Visitable<*>?>().apply{
