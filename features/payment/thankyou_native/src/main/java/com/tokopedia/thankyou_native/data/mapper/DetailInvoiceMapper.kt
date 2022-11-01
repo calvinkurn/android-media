@@ -1,13 +1,28 @@
 package com.tokopedia.thankyou_native.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.NEW_LINE
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.PREV_ORDER_AMOUNT_VA
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.THANK_STACKED_CASHBACK_TITLE
 import com.tokopedia.thankyou_native.domain.model.AddOnItem
 import com.tokopedia.thankyou_native.domain.model.BundleGroupItem
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.presentation.adapter.model.*
+import com.tokopedia.thankyou_native.presentation.adapter.model.CashBackEarned
+import com.tokopedia.thankyou_native.presentation.adapter.model.CashBackMap
+import com.tokopedia.thankyou_native.presentation.adapter.model.FeeDetail
+import com.tokopedia.thankyou_native.presentation.adapter.model.InvoiceSummaryMap
+import com.tokopedia.thankyou_native.presentation.adapter.model.InvoiceSummery
+import com.tokopedia.thankyou_native.presentation.adapter.model.OrderItemType
+import com.tokopedia.thankyou_native.presentation.adapter.model.OrderLevelAddOn
+import com.tokopedia.thankyou_native.presentation.adapter.model.OrderedItem
+import com.tokopedia.thankyou_native.presentation.adapter.model.PaymentInfo
+import com.tokopedia.thankyou_native.presentation.adapter.model.PaymentModeMap
+import com.tokopedia.thankyou_native.presentation.adapter.model.PurchasedProductTag
+import com.tokopedia.thankyou_native.presentation.adapter.model.ShopDivider
+import com.tokopedia.thankyou_native.presentation.adapter.model.ShopInvoice
+import com.tokopedia.thankyou_native.presentation.adapter.model.TotalFee
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
@@ -25,7 +40,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
     private fun addInvoiceSummary() {
         var totalPrice = 0.0
-        var totalItemCount = 0
+        var totalItemCount = Int.ZERO
         val invoiceSummaryMapList = arrayListOf<InvoiceSummaryMap>()
 
         thanksPageData.shopOrder.forEach { shopOrder ->
@@ -59,7 +74,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false)
             totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr, it.showTooltip, it.tooltipTitle, it.tooltipDesc))
         }
-        if (thanksPageData.combinedAmount > 0) {
+        if (thanksPageData.combinedAmount > Int.ZERO) {
             getPreviousVAOrderAmount(fee)?.let {
                 totalFee.feeDetailList.add(it)
             }
@@ -70,9 +85,9 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun getPreviousVAOrderAmount(totalFee: Long): FeeDetail? {
-        if (thanksPageData.combinedAmount > 0) {
+        if (thanksPageData.combinedAmount > Int.ZERO) {
             val previousAmount = thanksPageData.combinedAmount - thanksPageData.amount
-            if (previousAmount > 0) {
+            if (previousAmount > Int.ZERO) {
                 val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     previousAmount,
                     false
@@ -93,7 +108,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             }
         }
         thanksPageData.paymentDetails?.forEach { paymentDetail ->
-            val amountStr = if (paymentDetail.amountCombine > 0) {
+            val amountStr = if (paymentDetail.amountCombine > Int.ZERO) {
                 paymentDetail.amountCombineStr
             } else {
                 paymentDetail.amountStr
@@ -107,7 +122,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             )
         }
 
-        val totalPayment: String = if (thanksPageData.combinedAmount > 0) {
+        val totalPayment: String = if (thanksPageData.combinedAmount > Int.ZERO) {
             CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 thanksPageData.combinedAmount,
                 false
@@ -154,7 +169,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                         isBBICashBack = false,
                         isStackedCashBack = true
                     )
-                    if (cashBackMapList.size > 0) {
+                    if (cashBackMapList.size > Int.ZERO) {
                         val tempCashBackList = arrayListOf<CashBackMap>()
                         tempCashBackList.add(cashBackMap)
                         tempCashBackList.addAll(cashBackMapList)
@@ -180,12 +195,12 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         if (thanksPageData.shopOrder.isNotEmpty()) {
             visitableList.add(PurchasedProductTag())
         }
-        var currentIndex = 0
+        var currentIndex = Int.ZERO
         val bundleToProductMap = mutableMapOf<String, ArrayList<OrderedItem>>()
         var bundleMap: MutableMap<String, BundleGroupItem>
         thanksPageData.shopOrder.forEach { shopOrder ->
 
-            if (currentIndex > 0) {
+            if (currentIndex > Int.ZERO) {
                 visitableList.add(ShopDivider())
             }
             val orderedItemList = arrayListOf<OrderedItem>()
@@ -244,7 +259,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             val shippingInfo = if (shippingDurationOrETA.isBlank()) {
                 shopOrder.logisticType
             } else {
-                shopOrder.logisticType + "\n" + shippingDurationOrETA
+                shopOrder.logisticType + NEW_LINE + shippingDurationOrETA
             }
 
             val shopInvoice = ShopInvoice(
@@ -325,6 +340,7 @@ object PaymentDeductionKey {
     const val CASH_BACK_OVO_POINT = "cashback"
     const val POTENTIAL_CASH_BACK = "potential_cashback"
     const val CASHBACK_STACKED = "cashback_stacked"
+    const val NEW_LINE = "\n"
 
     const val THANK_STACKED_CASHBACK_TITLE = "Dapat cashback senilai"
     const val PREV_ORDER_AMOUNT_VA = "Total Transaksi Sebelumnya"
