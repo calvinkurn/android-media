@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.R as playR
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.view.game.*
 
 /**
@@ -44,9 +44,9 @@ class EngagementWidgetViewHolder(
     }
 
     fun bindGame(item: EngagementUiModel.Game) {
-        when(item.interactive){
-            is InteractiveUiModel.Giveaway -> setupGiveaway(item.interactive, item)
-            is InteractiveUiModel.Quiz-> setupQuiz(item.interactive, item)
+        when(item.game){
+            is GameUiModel.Giveaway -> setupGiveaway(item.game, item)
+            is GameUiModel.Quiz-> setupQuiz(item.game, item)
         }
         binding.setOnClickListener {
             listener.onWidgetClicked(engagement = item)
@@ -56,9 +56,9 @@ class EngagementWidgetViewHolder(
         }
     }
 
-    private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway, item: EngagementUiModel.Game){
+    private fun setupGiveaway(giveaway: GameUiModel.Giveaway, item: EngagementUiModel.Game){
         when(val current = giveaway.status){
-            is InteractiveUiModel.Giveaway.Status.Upcoming -> binding.setupUpcomingGiveaway(
+            is GameUiModel.Giveaway.Status.Upcoming -> binding.setupUpcomingGiveaway(
                 title = giveaway.title,
                 targetTime = current.startTime,
                 onDurationEnd = {
@@ -67,9 +67,9 @@ class EngagementWidgetViewHolder(
                 onTick = {
                     listener.onWidgetTimerTick(item,it)
                 },
-                id = item.interactive.id,
+                id = item.game.id,
             )
-            is InteractiveUiModel.Giveaway.Status.Ongoing -> binding.setupOngoingGiveaway(
+            is GameUiModel.Giveaway.Status.Ongoing -> binding.setupOngoingGiveaway(
                 title = giveaway.title,
                 targetTime = current.endTime,
                 onDurationEnd = {
@@ -78,14 +78,14 @@ class EngagementWidgetViewHolder(
                 onTick = {
                     listener.onWidgetTimerTick(item,it)
                 },
-                id = item.interactive.id,
+                id = item.game.id,
             )
         }
     }
 
-    private fun setupQuiz(quiz: InteractiveUiModel.Quiz, item: EngagementUiModel.Game) {
+    private fun setupQuiz(quiz: GameUiModel.Quiz, item: EngagementUiModel.Game) {
         when(val current = quiz.status){
-            is InteractiveUiModel.Quiz.Status.Ongoing -> binding.setupQuiz(
+            is GameUiModel.Quiz.Status.Ongoing -> binding.setupQuiz(
                 question = quiz.title,
                 targetTime = current.endTime,
                 onDurationEnd = {
@@ -94,7 +94,7 @@ class EngagementWidgetViewHolder(
                 onTick = {
                     listener.onWidgetTimerTick(item,it)
                 },
-                id = item.interactive.id,
+                id = item.game.id,
             )
         }
     }

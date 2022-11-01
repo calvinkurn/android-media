@@ -2,7 +2,7 @@ package com.tokopedia.play.ui.engagement.viewholder
 
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.view.game.*
 
 /**
@@ -13,9 +13,9 @@ class GameFinishedViewHolder(
 ) : BaseViewHolder(binding) {
 
     fun bindGame(item: EngagementUiModel.Game) {
-        when (item.interactive) {
-            is InteractiveUiModel.Giveaway -> binding.setupGiveaway()
-            is InteractiveUiModel.Quiz -> binding.setupQuiz()
+        when (item.game) {
+            is GameUiModel.Giveaway -> binding.setupGiveaway()
+            is GameUiModel.Quiz -> binding.setupQuiz()
         }
     }
 }

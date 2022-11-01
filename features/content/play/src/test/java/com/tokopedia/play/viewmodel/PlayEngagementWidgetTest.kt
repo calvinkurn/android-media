@@ -11,7 +11,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.websocket.response.PlayMerchantVoucherSocketResponse
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
@@ -230,7 +230,7 @@ class PlayEngagementWidgetTest {
             it.focusPage(mockChannelData)
 
             val state = it.recordState {}
-            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Unknown>()
+            state.interactive.game.assertInstanceOf<GameUiModel.Unknown>()
             state.engagement.data.assertEmpty()
             state.engagement.shouldShow.assertFalse()
         }
@@ -241,7 +241,7 @@ class PlayEngagementWidgetTest {
         every { socket.listenAsFlow() } returns socketFlow
 
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(
+            status = GameUiModel.Giveaway.Status.Ongoing(
                 200L.millisFromNow()
             )
         )
@@ -256,9 +256,9 @@ class PlayEngagementWidgetTest {
             it.focusPage(mockChannelData)
 
             val state = it.recordState {}
-            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Giveaway>()
+            state.interactive.game.assertInstanceOf<GameUiModel.Giveaway>()
             state.engagement.data.first().assertType<EngagementUiModel.Game> { dt ->
-                dt.interactive.assertType<InteractiveUiModel.Giveaway> { }
+                dt.game.assertType<GameUiModel.Giveaway> { }
             }
             state.engagement.data.size.assertEqualTo(1)
             state.engagement.shouldShow.assertTrue()
@@ -270,7 +270,7 @@ class PlayEngagementWidgetTest {
         every { socket.listenAsFlow() } returns socketFlow
 
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildQuiz(
-            status = InteractiveUiModel.Quiz.Status.Ongoing(
+            status = GameUiModel.Quiz.Status.Ongoing(
                 200L.millisFromNow()
             )
         )
@@ -285,9 +285,9 @@ class PlayEngagementWidgetTest {
             it.focusPage(mockChannelData)
 
             val state = it.recordState {}
-            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Quiz>()
+            state.interactive.game.assertInstanceOf<GameUiModel.Quiz>()
             state.engagement.data.first().assertType<EngagementUiModel.Game> { dt ->
-                dt.interactive.assertType<InteractiveUiModel.Quiz> { }
+                dt.game.assertType<GameUiModel.Quiz> { }
             }
             state.engagement.data.size.assertEqualTo(1)
             state.engagement.shouldShow.assertTrue()
@@ -309,7 +309,7 @@ class PlayEngagementWidgetTest {
             state2.interactive.isPlaying.assertTrue()
             state2.engagement.shouldShow.assertFalse()
             state.engagement.data.first().assertType<EngagementUiModel.Game> { dt ->
-                dt.interactive.assertType<InteractiveUiModel.Quiz> {  }
+                dt.game.assertType<GameUiModel.Quiz> {  }
             }
         }
     }
@@ -319,7 +319,7 @@ class PlayEngagementWidgetTest {
         every { socket.listenAsFlow() } returns socketFlow
 
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
-            status = InteractiveUiModel.Giveaway.Status.Finished
+            status = GameUiModel.Giveaway.Status.Finished
         )
 
         createPlayViewModelRobot(
@@ -346,7 +346,7 @@ class PlayEngagementWidgetTest {
         every { socket.listenAsFlow() } returns socketFlow
 
         coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(
+            status = GameUiModel.Giveaway.Status.Ongoing(
                 200L.millisFromNow()
             )
         )
@@ -363,9 +363,9 @@ class PlayEngagementWidgetTest {
             val state = it.recordState {
                 socketFlow.emit(WebSocketAction.NewMessage(mockVoucherSocketResponse))
             }
-            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Giveaway>()
+            state.interactive.game.assertInstanceOf<GameUiModel.Giveaway>()
             state.engagement.data.first().assertType<EngagementUiModel.Game> { dt ->
-                dt.interactive.assertType<InteractiveUiModel.Giveaway> { }
+                dt.game.assertType<GameUiModel.Giveaway> { }
             }
             state.engagement.data.last().assertType<EngagementUiModel.Promo> { }
             state.engagement.shouldShow.assertTrue()

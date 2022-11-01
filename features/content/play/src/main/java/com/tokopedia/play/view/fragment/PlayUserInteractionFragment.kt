@@ -84,7 +84,7 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.lifecycleBound
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.util.ActivityResultHelper
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
@@ -893,7 +893,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ShowWinningDialogEvent -> {
                         if (container.alpha != VISIBLE_ALPHA) return@collect
                         getInteractiveWinningDialog().apply {
-                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle, interactive = event.interactiveType)
+                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle, game = event.gameType)
                         }.showNow(childFragmentManager)
                     }
                     is OpenPageEvent -> {
@@ -1510,8 +1510,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderWinnerBadge(state: PlayWinnerBadgeUiState){
         if (state.shouldShow) {
             interactiveResultView?.show()
-            if(playViewModel.interactiveData is InteractiveUiModel.Unknown) return
-            newAnalytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id, channelId = playViewModel.channelId)
+            if(playViewModel.gameData is GameUiModel.Unknown) return
+            newAnalytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.gameData.id, channelId = playViewModel.channelId)
         }
         else interactiveResultView?.hide()
     }
@@ -1748,8 +1748,8 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(InteractiveGameResultBadgeClickedAction(bottomSheetMaxHeight))
         newAnalytic.clickWinnerBadge(
             shopId = playViewModel.partnerId.toString(),
-            interactiveId = playViewModel.interactiveData.id,
-            interactiveType = playViewModel.interactiveData,
+            interactiveId = playViewModel.gameData.id,
+            gameType = playViewModel.gameData,
             channelId = playViewModel.channelId,
             channelType = playViewModel.channelType
         )
@@ -1817,28 +1817,28 @@ class PlayUserInteractionFragment @Inject constructor(
         view: EngagementCarouselViewComponent,
         engagement: EngagementUiModel.Game
     ) {
-        when (engagement.interactive){
-            is InteractiveUiModel.Giveaway -> {
-                handleGiveaway(interactive = engagement.interactive)
+        when (engagement.game){
+            is GameUiModel.Giveaway -> {
+                handleGiveaway(game = engagement.game)
             }
-            is InteractiveUiModel.Quiz -> {
-                handleQuiz(interactive = engagement.interactive)
+            is GameUiModel.Quiz -> {
+                handleQuiz(game = engagement.game)
             }
         }
     }
 
-    private fun handleGiveaway(interactive: InteractiveUiModel.Giveaway) {
-        when(interactive.status) {
-            is InteractiveUiModel.Giveaway.Status.Upcoming ->
+    private fun handleGiveaway(game: GameUiModel.Giveaway) {
+        when(game.status) {
+            is GameUiModel.Giveaway.Status.Upcoming ->
                 playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
-            is InteractiveUiModel.Giveaway.Status.Ongoing ->
+            is GameUiModel.Giveaway.Status.Ongoing ->
                 playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
         }
     }
 
-    private fun handleQuiz(interactive: InteractiveUiModel.Quiz) {
-        when(interactive.status) {
-            is InteractiveUiModel.Quiz.Status.Ongoing ->
+    private fun handleQuiz(game: GameUiModel.Quiz) {
+        when(game.status) {
+            is GameUiModel.Quiz.Status.Ongoing ->
                 playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
         }
     }
@@ -1854,9 +1854,9 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             is EngagementUiModel.Game -> {
                 playViewModel.submitAction(PlayViewerNewAction.StartPlayingInteractive)
-                newAnalytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id,
+                newAnalytic.clickActiveInteractive(interactiveId = playViewModel.gameData.id,
                     shopId = playViewModel.partnerId.toString(),
-                    interactiveType = playViewModel.interactiveData, channelId = playViewModel.channelId)
+                    gameType = playViewModel.gameData, channelId = playViewModel.channelId)
             }
         }
     }
@@ -1874,7 +1874,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 newAnalytic.impressVoucherWidget(engagement.info.id)
             }
             is EngagementUiModel.Game -> {
-                newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = engagement.interactive.id, channelId = playViewModel.channelId)
+                newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = engagement.game.id, channelId = playViewModel.channelId)
             }
         }
     }

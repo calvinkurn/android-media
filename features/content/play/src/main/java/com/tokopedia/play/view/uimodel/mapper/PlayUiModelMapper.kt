@@ -15,7 +15,7 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
@@ -79,7 +79,7 @@ class PlayUiModelMapper @Inject constructor(
         return channelInteractiveMapper.mapInteractive(input)
     }
 
-    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
+    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): GameUiModel {
         return interactiveMapper.mapInteractive(input)
     }
 

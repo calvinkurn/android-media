@@ -27,7 +27,6 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
-import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
@@ -242,12 +241,12 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-        newAnalytic.clickRefreshLeaderBoard(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), channelId = playViewModel.channelId)
+        newAnalytic.clickRefreshLeaderBoard(interactiveId = playViewModel.gameData.id, shopId = playViewModel.partnerId.toString(), channelId = playViewModel.channelId)
         playViewModel.submitAction(RefreshLeaderboard)
     }
 
     override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
-        newAnalytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id, channelId = playViewModel.channelId)
+        newAnalytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.gameData.id, channelId = playViewModel.channelId)
     }
 
     override fun onLeaderBoardImpressed(

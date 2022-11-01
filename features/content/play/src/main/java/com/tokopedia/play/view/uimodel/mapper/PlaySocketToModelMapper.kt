@@ -7,7 +7,6 @@ import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
@@ -17,7 +16,7 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -95,12 +94,12 @@ class PlaySocketToModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusBanned(isBanned)
     }
 
-    fun mapInteractive(input: GiveawayResponse): InteractiveUiModel.Giveaway {
+    fun mapInteractive(input: GiveawayResponse): GameUiModel.Giveaway {
         val waitingDurationInMillis = TimeUnit.SECONDS.toMillis(input.waitingDuration.toLong())
         return interactiveMapper.mapGiveaway(input, waitingDurationInMillis)
     }
 
-    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
+    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): GameUiModel {
         return interactiveMapper.mapInteractive(input)
     }
 
@@ -118,7 +117,7 @@ class PlaySocketToModelMapper @Inject constructor(
         return userWinnerStatusMapper.mapUserWinnerStatus(userWinnerStatus)
     }
 
-    fun mapQuizFromSocket(response: QuizResponse): InteractiveUiModel {
+    fun mapQuizFromSocket(response: QuizResponse): GameUiModel {
         val waitingDurationInMillis = TimeUnit.SECONDS.toMillis(response.waitingDuration)
         return interactiveMapper.mapQuiz(response, waitingDurationInMillis)
     }

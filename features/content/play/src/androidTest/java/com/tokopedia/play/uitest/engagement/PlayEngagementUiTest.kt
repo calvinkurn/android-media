@@ -21,7 +21,7 @@ import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
@@ -218,7 +218,7 @@ class PlayEngagementUiTest {
 
         coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
 
-        val game = uiModelBuilder.buildQuiz(id = "11", "Quiz Sepeda", status = InteractiveUiModel.Quiz.Status.Ongoing(200L.millisFromNow()))
+        val game = uiModelBuilder.buildQuiz(id = "11", "Quiz Sepeda", status = GameUiModel.Quiz.Status.Ongoing(200L.millisFromNow()))
 
         coEvery { repo.getCurrentInteractive(any()) } returns game
 

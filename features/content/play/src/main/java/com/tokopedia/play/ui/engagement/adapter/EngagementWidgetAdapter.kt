@@ -8,7 +8,7 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
 import com.tokopedia.play.ui.engagement.viewholder.GameFinishedViewHolder
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.view.game.GameSmallWidgetView
 import com.tokopedia.play_common.view.game.InteractiveFinishView
 import com.tokopedia.play_common.R as commonR
@@ -26,7 +26,7 @@ class EngagementWidgetAdapter(listener: EngagementWidgetViewHolder.Listener) :
     }
 
     override fun areItemsTheSame(oldItem: EngagementUiModel, newItem: EngagementUiModel): Boolean {
-        return if (oldItem is EngagementUiModel.Game && newItem is EngagementUiModel.Game) oldItem.interactive.id == newItem.interactive.id
+        return if (oldItem is EngagementUiModel.Game && newItem is EngagementUiModel.Game) oldItem.game.id == newItem.game.id
         else if (oldItem is EngagementUiModel.Promo && newItem is EngagementUiModel.Promo) oldItem.info.id == newItem.info.id
         else oldItem == newItem
     }
@@ -48,9 +48,9 @@ class EngagementWidgetAdapter(listener: EngagementWidgetViewHolder.Listener) :
             position: Int,
             isFlexibleType: Boolean
         ): Boolean {
-            return when (val item = (itemList[position] as? EngagementUiModel.Game)?.interactive) {
-                is InteractiveUiModel.Quiz -> item.status !is InteractiveUiModel.Quiz.Status.Finished || item.status !is InteractiveUiModel.Quiz.Status.Unknown
-                is InteractiveUiModel.Giveaway -> item.status !is InteractiveUiModel.Giveaway.Status.Finished || item.status !is InteractiveUiModel.Giveaway.Status.Unknown
+            return when (val item = (itemList[position] as? EngagementUiModel.Game)?.game) {
+                is GameUiModel.Quiz -> item.status !is GameUiModel.Quiz.Status.Finished || item.status !is GameUiModel.Quiz.Status.Unknown
+                is GameUiModel.Giveaway -> item.status !is GameUiModel.Giveaway.Status.Finished || item.status !is GameUiModel.Giveaway.Status.Unknown
                 else -> false
             }
         }
@@ -81,9 +81,9 @@ class EngagementWidgetAdapter(listener: EngagementWidgetViewHolder.Listener) :
             position: Int,
             isFlexibleType: Boolean
         ): Boolean {
-            return when (val item = (itemList[position] as? EngagementUiModel.Game)?.interactive) {
-                is InteractiveUiModel.Quiz -> item.status is InteractiveUiModel.Quiz.Status.Finished
-                is InteractiveUiModel.Giveaway -> item.status is InteractiveUiModel.Giveaway.Status.Finished
+            return when (val item = (itemList[position] as? EngagementUiModel.Game)?.game) {
+                is GameUiModel.Quiz -> item.status is GameUiModel.Quiz.Status.Finished
+                is GameUiModel.Giveaway -> item.status is GameUiModel.Giveaway.Status.Finished
                 else -> false
             }
         }

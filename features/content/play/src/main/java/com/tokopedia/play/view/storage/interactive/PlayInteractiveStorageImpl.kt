@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.storage.interactive
 
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import javax.inject.Inject
 
@@ -17,9 +17,9 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
     /**
      * Detail resembles the detail when inputted
      */
-    private val interactiveDetailMap = mutableMapOf<String, InteractiveUiModel>()
+    private val interactiveDetailMap = mutableMapOf<String, GameUiModel>()
 
-    override fun save(model: InteractiveUiModel) {
+    override fun save(model: GameUiModel) {
         interactiveDetailMap[model.id] = model
     }
 

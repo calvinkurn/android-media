@@ -5,7 +5,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 
@@ -16,7 +16,7 @@ interface PlayBroadcastInteractiveRepository {
 
     suspend fun getInteractiveConfig(authorId: String, authorType: String): InteractiveConfigUiModel
 
-    suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel
+    suspend fun getCurrentInteractive(channelId: String): GameUiModel
 
     suspend fun getInteractiveLeaderboard(channelId: String, isChatAllowed: () -> Boolean): PlayLeaderboardInfoUiModel
 

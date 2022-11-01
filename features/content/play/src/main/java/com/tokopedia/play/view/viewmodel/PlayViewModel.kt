@@ -59,7 +59,7 @@ import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.PlayBufferControl
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -258,11 +258,11 @@ class PlayViewModel @AssistedInject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     private val _engagementUiState = combine(_tagItems, _interactive, _bottomInsets, _status){
             voucher, game, bottomInsets, status -> EngagementUiState(
-        shouldShow = (voucher.voucher.voucherList.isNotEmpty() || game.interactive !is InteractiveUiModel.Unknown) && !game.isPlaying && !bottomInsets.isAnyShown && videoOrientation.isVertical && videoPlayer.isGeneral() && status.channelStatus.statusType.isActive,
+        shouldShow = (voucher.voucher.voucherList.isNotEmpty() || game.game !is GameUiModel.Unknown) && !game.isPlaying && !bottomInsets.isAnyShown && videoOrientation.isVertical && videoPlayer.isGeneral() && status.channelStatus.statusType.isActive,
         data = buildList {
             val vouchers = voucher.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
-            if(game.interactive !is InteractiveUiModel.Unknown && isInteractiveAllowed)
-                add(EngagementUiModel.Game(interactive = game.interactive))
+            if(game.game !is GameUiModel.Unknown && isInteractiveAllowed)
+                add(EngagementUiModel.Game(game = game.game))
             if(vouchers.isNotEmpty())
                 add(EngagementUiModel.Promo(info = vouchers.first { it.highlighted }, size = vouchers.size - 1))
         },
@@ -472,8 +472,8 @@ class PlayViewModel @AssistedInject constructor(
                     && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)) || castState.currentState == PlayCastState.CONNECTED
         }
 
-    val interactiveData: InteractiveUiModel
-        get() = _interactive.value.interactive
+    val gameData: GameUiModel
+        get() = _interactive.value.game
 
     val isTotalViewLoaded: Boolean
         get() = _isChannelReportLoaded.value
@@ -1496,56 +1496,56 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun setupInteractive(interactive: InteractiveUiModel) {
+    private suspend fun setupInteractive(game: GameUiModel) {
         if (!isInteractiveAllowed) return
         /**
          * cancel task delay waiting duration in winner socket if game is coming in flash
          */
         cancelAllDelayFromSocketWinner()
-        repo.save(interactive)
-        repo.setActive(interactive.id)
+        repo.save(game)
+        repo.setActive(game.id)
 
         //new game set as first game
         _autoOpenInteractive.setValue { true }
 
-        when (interactive) {
-            is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
-            is InteractiveUiModel.Quiz -> handleQuizFromNetwork(interactive)
+        when (game) {
+            is GameUiModel.Giveaway -> setupGiveaway(game)
+            is GameUiModel.Quiz -> handleQuizFromNetwork(game)
             else -> {}
         }
     }
 
     private fun handleAutoOpen(){
-        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.interactive.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
+        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.game.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
             _autoOpenInteractive.setValue { false }
             handlePlayingInteractive(shouldPlay = true)
         }
     }
 
-    private suspend fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
-        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished || giveaway.status == InteractiveUiModel.Giveaway.Status.Unknown) {
+    private suspend fun setupGiveaway(giveaway: GameUiModel.Giveaway) {
+        if (giveaway.status == GameUiModel.Giveaway.Status.Finished || giveaway.status == GameUiModel.Giveaway.Status.Unknown) {
             _interactive.update {
-                it.copy(interactive = InteractiveUiModel.Unknown, isPlaying = false)
+                it.copy(game = GameUiModel.Unknown, isPlaying = false)
             }
             checkLeaderboard(channelId)
         } else {
             _interactive.update {
-                it.copy(interactive = giveaway)
+                it.copy(game = giveaway)
             }
         }
 
-        if(giveaway.status is InteractiveUiModel.Giveaway.Status.Ongoing) handleAutoOpen()
+        if(giveaway.status is GameUiModel.Giveaway.Status.Ongoing) handleAutoOpen()
     }
 
-    private suspend fun handleQuizFromNetwork(quiz: InteractiveUiModel.Quiz) {
-        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished || quiz.status == InteractiveUiModel.Quiz.Status.Unknown) {
+    private suspend fun handleQuizFromNetwork(quiz: GameUiModel.Quiz) {
+        if (quiz.status == GameUiModel.Quiz.Status.Finished || quiz.status == GameUiModel.Quiz.Status.Unknown) {
             _interactive.update {
-                it.copy(interactive = InteractiveUiModel.Unknown, isPlaying = false)
+                it.copy(game = GameUiModel.Unknown, isPlaying = false)
             }
             checkLeaderboard(channelId)
         } else {
             _interactive.update {
-                it.copy(interactive = quiz)
+                it.copy(game = quiz)
             }
         }
     }
@@ -1730,15 +1730,15 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is UserWinnerStatus -> {
-                val interactive = _interactive.value.interactive
+                val interactive = _interactive.value.game
                 val isFinished = when (interactive) {
-                    is InteractiveUiModel.Giveaway -> {
-                        interactive.status == InteractiveUiModel.Giveaway.Status.Finished
+                    is GameUiModel.Giveaway -> {
+                        interactive.status == GameUiModel.Giveaway.Status.Finished
                     }
-                    is InteractiveUiModel.Quiz -> {
-                        interactive.status == InteractiveUiModel.Quiz.Status.Finished
+                    is GameUiModel.Quiz -> {
+                        interactive.status == GameUiModel.Quiz.Status.Finished
                     }
-                    InteractiveUiModel.Unknown -> false
+                    GameUiModel.Unknown -> false
                 }
 
                 val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
@@ -1759,7 +1759,7 @@ class PlayViewModel @AssistedInject constructor(
      */
     private suspend fun onReceivedTapGiveawayAction(action: Unit) = withContext(dispatchers.io) {
         try {
-            val giveaway = _interactive.value.interactive as? InteractiveUiModel.Giveaway
+            val giveaway = _interactive.value.game as? GameUiModel.Giveaway
                 ?: return@withContext
             if (repo.hasJoined(giveaway.id)) return@withContext
 
@@ -1810,21 +1810,21 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     /**
-     * When pre-start finished, interactive should be played (e.g. TapTap)
+     * When pre-start finished, game should be played (e.g. TapTap)
      */
     private fun handleGiveawayUpcomingEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
             _interactive.update {
-                val currentGiveaway = it.interactive as? InteractiveUiModel.Giveaway ?: error("Interactive is not giveaway")
-                val upcomingStatus = currentGiveaway.status as? InteractiveUiModel.Giveaway.Status.Upcoming
+                val currentGiveaway = it.game as? GameUiModel.Giveaway ?: error("Interactive is not giveaway")
+                val upcomingStatus = currentGiveaway.status as? GameUiModel.Giveaway.Status.Upcoming
                     ?: error("Giveaway status is not upcoming")
 
-                val interactive = it.interactive.copy(
-                    status = InteractiveUiModel.Giveaway.Status.Ongoing(
+                val interactive = it.game.copy(
+                    status = GameUiModel.Giveaway.Status.Ongoing(
                         endTime = upcomingStatus.endTime
                     )
                 )
-                it.copy(interactive = interactive)
+                it.copy(game = interactive)
             }
 
         }) {
@@ -1835,12 +1835,12 @@ class PlayViewModel @AssistedInject constructor(
     private fun handleGiveawayOngoingEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
             val interactive = _interactive.getAndUpdate {
-                if (it.interactive !is InteractiveUiModel.Giveaway) error("Interactive is not giveaway")
-                val newInteractive = it.interactive.copy(
-                    status = InteractiveUiModel.Giveaway.Status.Finished
+                if (it.game !is GameUiModel.Giveaway) error("Interactive is not giveaway")
+                val newInteractive = it.game.copy(
+                    status = GameUiModel.Giveaway.Status.Finished
                 )
                 it.copy(
-                    interactive = newInteractive,
+                    game = newInteractive,
                     isPlaying = false,
                 )
             }
@@ -1848,19 +1848,19 @@ class PlayViewModel @AssistedInject constructor(
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
             val winnerStatus = _winnerStatus.value
-            val interactiveType = _interactive.value.interactive
+            val interactiveType = _interactive.value.game
 
             suspend fun checkWinnerStatus(): Boolean {
                 return if (winnerStatus != null) {
-                    processWinnerStatus(winnerStatus, interactive.interactive)
+                    processWinnerStatus(winnerStatus, interactive.game)
                     true
                 } else false
             }
 
-            if (!checkWinnerStatus() && interactive.interactive is InteractiveUiModel.Giveaway) {
+            if (!checkWinnerStatus() && interactive.game is GameUiModel.Giveaway) {
                 delayTapJob?.cancel()
                 delayTapJob = viewModelScope.launch(dispatchers.computation) {
-                    delay(interactive.interactive.waitingDuration)
+                    delay(interactive.game.waitingDuration)
                     if(!checkWinnerStatus()) showLeaderBoard(interactiveId = interactiveType.id)
                 }
             }
@@ -1881,16 +1881,16 @@ class PlayViewModel @AssistedInject constructor(
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
             _interactive.update {
-                if (it.interactive !is InteractiveUiModel.Quiz) error("Error")
-                val newInteractive = it.interactive.copy(
-                    status = InteractiveUiModel.Quiz.Status.Finished
+                if (it.game !is GameUiModel.Quiz) error("Error")
+                val newInteractive = it.game.copy(
+                    status = GameUiModel.Quiz.Status.Finished
                 )
                 it.copy(
-                    interactive = newInteractive,
+                    game = newInteractive,
                     isPlaying = false,
                 )
             }
-            showLeaderBoard(_interactive.value.interactive.id)
+            showLeaderBoard(_interactive.value.game.id)
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
@@ -1914,18 +1914,18 @@ class PlayViewModel @AssistedInject constructor(
 
     private suspend fun processWinnerStatus(
         status: PlayUserWinnerStatusUiModel,
-        interactive: InteractiveUiModel,
+        game: GameUiModel,
     ) {
-        if (repo.hasProcessedWinner(interactive.id)) return
+        if (repo.hasProcessedWinner(game.id)) return
 
-        val interactiveType = _interactive.value.interactive
+        val interactiveType = _interactive.value.game
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
 
         _interactive.value = InteractiveStateUiModel.Empty
 
-        if (status.interactiveId == interactive.id && repo.hasJoined(interactive.id)) {
+        if (status.interactiveId == game.id && repo.hasJoined(game.id)) {
             _uiEvent.emit(
                 if(status.userId.toString() == userId) {
                     ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
@@ -1934,19 +1934,19 @@ class PlayViewModel @AssistedInject constructor(
                     ShowCoachMarkWinnerEvent(status.loserTitle, UiString.Text(status.loserText))
                 }
             )
-            repo.setHasProcessedWinner(interactive.id)
+            repo.setHasProcessedWinner(game.id)
         }
     }
 
     private fun handlePlayingInteractive(shouldPlay: Boolean) {
         fun updateIsPlaying() {
             _interactive.update {
-                val isOngoing = when (it.interactive) {
-                    is InteractiveUiModel.Giveaway -> {
-                        it.interactive.status is InteractiveUiModel.Giveaway.Status.Ongoing
+                val isOngoing = when (it.game) {
+                    is GameUiModel.Giveaway -> {
+                        it.game.status is GameUiModel.Giveaway.Status.Ongoing
                     }
-                    is InteractiveUiModel.Quiz -> {
-                        it.interactive.status is InteractiveUiModel.Quiz.Status.Ongoing
+                    is GameUiModel.Quiz -> {
+                        it.game.status is GameUiModel.Quiz.Status.Ongoing
                     }
                     else -> false
                 }
@@ -1959,7 +1959,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleClickQuizOption(option: QuizChoicesUiModel){
-        val interactiveId = _interactive.value.interactive.id
+        val interactiveId = _interactive.value.game.id
 
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
@@ -1988,7 +1988,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun updateQuizOptionUi(selectedId: String, correctId: String){
         _interactive.update {
-            val quiz = it.interactive as InteractiveUiModel.Quiz
+            val quiz = it.game as GameUiModel.Quiz
             val new = quiz.copy(
                 listOfChoices =  quiz.listOfChoices.map { choice ->
                     when (choice.id) {
@@ -1997,20 +1997,20 @@ class PlayViewModel @AssistedInject constructor(
                     }
                 }
             )
-            it.copy(interactive = new)
+            it.copy(game = new)
         }
     }
 
     private fun setUpQuizOptionLoader(selectedId: String, isLoading: Boolean){
         _interactive.update {
-            val quiz = it.interactive as InteractiveUiModel.Quiz
+            val quiz = it.game as GameUiModel.Quiz
             val new = quiz.copy(
                 listOfChoices =  quiz.listOfChoices.map { choice ->
                     if(choice.id == selectedId) choice.copy(isLoading = isLoading)
                     else choice
                 }
             )
-            it.copy(interactive = new)
+            it.copy(game = new)
         }
     }
 
@@ -2036,7 +2036,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     /**
-     * [PartnerFollowAction] from interactive will definitely [PartnerFollowAction.Follow]
+     * [PartnerFollowAction] from game will definitely [PartnerFollowAction.Follow]
      */
     private fun handleClickFollowInteractive() = needLogin(REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE) {
         if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {

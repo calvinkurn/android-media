@@ -4,7 +4,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.GiveawayConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.ui.PlayLeaderboardConfigUiModel
@@ -128,8 +128,8 @@ class InteractiveUiModelBuilder {
         id: String = "",
         title: String = "",
         waitingDuration: Long = 200L,
-        status: InteractiveUiModel.Giveaway.Status = InteractiveUiModel.Giveaway.Status.Unknown,
-    ) = InteractiveUiModel.Giveaway(
+        status: GameUiModel.Giveaway.Status = GameUiModel.Giveaway.Status.Unknown,
+    ) = GameUiModel.Giveaway(
         id = id,
         title = title,
         waitingDuration = waitingDuration,
@@ -140,9 +140,9 @@ class InteractiveUiModelBuilder {
         id: String = "",
         title: String = "",
         waitingDuration: Long = 200L,
-        status: InteractiveUiModel.Quiz.Status = InteractiveUiModel.Quiz.Status.Unknown,
+        status: GameUiModel.Quiz.Status = GameUiModel.Quiz.Status.Unknown,
         listOfChoices: List<QuizChoicesUiModel> = emptyList(),
-    ) = InteractiveUiModel.Quiz(
+    ) = GameUiModel.Quiz(
         id = id,
         title = title,
         waitingDuration = waitingDuration,
