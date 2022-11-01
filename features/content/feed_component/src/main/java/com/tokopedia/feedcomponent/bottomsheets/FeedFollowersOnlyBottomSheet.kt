@@ -70,7 +70,7 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
     }
 
     override fun onDestroyView() {
-        super.onDestroy()
+        super.onDestroyView()
         listener = null
         _viewBinding = null
     }
