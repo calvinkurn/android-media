@@ -7,7 +7,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
-import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest.*
 import com.tokopedia.shop.flashsale.domain.entity.*
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel.*
@@ -52,9 +51,6 @@ class ManageProductViewModelTest {
     lateinit var getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase
 
     @RelaxedMockK
-    lateinit var productErrorStatusHandler: ProductErrorStatusHandler
-
-    @RelaxedMockK
     lateinit var tracker: ShopFlashSaleTracker
 
     @RelaxedMockK
@@ -62,6 +58,9 @@ class ManageProductViewModelTest {
 
     @RelaxedMockK
     lateinit var productObserver: Observer<in Result<SellerCampaignProductList>>
+
+    @RelaxedMockK
+    lateinit var incompleteProductObserver: Observer<in List<Product>>
 
     @RelaxedMockK
     lateinit var bannerTypeObserver: Observer<in ManageProductBannerType>
@@ -87,13 +86,13 @@ class ManageProductViewModelTest {
             getSellerCampaignProductListUseCase,
             doSellerCampaignProductSubmissionUseCase,
             getSellerCampaignDetailUseCase,
-            productErrorStatusHandler,
             tracker,
             gqlGetShopInfoUseCase
         )
 
         with(viewModel) {
             products.observeForever(productObserver)
+            incompleteProducts.observeForever(incompleteProductObserver)
             bannerType.observeForever(bannerTypeObserver)
             removeProductsStatus.observeForever(removeProductObserver)
             shopStatus.observeForever(shopStatusObserver)
@@ -111,7 +110,37 @@ class ManageProductViewModelTest {
     }
 
     @Test
-    fun `When getProducts success, observer will successfully receive the data`() {
+    fun `when accessing incompleteProducts, will filter and map the data from products accordingly`() {
+        runBlocking {
+            with(viewModel) {
+                //set products value
+                val campaignId: Long = 1001
+                val listType = 0
+                val pagination = Pagination(
+                    50,
+                    0
+                )
+                coEvery {
+                    getSellerCampaignProductListUseCase.execute(
+                        campaignId,
+                        productName = "",
+                        listType,
+                        pagination
+                    )
+                } returns generateIncompleteProduct()
+                getProducts(campaignId, listType)
+
+                //expected to have 1 product that is incomplete
+                val expected = 1
+                val actual = incompleteProducts.getOrAwaitValue().size
+
+                assertEquals(expected, actual)
+            }
+        }
+    }
+
+    @Test
+    fun `when getProducts success, observer will successfully receive the data`() {
         runBlocking {
             with(viewModel) {
                 val campaignId: Long = 1001
@@ -205,12 +234,12 @@ class ManageProductViewModelTest {
     }
 
     @Test
-    fun `when product info completion status is set, the product info completion status will be set accordingly`() {
+    fun `when productList data is not filled, observer will successfully receive the data accordingly`() {
         with(viewModel) {
-            val expected = true
-            val productList = generateCompleteProduct()
-            setProductInfoCompletion(productList)
-            val actual = productList.productList[0].isInfoComplete
+            val expected = EMPTY_BANNER
+            val productList = generateIncompleteProduct()
+            getBannerType(productList)
+            val actual = bannerType.getOrAwaitValue()
             assertEquals(expected, actual)
         }
     }
@@ -226,27 +255,16 @@ class ManageProductViewModelTest {
         }
     }
 
-//    @Test
-//    fun `when productList data is not filled, observer will successfully receive the data accordingly`() {
-//        with(viewModel) {
-//            val expected = EMPTY_BANNER
-//            val productList = generateErrorProduct()
-//            getBannerType(productList)
-//            val actual = bannerType.getOrAwaitValue()
-//            assertEquals(expected, actual)
-//        }
-//    }
-//
-//    @Test
-//    fun `when productList data is complete, observer will successfully receive the data accordingly`() {
-//        with(viewModel) {
-//            val expected = HIDE_BANNER
-//            val productList = generateCompleteProduct()
-//            getBannerType(productList)
-//            val actual = bannerType.getOrAwaitValue()
-//            assertEquals(expected, actual)
-//        }
-//    }
+    @Test
+    fun `when productList data is complete, observer will successfully receive the data accordingly`() {
+        with(viewModel) {
+            val expected = HIDE_BANNER
+            val productList = generateCompleteProduct()
+            getBannerType(productList)
+            val actual = bannerType.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+    }
 
     @Test
     fun `when discountedPrice value is 0, isProductInfoComplete will return false`() {
@@ -510,6 +528,16 @@ class ManageProductViewModelTest {
         }
     }
 
+    @Test
+    fun `set auto navigation to choose product value, will change the value accordingly`() {
+        with(viewModel) {
+            val expected = true
+            setAutoNavigateToChooseProduct(true)
+            val actual = autoNavigateToChooseProduct()
+            assertEquals(expected, actual)
+        }
+    }
+
     private fun generateCompleteProduct() = SellerCampaignProductList(
         productList = listOf(
             Product(
@@ -522,7 +550,9 @@ class ManageProductViewModelTest {
                     originalStock = 100,
                     campaignSoldCount = 10,
                     maxOrder = 90
-                )
+                ),
+                isInfoComplete = true,
+                errorType = ManageProductErrorType.NOT_ERROR
             )
         )
     )
@@ -538,10 +568,30 @@ class ManageProductViewModelTest {
                     originalCustomStock = 90,
                     originalStock = 100,
                     maxOrder = 110
-                )
+                ),
+                isInfoComplete = true,
+                errorType = ManageProductErrorType.MAX_ORDER
             )
         )
     )
+
+    private fun generateIncompleteProduct() = SellerCampaignProductList(
+        productList = listOf(
+            Product(
+                productMapData = ProductMapData(
+                    originalPrice = 0,
+                    discountedPrice = 0,
+                    discountPercentage = 0,
+                    customStock = 0,
+                    originalCustomStock = 0,
+                    originalStock = 0,
+                    maxOrder = 0
+                ),
+                isInfoComplete = false
+            )
+        )
+    )
+
 
     private fun generateCampaignUiModel() = CampaignUiModel(
         campaignId = 1001,

@@ -276,8 +276,6 @@ class ManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun displayProducts(productList: SellerCampaignProductList) {
-        viewModel.setProductErrorMessage(productList)
-        viewModel.setProductInfoCompletion(productList)
         viewModel.getBannerType(productList)
         viewModel.getCampaignDetail(campaignId)
         handleScrollUp()
