@@ -111,4 +111,5 @@
     <string name="play_product_pinned">Pin Dipasang</string>
     <string name="play_product_pinned_atc">+</string>
     <string name="play_product_pinned_info_separator">\u00b7</string>
+    <string name="play_follow_popup_header_title">Suka videonya kreator ini?</string>
 </resources>

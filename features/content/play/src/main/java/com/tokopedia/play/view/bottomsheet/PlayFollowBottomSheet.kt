@@ -7,11 +7,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.play.R
 import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
@@ -24,12 +26,17 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
     private val binding: PlayFollowBottomSheetBinding
         get() = _binding!!
 
+    private var _headerBinding: BottomSheetHeaderBinding? = null
+    private val headerBinding: BottomSheetHeaderBinding
+        get() = _headerBinding!!
+
     private lateinit var playViewModel: PlayViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         _binding = PlayFollowBottomSheetBinding.inflate(LayoutInflater.from(requireContext()))
+        _headerBinding = BottomSheetHeaderBinding.bind(binding.root)
         setChild(binding.root)
 
         clearContentPadding = true
@@ -53,6 +60,11 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
 
 
     private fun setupView() {
+        headerBinding.ivSheetClose.setOnClickListener {
+            dismiss()
+        }
+        headerBinding.tvSheetTitle.text = getString(R.string.play_follow_popup_header_title)
+
         binding.ivBadge.showWithCondition(playViewModel.latestCompleteChannelData.partnerInfo.badgeUrl.isNotBlank())
         binding.ivIcon.showWithCondition(playViewModel.latestCompleteChannelData.partnerInfo.iconUrl.isNotBlank())
         binding.ivBadge.loadIcon(playViewModel.latestCompleteChannelData.partnerInfo.badgeUrl)
@@ -65,6 +77,12 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         binding.clFollowContainer.setOnClickListener {
             playViewModel.submitAction((PlayViewerNewAction.Follow))
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        _headerBinding = null
     }
 
     companion object {
