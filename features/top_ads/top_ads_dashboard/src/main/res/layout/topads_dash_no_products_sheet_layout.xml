@@ -25,7 +25,7 @@
         android:layout_marginRight="@dimen/dp_50"
         android:gravity="center_horizontal"
         android:text="@string/topads_dashboard_no_product_sheet_header"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_NN1000"
         app:layout_constraintBottom_toTopOf="@id/text_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

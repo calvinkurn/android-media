@@ -152,6 +152,23 @@ object MacroIntent {
         }
     }
 
+    object TokoFood {
+        /**
+         * Target recyclerview
+         * Capture view by resource id
+         */
+        const val RV_RESOURCE_ID = "rv_home"
+
+        private const val DF_MODULE_NAME = "df_tokofood"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+
+        fun getHomeIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://food/home")
+            return intent
+        }
+    }
+
     object SearchResult {
         /**
          * Target recyclerview

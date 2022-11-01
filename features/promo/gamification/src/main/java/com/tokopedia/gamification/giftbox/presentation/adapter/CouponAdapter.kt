@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.PrecomputedTextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.data.entities.CouponType

@@ -1,0 +1,808 @@
+{
+  "TokonowGetRecipeBookmarks": {
+    "header": {
+      "success": true,
+      "processTime": 0.07301409,
+      "message": "Your request has been processed successfully",
+      "statusCode": "200"
+    },
+    "metadata": {
+      "hasNext": true,
+      "total": 10
+    },
+    "data": {
+      "userID": "9101599",
+      "recipes": [
+        {
+          "id": "7",
+          "title": "Test Create Recipe 7",
+          "status": "Published",
+          "instruction": "\u003cp\u003exczc\u003c/p\u003e\n",
+          "portion": 1,
+          "duration": 2,
+          "createdTime": "2022-07-27T19:26:56Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "7",
+            "name": "test create category 2"
+          },
+          "tags": [
+            {
+              "id": "4",
+              "name": "test create tag 3"
+            }
+          ],
+          "products": [
+            {
+              "id": "1",
+              "quantity": 3,
+              "detail": null
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "4",
+              "name": "Ingredient Test",
+              "quantity": 100,
+              "unit": "ml",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/27/0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "urlThumbnail": "",
+                "fileName": "0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "filePath": "MKEzJd/2022/7/27",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "urlThumbnail": "",
+              "fileName": "a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "filePath": "DqYeeh/2022/7/27",
+              "width": 360,
+              "height": 320
+            }
+          ],
+          "videos": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "type": "Image"
+            }
+          ]
+        },
+        {
+          "id": "8",
+          "title": "Test Create Recipe 8",
+          "status": "Published",
+          "instruction": "\u003cp\u003exczc\u003c/p\u003e\n",
+          "portion": 1,
+          "duration": 2,
+          "createdTime": "2022-07-27T19:26:56Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "7",
+            "name": "test create category 2"
+          },
+          "tags": [
+            {
+              "id": "4",
+              "name": "test create tag 3"
+            }
+          ],
+          "products": [
+            {
+              "id": "1",
+              "quantity": 3,
+              "detail": null
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "4",
+              "name": "Ingredient Test",
+              "quantity": 100,
+              "unit": "ml",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/27/0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "urlThumbnail": "",
+                "fileName": "0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "filePath": "MKEzJd/2022/7/27",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "urlThumbnail": "",
+              "fileName": "a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "filePath": "DqYeeh/2022/7/27",
+              "width": 360,
+              "height": 320
+            }
+          ],
+          "videos": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "type": "Image"
+            }
+          ]
+        },
+        {
+          "id": "7",
+          "title": "Test Create Recipe 7",
+          "status": "Published",
+          "instruction": "\u003cp\u003exczc\u003c/p\u003e\n",
+          "portion": 1,
+          "duration": 2,
+          "createdTime": "2022-07-27T19:26:56Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "7",
+            "name": "test create category 2"
+          },
+          "tags": [
+            {
+              "id": "4",
+              "name": "test create tag 3"
+            }
+          ],
+          "products": [
+            {
+              "id": "1",
+              "quantity": 3,
+              "detail": null
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "4",
+              "name": "Ingredient Test",
+              "quantity": 100,
+              "unit": "ml",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/27/0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "urlThumbnail": "",
+                "fileName": "0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "filePath": "MKEzJd/2022/7/27",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "urlThumbnail": "",
+              "fileName": "a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "filePath": "DqYeeh/2022/7/27",
+              "width": 360,
+              "height": 320
+            }
+          ],
+          "videos": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "type": "Image"
+            }
+          ]
+        },
+        {
+          "id": "7",
+          "title": "Test Create Recipe 7",
+          "status": "Published",
+          "instruction": "\u003cp\u003exczc\u003c/p\u003e\n",
+          "portion": 1,
+          "duration": 2,
+          "createdTime": "2022-07-27T19:26:56Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "7",
+            "name": "test create category 2"
+          },
+          "tags": [
+            {
+              "id": "4",
+              "name": "test create tag 3"
+            }
+          ],
+          "products": [
+            {
+              "id": "1",
+              "quantity": 3,
+              "detail": null
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "4",
+              "name": "Ingredient Test",
+              "quantity": 100,
+              "unit": "ml",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/27/0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "urlThumbnail": "",
+                "fileName": "0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "filePath": "MKEzJd/2022/7/27",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "urlThumbnail": "",
+              "fileName": "a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "filePath": "DqYeeh/2022/7/27",
+              "width": 360,
+              "height": 320
+            }
+          ],
+          "videos": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "type": "Image"
+            }
+          ]
+        },
+        {
+          "id": "7",
+          "title": "Test Create Recipe 7",
+          "status": "Published",
+          "instruction": "\u003cp\u003exczc\u003c/p\u003e\n",
+          "portion": 1,
+          "duration": 2,
+          "createdTime": "2022-07-27T19:26:56Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "7",
+            "name": "test create category 2"
+          },
+          "tags": [
+            {
+              "id": "4",
+              "name": "test create tag 3"
+            }
+          ],
+          "products": [
+            {
+              "id": "1",
+              "quantity": 3,
+              "detail": null
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "4",
+              "name": "Ingredient Test",
+              "quantity": 100,
+              "unit": "ml",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/27/0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "urlThumbnail": "",
+                "fileName": "0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "filePath": "MKEzJd/2022/7/27",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "urlThumbnail": "",
+              "fileName": "a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "filePath": "DqYeeh/2022/7/27",
+              "width": 360,
+              "height": 320
+            }
+          ],
+          "videos": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "type": "Image"
+            }
+          ]
+        },
+        {
+          "id": "7",
+          "title": "Test Create Recipe 7",
+          "status": "Published",
+          "instruction": "\u003cp\u003exczc\u003c/p\u003e\n",
+          "portion": 1,
+          "duration": 2,
+          "createdTime": "2022-07-27T19:26:56Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "7",
+            "name": "test create category 2"
+          },
+          "tags": [
+            {
+              "id": "4",
+              "name": "test create tag 3"
+            }
+          ],
+          "products": [
+            {
+              "id": "1",
+              "quantity": 3,
+              "detail": null
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "4",
+              "name": "Ingredient Test",
+              "quantity": 100,
+              "unit": "ml",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/27/0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "urlThumbnail": "",
+                "fileName": "0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "filePath": "MKEzJd/2022/7/27",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "urlThumbnail": "",
+              "fileName": "a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "filePath": "DqYeeh/2022/7/27",
+              "width": 360,
+              "height": 320
+            }
+          ],
+          "videos": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "type": "Image"
+            }
+          ]
+        },
+        {
+          "id": "7",
+          "title": "Test Create Recipe 7",
+          "status": "Published",
+          "instruction": "\u003cp\u003exczc\u003c/p\u003e\n",
+          "portion": 1,
+          "duration": 2,
+          "createdTime": "2022-07-27T19:26:56Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "7",
+            "name": "test create category 2"
+          },
+          "tags": [
+            {
+              "id": "4",
+              "name": "test create tag 3"
+            }
+          ],
+          "products": [
+            {
+              "id": "1",
+              "quantity": 3,
+              "detail": null
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "4",
+              "name": "Ingredient Test",
+              "quantity": 100,
+              "unit": "ml",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/27/0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "urlThumbnail": "",
+                "fileName": "0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "filePath": "MKEzJd/2022/7/27",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "urlThumbnail": "",
+              "fileName": "a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "filePath": "DqYeeh/2022/7/27",
+              "width": 360,
+              "height": 320
+            }
+          ],
+          "videos": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/27/a5723008-31fb-4977-bb78-088a4eda2d95.png",
+              "type": "Image"
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "title": "Test Create Recipe 3",
+          "status": "Published",
+          "instruction": "\u003cp\u003e\u003cb\u003etest\u003c/b\u003e \u003cu\u003ecreate\u003c/u\u003e \u003cem\u003erecipe\u003c/em\u003e 3\u003c/p\u003e\n",
+          "portion": 3,
+          "duration": 30,
+          "createdTime": "2022-07-20T17:02:55Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "8",
+            "name": "test create category 3"
+          },
+          "tags": [
+            {
+              "id": "2",
+              "name": "test create tag 1"
+            },
+            {
+              "id": "3",
+              "name": "test create tag 2"
+            },
+            {
+              "id": "4",
+              "name": "test create tag 3"
+            }
+          ],
+          "products": [
+            {
+              "id": "1",
+              "quantity": 3,
+              "detail": null
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "4",
+              "name": "Ingredient Test",
+              "quantity": 33,
+              "unit": "g",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/27/0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "urlThumbnail": "",
+                "fileName": "0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "filePath": "MKEzJd/2022/7/27",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/25/77f3c486-feb1-47a9-ac76-0e591b37cff0.png",
+              "urlThumbnail": "",
+              "fileName": "77f3c486-feb1-47a9-ac76-0e591b37cff0.png",
+              "filePath": "DqYeeh/2022/7/25",
+              "width": 360,
+              "height": 320
+            },
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/25/e57a2411-56c7-4779-b8ff-9b9659044fdf.png",
+              "urlThumbnail": "",
+              "fileName": "e57a2411-56c7-4779-b8ff-9b9659044fdf.png",
+              "filePath": "DqYeeh/2022/7/25",
+              "width": 360,
+              "height": 320
+            }
+          ],
+          "videos": [
+            {
+              "url": "7b150c95-4875-4e86-8b7a-eb57ce75a208",
+              "type": "Upload"
+            },
+            {
+              "url": "7ed8733a-00d6-4989-8839-e1540a8adc13",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "7b150c95-4875-4e86-8b7a-eb57ce75a208",
+              "type": "Video"
+            },
+            {
+              "url": "7ed8733a-00d6-4989-8839-e1540a8adc13",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/25/77f3c486-feb1-47a9-ac76-0e591b37cff0.png",
+              "type": "Image"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/25/e57a2411-56c7-4779-b8ff-9b9659044fdf.png",
+              "type": "Image"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "title": "Test Create Recipe 2",
+          "status": "Published",
+          "instruction": "\u003cp\u003etesttest\u003c/p\u003e\n",
+          "portion": 2,
+          "duration": 35,
+          "createdTime": "2022-07-19T19:11:56Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "2",
+            "name": "Test Category 1"
+          },
+          "tags": [
+            {
+              "id": "2",
+              "name": "test create tag 1"
+            }
+          ],
+          "products": [
+            {
+              "id": "1",
+              "quantity": 2,
+              "detail": null
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "6",
+              "name": "test create ingredient 2",
+              "quantity": 100,
+              "unit": "ml",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/19/42a042e8-19ed-4f2a-a701-274c212905d3.png",
+                "urlThumbnail": "",
+                "fileName": "42a042e8-19ed-4f2a-a701-274c212905d3.png",
+                "filePath": "MKEzJd/2022/7/19",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/19/32545373-a5a2-452e-bba7-1ff19bb91838.png",
+              "urlThumbnail": "",
+              "fileName": "32545373-a5a2-452e-bba7-1ff19bb91838.png",
+              "filePath": "DqYeeh/2022/7/19",
+              "width": 360,
+              "height": 320
+            }
+          ],
+          "videos": [
+            {
+              "url": "ea1fdd49-8eca-4934-8c0a-b76e57a5e987",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "ea1fdd49-8eca-4934-8c0a-b76e57a5e987",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/19/32545373-a5a2-452e-bba7-1ff19bb91838.png",
+              "type": "Image"
+            }
+          ]
+        },
+        {
+          "id": "1",
+          "title": "Test Create Recipe 1",
+          "status": "Published",
+          "instruction": "\u003cp\u003etest\u003c/p\u003e\n",
+          "portion": 1,
+          "duration": 60,
+          "createdTime": "2022-07-19T18:53:59Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
+          "category": {
+            "id": "1",
+            "name": "Category-1"
+          },
+          "tags": [
+            {
+              "id": "1",
+              "name": "Tag-1"
+            }
+          ],
+          "products": [
+            {
+              "id": "2148476412",
+              "quantity": 2,
+              "detail": {
+                "name": "daging ayam",
+                "url": "https://staging.tokopedia.com/tokonow/daging-ayam",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/4/7/3cacb4a4-20c2-4ad1-9389-d5eeb958d06d.jpg",
+                "fmtPrice": "Rp30.000",
+                "appUrl": "tokopedia://product/2148476412",
+                "slashedPrice": "",
+                "discountPercentage": 0,
+                "parentProductID": "",
+                "minOrder": 1,
+                "stock": 95,
+                "categoryName": "TokoNow Makanan",
+                "countReview": "0",
+                "rating": 0,
+                "ratingAverage": "",
+                "shopID": "480552",
+                "maxOrder": 95,
+                "categoryID": "3194",
+                "redirectLink": "",
+                "labelGroups": [
+                  {
+                    "title": "ONGKIRPUAS",
+                    "type": "lightGreen",
+                    "position": "promo",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 5",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "labelGroupVariants": []
+              }
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "2",
+              "name": "Ingredient-2",
+              "quantity": 2,
+              "unit": "gr",
+              "image": null
+            },
+            {
+              "id": "4",
+              "name": "Ingredient Test",
+              "quantity": 2,
+              "unit": "sdm",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/7/27/0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "urlThumbnail": "",
+                "fileName": "0b585af3-42d5-48bd-a1b4-c04cb513d944.png",
+                "filePath": "MKEzJd/2022/7/27",
+                "width": 250,
+                "height": 250
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/19/b47cee6a-467d-493a-a68c-44048343c5fe.png",
+              "urlThumbnail": "",
+              "fileName": "b47cee6a-467d-493a-a68c-44048343c5fe.png",
+              "filePath": "DqYeeh/2022/7/19",
+              "width": 360,
+              "height": 232
+            }
+          ],
+          "videos": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=bfda91090ff940a283064f264bdf2f15",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/7/19/b47cee6a-467d-493a-a68c-44048343c5fe.png",
+              "type": "Image"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

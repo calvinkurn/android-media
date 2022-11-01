@@ -116,7 +116,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             when (result) {
                 is Success -> {
                     binding?.groupContent?.visible()
-                    viewModel.storeTabsMetadata(result.data.tabMeta)
                     displayTabs(result.data.tabMeta, result.data.targetTabPosition)
                 }
                 is Fail -> {

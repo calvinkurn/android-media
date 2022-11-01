@@ -94,6 +94,11 @@ interface DynamicProductDetailListener {
      * OneLinerViewHolder
      */
     fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
+    fun onClickInformationIconAtStockAssurance(
+        componentTrackDataModel: ComponentTrackDataModel,
+        appLink: String,
+        label: String
+    )
 
     /**
      * ProductDiscussionViewHolder
@@ -381,6 +386,12 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel
     )
 
+    fun onClickActionButtonBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
     fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
@@ -414,6 +425,7 @@ interface DynamicProductDetailListener {
     fun onImpressBackToTop(label: String)
     fun onImpressProductDetailNavigation(labels: List<String>)
     fun onClickProductDetailnavigation(position: Int, label: String)
+    fun updateNavigationTabPosition()
 
     fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
     fun startVerticalRecommendation(pageName: String)

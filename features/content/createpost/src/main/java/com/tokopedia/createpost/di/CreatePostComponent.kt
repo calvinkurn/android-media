@@ -1,10 +1,11 @@
 package com.tokopedia.createpost.di
 
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
+import com.tokopedia.content.common.di.ContentFragmentFactoryModule
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.di.CreatePostScope
-import com.tokopedia.createpost.producttag.di.module.ContentCreationProductTagBindModule
-import com.tokopedia.createpost.producttag.di.module.ContentCreationProductTagModule
+import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagModule
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.activity.ProductTagActivity
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
@@ -20,6 +21,7 @@ import dagger.Component
         ViewModelModule::class,
         ContentCreationProductTagBindModule::class,
         ContentCreationProductTagModule::class,
+        ContentFragmentFactoryModule::class,
     ],
 )
 interface CreatePostComponent {

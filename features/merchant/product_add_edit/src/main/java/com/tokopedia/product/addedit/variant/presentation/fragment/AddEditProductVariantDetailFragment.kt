@@ -391,6 +391,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         variantListButton = view.findViewById(R.id.variantListButton)
         buttonSave = view.findViewById(R.id.buttonSave)
         multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
+        multiLocationTicker?.setTextDescription(context?.resources?.getString(R.string.ticker_variant_only_main_location).toString())
+        tickerVariantWholesale?.setTextDescription(context?.resources?.getString(R.string.label_variant_wholesale_warning).toString())
     }
 
     private fun setupVariantDetailFields(selectedUnitValues: List<OptionInputModel>) {

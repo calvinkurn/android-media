@@ -1,22 +1,23 @@
 package com.tokopedia.search.result.presentation.view.typefactory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder
+import com.tokopedia.search.result.product.broadmatch.BroadMatchViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder
@@ -25,12 +26,12 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTitleViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTopAdsImageViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
+import com.tokopedia.search.result.product.suggestion.SuggestionViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder
-import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
+import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
+import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
@@ -56,6 +57,9 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleLi
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleViewHolder
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListener
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.BigGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
@@ -105,10 +109,13 @@ class ProductListTypeFactoryImpl(
     private val violationListener: ViolationListener,
     private val videoCarouselListener: InspirationVideoCarouselListener,
     private val inspirationBundleListener: InspirationBundleListener,
+    private val inspirationListAtcListener: InspirationListAtcListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isUsingViewStub: Boolean = false,
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
+    private val recycledViewPool: RecyclerView.RecycledViewPool,
+    private val isSneakPeekEnabled: Boolean = false,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
@@ -219,15 +226,18 @@ class ProductListTypeFactoryImpl(
     override fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView): Int =
         SameSessionRecommendationViewHolder.LAYOUT
 
+    override fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int =
+        InspirationListAtcViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ListProductItemViewHolder.LAYOUT, ListProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
-                ListProductItemViewHolder(view, productListener)
+                ListProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             SmallGridProductItemViewHolder.LAYOUT, SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
-                SmallGridProductItemViewHolder(view, productListener)
+                SmallGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             BigGridProductItemViewHolder.LAYOUT ->
-                BigGridProductItemViewHolder(view, productListener)
+                BigGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener)
             TickerViewHolder.LAYOUT -> TickerViewHolder(view, tickerListener)
             SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(view, suggestionListener)
@@ -235,7 +245,7 @@ class ProductListTypeFactoryImpl(
             EmptyStateFilterViewHolder.LAYOUT -> EmptyStateFilterViewHolder(view, emptyStateListener)
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
-                InspirationCarouselViewHolder(view, inspirationCarouselListener)
+                InspirationCarouselViewHolder(view, inspirationCarouselListener, recycledViewPool)
             InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
                     view,
                     videoCarouselListener,
@@ -251,7 +261,8 @@ class ProductListTypeFactoryImpl(
             RecommendationItemViewHolder.LAYOUT ->
                 RecommendationItemViewHolder(view, recommendationListener)
             BannedProductsEmptySearchViewHolder.LAYOUT -> BannedProductsEmptySearchViewHolder(view)
-            BroadMatchViewHolder.LAYOUT -> BroadMatchViewHolder(view, broadMatchListener)
+            BroadMatchViewHolder.LAYOUT ->
+                BroadMatchViewHolder(view, broadMatchListener, recycledViewPool)
             SmallGridInspirationCardViewHolder.LAYOUT ->
                 SmallGridInspirationCardViewHolder(view, inspirationCardListener)
             BigGridInspirationCardViewHolder.LAYOUT ->
@@ -277,6 +288,8 @@ class ProductListTypeFactoryImpl(
                 inspirationCarouselListener,
                 sameSessionRecommendationListener,
             )
+            InspirationListAtcViewHolder.LAYOUT ->
+                InspirationListAtcViewHolder(view, inspirationListAtcListener, recycledViewPool)
 
             else -> super.createViewHolder(view, type)
         }

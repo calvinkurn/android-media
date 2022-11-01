@@ -1,7 +1,4 @@
 apply plugin: 'com.android.application'
-if (project.hasProperty("auto-patch")) {
-    apply plugin: 'auto-patch-plugin'
-}
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
@@ -103,7 +100,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            debuggable = project.hasProperty('enableDebug') && enableDebug == "true"
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
@@ -138,8 +135,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     configurations.all {
@@ -418,9 +415,9 @@ dependencies {
     //Adding this to df_base_sellerapp/build.gradle was giving error - https://github.com/Meituan-Dianping/Robust/issues/444
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
 
-    debugImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
-    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 }
 
 apply plugin: 'com.google.gms.google-services'

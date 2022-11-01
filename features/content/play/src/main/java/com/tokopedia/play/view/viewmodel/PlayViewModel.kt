@@ -30,6 +30,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.setValue
@@ -60,8 +61,8 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
@@ -112,6 +113,7 @@ class PlayViewModel @AssistedInject constructor(
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
     private val playLog: PlayLog,
+    chatManagerFactory: ChatManager.Factory,
     chatStreamsFactory: ChatStreams.Factory,
     private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon,
 ) : ViewModel() {
@@ -348,10 +350,12 @@ class PlayViewModel @AssistedInject constructor(
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
-    private val chatStreams = chatStreamsFactory.create(viewModelScope)
+    private val chatManager = chatManagerFactory.create(
+        chatStreamsFactory.create(viewModelScope)
+    )
 
     val chats: StateFlow<List<PlayChatUiModel>>
-        get() = chatStreams.chats
+        get() = chatManager.chats
 
     val videoOrientation: VideoOrientation
         get() {
@@ -564,7 +568,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private val gson by lazy { Gson() }
 
-    private var delayQuizJob: Job? = null
     private var delayTapJob: Job? = null
 
     init {
@@ -1024,7 +1027,7 @@ class PlayViewModel @AssistedInject constructor(
 
         updateTagItems()
         updateChannelStatus()
-
+        updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         sendInitialLog()
     }
@@ -1183,6 +1186,19 @@ class PlayViewModel @AssistedInject constructor(
         }) {}
     }
 
+    /**
+     * Updating chat history for live channel only
+     */
+    private fun updateLiveChannelChatHistory(channelData: PlayChannelData) {
+        viewModelScope.launchCatchError(block = {
+            if(channelData.channelDetail.channelInfo.channelType.isLive) {
+                chatManager.setWaitingForHistory()
+                val response = repo.getChatHistory(channelId)
+                chatManager.addHistoryChat(response.chatList.reversed())
+            }
+        }) { }
+    }
+
     fun sendChat(message: String) {
         if (!userSession.isLoggedIn) return
 
@@ -1292,12 +1308,22 @@ class PlayViewModel @AssistedInject constructor(
         this._partnerInfo.value = partnerInfo
     }
 
+    private var coachmarkJob: Job? = null
+
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        val userId = userSession.userId
-        if (!playPreference.isOnboardingShown(userId) && !videoMetaInfo.videoPlayer.isYouTube) {
-            viewModelScope.launch(dispatchers.main) {
+        val isShown = playPreference.isCoachMark(userId = userId)
+
+        playAnalytic.screenWithSwipeCoachMark(isShown = isShown, channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
+
+        coachmarkJob?.cancel()
+
+        if (isShown && !videoMetaInfo.videoPlayer.isYouTube) {
+            coachmarkJob = viewModelScope.launch(dispatchers.computation) {
                 delay(ONBOARDING_DELAY)
-                _observableOnboarding.value = Event(Unit)
+
+                withContext(dispatchers.main) {
+                    _observableOnboarding.value = Event(Unit)
+                }
             }
         }
     }
@@ -1412,7 +1438,7 @@ class PlayViewModel @AssistedInject constructor(
      * Private Method
      */
     private fun setNewChat(chat: PlayChatUiModel) {
-        chatStreams.addChat(chat)
+        chatManager.addChat(chat)
     }
 
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
@@ -1449,10 +1475,8 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun setLeaderboardBadgeState(leaderboardInfo: PlayLeaderboardInfoUiModel) {
-        if(leaderboardInfo.leaderboardWinners.isNotEmpty()) {
-            _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
-        }
+    private fun setLeaderboardBadgeState(leaderboardInfo: List<LeaderboardGameUiModel>) {
+        if(leaderboardInfo.isNotEmpty()) _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
     }
 
     private fun checkInteractive(channelId: String) {
@@ -1848,7 +1872,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            val interactive = _interactive.updateAndGet {
+            _interactive.update {
                 if (it.interactive !is InteractiveUiModel.Quiz) error("Error")
                 val newInteractive = it.interactive.copy(
                     status = InteractiveUiModel.Quiz.Status.Finished
@@ -1858,41 +1882,23 @@ class PlayViewModel @AssistedInject constructor(
                     isPlaying = false,
                 )
             }
-
-            val winnerStatus = _winnerStatus.value
-            val interactiveType = _interactive.value.interactive
-            val isFinished = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.status is InteractiveUiModel.Quiz.Status.Finished else false
-            val isRewardAvailable = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.reward.isNotEmpty() else false
-
-            if (!isRewardAvailable) {
-                showLeaderBoard(interactiveId = interactiveType.id)
-            } else {
-                delayQuizJob?.cancel()
-                delayQuizJob = viewModelScope.launch(dispatchers.computation) {
-                    delay(interactive.interactive.waitingDuration)
-                    if(isFinished) {
-                        if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
-                    }
-                }
-            }
-            /**
-             * _interactive.value = InteractiveStateUiModel.Empty (resetting interactive) is available on
-             * processWinnerStatus() / showLeaderBoard() if we use both there's a case when the delay is still on but the socket
-             * is coming, seller create another quiz it'll ruin the current flow.
-             *
-             * if winner status still didn't come after delay, just showLeaderBoard
-             * */
+            showLeaderBoard(_interactive.value.interactive.id)
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
     }
 
-    private fun showLeaderBoard(interactiveId: String){
+    private suspend fun showLeaderBoard(interactiveId: String){
         if (repo.hasProcessedWinner(interactiveId)) return
 
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
+
+        _uiEvent.emit(
+            ShowCoachMarkWinnerEvent("", UiString.Resource(R.string.play_quiz_finished))
+        )
+
         repo.setHasProcessedWinner(interactiveId)
 
         _interactive.value = InteractiveStateUiModel.Empty
@@ -1917,7 +1923,7 @@ class PlayViewModel @AssistedInject constructor(
                     ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
                 }
                 else {
-                    ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
+                    ShowCoachMarkWinnerEvent(status.loserTitle, UiString.Text(status.loserText))
                 }
             )
             repo.setHasProcessedWinner(interactive.id)
@@ -2605,7 +2611,6 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun cancelAllDelayFromSocketWinner() {
-        if(delayQuizJob?.isActive == true) delayQuizJob?.cancel()
         if(delayTapJob?.isActive == true) delayTapJob?.cancel()
     }
 

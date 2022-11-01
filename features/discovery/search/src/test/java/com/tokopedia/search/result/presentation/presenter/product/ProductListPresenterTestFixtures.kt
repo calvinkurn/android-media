@@ -2,31 +2,44 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.QueryKeyProvider
+import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banned.BannedProductsView
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.BroadMatchView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.safesearch.MutableSafeSearchPreference
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegate
+import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
+import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -47,6 +60,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val searchProductCommonResponseJSON = "searchproduct/common-response.json"
     protected val searchProductFirstPageJSON = "searchproduct/loaddata/first-page.json"
     protected val searchProductSecondPageJSON = "searchproduct/loaddata/second-page.json"
+    protected val className = "SearchClassName"
 
     protected val productListView = mockk<ProductListSectionContract.View>(relaxed = true)
     protected val searchProductFirstPageUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
@@ -71,7 +85,9 @@ internal open class ProductListPresenterTestFixtures {
     protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val bannedProductsView = mockk<BannedProductsView>(relaxed = true)
-    protected val pagination = PaginationImpl()
+    protected val broadMatchView = mockk<BroadMatchView>(relaxed = true)
+    protected val inspirationCarouselDynamicProductView =
+        mockk<InspirationCarouselDynamicProductView>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -86,21 +102,43 @@ internal open class ProductListPresenterTestFixtures {
         mockk<SameSessionRecommendationPreference>(relaxed = true)
     protected val queryKeyProvider = mockk<QueryKeyProvider>(relaxed = true)
     protected val productFilterIndicator = mockk<ProductFilterIndicator>(relaxed = true)
+    protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
+    protected val searchParameterProvider = mockk<SearchParameterProvider>(relaxed = true)
+    protected val inspirationListAtcView = mockk<InspirationListAtcView>(relaxed = true)
+    protected val classNameProvider = mockk<ClassNameProvider> {
+        every { className } returns this@ProductListPresenterTestFixtures.className
+    }
+    protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
+    protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
+    protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
 
-    protected lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
     open fun setUp() {
+        val pagination = PaginationImpl()
         val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
         val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
-        sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
+        val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,
             requestParamsGenerator,
             sameSessionRecommendationUseCase,
             sameSessionRecommendationPreference,
             queryKeyProvider,
             productFilterIndicator,
+        )
+        val suggestionPresenter = SuggestionPresenter()
+
+        val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
+            addToCartUseCase,
+            userSession,
+            inspirationListAtcView,
+            searchParameterProvider,
+        )
+        val tickerPresenter = TickerPresenterDelegate()
+        val safeSearchPresenter = SafeSearchPresenterDelegate(
+            safeSearchPreference,
+            safeSearchView,
         )
 
         productListPresenter = ProductListPresenter(
@@ -127,7 +165,22 @@ internal open class ProductListPresenterTestFixtures {
                 chooseAddressPresenterDelegate
             ) { saveLastFilterUseCase },
             sameSessionRecommendationPresenterDelegate,
-            BannedProductsPresenterDelegate(bannedProductsView, viewUpdater)
+            BannedProductsPresenterDelegate(bannedProductsView, viewUpdater),
+            inspirationListAtcPresenterDelegate,
+            BroadMatchPresenterDelegate(
+                broadMatchView,
+                inspirationCarouselDynamicProductView,
+                viewUpdater,
+                topAdsUrlHitter,
+                classNameProvider,
+                applinkModifier,
+                pagination,
+                suggestionPresenter,
+            ),
+            suggestionPresenter,
+            tickerPresenter,
+            safeSearchPresenter,
+            addToCartUseCase,
         )
         productListPresenter.attachView(productListView)
     }
@@ -166,6 +219,7 @@ internal open class ProductListPresenterTestFixtures {
                     expectedOrganicProductPosition,
                     "",
                     searchProductModel.getProductListType(),
+                    searchProductModel.isShowButtonAtc,
                 )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
@@ -201,6 +255,7 @@ internal open class ProductListPresenterTestFixtures {
         position: Int,
         expectedPageTitle: String = "",
         productListType: String = "",
+        isShowButtonAtc: Boolean = false,
     ) {
         val productItem = this as ProductItemDataView
 
@@ -225,6 +280,8 @@ internal open class ProductListPresenterTestFixtures {
         productItem.minOrder shouldBe organicProduct.minOrder
         productItem.pageTitle shouldBe expectedPageTitle
         productItem.productListType shouldBe productListType
+        productItem.showButtonAtc shouldBe isShowButtonAtc
+        productItem.parentId shouldBe organicProduct.parentId
     }
 
     @Suppress("UNCHECKED_CAST")

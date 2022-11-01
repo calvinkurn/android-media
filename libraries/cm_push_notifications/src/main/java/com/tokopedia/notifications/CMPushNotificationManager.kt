@@ -14,8 +14,10 @@ import com.tokopedia.logger.ServerLogger.log
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.notification.common.PushNotificationApi
-import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
+import com.tokopedia.notifications.common.CMRemoteConfigUtils
+import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.data.AmplificationDataSource
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.payloadProcessor.InAppPayloadPreprocessorUseCase
@@ -26,7 +28,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import timber.log.Timber
-import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 /**

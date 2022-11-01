@@ -19,12 +19,14 @@ import androidx.annotation.RequiresApi
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_PRODUCT_ID
 import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_TARGET_TITLE_ID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -97,8 +99,9 @@ class Utils {
         private const val COUNT_ONLY = "count_only"
         private const val RPC_USER_ID = "rpc_UserID"
         const val RPC_PAGE_NUMBER = "rpc_page_number"
-        const val RPC_PAGE__SIZE = "rpc_page_size"
+        const val RPC_PAGE_SIZE = "rpc_page_size"
         const val RPC_NEXT_PAGE = "rpc_next_page"
+        const val RPC_FILTER_KEY = "rpc_"
         const val DARK_MODE = "dark_mode"
         const val DEFAULT_ENCODING = "UTF-8"
 
@@ -168,7 +171,7 @@ class Utils {
                 val filtersMap = selectedFilterMapParameter as MutableMap<String, String?>
                 filtersMap.let {
                     it[COUNT_ONLY] = "true"
-                    it[RPC_PAGE__SIZE] = "10"
+                    it[RPC_PAGE_SIZE] = "10"
                     it[RPC_PAGE_NUMBER] = "1"
                     it[RPC_USER_ID] = if (userId.isNullOrEmpty()) "0" else userId
 
@@ -238,6 +241,9 @@ class Utils {
             }
             if(!queryParameterMap[TARGET_TITLE_ID].isNullOrEmpty()){
                 queryParamValues[RPC_TARGET_TITLE_ID] = queryParameterMap[TARGET_TITLE_ID]!!
+            }
+            if(!queryParameterMap[RECOM_PRODUCT_ID].isNullOrEmpty()){
+                queryParamValues[RPC_PRODUCT_ID] = queryParameterMap[RECOM_PRODUCT_ID]!!
             }
 
             return queryParamValues
@@ -465,6 +471,12 @@ class Utils {
             }catch (exception: Exception){
                 this
             }
+        }
+
+        fun ComponentsItem.areFiltersApplied():Boolean{
+            return (selectedSort != null && selectedFilters != null) &&
+                (selectedSort?.isNotEmpty() == true ||
+                    selectedFilters?.isNotEmpty() == true)
         }
     }
 }

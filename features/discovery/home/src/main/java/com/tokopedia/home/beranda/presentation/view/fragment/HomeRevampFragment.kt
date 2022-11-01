@@ -138,6 +138,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListC
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.LegoProductCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -1329,7 +1330,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             CueWidgetComponentCallback(this),
             VpsWidgetComponentCallback(this),
             CategoryWidgetV2Callback(context, this),
-            MissionWidgetComponentCallback(this, getHomeViewModel())
+            MissionWidgetComponentCallback(this, getHomeViewModel()),
+            LegoProductCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2354,16 +2356,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             channel.id, channel.grids, position
                     )
             )
-            DynamicChannelViewHolder.TYPE_ORGANIC -> putEEToIris(
-                    HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
-                            channel.id, channel.grids, channel.header.name
-                    )
-            )
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                     getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
-            DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
-                    HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
         }
     }

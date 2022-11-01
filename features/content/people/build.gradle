@@ -21,8 +21,12 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_11
     }
     defaultConfig {
         multiDexEnabled true
@@ -61,6 +65,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.playWidget)
     implementation project(rootProject.ext.features.feedComponent)
+    implementation project(rootProject.ext.features.contentCommon)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

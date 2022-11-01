@@ -3,11 +3,14 @@ package com.tokopedia.play.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.domain.GetChannelStatusUseCase
+import com.tokopedia.play.domain.GetChatHistoryUseCase
 import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
+import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
 import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -18,6 +21,8 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val channelStorage: PlayChannelStateStorage,
     private val getChannelStatusUseCase: GetChannelStatusUseCase,
     private val getChannelDetailsUseCase: GetChannelDetailsWithRecomUseCase,
+    private val getChatHistory: GetChatHistoryUseCase,
+    private val uiMapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
     private val channelMapper: PlayChannelDetailsWithRecomMapper,
 ) : PlayViewerChannelRepository {
@@ -60,5 +65,17 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
             channelList = channelMapper.map(response, extraParams),
             cursor = response.channelDetails.meta.cursor,
         )
+    }
+
+    override suspend fun getChatHistory(
+        channelId: String,
+        cursor: String,
+    ): PlayChatHistoryUiModel = withContext(dispatchers.io) {
+        val response = getChatHistory.executeOnBackground(
+            channelId = channelId,
+            cursor = cursor,
+        )
+
+        uiMapper.mapHistoryChat(response)
     }
 }

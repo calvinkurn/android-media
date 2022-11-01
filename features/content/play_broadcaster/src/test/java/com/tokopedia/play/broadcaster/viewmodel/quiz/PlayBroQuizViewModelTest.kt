@@ -13,7 +13,8 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.LeadeboardType
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -22,6 +23,7 @@ import io.mockk.coJustRun
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -48,11 +50,7 @@ class PlayBroQuizViewModelTest {
         channelId = "123"
     )
 
-    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
-        quizConfig = interactiveUiModelBuilder.buildQuizConfig(
-            showPrizeCoachMark = false,
-        )
-    )
+    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel()
 
     private val mockException = uiModelBuilder.buildException()
 
@@ -79,6 +77,11 @@ class PlayBroQuizViewModelTest {
 
     private val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
 
+    @Before
+    fun setUp() {
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
+    }
+
     @Test
     fun `when user successfully create new quiz, it should return quiz model`() {
         coJustRun {
@@ -87,11 +90,10 @@ class PlayBroQuizViewModelTest {
                 any(),
                 any(),
                 any(),
-                any()
             )
         }
         coEvery { mockRepo.getCurrentInteractive(any()) } returns mockQuizUiModel
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
@@ -99,7 +101,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.SubmitQuizForm)
             }
             Assertions.assertThat(state.interactive)
@@ -109,14 +111,14 @@ class PlayBroQuizViewModelTest {
 
     @Test
     fun `when ongoing quiz ended, it should return unknown interactive model`(){
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
         )
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 it.getViewModel().submitAction(PlayBroadcastAction.QuizEnded)
             }
             Assertions.assertThat(state.interactive).isInstanceOf(InteractiveUiModel.Unknown::class.java)
@@ -125,7 +127,7 @@ class PlayBroQuizViewModelTest {
 
     @Test
     fun `when user fill quiz question state form data title must be same as user input`() {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         val question = "pertanyaan"
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -133,7 +135,7 @@ class PlayBroQuizViewModelTest {
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.InputQuizTitle(question))
             }
             state.quizForm.quizFormData.title.assertEqualTo(question)
@@ -142,14 +144,14 @@ class PlayBroQuizViewModelTest {
 
     @Test
     fun `when user click back on quiz choice detail participant bottom sheet should return Quiz Choice Detail Empty model`() {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.ClickBackOnChoiceDetail)
             }
             Assertions.assertThat(state.quizBottomSheetUiState.quizChoiceDetailState).isInstanceOf(
@@ -160,14 +162,14 @@ class PlayBroQuizViewModelTest {
 
     @Test
     fun `when user dismiss play bro interactive bottom sheet should return Quiz Detail Empty and Quiz Choice Detail Empty model`() {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.DismissQuizDetailBottomSheet)
             }
             Assertions.assertThat(state.quizBottomSheetUiState.quizChoiceDetailState).isInstanceOf(
@@ -181,14 +183,14 @@ class PlayBroQuizViewModelTest {
 
     @Test
     fun `when user click on game result widget should emit event show Leaderboard BottomSheet`() {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
         )
         robot.use {
             val events = it.recordEvent {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.ClickGameResultWidget)
             }
             events.last().assertEqualTo(PlayBroadcastEvent.ShowLeaderboardBottomSheet)
@@ -198,7 +200,7 @@ class PlayBroQuizViewModelTest {
     @Test
     fun `when user click refresh on quiz detail bottom sheet it should return quiz detail succeed state model`() {
         val mockQuizDetail = QuizDetailDataUiModel("pertanyaan", "hadiah")
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         coEvery { mockRepo.getInteractiveQuizDetail(any()) } throws mockException andThen mockQuizDetail
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -206,7 +208,7 @@ class PlayBroQuizViewModelTest {
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().getQuizDetailData()
                 getViewModel().submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
             }
@@ -217,25 +219,16 @@ class PlayBroQuizViewModelTest {
 
     @Test
     fun `when user click refresh on leaderboard detail bottom sheet it should return quiz detail succeed state model`() {
-        val mockLeaderboard = listOf(
-            PlayLeaderboardUiModel(
-                title = "slot 1",
-                winners = emptyList(),
-                id = "1",
-                emptyLeaderBoardCopyText = "",
-                otherParticipantText = "",
-                otherParticipant = 0L
-            )
-        )
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
-        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } throws mockException andThen mockLeaderboard
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } throws mockException andThen interactiveUiModelBuilder.buildLeaderboardInfoModel(
+            listOf(LeaderboardGameUiModel.Header(leaderBoardType = LeadeboardType.Quiz, id = "11", title = "Hehe")))
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().getLeaderboardWithSlots()
                 getViewModel().submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
             }
@@ -256,7 +249,7 @@ class PlayBroQuizViewModelTest {
             choice = mockQuizChoicesUiModel,
             cursor = "-1"
         )
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         coEvery {
             mockRepo.getInteractiveQuizChoiceDetail(
                 any(),
@@ -273,7 +266,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(
                     PlayBroadcastAction.ClickQuizChoiceOption(
                         mockQuizChoicesUiModel
@@ -297,7 +290,7 @@ class PlayBroQuizViewModelTest {
             choice = mockQuizChoicesUiModel,
             cursor = "-1"
         )
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         coEvery {
             mockRepo.getInteractiveQuizChoiceDetail(
                 any(),
@@ -314,7 +307,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(
                     PlayBroadcastAction.ClickQuizChoiceOption(mockQuizChoicesUiModel)
                 )
@@ -327,7 +320,7 @@ class PlayBroQuizViewModelTest {
 
     @Test
     fun `when user click quiz game option should change quiz form state to preparation`(){
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
@@ -335,7 +328,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.ClickGameOption(GameType.Quiz))
             }
             Assertions.assertThat(state.quizForm.quizFormState).isInstanceOf(QuizFormStateUiModel.Preparation::class.java)
@@ -344,7 +337,7 @@ class PlayBroQuizViewModelTest {
 
     @Test
     fun `when user click giveaway game option should change interactive setup type to giveaway type`(){
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
@@ -352,7 +345,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.ClickGameOption(GameType.Giveaway))
             }
             Assertions.assertThat(state.interactiveSetup.type).isEqualTo(GameType.Giveaway)
@@ -360,28 +353,9 @@ class PlayBroQuizViewModelTest {
     }
 
     @Test
-    fun `when user fill input gift state form must changed`(){
-        val reward = "hadiah"
-
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo,
-        )
-
-        robot.use {
-            val state = it.recordState {
-                getConfig()
-                getViewModel().submitAction(PlayBroadcastAction.InputQuizGift(reward))
-            }
-            Assertions.assertThat(state.quizForm.quizFormData.gift).isEqualTo(reward)
-        }
-    }
-
-    @Test
     fun `when user fill input option data, quiz form state form data options must filled with input option value`(){
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
         coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
 
         every { mockBroadcastTimer.remainingDuration } returns Long.MAX_VALUE
@@ -395,7 +369,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
                 inputQuizOption(0, "AAA")
             }
