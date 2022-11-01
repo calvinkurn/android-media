@@ -169,7 +169,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.FORGOT_PA
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_ALA_CARTE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_INFO
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_LIVENESS
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_LIVENESS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER
 import com.tokopedia.applink.review.ReviewApplinkConst
@@ -546,7 +546,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ADD_TALK) }, DF_BASE, R.string.talk_title))
 
             add(DFP({ it.startsWith(ADD_FINGERPRINT_ONBOARDING) }, DF_BASE, R.string.fingerprint_onboarding))
-            add(DFP({ it.startsWithPattern(KYC_LIVENESS) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
+            add(DFP({ it.startsWith(KYC_LIVENESS_BASE) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
             add(DFP({
                     it.startsWith(ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC) ||
                     it.startsWith(ApplinkConstInternalUserPlatform.BIOMETRIC_SETTING)

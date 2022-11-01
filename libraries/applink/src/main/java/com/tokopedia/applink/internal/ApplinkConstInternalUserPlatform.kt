@@ -414,7 +414,7 @@ object ApplinkConstInternalUserPlatform {
      * ### Open KYC submission form
      *
      * @class       : UserIdentificationFormActivity
-     * @Applink     : tokopedia-android-internal://user/user-identification-form?projectId={projectId}
+     * @Applink     : tokopedia-android-internal://user/user-identification-form?projectId={projectId}&redirectUrl={redirectUrl}
      * @param
      *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
      *  - redirectUrl  : optional | String | ref: [PARAM_REDIRECT_URL]
