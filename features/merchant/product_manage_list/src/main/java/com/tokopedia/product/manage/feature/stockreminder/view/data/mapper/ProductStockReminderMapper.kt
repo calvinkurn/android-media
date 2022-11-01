@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
 import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
 import com.tokopedia.product.manage.feature.stockreminder.view.data.GroupVariantProductStockReminderUiModel
@@ -11,7 +12,7 @@ object ProductStockReminderMapper {
                            maxStock: Int?): List<ProductStockReminderUiModel> {
         if (response.variant.products.isEmpty()) {
             val stockAlertCount =
-                if (response.stockAlertCount.isEmpty()) 0 else response.stockAlertCount.toInt()
+                if (response.stockAlertCount.isEmpty()) 0 else response.stockAlertCount.toIntOrZero()
             return listOf(
                 ProductStockReminderUiModel(
                     response.productID,
@@ -28,7 +29,7 @@ object ProductStockReminderMapper {
             val variants = response.variant.products.map {
                 val variantName = getCombineVariantName(it.combination, variantSelections)
                 val stockAlertCount =
-                    if (it.stockAlertCount.isEmpty()) 0 else it.stockAlertCount.toInt()
+                    if (it.stockAlertCount.isEmpty()) 0 else it.stockAlertCount.toIntOrZero()
                 ProductStockReminderUiModel(
                     it.productID,
                     variantName,

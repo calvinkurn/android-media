@@ -36,7 +36,7 @@ class SectionTickerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             content.layoutTickerAttr.tickerList?.let { tickerData ->
                 tickerData.forEachIndexed { index, tickerContainer ->
                     val tickerItemText =  tickerContainer.metadata?.get(INDEX_TEXT)?: TickerMetadata()
-                    val tickerItemLink =  tickerContainer.metadata?.get(INDEX_LINK)?: TickerMetadata()
+                    val tickerItemLink =  tickerContainer.metadata?.getOrNull(INDEX_LINK)?: TickerMetadata()
 
                     link = if (tickerItemLink.link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
                         tickerItemLink.link[CommonConstant.TickerMapKeys.APP_LINK].toString()

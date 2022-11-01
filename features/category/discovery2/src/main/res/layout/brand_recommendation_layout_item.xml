@@ -9,7 +9,7 @@
 <androidx.cardview.widget.CardView
     android:id="@+id/cardView"
     android:layout_width="0dp"
-    android:layout_height="match_parent"
+    android:layout_height="0dp"
     android:layout_margin="4dp"
     app:layout_constraintDimensionRatio="1:1"
     app:cardBackgroundColor="@color/Unify_N0"
@@ -23,8 +23,8 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/brand_recom_iv"
         android:contentDescription="@string/content_desc_brand_recom_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
         tools:src="@drawable/empty_photo" />
