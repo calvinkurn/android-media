@@ -375,7 +375,7 @@ class ProductSheetViewComponent(
             val startPosition = linearLayoutManager.findFirstVisibleItemPosition()
             val endPosition = linearLayoutManager.findLastVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) {
-                return (startPosition..endPosition).flatMap { products }
+                return products.slice(startPosition..endPosition)
             }
         }
         return emptyList()
