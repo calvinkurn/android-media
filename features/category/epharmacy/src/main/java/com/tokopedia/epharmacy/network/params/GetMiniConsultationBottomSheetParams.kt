@@ -7,9 +7,9 @@ data class GetMiniConsultationBottomSheetParams(
     @SerializedName("data_type")
     var dataType: String = "",
     @SerializedName("params")
-    var params: Params? = null ,
+    var params: EpharmacyStaticInfoParams,
 ): GqlParam {
-    data class Params(
+    data class EpharmacyStaticInfoParams(
         @SerializedName("enabler_name")
         var enablerName: String = ""
     )

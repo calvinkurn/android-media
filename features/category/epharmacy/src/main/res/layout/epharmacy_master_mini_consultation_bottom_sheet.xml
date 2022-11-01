@@ -5,15 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="8dp"
-    android:layout_marginBottom="24dp"
-    android:orientation="vertical"
-    android:paddingBottom="8dp">
+    android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottom_sheet_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -76,17 +73,43 @@
             app:layout_constraintTop_toBottomOf="@id/heading_subtitle"
             tools:listitem="@layout/epharmacy_item_master_mini_consultation_bs" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/static_title_partner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="paragraph_3"
+            app:layout_constraintTop_toBottomOf="@id/step_list_rv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/epharmacy_toko_ini_adalah_partner_resmi"
+            />
+
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/bottom_image"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="125dp"
             android:layout_marginTop="8dp"
             android:scaleType="fitXY"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/step_list_rv" />
+            app:layout_constraintTop_toBottomOf="@id/static_title_partner"
+            app:completeUrl="https://images.tokopedia.net/img/miniconsul-toped-illustration.png"
+            app:imageDpiSupportType="singleDpi"
+            />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/bottom_image_logo"
+            android:layout_width="105dp"
+            android:layout_height="26dp"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toTopOf="@id/bottom_image"
+            app:layout_constraintStart_toStartOf="@id/bottom_image"
+            app:layout_constraintEnd_toEndOf="@id/bottom_image"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

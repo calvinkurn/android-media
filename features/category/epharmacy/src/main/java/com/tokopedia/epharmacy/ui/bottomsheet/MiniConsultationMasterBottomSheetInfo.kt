@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.epharmacy.databinding.EpharmacyMasterMiniConsultationBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
@@ -109,14 +108,15 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         val enabler = arguments?.getString(ENABLER_NAME)
         return if(!dataType.isNullOrBlank() && !enabler.isNullOrBlank()) {
             GetMiniConsultationBottomSheetParams(
-                dataType = dataType,GetMiniConsultationBottomSheetParams.Params(
+                dataType = dataType,GetMiniConsultationBottomSheetParams.EpharmacyStaticInfoParams(
                 enablerName = enabler
                 )
             )
         }
         else{
             closeBottomSheet()
-            GetMiniConsultationBottomSheetParams()
+            GetMiniConsultationBottomSheetParams("",
+                GetMiniConsultationBottomSheetParams.EpharmacyStaticInfoParams(""))
         }
     }
 
@@ -151,8 +151,8 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
                 paraSubtitle.text = bottomSheetData?.infoText.toEmptyStringIfNull()
                 headingSubtitle.text = bottomSheetData?.stepTitle.toEmptyStringIfNull()
                 bottomSheetData?.logoUrl.let {
-                    bottomImage.show()
-                    bottomImage.loadImage(bottomSheetData?.logoUrl)
+                    bottomImageLogo.show()
+                    bottomImageLogo.loadImage(bottomSheetData?.logoUrl)
                 }
             }
         }

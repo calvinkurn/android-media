@@ -26,8 +26,8 @@ class EPharmacyMiniConsultationTransparentActivity : BaseActivity() {
 
     private fun extractParameters() {
         val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
-        enablerName = if (pathSegments.size > 0) pathSegments[0] ?: "" else  ""
-        dataType = if (pathSegments.size > 1) pathSegments[1] ?: "" else  ""
+        enablerName = if (pathSegments.size > 1) pathSegments[1] ?: "" else  ""
+        dataType = if (pathSegments.size > 2) pathSegments[2] ?: "" else  ""
     }
 
     private fun openBottomSheet(){

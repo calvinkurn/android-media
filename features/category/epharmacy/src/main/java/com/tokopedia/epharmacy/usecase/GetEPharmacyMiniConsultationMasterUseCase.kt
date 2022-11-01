@@ -16,8 +16,20 @@ class GetEPharmacyMiniConsultationMasterUseCase @Inject constructor(
 ) : CoroutineUseCase<GetMiniConsultationBottomSheetParams, GetEpharmacyMiniConsultationStaticData>(dispatchers.io) {
 
     override suspend fun execute(params: GetMiniConsultationBottomSheetParams): GetEpharmacyMiniConsultationStaticData {
-        return repository.request(GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY, params)
+        return repository.request(GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY, createRequestParams(params))
     }
 
     override fun graphqlQuery(): String = GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY
+
+    private fun createRequestParams(params: GetMiniConsultationBottomSheetParams): Map<String, Any> {
+        return mapOf<String, Any>(
+            PARAM_DATA_TYPE to params.dataType,
+            PARAM_INPUT to params.params
+        )
+    }
+
+    companion object {
+        const val PARAM_INPUT = "params"
+        const val PARAM_DATA_TYPE = "data_type"
+    }
 }
