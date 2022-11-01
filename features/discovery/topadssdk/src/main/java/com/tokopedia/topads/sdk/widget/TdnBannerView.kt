@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_CAROUSEL
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_SINGLE
+import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
@@ -118,7 +119,7 @@ class TdnBannerView : FrameLayout {
         onTdnBannerImpressed: () -> Unit = {}
     ) {
         val layoutType = tdnBanners.firstOrNull()?.layoutType
-        if (layoutType == TYPE_CAROUSEL) {
+        if (layoutType == TYPE_CAROUSEL || layoutType == TYPE_VERTICAL_CAROUSEL) {
             tdnCarouselView?.setCarouselModel(tdnBanners, onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
             tdnCarouselView?.show()
             singleTdnView?.hide()

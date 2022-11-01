@@ -85,12 +85,6 @@ open class DeepLinkMapperTestFixture {
             assertEquals(uri.getQueryParameter(it.first), it.second)
         }
     }
-
-    protected fun foodRollenceEnabler(){
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_FOOD, "")
-        } returns RollenceKey.KEY_ROLLENCE_FOOD
-    }
 }
 
 enum class AppType(val isMainApp: Boolean) {

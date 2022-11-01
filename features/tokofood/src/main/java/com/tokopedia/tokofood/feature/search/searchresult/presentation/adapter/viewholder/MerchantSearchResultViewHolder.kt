@@ -67,16 +67,12 @@ class MerchantSearchResultViewHolder(
     }
 
     private fun setPromoInfo(promo: String, additionalData: AdditionalData) {
+        setPromoRibbonLabel(additionalData.topTextBanner)
         binding?.run {
             if (promo.isBlank()) {
-                ribbonTokofoodPromo.hide()
                 ivItemSrpMerchantDiscount.hide()
                 tvItemSrpMerchantPromoDetail.hide()
             } else {
-                ribbonTokofoodPromo.run {
-                    show()
-                    setRibbonText(additionalData.topTextBanner)
-                }
                 ivItemSrpMerchantDiscount.run {
                     show()
                     setImageUrl(additionalData.discountIcon)
@@ -84,6 +80,19 @@ class MerchantSearchResultViewHolder(
                 tvItemSrpMerchantPromoDetail.run {
                     show()
                     text = promo
+                }
+            }
+        }
+    }
+
+    private fun setPromoRibbonLabel(topTextBanner: String) {
+        binding?.run {
+            if (topTextBanner.isBlank()) {
+                ribbonTokofoodPromo.hide()
+            } else {
+                ribbonTokofoodPromo.run {
+                    show()
+                    setRibbonText(topTextBanner)
                 }
             }
         }
