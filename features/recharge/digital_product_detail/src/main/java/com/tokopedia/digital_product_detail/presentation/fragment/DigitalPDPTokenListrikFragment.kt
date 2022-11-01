@@ -1155,6 +1155,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                         FavoriteNumberType.LIST
                     )
                 )
+                binding?.rechargePdpTokenListrikClientNumberWidget?.clearFocusAutoComplete()
             } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {

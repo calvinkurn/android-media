@@ -84,7 +84,7 @@ class EditAddressRevampRobot {
     fun searchKotaKecamatan(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
         onView(withId(R.id.searchbar_textfield))
-            .perform(click(), typeText(keyword), closeSoftKeyboard())
+            .perform(click(), replaceText(keyword), closeSoftKeyboard())
         waitForData()
     }
 

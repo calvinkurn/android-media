@@ -177,6 +177,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_ATC_CHECKOUT_GQL = "android_enable_digital_gql";
     public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
     public static final String MAINAPP_DEALS_ENABLE_PDP = "android_enable_deals_pdp";
+    public static final String MAINAPP_DEALS_ENABLE_CHECKOUT = "android_enable_deals_checkout";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -295,4 +296,8 @@ public class RemoteConfigKey {
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
     public static final String SEARCH_DEBUG_LOG = "android_search_debug_enable";
+
+    public static final String ENABLE_TICKER_NOTIFY_ME = "android_show_ticker_notify_me";
+
+    public static final String ENABLE_SEND_SUCCESS_LOG_BRANCH = "android_enable_success_log_branch";
 }

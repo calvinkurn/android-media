@@ -123,10 +123,6 @@ object LeftCarouselAtcMapper {
                         imageUrl = it.url
                     )
                 },
-                freeOngkir = ProductCardModel.FreeOngkir(
-                    channelGrid.isFreeOngkirActive,
-                    channelGrid.freeOngkirImageUrl
-                ),
                 isOutOfStock = channelGrid.isOutOfStock,
                 ratingCount = channelGrid.rating,
                 countSoldRating = channelGrid.ratingFloat,
@@ -158,10 +154,6 @@ object LeftCarouselAtcMapper {
                         imageUrl = it.url
                     )
                 },
-                freeOngkir = ProductCardModel.FreeOngkir(
-                    channelGrid.isFreeOngkirActive,
-                    channelGrid.freeOngkirImageUrl
-                ),
                 isOutOfStock = channelGrid.isOutOfStock,
                 ratingCount = channelGrid.rating,
                 countSoldRating = channelGrid.ratingFloat,

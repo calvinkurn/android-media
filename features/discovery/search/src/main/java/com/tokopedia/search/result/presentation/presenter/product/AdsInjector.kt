@@ -20,6 +20,7 @@ class AdsInjector {
         productListType: String,
         externalReference: String,
         keywordIntention: Int,
+        showButtonAtc: Boolean,
     ): List<Visitable<*>> {
         val list = mutableListOf<ProductItemDataView>()
         list.addAll(productList)
@@ -41,6 +42,7 @@ class AdsInjector {
                     productListType,
                     externalReference,
                     keywordIntention,
+                    showButtonAtc,
                 )
 
                 list.add(i, item)
