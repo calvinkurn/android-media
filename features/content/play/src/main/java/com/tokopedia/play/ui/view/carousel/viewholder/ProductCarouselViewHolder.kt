@@ -75,7 +75,7 @@ class ProductCarouselViewHolder private constructor() {
                     text = button.text
                 }
             }
-            generateButton(button.color)
+            generateButtonPinned(button.color)
         }
 
         fun bind(item: PlayProductUiModel.Product) {
