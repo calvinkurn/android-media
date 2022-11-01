@@ -1,6 +1,5 @@
 package com.tokopedia.mediauploader.image
 
-import android.util.Log
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
@@ -19,9 +18,6 @@ import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import java.io.File
 import javax.inject.Inject
-import android.webkit.MimeTypeMap
-
-
 
 
 class ImageUploaderManager @Inject constructor(
@@ -85,7 +81,7 @@ class ImageUploaderManager @Inject constructor(
         )
 
         return upload.data?.let {
-            UploadResult.Success(uploadId = it.uploadId)
+            UploadResult.Success(fileUrl = it.fileUrl, uploadId = it.uploadId)
         }?: UploadResult.Error(error)
     }
 
