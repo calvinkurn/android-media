@@ -23,9 +23,9 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
     private val getChannelStatusUseCase: GetChannelStatusUseCase,
     private val getChatHistory: GetChatHistoryUseCase,
-    private val mapper: PlayChannelDetailsWithRecomMapper,
+    private val channelDetailRecomMapper: PlayChannelDetailsWithRecomMapper,
+    private val uiMapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
-    private val mapper: PlayUiModelMapper,
 ) : PlayViewerChannelRepository {
 
     override fun getChannelData(
@@ -65,7 +65,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
         }.executeOnBackground()
 
         return@withContext PlayViewerChannelRepository.ChannelListResponse(
-            mapper.map(response, extraParams),
+            channelDetailRecomMapper.map(response, extraParams),
             response.channelDetails.meta.cursor,
         )
     }
@@ -79,6 +79,6 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
             cursor = cursor,
         )
 
-        mapper.mapHistoryChat(response)
+        uiMapper.mapHistoryChat(response)
     }
 }
