@@ -95,7 +95,7 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
             txtMainPrice.text = data.campaignInfo.discountedPrice?.getCurrencyFormatted()
             txtSlashPrice.text = data.campaignInfo.originalPrice?.getCurrencyFormatted()
             lblDiscounted.text = context.getString(
-                    com.tokopedia.product.detail.common.R.string.template_campaign_off,
+                    com.tokopedia.product.detail.common.R.string.template_campaign_off_string,
                     data.campaignInfo.discountedPercentage.toIntSafely().toString())
 
             txtSlashPrice.paintFlags = txtSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
