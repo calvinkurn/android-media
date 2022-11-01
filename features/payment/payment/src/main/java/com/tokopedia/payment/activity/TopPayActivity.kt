@@ -596,18 +596,6 @@ class TopPayActivity :
                     callbackPaymentFailed()
                     return true
                 }
-
-                // cc loading
-                if (url.contains(CC_LOADING_URL)) {
-                    Toast.makeText(this@TopPayActivity, "inLoading", Toast.LENGTH_SHORT).show()
-                    showProgressLoading()
-                }
-
-                if (url.contains(CC_LOADING_COMPLETE)) {
-                    Toast.makeText(this@TopPayActivity, "completedLoading", Toast.LENGTH_SHORT).show()
-                    hideProgressLoading()
-                }
-
                 if (url.contains(ACCOUNTS_URL)) {
                     view?.stopLoading()
                     processRedirectUrlContainsAccountsUrl(url)
@@ -705,7 +693,19 @@ class TopPayActivity :
                     }
                     view?.post { view?.stopLoading() }
                 }
+
+                // cc loading
+                if (uriString.contains(CC_LOADING_URL)) {
+                    Toast.makeText(this@TopPayActivity, "inLoading", Toast.LENGTH_SHORT).show()
+                    showFullLoading()
+                }
+
+                if (uriString.contains(CC_LOADING_COMPLETE)) {
+                    Toast.makeText(this@TopPayActivity, "completedLoading", Toast.LENGTH_SHORT).show()
+                    hideFullLoading()
+                }
             }
+
             return super.shouldInterceptRequest(view, request)
         }
 
