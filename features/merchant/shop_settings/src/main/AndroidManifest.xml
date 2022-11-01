@@ -24,6 +24,7 @@
             android:name=".basicinfo.view.activity.ShopSettingsOperationalHoursActivity"
             android:label="Jadwal Operasional Toko"
             android:theme="@style/Theme.White"
+            android:exported="false"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -41,6 +42,7 @@
             android:name=".basicinfo.view.activity.ShopSettingsSetOperationalHoursActivity"
             android:label="Jam Operasional"
             android:theme="@style/Theme.White"
+            android:exported="false"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

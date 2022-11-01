@@ -19,6 +19,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -954,6 +955,7 @@ object SellerHomeTracking {
         dataKey: String,
         tab: UnificationTabUiModel,
         text: String,
+        meta: TableRowsUiModel.Meta,
         isEmpty: Boolean
     ) {
         val emptyLabel = if (tab.isUnauthorized) {
@@ -963,13 +965,18 @@ object SellerHomeTracking {
         } else {
             TrackingConstant.NOT_EMPTY
         }
+        val labels = mutableListOf(
+            dataKey, tab.title, emptyLabel, text
+        )
+        if (meta.flag.isNotBlank()) {
+            labels.add(meta.flag)
+        }
+
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
             category = TrackingConstant.SELLER_APP_HOME,
             action = TrackingConstant.CLICK_WIDGET_UNIFICATION_TAB_ITEM,
-            label = arrayOf(
-                dataKey, tab.title, emptyLabel, text
-            ).joinDashSeparator()
+            label = labels.joinToString(TrackingConstant.SEPARATOR)
         )
         eventMap[TrackingConstant.TRACKER_ID] = "33400"
 
