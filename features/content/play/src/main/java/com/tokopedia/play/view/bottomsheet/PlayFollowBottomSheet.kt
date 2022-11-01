@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -52,6 +53,8 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
 
 
     private fun setupView() {
+        binding.ivBadge.showWithCondition(playViewModel.latestCompleteChannelData.partnerInfo.badgeUrl.isNotBlank())
+        binding.ivIcon.showWithCondition(playViewModel.latestCompleteChannelData.partnerInfo.iconUrl.isNotBlank())
         binding.ivBadge.loadIcon(playViewModel.latestCompleteChannelData.partnerInfo.badgeUrl)
         binding.ivIcon.loadIcon(playViewModel.latestCompleteChannelData.partnerInfo.iconUrl)
         binding.tvPartnerName.text = playViewModel.latestCompleteChannelData.partnerInfo.name
