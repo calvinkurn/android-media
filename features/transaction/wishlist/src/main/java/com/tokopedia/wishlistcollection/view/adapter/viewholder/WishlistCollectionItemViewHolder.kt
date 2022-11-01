@@ -25,7 +25,7 @@ class WishlistCollectionItemViewHolder(
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
     var isAllWishlist = false
-        fun bind(item: WishlistCollectionTypeLayoutData) {
+        fun bind(item: WishlistCollectionTypeLayoutData, position: Int) {
             if (item.dataObject is GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
                 binding.root.clickWithDebounce {
                     actionListener?.onCollectionItemClicked(item.dataObject.id)
@@ -39,10 +39,16 @@ class WishlistCollectionItemViewHolder(
                 if (item.dataObject.name == SEMUA_WISHLIST) {
                     isAllWishlist = true
                     binding.collectionKebabMenu.gone()
-                }
-            else {
-                binding.collectionKebabMenu.visible()
-                binding.collectionKebabMenu.setOnClickListener {
+                } else {
+                    if (position == 1) actionListener?.onFirstCollectionItemBind(
+                        binding.collectionKebabMenu,
+                        item.dataObject.id,
+                        item.dataObject.name,
+                        item.dataObject.actions,
+                        item.dataObject.indicator.title
+                    )
+                    binding.collectionKebabMenu.visible()
+                    binding.collectionKebabMenu.setOnClickListener {
                     actionListener?.onKebabMenuClicked(
                         item.dataObject.id,
                         item.dataObject.name,

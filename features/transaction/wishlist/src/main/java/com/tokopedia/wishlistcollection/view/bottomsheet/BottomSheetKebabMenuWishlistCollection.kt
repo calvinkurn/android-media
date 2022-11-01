@@ -73,7 +73,6 @@ class BottomSheetKebabMenuWishlistCollection: BottomSheetUnify() {
         val collectionName = arguments?.getString(COLLECTION_NAME) ?: ""
         val collectionId = arguments?.getString(COLLECTION_ID) ?: ""
         val collectionIndicatorTitle = arguments?.getString(COLLECTION_INDICATOR_TITLE) ?: ""
-        println("++ collectionIndicatorTitle = $collectionIndicatorTitle")
         val collectionActionItems = (arguments?.getParcelableArray(COLLECTION_ACTIONS) as? Array<BottomSheetKebabActionItemData>)?.toList() ?: emptyList()
         binding = BottomsheetKebabMenuWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {

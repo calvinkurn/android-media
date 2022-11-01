@@ -3089,4 +3089,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         turnOnBulkDeleteMode(false)
         WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(actionText)
     }
+
+    override fun onShareItemShown(anchorView: View) {
+        // used in WishlistCollectionFragment - to show coachmark
+    }
 }

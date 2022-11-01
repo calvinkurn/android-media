@@ -66,6 +66,8 @@
     <string name="collection_coachmark_create_collection">Baru! Pakai fitur “Koleksi”, buat mengelompokkan barang di Wishlist sesuai keinginanmu.</string>
     <string name="collection_coachmark_try_create_wishlist">Coba</string>
     <string name="collection_coachmark_back">Balik</string>
+    <string name="collection_coachmark_finish">Selesai</string>
+    <string name="collection_coachmark_lanjut">Lanjut</string>
     <string name="update_collection_bottomsheet_title">Ubah nama Koleksi</string>
     <string name="update_collection_bottomsheet_button">Simpan Perubahan</string>
     <string name="update_collection_access_confirmation">Siapa yang boleh lihat Koleksi ini?</string>
@@ -109,4 +111,7 @@
     <string name="collection_edit_back_dialog_confirmation_desc">Perubahan yang kamu buat akan dibatalkan, lho.</string>
     <string name="collection_edit_back_dialog_confirmation_primary_button">Balik</string>
     <string name="collection_edit_back_dialog_confirmation_secondary_button">Tetap di Sini</string>
+
+    <string name="collection_coachmark_wishlist_sharing_1">Bagikan Koleksi, yuk! Klik menu ini untuk mulai kasih inspirasi lewat isi Koleksimu.</string>
+    <string name="collection_coachmark_wishlist_sharing_2">Bagikan link Koleksi pilihanmu dengan menu ini, ya. Supaya temanmu bisa lihat isinya.</string>
 </resources>

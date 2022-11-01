@@ -65,6 +65,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
+import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingPreference
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
@@ -95,6 +96,11 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private var bottomSheetKebabMenu = BottomSheetKebabMenuWishlistCollection()
     private var _allCollectionView: View? = null
     private var _createCollectionView: View? = null
+    private var _firstAnchorKebabMenuView: View? = null
+    private var _firstCollectionId: String = ""
+    private var _firstCollectionName: String = ""
+    private var _firstActionsCollection: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action> = emptyList()
+    private var _firstCollectionIndicatorTitle: String = ""
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
     private var onLoadMore = false
@@ -119,10 +125,19 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private val onboardingPref: WishlistCollectionOnboardingPreference? by lazy {
         activity?.let { WishlistCollectionOnboardingPreference(it) }
     }
+    private val coachmarkSharingPref: WishlistCollectionSharingPreference? by lazy {
+        activity?.let { WishlistCollectionSharingPreference(it) }
+    }
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
 
     private val coachMarkItem = ArrayList<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
+
+    private val coachMarkItemSharing = ArrayList<CoachMark2Item>()
+    private var coachMarkSharing: CoachMark2? = null
+
+    private val coachMarkTestItemSharing = ArrayList<CoachMark2Item>()
+    private var coachMarkTestSharing: CoachMark2? = null
 
     override fun getScreenName(): String = ""
 
@@ -336,6 +351,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                     if (result.data.status == OK) {
                         wishlistCollectionPref?.getHasClosed()
                             ?.let { collectionAdapter.setTickerHasClosed(it) }
+
+                        // check empty state
                         if (result.data.data.isEmptyState) {
                             val items = arrayListOf<Any>()
                             result.data.data.emptyState.messages.forEach { item ->
@@ -343,6 +360,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                             }
                             collectionAdapter.setCarouselEmptyData(items)
                         }
+
+                        // check if need to show delete progress
                         if (result.data.data.showDeleteProgress) {
                             showDeletionProgress()
                             if (!hitCountDeletion) {
@@ -353,15 +372,21 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                         } else {
                             hideDeletionProgress()
                         }
+
+                        // check eligible to add new collection
                         if (result.data.data.totalCollection >= result.data.data.maxLimitCollection) {
                             isEligibleAddNewCollection = false
                             wordingMaxLimitCollection = result.data.data.wordingMaxLimitCollection
                         } else {
                             isEligibleAddNewCollection = true
                         }
+
+                        // check if need to show any coachmarks
                         if (result.data.data.collections.size == 1) {
                             onlyAllCollection = true
                             checkOnboarding()
+                        } else if (result.data.data.collections.size > 1) {
+
                         }
                     } else {
                         // TODO: show global error page?
@@ -741,6 +766,26 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
+    override fun onShareItemShown(anchorView: View) {
+        coachMarkSharing?.hideCoachMark()
+        showCoachmarkKebabItem2(anchorView)
+    }
+
+    override fun onFirstCollectionItemBind(
+        anchorKebabMenuView: View,
+        collectionId: String,
+        collectionName: String,
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+        collectionIndicatorTitle: String
+    ) {
+        _firstAnchorKebabMenuView = anchorKebabMenuView
+        _firstCollectionId = collectionId
+        _firstCollectionName = collectionName
+        _firstActionsCollection = actions
+        _firstCollectionIndicatorTitle = collectionIndicatorTitle
+        showWishlistCollectionSharingCoachMark(anchorKebabMenuView, collectionId, collectionName, actions, collectionIndicatorTitle)
+    }
+
     override fun onCariBarangClicked() {
         RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     }
@@ -750,6 +795,101 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         bottomSheetOnboarding.setListener(this@WishlistCollectionFragment)
         if (bottomSheetOnboarding.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetOnboarding.show(childFragmentManager)
+    }
+
+    private fun showWishlistCollectionSharingCoachMark(
+        anchorKebabMenuView: View,
+        collectionId: String,
+        collectionName: String,
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+        collectionIndicatorTitle: String
+    ) {
+        if (coachMarkItemSharing.isEmpty()) {
+            coachMarkItemSharing.add(
+                CoachMark2Item(
+                    anchorKebabMenuView,
+                    "",
+                    getString(R.string.collection_coachmark_wishlist_sharing_1),
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+            coachMarkItemSharing.add(
+                CoachMark2Item(
+                    anchorKebabMenuView,
+                    "",
+                    getString(R.string.collection_coachmark_wishlist_sharing_1),
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+        }
+        if (coachMarkSharing == null)
+            coachMarkSharing = CoachMark2(requireContext())
+
+        coachMarkSharing?.let {
+            it.setStepListener(object: CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    if (currentIndex == 1) {
+                        showBottomSheetKebabMenu(
+                            collectionId, collectionName, actions, collectionIndicatorTitle
+                        )
+                    }
+                }
+            })
+            it.stepButtonTextLastChild =
+                getString(R.string.collection_coachmark_lanjut)
+
+            if (!it.isShowing) {
+                it.showCoachMark(coachMarkItemSharing, null)
+            }
+            // CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
+        }
+    }
+
+    private fun showCoachmarkKebabItem2(view: View) {
+        if (coachMarkTestItemSharing.isEmpty()) {
+            coachMarkTestItemSharing.add(
+                CoachMark2Item(
+                    view,
+                    "",
+                    getString(R.string.collection_coachmark_wishlist_sharing_2),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+            coachMarkTestItemSharing.add(
+                CoachMark2Item(
+                    view,
+                    "",
+                    getString(R.string.collection_coachmark_wishlist_sharing_2),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        }
+        if (coachMarkTestSharing == null)
+            coachMarkTestSharing = CoachMark2(requireContext())
+
+        coachMarkTestSharing?.let {
+            it.setStepListener(object: CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    if (currentIndex == 0) {
+                        coachMarkTestSharing?.hideCoachMark()
+                        bottomSheetKebabMenu.dismiss()
+                        _firstAnchorKebabMenuView?.let { it1 ->
+                            showWishlistCollectionSharingCoachMark(
+                                it1, _firstCollectionId, _firstCollectionName, _firstActionsCollection, _firstCollectionIndicatorTitle
+                            )
+                        }
+                    }
+                }
+            })
+            it.stepButtonTextLastChild =
+                getString(R.string.collection_coachmark_finish)
+            // it.stepPrev?.text = getString(R.string.collection_coachmark_back)
+
+            if (!it.isShowing) {
+                it.showCoachMark(coachMarkTestItemSharing, null, 1)
+            }
+            // CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
+        }
     }
 
     private fun showWishlistCollectionCoachMark(view1: View, view2: View) {

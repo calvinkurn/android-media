@@ -25,6 +25,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     private var listTypeData = mutableListOf<WishlistCollectionTypeLayoutData>()
     private var isTickerCloseClicked = false
     private var allCollectionView: View? = null
+    private var firstCollectionItemView: View? = null
     private var carouselItems = arrayListOf<Any>()
 
     companion object {
@@ -50,6 +51,13 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         fun onCreateNewCollectionClicked()
         fun onCollectionItemClicked(id: String)
         fun onCreateCollectionItemBind(allCollectionView: View, createCollectionView: View)
+        fun onFirstCollectionItemBind(
+            anchorKebabMenuView: View,
+            collectionId: String,
+            collectionName: String,
+            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+            collectionIndicatorTitle: String
+        )
         fun onCariBarangClicked()
         fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int)
@@ -132,7 +140,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                     (holder as WishlistCollectionTickerItemViewHolder).bind(element, isTickerCloseClicked)
                 }
                 TYPE_COLLECTION_ITEM -> {
-                    (holder as WishlistCollectionItemViewHolder).bind(element)
+                    (holder as WishlistCollectionItemViewHolder).bind(element, position)
                     allCollectionView = if (holder.isAllWishlist) holder.itemView else null
                 }
                 TYPE_COLLECTION_CREATE -> {
