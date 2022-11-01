@@ -198,7 +198,7 @@ class OfficialStoreTracking(context: Context) {
             putString(EVENT, Event.SELECT_CONTENT)
             putString(EVENT_CATEGORY, OS_MICROSITE_SINGLE)
             putString(EVENT_ACTION, FORMAT_DASH_TWO_VALUES.format(CLICK_BANNER, VALUE_SLIDER_BANNER))
-            putString(EVENT_LABEL, FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, bannerItem.bannerId, categoryName))
+            putString(EVENT_LABEL, FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, "", categoryName))
             putString(USER_ID, userId)
             putString(FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT)
             putString(FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT)
@@ -223,7 +223,7 @@ class OfficialStoreTracking(context: Context) {
                 event = PROMO_VIEW,
                 eventCategory = OS_MICROSITE_SINGLE,
                 eventAction = FORMAT_DASH_TWO_VALUES.format(IMPRESSION_BANNER, VALUE_SLIDER_BANNER),
-                eventLabel = FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, bannerItem.bannerId, categoryName),
+                eventLabel = FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, "", categoryName),
                 promotions = listOf(BaseTrackerConst.Promotion(
                     creative = bannerItem.title,
                     position = bannerPosition.toString(),
