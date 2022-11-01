@@ -1045,7 +1045,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String) {
-        loaderUnify?.visibility = View.GONE
+        activity?.runOnUiThread {
+            loaderUnify?.visibility = View.GONE
+        }
         preserveImage = true
         shareModel.ogImgUrl = mediaImageUrl
         shareModel.savedImageFilePath = savedImagePath
@@ -1053,7 +1055,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executeSharingFlow(shareModel: ShareModel) {
-        loaderUnify?.visibility = View.GONE
+        activity?.runOnUiThread {
+            loaderUnify?.visibility = View.GONE
+        }
         preserveImage = true
         shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
