@@ -220,10 +220,7 @@ class PlayBottomSheetFragment @Inject constructor(
     override fun onCloseButtonClicked(view: VariantSheetViewComponent) {
         closeVariantSheet()
     }
-
-    /**
-     * TODO = Change To Product Cart Type not Action
-     */
+    
     override fun onActionClicked(variant: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         playViewModel.submitAction(
             when (action) {

@@ -98,10 +98,10 @@ class ProductBottomSheetCardView(
             }
         }
 
-        binding.btnProductBuy.setOnClickListener {
+        binding.btnProductSecond.setOnClickListener {
             mListener?.onBuyProduct(this, item, section)
         }
-        binding.btnProductAtc.setOnClickListener {
+        binding.btnProductFirst.setOnClickListener {
             mListener?.onAtcProduct(this, item, section)
         }
         setOnClickListener {
@@ -109,12 +109,12 @@ class ProductBottomSheetCardView(
         }
 
         //Buttons
-        binding.btnProductAtc.showWithCondition(item.buttons.isNotEmpty())
-        binding.btnProductBuy.showWithCondition(item.buttons.isNotEmpty())
-        binding.btnProductAtc.text = item.buttons.firstOrNull().orDefault().text
-        binding.btnProductBuy.text = item.buttons.lastOrNull().orDefault().text
-        binding.btnProductAtc.generateButton(item.buttons.firstOrNull().orDefault().color)
-        binding.btnProductBuy.generateButton(item.buttons.lastOrNull().orDefault().color)
+        binding.btnProductFirst.showWithCondition(item.buttons.isNotEmpty())
+        binding.btnProductSecond.showWithCondition(item.buttons.isNotEmpty())
+        binding.btnProductFirst.text = item.buttons.firstOrNull().orDefault().text
+        binding.btnProductSecond.text = item.buttons.lastOrNull().orDefault().text
+        binding.btnProductFirst.generateButton(item.buttons.firstOrNull().orDefault().color)
+        binding.btnProductSecond.generateButton(item.buttons.lastOrNull().orDefault().color)
     }
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {

@@ -86,10 +86,10 @@ class ProductCarouselViewHolder private constructor() {
              * Buttons
              * First button must be ATC
              */
-            binding.btnAtc.showWithCondition(item.buttons.isNotEmpty())
-            binding.btnBuy.showWithCondition(item.buttons.isNotEmpty())
-            binding.btnAtc.configButton(item.buttons.find { it.type == ProductButtonType.ATC }.orDefault())
-            binding.btnBuy.configButton(item.buttons.find { it.type != ProductButtonType.ATC }.orDefault())
+            binding.btnFirst.showWithCondition(item.buttons.isNotEmpty())
+            binding.btnSecond.showWithCondition(item.buttons.isNotEmpty())
+            binding.btnFirst.configButton(item.buttons.find { it.type == ProductButtonType.ATC }.orDefault())
+            binding.btnFirst.configButton(item.buttons.find { it.type != ProductButtonType.ATC }.orDefault())
 
             when (item.price) {
                 is DiscountedPrice -> {
@@ -110,10 +110,10 @@ class ProductCarouselViewHolder private constructor() {
             }
             binding.tvInfo.text = getInfo(item)
 
-            binding.btnAtc.setOnClickListener {
+            binding.btnFirst.setOnClickListener {
                 listener.onAtcClicked(this, item)
             }
-            binding.btnBuy.setOnClickListener {
+            binding.btnFirst.setOnClickListener {
                 listener.onBuyClicked(this, item)
             }
             binding.root.setOnClickListener {
