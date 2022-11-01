@@ -4,6 +4,7 @@
     <application>
         <activity android:name=".sample.ContentProductTagSampleActivity"
             android:launchMode="singleTask"
+            android:exported="false"
             >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

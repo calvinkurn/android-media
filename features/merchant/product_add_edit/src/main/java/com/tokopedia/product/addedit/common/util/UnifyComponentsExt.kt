@@ -58,26 +58,28 @@ fun TextFieldUnify?.setModeToNumberInput(maxLength: Int = MAX_LENGTH_NUMBER_INPU
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-            try {
-                val productPriceInput = charSequence?.toString()?.filterDigit()
-                productPriceInput?.let {
-                    // format the number
-                    it.toLongOrNull()?.let { parsedLong ->
-                        textFieldInput.removeTextChangedListener(this)
-                        val formattedText: String = NumberFormat.getNumberInstance(Locale.US)
-                            .format(parsedLong)
-                            .toString()
-                            .replace(",", ".")
-                        val lengthDiff = formattedText.length - charSequence.length
-                        val cursorPosition = start + count + lengthDiff
-                        textFieldInput.setText(formattedText)
-                        textFieldInput.setSelection(cursorPosition.coerceIn(Int.ZERO, formattedText.length))
-                        textFieldInput.addTextChangedListener(this)
+            this@setModeToNumberInput?.post {
+                try {
+                    val productPriceInput = charSequence?.toString()?.filterDigit()
+                    productPriceInput?.let {
+                        // format the number
+                        it.toLongOrNull()?.let { parsedLong ->
+                            textFieldInput.removeTextChangedListener(this)
+                            val formattedText: String = NumberFormat.getNumberInstance(Locale.US)
+                                .format(parsedLong)
+                                .toString()
+                                .replace(",", ".")
+                            val lengthDiff = formattedText.length - charSequence.length
+                            val cursorPosition = start + count + lengthDiff
+                            textFieldInput.setText(formattedText)
+                            textFieldInput.setSelection(cursorPosition.coerceIn(Int.ZERO, formattedText.length))
+                            textFieldInput.addTextChangedListener(this)
+                        }
                     }
+                } catch (e: Exception) {
+                    AddEditProductErrorHandler.logMessage("setModeToNumberInput: $charSequence")
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(e)
                 }
-            } catch (e: Exception) {
-                AddEditProductErrorHandler.logMessage("setModeToNumberInput: $charSequence")
-                AddEditProductErrorHandler.logExceptionToCrashlytics(e)
             }
         }
     })

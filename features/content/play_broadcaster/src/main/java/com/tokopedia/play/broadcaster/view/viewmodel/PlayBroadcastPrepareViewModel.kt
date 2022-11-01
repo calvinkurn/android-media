@@ -13,11 +13,14 @@ import com.tokopedia.play.broadcaster.error.PlayErrorCode
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.util.event.Event
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
@@ -25,6 +28,7 @@ import javax.inject.Inject
  */
 class PlayBroadcastPrepareViewModel @Inject constructor(
     private val mDataStore: PlayBroadcastDataStore,
+    private val sharedPref: HydraSharedPreferences,
     private val hydraConfigStore: HydraConfigStore,
     private val setupDataStore: PlayBroadcastSetupDataStore,
     private val channelConfigStore: ChannelConfigStore,
@@ -58,9 +62,16 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         }
     }
 
+    private var _isFromSwitchAccount = MutableStateFlow(false)
+    val isFromSwitchAccount
+        get() = _isFromSwitchAccount.value
+
     private val ingestUrlObserver = object : Observer<String> {
         override fun onChanged(t: String?) {}
     }
+
+    val isFirstSwitchAccount: Boolean
+        get() = sharedPref.isFirstSwitchAccount()
 
     init {
         _observableIngestUrl.observeForever(ingestUrlObserver)
@@ -71,15 +82,19 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         _observableIngestUrl.removeObserver(ingestUrlObserver)
     }
 
+    fun setNotFirstSwitchAccount() {
+        sharedPref.setNotFirstSwitchAccount()
+    }
+
     fun setDataFromSetupDataStore(setupDataStore: PlayBroadcastSetupDataStore) {
         mDataStore.setFromSetupStore(setupDataStore)
     }
 
     /** Setup Title */
-    fun uploadTitle(title: String) {
+    fun uploadTitle(authorId: String, title: String) {
         viewModelScope.launchCatchError(dispatcher.main, block = {
             val result = withContext(dispatcher.io) {
-                setupDataStore.uploadTitle(hydraConfigStore.getChannelId(), title)
+                setupDataStore.uploadTitle(authorId, hydraConfigStore.getChannelId(), title)
             }
 
             _observableUploadTitleEvent.value = Event(result)
@@ -128,6 +143,10 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
 
     private fun setIngestUrl(ingestUrl: String) {
         channelConfigStore.setIngestUrl(ingestUrl)
+    }
+
+    fun setFromSwitchAccount(value: Boolean) {
+        _isFromSwitchAccount.update { value }
     }
 
     companion object {

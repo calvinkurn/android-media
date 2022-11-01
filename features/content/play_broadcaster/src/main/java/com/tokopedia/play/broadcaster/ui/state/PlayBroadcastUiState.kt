@@ -1,7 +1,9 @@
 package com.tokopedia.play.broadcaster.ui.state
 
-import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -31,6 +33,8 @@ data class PlayBroadcastUiState(
     val quizDetail: QuizDetailStateUiModel,
     val onBoarding: OnboardingUiModel,
     val quizBottomSheetUiState: QuizBottomSheetUiState,
+    val selectedContentAccount: ContentAccountUiModel,
+    val accountStateInfo: AccountStateInfo,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -53,6 +57,8 @@ data class PlayBroadcastUiState(
                 quizDetail = QuizDetailStateUiModel.Empty,
                 onBoarding = OnboardingUiModel.Empty,
                 quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
+                selectedContentAccount = ContentAccountUiModel.Empty,
+                accountStateInfo = AccountStateInfo(),
             )
     }
 }

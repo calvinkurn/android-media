@@ -339,6 +339,8 @@
 /libraries/oms/											@tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
+/libraries/journey_debugger/			                @tokopedia/android-core-dev
+/libraries/journey_debugger_no_op/					    @tokopedia/android-core-dev
 /libraries/product_photo_adapter/                       @tokopedia/android-minionken-dev
 /libraries/push_notification/							@tokopedia/android-core-dev
 /libraries/remote_config/								@tokopedia/android-core-dev
