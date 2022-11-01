@@ -16,6 +16,7 @@ import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedActio
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -80,9 +81,8 @@ class PlayWinnerBadgeInteractiveTest {
             id = "1",
             waitingDuration = 200L,
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
-                leaderboardWinners = listOf(modelBuilder.buildLeaderboardDetails())
-        )
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data =
+            listOf(modelBuilder.buildHeader(title = "Kucing apa hayo?", leaderBoardType = LeadeboardType.Giveaway)))
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
@@ -147,9 +147,7 @@ class PlayWinnerBadgeInteractiveTest {
             id = "1",
             waitingDuration = 200L,
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
-                leaderboardWinners = emptyList()
-        )
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data = emptyList())
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
@@ -177,9 +175,8 @@ class PlayWinnerBadgeInteractiveTest {
             id = "1",
             waitingDuration = 200L,
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
-                leaderboardWinners = listOf(modelBuilder.buildLeaderboardDetails())
-        )
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data =
+        listOf(modelBuilder.buildHeader(title = "Kucing apa hayo?", leaderBoardType = LeadeboardType.Giveaway)))
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
@@ -205,9 +202,8 @@ class PlayWinnerBadgeInteractiveTest {
 
     @Test
     fun `given refresh leaderboard, if should query true, then viewmodel will first emit loading state`() {
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
-            leaderboardWinners = listOf(modelBuilder.buildLeaderboardDetails())
-        )
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data =
+        listOf(modelBuilder.buildHeader(title = "Kucing apa hayo?", leaderBoardType = LeadeboardType.Giveaway)))
 
         givenPlayViewModelRobot(
             playChannelWebSocket = socket,

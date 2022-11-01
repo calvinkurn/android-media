@@ -164,6 +164,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
                     createTopAdsBannerModel(channel)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_VERTICAL_BANNER_ADS -> {
+                    createTopAdsVerticalBannerModel(channel)
+                }
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> {
                     createLego4AutoComponent(channel, position, isCache)
                 }
@@ -417,7 +420,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
             else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS) {
                 channel.promoName = String.format(PROMO_NAME_TOPADS_BANNER, position.toString(), channel.header.name)
                 channel.setPosition(position)
-            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2) {
+            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_VERTICAL_BANNER_ADS) {
+                channel.promoName = String.format(PROMO_NAME_TOPADS_BANNER, position.toString(), channel.header.name)
+                channel.setPosition(position)
+            }
+            else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2) {
                 channel.promoName = String.format(PROMO_NAME_BANNER_CAROUSEL, position.toString(),
                         if (channel.header.name.isNotEmpty()) channel.header.name
                         else VALUE_BANNER_DEFAULT
@@ -681,6 +688,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createTopAdsBannerModel(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(HomeTopAdsBannerDataModel(null, channel = channel))
+    }
+
+    private fun createTopAdsVerticalBannerModel(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(HomeTopAdsVerticalBannerDataModel(null, channel = channel))
     }
 
     private fun createReminderWidget(source: ReminderEnum){

@@ -49,8 +49,8 @@ import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.LeadeboardType
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -67,14 +67,13 @@ import javax.inject.Inject
 class PlayBottomSheetFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayAnalytic,
-    private val newAnalytic: PlayNewAnalytic,
-) : TkpdBaseV4Fragment(),
-    PlayFragmentContract,
-    ProductSheetViewComponent.Listener,
-    VariantSheetViewComponent.Listener,
-    PlayInteractiveLeaderboardViewComponent.Listener,
-    ShopCouponSheetViewComponent.Listener
-{
+    private val newAnalytic: PlayNewAnalytic) :
+    TkpdBaseV4Fragment(),
+        PlayFragmentContract,
+        ProductSheetViewComponent.Listener,
+        VariantSheetViewComponent.Listener,
+        PlayGameLeaderboardViewComponent.Listener,
+        ShopCouponSheetViewComponent.Listener {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -86,7 +85,7 @@ class PlayBottomSheetFragment @Inject constructor(
         ProductSheetViewComponent(it, this, viewLifecycleOwner.lifecycleScope)
     }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
-    private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
+    private val leaderboardSheetView by viewComponent { PlayGameLeaderboardViewComponent(it, this) }
     private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }
 
     private val offset16 by lazy { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
@@ -236,22 +235,26 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * LeaderboardSheet View Component Listener
      */
-    override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+    override fun onCloseButtonClicked(view: PlayGameLeaderboardViewComponent) {
         playViewModel.submitAction(ClickCloseLeaderboardSheetAction)
     }
 
-    override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-        newAnalytic.clickRefreshLeaderBoard(interactiveId = playViewModel.gameData.id, shopId = playViewModel.partnerId.toString(), channelId = playViewModel.channelId)
+    override fun onRefreshButtonClicked(view: PlayGameLeaderboardViewComponent) {
+        newAnalytic.clickRefreshLeaderBoard(
+            interactiveId = playViewModel.gameData.id,
+            shopId = playViewModel.partnerId.toString(),
+            channelId = playViewModel.channelId
+        )
         playViewModel.submitAction(RefreshLeaderboard)
     }
 
-    override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
+    override fun onRefreshButtonImpressed(view: PlayGameLeaderboardViewComponent) {
         newAnalytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.gameData.id, channelId = playViewModel.channelId)
     }
 
     override fun onLeaderBoardImpressed(
-        view: PlayInteractiveLeaderboardViewComponent,
-        leaderboard: PlayLeaderboardUiModel
+        view: PlayGameLeaderboardViewComponent,
+        leaderboard: LeaderboardGameUiModel.Header
     ) {
         if (leaderboard.leaderBoardType != LeadeboardType.Quiz) return
         newAnalytic.impressLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = leaderboard.id, channelId = playViewModel.channelId)
@@ -523,7 +526,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 when(state.winnerBadge.leaderboards.state) {
                     ResultState.Success ->
                         leaderboardSheetView.setData(
-                            state.winnerBadge.leaderboards.data.leaderboardWinners
+                            state.winnerBadge.leaderboards.data
                         )
                     is ResultState.Fail ->
                         leaderboardSheetView.setError()

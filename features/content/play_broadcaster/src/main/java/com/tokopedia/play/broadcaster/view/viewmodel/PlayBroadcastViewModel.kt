@@ -68,8 +68,9 @@ import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.ui.LeadeboardType
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
@@ -84,8 +85,28 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.getAndUpdate
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -151,7 +172,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
+    val observableLeaderboardInfo: LiveData<NetworkResult<List<LeaderboardGameUiModel>>>
         get() = _observableLeaderboardInfo
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -177,7 +198,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableLeaderboardInfo =
-        MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
+        MutableLiveData<NetworkResult<List<LeaderboardGameUiModel>>>()
 
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
     private var isLiveStreamEnded = false
@@ -562,10 +583,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return broadcastTimer.remainingDuration > duration + delayGqlDuration
     }
 
-    fun getLeaderboardData(channelId: String) {
-        viewModelScope.launch { getLeaderboardInfo(channelId) }
-    }
-
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val gameConfig = repo.getInteractiveConfig(authorId, authorType)
@@ -616,20 +633,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (quiz.status) {
             GameUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
             GameUiModel.Quiz.Status.Unknown -> stopInteractive()
-        }
-    }
-
-    private suspend fun getLeaderboardInfo(channelId: String): Throwable? {
-        _observableLeaderboardInfo.value = NetworkResult.Loading
-        return try {
-            val leaderboard = repo.getInteractiveLeaderboard(channelId) {
-                mIsBroadcastStopped
-            }
-            _observableLeaderboardInfo.value = NetworkResult.Success(leaderboard)
-            null
-        } catch (err: Throwable) {
-            _observableLeaderboardInfo.value = NetworkResult.Fail(err)
-            err
         }
     }
 
@@ -822,9 +825,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val quizDetailUiModel = repo.getInteractiveQuizDetail(interactiveId)
             _quizDetailState.value = QuizDetailStateUiModel.Success(
-                listOf(
-                    playBroadcastMapper.mapQuizDetailToLeaderBoard(quizDetailUiModel)
-                )
+                    playBroadcastMapper.mapQuizDetailToLeaderBoard(quizDetailUiModel, endTimeInteractive)
             )
         }) {
             _quizDetailState.value =
@@ -876,7 +877,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun getLeaderboardWithSlots(allowChat: Boolean = false) {
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
-            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat)
+            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat).map {
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && (_interactive.value as? InteractiveUiModel.Quiz)?.status is InteractiveUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
+                else it
+            }
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
         }) {
             _quizDetailState.value =
@@ -884,9 +888,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private val endTimeInteractive: Calendar? get() {
+        return when (val interactive = _interactive.value){
+            is InteractiveUiModel.Quiz -> return when (val status = interactive.status){
+                is InteractiveUiModel.Quiz.Status.Ongoing -> {
+                    status.endTime
+                }
+                else -> null
+            }
+            else -> null
+        }
+    }
+
     private fun displayGameResultWidgetIfHasLeaderBoard() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, false)
+            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, false).map {
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
+                else it
+            }
             if (leaderboardSlots.isNotEmpty()) {
                 _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget(sharedPref.isFirstGameResult()))
                 sharedPref.setNotFirstGameResult()

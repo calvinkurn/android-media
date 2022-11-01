@@ -16,7 +16,6 @@ import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.websocket.response.PlayUserWinnerStatusSocketResponse
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
-import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
@@ -60,8 +59,6 @@ class PlayLiveInitialInteractiveTest {
             )
     )
     private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
-
-    private val interactiveModelBuilder = PlayInteractiveModelBuilder()
 
     private val socket: PlayWebSocket = mockk(relaxed = true)
 
@@ -185,9 +182,7 @@ class PlayLiveInitialInteractiveTest {
             waitingDuration = 200L,
         )
         coEvery { repo.getCurrentInteractive(any()) } returns giveawayModel
-        coEvery { repo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
-                leaderboardWinners = emptyList()
-        )
+        coEvery { repo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data = emptyList())
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
@@ -286,13 +281,10 @@ class PlayLiveInitialInteractiveTest {
         )
 
         coEvery { repo.getCurrentInteractive(any()) } returns model
-        coEvery { repo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
-            leaderboardWinners = listOf(
-                interactiveModelBuilder.buildLeaderboard(winners = listOf(
-                    PlayWinnerUiModel(name = "Koi Rainbow", imageUrl = "", topChatMessage = "", rank = 1, allowChat = { false }, id = "22")
-                ))
-            )
-        )
+        coEvery { repo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data = listOf(
+            modelBuilder.buildWinner(name = "Koi Rainbow", imageUrl = "", topChatMessage = "", rank = 1, allowChat = { false }, id = "22")
+        ))
+
         createPlayViewModelRobot (
             playChannelWebSocket = socket,
             repo = repo,
@@ -541,13 +533,9 @@ class PlayLiveInitialInteractiveTest {
             )
         )
         coEvery { repo.getCurrentInteractive(any()) } returns model
-        coEvery { repo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
-            leaderboardWinners = listOf(
-                interactiveModelBuilder.buildLeaderboard(winners = listOf(
-                    PlayWinnerUiModel(name = "Koi Rainbow", imageUrl = "", topChatMessage = "", rank = 1, allowChat = { false }, id = "22")
-                ))
-            )
-        )
+        coEvery { repo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data = listOf(
+            modelBuilder.buildWinner(name = "Koi Rainbow", imageUrl = "", topChatMessage = "", rank = 1, allowChat = { false }, id = "22")
+        ))
 
         createPlayViewModelRobot(
             playChannelWebSocket = socket,
