@@ -504,37 +504,6 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickLegoHeaderActionTextListener(applink: String): View.OnClickListener {
-        return View.OnClickListener {
-            RouteManager.route(context, applink)
-        }
-    }
-
-    override fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener {
-        return View.OnClickListener {
-            channelData.grids.getOrNull(position)?.let { gridData ->
-                val applink = gridData.applink
-
-                tracking?.dynamicChannelImageClick(
-                        viewModel.currentSlug,
-                        channelData.header?.name ?: "",
-                        (position + POS_1).toString(POS_10),
-                        gridData,
-                        channelData
-                )
-
-                RouteManager.route(context, applink)
-            }
-        }
-    }
-
-    override fun legoImpression(channelData: Channel) {
-        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
-            tracking?.dynamicChannelImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id)
-        }
-    }
-
     override fun onClickFlashSaleActionText(applink: String, channelId: String, headerName: String): View.OnClickListener {
         return View.OnClickListener {
             tracking?.flashSaleClickViewAll(viewModel.currentSlug, channelId, headerName)

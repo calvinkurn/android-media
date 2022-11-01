@@ -17,11 +17,6 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onClickLegoImage(channelModel: ChannelModel, position: Int)
     fun legoImpression(channelModel: ChannelModel)
 
-    // Old lego layout event handlers - deprecated - exist for remote config
-    fun onClickLegoHeaderActionTextListener(applink: String): View.OnClickListener
-    fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener
-    fun legoImpression(channelData: Channel)
-
     // Flash Sale layout event handlers
     fun onClickFlashSaleActionText(applink: String, channelId: String, headerName: String): View.OnClickListener
     fun onClickFlashSaleImage(channelData: Channel, position: Int): View.OnClickListener
