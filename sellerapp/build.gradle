@@ -341,6 +341,12 @@ dependencies {
     }
 
     if (rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebugger)
+    } else {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebuggerNoop)
+    }
+
+    if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
@@ -415,7 +421,7 @@ dependencies {
     //Adding this to df_base_sellerapp/build.gradle was giving error - https://github.com/Meituan-Dianping/Robust/issues/444
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
 
-    debugImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 }

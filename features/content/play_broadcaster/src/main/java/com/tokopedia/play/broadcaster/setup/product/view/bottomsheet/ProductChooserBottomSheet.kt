@@ -42,7 +42,6 @@ import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -142,6 +141,10 @@ class ProductChooserBottomSheet @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         mListener = null
     }
 
@@ -425,7 +428,7 @@ class ProductChooserBottomSheet @Inject constructor(
         when (event) {
             is ProductListViewComponent.Event.OnSelected -> {
                 isSelectedProductsChanged = true
-                viewModel.submitAction(ProductSetupAction.SelectProduct(event.product))
+                viewModel.submitAction(ProductSetupAction.ToggleSelectProduct(event.product))
             }
             is ProductListViewComponent.Event.OnLoadMore -> {
                 viewModel.submitAction(
