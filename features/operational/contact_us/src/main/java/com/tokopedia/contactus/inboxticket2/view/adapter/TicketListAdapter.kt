@@ -176,19 +176,55 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
 
         private fun setTicketStatus(status: String?, needRating: Int, mContext: Context) {
             when {
-                NEW.equals(status, true) || OPEN.equals(status, true) || SOLVED.equals(status, true) -> {
-                    MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_yellow))
+                NEW.equals(status, true) || OPEN.equals(status, true) || SOLVED.equals(
+                    status,
+                    true
+                ) -> {
+                    MethodChecker.setBackground(
+                        tvTicketStatus,
+                        MethodChecker.getDrawable(
+                            mContext,
+                            com.tokopedia.unifyprinciples.R.color.Unify_YN600
+                        )
+                    )
                     tvTicketStatus?.setText(R.string.on_going)
-                    tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_in_process))
+                    tvTicketStatus?.setTextColor(
+                        MethodChecker.getColor(
+                            mContext,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN100
+                        )
+                    )
                 }
                 CLOSED.equals(status, true) && needRating == RATING_CLOSED -> {
-                    MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_grey))
-                    tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_closed))
+                    MethodChecker.setBackground(
+                        tvTicketStatus,
+                        MethodChecker.getDrawable(
+                            mContext,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        )
+                    )
+                    tvTicketStatus?.setTextColor(
+                        MethodChecker.getColor(
+                            mContext,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN100
+                        )
+                    )
                     tvTicketStatus?.setText(R.string.closed)
                 }
                 CLOSED.equals(status, true) && needRating == NEED_RATING -> {
-                    MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_pink))
-                    tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_need_rating))
+                    MethodChecker.setBackground(
+                        tvTicketStatus,
+                        MethodChecker.getDrawable(
+                            mContext,
+                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                        )
+                    )
+                    tvTicketStatus?.setTextColor(
+                        MethodChecker.getColor(
+                            mContext,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN100
+                        )
+                    )
                     tvTicketStatus?.setText(R.string.need_rating)
                 }
             }

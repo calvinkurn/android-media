@@ -23,7 +23,7 @@
         android:paddingTop="4dp"
         android:paddingRight="4dp"
         android:paddingBottom="4dp"
-        android:textColor="@color/contact_us_in_process"
+        android:textColor="@color/Unify_RN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:background="@drawable/rounded_rect_yellow"

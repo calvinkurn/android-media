@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="card_border">#f2f2f2</color>
-    <color name="contact_us_in_process">#fa591d</color>
-    <color name="contact_us_need_rating">#ff5c84</color>
-    <color name="contact_us_closed">#9fa6b0</color>
     <color name="contact_us_unread_ticket_background">#66ebffef</color>
-    <color name="contact_us_input_field_bg_color">#f4f5f7</color>
-    <color name="contact_us_ticket_status_bg_color_grey">#f3f4f5</color>
-    <color name="contact_us_ticket_status_bg_color_pink">#ffeaef</color>
-    <color name="contact_us_ticket_status_bg_color_yellow">#fff0b3</color>
 
     <color name="contact_us_green_250">#42B549</color>
     <color name="contact_us_green_500">#259b24</color>
