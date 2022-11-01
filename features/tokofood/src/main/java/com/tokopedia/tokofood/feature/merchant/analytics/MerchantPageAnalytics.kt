@@ -406,7 +406,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
         val promotionBundleList = arrayListOf(getMvcPromotionBundle(promoName))
 
         val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_VIEW_ITEM)
+            putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_SELECT_CONTENT)
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalyticsConstants.CLICK_ON_PROMO_BUTTON)
             putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE)
             putString(TrackAppUtils.EVENT_LABEL, String.EMPTY)
