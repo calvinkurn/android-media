@@ -114,7 +114,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var presenter: FeedDetailViewModel
-    private lateinit var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet
+    private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     @Inject
     lateinit var analytics: FeedAnalytics
@@ -229,8 +229,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                                 getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                             )
                             onResponseAfterFollowFromBottomSheet(true)
-                            if (::feedFollowersOnlyBottomSheet.isInitialized && feedFollowersOnlyBottomSheet.isAdded && feedFollowersOnlyBottomSheet.isVisible) {
-                                feedFollowersOnlyBottomSheet.dismiss()
+                            if (feedFollowersOnlyBottomSheet?.isAdded == true && feedFollowersOnlyBottomSheet?.isVisible == true) {
+                                feedFollowersOnlyBottomSheet?.dismiss()
                             }
                         }
                     }
@@ -476,11 +476,11 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     private fun showFollowerBottomSheet() {
-        if (!::feedFollowersOnlyBottomSheet.isInitialized) {
-            feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
-        }
-        if (!feedFollowersOnlyBottomSheet.isAdded && !feedFollowersOnlyBottomSheet.isVisible)
-        feedFollowersOnlyBottomSheet.show(childFragmentManager, this, status = saleStatus)
+
+        feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
+
+        if (feedFollowersOnlyBottomSheet?.isAdded == false && feedFollowersOnlyBottomSheet?.isVisible == false)
+            feedFollowersOnlyBottomSheet?.show(childFragmentManager, this, status = saleStatus)
     }
 
     private fun onResponseAfterFollowFromBottomSheet(isFollowSuccess: Boolean){
@@ -1014,9 +1014,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     override fun onDestroyView() {
-        if (::feedFollowersOnlyBottomSheet.isInitialized) {
-            feedFollowersOnlyBottomSheet.onDestroy()
-        }
         Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroyView()
     }

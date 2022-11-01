@@ -108,7 +108,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private lateinit var reportBottomSheet: ReportBottomSheet
     private lateinit var productTagBS: ProductItemInfoBottomSheet
-    private lateinit var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet
+    private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
 
     private val adapter = ContentDetailAdapter(
@@ -1344,9 +1344,6 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         if (::reportBottomSheet.isInitialized) {
             reportBottomSheet.onDestroy()
         }
-        if (::feedFollowersOnlyBottomSheet.isInitialized) {
-            feedFollowersOnlyBottomSheet.onDestroy()
-        }
     }
 
 
@@ -1747,10 +1744,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     }
 
     private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
-        if (!::feedFollowersOnlyBottomSheet.isInitialized) {
-            feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
-        }
-        feedFollowersOnlyBottomSheet.show(
+        feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
+        feedFollowersOnlyBottomSheet?.show(
             childFragmentManager,
             this,
             positionInFeed,
@@ -1831,7 +1826,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                                 Toaster.TYPE_NORMAL,
                                 getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                             )
-                            feedFollowersOnlyBottomSheet.dismiss()
+                            feedFollowersOnlyBottomSheet?.dismiss()
                         }
                     }
                     onSuccessFollowShop(it.data)

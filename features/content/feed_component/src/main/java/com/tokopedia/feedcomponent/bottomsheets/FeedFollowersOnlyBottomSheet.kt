@@ -8,15 +8,10 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.databinding.BottomsheetFollowRestrictionFeedBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 
 @Suppress("LateinitUsage")
 class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
 
-    private var dismissedByClosing = false
-    private lateinit var followBtn: UnifyButton
-    private lateinit var subTitle: Typography
     private var listener: Listener? = null
     private var mPositionInFeed: Int = 0
     private var campaignStatus: String = ""
@@ -30,10 +25,6 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
     ): View? {
         _viewBinding = BottomsheetFollowRestrictionFeedBinding.inflate(LayoutInflater.from(context))
         setChild(getBindingView().root)
-        getBindingView().run {
-            followBtn = this.buttonFollow
-            subTitle = this.subMessageDescription
-        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -44,9 +35,9 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
 
         setSubtitleText()
 
-        followBtn.setOnClickListener {
+        getBindingView().buttonFollow.setOnClickListener {
             mPositionInFeed.let { it1 ->
-                followBtn.isLoading = true
+                getBindingView().buttonFollow.isLoading = true
                 listener?.onFollowClickedFromFollowBottomSheet(
                     it1
                 )
@@ -54,14 +45,15 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
         }
 
         setCloseClickListener {
-            dismissedByClosing = true
             dismiss()
         }
     }
     private fun setSubtitleText(){
+        getBindingView().subMessageDescription.let {
         when(campaignStatus){
-            FeedXCampaign.UPCOMING -> subTitle.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_upcoming_text)
-            FeedXCampaign.ONGOING -> subTitle.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_ongoing_text)
+                FeedXCampaign.UPCOMING -> it.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_upcoming_text)
+                FeedXCampaign.ONGOING -> it.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_ongoing_text)
+            }
         }
     }
 
@@ -77,7 +69,7 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
         show(fragmentManager, "")
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         super.onDestroy()
         listener = null
         _viewBinding = null
@@ -85,6 +77,15 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onFollowClickedFromFollowBottomSheet(position: Int)
+    }
+
+    companion object {
+        private const val TAG = "FeedFollowersOnlyBottomSheet"
+
+        fun getOrCreate(fragmentManager: FragmentManager): FeedFollowersOnlyBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedFollowersOnlyBottomSheet
+            return oldInstance ?: FeedFollowersOnlyBottomSheet()
+        }
     }
 
 }

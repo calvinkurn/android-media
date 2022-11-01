@@ -234,7 +234,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
 
     private lateinit var productTagBS: ProductItemInfoBottomSheet
-    private lateinit var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet
+    private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     private val userIdLong: Long
         get() {
@@ -435,8 +435,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                         Toaster.TYPE_NORMAL,
                                         getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                                     )
-                                    if (::feedFollowersOnlyBottomSheet.isInitialized && feedFollowersOnlyBottomSheet.isAdded && feedFollowersOnlyBottomSheet.isVisible)
-                                        feedFollowersOnlyBottomSheet.dismiss()
+                                    if (feedFollowersOnlyBottomSheet?.isAdded == true && feedFollowersOnlyBottomSheet?.isVisible == true)
+                                        feedFollowersOnlyBottomSheet?.dismiss()
                                 }
 
                             } else {
@@ -564,8 +564,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                         Toaster.TYPE_NORMAL,
                                         getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                                     )
-                                    if (::feedFollowersOnlyBottomSheet.isInitialized && feedFollowersOnlyBottomSheet.isAdded && feedFollowersOnlyBottomSheet.isVisible)
-                                        feedFollowersOnlyBottomSheet.dismiss()
+                                    if (feedFollowersOnlyBottomSheet?.isAdded == true && feedFollowersOnlyBottomSheet?.isVisible == true)
+                                        feedFollowersOnlyBottomSheet?.dismiss()
                                 }
                             }
                             onSuccessToggleFavoriteShop(data)
@@ -869,9 +869,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (::productTagBS.isInitialized) {
             productTagBS.onDestroy()
         }
-        if (::feedFollowersOnlyBottomSheet.isInitialized) {
-            feedFollowersOnlyBottomSheet.onDestroy()
-        }
+
         TopAdsHeadlineActivityCounter.page = 1
         Toaster.onCTAClick = View.OnClickListener { }
         recyclerView.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
@@ -3598,11 +3596,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
-        if (!::feedFollowersOnlyBottomSheet.isInitialized) {
-            feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
-        }
-        if (!feedFollowersOnlyBottomSheet.isAdded && !feedFollowersOnlyBottomSheet.isVisible)
-            feedFollowersOnlyBottomSheet.show(
+        feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
+
+        if (feedFollowersOnlyBottomSheet?.isAdded == false && feedFollowersOnlyBottomSheet?.isVisible == false)
+            feedFollowersOnlyBottomSheet?.show(
                 childFragmentManager,
                 this,
                 positionInFeed,
