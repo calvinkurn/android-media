@@ -300,7 +300,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     private fun handleUiState(uiState: FlashSaleListUiState) {
         renderLoadingState(uiState.isLoading)
         renderSortFilter(uiState)
-        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.searchResultCount, uiState.totalFlashOnCurrentPage)
+        renderEmptyState(uiState.isLoading, uiState.offset, uiState.isFilterActive, uiState.searchResultCount, uiState.totalFlashOnCurrentPage)
         refreshScrollState(uiState.allItems)
         renderScrollUpButton(uiState.allItems.size)
     }
@@ -328,6 +328,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
 
     private fun renderEmptyState(
         isLoading: Boolean,
+        offset: Int,
         isUsingFilter: Boolean,
         searchResultCount: Int,
         totalFlashOnCurrentPage: Int
@@ -335,21 +336,24 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
         if (isLoading) {
             binding?.emptyState?.gone()
         } else {
-            handleEmptyState(isUsingFilter, searchResultCount, totalFlashOnCurrentPage)
+            handleEmptyState(offset, isUsingFilter, searchResultCount, totalFlashOnCurrentPage)
         }
     }
 
     private fun handleEmptyState(
+        offset: Int,
         isUsingFilter: Boolean,
         searchResultCount: Int,
         totalFlashOnCurrentPage: Int
     ) {
+        val isFreshLoad = offset == 0
+
         when {
-            totalFlashOnCurrentPage.isZero() && searchResultCount.isZero() -> binding?.emptyState?.gone()
-            searchResultCount.isZero() -> displayEmptySearchResult()
-            searchResultCount.isMoreThanZero() -> binding?.emptyState?.gone()
-            isUsingFilter && searchResultCount == 0 -> displayEmptySearchResult()
-            !isUsingFilter && searchResultCount == 0 -> displayNoFlashSaleAvailable()
+            isFreshLoad && isUsingFilter && totalFlashOnCurrentPage.isZero() && searchResultCount.isZero() -> displayEmptySearchResult()
+            isFreshLoad && totalFlashOnCurrentPage.isZero() && searchResultCount.isZero() -> displayNoFlashSaleAvailable()
+            !isFreshLoad && totalFlashOnCurrentPage.isZero() && searchResultCount.isZero() -> binding?.emptyState?.gone()
+            isFreshLoad && isUsingFilter && totalFlashOnCurrentPage.isZero() && searchResultCount.isZero() -> displayEmptySearchResult()
+            else -> binding?.emptyState?.gone()
         }
     }
 
