@@ -1401,8 +1401,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         cartPageAnalytics.eventClickAddOnsWidget(productId)
     }
 
-    override fun onClickEpharmacyInfoCart() {
-
+    override fun onClickEpharmacyInfoCart(enablerLabel: String) {
+        activity?.let {
+            RouteManager.route(it, "tokopedia://epharmacy/edu/$enablerLabel/obat_keras_tnc")
+        }
     }
 
     override fun addOnImpression(productId: String) {

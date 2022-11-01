@@ -419,7 +419,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         cartShopHolderData.addOnId
                     )
                 } else if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_EPHARMACY) {
-                    actionListener.onClickEpharmacyInfoCart()
+                    actionListener.onClickEpharmacyInfoCart(cartShopHolderData.enablerLabel)
                 }
             }
             if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {
