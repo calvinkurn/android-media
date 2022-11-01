@@ -1578,7 +1578,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check edit address applink then should return tokopedia internal edit address revamp in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/editaddressrevamp/1234567890"
-        val appLink = "${ApplinkConst.SETTING_EDIT_ADDRESS}?id=1234567890"
+        val appLink = "${ApplinkConst.SETTING_EDIT_ADDRESS}1234567890"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
