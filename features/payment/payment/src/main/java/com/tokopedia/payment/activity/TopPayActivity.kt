@@ -599,11 +599,13 @@ class TopPayActivity :
 
                 // cc loading
                 if (url.contains(CC_LOADING_URL)) {
-                    showFullLoading()
+                    Toast.makeText(this@TopPayActivity, "inLoading", Toast.LENGTH_SHORT).show()
+                    showProgressLoading()
                 }
 
                 if (url.contains(CC_LOADING_COMPLETE)) {
-                    hideFullLoading()
+                    Toast.makeText(this@TopPayActivity, "completedLoading", Toast.LENGTH_SHORT).show()
+                    hideProgressLoading()
                 }
 
                 if (url.contains(ACCOUNTS_URL)) {
