@@ -110,7 +110,7 @@ class OfficialStoreTracking(context: Context) {
         const val FORMAT_DASH_TWO_VALUES = "%s - %s"
         const val FORMAT_DASH_THREE_VALUES = "%s - %s - %s"
         const val FORMAT_DASH_FOUR_VALUES = "%s - %s - %s - %s"
-        const val FORMAT_DASH_FIVE_VALUES = "%s - %s - %s - %s"
+        const val FORMAT_DASH_FIVE_VALUES = "%s - %s - %s - %s - %s"
         const val FORMAT_UNDERSCORE_TWO_VALUES = "%s_%s"
         const val FORMAT_UNDERSCORE_THREE_VALUES = "%s_%s_%s"
         const val FORMAT_ITEM_NAME = "${SLASH_OFFICIAL_STORE}/%s - %s"
@@ -242,11 +242,14 @@ class OfficialStoreTracking(context: Context) {
 
     fun eventClickAllBanner(categoryName: String) {
         val track = TrackAppUtils
-            .gtmData(CLICK_OS_MICROSITE,
-                "$OS_MICROSITE$categoryName",
+            .gtmData(
+                CLICK_HOMEPAGE,
+                OS_MICROSITE_SINGLE,
                 FORMAT_CLICK_VIEW_ALL.format(VALUE_SLIDER_BANNER),
                 FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, "", categoryName))
         track[KEY_TRACKER_ID] = VALUE_TRACKER_ID_VIEW_ALL_BANNER
+        track[FIELD_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_DEFAULT
+        track[FIELD_CURRENT_SITE] = VALUE_CURRENT_SITE_DEFAULT
         tracker.sendGeneralEvent(track)
     }
 

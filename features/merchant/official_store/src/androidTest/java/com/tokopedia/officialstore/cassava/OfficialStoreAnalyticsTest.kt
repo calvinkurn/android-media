@@ -231,6 +231,7 @@ class OfficialStoreAnalyticsTest {
             }
             is OfficialBannerViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.viewpager_banner_category,0)
+                onView(withId(R.id.promo_link)).perform(ViewActions.click())
             }
             is DynamicLegoBannerViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)

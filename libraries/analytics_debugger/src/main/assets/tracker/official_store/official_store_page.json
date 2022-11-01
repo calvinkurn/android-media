@@ -72,7 +72,8 @@
       "eventLabel": "slider banner - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "trackerId": "4697"
+      "trackerId": "4697",
+      "sessionIris": ".*"
     },
     {
       "eventCategory": ".*",
