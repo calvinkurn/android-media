@@ -694,6 +694,9 @@ class TopPayActivity :
                     view?.post { view?.stopLoading() }
                 }
 
+                if (uriString.contains("centinelapi.cardinalcommerce.com/V1")) {
+                    Log.e("HIIIIIII", uriString)
+                }
                 // cc loading
                 if (uriString.contains(CC_LOADING_URL)) {
                     Toast.makeText(this@TopPayActivity, "inLoading", Toast.LENGTH_SHORT).show()
