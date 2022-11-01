@@ -144,7 +144,8 @@
           "item_name": "/official-store/.* - dynamic channel - .* - .*"
         }
       ],
-      "userId": ".*"
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "view_item",
@@ -168,7 +169,8 @@
           "item_name": "/official-store/.* - dynamic channel - .* - .*"
         }
       ],
-      "userId": ".*"
+      "userId": ".*",
+      "sessionIris": ".*"
     },
 
 
