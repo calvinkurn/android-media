@@ -310,8 +310,6 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                     }
                 }
             }
-            else -> {
-            }
         }
     }
 

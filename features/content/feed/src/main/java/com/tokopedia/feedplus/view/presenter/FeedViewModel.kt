@@ -726,12 +726,13 @@ class FeedViewModel @Inject constructor(
         isFollowedFromFollowRestrictionBottomSheet: Boolean = false
     ): FavoriteShopViewModel {
         try {
-            val data = FavoriteShopViewModel()
-            data.rowNumber = rowNumber
-            data.adapterPosition = adapterPosition
-            data.shopId = shopId
-            data.isUnfollowFromShopsMenu = isUnfollowClickedFromBottomSheetMenu
-            data.isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet
+            val data = FavoriteShopViewModel(
+                rowNumber = rowNumber,
+                adapterPosition = adapterPosition,
+                shopId = shopId,
+                isUnfollowFromShopsMenu = isUnfollowClickedFromBottomSheetMenu,
+                isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet
+            )
             val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
             val isSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
