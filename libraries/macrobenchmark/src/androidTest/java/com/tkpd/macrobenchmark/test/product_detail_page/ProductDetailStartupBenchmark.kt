@@ -10,11 +10,9 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 /**
- * Created by DevAra
- * This test will measure MainParentActivity launch time with macro benchmark
- *
- * @see [Testing documentation](http://d.android.com/tools/testing)
- */
+ * Created by yovi.putra on 01/11/22"
+ * Project name: android-tokopedia-core
+ **/
 
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
