@@ -70,6 +70,9 @@ object RollenceKey {
     //Play
     const val SWIPE_LIVE_ROOM = "play_sc"
 
+    // Bubbles
+    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat"
+
     object PdpToolbar {
         const val key = "pdp_dyn_container"
         const val transparent = "var_container"
