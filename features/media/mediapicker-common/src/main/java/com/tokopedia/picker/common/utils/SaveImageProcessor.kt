@@ -29,11 +29,10 @@ object SaveImageProcessor {
             if (filePath.isEmpty()) return null
 
             val file = filePath.asPickerFile()
-            val isImage = isImageFormat(filePath)
 
             val contentUri: Uri
             val mimeType: String
-            if (isImage) {
+            if (file.isImage()) {
                 contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 mimeType = MIME_IMAGE_TYPE
             } else {
@@ -50,7 +49,7 @@ object SaveImageProcessor {
             contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                val basePath = getBasePath(context, isImage)
+                val basePath = getBasePath(context, file.isImage())
 
                 resultFile = File("${basePath.first().path}/$fileName")
                 resultFile.createNewFile()
@@ -62,7 +61,7 @@ object SaveImageProcessor {
 
                 context.contentResolver.insert(contentUri, contentValues)
             } else {
-                val mediaContentValue = getQContentValue(isImage)
+                val mediaContentValue = getQContentValue(file.isImage())
                 contentValues.put(mediaContentValue.first, mediaContentValue.second)
 
                 context.contentResolver.insert(contentUri, contentValues)?.let { uriResult ->
