@@ -70,7 +70,7 @@ class UserProfilePlayVideoViewModelTest {
         coEvery { mockRepo.getFollowInfo(listOf(mockUserId)) } returns mockOwnFollow
 
         coEvery { mockRepo.getPlayVideo(any(), any()) } returns mockPlayVideo
-        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
+        coEvery { mockRepo.getShopRecom("") } returns mockShopRecom
 
         coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
     }

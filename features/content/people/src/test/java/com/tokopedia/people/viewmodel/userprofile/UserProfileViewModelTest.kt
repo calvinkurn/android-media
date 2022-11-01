@@ -72,7 +72,7 @@ class UserProfileViewModelTest {
         coEvery { mockRepo.getProfile(mockOtherUsername) } returns mockOtherProfile
 
         coEvery { mockRepo.getFollowInfo(listOf(mockUserId)) } returns mockOwnFollow
-        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
+        coEvery { mockRepo.getShopRecom("") } returns mockShopRecom
     }
 
     @Test
