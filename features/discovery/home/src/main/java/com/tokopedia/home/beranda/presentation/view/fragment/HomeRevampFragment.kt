@@ -2356,16 +2356,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             channel.id, channel.grids, position
                     )
             )
-            DynamicChannelViewHolder.TYPE_ORGANIC -> putEEToIris(
-                    HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
-                            channel.id, channel.grids, channel.header.name
-                    )
-            )
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                     getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
-            DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
-                    HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
         }
     }

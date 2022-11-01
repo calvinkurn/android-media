@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_top_ads_divider_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:background="@color/Unify_Static_Black"
+        tools:visibility="visible" />
+
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/dynamic_channel_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.topads.sdk.widget.TdnBannerView
+        android:id="@+id/topads_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_top_ads_divider_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:background="@color/Unify_Static_Black"
+        tools:visibility="visible" />
+
+</LinearLayout>

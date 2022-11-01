@@ -35,5 +35,7 @@ class ContentDetailArgumentModel {
         const val PARAM_SHOP_ID = "shop_id"
         const val PARAM_ACTIVITY_ID = "activity_id"
         const val PARAM_POST_TYPE = "POST_TYPE"
+        const val PARAM_SALE_TYPE = "sale_type"
+        const val PARAM_SALE_STATUS = "sale_status"
     }
 }

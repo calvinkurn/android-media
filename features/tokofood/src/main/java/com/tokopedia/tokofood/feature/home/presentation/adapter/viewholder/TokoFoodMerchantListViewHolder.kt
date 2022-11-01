@@ -17,8 +17,10 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.domain.response.AdditionalData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
+import com.tokopedia.tokofood.common.presentation.customview.TokofoodPromoRibbonView
 import com.tokopedia.tokofood.databinding.ItemTokofoodMerchantListCardBinding
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -46,11 +48,13 @@ class TokoFoodMerchantListViewHolder (
     private var tgTokoFoodMerchantPriceScale: Typography? = null
     private var viewDividerTokoFoodMerchant: View? = null
     private var tgTokoFoodMerchantCategory: Typography? = null
-    private var labelMerchantDiskon: Label? = null
+    private var ivMerchantDiskon: ImageUnify? = null
+    private var tvMerchantDiskon: Typography? = null
     private var tgTokoFoodMerchantDistance: Typography? = null
     private var tgTokoFoodMerchantRating: Typography? = null
     private var imgTokoFoodMerchantRating: ImageView? = null
     private var labelMerchantClosed: Label? = null
+    private var promoRibbon: TokofoodPromoRibbonView? = null
 
     override fun bind(element: TokoFoodMerchantListUiModel) {
         setupLayout()
@@ -63,17 +67,19 @@ class TokoFoodMerchantListViewHolder (
         tgTokoFoodMerchantPriceScale = binding?.tgTokofoodMerchantPriceScale
         viewDividerTokoFoodMerchant = binding?.viewDividerTokofoodMerchant
         tgTokoFoodMerchantCategory = binding?.tgTokofoodMerchantCategory
-        labelMerchantDiskon = binding?.labelMerchantDiskon
+        ivMerchantDiskon = binding?.ivTokofoodMerchantDiscount
+        tvMerchantDiskon = binding?.tvTokofoodMerchantPromoDetail
         tgTokoFoodMerchantDistance = binding?.tgTokofoodMerchantDistance
         tgTokoFoodMerchantRating = binding?.tgTokofoodMerchantRating
         imgTokoFoodMerchantRating = binding?.imgTokofoodMerchantRating
         labelMerchantClosed = binding?.labelMerchantClosed
+        promoRibbon = binding?.ribbonTokofoodPromo
     }
 
     private fun setMerchantLayout(merchant: Merchant) {
         setImageMerchant(merchant.imageURL)
         setTitleMerchant(merchant.name)
-        setLabelDiscount(merchant.promo, merchant.priceLevel)
+        setPromoInfo(merchant.promo, merchant.additionalData)
         setMerchantDistance(merchant.distanceFmt, merchant.etaFmt)
         setMerchantRating(merchant.ratingFmt, merchant.rating)
         setMerchantCategory(merchant.merchantCategories, merchant.priceLevel)
@@ -101,24 +107,32 @@ class TokoFoodMerchantListViewHolder (
         }
     }
 
-    private fun setLabelDiscount(label: String, priceLevel: PriceLevel) {
-        if (label.isNullOrEmpty()){
-            labelMerchantDiskon?.hide()
+    private fun setPromoInfo(promo: String, additionalData: AdditionalData) {
+        setPromoRibbonLabel(additionalData.topTextBanner)
+        if (promo.isBlank()){
+            ivMerchantDiskon?.hide()
+            tvMerchantDiskon?.hide()
         } else {
-            labelMerchantDiskon?.show()
-            labelMerchantDiskon?.text = label
-        }
-
-        labelMerchantDiskon?.run {
-            val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-            if (priceLevel.fareCount <= 0) {
-                labelParams.topToBottom = tgTokoFoodMerchantCategory?.id ?: ConstraintLayout.LayoutParams.UNSET
-            } else {
-                labelParams.topToBottom = tgTokoFoodMerchantPriceScale?.id ?: ConstraintLayout.LayoutParams.UNSET
+            ivMerchantDiskon?.run {
+                show()
+                setImageUrl(additionalData.discountIcon)
             }
-            layoutParams = labelParams
+            tvMerchantDiskon?.run {
+                show()
+                text = promo
+            }
         }
+    }
 
+    private fun setPromoRibbonLabel(topTextBanner: String) {
+        if (topTextBanner.isBlank()) {
+            promoRibbon?.hide()
+        } else {
+            promoRibbon?.run {
+                show()
+                setRibbonText(topTextBanner)
+            }
+        }
     }
 
     private fun setMerchantDistance(distance: String, eta: String) {

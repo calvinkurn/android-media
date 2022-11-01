@@ -186,6 +186,7 @@
     <string name="search_srp_ooc_success_change_address">Berhasil mengubah alamat</string>
     <string name="search_srp_ooc_failed_edit_pinpoint">Gagal mengubah pinpoint alamat</string>
     <string name="search_srp_ooc_okay">Oke</string>
+    <string name="search_srp_filter_title">Filter restoran</string>
 
     <!-- Search - Common -->
     <string name="search_common_to_homepage">Ke Homepage</string>
