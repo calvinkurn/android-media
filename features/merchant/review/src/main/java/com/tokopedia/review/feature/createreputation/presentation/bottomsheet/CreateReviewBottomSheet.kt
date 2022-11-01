@@ -1056,7 +1056,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private inner class SubmitButtonListener : CreateReviewSubmitButton.Listener {
         override fun onSubmitButtonClicked() {
             trackingHandler.trackClickSubmitForm()
-            if (!viewModel.isReviewComplete() && viewModel.hasIncentive()) {
+            if (!viewModel.isReviewComplete() && (viewModel.hasIncentive() || viewModel.hasOngoingChallenge())) {
                 dialogHandler.showReviewIncompleteDialog()
             } else {
                 viewModel.submitReview()
