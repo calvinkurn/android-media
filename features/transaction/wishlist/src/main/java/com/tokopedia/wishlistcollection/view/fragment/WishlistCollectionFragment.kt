@@ -63,9 +63,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
-import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
-import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingPreference
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
@@ -122,22 +120,16 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private val collectionViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[WishlistCollectionViewModel::class.java]
     }
-    private val onboardingPref: WishlistCollectionOnboardingPreference? by lazy {
-        activity?.let { WishlistCollectionOnboardingPreference(it) }
-    }
-    private val coachmarkSharingPref: WishlistCollectionSharingPreference? by lazy {
-        activity?.let { WishlistCollectionSharingPreference(it) }
-    }
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
 
     private val coachMarkItem = ArrayList<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
 
-    private val coachMarkItemSharing = ArrayList<CoachMark2Item>()
-    private var coachMarkSharing: CoachMark2? = null
+    private val coachMarkItemSharing1 = ArrayList<CoachMark2Item>()
+    private var coachMarkSharing1: CoachMark2? = null
 
-    private val coachMarkTestItemSharing = ArrayList<CoachMark2Item>()
-    private var coachMarkTestSharing: CoachMark2? = null
+    private val coachMarkItemSharing2 = ArrayList<CoachMark2Item>()
+    private var coachMarkSharing2: CoachMark2? = null
 
     override fun getScreenName(): String = ""
 
@@ -165,7 +157,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         const val OK = "OK"
         private const val PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection"
         const val PARAM_HOME = "home"
+        private const val COACHMARK_WISHLIST_ONBOARDING = "coachmark-wishlist-onboarding"
         private const val COACHMARK_WISHLIST = "coachmark-wishlist"
+        private const val COACHMARK_WISHLIST_SHARING = "coachmark-wishlist-sharing"
         private const val WISHLIST_PAGE = "wishlist page"
         private const val EDIT_WISHLIST_COLLECTION_REQUEST_CODE = 188
         private const val TYPE_COLLECTION_SHARE = "2"
@@ -196,9 +190,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     private fun checkOnboarding() {
-        if (onboardingPref?.hasOnboardingShown() == false) {
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_ONBOARDING)) {
             showBottomSheetOnboarding()
-            onboardingPref?.setShown(true)
+            CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST_ONBOARDING, true)
         }
     }
 
@@ -767,8 +761,10 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onShareItemShown(anchorView: View) {
-        coachMarkSharing?.hideCoachMark()
-        showCoachmarkKebabItem2(anchorView)
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
+            coachMarkSharing1?.hideCoachMark()
+            showCoachmarkKebabItem2(anchorView)
+        }
     }
 
     override fun onFirstCollectionItemBind(
@@ -783,7 +779,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         _firstCollectionName = collectionName
         _firstActionsCollection = actions
         _firstCollectionIndicatorTitle = collectionIndicatorTitle
-        showWishlistCollectionSharingCoachMark(anchorKebabMenuView, collectionId, collectionName, actions, collectionIndicatorTitle)
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
+            showWishlistCollectionSharingCoachMark(anchorKebabMenuView, collectionId, collectionName, actions, collectionIndicatorTitle)
+        }
     }
 
     override fun onCariBarangClicked() {
@@ -804,8 +802,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
         collectionIndicatorTitle: String
     ) {
-        if (coachMarkItemSharing.isEmpty()) {
-            coachMarkItemSharing.add(
+        if (coachMarkItemSharing1.isEmpty()) {
+            coachMarkItemSharing1.add(
                 CoachMark2Item(
                     anchorKebabMenuView,
                     "",
@@ -813,7 +811,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                     CoachMark2.POSITION_BOTTOM
                 )
             )
-            coachMarkItemSharing.add(
+            coachMarkItemSharing1.add(
                 CoachMark2Item(
                     anchorKebabMenuView,
                     "",
@@ -822,10 +820,10 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 )
             )
         }
-        if (coachMarkSharing == null)
-            coachMarkSharing = CoachMark2(requireContext())
+        if (coachMarkSharing1 == null)
+            coachMarkSharing1 = CoachMark2(requireContext())
 
-        coachMarkSharing?.let {
+        coachMarkSharing1?.let {
             it.setStepListener(object: CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     if (currentIndex == 1) {
@@ -839,15 +837,14 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 getString(R.string.collection_coachmark_lanjut)
 
             if (!it.isShowing) {
-                it.showCoachMark(coachMarkItemSharing, null)
+                it.showCoachMark(coachMarkItemSharing1, null)
             }
-            // CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
         }
     }
 
     private fun showCoachmarkKebabItem2(view: View) {
-        if (coachMarkTestItemSharing.isEmpty()) {
-            coachMarkTestItemSharing.add(
+        if (coachMarkItemSharing2.isEmpty()) {
+            coachMarkItemSharing2.add(
                 CoachMark2Item(
                     view,
                     "",
@@ -855,7 +852,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                     CoachMark2.POSITION_TOP
                 )
             )
-            coachMarkTestItemSharing.add(
+            coachMarkItemSharing2.add(
                 CoachMark2Item(
                     view,
                     "",
@@ -864,14 +861,14 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 )
             )
         }
-        if (coachMarkTestSharing == null)
-            coachMarkTestSharing = CoachMark2(requireContext())
+        if (coachMarkSharing2 == null)
+            coachMarkSharing2 = CoachMark2(requireContext())
 
-        coachMarkTestSharing?.let {
+        coachMarkSharing2?.let {
             it.setStepListener(object: CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     if (currentIndex == 0) {
-                        coachMarkTestSharing?.hideCoachMark()
+                        coachMarkSharing2?.hideCoachMark()
                         bottomSheetKebabMenu.dismiss()
                         _firstAnchorKebabMenuView?.let { it1 ->
                             showWishlistCollectionSharingCoachMark(
@@ -883,12 +880,11 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             })
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_finish)
-            // it.stepPrev?.text = getString(R.string.collection_coachmark_back)
 
             if (!it.isShowing) {
-                it.showCoachMark(coachMarkTestItemSharing, null, 1)
+                it.showCoachMark(coachMarkItemSharing2, null, 1)
             }
-            // CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST, true)
+            CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST_SHARING, true)
         }
     }
 
