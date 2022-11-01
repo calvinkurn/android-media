@@ -31,7 +31,6 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.util.extension.getBitmapFromUrl
-import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -66,6 +65,8 @@ class ProductSheetViewComponent(
     private val tvHeaderProductEmpty: TextView = findViewById(R.id.tv_title_product_empty)
     private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
+
+    private val impressionSet = mutableSetOf<String>()
 
     private val productCardListener = object : ProductLineViewHolder.Listener {
         override fun onProductClicked(
@@ -148,8 +149,13 @@ class ProductSheetViewComponent(
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
     private val itemDecoration: ProductLineItemDecoration
 
-    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        StopFlingScrollListener()
+    private val scrollListener = object: RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            when (newState) {
+                RecyclerView.SCROLL_STATE_SETTLING -> recyclerView.stopScroll()
+                RecyclerView.SCROLL_STATE_IDLE -> sendImpression()
+            }
+        }
     }
 
     private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -221,6 +227,8 @@ class ProductSheetViewComponent(
                 rvProductList.invalidateItemDecorations()
             }
         }
+
+        impressionSet.clear()
 
         if (voucherList.isEmpty()) {
             clProductVoucher.hide()
@@ -373,9 +381,15 @@ class ProductSheetViewComponent(
         return emptyList()
     }
 
-    private fun sendImpression() = synchronized(getVisibleProducts()) {
+    private fun sendImpression() = synchronized(impressionSet) {
         val products = getVisibleProducts()
-        listener.onProductImpressed(this, products)
+        val productsToBeImpressed = products.filter {
+            !impressionSet.contains(it.product.id)
+        }
+        listener.onProductImpressed(this, productsToBeImpressed)
+        productsToBeImpressed.forEach {
+            impressionSet.add(it.product.id)
+        }
     }
 
     /**

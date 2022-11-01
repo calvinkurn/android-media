@@ -21,6 +21,14 @@ class ProductCarouselUiView(
 
     private val context = binding.root.context
 
+    private val impressionSet = mutableSetOf<String>()
+
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
+        }
+    }
+
     private val adapter = ProductCarouselAdapter(
         listener = object : ProductBasicViewHolder.Listener {
             override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
@@ -67,6 +75,7 @@ class ProductCarouselUiView(
         binding.rvProductFeatured.adapter = adapter
 
         binding.rvProductFeatured.addItemDecoration(defaultItemDecoration)
+        binding.rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
     fun setProducts(
@@ -75,6 +84,7 @@ class ProductCarouselUiView(
         if (products == adapter.getItems()) return
 
         invalidateItemDecorations()
+        impressionSet.clear()
 
         adapter.setItemsAndAnimateChanges(products)
         sendImpression()
@@ -121,9 +131,15 @@ class ProductCarouselUiView(
         } catch (ignored: IllegalStateException) {}
     }
 
-    private fun sendImpression() = synchronized(getVisibleProducts()) {
+    private fun sendImpression() = synchronized(impressionSet) {
         val products = getVisibleProducts()
-        listener.onProductImpressed(this, products)
+        val productsToBeImpressed = products.filter {
+            !impressionSet.contains(it.key.id)
+        }
+        listener.onProductImpressed(this, productsToBeImpressed)
+        productsToBeImpressed.forEach {
+            impressionSet.add(it.key.id)
+        }
     }
 
     /**
@@ -141,6 +157,10 @@ class ProductCarouselUiView(
             }
         }
         return emptyMap()
+    }
+
+    fun cleanUp() {
+        binding.rvProductFeatured.removeOnScrollListener(scrollListener)
     }
 
     interface Listener {
