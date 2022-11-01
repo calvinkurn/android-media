@@ -98,17 +98,19 @@ object ChooseProductUiMapper {
         return productCount.orZero() >= MAX_PRODUCT_SELECTION
     }
 
-    fun isExceedMaxQuota(productCount: Int, maxProduct: Int): Boolean {
-        return productCount.orZero() >= maxProduct
+    fun isExceedMaxQuota(productCount: Int, remainingQuota: Int, maxProduct: Int): Boolean {
+        val maxInputCount = if (remainingQuota > maxProduct) maxProduct else remainingQuota
+        return productCount >= maxInputCount
     }
 
     fun getSelectionValidationResult(
         selectedProductCount: Int,
         criteriaList: List<CriteriaSelection>,
-        maxSelectedProduct: Int
+        maxSelectedProduct: Int,
+        remainingQuota: Int
     ): SelectionValidationResult {
         val isExceedMaxProduct = isExceedMaxProduct(selectedProductCount)
-        val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, maxSelectedProduct)
+        val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, remainingQuota, maxSelectedProduct)
         val disabledCriteriaIds = criteriaList.getDisabledCriteriaIds()
         return SelectionValidationResult(isExceedMaxProduct, isExceedMaxQuota, disabledCriteriaIds)
     }

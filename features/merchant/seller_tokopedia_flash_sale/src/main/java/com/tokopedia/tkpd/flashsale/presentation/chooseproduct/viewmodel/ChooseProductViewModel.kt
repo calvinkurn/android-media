@@ -55,6 +55,7 @@ class ChooseProductViewModel @Inject constructor(
 
     // Selection related
     private var selectedProductList = emptyList<ChooseProductItem>()
+    private var remainingQuota = 0
     private val remoteProductList = MutableLiveData<List<ChooseProductItem>>()
     private val maxProductSubmission = MutableLiveData<Int>()
 
@@ -80,7 +81,8 @@ class ChooseProductViewModel @Inject constructor(
     val selectionValidationResult = combine(
         selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
     ) { selectedProductCount, criteriaList, maxSelectedProduct ->
-        ChooseProductUiMapper.getSelectionValidationResult(selectedProductCount, criteriaList, maxSelectedProduct)
+        ChooseProductUiMapper.getSelectionValidationResult(selectedProductCount, criteriaList,
+            maxSelectedProduct, remainingQuota)
     }
 
     // public variables
@@ -192,6 +194,7 @@ class ChooseProductViewModel @Inject constructor(
             block = {
                 val response = getFlashSaleDetailForSellerUseCase.execute(campaignId)
                 maxProductSubmission.postValue(response.maxProductSubmission)
+                remainingQuota = response.remainingQuota
                 selectedProductList = emptyList()
             },
             onError = { error ->
