@@ -465,3 +465,16 @@ suspend fun getBitmapFromUrl(
         Glide.with(context).clear(target)
     }
 }
+
+inline fun View.updateLayoutParams(block: ViewGroup.LayoutParams.() -> Unit) {
+    updateLayoutParams<ViewGroup.LayoutParams>(block)
+}
+
+@JvmName("updateLayoutParamsTyped")
+inline fun <reified T : ViewGroup.LayoutParams> View.updateLayoutParams(
+    block: T.() -> Unit
+) {
+    val params = layoutParams as T
+    block(params)
+    layoutParams = params
+}
