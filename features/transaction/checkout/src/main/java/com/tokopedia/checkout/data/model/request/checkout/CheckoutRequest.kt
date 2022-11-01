@@ -279,7 +279,7 @@ object CheckoutRequestMapper {
                     promos = mapPromos(it.promos)
                     bundle = mapBundle(it.productData)
                     checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
-                    orderMetadata = mapOrderMetadata(it)
+                    orderMetadata = mapOrderMetadata(it, it.promos)
                 }
             )
         }
@@ -382,17 +382,18 @@ object CheckoutRequestMapper {
     }
 
     private fun mapOrderMetadata(
-        shopProductCheckoutRequest: ShopProductCheckoutRequest
+        shopProductCheckoutRequest: ShopProductCheckoutRequest,
+        promos: List<PromoRequest>?
     ): List<OrderMetadata> {
         val orderMetadata = arrayListOf<OrderMetadata>()
-        if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank()) {
-            orderMetadata.add(
-                OrderMetadata(
-                    FREE_SHIPPING_METADATA,
-                    shopProductCheckoutRequest.freeShippingMetadata
-                )
-            )
+        if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank() &&
+            promos?.firstOrNull { it.type == PromoRequest.TYPE_LOGISTIC } != null
+        ) {
+            // only add free shipping metadata if the order contains at least 1 promo logistic
+            orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
         }
+        if (shopProductCheckoutRequest.needPrescription && prescriptionIds != null && prescriptionIds.isNotEmpty()) {
+            orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, prescriptionIds.toString()))
         if (shopProductCheckoutRequest.needPrescription &&
             shopProductCheckoutRequest.prescriptionIds.isNotEmpty()
         ) {

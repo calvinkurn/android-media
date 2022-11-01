@@ -22,23 +22,15 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.util.Calendar
 
 /**
  * Created by jegul on 21/09/20
  */
 interface PlayBroadcastMapper {
-
-    fun mapSearchSuggestionList(
-        keyword: String,
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData
-    ): List<SearchSuggestionUiModel>
-
-    fun mapLiveFollowers(
-        response: GetLiveFollowersResponse
-    ): FollowerDataUiModel
 
     fun mapLiveStream(
         channelId: String,
@@ -53,13 +45,9 @@ interface PlayBroadcastMapper {
 
     fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel>
 
-    fun mapProductTag(productTag: ProductTagging): List<ProductData>
-
     fun mapConfiguration(config: Config): ConfigurationUiModel
 
     fun mapChannelInfo(channel: GetChannelResponse.Channel): ChannelInfoUiModel
-
-    fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData>
 
     fun mapChannelSchedule(
         timestamp: GetChannelResponse.Timestamp,
@@ -109,7 +97,7 @@ interface PlayBroadcastMapper {
         interactiveId: String,
     ): QuizDetailDataUiModel
 
-    fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel
+    fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel, endTime: Calendar?): List<LeaderboardGameUiModel>
 
     fun mapChoiceDetail(
         response: GetInteractiveQuizChoiceDetailResponse,
@@ -121,7 +109,7 @@ interface PlayBroadcastMapper {
     fun mapLeaderBoardWithSlot(
         response: GetSellerLeaderboardSlotResponse,
         allowChat: Boolean,
-    ): List<PlayLeaderboardUiModel>
+    ): List<LeaderboardGameUiModel>
 
     fun mapBroadcasterMetric(
         metric: BroadcasterMetric,

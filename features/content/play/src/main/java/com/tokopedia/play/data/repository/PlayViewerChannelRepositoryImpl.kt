@@ -3,14 +3,18 @@ package com.tokopedia.play.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.domain.GetChannelStatusUseCase
+import com.tokopedia.play.domain.GetChatHistoryUseCase
 import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
+import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
+import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
 import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,7 +22,9 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val channelStorage: PlayChannelStateStorage,
     private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
     private val getChannelStatusUseCase: GetChannelStatusUseCase,
-    private val mapper: PlayChannelDetailsWithRecomMapper,
+    private val getChatHistory: GetChatHistoryUseCase,
+    private val channelDetailRecomMapper: PlayChannelDetailsWithRecomMapper,
+    private val uiMapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : PlayViewerChannelRepository {
 
@@ -59,8 +65,20 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
         }.executeOnBackground()
 
         return@withContext PlayViewerChannelRepository.ChannelListResponse(
-            mapper.map(response, extraParams),
+            channelDetailRecomMapper.map(response, extraParams),
             response.channelDetails.meta.cursor,
         )
+    }
+
+    override suspend fun getChatHistory(
+        channelId: String,
+        cursor: String,
+    ): PlayChatHistoryUiModel = withContext(dispatchers.io) {
+        val response = getChatHistory.executeOnBackground(
+            channelId = channelId,
+            cursor = cursor,
+        )
+
+        uiMapper.mapHistoryChat(response)
     }
 }

@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.clickWithDebounce
 import com.tokopedia.tokofood.databinding.CuisineItemInitialStateBinding
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.CuisineItemUiModel
 
@@ -54,7 +55,7 @@ class CuisineItemViewHolder(
     }
 
     private fun setCuisineAction(item: CuisineItemUiModel) {
-        itemView.setOnClickListener {
+        itemView.clickWithDebounce {
             actionListener.setCuisineItemClicked(item)
         }
     }

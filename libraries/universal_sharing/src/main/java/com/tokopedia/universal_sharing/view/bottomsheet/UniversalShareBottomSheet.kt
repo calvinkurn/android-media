@@ -142,9 +142,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         private var isAffiliateUser: String = KEY_GENERAL_USER
 
         //Image Type
-        const val KEY_NO_IMAGE = "no image"
+        const val KEY_NO_IMAGE = "no_image"
         const val KEY_IMAGE_DEFAULT = "default"
-        const val KEY_CONTEXTUAL_IMAGE = "contextual image"
+        const val KEY_CONTEXTUAL_IMAGE = "contextual_image"
         const val KEY_PRODUCT_ID = "productId";
 
 
@@ -1015,6 +1015,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun executeShareOptionClick(shareModel: ShareModel) {
+        setIfAffiliate(shareModel)
         if (getImageFromMedia) {
             when (sourceId) {
                 ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
@@ -1026,7 +1027,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                     imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
                 }
             }
-
         } else {
             executeSharingFlow(shareModel)
         }
@@ -1057,11 +1057,14 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
+        bottomSheetListener?.onShareOptionClicked(shareModel)
+    }
+
+    private fun setIfAffiliate(shareModel: ShareModel) {
         if (affiliateQueryData != null &&
             affiliateCommissionTextView?.visibility == View.VISIBLE) {
             shareModel.isAffiliate = true
         }
-        bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 
     private fun transformOgImageURL(imageURL: String): String {
