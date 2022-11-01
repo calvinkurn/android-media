@@ -53,6 +53,7 @@ class PlayTestModule(
     val mContext: Context,
     val trackingQueue: TrackingQueue = TrackingQueue(mContext),
     val userSession: (appContext: Context) -> UserSessionInterface = { UserSession(it) },
+    val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(mContext),
 ) {
 
     @PlayScope

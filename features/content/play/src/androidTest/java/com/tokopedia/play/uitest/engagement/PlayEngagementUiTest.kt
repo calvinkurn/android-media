@@ -21,6 +21,7 @@ import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
@@ -82,7 +83,7 @@ class PlayEngagementUiTest {
             channelData = listOf(
                 uiModelBuilder.buildChannelData(
                    channelDetail = PlayChannelDetailUiModel(
-                        channelInfo = PlayChannelInfoUiModel(id = channelId, channelType = PlayChannelType.VOD)
+                        channelInfo = PlayChannelInfoUiModel(id = channelId, channelType = PlayChannelType.Live)
                     ),
                     id = channelId,
                     tagItems = uiModelBuilder.buildTagItem(
@@ -108,7 +109,7 @@ class PlayEngagementUiTest {
                             )
                         ),
                         videoStream = PlayVideoStreamUiModel(
-                            "", VideoOrientation.Vertical, "Video Keren"
+                            "", VideoOrientation.Vertical, "Iklan Popmie"
                         ),
                     ),
                 )
@@ -116,13 +117,13 @@ class PlayEngagementUiTest {
             cursor = "",
         )
 
-        coEvery { mockRemoteConfig.getBoolean(any()) } returns true
+        every { mockRemoteConfig.getBoolean(any(), any()) } returns true
 
         every { socket.listenAsFlow() } returns socketFlow
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext, userSession = {mockUserSession}))
+                .playTestModule(PlayTestModule(targetContext, userSession = {mockUserSession}, remoteConfig = mockRemoteConfig))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
                 .playTestRepositoryModule(PlayTestRepositoryModule(repo))
                 .build()
@@ -216,6 +217,10 @@ class PlayEngagementUiTest {
         )
 
         coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
+
+        val game = uiModelBuilder.buildQuiz(id = "11", "Quiz Sepeda", status = InteractiveUiModel.Quiz.Status.Ongoing(200L.millisFromNow()))
+
+        coEvery { repo.getCurrentInteractive(any()) } returns game
 
         val robot = createRobot()
         robot.hasEngagement(isGame = true)
