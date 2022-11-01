@@ -96,31 +96,6 @@ fun UnifyButton.generateButton(color: ProductButtonColor){
     }
 }
 
-fun UnifyButton.generateButtonPinned(color: ProductButtonColor){
-    when (color) {
-        ProductButtonColor.PRIMARY_BUTTON -> {
-            buttonVariant = UnifyButton.Variant.GHOST
-            buttonType = UnifyButton.Type.MAIN
-            isEnabled = true
-        }
-        ProductButtonColor.SECONDARY_BUTTON -> {
-            buttonVariant = UnifyButton.Variant.FILLED
-            buttonType = UnifyButton.Type.MAIN
-            isEnabled = true
-        }
-        ProductButtonColor.PRIMARY_DISABLED_BUTTON -> {
-            buttonVariant = UnifyButton.Variant.GHOST
-            buttonType = UnifyButton.Type.MAIN
-            isEnabled = false
-        }
-        ProductButtonColor.SECONDARY_DISABLED_BUTTON -> {
-            buttonVariant = UnifyButton.Variant.FILLED
-            buttonType = UnifyButton.Type.MAIN
-            isEnabled = false
-        }
-    }
-}
-
 val ProductButtonType.toAction : ProductAction
     get() = when (this) {
         ProductButtonType.ATC -> ProductAction.AddToCart

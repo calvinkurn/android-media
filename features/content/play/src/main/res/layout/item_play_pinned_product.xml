@@ -163,7 +163,7 @@
             app:layout_constraintStart_toStartOf="@id/tv_price"
             app:layout_constraintBottom_toBottomOf="parent"
             app:unifyButtonSize="small"
-            tools:unifyButtonVariant="ghost"
+            app:unifyButtonVariant="ghost"
             />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -176,7 +176,7 @@
             app:layout_constraintStart_toEndOf="@id/btn_first"
             app:layout_constraintBottom_toBottomOf="@id/btn_first"
             app:unifyButtonSize="small"
-            tools:unifyButtonVariant="filled"
+            app:unifyButtonVariant="filled"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

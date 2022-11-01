@@ -62,9 +62,8 @@ class ProductCarouselViewHolder private constructor() {
 
         private fun UnifyButton.configButton(button: ProductButtonUiModel){
             //Setup Icon if any, for now its only for ATC
-            val iconType = if(button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON)
-                iconCartDisabled
-            else iconCartEnabled
+            val isDisabled = button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON
+            val iconType = if(isDisabled) iconCartDisabled else iconCartEnabled
 
             when (button.type) {
                 ProductButtonType.ATC -> {
@@ -75,7 +74,9 @@ class ProductCarouselViewHolder private constructor() {
                     text = button.text
                 }
             }
-            generateButtonPinned(button.color)
+
+            binding.btnFirst.isEnabled = !isDisabled
+            binding.btnSecond.isEnabled = !isDisabled
         }
 
         fun bind(item: PlayProductUiModel.Product) {
