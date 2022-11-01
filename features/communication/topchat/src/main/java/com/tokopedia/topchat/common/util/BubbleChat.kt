@@ -10,6 +10,7 @@ object BubbleChat {
         const val BUBBLE_ACTIVATION_GUIDE_2 = "https://images.tokopedia.net/img/android/topchat/iv_bubble_activation_guide_2_url.png"
         const val BUBBLE_ACTIVATION_GUIDE_3 = "https://images.tokopedia.net/img/android/topchat/iv_bubble_activation_guide_3_url.png"
         const val BUBBLE_CHAT_ENTRY_POINT = "https://images.tokopedia.net/img/android/tokochat/iv_bubble_chat_entry_point_url.png"
+        const val BUBBLE_CHAT_HELP_PAGE_URL = "https://www.tokopedia.com/help/article/cara-pakai-bubble-chat"
     }
 
     object Key {
