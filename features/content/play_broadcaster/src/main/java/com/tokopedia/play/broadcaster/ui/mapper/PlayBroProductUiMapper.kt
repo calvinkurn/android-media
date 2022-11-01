@@ -94,11 +94,10 @@ class PlayBroProductUiMapper @Inject constructor() {
     }
 
     fun mapProductsInEtalase(
-        response: GetProductsByEtalaseResponse.GetProductListData,
-        perPage: Int,
+        response: GetProductsByEtalaseResponse,
     ): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
-            dataList = response.data.map { data ->
+            dataList = response.wrapper.products.map { data ->
                 ProductUiModel(
                     id = data.id,
                     name = data.name,
@@ -110,7 +109,8 @@ class PlayBroProductUiMapper @Inject constructor() {
                     ), //No discounted price because it is not supported in the current gql
                 )
             },
-            hasNextPage = response.data.size >= perPage,
+            hasNextPage = response.wrapper.pagerCursor.hasNext,
+            cursor = response.wrapper.pagerCursor.cursor,
         )
     }
 

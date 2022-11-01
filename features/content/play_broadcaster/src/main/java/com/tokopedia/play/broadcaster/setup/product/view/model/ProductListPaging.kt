@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.model
 
+import com.tokopedia.play.broadcaster.ui.model.PagingType
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
@@ -11,7 +12,7 @@ import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 data class ProductListPaging(
     val productList: List<ProductUiModel>,
     val resultState: PageResultState,
-    val page: Int,
+    val pagingType: PagingType,
 ) {
 
     companion object {
@@ -19,7 +20,7 @@ data class ProductListPaging(
             get() = ProductListPaging(
                 productList = emptyList(),
                 resultState = PageResultState.Loading,
-                page = 0,
+                pagingType = PagingType.Unknown,
             )
     }
 

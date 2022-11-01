@@ -1270,8 +1270,6 @@ class ChatbotFragment :
             onSendingMessage(sendMessage, startTime, replyBubbleContainer?.referredMsg)
         )
 
-        replyBubbleOnBoarding.dismiss()
-        videoUploadOnBoarding.dismiss()
         visibilityReplyBubble(false)
         clearChatText()
     }
@@ -1690,11 +1688,14 @@ class ChatbotFragment :
         return {
             when (it) {
                 REPLY -> {
-                    replyBubbleOnBoarding.dismiss()
-                    videoUploadOnBoarding.dismiss()
                     senderNameForReply = messageUiModel.from
                     setGuidelineForReplyBubble(true)
-                    replyBubbleContainer?.composeReplyData(messageUiModel,"",true, getUserNameForReplyBubble.getUserName(messageUiModel))
+                    replyBubbleContainer?.composeReplyData(
+                        messageUiModel,
+                        "",
+                        true,
+                        getUserNameForReplyBubble.getUserName(messageUiModel)
+                    )
                     bottomSheetPage.dismiss()
                 }
             }

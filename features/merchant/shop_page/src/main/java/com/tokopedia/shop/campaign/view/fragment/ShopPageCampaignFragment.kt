@@ -168,7 +168,8 @@ class ShopPageCampaignFragment :
                     isOwner,
                     isLogin,
                     isThematicWidgetShown,
-                    isEnableDirectPurchase
+                    isEnableDirectPurchase,
+                    shopId
                 )
             shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
         }

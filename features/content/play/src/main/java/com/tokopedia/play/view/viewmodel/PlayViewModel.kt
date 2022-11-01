@@ -30,6 +30,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.setValue
@@ -112,6 +113,7 @@ class PlayViewModel @AssistedInject constructor(
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
     private val playLog: PlayLog,
+    chatManagerFactory: ChatManager.Factory,
     chatStreamsFactory: ChatStreams.Factory,
     private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon,
 ) : ViewModel() {
@@ -348,10 +350,12 @@ class PlayViewModel @AssistedInject constructor(
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
-    private val chatStreams = chatStreamsFactory.create(viewModelScope)
+    private val chatManager = chatManagerFactory.create(
+        chatStreamsFactory.create(viewModelScope)
+    )
 
     val chats: StateFlow<List<PlayChatUiModel>>
-        get() = chatStreams.chats
+        get() = chatManager.chats
 
     val videoOrientation: VideoOrientation
         get() {
@@ -1023,7 +1027,7 @@ class PlayViewModel @AssistedInject constructor(
 
         updateTagItems()
         updateChannelStatus()
-
+        updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         sendInitialLog()
     }
@@ -1180,6 +1184,19 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(channelStatus = channelStatus)
             }
         }) {}
+    }
+
+    /**
+     * Updating chat history for live channel only
+     */
+    private fun updateLiveChannelChatHistory(channelData: PlayChannelData) {
+        viewModelScope.launchCatchError(block = {
+            if(channelData.channelDetail.channelInfo.channelType.isLive) {
+                chatManager.setWaitingForHistory()
+                val response = repo.getChatHistory(channelId)
+                chatManager.addHistoryChat(response.chatList.reversed())
+            }
+        }) { }
     }
 
     fun sendChat(message: String) {
@@ -1421,7 +1438,7 @@ class PlayViewModel @AssistedInject constructor(
      * Private Method
      */
     private fun setNewChat(chat: PlayChatUiModel) {
-        chatStreams.addChat(chat)
+        chatManager.addChat(chat)
     }
 
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
