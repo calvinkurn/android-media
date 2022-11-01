@@ -54,7 +54,6 @@ object RollenceKey {
     const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
 
     // Food
-    const val KEY_ROLLENCE_FOOD = "m1_gofood"
     const val KEY_GOFOOD_SEARCH = "gofood_search"
 
     // PDP

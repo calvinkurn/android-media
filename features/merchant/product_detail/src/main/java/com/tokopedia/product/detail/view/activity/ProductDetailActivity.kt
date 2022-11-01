@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.user.session.UserSession
@@ -233,8 +234,21 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        userSessionInterface = UserSession(this)
-        isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
+        try {
+            userSessionInterface = UserSession(this)
+            isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
+
+            parseApplink()
+            initPLTMonitoring()
+            initPerformanceMonitoring()
+        } catch (e: Throwable) {
+            onApplinkParseError(e)
+        }
+
+        super.onCreate(savedInstanceState)
+    }
+
+    private fun parseApplink() {
         val uri = intent.data
         val bundle = intent.extras
         if (uri != null) {
@@ -299,10 +313,16 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         if (productKey?.isNotEmpty() == true && shopDomain?.isNotEmpty() == true) {
             isFromDeeplink = true
         }
-        initPLTMonitoring()
-        initPerformanceMonitoring()
+    }
 
-        super.onCreate(savedInstanceState)
+    private fun onApplinkParseError(t: Throwable) {
+        val uri = intent.data
+        val uriString = uri?.toString() ?: ""
+        ProductDetailServerLogger.logNewRelicProductCannotOpen(
+                uriString,
+                t
+        )
+        finish()
     }
 
     private fun initPLTMonitoring() {

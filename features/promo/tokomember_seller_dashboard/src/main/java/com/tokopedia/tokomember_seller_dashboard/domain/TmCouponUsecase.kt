@@ -13,24 +13,30 @@ class TmCouponUsecase@Inject constructor(
     fun getCouponList(
         success: (TmCouponListResponse) -> Unit,
         failure: (Throwable) -> Unit,
-        voucherStatus: String, voucherType: Int?
+        voucherStatus: String, voucherType: Int?, page: Int, perPage: Int
     ){
         setTypeClass(TmCouponListResponse::class.java)
-        setRequestParams(getRequestParams(voucherStatus, voucherType))
+        setRequestParams(getRequestParams(voucherStatus, voucherType, page, perPage))
         setGraphqlQuery(QUERY_TM_COUPON_LIST)
         execute(
-            { success(it) },
-            { failure(it) }
+            {
+                success(it)
+            },
+            {
+                failure(it)
+            }
         )
     }
 
-    private fun getRequestParams(voucherStatus: String, voucherType: Int?): Map<String, Any> {
+    private fun getRequestParams(voucherStatus: String, voucherType: Int?, page: Int, perPage: Int): Map<String, Any> {
         val req = TmMVFilter(voucherType, voucherStatus, "1", "3")
         val map = mapOf<String, Any?>(
             "voucher_type" to voucherType,
             "voucher_status" to voucherStatus,
             "is_public" to "1",
             "target_buyer" to "3",
+            "page" to page,
+            "per_page" to perPage,
         )
         return mapOf(FILTER_INPUT to map)
     }

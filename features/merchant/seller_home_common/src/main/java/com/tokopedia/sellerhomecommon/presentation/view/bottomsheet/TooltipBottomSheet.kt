@@ -35,7 +35,7 @@ class TooltipBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NO_FRAME, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.ShcDialogStyle)
     }
 
     fun init(context: Context, tooltip: TooltipUiModel) {

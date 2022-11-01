@@ -6,6 +6,7 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -38,7 +39,7 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
     val playWidgetTools by memoized<PlayWidgetTools>()
     val getDynamicFeedNewUseCase by memoized<GetDynamicFeedNewUseCase>()
-    val getWhitelistNewUseCase by memoized<GetWhitelistNewUseCase>()
+    val getWhitelistNewUseCase by memoized<GetWhiteListNewUseCase>()
     val addToWishlistV2UseCase by memoized<AddToWishlistV2UseCase>()
     val sendReportUseCase by memoized<SendReportUseCase>()
     val feedBroadcastTrackerUseCase by memoized<FeedBroadcastTrackerUseCase>()
@@ -111,7 +112,7 @@ fun FeatureBody.createFeedTestInstance() {
         mockk<PlayWidgetTools>(relaxed = true)
     }
     val getWhitelistNewUseCase by memoized {
-        mockk<GetWhitelistNewUseCase>(relaxed = true)
+        mockk<GetWhiteListNewUseCase>(relaxed = true)
     }
     val getDynamicFeedNewUseCase by memoized {
         mockk<GetDynamicFeedNewUseCase>(relaxed = true)
@@ -132,7 +133,7 @@ fun GetDynamicFeedNewUseCase.getMockData(data: MutableList<Visitable<*>>, cursor
             DynamicFeedDomainModel(postList = data)
 }
 
-fun GetWhitelistNewUseCase.getMockData(data: WhitelistQuery) {
+fun GetWhiteListNewUseCase.getMockData(data: WhitelistQuery) {
     coEvery {
         execute("interest")
     } returns data
