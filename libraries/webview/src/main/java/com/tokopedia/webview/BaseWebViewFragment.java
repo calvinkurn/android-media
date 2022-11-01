@@ -205,7 +205,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         isTokopediaUrl = host != null && host.endsWith(TOKOPEDIA_COM) && !host.contains(ZOOM_US_STRING);
-        Log.e("Hii",host+"-"+isTokopediaUrl);
+        Log.e("Hii",url+"-"+host+"-"+isTokopediaUrl);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
