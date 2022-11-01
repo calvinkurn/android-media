@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -10,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetUnreadChatCountUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
@@ -46,7 +48,8 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     private val coroutineDispatchers: CoroutineDispatchers,
     private val getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>,
     private val getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>,
-    private val getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>
+    private val getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>,
+    private val getUnReadChatCountUseCase: GetUnreadChatCountUseCase
 ) : BaseViewModel(coroutineDispatchers.main) {
 
     private val _orderDetailResult = MutableLiveData<Result<OrderDetailResultUiModel>>()
@@ -144,6 +147,16 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         }, onError = {
             _driverPhoneNumber.value = Fail(it)
         })
+    }
+
+    fun getUnReadChatCount(): LiveData<Result<Int>> {
+         return Transformations.map(getUnReadChatCountUseCase.unReadCount()) {
+            try {
+                return@map Success(it)
+            } catch (t: Throwable) {
+                Fail(t)
+            }
+        }
     }
 
     private fun fetchOrderCompletedLiveTracking(orderId: String) {

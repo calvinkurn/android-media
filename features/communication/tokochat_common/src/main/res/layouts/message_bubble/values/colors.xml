@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tokochat_dms_image_bubble_overlay_end_color">#00eeeeee</color>
+    <color name="tokochat_dms_image_bubble_overlay_mid_color">#33000000</color>
+    <color name="tokochat_dms_image_bubble_overlay_start_color">#50000000</color>
+</resources>
