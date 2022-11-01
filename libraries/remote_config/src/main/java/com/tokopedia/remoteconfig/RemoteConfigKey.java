@@ -299,4 +299,5 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_TICKER_NOTIFY_ME = "android_show_ticker_notify_me";
 
+    public static final String ENABLE_SEND_SUCCESS_LOG_BRANCH = "android_enable_success_log_branch";
 }

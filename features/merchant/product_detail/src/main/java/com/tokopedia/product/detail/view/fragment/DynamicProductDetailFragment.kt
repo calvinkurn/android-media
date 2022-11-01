@@ -5207,6 +5207,20 @@ open class DynamicProductDetailFragment :
         startActivity(intent)
     }
 
+    override fun onClickActionButtonBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        val productInfoP1 = viewModel.getDynamicProductInfoP1
+        DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
+            bundleId,
+            bundleType,
+            productInfoP1,
+            componentTrackDataModel
+        )
+    }
+
     override fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,

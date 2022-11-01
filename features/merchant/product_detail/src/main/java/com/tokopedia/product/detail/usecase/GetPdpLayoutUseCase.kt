@@ -351,6 +351,12 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        eduLink {
                           appLink
                        }
+                    },
+                    ... on pdpDataBundleComponentInfo {
+                       title
+                       widgetType
+                       productID
+                       whID
                     }
                   }
                 }
