@@ -1,8 +1,9 @@
-package com.tkpd.macrobenchmark.test.product_detail_page
+package com.tkpd.macrobenchmark.test.product_detail
 import android.content.Intent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
+import androidx.test.uiautomator.Direction
 import com.tkpd.macrobenchmark.base.BaseFrameTimingBenchmark
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
@@ -25,9 +26,20 @@ class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.basicRecyclerviewInteraction(
+        MacroInteration.recyclerViewViewHolderInteraction(
             MacroIntent.TKPD_PACKAGE_NAME,
-            MacroIntent.ProductDetail.RV_RESOURCE_ID
+            MacroIntent.ProductDetail.RECYCLER_VIEW_ID,
+            MacroIntent.ProductDetail.MEDIA_VIEW_HOLDER
+        )
+        MacroInteration.recyclerViewScrollingInteraction(
+            MacroIntent.TKPD_PACKAGE_NAME,
+            MacroIntent.ProductDetail.RECYCLER_VIEW_ID,
+            Direction.DOWN
+        )
+        MacroInteration.recyclerViewViewHolderInteraction(
+            MacroIntent.TKPD_PACKAGE_NAME,
+            MacroIntent.ProductDetail.RECYCLER_VIEW_ID,
+            MacroIntent.ProductDetail.RECOMMENDATION_VIEW_HOLDER
         )
     }
 

@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.product_detail_page
+package com.tkpd.macrobenchmark.test.product_detail
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
@@ -31,7 +31,7 @@ class ProductDetailStartupBenchmark(startupMode: StartupMode) : BaseStartupBench
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
             MacroIntent.TKPD_PACKAGE_NAME,
-            MacroIntent.ProductDetail.RV_RESOURCE_ID
+            MacroIntent.ProductDetail.RECYCLER_VIEW_ID
         )
     }
 }
