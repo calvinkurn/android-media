@@ -11,7 +11,6 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
@@ -50,7 +49,7 @@ class ProfileViewHolder(
     private val binding: HomeAccountItemProfileBinding? by viewBinding()
 
     fun getMemberTitle(): String =
-            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text.toString()
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text.toString()
 
     fun bind(profile: ProfileDataView) {
         binding?.homeAccountProfileSection?.accountUserItemProfileName?.text = profile.name
@@ -102,21 +101,7 @@ class ProfileViewHolder(
             listener.onProfileAdapterReady(memberAdapter)
         }
 
-        if (profile.isShowLinkStatus) {
-            binding?.homeAccountProfileSection?.linkAccountProfileBtn?.setOnClickListener {
-                listener.onLinkingAccountClicked(profile.isLinked)
-            }
-            if (profile.isLinked) {
-                binding?.homeAccountProfileSection?.linkAccountProfileBtn?.hide()
-                binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.show()
-            } else {
-                binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.hide()
-                binding?.homeAccountProfileSection?.linkAccountProfileBtn?.show()
-            }
-        } else {
-            binding?.homeAccountProfileSection?.linkAccountProfileBtn?.hide()
-            binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.hide()
-        }
+        generateLinkingButton(profile)
 
         binding?.tokopediaPlusWidget?.apply {
             listener = tokopediaPlusListener
@@ -133,15 +118,97 @@ class ProfileViewHolder(
         }
     }
 
-    private fun setupMemberSection(tierData: TierData) {
-        if (tierData.nameDesc.isNotEmpty()) {
-            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text = tierData.nameDesc
+    private fun generateLinkingButton(profile: ProfileDataView) {
+        val isAddPhone = !profile.offerInterruptData.offers.none {
+            it.name == AccountConstants.OfferInterruptionList.OFFER_PHONE
+        }
+        val isPhoneVerify = !profile.offerInterruptData.offers.none {
+            it.name == AccountConstants.OfferInterruptionList.OFFER_VERIFY_PHONE
         }
 
-        if(tierData.imageURL.isNotEmpty()) {
-            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.setMargin(AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN, 0, 0, 0)
+        if (isAddPhone) {
+            renderAddPhoneButton()
+            return
+        }
+
+        if (isPhoneVerify) {
+            renderPhoneVerifyButton(profile.phone)
+            return
+        }
+
+        renderAccountLinkingButton(profile)
+    }
+
+    private fun renderAddPhoneButton() {
+        binding?.homeAccountProfileSection?.apply {
+            accountUserItemProfileLinkStatus.hide()
+            labelPhoneVerify.hide()
+            linkAccountProfileBtn.apply {
+                text = ADD_PHONE
+                setDrawable(MethodChecker.getDrawable(context, R.drawable.ic_protection))
+                setOnClickListener {
+                    listener.onAddPhoneClicked()
+                }
+            }.show()
+        }
+    }
+
+    private fun renderPhoneVerifyButton(phoneNumber: String) {
+        binding?.homeAccountProfileSection?.apply {
+            accountUserItemProfileLinkStatus.hide()
+            labelPhoneVerify.show()
+            linkAccountProfileBtn.apply {
+                text = VERIFY_PHONE
+                setDrawable(MethodChecker.getDrawable(context, R.drawable.ic_protection))
+                setOnClickListener {
+                    listener.onVerifyPhoneCLicked(phoneNumber)
+                }
+            }.show()
+            accountUserItemProfilePhone.apply {
+                text = Utils.formatPhoneNumber("089683328209")
+            }.show()
+        }
+    }
+
+    private fun renderAccountLinkingButton(profile: ProfileDataView) {
+        binding?.homeAccountProfileSection?.apply {
+            labelPhoneVerify.hide()
+
+            if (profile.isShowLinkStatus) {
+                linkAccountProfileBtn.setOnClickListener {
+                    listener.onLinkingAccountClicked(profile.isLinked)
+                }
+                if (profile.isLinked) {
+                    linkAccountProfileBtn.hide()
+                    accountUserItemProfileLinkStatus.show()
+                } else {
+                    accountUserItemProfileLinkStatus.hide()
+                    linkAccountProfileBtn.show()
+                }
+            } else {
+                linkAccountProfileBtn.hide()
+                accountUserItemProfileLinkStatus.hide()
+            }
+        }
+    }
+
+    private fun setupMemberSection(tierData: TierData) {
+        if (tierData.nameDesc.isNotEmpty()) {
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text =
+                tierData.nameDesc
+        }
+
+        if (tierData.imageURL.isNotEmpty()) {
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.setMargin(
+                AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN,
+                0,
+                0,
+                0
+            )
             binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.show()
-            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.setImageUrl(tierData.imageURL)
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.setImageUrl(
+                tierData.imageURL
+            )
         } else {
             binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.hide()
         }
@@ -152,15 +219,24 @@ class ProfileViewHolder(
             if (context.isDarkMode()) {
                 MethodChecker.setBackground(
                     binding?.accountUserItemProfileContainer,
-                    VectorDrawableCompat.create(context.resources,  R.drawable.ic_account_backdrop_dark, context.theme)
+                    VectorDrawableCompat.create(
+                        context.resources,
+                        R.drawable.ic_account_backdrop_dark,
+                        context.theme
+                    )
                 )
             } else {
                 MethodChecker.setBackground(
                     binding?.accountUserItemProfileContainer,
-                    VectorDrawableCompat.create(context.resources,  R.drawable.ic_account_backdrop, context.theme)
+                    VectorDrawableCompat.create(
+                        context.resources,
+                        R.drawable.ic_account_backdrop,
+                        context.theme
+                    )
                 )
             }
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     private fun loadImage(imageView: ImageView, imageUrl: String) {
@@ -282,5 +358,7 @@ class ProfileViewHolder(
         const val TOP_PAD = 8
         val LAYOUT = R.layout.home_account_item_profile
         private const val DEFAULT_NAME = "toppers-"
+        private const val ADD_PHONE = "Tambah Nomor HP"
+        private const val VERIFY_PHONE = "Verifikasi Nomor HP"
     }
 }

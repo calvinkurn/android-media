@@ -40,7 +40,8 @@ class DataViewMapper @Inject constructor(
             email = getEmailFromDataStore(),
             avatar = accountDataModel.profile.profilePicture,
             isLinked = linkStatus,
-            isShowLinkStatus = isShowLinkAccount
+            isShowLinkStatus = isShowLinkAccount,
+            offerInterruptData = accountDataModel.offerInterrupt
         )
     }
 
