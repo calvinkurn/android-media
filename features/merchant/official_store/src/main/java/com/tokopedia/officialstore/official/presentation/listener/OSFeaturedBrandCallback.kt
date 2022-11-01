@@ -47,7 +47,8 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
             userId = dcEventHandler.getUserId(),
             headerName = channelModel.channelHeader.name,
             bannerId =  bannerId,
-            channelId = channelModel.id
+            channelId = channelModel.id,
+            campaignCode = channelGrid.campaignCode
         )
 
         dcEventHandler.goToApplink(applink)

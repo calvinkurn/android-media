@@ -23,7 +23,7 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun legoImpression(channelData: Channel)
 
     // Flash Sale layout event handlers
-    fun onClickFlashSaleActionText(applink: String, headerId: Long): View.OnClickListener
+    fun onClickFlashSaleActionText(applink: String, channelId: String, headerName: String): View.OnClickListener
     fun onClickFlashSaleImage(channelData: Channel, position: Int): View.OnClickListener
     fun flashSaleImpression(channelData: Channel)
 

@@ -535,9 +535,9 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickFlashSaleActionText(applink: String, headerId: Long): View.OnClickListener {
+    override fun onClickFlashSaleActionText(applink: String, channelId: String, headerName: String): View.OnClickListener {
         return View.OnClickListener {
-            tracking?.flashSaleActionTextClick(viewModel.currentSlug, headerId)
+            tracking?.flashSaleClickViewAll(viewModel.currentSlug, channelId, headerName)
             RouteManager.route(context, applink)
         }
     }
@@ -553,8 +553,8 @@ class OfficialHomeFragment :
                         channelData.header?.name ?: "",
                         (position + POS_1).toString(POS_10),
                         gridData,
-                        campaignId,
-                        campaignCode
+                        channelData.id,
+                        getUserId()
                 )
                 RouteManager.route(context, applink)
             }
@@ -565,7 +565,7 @@ class OfficialHomeFragment :
     override fun flashSaleImpression(channelData: Channel) {
         if (!sentDynamicChannelTrackers.contains(channelData.id)) {
             val campaignId = channelData.campaignID
-            tracking?.flashSaleImpression(viewModel.currentSlug, channelData, campaignId)
+            tracking?.flashSaleImpression(viewModel.currentSlug, channelData, getUserId())
             sentDynamicChannelTrackers.add(channelData.id)
         }
     }
