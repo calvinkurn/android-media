@@ -271,7 +271,10 @@ class ChatbotPresenter @Inject constructor(
                         updateToolbar(tool)
                     }
 
-                    val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
+                    val liveChatDividerAttribute = Gson().fromJson(
+                        chatResponse.attachment?.attributes,
+                        LiveChatDividerAttributes::class.java
+                    )
                     if (attachmentType == CHAT_DIVIDER_DEBUGGING) {
                         val model = ChatSepratorUiModel(
                             sepratorMessage = liveChatDividerAttribute?.divider?.label,
@@ -388,7 +391,6 @@ class ChatbotPresenter @Inject constructor(
                         replyBoxAttribute.dynamicContent,
                         BigReplyBoxAttribute::class.java
                     )
-                    Log.d("LEVII", "handleReplyBoxWSToggle: handleBigReplyBoxWS")
                     handleBigReplyBoxWS(bigReplyBoxContent)
                 }
                 TYPE_SMALL_REPLY_BOX -> {
@@ -396,11 +398,11 @@ class ChatbotPresenter @Inject constructor(
                         replyBoxAttribute.dynamicContent,
                         SmallReplyBoxAttribute::class.java
                     )
-                    Log.d("LEVII", "handleReplyBoxWSToggle: handleSmallReplyBoxWS")
                     handleSmallReplyBoxWS(smallReplyBoxContent)
                 }
                 else -> {
                     //TODO need to show fallback message
+                    mapToVisitable(chatResponse)
                 }
             }
         }
