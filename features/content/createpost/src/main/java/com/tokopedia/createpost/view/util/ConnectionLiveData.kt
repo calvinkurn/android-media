@@ -12,14 +12,13 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
 import androidx.lifecycle.LiveData
-import java.lang.ref.WeakReference
 
 class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
-    private val mContext: WeakReference<Context> = WeakReference(context)
+    private val appContext = context.applicationContext
 
     private val connectivityManager =
-        mContext.get()?.getSystemService(CONNECTIVITY_SERVICE) as? ConnectivityManager
+        appContext.getSystemService(CONNECTIVITY_SERVICE) as? ConnectivityManager
 
     private var connectivityManagerCallback: ConnectivityManager.NetworkCallback? = null
 
@@ -58,7 +57,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ->
                 lollipopNetworkAvailableRequest()
 
-            else -> mContext.get()?.registerReceiver(
+            else -> appContext.registerReceiver(
                 networkReceiver,
                 IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
             )
@@ -71,7 +70,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             connectivityManagerCallback?.let { connectivityManager?.unregisterNetworkCallback(it) }
         } else {
-            mContext.get()?.unregisterReceiver(networkReceiver)
+            appContext.unregisterReceiver(networkReceiver)
         }
     }
 
