@@ -20,6 +20,8 @@
           "name": ""
         },
         "badges":[],
+        "label_groups": [],
+        "label_group_variant": [],
         "category_id":0,
         "category_name":"",
         "rating":0,
@@ -28,7 +30,13 @@
         "discount_expired_time":"",
         "discount_start_time":"",
         "discount_percentage":0,
-        "wishlist":false
+        "wishlist":false,
+        "min_order": 1,
+        "free_ongkir": {
+          "is_active": false,
+          "img_url": ""
+        },
+        "applink": "tokopedia://product/4807570043?extParam=ivf%3Dfalse%26src%3Dsearch"
       }
     }
   }

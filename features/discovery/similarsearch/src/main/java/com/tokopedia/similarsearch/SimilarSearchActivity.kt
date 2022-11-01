@@ -2,8 +2,8 @@ package com.tokopedia.similarsearch
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -14,13 +14,20 @@ import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCaseM
 import javax.inject.Inject
 import javax.inject.Named
 
-internal class SimilarSearchActivity: BaseSimpleActivity() {
+internal class SimilarSearchActivity : BaseSimpleActivity() {
 
     @field:[Inject Named(SIMILAR_SEARCH_VIEW_MODEL_FACTORY)]
     lateinit var similarSearchViewModelFactory: ViewModelProvider.Factory
 
+    @field:Inject
+    @Suppress("LateinitUsage")
+    lateinit var similarSearchFragmentFactory: FragmentFactory
+
     override fun getNewFragment(): Fragment? {
-        return SimilarSearchFragment.getInstance()
+        return supportFragmentManager.fragmentFactory.instantiate(
+            classLoader,
+            SimilarSearchFragment::class.java.name
+        )
     }
 
     override fun getLayoutRes(): Int {
@@ -37,6 +44,7 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
 
     override fun setupFragment(savedInstance: Bundle?) {
         injectDependencies()
+        supportFragmentManager.fragmentFactory = similarSearchFragmentFactory
 
         setupViewModel()
 
@@ -45,11 +53,11 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
 
     private fun injectDependencies() {
         DaggerSimilarSearchComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .getSimilarProductsUseCaseModule(createGetSimilarProductsUseCaseModule())
-                .similarSearchViewModelFactoryModule(createSimilarSearchViewModelFactoryModule())
-                .build()
-                .inject(this)
+            .baseAppComponent(getBaseAppComponent())
+            .getSimilarProductsUseCaseModule(createGetSimilarProductsUseCaseModule())
+            .similarSearchViewModelFactoryModule(createSimilarSearchViewModelFactoryModule())
+            .build()
+            .inject(this)
     }
 
     private fun getBaseAppComponent(): BaseAppComponent {
@@ -65,7 +73,10 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
     private fun getProductIdFromApplink(): String {
         val uri = intent.data
         if (uri != null) {
-            val paths = UriUtil.destructureUri(ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, uri)
+            val paths = UriUtil.destructureUri(
+                ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT,
+                uri
+            )
             if (paths != null && paths.isNotEmpty()) {
                 return paths[0]
             }
@@ -85,6 +96,8 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
     }
 
     private fun setupViewModel() {
-        ViewModelProviders.of(this, similarSearchViewModelFactory).get(SimilarSearchViewModel::class.java)
+        ViewModelProvider(this, similarSearchViewModelFactory).get(
+            SimilarSearchViewModel::class.java
+        )
     }
 }

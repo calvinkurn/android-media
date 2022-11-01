@@ -8,7 +8,7 @@ private fun getProductInfoGQLQuery() = """
     name
     url
     image_url
-    image_url_700
+    rating_average
     price
     shop {
      id
@@ -27,6 +27,13 @@ private fun getProductInfoGQLQuery() = """
       title
       position
       type
+      url
+    }
+    label_group_variant {
+        title
+        type
+        type_variant
+        hex_color
     }
     category_id
     category_name
@@ -42,6 +49,7 @@ private fun getProductInfoGQLQuery() = """
       is_active
       img_url
     }
+    applink
 """.trimIndent().replace("\n", " ")
 
 internal fun getSimilarProductsGQLQuery() = """

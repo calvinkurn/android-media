@@ -2,9 +2,6 @@ package com.tokopedia.similarsearch.getsimilarproducts.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.similarsearch.LABEL_GROUP_POSITION_CREDIBILITY
-import com.tokopedia.similarsearch.LABEL_GROUP_POSITION_OFFERS
-import com.tokopedia.similarsearch.LABEL_GROUP_POSITION_PROMO
 
 internal data class Product(
         @SerializedName("id")
@@ -55,6 +52,10 @@ internal data class Product(
         @Expose
         val rating: Int = 0,
 
+        @SerializedName("rating_average")
+        @Expose
+        val ratingAverage: String = "",
+
         @SerializedName("count_review")
         @Expose
         val countReview: Int = 0,
@@ -85,7 +86,15 @@ internal data class Product(
 
         @SerializedName("free_ongkir")
         @Expose
-        val freeOngkir: FreeOngkirBadge = FreeOngkirBadge()
+        val freeOngkir: FreeOngkirBadge = FreeOngkirBadge(),
+
+        @SerializedName("applink")
+        @Expose
+        val applink: String = "",
+
+        @SerializedName("label_group_variant")
+        @Expose
+        val labelGroupVariantList: List<LabelGroupVariant> = emptyList(),
 ) {
 
         var position: Int = 0
