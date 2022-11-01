@@ -569,52 +569,6 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         ))
     }
 
-    fun dynamicChannelImageClick(categoryName: String, headerName: String, position: String, gridData: Grid, channelData: Channel) {
-        val ecommerceBody = DataLayer.mapOf(
-                "promoClick", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", gridData.id.toString(RADIX_10),
-                "name", "/official-store/$categoryName - dynamic channel - $headerName",
-                "position", position,
-                "creative", gridData.attribution,
-                "creative_url", gridData.applink,
-                "promo_id", null,
-                "promo_code", null
-        ))
-        )
-        )
-
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "promoClick",
-                Category.KEY, "os microsite - $categoryName",
-                Action.KEY, "dynamic channel - click",
-                Label.KEY, "click dynamic channel - $headerName",
-                ATTRIBUTION, channelData.galaxyAttribution,
-                AFFINITY_LABEL, channelData.persona,
-                CATEGORY_ID, channelData.categoryPersona,
-                SHOP_ID, channelData.brandId,
-                CAMPAIGN_CODE, channelData.campaignCode,
-                Ecommerce.KEY, ecommerceBody
-        ))
-    }
-
-    fun dynamicChannelImpression(categoryName: String, channelData: Channel) {
-        val headerName = channelData.header?.name ?: ""
-        val promotionBody = getDynamicChannelImpressionPromotion(categoryName, channelData, "dynamic channel", headerName)
-
-        trackingQueue.putEETracking(DataLayer.mapOf(
-                Event.KEY, "promoView",
-                Category.KEY, "os microsite - $categoryName",
-                Action.KEY, "dynamic channel - impression",
-                Label.KEY, "impression of dynamic channel - $headerName",
-                Ecommerce.KEY, DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                        "promotions", promotionBody
-                )
-            )
-        ) as HashMap<String, Any>)
-    }
-
     fun dynamicChannelHomeComponentImpression(categoryName: String, channelModel: ChannelModel) {
         val headerName = channelModel.channelHeader.name ?: ""
         val promotionBody = getHomeComponentImpressionPromotion(categoryName, channelModel, "dynamic channel", headerName)
