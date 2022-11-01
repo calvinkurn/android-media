@@ -124,7 +124,7 @@ class PlayTestModule(
     @PlayScope
     @Provides
     fun provideRemoteConfig(): RemoteConfig {
-        return FirebaseRemoteConfigImpl(mContext)
+        return remoteConfig
     }
 
     @PlayScope

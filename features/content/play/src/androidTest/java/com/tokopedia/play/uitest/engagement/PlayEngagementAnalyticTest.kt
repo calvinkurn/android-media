@@ -44,7 +44,7 @@ import com.tokopedia.play.R as playR
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
 @CassavaTest
-class PlayEngagementUiTest {
+class PlayEngagementAnalyticTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
