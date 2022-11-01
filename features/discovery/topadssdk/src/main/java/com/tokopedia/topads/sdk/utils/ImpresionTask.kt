@@ -77,7 +77,6 @@ class ImpresionTask {
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val result = restRepository.getResponse(restRequest).getData<String>()
-                    delay(30*1000)
                     if (impressionListener != null) {
                         if (result != null) {
                             impressionListener!!.onSuccess()

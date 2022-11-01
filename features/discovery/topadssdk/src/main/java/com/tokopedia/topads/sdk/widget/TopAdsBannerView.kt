@@ -83,7 +83,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private var isShowCta: Boolean = true
     var impressionCount: Int = 0
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
-        TopAdsUrlHitter(context)
+        TopAdsUrlHitter(context.applicationContext)
     }
 
     private var template = NO_TEMPLATE

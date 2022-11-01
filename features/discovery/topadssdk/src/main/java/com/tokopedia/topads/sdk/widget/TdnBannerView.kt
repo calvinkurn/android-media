@@ -22,6 +22,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class TdnBannerView : FrameLayout {
@@ -33,11 +34,14 @@ class TdnBannerView : FrameLayout {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModelProvider by lazy { ViewModelProvider(context as AppCompatActivity, viewModelFactory) }
-
-    private val topAdsImageViewViewModel by lazy {
-        viewModelProvider.get(TopAdsImageViewViewModel::class.java)
+    private val topAdsImageViewViewModelWeakReference by lazy {
+        val vm = ViewModelProvider(context as AppCompatActivity, viewModelFactory).get(
+            TopAdsImageViewViewModel::class.java
+        )
+        WeakReference(vm)
     }
+
+    private val topAdsImageViewViewModel = topAdsImageViewViewModelWeakReference.get()
 
     constructor(context: Context) : super(context) {
         init()
@@ -83,7 +87,7 @@ class TdnBannerView : FrameLayout {
         productID: String = "",
         page: String = ""
     ) {
-        val qp = topAdsImageViewViewModel.getQueryParams(
+        val qp = topAdsImageViewViewModel?.getQueryParams(
             query,
             source,
             pageToken,
@@ -93,9 +97,9 @@ class TdnBannerView : FrameLayout {
             productID,
             page
         )
-        topAdsImageViewViewModel.getImageData(qp)
+        qp?.let { topAdsImageViewViewModel?.getImageData(it) }
 
-        topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, {
+        topAdsImageViewViewModel?.getResponse()?.observe(context as LifecycleOwner, {
             when (it) {
                 is Success -> {
                     val categoriesList = TdnHelper.categoriesTdnBanners(it.data)

@@ -28,13 +28,10 @@ import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class TopAdsImageView : AppCompatImageView {
-
-    companion object {
-        private var noOfObject = 0
-    }
 
     private var topAdsImageViewClickListener: TopAdsImageViewClickListener? = null
     private var topAdsImageViewImpressionListener: TopAdsImageViewImpressionListener? = null
@@ -49,10 +46,9 @@ class TopAdsImageView : AppCompatImageView {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModelProvider by lazy { ViewModelProvider(context as AppCompatActivity, viewModelFactory) }
-
     private val topAdsImageViewViewModel by lazy {
-        viewModelProvider.get(TopAdsImageViewViewModel::class.java)
+        val vm = ViewModelProvider(context as AppCompatActivity, viewModelFactory).get(TopAdsImageViewViewModel::class.java)
+        WeakReference(vm)
     }
 
     /**
@@ -83,9 +79,9 @@ class TopAdsImageView : AppCompatImageView {
      * */
     fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "", productID: String = "", page:String = "") {
         initViewModel()
-        val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
-        topAdsImageViewViewModel.getImageData(queryParams)
-        topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
+        val queryParams = topAdsImageViewViewModel.get()?.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
+        queryParams?.let { topAdsImageViewViewModel.get()?.getImageData(it) }
+        topAdsImageViewViewModel.get()?.getResponse()?.observe(context as LifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
