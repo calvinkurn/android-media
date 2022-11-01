@@ -322,7 +322,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           color
           position
           }
-          __typename
+        __typename
         }
         ribbonImageURL
         campaign {

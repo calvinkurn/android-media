@@ -87,7 +87,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var feedViewModel: FeedViewModel
     private lateinit var campaignData: FeedXCampaign
     private var detailId: String = ""
-    private var shopId: String = ""
+    private var authorId: String = ""
     private var authorType: String = ""
     private var shopName: String = ""
     private var postType: String = ""
@@ -259,10 +259,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             }
         }
-        if (shopId.isEmpty()) {
+        if (authorId.isEmpty()) {
             arguments?.run {
-                getString(FeedPlusDetailActivity.PARAM_SHOP_ID)?.let {
-                    shopId = it
+                getString(FeedPlusDetailActivity.PARAM_AUTHOR_ID)?.let {
+                    authorId = it
                 }
             }
         }
@@ -335,7 +335,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     if (!adapter.isLoading && presenter.cursor.isNotEmpty()) {
                         pagingHandler.nextPage()
-                        presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
+                        presenter.getFeedDetail(detailId, pagingHandler.page, authorId, activityId)
                     }
             }
 
@@ -368,12 +368,12 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun onShopFollowRequestedFromBottomSheet(){
         requireLogin {
             if (authorType == FollowCta.AUTHOR_USER) {
-                feedViewModel.doFollowKol(shopId.toIntOrZero(), 0)
+                feedViewModel.doFollowKol(authorId.toIntOrZero(), 0)
             } else if (authorType == FollowCta.AUTHOR_SHOP) {
                 feedViewModel.doToggleFavoriteShop(
                     rowNumber = 0,
                     adapterPosition = 0,
-                    shopId = shopId,
+                    shopId = authorId,
                     follow = false
                 )
             }
@@ -403,7 +403,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         super.onViewCreated(view, savedInstanceState)
 
         setUpObservers()
-        presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
+        presenter.getFeedDetail(detailId, pagingHandler.page, authorId, activityId)
 
         setUpShopDataHeader()
     }
@@ -465,7 +465,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun onErrorGetFeedDetail(error: Throwable) {
         dismissLoading()
         NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(context, error)) {
-            presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
+            presenter.getFeedDetail(detailId, pagingHandler.page, authorId, activityId)
         }
     }
     private fun shouldShowFollowerBottomSheet() =
@@ -916,7 +916,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             feedAnalytics.eventImpressionProductBottomSheet(
                 activityId,
                 impressionProductList!!,
-                shopId,
+                authorId,
                 postType,
                 isFollowed,
                 true,
@@ -997,7 +997,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     rating = postTagItem.star,
                     mods = postTagItem.mods,
                     shopName = shopName,
-                    shopId = shopId,
+                    shopId = authorId,
                     postType = postType,
                     isFollowed = isFollowed,
                     description = postDescription,

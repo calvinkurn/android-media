@@ -262,7 +262,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val OPEN_KOL_COMMENT = 101
         private const val OPEN_FEED_DETAIL = 1011
         private const val OPEN_CONTENT_REPORT = 1310
-        private const val DEFAULT_VALUE = -1
+        private const val DEFAULT_INVALID_POSITION_VALUE = -1
+        private const val AUTHOR_USER_TYPE_VALUE = 1
         private const val OPEN_PLAY_CHANNEL = 1858
         private const val OPEN_VIDEO_DETAIL = 1311
         const val REQUEST_LOGIN = 345
@@ -905,7 +906,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     }
                 } else {
                     onSuccessAddDeleteKolComment(
-                        data.getIntExtra(COMMENT_ARGS_POSITION, DEFAULT_VALUE),
+                        data.getIntExtra(COMMENT_ARGS_POSITION, DEFAULT_INVALID_POSITION_VALUE),
                         data.getIntExtra(COMMENT_ARGS_TOTAL_COMMENT, 0)
                     )
                 }
@@ -913,7 +914,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             OPEN_FEED_DETAIL -> if (resultCode == Activity.RESULT_OK) {
                if (data.getBooleanExtra(IS_FOLLOWED, false)) {
                    val authorType =  data.getStringExtra(PARAM_AUTHOR_TYPE)
-                   val rowNumber = data.getIntExtra(PARAM_POST_POSITION, -1)
+                   val rowNumber = data.getIntExtra(PARAM_POST_POSITION, DEFAULT_INVALID_POSITION_VALUE)
                    if (rowNumber in 0 until adapter.getList().size) {
                        if (authorType == FollowCta.AUTHOR_USER) {
                            onSuccessFollowUnfollowKol(rowNumber)
@@ -3613,7 +3614,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist().size > position && adapter.getlist()[position] is DynamicPostUiModel) {
             val item = adapter.getlist()[position] as DynamicPostUiModel
             val card = item.feedXCard
-            val authorType = if (card.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+            val authorType = if (card.author.type == AUTHOR_USER_TYPE_VALUE) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
             onHeaderActionClick(position, card.author.id, authorType, card.followers.isFollowed, card.typename, card.isTypeSgcVideo, isFollowedFromFollowRestrictionBottomSheet = true)
         }
 

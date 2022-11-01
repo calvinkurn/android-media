@@ -138,7 +138,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     }
 
     companion object {
-
+        private const val DEFAULT_INVALID_POSITION_VALUE = -1
+        private const val AUTHOR_USER_TYPE_VALUE = 1
         const val REQUEST_LOGIN = 345
         private const val OPEN_KOL_COMMENT = 101
         const val OPEN_VIDEO_DETAIL = 1311
@@ -298,7 +299,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
             OPEN_FEED_DETAIL -> if (resultCode == Activity.RESULT_OK) {
                 if (data.getBooleanExtra(ContentDetailArgumentModel.IS_FOLLOWED, false)) {
                     val rowNumber =
-                        data.getIntExtra(ContentDetailArgumentModel.PARAM_POST_POSITION, -1)
+                        data.getIntExtra(PARAM_POST_POSITION, DEFAULT_INVALID_POSITION_VALUE)
                     if (rowNumber in 0 until adapter.getList().size) {
                         onSuccessFollowShop(
                             ShopFollowModel(
@@ -1250,7 +1251,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                 )
             )
         )
-        val authorType = if (feedXCard.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val authorType = if (feedXCard.author.type == AUTHOR_USER_TYPE_VALUE) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
 
         val intent = RouteManager.getIntent(context, feedXCard.appLinkProductList)
         intent.putExtra(
