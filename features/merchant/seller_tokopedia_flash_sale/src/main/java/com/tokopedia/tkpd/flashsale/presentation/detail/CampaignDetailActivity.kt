@@ -16,6 +16,7 @@ class CampaignDetailActivity : BaseSimpleActivity() {
             val intent = Intent(context, CampaignDetailActivity::class.java)
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
+            bundle.putLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT, totalSubmittedProduct)
             intent.putExtras(bundle)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             context.startActivity(intent)
@@ -26,8 +27,12 @@ class CampaignDetailActivity : BaseSimpleActivity() {
         intent?.extras?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
     }
 
+    private val totalSubmittedProduct by lazy {
+        intent?.extras?.getLong(BundleConstant.BUNDLE_KEY_TOTAL_SUBMITTED_PRODUCT).orZero()
+    }
+
     override fun getLayoutRes() = R.layout.stfs_activity_campaign_detail
-    override fun getNewFragment() = CampaignDetailFragment.newInstance(flashSaleId)
+    override fun getNewFragment() = CampaignDetailFragment.newInstance(flashSaleId, totalSubmittedProduct)
     override fun getParentViewResourceID() = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -115,6 +115,7 @@ class FlashSaleManageProductListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         configHeaderUnify()
         configRecyclerView()
         getCampaignDetailBottomSheetData()

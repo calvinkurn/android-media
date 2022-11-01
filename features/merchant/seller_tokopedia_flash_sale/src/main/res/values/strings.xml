@@ -207,6 +207,7 @@
     <string name="stfs_avp_location_placeholder">Promo dipasang di %d lokasi</string>
 
     <!--Choose Product-->
+    <string name="chooseproduct_search_bar_placeholder">Cari nama produk</string>
     <string name="chooseproduct_fs_tokopedia_page_title">Tambah Produk Campaign</string>
     <string name="chooseproduct_category_criteria_title">Batas pengajuan kategori promo</string>
     <string name="chooseproduct_product_count_suffix">Produk</string>
@@ -252,6 +253,7 @@
     <string name="stfs_manage_product_list_total_product">%1s Produk</string>
     <string name="stfs_manage_product_list_success_delete_product_message">Produk berhasil dihapus</string>
     <string name="stfs_manage_product_list_success_delete_product_cta">Oke</string>
+    <string name="stfs_manage_product_list_success_product_submitted">%d produk berhasil diajukan untuk mengikuti %s.</string>
     <string name="stfs_manage_product_list_retry_cta">Coba Lagi</string>
     <string name="stfs_manage_product_list_delete_product_dialog_title">Yakin hapus produk?</string>
     <string name="stfs_manage_product_list_delete_product_dialog_description">Produk akan dihapus dari halaman ini dan kamu harus menambahkan kembali di halaman Flash Sale Tokopedia.</string>
