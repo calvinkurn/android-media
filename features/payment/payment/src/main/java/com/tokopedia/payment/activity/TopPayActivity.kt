@@ -922,8 +922,6 @@ class TopPayActivity :
         private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
         private const val LINK_ATOM_GOPAY = "afi.gopaylater.co.id"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"
-        private const val CC_LOADING_URL = "https://centinelapi.cardinalcommerce.com/V1/Cruise/Collect"
-        private const val CC_LOADING_COMPLETE = "https://centinelapi.cardinalcommerce.com/V1/Cruise/CollectRedirect"
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
