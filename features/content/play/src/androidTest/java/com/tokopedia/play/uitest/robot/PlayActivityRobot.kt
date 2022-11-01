@@ -15,6 +15,7 @@ import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.espresso.waitUntilViewIsDisplayed
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
+import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
@@ -175,6 +176,31 @@ class PlayActivityRobot(
             withId(R.id.rv_engagement_widget)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<EngagementWidgetViewHolder>(
+                position, ViewActions.click()
+            )
+        )
+    }
+
+    fun swipeEngagement(index: Int) {
+        Espresso.onView(
+            withId(R.id.rv_engagement_widget)
+        ).perform(
+            RecyclerViewActions.scrollToPosition<EngagementWidgetViewHolder>(index)
+        )
+    }
+
+    fun hasVoucherInBottomSheet() {
+        val child = hasMinimumChildCount(1)
+        Espresso.onView(
+            withId(R.id.rv_voucher_list)
+        ).check(matches(child))
+    }
+
+    fun clickVoucherInBottomSheet(position: Int) {
+        Espresso.onView(
+            withId(R.id.rv_voucher_list)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<MerchantVoucherNewViewHolder>(
                 position, ViewActions.click()
             )
         )

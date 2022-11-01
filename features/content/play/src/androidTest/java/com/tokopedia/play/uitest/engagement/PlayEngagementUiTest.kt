@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.content.test.cassava.containsEventAction
@@ -20,14 +21,21 @@ import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.play_common.websocket.WebSocketAction
+import com.tokopedia.play_common.websocket.WebSocketResponse
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 import com.tokopedia.play.R as playR
 
 /**
@@ -47,10 +55,27 @@ class PlayEngagementUiTest {
 
     private val channelId = "12665"
 
+    private val channelInteractiveExistStatus = """
+        {
+          "type" : "CHANNEL_INTERACTIVE_STATUS",
+          "data" : {
+            "channel_id" : 12665,
+            "exist" : true 
+          }
+        }
+    """.trimIndent()
+
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
+    private val socket: PlayWebSocket = mockk(relaxed = true)
+    private val socketFlow = MutableStateFlow<WebSocketAction>(
+        WebSocketAction.NewMessage(
+            Gson().fromJson(channelInteractiveExistStatus, WebSocketResponse::class.java)
+        )
+    )
 
     private val mockUserSession = mockk<UserSessionInterface>(relaxed = true)
+    private val mockRemoteConfig = mockk<RemoteConfig>(relaxed = true)
 
     init {
         coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
@@ -91,6 +116,10 @@ class PlayEngagementUiTest {
             cursor = "",
         )
 
+        coEvery { mockRemoteConfig.getBoolean(any()) } returns true
+
+        every { socket.listenAsFlow() } returns socketFlow
+
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
                 .playTestModule(PlayTestModule(targetContext, userSession = {mockUserSession}))
@@ -121,10 +150,77 @@ class PlayEngagementUiTest {
         coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
 
        val robot = createRobot()
-        robot.hasEngagement(isGame = false)
-        assertCassavaByEventAction("view - voucher widget")
-        robot.clickEngagementWidget(0)
-        assertCassavaByEventAction("click - voucher widget")
+        with(robot) {
+            hasEngagement(isGame = false)
+            assertCassavaByEventAction("view - voucher widget")
+            clickEngagementWidget(0)
+            assertCassavaByEventAction("click - voucher widget")
+        }
+    }
+
+    @Test
+    fun bottomSheet_privateVoucher() {
+        val tagItems = uiModelBuilder.buildTagItem(
+            voucher = uiModelBuilder.buildVoucherModel(
+                voucherList = listOf(uiModelBuilder.buildMerchantVoucher
+                    (highlighted = true, id = "1234", isPrivate = true, copyable = true, title = "Voucher KFC", description = "Diskon hingga 100rb", code = "ASHH"))
+            )
+        )
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
+
+        val robot = createRobot()
+        with(robot) {
+            hasEngagement(isGame = false)
+            assertCassavaByEventAction("view - voucher widget")
+            clickEngagementWidget(0)
+            assertCassavaByEventAction("click - voucher widget")
+            hasVoucherInBottomSheet()
+            assertCassavaByEventAction("view - voucher bottomsheet")
+            clickVoucherInBottomSheet(0)
+            assertCassavaByEventAction("view - toaster private voucher")
+            clickToasterAction()
+            assertCassavaByEventAction("click - lihat toaster private voucher")
+        }
+    }
+
+    @Test
+    fun bottomSheet_publicVoucher() {
+        val tagItems = uiModelBuilder.buildTagItem(
+            voucher = uiModelBuilder.buildVoucherModel(
+                voucherList = listOf(
+                    uiModelBuilder.buildMerchantVoucher(highlighted = true, id = "1234", isPrivate = true, copyable = true, title = "Voucher KFC", description = "Diskon hingga 100rb", code = "ASHH"),
+                    uiModelBuilder.buildMerchantVoucher(id = "1235",title = "Voucher Gopay", description = "Potongan hingga 100rb"))
+            )
+        )
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
+
+        val robot = createRobot()
+        with(robot) {
+            hasEngagement(isGame = false)
+            hasVoucherInBottomSheet()
+            clickEngagementWidget(0)
+            assertCassavaByEventAction("click - voucher widget")
+            assertCassavaByEventAction("view - voucher bottomsheet")
+            clickVoucherInBottomSheet(1)
+            assertCassavaByEventAction("view - toaster public voucher")
+            assertCassavaByEventAction("click - lihat toaster public voucher")
+        }
+    }
+
+    @Test
+    fun swipeEngagement() {
+        val tagItems = uiModelBuilder.buildTagItem(
+            voucher = uiModelBuilder.buildVoucherModel(
+                voucherList = listOf(uiModelBuilder.buildMerchantVoucher(highlighted = true, id = "1234", title = "Voucher Upin Ipin"))
+            )
+        )
+
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
+
+        val robot = createRobot()
+        robot.hasEngagement(isGame = true)
+        robot.swipeEngagement(1)
+        assertCassavaByEventAction("swipe - voucher widget")
     }
 
     private fun assertCassavaByEventAction(eventAction: String) {
@@ -132,6 +228,12 @@ class PlayEngagementUiTest {
             cassavaTestRule.validate(ANALYTIC_FILE),
             containsEventAction(eventAction)
         )
+    }
+
+    fun Long.millisFromNow(): Calendar {
+        return Calendar.getInstance().apply {
+            add(Calendar.MILLISECOND, this@millisFromNow.toInt())
+        }
     }
 
     companion object {

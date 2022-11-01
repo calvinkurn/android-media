@@ -63,7 +63,7 @@ class PlayVoucherAnalyticImpl @Inject constructor(
     override fun impressVoucherBottomSheet(voucherId: String) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
-            .setEventAction("view - voucher bottom sheet")
+            .setEventAction("view - voucher bottomsheet")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
             .setEventLabel("$channelId - $voucherId - $channelType")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
