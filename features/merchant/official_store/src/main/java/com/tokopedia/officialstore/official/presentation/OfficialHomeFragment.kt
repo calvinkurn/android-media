@@ -485,12 +485,13 @@ class OfficialHomeFragment :
         val applink = gridData.applink
 
         gridData.let {
-            tracking?.dynamicChannelHomeComponentClick(
+            tracking?.legoClick(
                     viewModel.currentSlug,
                     channelModel.channelHeader.name,
                     (position + POS_1).toString(POS_10),
                     it,
-                    channelModel
+                    channelModel,
+                    getUserId()
             )
         }
 
@@ -499,7 +500,7 @@ class OfficialHomeFragment :
 
     override fun legoImpression(channelModel: ChannelModel) {
         if (!sentDynamicChannelTrackers.contains(channelModel.id)) {
-            tracking?.dynamicChannelHomeComponentImpression(viewModel.currentSlug, channelModel)
+            tracking?.legoImpression(viewModel.currentSlug, channelModel, getUserId())
             sentDynamicChannelTrackers.add(channelModel.id)
         }
     }
