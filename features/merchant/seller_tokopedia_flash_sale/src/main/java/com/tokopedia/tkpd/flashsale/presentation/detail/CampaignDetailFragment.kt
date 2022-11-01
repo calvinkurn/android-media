@@ -60,7 +60,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     companion object {
         private const val PAGE_SIZE = 10
         private const val APPLINK_SEGMENTS_SIZE = 2
-        private const val DELAY = 1000L
+        private const val DELAY = 1500L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
@@ -177,18 +177,19 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         observeDeletedProductResult()
         observeCampaignRegistrationResult()
         observeSubmittedProductVariant()
+        observeSubmittedProductData()
         loadCampaignDetailData()
     }
 
     private fun observeCampaignDetail() {
         viewModel.campaign.observe(viewLifecycleOwner) { flashSale ->
             hideLoading()
-            when (flashSale) {
-                is Success -> {
-                    setupView(flashSale.data)
-                }
-                is Fail -> {
-                    doOnDelayFinished(DELAY) {
+            doOnDelayFinished(DELAY) {
+                when (flashSale) {
+                    is Success -> {
+                        setupView(flashSale.data)
+                    }
+                    is Fail -> {
                         showGlobalError()
                     }
                 }
@@ -280,7 +281,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 } else {
                     showErrorToaster(result.errorMessage)
                 }
-                loadSubmittedProductListData(Int.ZERO)
+                loadCampaignDetailData()
             }
         }
     }
@@ -388,14 +389,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         setupUpcomingMid(flashSale, campaignStatus)
         setupUpcomingBody(flashSale)
         setupUpcomingButton()
-//        setupChooseProductRedirection()
     }
 
     private fun setupUpcomingHeader(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
         val binding = binding ?: return
         val inflatedView = binding.layoutHeader
         inflatedView.layoutResource = R.layout.stfs_cdp_header
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
         setupUpcomingHeaderData(flashSale, campaignStatus)
     }
 
@@ -403,7 +405,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val binding = binding ?: return
         val inflatedView = binding.layoutMid
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_mid
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
         upcomingCdpMidBinding?.run {
             setupUpcomingMidData(flashSale, campaignStatus)
             val startSubmissionDate = flashSale.submissionStartDateUnix.formatTo(
@@ -436,7 +440,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val binding = binding ?: return
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_body
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
         upcomingCdpBodyBinding?.run {
             tgDescription.text = MethodChecker.fromHtml(
                 flashSale.description
@@ -598,14 +604,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         setupRegisteredHeader(flashSale)
         setupRegisteredMid(flashSale)
         setupRegisteredBody()
-        observeSubmittedProductData()
     }
 
     private fun setupRegisteredHeader(flashSale: FlashSale) {
         val binding = binding ?: return
         val inflatedView = binding.layoutHeader
         inflatedView.layoutResource = R.layout.stfs_cdp_header
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
         setupRegisteredHeaderData(flashSale)
     }
 
@@ -613,7 +620,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val binding = binding ?: return
         val inflatedView = binding.layoutMid
         inflatedView.layoutResource = R.layout.stfs_cdp_registered_mid
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
         setupRegisteredMidData(flashSale)
     }
 
@@ -621,7 +630,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val binding = binding ?: return
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_body
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
     }
 
     private fun setupRegisteredHeaderData(flashSale: FlashSale) {
@@ -810,7 +821,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun onShowOrHideItemCheckBox() {
         val oldItems = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
-        val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown, isSelected = false) }
+        val newItems =
+            oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown, isSelected = false) }
         val isShown = newItems[Int.ZERO].isCheckBoxShown
         productAdapter.submit(newItems)
         viewModel.setCheckBoxStateStatus(isShown)
@@ -853,7 +865,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 btnRegister.visible()
                 btnDelete.gone()
                 btnEdit.gone()
-            } else{
+            } else {
                 btnRegister.gone()
             }
         }
@@ -891,14 +903,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         setupOngoingHeader(flashSale)
         setupOngoingMid(flashSale)
         setupRegisteredBody()
-        observeSubmittedProductData()
     }
 
     private fun setupOngoingHeader(flashSale: FlashSale) {
         val binding = binding ?: return
         val inflatedView = binding.layoutHeader
         inflatedView.layoutResource = R.layout.stfs_cdp_header
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
         setupOngoingHeaderData(flashSale)
     }
 
@@ -906,7 +919,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val binding = binding ?: return
         val inflatedView = binding.layoutMid
         inflatedView.layoutResource = R.layout.stfs_cdp_ongoing_mid
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
         setupOngoingMidData(flashSale)
     }
 
@@ -1049,14 +1064,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         setupFinishedHeader(flashSale)
         setupFinishedMid(flashSale)
         setupFinishedBody()
-        observeSubmittedProductData()
     }
 
     private fun setupFinishedHeader(flashSale: FlashSale) {
         val binding = binding ?: return
         val inflatedView = binding.layoutHeader
         inflatedView.layoutResource = R.layout.stfs_cdp_header
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
         setupFinishedHeaderData(flashSale)
     }
 
@@ -1064,7 +1080,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val binding = binding ?: return
         val inflatedView = binding.layoutMid
         inflatedView.layoutResource = R.layout.stfs_cdp_ongoing_mid
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
         setupFinishedMidData(flashSale)
     }
 
@@ -1072,7 +1090,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val binding = binding ?: return
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_body
-        inflatedView.inflate()
+        if (inflatedView.parent != null) {
+            inflatedView.inflate()
+        }
     }
 
     private fun setupFinishedHeaderData(flashSale: FlashSale) {
@@ -1451,7 +1471,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val isVariantProduct = ProductCheckingResultMapper.isVariantProduct(selectedProduct)
         val isMultiloc = ProductCheckingResultMapper.isMultiloc(selectedProduct)
         val productName = ProductCheckingResultMapper.getProductName(selectedProduct)
-        val displayProductSold = ProductCheckingResultMapper.getProductSold(selectedProduct).isNotEmpty()
+        val displayProductSold =
+            ProductCheckingResultMapper.getProductSold(selectedProduct).isNotEmpty()
         val imageUrl = ProductCheckingResultMapper.getImageUrl(selectedProduct)
 
         checkProductBottomSheet.setProductName(productName)
@@ -1461,7 +1482,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 flashSaleId,
                 selectedProductId.orZero(),
                 displayProductSold,
-                imageUrl)
+                imageUrl
+            )
         } else if (isMultiloc) {
             val productCheckingResult = ProductCheckingResultMapper.mapFromAdapterItem(
                 selectedProduct,

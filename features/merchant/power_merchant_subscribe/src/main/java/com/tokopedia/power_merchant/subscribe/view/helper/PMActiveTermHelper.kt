@@ -246,7 +246,7 @@ object PMActiveTermHelper {
             PMProBenefitUiModel(
                 description = context.getString(
                     R.string.pm_pro_general_benefit_1,
-                    Constant.POWER_MERCHANT_PRO_CHARGING
+                    Constant.PM_PRO_FREE_DELIVERY
                 ),
                 icon = IconUnify.COURIER_FAST
             ),

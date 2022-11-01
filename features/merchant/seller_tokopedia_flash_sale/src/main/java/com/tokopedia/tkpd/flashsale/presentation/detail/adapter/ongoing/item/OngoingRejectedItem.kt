@@ -22,6 +22,7 @@ data class OngoingRejectedItem(
     val submittedProductStockStatus: ProductStockStatus,
     val warehouses: List<SubmittedProduct.Warehouse>,
     val countLocation: Int,
+    val statusText: String
 ) : DelegateAdapterItem {
     override fun id() = productId
 }

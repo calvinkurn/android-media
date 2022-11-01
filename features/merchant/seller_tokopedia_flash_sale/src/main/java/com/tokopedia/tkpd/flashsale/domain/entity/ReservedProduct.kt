@@ -12,18 +12,18 @@ data class ReservedProduct(
 ) {
     @Parcelize
     data class Product(
-        var childProducts: List<ChildProduct>,
-        val isMultiWarehouse: Boolean,
-        val isParentProduct: Boolean,
-        val name: String,
-        val picture: String,
-        val price: Price,
-        val productCriteria: ProductCriteria,
-        val productId: Long,
-        val sku: String,
-        val stock: Int,
-        val url: String,
-        val warehouses: List<Warehouse>
+        var childProducts: List<ChildProduct> = listOf(),
+        val isMultiWarehouse: Boolean = false,
+        val isParentProduct: Boolean = false,
+        val name: String = "",
+        val picture: String = "",
+        val price: Price = Price(),
+        val productCriteria: ProductCriteria = ProductCriteria(),
+        val productId: Long = 0,
+        val sku: String = "",
+        val stock: Int = 0,
+        val url: String = "",
+        val warehouses: List<Warehouse> = listOf()
     ) : Parcelable {
 
         fun getTotalDiscountedLocation(): Int {
@@ -134,17 +134,20 @@ data class ReservedProduct(
         ) : Parcelable
 
         @Parcelize
-        data class Price(val lowerPrice: Long, val price: Long, val upperPrice: Long) : Parcelable
+        data class Price(
+            val lowerPrice: Long = 0,
+            val price: Long = 0,
+            val upperPrice: Long = 0) : Parcelable
 
         @Parcelize
         data class ProductCriteria(
-            val criteriaId: Long,
-            val maxCustomStock: Int,
-            val maxDiscount: Long,
-            val maxFinalPrice: Long,
-            val minCustomStock: Int,
-            val minDiscount: Long,
-            val minFinalPrice: Long,
+            val criteriaId: Long = 0,
+            val maxCustomStock: Int = 0 ,
+            val maxDiscount: Long = 0,
+            val maxFinalPrice: Long = 0,
+            val minCustomStock: Int = 0,
+            val minDiscount: Long = 0,
+            val minFinalPrice: Long = 0,
         ):Parcelable
         @Parcelize
         data class Warehouse(

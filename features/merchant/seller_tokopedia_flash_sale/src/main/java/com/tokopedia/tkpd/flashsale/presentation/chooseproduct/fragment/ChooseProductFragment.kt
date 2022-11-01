@@ -302,7 +302,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
                 else chooseProductAdapter.enable()
 
                 chooseProductAdapter.disableByCriteria(it.disabledCriteriaIds, getString(R.string.chooseproduct_error_max_criteria_item))
-                chooseProductAdapter.forceEnableProduct(viewModel.selectedProductIds.map { id -> id.toString() })
+                chooseProductAdapter.forceEnableProduct(viewModel.submittedProductIds.map { id -> id.toString() })
             }
         }
     }

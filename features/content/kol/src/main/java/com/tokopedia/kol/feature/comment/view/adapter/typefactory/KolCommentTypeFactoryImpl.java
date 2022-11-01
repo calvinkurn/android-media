@@ -5,14 +5,10 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentHeaderNewViewHolder;
-import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentHeaderViewHolder;
 import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentNewViewHolder;
-import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentViewHolder;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 
 /**
  * @author by milhamj on 18/04/18.
@@ -31,16 +27,6 @@ public class KolCommentTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(KolCommentViewModel viewModel) {
-        return KolCommentViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(KolCommentHeaderViewModel viewModel) {
-        return KolCommentHeaderViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(KolCommentNewModel viewModel) {
         return KolCommentNewViewHolder.LAYOUT;
     }
@@ -55,11 +41,7 @@ public class KolCommentTypeFactoryImpl extends BaseAdapterTypeFactory
 
         AbstractViewHolder viewHolder;
 
-        if (type == KolCommentViewHolder.LAYOUT)
-            viewHolder = new KolCommentViewHolder(view, viewHolderListener, true);
-        else if (type == KolCommentHeaderViewHolder.LAYOUT)
-            viewHolder = new KolCommentHeaderViewHolder(view, viewListener);
-        else if (type == KolCommentNewViewHolder.LAYOUT)
+        if (type == KolCommentNewViewHolder.LAYOUT)
             viewHolder = new KolCommentNewViewHolder(view, viewHolderListener, true);
         else if (type == KolCommentHeaderNewViewHolder.LAYOUT)
             viewHolder = new KolCommentHeaderNewViewHolder(view, viewListener);

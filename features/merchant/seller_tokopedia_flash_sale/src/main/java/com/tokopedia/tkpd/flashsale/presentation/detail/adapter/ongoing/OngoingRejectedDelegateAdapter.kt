@@ -20,6 +20,11 @@ class OngoingRejectedDelegateAdapter(
     OngoingRejectedItem::class.java
 ) {
 
+    companion object {
+        private const val STATUS_ACCEPTED = "Produk Diterima"
+        private const val STATUS_REJECTED = "Produk Ditolak"
+    }
+
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemProductOngoingRejectedBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -51,10 +56,32 @@ class OngoingRejectedDelegateAdapter(
                 tpgOriginalPrice.setPrice(item)
                 tpgProductSold.setSoldCount()
                 tpgVariantStockLocation.setStock(item)
+            }
+            setRejectReason(item)
+            setStatusIcon(item)
+        }
+
+        private fun setRejectReason(item: OngoingRejectedItem) {
+            binding.run {
                 if (item.isMultiwarehouse && !item.isParentProduct) {
                     tpgRejectionReason.gone()
                 } else {
                     tpgRejectionReason.setRejectReason(item)
+                }
+            }
+        }
+
+        private fun setStatusIcon(item: OngoingRejectedItem) {
+            binding.run {
+                when(item.statusText) {
+                    STATUS_ACCEPTED -> {
+                        iconInfo.visible()
+                        iconWarning.invisible()
+                    }
+                    STATUS_REJECTED -> {
+                        iconInfo.invisible()
+                        iconWarning.visible()
+                    }
                 }
             }
         }

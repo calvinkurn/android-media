@@ -47,7 +47,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.supportLibDependencies.supportV4
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
@@ -61,9 +60,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.medialoader)
-    implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.campaignCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
@@ -95,8 +92,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
-    implementation projectOrAar(rootProject.ext.libraries.linker)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.mockitorCore
@@ -108,8 +103,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
