@@ -392,8 +392,6 @@ object CheckoutRequestMapper {
             // only add free shipping metadata if the order contains at least 1 promo logistic
             orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
         }
-        if (shopProductCheckoutRequest.needPrescription && prescriptionIds != null && prescriptionIds.isNotEmpty()) {
-            orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, prescriptionIds.toString()))
         if (shopProductCheckoutRequest.needPrescription &&
             shopProductCheckoutRequest.prescriptionIds.isNotEmpty()
         ) {
