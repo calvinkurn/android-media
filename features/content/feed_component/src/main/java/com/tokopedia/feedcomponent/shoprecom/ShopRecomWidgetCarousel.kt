@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
-import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 
 /**
  * created by fachrizalmrsln on 14/10/22

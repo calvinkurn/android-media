@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero

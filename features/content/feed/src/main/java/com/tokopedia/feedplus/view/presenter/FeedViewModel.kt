@@ -38,7 +38,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
