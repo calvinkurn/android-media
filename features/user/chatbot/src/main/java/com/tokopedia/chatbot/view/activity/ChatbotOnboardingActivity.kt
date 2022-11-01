@@ -53,7 +53,7 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
         val height = displayMetrics.heightPixels
         val givenY = intent.getIntExtra(Y_COORDINATE, DIMEN_DEFAULT)
         val ratioY: Float = (givenY.toFloat() / height.toFloat())
-        return ratioY + RATIO_CONSTANT
+        return ratioY
     }
 
     private fun setUpReplyBubbleGuideline(ratioY: Float) {
@@ -136,12 +136,17 @@ class ChatbotOnboardingActivity : BaseSimpleActivity(), OnboardingDismissListene
     override fun onDestroy() {
         super.onDestroy()
         _viewBinding = null
+        replyBubbleOnBoarding.flush()
+        videoUploadOnBoarding.flush()
     }
 
+    /**
+     * Coachmark with position as TOP shows odd behaviour of changing it's place -> therefore adding
+     * a constant value to the position if we get the coachmark by scrolling to user
+     * */
     companion object {
         private const val Y_COORDINATE = "y-coordinate"
         private const val ZERO_RATIO = 0F
         private const val DIMEN_DEFAULT = 0
-        private const val RATIO_CONSTANT = 0F
     }
 }

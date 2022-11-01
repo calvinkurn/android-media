@@ -88,7 +88,7 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl) :
     }
 
     fun getMostRecentTokopediaCareMessage(): Int {
-        var item = 0
+        var item = DEFAULT_POSITION_FOR_TKPD_CARD_BUBBLE
         visitables.forEachIndexed { index, visitable ->
             try {
                 if (visitable is SendableUiModel && convertToSenderInfo(visitable.source)?.name == TOKOPEDIA_CARE) {
@@ -167,5 +167,6 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl) :
     companion object {
         const val TOKOPEDIA_CARE = "Tokopedia Care"
         const val SENDER_INFO_PREFIX = "chatbot_"
+        const val DEFAULT_POSITION_FOR_TKPD_CARD_BUBBLE = -1
     }
 }

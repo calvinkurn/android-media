@@ -66,11 +66,6 @@ class ReplyBubbleOnBoarding @Inject constructor(
         return cacheManager.loadPreviousState(CHATBOT_REPLY_BUBBLE_ONBOARDING)
     }
 
-    //TODO revert
-    fun markAsShowedNot() {
-        cacheManager.saveState(CHATBOT_REPLY_BUBBLE_ONBOARDING, false)
-    }
-
     fun flush() {
         anchor = null
         context = null

@@ -5,12 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -272,6 +269,8 @@ class ChatbotFragment :
     private var guideline: Guideline? = null
     var xForReplyBubbleOnboarding: Int  = 0
     var yForReplyBubbleOnboarding: Int  = 0
+    var replyBubbleOnBoardingHasBeenShow: Boolean = false
+    var videoUploadOnBoardingHasBeenShow: Boolean = false
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
@@ -287,9 +286,10 @@ class ChatbotFragment :
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
         private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
         private const val DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 0
-        private const val X_COORDINATE = "x-coordinate"
         private const val Y_COORDINATE = "y-coordinate"
         private const val ZERO_POSITION = 0
+        private const val BUBBLE_NOT_FOUND = -2
+
     }
 
     override fun initInjector() {
@@ -617,6 +617,9 @@ class ChatbotFragment :
         guideline = getBindingView().composeArea.guidelineReplyBubble
         attachmentMenuRecyclerView = getBindingView().rvAttachmentMenu
 
+        replyBubbleOnBoardingHasBeenShow = replyBubbleOnBoarding.hasBeenShown()
+        videoUploadOnBoardingHasBeenShow = videoUploadOnBoarding.hasBeenShown()
+
         setUpFloatingInvoiceListeners()
 
         recyclerView = getRecyclerView(view)
@@ -646,21 +649,15 @@ class ChatbotFragment :
         }
     }
 
-    private fun goToOnboardingActivity() {
+    private fun goToOnboardingActivity(fromScroll: Boolean = false) {
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
         val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
 
-//        if (hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
-//            return
-//        }
-        if(xForReplyBubbleOnboarding ==0 && yForReplyBubbleOnboarding == 0)
+        if (hasBeenShownReplyBubbleOnboarding && hasBeenShownVideoUploadOnBoarding) {
             return
+        }
 
-        //TODO revert
-        videoUploadOnBoarding.markAsShowedNot()
-        replyBubbleOnBoarding.markAsShowedNot()
         val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
-        intent.putExtra(X_COORDINATE, xForReplyBubbleOnboarding)
         intent.putExtra(Y_COORDINATE, yForReplyBubbleOnboarding)
         startActivityForResult(intent, REQUEST_CODE_CHATBOT_ONBOARDING)
     }
@@ -911,7 +908,6 @@ class ChatbotFragment :
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
         getViewState()?.onCheckToHideQuickReply(visitable)
-        checkReplyBubbleOnboardingStatus()
     }
 
     private fun manageVideoBubble() {
@@ -1029,9 +1025,6 @@ class ChatbotFragment :
     }
 
     private fun backFromOnboardingActivity() {
-        //TODO revert this
-        videoUploadOnBoarding.markAsShowedNot()
-        replyBubbleOnBoarding.markAsShowedNot()
         smoothScrollToPosition(ZERO_POSITION)
     }
 
@@ -1710,7 +1703,8 @@ class ChatbotFragment :
     private fun setGuidelineForReplyBubble(toSet: Boolean) {
         if (toSet) {
             val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
-            params.guideBegin = context?.dpToPx(GUIDELINE_VALUE_FOR_REPLY_BUBBLE)?.toInt() ?: DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
+            params.guideBegin = context?.dpToPx(GUIDELINE_VALUE_FOR_REPLY_BUBBLE)?.toInt()
+                ?: DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
             guideline?.layoutParams = params
         } else {
             val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
@@ -1720,19 +1714,14 @@ class ChatbotFragment :
     }
 
     private fun checkReplyBubbleOnboardingStatus() {
-//        recyclerView?.doOnLayout {
-//            val location = IntArray(2)
-////            recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark())
-////                ?.getLocationOnScreen(location)
-////            xForReplyBubbleOnboarding = location[0]
-////            yForReplyBubbleOnboarding = location[1]
         if (!replyBubbleOnBoarding.hasBeenShown()) {
             val position = getPositionToAnchorReplyBubbleCoachmark()
-            Log.d("FATAL", "checkReplyBubbleOnboardingStatus: $position")
-            if (position != RecyclerView.NO_POSITION)
+            if (position == BUBBLE_NOT_FOUND) {
+                return
+            } else if (position != RecyclerView.NO_POSITION)
                 smoothScrollToPosition(position)
-//
-//        }
+        } else {
+            goToOnboardingActivity()
         }
     }
 
@@ -1761,51 +1750,54 @@ class ChatbotFragment :
         }
     }
 
-    private val handler = Handler(Looper.getMainLooper())
     private fun initRecyclerViewListener() {
         rvScrollListener = object : RecyclerViewScrollListener((recyclerView?.layoutManager as LinearLayoutManager)) {
             override fun loadMoreTop() {
                 showTopLoading()
-                presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat(), onGetChatRatingListMessageError)
+                presenter.getTopChat(
+                    messageId,
+                    onSuccessGetTopChatData(),
+                    onErrorGetTopChat(),
+                    onGetChatRatingListMessageError
+                )
             }
 
             override fun loadMoreDown() {
                 showBottomLoading()
-                presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+                presenter.getBottomChat(
+                    messageId,
+                    onSuccessGetBottomChatData(),
+                    onErrorGetBottomChat(),
+                    onGetChatRatingListMessageError
+                )
             }
 
             override fun scrollDone() {
-                if(!isConnectedToAgent)
+                if (!isConnectedToAgent)
                     return
-                if (true) {
-                    val position = getPositionToAnchorReplyBubbleCoachmark()
-                    handler.postDelayed(
-                        {
-                            val location = IntArray(2)
-                            Log.d(
-                                "EREN",
-                                "initRecyclerViewListener: ${
-                                    recyclerView?.getChildAt(position)
-                                        ?.getLocationOnScreen(location)
-                                }"
-                            )
+                if (videoUploadOnBoardingHasBeenShow && replyBubbleOnBoardingHasBeenShow)
+                    return
 
-                            Log.d(
-                                "EREN",
-                                "initRecyclerViewListener: " + location[0] + "    " + location[1]
-                            )
-                            xForReplyBubbleOnboarding = location[0]
-                            yForReplyBubbleOnboarding = location[1]
-                            goToOnboardingActivity()
-                        }, 1000L
-                    )
-
-                }
+                getPositionToShowCoachmark()
             }
 
         }.also {
             recyclerView?.addOnScrollListener(it)
         }
+    }
+
+    private fun getPositionToShowCoachmark() {
+        val position = getPositionToAnchorReplyBubbleCoachmark()
+
+        val firstPosition =
+            ((recyclerView?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition())
+        val location = IntArray(2)
+        recyclerView?.getChildAt(position - firstPosition)
+            ?.getLocationOnScreen(location)
+
+        xForReplyBubbleOnboarding = location[0]
+        yForReplyBubbleOnboarding = location[1]
+        goToOnboardingActivity(fromScroll = true)
     }
 
     private fun onErrorGetBottomChat(): (Throwable) -> Unit = {
@@ -1821,7 +1813,6 @@ class ChatbotFragment :
     }
 
     private fun hideTopLoading() {
-        Log.d("EREN", "hideTopLoading: a")
         hideLoading()
     }
 
@@ -1852,7 +1843,12 @@ class ChatbotFragment :
                     updateHasNextAfterState(chatReplies)
                 }
             } else {
-                presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
+                presenter.getExistingChat(
+                    messageId,
+                    onError(),
+                    onSuccessGetExistingChatFirstTime(),
+                    onGetChatRatingListMessageError
+                )
             }
         }
     }
@@ -1871,12 +1867,22 @@ class ChatbotFragment :
                 if (filteredList?.isNotEmpty() == true) {
                     renderBottomList(filteredList)
                 } else {
-                    presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+                    presenter.getBottomChat(
+                        messageId,
+                        onSuccessGetBottomChatData(),
+                        onErrorGetBottomChat(),
+                        onGetChatRatingListMessageError
+                    )
                 }
                 updateHasNextAfterState(chatReplies)
             } else {
                 if (rvScrollListener?.hasNextAfterPage == true) {
-                    presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+                    presenter.getBottomChat(
+                        messageId,
+                        onSuccessGetBottomChatData(),
+                        onErrorGetBottomChat(),
+                        onGetChatRatingListMessageError
+                    )
                 } else {
                     chatbotAdapter.hideBottomLoading()
                     rvScrollListener?.finishBottomLoadingState()
@@ -2012,9 +2018,10 @@ class ChatbotFragment :
     override fun sessionChangeStateHandler(state: Boolean) {
         isConnectedToAgent = state
         replyBubbleEnabled = state
-        checkReplyBubbleOnboardingStatus()
-        goToOnboardingActivity()
-        createAttachmentMenus()
+        if (state) {
+            checkReplyBubbleOnboardingStatus()
+            createAttachmentMenus()
+        }
     }
 
     override fun videoUploadEligibilityHandler(state: Boolean) {
@@ -2040,6 +2047,5 @@ class ChatbotFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
-        handler.removeCallbacksAndMessages(null)
     }
 }
