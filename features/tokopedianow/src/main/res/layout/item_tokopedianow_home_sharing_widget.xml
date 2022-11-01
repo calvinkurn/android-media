@@ -22,11 +22,12 @@
         app:srcCompat="@drawable/tokopedianow_bg_sharing_education_supergraphic_top" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_widget_sharing"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/iv_bg_image_right"
+            android:id="@+id/iv_bg_image_top_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/tokopedianow_sharing_education_background_content_description"
@@ -48,16 +49,17 @@
             android:id="@+id/tp_sharing"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/unify_space_24"
             android:layout_marginEnd="11dp"
             android:layout_marginBottom="16dp"
             android:translationZ="1dp"
+            android:layout_marginTop="@dimen/unify_space_32"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toTopOf="@+id/btn_sharing"
             app:layout_constraintStart_toStartOf="@+id/iu_close_sharing"
             app:layout_constraintEnd_toStartOf="@+id/iu_sharing"
-            app:layout_constraintTop_toTopOf="@+id/iu_sharing"
-            app:typographyType="display_3"
-            tools:text="asdasdasdasdas"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"/>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_sharing"
@@ -85,13 +87,14 @@
             app:layout_constraintEnd_toStartOf="@+id/iu_sharing" />
 
         <ImageView
-            android:id="@+id/iv_bg_image_left"
+            android:id="@+id/iv_bg_image_btm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:scaleX="2"
             android:contentDescription="@string/tokopedianow_sharing_education_background_content_description"
             android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

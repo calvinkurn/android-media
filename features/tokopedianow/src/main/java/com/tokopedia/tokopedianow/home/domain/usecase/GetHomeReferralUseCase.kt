@@ -30,8 +30,12 @@ class GetHomeReferralUseCase @Inject constructor(
                     getReferralReceiver(slug, status)
                 }
             } else {
-                HomeReferralDataModel(isEligible = false)
-            }
+                return HomeReferralDataModel(
+                    userStatus = "2",
+                    maxReward = "100",
+                    isSender = false,
+                    isEligible = true
+                )            }
         } else {
             HomeReferralDataModel(isEligible = false)
         }
@@ -75,7 +79,8 @@ class GetHomeReferralUseCase @Inject constructor(
                 userStatus = status.toString(),
                 maxReward = reward.maxReward,
                 isSender = false,
-                isEligible = true
+                isEligible = true,
+                ogDescription = gamiReferralReceiverHome.benefits.description
             )
         } else {
             throw MessageErrorException(gamiReferralReceiverHome.resultStatus.reason)
