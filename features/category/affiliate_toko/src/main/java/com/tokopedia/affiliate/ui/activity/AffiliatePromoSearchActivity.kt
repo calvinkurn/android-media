@@ -13,18 +13,17 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import javax.inject.Inject
 
 class AffiliatePromoSearchActivity : BaseViewModelActivity<AffiliatePromoViewModel>() {
-    @JvmField
     @Inject
-    var viewModelProvider: ViewModelProvider.Factory? = null
+    lateinit var viewModelProvider: ViewModelProvider.Factory
 
-    private var affiliateVM: AffiliatePromoViewModel? = null
+    private lateinit var affiliateVM: AffiliatePromoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory? {
+    override fun getVMFactory(): ViewModelProvider.Factory {
         return viewModelProvider
     }
 
