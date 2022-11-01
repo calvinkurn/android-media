@@ -15,7 +15,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
 
 class TableItemFactoryImpl(
     private val listener: TableColumnHtmlViewHolder.Listener
-) : BaseAdapterTypeFactory(), TableItemFactory {
+    ) : BaseAdapterTypeFactory(), TableItemFactory {
 
     override fun type(header: TableHeaderUiModel): Int {
         return TableHeaderColumnViewHolder.RES_LAYOUT
@@ -33,6 +33,10 @@ class TableItemFactoryImpl(
         return TableColumnHtmlViewHolder.RES_LAYOUT
     }
 
+    override fun type(column: TableRowsUiModel.RowColumnHtmlWithIcon): Int {
+        return TableColumnHtmlWithIconViewHolder.RES_LAYOUT
+    }
+
     override fun type(divider: TableItemDivider): Int = TableItemDividerViewHolder.RES_LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -41,6 +45,7 @@ class TableItemFactoryImpl(
             TableColumnTextViewHolder.RES_LAYOUT -> TableColumnTextViewHolder(parent)
             TableColumnImageViewHolder.RES_LAYOUT -> TableColumnImageViewHolder(parent)
             TableColumnHtmlViewHolder.RES_LAYOUT -> TableColumnHtmlViewHolder(parent, listener)
+            TableColumnHtmlWithIconViewHolder.RES_LAYOUT -> TableColumnHtmlWithIconViewHolder(parent, listener)
             TableItemDividerViewHolder.RES_LAYOUT -> TableItemDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

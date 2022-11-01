@@ -7,6 +7,7 @@ import com.tokopedia.csat_rating.R
 import com.tokopedia.csat_rating.quickfilter.ItemFilterViewHolder
 import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
 import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterListener
+import com.tokopedia.abstraction.R as RAbstraction
 
 open class OptionItemViewHolder(itemView: View, listener: QuickSingleFilterListener?) : ItemFilterViewHolder(itemView, listener) {
 

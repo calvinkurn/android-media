@@ -1,6 +1,9 @@
 package com.tokopedia.play.domain.repository
 
+import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.view.storage.PlayChannelData
+import com.tokopedia.play.view.type.PlaySource
+import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -12,6 +15,16 @@ interface PlayViewerChannelRepository {
     fun setChannelData(data: PlayChannelData)
 
     suspend fun getChannelStatus(channelId: String): PlayChannelStatus
+
+    suspend fun getChannelList(
+        key: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey,
+        extraParams: PlayChannelDetailsWithRecomMapper.ExtraParams,
+    ): ChannelListResponse
+
+    data class ChannelListResponse(
+        val channelData: List<PlayChannelData>,
+        val cursor: String,
+    )
 
     suspend fun getChatHistory(
         channelId: String,

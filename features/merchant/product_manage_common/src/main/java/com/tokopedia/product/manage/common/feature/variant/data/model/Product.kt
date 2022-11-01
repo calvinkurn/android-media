@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
-data class Product (
+data class Product(
     @Expose
     @SerializedName("productID")
     val productID: String,
@@ -39,5 +39,17 @@ data class Product (
     val pictures: List<Picture>,
     @Expose
     @SerializedName("campaign_types")
-    val campaignTypeList: List<CampaignType>? = listOf()
+    val campaignTypeList: List<CampaignType>? = listOf(),
+    @Expose
+    @SerializedName("notifymeCount")
+    val notifymeCount: Int,
+    @Expose
+    @SerializedName("isEmptyStock")
+    val isEmptyStock: Boolean,
+    @Expose
+    @SerializedName("hasStockAlert")
+    val hasStockAlert: Boolean,
+    @Expose
+    @SerializedName("isBelowStockAlert")
+    val isBelowStockAlert: Boolean,
 )

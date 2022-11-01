@@ -52,7 +52,7 @@ class FeedPlusTopAdsShopTestCase {
                 sendTopAdsUseCase = sendTopAdsUseCase,
                 playWidgetTools = mockk(),
                 getDynamicFeedNewUseCase = mockk(),
-                getWhitelistNewUseCase = mockk(),
+                getWhiteListNewUseCase = mockk(),
                 sendReportUseCase = mockk(),
                 addToWishlistV2UseCase = mockk(),
                 trackVisitChannelBroadcasterUseCase = mockk(),
