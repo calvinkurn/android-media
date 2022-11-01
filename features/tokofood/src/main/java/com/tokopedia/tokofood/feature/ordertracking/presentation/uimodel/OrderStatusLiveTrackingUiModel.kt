@@ -7,5 +7,4 @@ data class OrderStatusLiveTrackingUiModel(
     val estimationUiModel: OrderTrackingEstimationUiModel? = null,
     val invoiceOrderNumberUiModel: InvoiceOrderNumberUiModel? = null,
     val toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
-    val driverSectionUiModel: DriverSectionUiModel? = null
 )
