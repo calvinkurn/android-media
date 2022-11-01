@@ -54,8 +54,8 @@ import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_REPLY_BOX_TOGGLE
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_SMALL_REPLY_BOX
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
@@ -288,7 +288,7 @@ class ChatbotPresenter @Inject constructor(
                         handleSessionChange(agentMode)
                     }
 
-                    if (attachmentType == TYPE_REPLY_BOX_TOGGLE) {
+                    if (attachmentType == DYNAMIC_ATTACHMENT) {
                         handleReplyBoxWSToggle()
                     }
 

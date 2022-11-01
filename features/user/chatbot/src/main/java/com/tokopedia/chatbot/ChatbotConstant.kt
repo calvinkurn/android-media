@@ -51,9 +51,10 @@ object ChatbotConstant {
     }
 
     object ReplyBoxType {
-        const val TYPE_REPLY_BOX_TOGGLE = "34"
+        const val DYNAMIC_ATTACHMENT = "34"
         const val TYPE_BIG_REPLY_BOX = 100
         const val TYPE_SMALL_REPLY_BOX = 101
+        val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(TYPE_BIG_REPLY_BOX, TYPE_SMALL_REPLY_BOX)
     }
 
     object ChatbotUnification{

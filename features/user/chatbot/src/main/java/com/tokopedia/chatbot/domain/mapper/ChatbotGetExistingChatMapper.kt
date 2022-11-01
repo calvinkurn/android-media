@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.domain.mapper
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
@@ -7,11 +8,13 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
@@ -39,6 +42,7 @@ import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyPojo
+import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
 import javax.inject.Inject
 
 /**
@@ -72,8 +76,35 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
+            DYNAMIC_ATTACHMENT -> {
+                val dynamicAttachmentContents =
+                    Gson().fromJson(chatItemPojoByDateByTime.attachment.attributes, DynamicAttachment::class.java)
+
+                val replyBoxAttribute =
+                    dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+//                if (!(replyBoxAttribute?.contentCode == 100 || replyBoxAttribute?.contentCode == 101)) {
+//                    convertToFallBackModel(chatItemPojoByDateByTime)
+//                } else {
+//                    super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
+//                }
+
+                convertToFallBackModel(chatItemPojoByDateByTime)
+            }
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
+    }
+
+    private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        var fallbackMessage = ""
+        chatItemPojoByDateByTime.attachment?.fallback?.let {
+            fallbackMessage = it.message
+        }
+        return FallbackAttachmentUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withMsg(fallbackMessage)
+            .withAttachment(chatItemPojoByDateByTime.attachment)
+            .build()
     }
 
     private fun convertToInvoiceSentUiModel(pojo: Reply, attachmentIds: List<String>): AttachInvoiceSentUiModel {

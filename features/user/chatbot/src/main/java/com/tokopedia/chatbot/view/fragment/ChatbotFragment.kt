@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -41,6 +43,7 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.Attachment
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
@@ -68,6 +71,8 @@ import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_VIDEO
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.ALLOWED_DYNAMIC_ATTACHMENT_TYPE
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.ChatbotConstant.VIDEO_URL
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_DURATION_FOR_VIDEO
@@ -104,6 +109,7 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
+import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
@@ -1749,11 +1755,44 @@ class ChatbotFragment :
         return chatroom.listChat.filter {
             !(
                 (it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                    (it is MessageUiModel && it.message.isEmpty())
+                    (it is MessageUiModel && it.message.isEmpty()) || checkForDynamicAttachment(it)
                 )
         }
     }
 
+    private fun checkForDynamicAttachment(visitable: Visitable<*>): Boolean {
+        if (visitable !is FallbackAttachmentUiModel) {
+            return false
+        }
+        if (visitable.attachmentType != DYNAMIC_ATTACHMENT)
+            return false
+
+        if(visitable.attachment is Attachment) {
+            val attachment = visitable.attachment as Attachment
+
+            try {
+                val dynamicAttachmentContents =
+                    Gson().fromJson(attachment.attributes, DynamicAttachment::class.java)
+
+                val replyBoxAttribute =
+                    dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+                if(!checkDynamicAttachmentValidility(replyBoxAttribute?.contentCode))
+                    return false
+
+            } catch (e : JsonSyntaxException) {
+                return true
+            }
+        }
+
+        return true
+    }
+
+    private fun checkDynamicAttachmentValidility(contentCode : Int?) : Boolean {
+        if(contentCode == null)
+            return false
+        return ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
+    }
 
     private fun onSuccessGetTopChatData(replyTime: String = "", fromOnClick: Boolean = false): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroom, chatReplies ->
