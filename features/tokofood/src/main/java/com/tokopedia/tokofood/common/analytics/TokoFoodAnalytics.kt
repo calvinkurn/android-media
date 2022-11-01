@@ -21,6 +21,7 @@ object TokoFoodAnalytics {
     const val EVENT_BEGIN_CHECKOUT = "begin_checkout"
     const val EVENT_VIEW_PG_IRIS = "viewPGIris"
     const val EVENT_VIEW_ITEM = "view_item"
+    const val EVENT_SELECT_CONTENT = "select_content"
 
     // Event Action
     const val EVENT_ACTION_VIEW_CHECKOUT = "view tokofood checkout"

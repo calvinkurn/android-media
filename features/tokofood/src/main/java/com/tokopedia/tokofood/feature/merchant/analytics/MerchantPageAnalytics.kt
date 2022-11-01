@@ -419,7 +419,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             putParcelableArrayList(TokoFoodAnalyticsConstants.KEY_EE_PROMOTIONS, promotionBundleList)
         }
 
-        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_VIEW_ITEM, eventDataLayer)
+        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_SELECT_CONTENT, eventDataLayer)
     }
 
     private fun getItemsBundle(
