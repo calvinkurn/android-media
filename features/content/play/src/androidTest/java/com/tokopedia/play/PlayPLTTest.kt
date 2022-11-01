@@ -83,7 +83,7 @@ class PlayPLTTest {
     fun setup() {
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext, mockChannelStorage))
+                .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
                 .playTestRepositoryModule(PlayTestRepositoryModule(repo))
                 .build()

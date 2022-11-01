@@ -11,8 +11,6 @@ interface PlayViewerChannelRepository {
 
     fun getChannelData(channelId: String): PlayChannelData?
 
-    fun setChannelData(data: PlayChannelData)
-
     suspend fun getChannelStatus(channelId: String): PlayChannelStatus
 
     suspend fun getChannels(

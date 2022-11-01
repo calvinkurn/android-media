@@ -8,10 +8,10 @@ import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
-import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.type.VideoOrientation
@@ -46,8 +46,8 @@ class PlayPinnedProductUiTest {
     private val channelId = "12669"
 
     init {
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = listOf(
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = listOf(
                 uiModelBuilder.buildChannelData(
                     id = channelId,
                     tagItems = uiModelBuilder.buildTagItem(

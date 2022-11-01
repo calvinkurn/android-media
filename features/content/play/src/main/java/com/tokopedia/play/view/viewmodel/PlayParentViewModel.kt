@@ -139,7 +139,7 @@ class PlayParentViewModel @AssistedInject constructor(
                 mNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor(response.cursor)
 
                 response.channelList.forEach {
-                    repo.setChannelData(it)
+                    playChannelStateStorage.setData(it.id, it)
                 }
             }
 

@@ -33,10 +33,6 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
         return channelStorage.getData(channelId)
     }
 
-    override fun setChannelData(data: PlayChannelData) {
-        channelStorage.setData(data.id, data)
-    }
-
     override suspend fun getChannelStatus(channelId: String) = withContext(dispatchers.io) {
         val response = getChannelStatusUseCase.apply {
             setRequestParams(GetChannelStatusUseCase.createParams(arrayOf(channelId)))
