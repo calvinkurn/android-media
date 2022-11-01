@@ -114,17 +114,17 @@ class DriverSectionViewHolder(
         icDriverChat.run {
             if (isShowDriverChat()) {
                 if (badgeCounter.isZero() || badgeCounter.isLessThanZero()) {
+                    notificationRef.hide()
+                } else {
                     notificationRef.show()
 
                     notificationRef.setNotification(
                         notif = badgeCounter.toString(),
-                        notificationType = NotificationUnify.NONE_TYPE,
+                        notificationType = NotificationUnify.COUNTER_TYPE,
                         colorType = NotificationUnify.COLOR_PRIMARY
                     )
 
                     notificationGravity = Gravity.TOP or Gravity.END
-                } else {
-                    notificationRef.hide()
                 }
 
                 var (isClickableCall, chatIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
