@@ -878,7 +878,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat).map {
-                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && (_interactive.value as? InteractiveUiModel.Quiz)?.status is InteractiveUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && (_interactive.value as? GameUiModel.Quiz)?.status is GameUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
                 else it
             }
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
@@ -890,8 +890,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val endTimeInteractive: Calendar? get() {
         return when (val interactive = _interactive.value){
-            is InteractiveUiModel.Quiz -> return when (val status = interactive.status){
-                is InteractiveUiModel.Quiz.Status.Ongoing -> {
+            is GameUiModel.Quiz -> return when (val status = interactive.status){
+                is GameUiModel.Quiz.Status.Ongoing -> {
                     status.endTime
                 }
                 else -> null
