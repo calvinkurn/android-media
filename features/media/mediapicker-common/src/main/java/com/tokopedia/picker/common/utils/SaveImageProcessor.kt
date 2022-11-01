@@ -89,7 +89,7 @@ object SaveImageProcessor {
             }
 
             return resultFile
-        } catch (e: Exception){
+        } catch (e: Exception) {
             return null
         }
     }
