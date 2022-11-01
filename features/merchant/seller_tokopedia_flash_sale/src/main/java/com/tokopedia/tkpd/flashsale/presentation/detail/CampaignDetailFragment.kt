@@ -62,7 +62,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val APPLINK_SEGMENTS_SIZE = 2
         private const val DELAY = 1500L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
-            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped_new.png"
         private const val IMAGE_PRODUCT_INELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/surprised_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
