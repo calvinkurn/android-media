@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
@@ -94,9 +95,13 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         intent.putExtra(MESSAGE_ID, mMessageId);
         intent.putExtra(NOTIFICATION_ID, notificationId);
         intent.putExtra(USER_ID, userSession.getUserId());
-
-        return PendingIntent.getBroadcast(context, notificationId, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return PendingIntent.getBroadcast(context, notificationId, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+        } else {
+            return PendingIntent.getBroadcast(context, notificationId, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
     }
 
     private String getMessageId(String appLinks) {

@@ -16,7 +16,8 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".stub.view.activity.HomeAccountUserActivityStub"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -20,13 +20,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
-import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
 import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
-import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
@@ -61,6 +62,7 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
+import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
@@ -219,8 +221,8 @@ class UserProfileFragment @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when(childFragment) {
-            is FeedUGCOnboardingParentFragment -> {
-                childFragment.setListener(object : FeedUGCOnboardingParentFragment.Listener {
+            is UGCOnboardingParentFragment -> {
+                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
                         submitAction(UserProfileAction.LoadProfile())
                         goToCreatePostPage()
@@ -249,6 +251,9 @@ class UserProfileFragment @Inject constructor(
                             viewModel.profileUserID
                         )
                     }
+
+                    override fun clickCloseIcon() {}
+
                 })
             }
         }
@@ -291,10 +296,14 @@ class UserProfileFragment @Inject constructor(
                 userProfileTracker.clickCreatePost(viewModel.profileUserID)
                 if(viewModel.needOnboarding) {
                     val bundle = Bundle().apply {
-                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
+                        putInt(
+                            UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
+                            if (viewModel.profileUsername.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETE
+                            else VALUE_ONBOARDING_TYPE_TNC
+                        )
                     }
                     childFragmentManager.beginTransaction()
-                        .add(FeedUGCOnboardingParentFragment::class.java, bundle, FeedUGCOnboardingParentFragment.TAG)
+                        .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
                         .commit()
                 }
                 else {
@@ -916,7 +925,7 @@ class UserProfileFragment @Inject constructor(
         private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
         private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
         private const val KEY_IS_OPEN_FROM = "key_is_open_from"
-        private const val VALUE_IS_OPEN_FROM_USER_PROFILE = 11023
+        private const val VALUE_IS_OPEN_FROM_USER_PROFILE = "is_open_from_user_profile"
 
         private const val TAG = "UserProfileFragment"
 

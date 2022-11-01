@@ -42,14 +42,14 @@ internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig()
         )
 
         addMockResponse(
-                KEY_CONTAINS_SLIDE,
-                getRawString(context, R.raw.response_error_mock_data_slider_banner),
-                FIND_BY_CONTAINS
+            KEY_CONTAINS_SLIDE,
+            getRawString(context, R.raw.response_error_mock_data_slider_banner),
+            FIND_BY_CONTAINS
         )
 
         addMockResponse(
-            KEY_CONTAINS_SLIDE,
-            getRawString(context, R.raw.response_error_mock_data_slider_banner),
+            KEY_CONTAINS_HOME_BANNER_V2,
+            getRawString(context, R.raw.response_error_mock_data_slider_banner_v2),
             FIND_BY_CONTAINS
         )
 
