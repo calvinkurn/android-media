@@ -83,9 +83,12 @@ import javax.inject.Inject
 /**
  * Created by kris on 3/9/17. Tokopedia
  */
-class TopPayActivity : AppCompatActivity(), TopPayContract.View,
-        FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister,
-        FilePickerInterface {
+class TopPayActivity :
+    AppCompatActivity(),
+    TopPayContract.View,
+    FingerPrintDialogPayment.ListenerPayment,
+    FingerprintDialogRegister.ListenerRegister,
+    FilePickerInterface {
 
     @Inject
     lateinit var presenter: TopPayPresenter
@@ -156,11 +159,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private fun initInjector() {
         DaggerFingerprintComponent
-                .builder()
-                .fingerprintModule(FingerprintModule())
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .builder()
+            .fingerprintModule(FingerprintModule())
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
         presenter.attachView(this)
     }
 
@@ -182,18 +185,25 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             val currentTransactionId = paymentPassData?.transactionId ?: ""
             tvTitle?.contentDescription = getString(R.string.toppay_title_content_desc, currentTransactionId)
         } catch (e: Exception) {
-            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
-                mapOf("type" to "exception",
+            ServerLogger.log(
+                Priority.P1,
+                "WEBVIEW_ERROR",
+                mapOf(
+                    "type" to "exception",
                     "err" to Log.getStackTraceString(e).take(LOG_TIMEOUT),
-                    "data" to ""))
+                    "data" to ""
+                )
+            )
             finish()
         }
     }
 
     private fun initVar() {
-        webChromeWebviewClient = if (isPaymentJSLoggingEnabled())
-                PaymentLoggingClient(this, progressBar)
-        else CommonWebViewClient(this, progressBar)
+        webChromeWebviewClient = if (isPaymentJSLoggingEnabled()) {
+            PaymentLoggingClient(this, progressBar)
+        } else {
+            CommonWebViewClient(this, progressBar)
+        }
     }
 
     private fun isPaymentJSLoggingEnabled(): Boolean {
@@ -348,8 +358,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     override fun showProgressDialog() {
-        if (!isFinishing)
+        if (!isFinishing) {
             progressDialog?.show()
+        }
     }
 
     override fun onGoToOtpPage(transactionId: String, urlOtp: String) {
@@ -436,16 +447,17 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             webChromeWebviewClient?.onActivityResult(requestCode, resultCode, intent)
         } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == Activity.RESULT_OK) {
             val redirectionUrl = intent?.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL) ?: ""
-            if (redirectionUrl.isNotEmpty())
+            if (redirectionUrl.isNotEmpty()) {
                 scroogeWebView?.loadUrl(redirectionUrl)
+            }
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imagePath = intent?.getStringExtra(HCI_KTP_IMAGE_PATH)
             sendKycImagePathToLite(imagePath)
-        } else if(requestCode == REQUEST_CODE_LINK_ACCOUNT) {
+        } else if (requestCode == REQUEST_CODE_LINK_ACCOUNT) {
             hideProgressDialog()
-            if(resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 val status = intent?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
-                if(status.isNotEmpty()) {
+                if (status.isNotEmpty()) {
                     handleStatusMatching(status)
                 }
                 reloadPayment()
@@ -453,8 +465,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 hideFullLoading()
             }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GOPAY_TOP_UP) {
-            if (reloadUrl.contains(getBaseUrlDomainPayment()))
+            if (reloadUrl.contains(getBaseUrlDomainPayment())) {
                 reloadPayment()
+            }
         }
     }
 
@@ -479,7 +492,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private fun handleStatusMatching(status: String) {
         val message = LinkStatusMatcher.getStatus(status)
-        if(message.isNotEmpty()) {
+        if (message.isNotEmpty()) {
             showToaster(message, Toaster.TYPE_NORMAL)
         }
     }
@@ -489,7 +502,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             Toaster.build(this, message, Toaster.LENGTH_LONG, type).show()
         }
     }
-
 
     private fun reloadPayment() {
         // scroogeWebView?.reload() doesn't work
@@ -535,7 +547,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
         }
-        
+
         fun goToAlaCarteKyc(uri: Uri) {
             val projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID) ?: ""
             val kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL) ?: ""
@@ -552,7 +564,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 }
                 // fingerprint
                 if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
-                        getEnableFingerprintPayment()) {
+                    getEnableFingerprintPayment()
+                ) {
                     showFingerprintDialogRegister(url)
                     return true
                 }
@@ -563,9 +576,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
 
-                if(url.isNotEmpty() && url.startsWith(ApplinkConst.LINK_ACCOUNT)){
-                        gotoLinkAccount()
-                        return true
+                if (url.isNotEmpty() && url.startsWith(ApplinkConst.LINK_ACCOUNT)) {
+                    gotoLinkAccount()
+                    return true
                 }
 
                 // success payment
@@ -582,6 +595,15 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     view?.stopLoading()
                     callbackPaymentFailed()
                     return true
+                }
+
+                // cc loading
+                if (url.contains(CC_LOADING_URL)) {
+                    showFullLoading()
+                }
+
+                if (url.contains(CC_LOADING_COMPLETE)) {
+                    hideFullLoading()
                 }
 
                 if (url.contains(ACCOUNTS_URL)) {
@@ -634,7 +656,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     }
                     return true
                 }
-                //applink for link aja...
+                // applink for link aja...
                 if (isLinkAjaAppLink(url)) {
                     redirectToLinkAjaApp(url)
                     return true
@@ -642,8 +664,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
                 val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
 
-                if(urlFinal.isNotEmpty() && urlFinal.contains(LINK_ATOM_GOPAY))
-                {
+                if (urlFinal.isNotEmpty() && urlFinal.contains(LINK_ATOM_GOPAY)) {
                     view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPaymentWithoutAuth(urlFinal))
                     return true
                 }
@@ -667,10 +688,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             if (uri != null) {
                 val uriString = uri.toString()
                 if ((uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) || uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS)) &&
-                        isInterceptOtp && uri.getQueryParameter(PaymentFingerprintConstant.ENABLE_FINGERPRINT).equals("true", true) &&
-                        getEnableFingerprintPayment()) {
-                    fingerPrintDialogPayment = FingerPrintDialogPayment.createInstance(presenter.userId, uriString,
-                            uri.getQueryParameter(PaymentFingerprintConstant.TRANSACTION_ID))
+                    isInterceptOtp && uri.getQueryParameter(PaymentFingerprintConstant.ENABLE_FINGERPRINT).equals("true", true) &&
+                    getEnableFingerprintPayment()
+                ) {
+                    fingerPrintDialogPayment = FingerPrintDialogPayment.createInstance(
+                        presenter.userId,
+                        uriString,
+                        uri.getQueryParameter(PaymentFingerprintConstant.TRANSACTION_ID)
+                    )
                     fingerPrintDialogPayment?.apply {
                         setListenerPayment(this@TopPayActivity)
                         context = this@TopPayActivity
@@ -698,15 +723,22 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         @TargetApi(Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
-            if(isMainPaymentPageTimeOut(request?.url,
-                error?.errorCode?:0)){
+            if (isMainPaymentPageTimeOut(
+                    request?.url,
+                    error?.errorCode ?: 0
+                )
+            ) {
                 handleMainPaymentPageTimeOut(request, error)
             } else {
-                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
-                    mapOf("type" to request?.url.toString(),
-                            "error_code" to error?.errorCode.toString(),
-                            "desc" to error?.description?.toString().orEmpty()
-                    ))
+                ServerLogger.log(
+                    Priority.P1,
+                    "WEBVIEW_ERROR",
+                    mapOf(
+                        "type" to request?.url.toString(),
+                        "error_code" to error?.errorCode.toString(),
+                        "desc" to error?.description?.toString().orEmpty()
+                    )
+                )
             }
         }
 
@@ -719,20 +751,20 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         private fun timerObservable(view: WebView) {
             presenter.addTimeoutSubscription(
-                    Observable.timer(FORCE_TIMEOUT, TimeUnit.MILLISECONDS)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(object : Subscriber<Long>() {
-                                override fun onCompleted() {}
+                Observable.timer(FORCE_TIMEOUT, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Subscriber<Long>() {
+                        override fun onCompleted() {}
 
-                                override fun onError(e: Throwable) {}
+                        override fun onError(e: Throwable) {}
 
-                                override fun onNext(aLong: Long) {
-                                    if (!isUnsubscribed) {
-                                        showErrorTimeout(view)
-                                    }
-                                }
-                            })
+                        override fun onNext(aLong: Long) {
+                            if (!isUnsubscribed) {
+                                showErrorTimeout(view)
+                            }
+                        }
+                    })
             )
         }
 
@@ -745,9 +777,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     @TargetApi(Build.VERSION_CODES.M)
     private fun handleMainPaymentPageTimeOut(request: WebResourceRequest?, error: WebResourceError?) {
         isPaymentPageLoadingTimeout = true
-        paymentPageTimeOutLogging.logCurrentPaymentPageTimeOut(request?.url.toString(),
+        paymentPageTimeOutLogging.logCurrentPaymentPageTimeOut(
+            request?.url.toString(),
             error?.errorCode.toString(),
-            error?.description?.toString().orEmpty())
+            error?.description?.toString().orEmpty()
+        )
         closePaymentPageOnTimeOut()
     }
 
@@ -767,8 +801,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private fun logPaymentPageSuccessAfterTimeOut(url: String?) {
         url?.let {
-            if (!isPaymentPageLoadingTimeout
-                    && url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment")) {
+            if (!isPaymentPageLoadingTimeout &&
+                url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment")
+            ) {
                 paymentPageTimeOutLogging.logPaymentPageSuccessAfterTimeOut(url)
             }
         }
@@ -793,25 +828,26 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         if (!originUri.isOpaque) {
             if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_FLAG_APP))) {
                 uriBuilder.appendQueryParameter(
-                        WEBVIEW_FLAG_PARAM_FLAG_APP,
-                        DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+                    WEBVIEW_FLAG_PARAM_FLAG_APP,
+                    DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
                 )
             }
             if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_DEVICE))) {
                 uriBuilder.appendQueryParameter(
-                        WEBVIEW_FLAG_PARAM_DEVICE,
-                        DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+                    WEBVIEW_FLAG_PARAM_DEVICE,
+                    DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
                 )
             }
             if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
                 uriBuilder.appendQueryParameter(
-                        WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                        DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+                    WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                    DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
                 )
             }
             if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_APP_VERSION))) {
                 uriBuilder.appendQueryParameter(
-                        WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+                    WEBVIEW_FLAG_PARAM_APP_VERSION,
+                    GlobalConfig.VERSION_NAME
                 )
             }
         }
@@ -876,7 +912,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         const val CHARSET_UTF_8 = "UTF-8"
 
         const val HCI_CAMERA_REQUEST_CODE = 978
-        private const val REQUEST_CODE_LIVENESS = 1235;
+        private const val REQUEST_CODE_LIVENESS = 1235
         const val FORCE_TIMEOUT = 90000L
 
         const val LOG_TIMEOUT = 1000
@@ -886,6 +922,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
         private const val LINK_ATOM_GOPAY = "afi.gopaylater.co.id"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"
+        private const val CC_LOADING_URL = "https://centinelapi.cardinalcommerce.com/V1/Cruise/Collect"
+        private const val CC_LOADING_COMPLETE = "https://centinelapi.cardinalcommerce.com/V1/Cruise/CollectRedirect"
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
