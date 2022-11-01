@@ -58,9 +58,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         intent?.data?.let {
-            projectId = it.getQueryParameter(
-                PARAM_PROJECT_ID
-            )?.toIntOrZero() ?: KycStatus.DEFAULT.code
+            projectId = it.getQueryParameter(PARAM_PROJECT_ID)?.toIntOrZero() ?: KycStatus.DEFAULT.code
             kycType = it.getQueryParameter(PARAM_KYC_TYPE).orEmpty()
             intent.putExtra(PARAM_PROJECT_ID, projectId)
         }
@@ -96,9 +94,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
 
     override fun getListFragment(): List<Fragment> {
         return if (projectId == KycStatus.DEFAULT.code) {
-            val notFoundList = ArrayList<Fragment>()
-            notFoundList.add(NotFoundFragment.createInstance())
-            notFoundList
+           listOf(NotFoundFragment.createInstance())
         } else {
             if (fragmentList.isEmpty()) {
                 fragmentList.add(UserIdentificationFormKtpFragment.createInstance(kycType))
@@ -133,7 +129,10 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
                 }
             }
 
-            fragmentList[actualPosition] = fragment
+            if (fragmentList.isNotEmpty()) {
+                fragmentList[actualPosition] = fragment
+            }
+
             val stepperBundle = Bundle().apply {
                 putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
             }
