@@ -383,8 +383,8 @@ class ProductSheetViewComponent(
 
     private fun sendImpression() = synchronized(impressionSet) {
         val products = getVisibleProducts()
-        val productsToBeImpressed = products.filter {
-            !impressionSet.contains(it.product.id)
+        val productsToBeImpressed = products.filterNot {
+            impressionSet.contains(it.product.id)
         }
         listener.onProductImpressed(this, productsToBeImpressed)
         productsToBeImpressed.forEach {
