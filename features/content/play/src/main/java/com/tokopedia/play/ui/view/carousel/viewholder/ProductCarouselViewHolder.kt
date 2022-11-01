@@ -61,18 +61,20 @@ class ProductCarouselViewHolder private constructor() {
         }
 
         private fun UnifyButton.configButton(button: ProductButtonUiModel){
-            //Setup Text
-            text = button.text
-
             //Setup Icon if any, for now its only for ATC
             val iconType = if(button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON)
                 iconCartDisabled
             else iconCartEnabled
 
             when (button.type) {
-                ProductButtonType.ATC -> setDrawable(iconType , UnifyButton.DrawablePosition.RIGHT)
+                ProductButtonType.ATC -> {
+                    text = "+"
+                    setDrawable(iconType, UnifyButton.DrawablePosition.RIGHT)
+                }
+                else -> {
+                    text = button.text
+                }
             }
-
             generateButton(button.color)
         }
 
@@ -88,8 +90,8 @@ class ProductCarouselViewHolder private constructor() {
              */
             binding.btnFirst.showWithCondition(item.buttons.isNotEmpty())
             binding.btnSecond.showWithCondition(item.buttons.isNotEmpty())
-            binding.btnFirst.configButton(item.buttons.find { it.type == ProductButtonType.ATC }.orDefault())
-            binding.btnFirst.configButton(item.buttons.find { it.type != ProductButtonType.ATC }.orDefault())
+            binding.btnFirst.configButton(item.buttons.firstOrNull { it.type == ProductButtonType.ATC }.orDefault())
+            binding.btnSecond.configButton(item.buttons.firstOrNull { it.type != ProductButtonType.ATC }.orDefault())
 
             when (item.price) {
                 is DiscountedPrice -> {
