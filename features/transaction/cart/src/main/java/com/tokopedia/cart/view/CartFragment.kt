@@ -1401,6 +1401,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         cartPageAnalytics.eventClickAddOnsWidget(productId)
     }
 
+    override fun onClickEpharmacyInfoCart() {
+
+    }
+
     override fun addOnImpression(productId: String) {
         cartPageAnalytics.eventViewAddOnsWidget(productId)
     }

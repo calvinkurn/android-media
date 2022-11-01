@@ -409,19 +409,24 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderAddOnInfo(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.addOnText.isNotEmpty()) {
-            // todo priority gifting
             binding.addonInfoWidgetLayout.root.visible()
             binding.addonInfoWidgetLayout.descAddonInfo.text = cartShopHolderData.addOnText
             binding.addonInfoWidgetLayout.ivAddonLeft.loadImage(cartShopHolderData.addOnImgUrl)
             binding.addonInfoWidgetLayout.root.setOnClickListener {
-                actionListener.onClickAddOnCart(
-                    cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "",
-                    cartShopHolderData.addOnId
+                if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {
+                    actionListener.onClickAddOnCart(
+                        cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "",
+                        cartShopHolderData.addOnId
+                    )
+                } else if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_EPHARMACY) {
+                    actionListener.onClickEpharmacyInfoCart()
+                }
+            }
+            if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {
+                actionListener.addOnImpression(
+                    cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: ""
                 )
             }
-            actionListener.addOnImpression(
-                cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: ""
-            )
         } else {
             binding.addonInfoWidgetLayout.root.gone()
         }
