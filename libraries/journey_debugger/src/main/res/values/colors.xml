@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="journeydebugger_dms_web_socket_chip_checked">#1AAC0E</color>
+    <color name="journeydebugger_dms_web_socket_chip_unchecked">#C9C9C9</color>
+    <color name="journeydebugger_dms_black_55">#8C000000</color>
+    <color name="journeydebugger_dms_black_36">#5b000000</color>
+    <color name="journeydebugger_dms_black_05">#0D000000</color>
+
+</resources>
