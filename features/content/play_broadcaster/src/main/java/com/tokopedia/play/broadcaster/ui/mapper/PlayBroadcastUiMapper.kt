@@ -54,43 +54,6 @@ class PlayBroadcastUiMapper @Inject constructor(
     private val uriParser: UriParser,
 ) : PlayBroadcastMapper {
 
-    override fun mapSearchSuggestionList(
-        keyword: String,
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData
-    ) = productsResponse.data.map {
-        val fullSuggestedText = it.name
-        val startIndex = fullSuggestedText.indexOf(keyword)
-        val lastIndex = startIndex + keyword.length
-
-        SearchSuggestionUiModel(
-            queriedText = keyword,
-            suggestedId = it.id,
-            suggestedText = it.name,
-            spannedSuggestion = SpannableStringBuilder(fullSuggestedText).apply {
-                if (startIndex >= 0) setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    startIndex,
-                    lastIndex,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-            }
-        )
-    }
-
-    override fun mapLiveFollowers(
-        response: GetLiveFollowersResponse
-    ): FollowerDataUiModel {
-        val totalRetrievedFollowers = response.shopFollowerList.data.size
-        return FollowerDataUiModel(
-            followersList = List(TOTAL_FOLLOWERS) {
-                if (it >= totalRetrievedFollowers) FollowerUiModel.Unknown.fromIndex(it)
-                else FollowerUiModel.User(response.shopFollowerList.data[it].photo)
-            },
-            totalFollowers = response.shopInfoById.result.firstOrNull()?.favoriteData?.totalFavorite
-                ?: 0
-        )
-    }
-
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
         LiveStreamInfoUiModel(
             ingestUrl = media.ingestUrl,

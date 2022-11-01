@@ -32,15 +32,6 @@ import java.util.Calendar
  */
 interface PlayBroadcastMapper {
 
-    fun mapSearchSuggestionList(
-        keyword: String,
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData
-    ): List<SearchSuggestionUiModel>
-
-    fun mapLiveFollowers(
-        response: GetLiveFollowersResponse
-    ): FollowerDataUiModel
-
     fun mapLiveStream(
         channelId: String,
         media: CreateLiveStreamChannelResponse.GetMedia
