@@ -134,7 +134,7 @@ class DriverSectionViewHolder(
 
                 val drawable = getIconUnifyDrawable(
                     context = context,
-                    iconId = IconUnify.CALL,
+                    iconId = IconUnify.CHAT,
                     assetColor = chatIconColor
                 )
 
