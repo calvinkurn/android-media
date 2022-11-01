@@ -4,7 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
+import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
@@ -175,8 +175,8 @@ object SearchTracking {
                 "dimension81", SearchCategoryTrackingConst.Misc.TOKO_NOW,
                 "dimension96", boosterList,
                 "id", id,
-                "name", name,
-                "price", priceInt,
+                "name", productCardModel.name,
+                "price", productCardModel.price.getDigits(),
                 "variant", SearchCategoryTrackingConst.Misc.NONE_OTHER,
         )
     }

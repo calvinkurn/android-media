@@ -43,6 +43,13 @@ object ProductItemMapper {
         cartService: CartService
     ): ProductItemDataView = ProductItemDataView(
         id = product.id,
+        parentId = product.parentId,
+        boosterList = product.boosterList,
+        sourceEngine = product.sourceEngine,
+        shop = ProductItemDataView.Shop(
+            id = product.shop.id,
+            name = product.shop.name,
+        ),
         position = index + ADDITIONAL_POSITION,
         productCardModel = mapAceSearchProductToProductCard(
             product = product,

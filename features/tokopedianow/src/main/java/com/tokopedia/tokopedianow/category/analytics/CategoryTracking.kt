@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.ADD_QUANTITY_ON_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_APPLY_FILTER
@@ -307,8 +308,8 @@ object CategoryTracking {
                 "brand", NONE_OTHER,
                 "category", NONE_OTHER,
                 "id", id,
-                "name", name,
-                "price", priceInt,
+                "name", productCardModel.name,
+                "price", productCardModel.price.getDigits(),
                 "variant", NONE_OTHER,
                 "position", position,
                 "list", String.format(TOKONOW_CATEGORY_ORGANIC, categoryIdTracking)
@@ -459,8 +460,8 @@ object CategoryTracking {
                 "category_id", categoryId,
                 "dimension45", cartId,
                 "id", id,
-                "name", name,
-                "price", priceInt,
+                "name", productCardModel.name,
+                "price", productCardModel.price.getDigits(),
                 "quantity", quantity,
                 "shop_id", shop.id,
                 "shop_name", shop.name,

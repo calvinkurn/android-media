@@ -88,7 +88,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
         return when(type) {
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(
                 itemView = view,
-                productItemListener = productItemListener
+                listener = productItemListener
             )
             BannerViewHolder.LAYOUT -> BannerViewHolder(
                 itemView = view,

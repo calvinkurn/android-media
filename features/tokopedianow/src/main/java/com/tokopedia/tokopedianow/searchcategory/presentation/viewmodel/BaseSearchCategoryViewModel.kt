@@ -1051,18 +1051,10 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         val productId = productItem.id
         val parentProductId = productItem.parentId
-        val nonVariantATC = productItem.nonVariantATC
-        val variantATC = productItem.variantATC
-
         val quantity = cartService.getProductQuantity(productId, parentProductId)
 
-        if (nonVariantATC != null && nonVariantATC.quantity != quantity) {
-            nonVariantATC.quantity = quantity
-            updatedProductIndices.add(index)
-        } else if (variantATC != null && variantATC.quantity != quantity) {
-            variantATC.quantity = quantity
-            updatedProductIndices.add(index)
-        }
+        productItem.productCardModel = productItem.productCardModel.copy(orderQuantity = quantity)
+        updatedProductIndices.add(index)
     }
 
     private suspend fun updateVisitableWithIndex(updatedProductIndices: List<Int>) {
@@ -1086,11 +1078,9 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewATCProductNonVariant(productItem: ProductItemDataView, quantity: Int) {
-        val nonVariantATC = productItem.nonVariantATC ?: return
-
         val productId = productItem.id
         val shopId = productItem.shop.id
-        val currentQuantity = nonVariantATC.quantity
+        val currentQuantity = productItem.productCardModel.orderQuantity
 
         cartService.handleCart(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
@@ -1136,7 +1126,7 @@ abstract class BaseSearchCategoryViewModel(
             productItem: ProductItemDataView,
             quantity: Int,
     ) {
-        productItem.nonVariantATC?.quantity = quantity
+        productItem.productCardModel = productItem.productCardModel.copy(orderQuantity = quantity)
     }
 
     protected fun onAddToCartFailed(throwable: Throwable) {
@@ -1144,11 +1134,9 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun sendTrackingUpdateQuantity(newQuantity: Int, productItem: ProductItemDataView) {
-        val nonVariantATC = productItem.nonVariantATC ?: return
-
-        if (nonVariantATC.quantity > newQuantity)
+        if (productItem.productCardModel.orderQuantity > newQuantity)
             decreaseQtyTrackingMutableLiveData.value = productItem.id
-        else if (nonVariantATC.quantity < newQuantity)
+        else if (productItem.productCardModel.orderQuantity < newQuantity)
             increaseQtyTrackingMutableLiveData.value = productItem.id
     }
 

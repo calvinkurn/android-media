@@ -55,17 +55,6 @@ data class LabelGroup(
     fun isLightGreenColor() = type == LIGHT_GREEN
 }
 
-data class Variant(
-    val orderQuantity: Int = 0
-)
-
-data class NonVariant(
-    val minOrder: Int = 0,
-    val maxOrder: Int = 0,
-    val availableStock: Int = 0,
-    val orderQuantity: Int = 0,
-)
-
 /**
  * Position
  */
