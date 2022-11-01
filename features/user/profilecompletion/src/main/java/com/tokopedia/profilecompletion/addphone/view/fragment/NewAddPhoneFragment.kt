@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.addphone.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.common.getMessage
+import com.tokopedia.profilecompletion.addphone.data.analitycs.NewAddPhoneNumberTracker
 import com.tokopedia.profilecompletion.addphone.viewmodel.NewAddPhoneViewModel
 import com.tokopedia.profilecompletion.databinding.FragmentNewAddPhoneBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -45,6 +47,9 @@ class NewAddPhoneFragment: BaseDaggerFragment() {
         )
     }
 
+    @Inject
+    lateinit var analytics: NewAddPhoneNumberTracker
+
     private var validateToken: String = ""
 
     override fun onCreateView(
@@ -61,6 +66,18 @@ class NewAddPhoneFragment: BaseDaggerFragment() {
         initListener()
         iniObserver()
         editorChangesListener()
+        initToolbar()
+        analytics.sendView2FaMluAddPhoneNumberPageEvent()
+    }
+
+    private fun initToolbar() {
+        binding?.unifyToolbar?.apply {
+            actionText = ""
+            setNavigationOnClickListener {
+                analytics.sendClickOnButtonCloseEvent()
+                requireActivity().onBackPressed()
+            }
+        }
     }
 
     private fun iniObserver() {
@@ -77,11 +94,13 @@ class NewAddPhoneFragment: BaseDaggerFragment() {
                     } else {
                         val message = it.data
                         binding?.fieldInputPhone?.setMessageField(message)
+                        analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_FAILED, message)
                     }
                 }
                 is Fail -> {
                     val message = it.throwable.getMessage(requireActivity())
                     binding?.fieldInputPhone?.setMessageField(message)
+                    analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_FAILED, message)
                 }
             }
         }
@@ -89,12 +108,15 @@ class NewAddPhoneFragment: BaseDaggerFragment() {
         viewModel.userPhoneUpdate.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_SUCCESS)
                     onSuccessAddPhone(
                         it.data.first,
                         it.data.second.completionScore
                     )
                 }
                 is Fail -> {
+                    val message = it.throwable.getMessage(requireActivity())
+                    analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_FAILED, message)
                     handleGlobalError(it.throwable)
                 }
             }
@@ -114,8 +136,18 @@ class NewAddPhoneFragment: BaseDaggerFragment() {
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
             if (binding?.btnSubmit?.isLoading == false) {
+                analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_CLICK)
                 submitForm()
             }
+        }
+
+        binding?.globalError?.setActionClickListener {
+            changePhoneNumber(validateToken)
+        }
+
+        binding?.globalError?.setSecondaryActionClickListener {
+            val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+            startActivity(intent)
         }
     }
 
@@ -136,6 +168,14 @@ class NewAddPhoneFragment: BaseDaggerFragment() {
     private fun editorChangesListener() {
         binding?.fieldInputPhone?.editText?.afterTextChanged {
             viewModel.validatePhone(it)
+        }
+    }
+
+    private fun showGlobalError() {
+        binding?.apply {
+            loaderUnify.hide()
+            globalError.show()
+            content.hide()
         }
     }
 
@@ -188,6 +228,7 @@ class NewAddPhoneFragment: BaseDaggerFragment() {
                 }
             }
         }
+        showGlobalError()
         showToasterError(throwable)
     }
 
@@ -231,6 +272,8 @@ class NewAddPhoneFragment: BaseDaggerFragment() {
         if (requestCode == REQUEST_OTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
             validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
             changePhoneNumber(validateToken)
+        } else {
+            analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_FAILED, NewAddPhoneNumberTracker.MESSAGE_FAILED_OTP)
         }
     }
 

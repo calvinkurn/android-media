@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/unify_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="false" />
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_unify"
         android:layout_width="40dp"
@@ -12,7 +21,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unify_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.tokopedia.globalerror.GlobalError
@@ -22,7 +31,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unify_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ScrollView
@@ -32,7 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unify_toolbar"
         app:layout_constrainedHeight="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
