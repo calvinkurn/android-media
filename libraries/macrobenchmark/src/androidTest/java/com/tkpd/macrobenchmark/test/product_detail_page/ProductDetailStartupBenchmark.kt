@@ -19,9 +19,8 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class ProductDetailStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+class ProductDetailStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
     override fun setupMock() {
-        //MacroDevOps.setupEnvironment(getIntent())
     }
 
     override fun setupEnvironment() {
@@ -34,11 +33,7 @@ class ProductDetailStartupBenchmark(startupMode: StartupMode): BaseStartupBenchm
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
             MacroIntent.TKPD_PACKAGE_NAME,
-            MacroIntent.ProductDetail.RV_RESOURCE_ID,
-        )
-        MacroInteration.waitForRecyclerViewContent(
-            MacroIntent.TKPD_PACKAGE_NAME,
-            MacroIntent.ProductDetail.RV_RESOURCE_ID,
+            MacroIntent.ProductDetail.RV_RESOURCE_ID
         )
     }
 }

@@ -9,8 +9,13 @@ import com.tokopedia.macrobenchmark_util.env.mock.config.HomeMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.SearchMockResponseConfig
 
 fun Intent.putMockData(key: String, res: Int) {
-    this.putExtra(key, getRawString(
-        InstrumentationRegistry.getInstrumentation().context, res))
+    this.putExtra(
+        key,
+        getRawString(
+            InstrumentationRegistry.getInstrumentation().context,
+            res
+        )
+    )
 }
 
 object MacroIntent {
@@ -67,7 +72,7 @@ object MacroIntent {
             intent.setPackage(TKPD_PACKAGE_NAME)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             var loginParam = "non-login"
-            if (MacroArgs.isLogin(InstrumentationRegistry.getArguments())){
+            if (MacroArgs.isLogin(InstrumentationRegistry.getArguments())) {
                 loginParam = "login"
             }
             intent.data = Uri.parse("tokopedia-android-internal://session-setting/opt/$loginParam")
@@ -189,11 +194,10 @@ object MacroIntent {
     object ProductDetail {
 
         const val RV_RESOURCE_ID = "rv_pdp"
-        const val PACKAGE_NAME = "com.tokopedia.product.detail"
 
         fun getStartupIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/5468977597")
+            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/6336029829/")
             return intent
         }
 
