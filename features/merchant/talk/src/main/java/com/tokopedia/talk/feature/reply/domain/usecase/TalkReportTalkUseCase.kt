@@ -13,6 +13,7 @@ class TalkReportTalkUseCase @Inject constructor(graphqlRepository: GraphqlReposi
         const val PARAM_TALK_ID = "talk_id"
         const val PARAM_REASON = "reason"
         const val SELLER_REPORT_REASON = "seller dismiss unmask"
+        const val REPORT_REASON_BLOCK = "suggest to block"
         const val PARAM_REPORT_TYPE = "report_type"
         const val OTHER_REPORT_TYPE = 3
         private const val TALK_REPORT_TALK_MUTATION_CLASS_NAME = "TalkReportTalk"
