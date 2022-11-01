@@ -190,7 +190,9 @@ class ManageProductFragment : BaseDaggerFragment() {
                         hideEmptyState()
                     } else {
                         showEmptyState()
-                        showChooseProductPage()
+                        if (viewModel.autoNavigateToChooseProduct()) {
+                            showChooseProductPage()
+                        }
                     }
                 }
                 is Fail -> {
@@ -248,6 +250,9 @@ class ManageProductFragment : BaseDaggerFragment() {
                     showErrorProductBanner()
                 }
                 HIDE_BANNER -> {
+                    hideBanner()
+                }
+                else -> {
                     hideBanner()
                 }
             }
@@ -449,7 +454,7 @@ class ManageProductFragment : BaseDaggerFragment() {
                         )
                     }
 
-                    val coachMark = activity?.let { it -> CoachMark2(it) }
+                    val coachMark = activity?.let { act -> CoachMark2(act) }
                     coachMark?.showCoachMark(coachMarkItems)
                     viewModel.setIsCoachMarkShown(true)
                     coachMark?.onFinishListener = {
@@ -488,12 +493,14 @@ class ManageProductFragment : BaseDaggerFragment() {
         if (productList.isEmpty()) return
         val bottomSheet = EditProductInfoBottomSheet.newInstance(campaignId, productList)
         bottomSheet.setOnEditProductSuccessListener {
+            showLoader()
             doOnDelayFinished(DELAY) {
                 loadProductsData()
                 showSuccessEditProductToaster()
             }
         }
         bottomSheet.setOnDeleteProductSuccessListener {
+            showLoader()
             doOnDelayFinished(DELAY) {
                 loadProductsData()
                 showSuccessDeleteProductToaster()
@@ -504,14 +511,12 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun showChooseProductPage() {
         val context = context ?: return
-        doOnDelayFinished(DELAY) {
-            val intent = ChooseProductActivity.createIntent(
-                context,
-                campaignId.toString(),
-                manageProductListAdapter.itemCount
-            )
-            startActivityForResult(intent, REQUEST_CODE)
-        }
+        val intent = ChooseProductActivity.createIntent(
+            context,
+            campaignId.toString(),
+            manageProductListAdapter.itemCount
+        )
+        startActivityForResult(intent, REQUEST_CODE)
     }
 
     private fun editProduct(product: SellerCampaignProductList.Product) {
@@ -521,6 +526,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun deleteProduct(product: SellerCampaignProductList.Product) {
         ProductDeleteDialog().apply {
             setOnPrimaryActionClick {
+                showLoader()
                 viewModel.removeProducts(campaignId, listOf(product))
             }
             show(context ?: return)
@@ -549,6 +555,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         when (resultCode) {
             Activity.RESULT_OK -> {
                 viewModel.autoShowEditProduct = true
+                viewModel.setAutoNavigateToChooseProduct(false)
                 showLoader()
                 doOnDelayFinished(DELAY) {
                     viewModel.getProducts(campaignId, LIST_TYPE)

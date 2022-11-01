@@ -68,6 +68,7 @@ class ManageProductViewModel @Inject constructor(
     
     var campaignName = ""
     var autoShowEditProduct = true
+    private var autoNavigateWhenProductIsEmpty = true
 
     fun getProducts(
         campaignId: Long,
@@ -197,5 +198,13 @@ class ManageProductViewModel @Inject constructor(
 
     fun getIsCoachMarkShown(): Boolean {
         return isCoachMarkShown
+    }
+
+    fun setAutoNavigateToChooseProduct(value: Boolean) {
+        autoNavigateWhenProductIsEmpty = value
+    }
+
+    fun autoNavigateToChooseProduct(): Boolean {
+        return autoNavigateWhenProductIsEmpty
     }
 }
