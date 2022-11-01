@@ -1,7 +1,6 @@
 package com.tokopedia.tokochat.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,12 +26,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.tokochat.R
-import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
+import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatErrorLogger
 import com.tokopedia.tokochat.util.TokoChatViewUtil.loadByteArrayImage
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.tokochat.view.bottomsheet.TokoChatGeneralUnavailableBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
@@ -61,7 +61,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
+class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
     TokoChatReplyTextListener,
@@ -235,8 +235,8 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         return baseBinding?.tokochatReplyBox
     }
 
-    override fun getViewBindingInflate(container: ViewGroup?): FragmentTokoChatBinding {
-        return FragmentTokoChatBinding.inflate(
+    override fun getViewBindingInflate(container: ViewGroup?): TokochatChatroomFragmentBinding {
+        return TokochatChatroomFragmentBinding.inflate(
             LayoutInflater.from(context),
             container,
             false
@@ -357,8 +357,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     private fun observeMemberLeft() {
         observe(viewModel.getMemberLeft()) {
-            Log.d("MEMBER LEFT - CONV", it)
-            // TODO: Add bottomsheet for not available chat
+            showUnavailableBottomSheet()
         }
     }
 
@@ -635,6 +634,16 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             userSession.deviceId.orEmpty(),
             description
         )
+    }
+
+    private fun showUnavailableBottomSheet() {
+        val bottomSheet = TokoChatGeneralUnavailableBottomSheet()
+        bottomSheet.setListener(tracking = {
+            //TODO: Trackers if any
+        }, buttonAction = {
+            activity?.finish()
+        })
+        bottomSheet.show(childFragmentManager)
     }
 
     companion object {
