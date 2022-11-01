@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.domain.mapper
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
@@ -42,7 +41,6 @@ import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyPojo
-import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
 import javax.inject.Inject
 
 /**
@@ -76,28 +74,19 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
-            DYNAMIC_ATTACHMENT -> {
-                val dynamicAttachmentContents =
-                    Gson().fromJson(chatItemPojoByDateByTime.attachment.attributes, DynamicAttachment::class.java)
-
-                val replyBoxAttribute =
-                    dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
-
-//                if (!(replyBoxAttribute?.contentCode == 100 || replyBoxAttribute?.contentCode == 101)) {
-//                    convertToFallBackModel(chatItemPojoByDateByTime)
-//                } else {
-//                    super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
-//                }
-
-                convertToFallBackModel(chatItemPojoByDateByTime)
-            }
+            DYNAMIC_ATTACHMENT -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
     }
 
-    private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    /**
+     * We are using Dynamic Attachment with content_codes like 100,101 [As of now]. In future more will
+     * get added. If the user doesn't have the updated version to receive new content_code, we will
+     * show message to update the app
+     * */
+    private fun convertToDynamicAttachmentFallback(chatItemPojoByDateByTime: Reply): Visitable<*> {
         var fallbackMessage = ""
-        chatItemPojoByDateByTime.attachment?.fallback?.let {
+        chatItemPojoByDateByTime.attachment.fallback.let {
             fallbackMessage = it.message
         }
         return FallbackAttachmentUiModel.Builder()

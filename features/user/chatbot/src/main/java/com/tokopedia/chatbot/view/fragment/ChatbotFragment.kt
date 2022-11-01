@@ -1760,6 +1760,11 @@ class ChatbotFragment :
         }
     }
 
+    /**
+     * We are using Dynamic Attachment with content_codes like 100,101 [As of now]. In future more will
+     * get added. If the user doesn't have the updated version to receive new content_code, we will
+     * show message to update the app
+     * */
     private fun checkForDynamicAttachment(visitable: Visitable<*>): Boolean {
         if (visitable !is FallbackAttachmentUiModel) {
             return false
@@ -1767,7 +1772,7 @@ class ChatbotFragment :
         if (visitable.attachmentType != DYNAMIC_ATTACHMENT)
             return false
 
-        if(visitable.attachment is Attachment) {
+        if (visitable.attachment is Attachment) {
             val attachment = visitable.attachment as Attachment
 
             try {
@@ -1777,14 +1782,13 @@ class ChatbotFragment :
                 val replyBoxAttribute =
                     dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
-                if(!checkDynamicAttachmentValidility(replyBoxAttribute?.contentCode))
+                if (!checkDynamicAttachmentValidility(replyBoxAttribute?.contentCode))
                     return false
 
-            } catch (e : JsonSyntaxException) {
+            } catch (e: JsonSyntaxException) {
                 return true
             }
         }
-
         return true
     }
 
