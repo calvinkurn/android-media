@@ -715,27 +715,25 @@ class OfficialHomeFragment :
     }
 
     override fun onFeaturedShopDCClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        tracking?.trackingQueueObj?.putEETracking(
-                OSFeaturedShopTracking.getEventClickShopWidget(
-                        channel = channelModel,
-                        grid = channelGrid,
-                        categoryName = category?.title?:"",
-                        bannerPosition = position,
-                        userId = userSession.userId
-                ) as HashMap<String, Any>
+        OSFeaturedShopTracking.getEventClickShopWidget(
+            channel = channelModel,
+            grid = channelGrid,
+            categoryName = category?.title?:"",
+            bannerPosition = position,
+            userId = userSession.userId
         )
         goToApplink(channelGrid.applink)
     }
 
     override fun onFeaturedShopDCImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        tracking?.trackerObj?.sendEnhanceEcommerceEvent(
+        tracking?.trackingQueueObj?.putEETracking(
                 OSFeaturedShopTracking.getEventImpressionShopWidget(
                         channel = channelModel,
                         grid = channelGrid,
                         categoryName = category?.title?:"",
                         bannerPosition = position,
                         userId = userSession.userId
-                ) as HashMap<String, Any>
+                )
         )
 
         viewModel.recordShopWidgetImpression(channelModel.id, channelGrid.id)
