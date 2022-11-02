@@ -257,14 +257,14 @@ class SellerHomeViewModel @Inject constructor(
             useCase.params = params
             if (heightDp == null) {
                 getDataFromUseCase(useCase, _widgetLayout) { widgets ->
-                    startSSE(widgets)
+                    startSse(widgets)
                 }
             } else {
                 getDataFromUseCase(useCase, _widgetLayout) { widgets, isFromCache ->
                     val initialWidgetFlow = sellerHomeLayoutHelper.get()
                         .getInitialWidget(widgets, heightDp, isFromCache)
                         .flowOn(dispatcher.io)
-                    startSSE(widgets)
+                    startSse(widgets)
                     return@getDataFromUseCase initialWidgetFlow
                 }
             }
@@ -485,6 +485,26 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
+    fun startSse(widgets: List<BaseWidgetUiModel<*>>) {
+        cancelSseJob()
+        sseJob = viewModelScope.launch(dispatcher.io) {
+            delay(SSE_INITIAL_DELAY)
+            val dataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
+            widgetSse.get().connect(SELLER_HOME_SSE, dataKeys)
+            widgetSse.get().listen()
+                .collect { data ->
+                    data?.let {
+                        handleSSEMessage(it)
+                    }
+                }
+        }
+    }
+
+    fun cancelSseJob() {
+        sseJob?.cancel()
+        widgetSse.get().closeSse()
+    }
+
     private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
         executeOnBackground()
     }
@@ -492,7 +512,7 @@ class SellerHomeViewModel @Inject constructor(
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
         liveData: MutableLiveData<Result<T>>,
-        onResult: suspend (widgets: T) -> Unit = {}
+        onResult: (widgets: T) -> Unit = {}
     ) {
         try {
             useCase.setUseCache(false)
@@ -536,21 +556,6 @@ class SellerHomeViewModel @Inject constructor(
         val useCaseResult = useCase.executeOnBackground()
         getTransformerFlow(useCaseResult, false).collect {
             liveData.value = Success(it)
-        }
-    }
-
-    private suspend fun startSSE(widgets: List<BaseWidgetUiModel<*>>) {
-        sseJob?.cancel()
-        delay(SSE_INITIAL_DELAY)
-        sseJob = viewModelScope.launch(dispatcher.io) {
-            val dataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
-            widgetSse.get().connect(SELLER_HOME_SSE, dataKeys)
-            widgetSse.get().listen()
-                .collect { data ->
-                    data?.let {
-                        handleSSEMessage(it)
-                    }
-                }
         }
     }
 

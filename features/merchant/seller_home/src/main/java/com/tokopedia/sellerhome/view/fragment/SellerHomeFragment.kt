@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -338,6 +339,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onPause() {
         super.onPause()
+        stopWidgetSse()
         hideTooltipIfExist()
     }
 
@@ -357,6 +359,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (hidden) {
             rebateCoachMark?.dismissCoachMark()
             unificationWidgetCoachMark?.dismissCoachMark()
+            stopWidgetSse()
         } else {
             SellerHomeTracking.sendScreen(screenName)
             view?.post {
@@ -366,6 +369,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 resetWidgetImpressionHolder()
                 showRebateCoachMark()
             }
+            startWidgetSse()
         }
     }
 
@@ -2618,6 +2622,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 )
             }
         }
+    }
+
+    private fun startWidgetSse() {
+        lifecycleScope.launchWhenResumed {
+            if (tempWidgetList.isNotEmpty()) {
+                sellerHomeViewModel.startSse(tempWidgetList)
+            }
+        }
+    }
+
+    private fun stopWidgetSse() {
+        sellerHomeViewModel.cancelSseJob()
     }
 
     interface Listener {
