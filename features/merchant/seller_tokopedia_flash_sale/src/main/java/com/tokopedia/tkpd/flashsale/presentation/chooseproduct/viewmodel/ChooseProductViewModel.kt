@@ -82,7 +82,7 @@ class ChooseProductViewModel @Inject constructor(
         selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
     ) { selectedProductCount, criteriaList, maxSelectedProduct ->
         ChooseProductUiMapper.getSelectionValidationResult(selectedProductCount, criteriaList,
-            maxSelectedProduct, remainingQuota)
+            maxSelectedProduct, remainingQuota, selectedProductList)
     }
 
     // public variables
