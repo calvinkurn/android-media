@@ -25,7 +25,6 @@ import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
-import com.tokopedia.picker.DebugPickerActivity
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
@@ -40,6 +39,7 @@ import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.utils.VideoDurationRetriever
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey.PICKER_TO_EDITOR
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -50,10 +50,13 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var param: ParamCacheManager
+
     @Inject
     lateinit var pickerAnalytics: PickerAnalytics
 
@@ -155,7 +158,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
         if (pickerParam.isEditorEnabled()) {
             val isEditorAllowed =
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ROLLANCE_KEY) == EDITOR_ROLLANCE_KEY
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(PICKER_TO_EDITOR) == PICKER_TO_EDITOR
 
             if (!isEditorAllowed) {
                 pickerParam.withoutEditor()
@@ -536,8 +539,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
         private const val BYTES_TO_MB = 1000000
         private const val MILLIS_TO_SEC = 1000
-
-        private const val EDITOR_ROLLANCE_KEY = "android_editor"
     }
 
 }
