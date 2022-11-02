@@ -6,8 +6,8 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMe
  * Created by dhaba
  */
 interface MerchantVoucherComponentListener  {
-    fun onViewAllCardClicked(headerName: String, seeMoreAppLink: String, userId: String, campaignCode: String)
-    fun onViewAllClicked(headerName: String, seeMoreAppLink: String, userId: String, campaignCode: String)
+    fun onViewAllCardClicked(channelId: String, headerName: String, seeMoreAppLink: String, userId: String, campaignCode: String)
+    fun onViewAllClicked(channelId: String, headerName: String, seeMoreAppLink: String, userId: String, campaignCode: String)
     fun onShopClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int)
     fun onMerchantImpressed(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int)
     fun onProductClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int)

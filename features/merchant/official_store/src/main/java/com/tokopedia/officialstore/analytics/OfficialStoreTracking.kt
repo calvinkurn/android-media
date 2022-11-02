@@ -48,7 +48,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         private const val FIELD_PRODUCTS = "products"
         private const val FIELD_PRODUCT_LIST = "list"
         private const val FIELD_ACTION_FIELD = "actionField"
-        private const val FIELD_DIMENSION_38 = "dimension38"
+        const val FIELD_DIMENSION_38 = "dimension38"
         private const val ATTRIBUTION = "attribution"
         private const val VALUE_NONE_OTHER = "none / other"
         private const val VALUE_IDR = "IDR"

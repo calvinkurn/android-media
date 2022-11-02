@@ -6,7 +6,7 @@
       "event": "view_item",
       "eventAction": "merchant voucher multiple - view coupon",
       "eventCategory": "os microsite",
-      "eventLabel": ".*",
+      "eventLabel": "merchant voucher multiple - .* - .* - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "promotions": [
@@ -18,13 +18,14 @@
         }
       ],
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "trackerId": "28741"
     },
     {
       "event": "select_content",
       "eventAction": "merchant voucher multiple - click shop",
       "eventCategory": "os microsite",
-      "eventLabel": ".* - .*",
+      "eventLabel": "merchant voucher multiple - .* - .* - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "promotions": [
@@ -37,29 +38,32 @@
       ],
       "userId": ".*",
       "sessionIris": ".*",
-      "clientId": ".*"
+      "clientId": ".*",
+      "trackerId": "28742"
     },
     {
       "event": "clickHomepage",
       "eventAction": "merchant voucher multiple - click view all",
       "eventCategory": "os microsite",
-      "eventLabel": ".* - .*",
+      "eventLabel": "merchant voucher multiple - .* - .* - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "clientId": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "28744"
     },
     {
       "event": "select_content",
       "eventAction": "merchant voucher multiple - click product detail",
       "eventCategory": "os microsite",
-      "eventLabel": ".* - .* - .*",
+      "eventLabel": "merchant voucher multiple - .* - .* - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "item_list": "/official-store/.* - merchant_voucher_multiple - .* - .*",
       "items": [
         {
+          "dimension38": ".*",
           "index": ".*",
           "item_brand": ".*",
           "item_category": ".* / .* / .*",
@@ -71,7 +75,8 @@
       ],
       "userId": ".*",
       "sessionIris": ".*",
-      "clientId": ".*"
+      "clientId": ".*",
+      "trackerId": "28747"
     }
   ]
 }
