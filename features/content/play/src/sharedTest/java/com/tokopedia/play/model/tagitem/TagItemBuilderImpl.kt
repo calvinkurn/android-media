@@ -125,4 +125,11 @@ class TagItemBuilderImpl : TagItemBuilder {
         background = background,
         reminder = reminderStatus,
     )
+
+    override fun buildButton(
+        text: String,
+        color: ProductButtonColor,
+        type: ProductButtonType
+    ): ProductButtonUiModel =
+        ProductButtonUiModel(text, color, type)
 }
