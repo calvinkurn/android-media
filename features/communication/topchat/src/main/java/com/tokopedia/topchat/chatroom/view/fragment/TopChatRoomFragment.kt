@@ -333,10 +333,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initFireBase()
         registerUploadImageReceiver()
         initSmoothScroller()
+        initBubbleChatFlag()
     }
 
     private fun initSmoothScroller() {
         smoothScroller = CenterSmoothScroller(context)
+    }
+
+    private fun initBubbleChatFlag() {
+        isFromBubble = activity?.isFromBubble() == true
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
+        }
     }
 
     override fun onCreateView(
@@ -567,14 +575,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupObservers()
         setupLifecycleObserver()
         initChatTextAreaLayout()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        this.isFromBubble = activity?.isFromBubble() == true
-        if (isFromBubble) {
-            TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
-        }
     }
 
     private fun setupLifecycleObserver() {
