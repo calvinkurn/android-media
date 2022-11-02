@@ -23,6 +23,7 @@ import com.tokopedia.content.common.producttag.util.extension.currentSource
 import com.tokopedia.content.common.producttag.util.extension.isAutocomplete
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.util.getAutocompleteApplink
+import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.content.common.producttag.view.fragment.ContentAutocompleteFragment
 import com.tokopedia.content.common.producttag.view.fragment.GlobalSearchFragment
@@ -63,6 +64,7 @@ class ProductTagParentFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
     private val dispatchers: CoroutineDispatchers,
+    private val sharedPref: ProductTagPreference,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"
@@ -455,6 +457,8 @@ class ProductTagParentFragment @Inject constructor(
 
             imgCcProductTagShopBadge1.showWithCondition(isShow)
         }
+
+        if(!isShow) coachmark?.hideCoachMark()
     }
 
     private fun showCoachmarkGlobalTag(isShow: Boolean) {
@@ -477,6 +481,10 @@ class ProductTagParentFragment @Inject constructor(
                         CoachMark2.POSITION_BOTTOM
                     )
                 ))
+
+                coachmark?.onDismissListener = {
+                    sharedPref.setNotFirstGlobalTag()
+                }
             }
         }
     }
