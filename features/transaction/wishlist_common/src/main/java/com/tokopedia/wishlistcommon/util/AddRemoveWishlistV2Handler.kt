@@ -2,12 +2,11 @@ package com.tokopedia.wishlistcommon.util
 
 import android.content.Context
 import android.view.View
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
-import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.wishlist_common.R
@@ -138,7 +137,7 @@ object AddRemoveWishlistV2Handler {
     }
 
     private fun isUsingWishlistCollection(context: Context): Boolean {
-        return DeeplinkMapperPurchasePlatform.isUsingWishlistCollection(context)
+        return DeeplinkMapperWishlist.isUsingWishlistCollection(context)
     }
 
     private fun goToWishlistCollectionPage(context: Context) {

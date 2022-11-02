@@ -62,6 +62,7 @@ import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.inappupdate.InAppUpdateLifecycleCallback;
+import com.tokopedia.journeydebugger.JourneySubscriber;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -251,6 +252,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+            registerActivityLifecycleCallbacks(new JourneySubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));

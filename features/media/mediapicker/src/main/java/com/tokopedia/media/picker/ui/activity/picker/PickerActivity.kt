@@ -163,7 +163,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             if (!isEditorAllowed) {
                 pickerParam.withoutEditor()
             } else {
-                editorParam = intent?.getParcelableExtra(EXTRA_EDITOR_PARAM) ?: EditorParam()
+                editorParam = pickerParam.getEditorParam() ?: EditorParam()
             }
         }
 

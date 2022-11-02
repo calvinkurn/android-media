@@ -21,6 +21,7 @@ import com.tokopedia.tokofood.common.domain.response.AdditionalData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
 import com.tokopedia.tokofood.common.presentation.customview.TokofoodPromoRibbonView
+import com.tokopedia.tokofood.common.util.TokofoodExt.clickWithDebounce
 import com.tokopedia.tokofood.databinding.ItemTokofoodMerchantListCardBinding
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -86,7 +87,7 @@ class TokoFoodMerchantListViewHolder (
         setPriceLevel(merchant.priceLevel)
         setViewDividerCategoryPriceLevel(merchant.merchantCategories, merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
-        binding?.root?.setOnClickListener {
+        binding?.root?.clickWithDebounce {
             listener?.onClickMerchant(merchant, adapterPosition)
         }
         itemView.addOnImpressionListener(merchant){
@@ -108,15 +109,11 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setPromoInfo(promo: String, additionalData: AdditionalData) {
-        if (promo.isNullOrEmpty()){
-            promoRibbon?.hide()
+        setPromoRibbonLabel(additionalData.topTextBanner)
+        if (promo.isBlank()){
             ivMerchantDiskon?.hide()
             tvMerchantDiskon?.hide()
         } else {
-            promoRibbon?.run {
-                show()
-                setRibbonText(additionalData.topTextBanner)
-            }
             ivMerchantDiskon?.run {
                 show()
                 setImageUrl(additionalData.discountIcon)
@@ -124,6 +121,17 @@ class TokoFoodMerchantListViewHolder (
             tvMerchantDiskon?.run {
                 show()
                 text = promo
+            }
+        }
+    }
+
+    private fun setPromoRibbonLabel(topTextBanner: String) {
+        if (topTextBanner.isBlank()) {
+            promoRibbon?.hide()
+        } else {
+            promoRibbon?.run {
+                show()
+                setRibbonText(topTextBanner)
             }
         }
     }

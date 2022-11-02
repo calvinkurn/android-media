@@ -34,7 +34,13 @@ class FeedPlusContainerViewModel @Inject constructor(
 
     val isShowPostButton: Boolean
         get() = when(val whitelist = whitelistResp.value) {
-            is Success -> whitelist.data.isShopAccountExists || whitelist.data.isUserAccountPostEligible
+            is Success -> whitelist.data.isShopAccountExists || whitelist.data.isBuyerAccountPostEligible
+            else -> false
+        }
+
+    val isShowLiveButton: Boolean
+        get() = when(val whitelist = whitelistResp.value) {
+            is Success -> whitelist.data.authors.isNotEmpty()
             else -> false
         }
 
