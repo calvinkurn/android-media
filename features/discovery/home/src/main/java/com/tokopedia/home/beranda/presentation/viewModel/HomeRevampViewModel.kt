@@ -254,7 +254,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun updateHeaderData(visitable: Visitable<*>?, index: Int = 0): Visitable<*>? {
         Log.d("dhabalog", "updateheaderdata")
-        visitable?.let { findWidget<HomeHeaderDataModel> { model, _ -> updateWidget(it, index) } }
+        visitable?.let { findWidget<HomeHeaderDataModel> { model, index -> updateWidget(it, index) } }
         return visitable
     }
 
