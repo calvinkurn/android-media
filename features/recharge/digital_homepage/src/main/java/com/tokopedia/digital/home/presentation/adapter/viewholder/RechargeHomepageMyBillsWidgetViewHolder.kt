@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -17,6 +16,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageMyBillsAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeItemSpaceDecorator
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -118,7 +118,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
             binding.tvExpired.setTextColor(element.attributes.specialInfoColor)
         }
 
-        private fun TextView.setTextColor(color: String) {
+        private fun Typography.setTextColor(color: String) {
             try {
                 setTextColor(Color.parseColor(color))
             } catch (t: Throwable) {
