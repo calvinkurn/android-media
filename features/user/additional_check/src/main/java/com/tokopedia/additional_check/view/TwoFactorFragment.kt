@@ -220,7 +220,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
     }
 
     companion object {
-        private const val ROLLENCE_IMPROVE_2FA = "improve_2fa"
+        private const val ROLLENCE_IMPROVE_2FA = "2fa_phone_improve"
         const val RESULT_POJO_KEY = "modelKey"
         const val IS_FROM_2FA = "is_from_2fa_checker"
 

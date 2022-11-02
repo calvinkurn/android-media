@@ -92,8 +92,8 @@
     <string name="subtitle_phone_setting_profile">Nomor HP</string>
 
     <!-- NEW ADD PHONE-->
-    <string name="new_add_phone_title">Tambah nomor HP dulu, yuk!</string>
-    <string name="new_add_phone_subtitle">Nomor HP akan memperkuat keamanan &amp; akses masuk ke akunmu.</string>
+    <string name="new_add_phone_title">Tambah nomor HP biar akunmu makin aman, yuk!</string>
+    <string name="new_add_phone_subtitle">Akunmu akan jadi lebih aman karena dilindungi kata sandi dan nomor HP.</string>
     <string name="new_add_phone_label_filed">Nomor HP</string>
     <string name="new_add_phone_label_button">Tambah Nomor HP</string>
     <string name="new_add_phone_must_be_filled">Wajib diisi.</string>
