@@ -22,6 +22,7 @@ internal class SimilarProductItemViewHolder(
             discountPercentage = if (getDiscountPercentageVisible(item)) "${item.discountPercentage}%" else "",
             slashedPrice = item.originalPrice,
             formattedPrice = item.price,
+            priceRange = item.priceRange,
             shopLocation = item.shop.location.ifEmpty { item.shop.name },
             shopBadgeList = createProductCardModelShopBadgeList(item),
             countSoldRating = item.ratingAverage,

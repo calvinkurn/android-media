@@ -50,6 +50,7 @@ private fun getProductInfoGQLQuery() = """
       img_url
     }
     applink
+    price_range
 """.trimIndent().replace("\n", " ")
 
 internal fun getSimilarProductsGQLQuery() = """

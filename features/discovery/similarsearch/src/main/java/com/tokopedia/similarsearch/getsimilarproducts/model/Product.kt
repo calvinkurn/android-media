@@ -64,6 +64,10 @@ internal data class Product(
         @Expose
         val originalPrice: String = "",
 
+        @SerializedName("price_range")
+        @Expose
+        val priceRange: String = "",
+
         @SerializedName("discount_expired_time")
         @Expose
         val discountExpiredTime: String = "",
