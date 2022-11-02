@@ -1,12 +1,12 @@
 {
   "checkUserFinancialAssets": {
-    "has_financial_assets": false,
+    "has_financial_assets": true,
     "detail": {
-      "has_egold": false,
+      "has_egold": true,
       "has_mutual_fund": false,
       "has_deposit_balance": false,
       "has_ongoing_trx": false,
-      "has_loan": false
+      "has_loan": true
     }
   }
 }

@@ -117,7 +117,7 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
-    debugImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
@@ -141,6 +141,10 @@ dependencies {
         exclude group: 'com.google.firebase'
     }
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
+
+    //For Ui test
+    androidTestImplementation rootProject.ext.unifyDependencies.sortFilter
+    androidTestImplementation projectOrAar(rootProject.ext.features.filter)
 }
 
 project.ext {

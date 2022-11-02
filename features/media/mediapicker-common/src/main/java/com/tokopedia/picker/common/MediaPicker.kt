@@ -63,10 +63,11 @@ object MediaPicker {
         appLink: String = INTERNAL_MEDIA_PICKER,
         param: PickerParam.() -> Unit = {}
     ): Intent {
-        val pickerParam = PickerParam().apply(param)
-
         return RouteManager.getIntent(context, appLink).apply {
-            putExtra(EXTRA_PICKER_PARAM, pickerParam)
+            putExtra(
+                EXTRA_PICKER_PARAM,
+                PickerParam().apply(param)
+            )
         }
     }
 
@@ -94,7 +95,7 @@ object MediaPicker {
      * `compressedImages` will hit the save-to-gallery on device.
      */
     fun result(data: Intent?): PickerResult {
-        return data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
+        return data?.getParcelableExtra(EXTRA_RESULT_PICKER) ?: PickerResult()
     }
 
 }
