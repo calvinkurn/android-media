@@ -5,8 +5,8 @@
     android:id="@+id/card_view_recharge_homepage_last_item"
     android:layout_width="132dp"
     android:layout_height="110dp"
-    app:cardCornerRadius="@dimen/layout_lvl1"
-    app:cardElevation="@dimen/unify_space_4"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
     app:view_all_card_unify_mode="normal"
     app:cardUseCompatPadding="true">
     <androidx.constraintlayout.widget.ConstraintLayout
