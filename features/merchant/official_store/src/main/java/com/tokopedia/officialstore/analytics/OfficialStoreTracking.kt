@@ -37,48 +37,26 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
     private val trackingQueue = TrackingQueue(context)
     
     companion object{
-        private const val IMPRESSION_BANNER = "impression banner - %s"
-        private const val CLICK_BANNER = "click banner - %s"
-        private const val CLICK_PRODUCT = "click product - %s"
-        private const val IMPRESSION_PRODUCT = "impression product - %s"
-        private const val PROMOTIONS_NAME_POPULAR_BRANDS = "%s%s - %s - %s"
         private const val AFFINITY_LABEL = "affinityLabel"
         private const val CATEGORY_ID = "categoryId"
         private const val SHOP_ID = "shopId"
         private const val CLICK = "click"
         private const val IMPRESSION = "impression"
-        private const val REFERENCE_POPULAR_BRANDS = "reference: row 18"
         private const val CLICK_HOMEPAGE = "clickHomepage"
         private const val CLICK_OS_MICROSITE = "clickOSMicrosite"
         private const val OS_MICROSITE = "os microsite - "
         private const val FIELD_PRODUCTS = "products"
-        private const val FIELD_PRODUCT_NAME = "name"
-        private const val FIELD_PRODUCT_ID = "id"
-        private const val FIELD_PRODUCT_PRICE = "price"
-        private const val FIELD_PRODUCT_BRAND = "brand"
-        private const val FIELD_PRODUCT_VARIANT = "variant"
-        private const val FIELD_PRODUCT_CATEGORY = "category"
         private const val FIELD_PRODUCT_LIST = "list"
-        private const val FIELD_PRODUCT_POSITION = "position"
         private const val FIELD_ACTION_FIELD = "actionField"
         private const val FIELD_DIMENSION_38 = "dimension38"
-        private const val FIELD_PRODUCT_CREATIVE = "creative"
         private const val ATTRIBUTION = "attribution"
         private const val VALUE_NONE_OTHER = "none / other"
-        private const val VALUE_NONE = "none"
         private const val VALUE_IDR = "IDR"
-        private const val VALUE_NON_LOGIN = ""
-        private const val VALUE_NON_LOGIN_NEW = "non login"
-        private const val VALUE_LOGIN_NEW = "login"
-        private const val VALUE_DYNAMIC_MIX_TOP_CAROUSEL = "dynamic channel top carousel"
-        private const val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
-        private const val EVENT_PRODUCT_VIEW = "productView"
-        private const val EVENT_PRODUCT_CLICK = "productClick"
+
+        const val EVENT_PRODUCT_VIEW = "productView"
+        const val EVENT_PRODUCT_CLICK = "productClick"
         private const val PRODUCT_EVENT_ACTION = "product recommendation"
         private const val SLASH_OFFICIAL_STORE = "/official-store"
-        private const val SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY = "/official-store/"
-        private const val SKEL_APPLINK = "{&data}"
-        private const val SKEL_APPLINK_DATA = "&data"
         private const val RADIX_10 = 10
         const val OS_MICROSITE_SINGLE = "os microsite"
         private const val CAMPAIGN_CODE = "campaignCode"
@@ -92,14 +70,16 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         const val FORMAT_UNDERSCORE_TWO_VALUES = "%s_%s"
         const val FORMAT_UNDERSCORE_THREE_VALUES = "%s_%s_%s"
         const val FORMAT_ITEM_NAME = "${SLASH_OFFICIAL_STORE}/%s - %s"
+        const val FORMAT_ITEM_NAME_THREE_VALUES = "${SLASH_OFFICIAL_STORE}/%s - %s - %s"
         const val FORMAT_ITEM_NAME_FOUR_VALUES = "${SLASH_OFFICIAL_STORE}/%s - %s - %s - %s"
-        const val FORMAT_ITEM_LIST = "${SLASH_OFFICIAL_STORE}/%s - %s - %s"
+        const val FORMAT_IMPRESSION_BANNER = "impression banner - %s"
+        const val FORMAT_CLICK_BANNER = "click banner - %s"
+        const val FORMAT_IMPRESSION_PRODUCT = "impression product - %s"
+        const val FORMAT_CLICK_PRODUCT = "click product - %s"
         const val FORMAT_CLICK_VIEW_ALL = "click view all - %s"
         const val FORMAT_CLICK_VIEW_ALL_ON = "click view all on %s"
         const val FORMAT_CLICK_VIEW_ALL_CARD = "click view all card on %s"
         const val FORMAT_CLICK_BUTTON_ON = "click button on %s"
-        private const val VALUE_PRODUCT_IMPRESSION = "$IMPRESSION product"
-        private const val VALUE_PRODUCT_CLICK = "$CLICK product"
 
         private const val VALUE_TRACKER_ID_CLICK_CATEGORY = "4660"
         private const val VALUE_TRACKER_ID_IMPRESSION_CATEGORY = "4694"
@@ -131,6 +111,8 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         private const val VALUE_POPULAR_BRANDS = "popular brands"
         private const val VALUE_FLASH_SALE = "flash sale"
         private const val VALUE_DYNAMIC_CHANNEL = "dynamic channel"
+        private const val VALUE_DYNAMIC_MIX_TOP_CAROUSEL = "dynamic channel top carousel"
+        private const val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
     }
 
     fun sendScreen(categoryName: String) {
@@ -152,7 +134,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         val bundle = Bundle().apply {
             putString(Event.KEY, SELECT_CONTENT)
             putString(Category.KEY, OS_MICROSITE_SINGLE)
-            putString(Action.KEY, CLICK_BANNER.format(VALUE_CATEGORY_ICON))
+            putString(Action.KEY, FORMAT_CLICK_BANNER.format(VALUE_CATEGORY_ICON))
             putString(Label.KEY, FORMAT_DASH_TWO_VALUES.format(VALUE_CATEGORY_ICON, categorySelected.title))
             putString(UserId.KEY, userId)
             putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
@@ -181,7 +163,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         val data = DataLayer.mapOf(
             Event.KEY, PROMO_VIEW,
             Category.KEY, OS_MICROSITE_SINGLE,
-            Action.KEY, IMPRESSION_BANNER.format(VALUE_CATEGORY_ICON),
+            Action.KEY, FORMAT_IMPRESSION_BANNER.format(VALUE_CATEGORY_ICON),
             Label.KEY, FORMAT_DASH_TWO_VALUES.format(VALUE_CATEGORY_ICON, categoryName),
             Ecommerce.KEY, DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
@@ -207,7 +189,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         val bundle = Bundle().apply {
             putString(Event.KEY, SELECT_CONTENT)
             putString(Category.KEY, OS_MICROSITE_SINGLE)
-            putString(Action.KEY, CLICK_BANNER.format(VALUE_SLIDER_BANNER))
+            putString(Action.KEY, FORMAT_CLICK_BANNER.format(VALUE_SLIDER_BANNER))
             putString(Label.KEY, FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, bannerItem.bannerId, categoryName))
             putString(UserId.KEY, userId)
             putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
@@ -216,11 +198,11 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, bannerItem.title)
                     putString(Promotion.CREATIVE_SLOT, (bannerPosition+1).toString())
-                    putString(Items.ITEM_ID, bannerItem.bannerId)
-                    putString(Items.ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER))
+                    putString(Promotion.ITEM_ID, bannerItem.bannerId)
+                    putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER))
                 }
             )
-            putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_BANNER)
+            putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_CATEGORY)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
         getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
@@ -233,7 +215,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             constructBasicPromotionView(
                 event = PROMO_VIEW,
                 eventCategory = OS_MICROSITE_SINGLE,
-                eventAction = IMPRESSION_BANNER.format(VALUE_SLIDER_BANNER),
+                eventAction = FORMAT_IMPRESSION_BANNER.format(VALUE_SLIDER_BANNER),
                 eventLabel = FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, bannerItem.bannerId, categoryName),
                 promotions = listOf(Promotion(
                     creative = bannerItem.title,
@@ -301,43 +283,37 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         bannerId: String,
         userId: String,
         channelId: String,
-        campaignCode: String
     ) {
-        val data = DataLayer.mapOf(
-            Event.KEY, PROMO_CLICK,
-            Category.KEY, OS_MICROSITE_SINGLE,
-            Action.KEY, FORMAT_DASH_TWO_VALUES.format(CLICK_BANNER, VALUE_POPULAR_BRANDS),
-            Label.KEY, FORMAT_DASH_FIVE_VALUES.format(
+        val bundle = Bundle().apply {
+            putString(Event.KEY, SELECT_CONTENT)
+            putString(Category.KEY, OS_MICROSITE_SINGLE)
+            putString(Action.KEY, FORMAT_DASH_TWO_VALUES.format(FORMAT_CLICK_BANNER, VALUE_POPULAR_BRANDS))
+            putString(Label.KEY, FORMAT_DASH_FIVE_VALUES.format(
                 VALUE_POPULAR_BRANDS,
                 channelId,
                 headerName,
                 shopId,
                 categoryName
-            ),
-            Label.CAMPAIGN_CODE, campaignCode,
-            Ecommerce.KEY, DataLayer.mapOf(
-                PROMO_CLICK, DataLayer.mapOf(
-                    Promotion.KEY, DataLayer.listOf(
-                        DataLayer.mapOf(
-                            FIELD_PRODUCT_ID, FORMAT_UNDERSCORE_THREE_VALUES.format(bannerId, channelId, shopId),
-                            FIELD_PRODUCT_NAME, PROMOTIONS_NAME_POPULAR_BRANDS.format(
-                                SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY,
-                                categoryName,
-                                VALUE_POPULAR_BRANDS,
-                                headerName
-                            ),
-                            FIELD_PRODUCT_POSITION, "$shopPosition",
-                            FIELD_PRODUCT_CREATIVE, "$creativeName $REFERENCE_POPULAR_BRANDS"
-                        )
-                    )
-                )
-            ),
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            UserId.KEY, userId,
-            TrackerId.KEY, VALUE_TRACKER_ID_CLICK_FEATURED_BRAND
-        )
-        getTracker().sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
+            ))
+            putString(UserId.KEY, userId)
+            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+            val promotions = arrayListOf(
+                Bundle().apply {
+                    putString(Promotion.CREATIVE_NAME, creativeName)
+                    putString(Promotion.CREATIVE_SLOT, shopPosition.toString())
+                    putString(Promotion.ITEM_ID, FORMAT_UNDERSCORE_THREE_VALUES.format(bannerId, channelId, shopId))
+                    putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME_THREE_VALUES.format(
+                        categoryName,
+                        VALUE_POPULAR_BRANDS,
+                        headerName
+                    ))
+                }
+            )
+            putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_FEATURED_BRAND)
+            putParcelableArrayList(Promotion.KEY, promotions)
+        }
+        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
     }
 
     // Row 8
@@ -354,7 +330,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         val data = DataLayer.mapOf(
             Event.KEY, PROMO_VIEW,
             Category.KEY, OS_MICROSITE_SINGLE,
-            Action.KEY, IMPRESSION_BANNER.format(VALUE_POPULAR_BRANDS),
+            Action.KEY, FORMAT_IMPRESSION_BANNER.format(VALUE_POPULAR_BRANDS),
             Label.KEY, FORMAT_DASH_FIVE_VALUES.format(
                 VALUE_POPULAR_BRANDS,
                 channelId,
@@ -367,15 +343,14 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 PROMO_VIEW, DataLayer.mapOf(
                     Promotion.KEY, DataLayer.listOf(
                         DataLayer.mapOf(
-                            FIELD_PRODUCT_ID, FORMAT_UNDERSCORE_THREE_VALUES.format(bannerId, channelId, shopId),
-                            FIELD_PRODUCT_NAME, PROMOTIONS_NAME_POPULAR_BRANDS.format(
-                                SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY,
+                            Promotion.ITEM_ID, FORMAT_UNDERSCORE_THREE_VALUES.format(bannerId, channelId, shopId),
+                            Promotion.ITEM_NAME, FORMAT_ITEM_NAME_THREE_VALUES.format(
                                 categoryName,
                                 VALUE_POPULAR_BRANDS,
                                 headerName
                             ),
-                            FIELD_PRODUCT_POSITION, "$shopPosition",
-                            FIELD_PRODUCT_CREATIVE, creativeName
+                            Promotion.CREATIVE_SLOT, "$shopPosition",
+                            Promotion.CREATIVE_NAME, creativeName
                         )
                     )
                 )
@@ -415,34 +390,30 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         channelId: String,
         userId: String
     ) {
-        val ecommerceBody = DataLayer.mapOf(
-            CLICK, DataLayer.mapOf(
-                FIELD_ACTION_FIELD, DataLayer.mapOf(FIELD_PRODUCT_LIST, FORMAT_ITEM_LIST.format(categoryName, VALUE_FLASH_SALE, headerName)),
-                FIELD_PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
-                    FIELD_PRODUCT_NAME, gridData.name,
-                    FIELD_PRODUCT_ID, gridData.id.toString(RADIX_10),
-                    FIELD_PRODUCT_PRICE, gridData.price,
-                    FIELD_PRODUCT_BRAND, VALUE_NONE,
-                    FIELD_PRODUCT_CATEGORY, VALUE_NONE,
-                    FIELD_PRODUCT_VARIANT, VALUE_NONE,
-                    FIELD_PRODUCT_LIST, FORMAT_ITEM_LIST.format(categoryName, VALUE_FLASH_SALE, headerName),
-                    FIELD_PRODUCT_POSITION, position,
-                    ATTRIBUTION, gridData.attribution,
-                ))
+        val bundle = Bundle().apply {
+            putString(Event.KEY, SELECT_CONTENT)
+            putString(Category.KEY, OS_MICROSITE_SINGLE)
+            putString(Action.KEY, FORMAT_CLICK_PRODUCT.format(VALUE_FLASH_SALE))
+            putString(Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_FLASH_SALE, channelId, headerName, categoryName))
+            putString(UserId.KEY, userId)
+            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+            val items = arrayListOf(
+                Bundle().apply {
+                    putString(FIELD_DIMENSION_38, gridData.attribution)
+                    putString(Items.ITEM_NAME, gridData.name)
+                    putString(Items.ITEM_ID, gridData.id.toString())
+                    putString(Items.PRICE, formatPrice(gridData.price))
+                    putString(Items.ITEM_BRAND, Value.NONE_OTHER)
+                    putString(Items.ITEM_CATEGORY, Value.NONE_OTHER)
+                    putString(Items.ITEM_VARIANT, Value.NONE_OTHER)
+                    putString(Items.INDEX, position)
+                }
             )
-        )
-
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-            Event.KEY, CLICK_HOMEPAGE,
-            Category.KEY, OS_MICROSITE_SINGLE,
-            Action.KEY, VALUE_PRODUCT_CLICK.format(VALUE_FLASH_SALE),
-            Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_FLASH_SALE, channelId, headerName, categoryName),
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            TrackerId.KEY, VALUE_TRACKER_ID_CLICK_PDP_FLASH_SALE,
-            Ecommerce.KEY, ecommerceBody,
-            UserId.KEY, userId
-        ))
+            putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_PDP_FLASH_SALE)
+            putParcelableArrayList(Items.KEY, items)
+        }
+        getTracker().sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
     }
 
     // Row 11
@@ -457,16 +428,16 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             eventLabel = FORMAT_DASH_FOUR_VALUES.format(VALUE_FLASH_SALE, channelData.id, headerName, categoryName),
             eventCategory = OS_MICROSITE_SINGLE,
             eventAction = CLICK_HOMEPAGE,
-            list = FORMAT_ITEM_LIST.format(categoryName, VALUE_FLASH_SALE, headerName),
+            list = FORMAT_ITEM_NAME_THREE_VALUES.format(categoryName, VALUE_FLASH_SALE, headerName),
             products = channelData.grids.mapIndexed { index, grid ->
                 Product(
                     name = grid.name,
-                    id = grid.id.toString(RADIX_10),
+                    id = grid.id.toString(),
                     productPrice = grid.price,
                     brand = Value.NONE_OTHER,
                     category = Value.EMPTY,
                     variant = Value.NONE_OTHER,
-                    productPosition = (index + 1).toString(RADIX_10),
+                    productPosition = (index + 1).toString(),
                     isFreeOngkir = grid.freeOngkir?.isActive ?: false
                 )
             }
@@ -480,28 +451,28 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
 
     // Row 12
     fun legoClick(categoryName: String, headerName: String, position: String, channelGrid: ChannelGrid, channelModel: ChannelModel, userId: String) {
-        val ecommerceBody = DataLayer.mapOf(
-            PROMO_CLICK, DataLayer.mapOf(
-                Promotion.KEY, DataLayer.listOf(DataLayer.mapOf(
-                    Promotion.ITEM_ID, FORMAT_UNDERSCORE_TWO_VALUES.format(channelGrid.id, channelModel.id),
-                    Promotion.ITEM_NAME, FORMAT_ITEM_NAME_FOUR_VALUES.format(
+        val bundle = Bundle().apply {
+            putString(Event.KEY, SELECT_CONTENT)
+            putString(Category.KEY, OS_MICROSITE_SINGLE)
+            putString(Action.KEY, FORMAT_CLICK_BANNER.format(VALUE_DYNAMIC_CHANNEL))
+            putString(Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL, channelModel.id, headerName, categoryName))
+            putString(UserId.KEY, userId)
+            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+            val promotions = arrayListOf(
+                Bundle().apply {
+                    putString(Promotion.CREATIVE_NAME, channelGrid.attribution)
+                    putString(Promotion.CREATIVE_SLOT, position)
+                    putString(Promotion.ITEM_ID, FORMAT_UNDERSCORE_TWO_VALUES.format(channelGrid.id, channelModel.id))
+                    putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME_FOUR_VALUES.format(
                         categoryName, VALUE_DYNAMIC_CHANNEL,
-                        headerName, channelGrid.applink),
-                    Promotion.CREATIVE_SLOT, position,
-                    Promotion.CREATIVE_NAME, channelGrid.attribution,
-                ))
+                        headerName, channelGrid.applink))
+                }
             )
-        )
-
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-            Event.KEY, PROMO_CLICK,
-            Category.KEY, OS_MICROSITE_SINGLE,
-            Action.KEY, CLICK_BANNER.format(VALUE_DYNAMIC_CHANNEL),
-            Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL, channelModel.id, headerName, categoryName),
-            Ecommerce.KEY, ecommerceBody,
-            UserId.KEY, userId,
-            TrackerId.KEY, VALUE_TRACKER_ID_CLICK_LEGO
-        ))
+            putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_LEGO)
+            putParcelableArrayList(Promotion.KEY, promotions)
+        }
+        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
     }
 
     // Row 13
@@ -521,7 +492,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         trackingQueue.putEETracking(DataLayer.mapOf(
             Event.KEY, PROMO_VIEW,
             Category.KEY, OS_MICROSITE_SINGLE,
-            Action.KEY, IMPRESSION_BANNER.format(VALUE_DYNAMIC_CHANNEL),
+            Action.KEY, FORMAT_IMPRESSION_BANNER.format(VALUE_DYNAMIC_CHANNEL),
             Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL, channelModel.id, headerName, categoryName),
             Ecommerce.KEY, DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
@@ -551,9 +522,9 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_TRACKER_ID_IMPRESSION_MIX_LEFT_PRODUCT
             else -> ""
         }
-        val eventAction = IMPRESSION_PRODUCT.format(valueDynamicMix)
+        val eventAction = FORMAT_IMPRESSION_PRODUCT.format(valueDynamicMix)
         val eventLabel = FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL, channel.id, channel.channelHeader.name, categoryName)
-        val list = FORMAT_ITEM_LIST.format(categoryName, valueDynamicMix, channel.channelHeader.name)
+        val list = FORMAT_ITEM_NAME_THREE_VALUES.format(categoryName, valueDynamicMix, channel.channelHeader.name)
         val data = DataLayer.mapOf(
             Event.KEY, PRODUCT_VIEW,
             Category.KEY, OS_MICROSITE_SINGLE,
@@ -563,10 +534,15 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             Ecommerce.KEY, DataLayer.mapOf(
                 ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                 ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
-                    createCarouselCardProductItemMap(
-                        productItem,
-                        productPosition,
-                        list
+                    DataLayer.mapOf(
+                        Items.ITEM_NAME, productItem.name,
+                        Items.ITEM_ID, productItem.id,
+                        Items.PRICE, formatPrice(productItem.price),
+                        Items.ITEM_BRAND, Value.NONE_OTHER,
+                        Items.ITEM_CATEGORY, Value.NONE_OTHER,
+                        Items.ITEM_VARIANT, Value.NONE_OTHER,
+                        Items.INDEX, productPosition,
+                        FIELD_DIMENSION_38, productItem.attribution
                     )
                 )
             ),
@@ -594,48 +570,35 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_TRACKER_ID_CLICK_MIX_LEFT_PRODUCT
             else -> ""
         }
-        val eventAction = CLICK_PRODUCT.format(valueDynamicMix)
+        val eventAction = FORMAT_CLICK_PRODUCT.format(valueDynamicMix)
         val eventLabel = FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL, channel.id, channel.channelHeader.name, categoryName)
-        val list = FORMAT_ITEM_LIST.format(categoryName, valueDynamicMix, channel.channelHeader.name)
-        val data = DataLayer.mapOf(
-            Event.KEY, PRODUCT_CLICK,
-            Category.KEY, OS_MICROSITE_SINGLE,
-            Action.KEY, eventAction,
-            Label.KEY, eventLabel,
-            Ecommerce.KEY, DataLayer.mapOf(
-                CLICK, DataLayer.mapOf(
-                    FIELD_ACTION_FIELD , DataLayer.mapOf(FIELD_PRODUCT_LIST, list),
-                    FIELD_PRODUCTS, DataLayer.listOf(
-                        createCarouselCardProductItemMap(
-                            productItem,
-                            productPosition,
-                            list
-                        )
-                    )
-                )
-            ),
-            UserId.KEY, userId,
-            TrackerId.KEY, trackerId
-        )
-        getTracker().sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
-    }
+        val list = FORMAT_ITEM_NAME_THREE_VALUES.format(categoryName, valueDynamicMix, channel.channelHeader.name)
 
-    private fun createCarouselCardProductItemMap(
-        gridData: ChannelGrid,
-        position: String,
-        list: String
-    ): MutableMap<String, Any> {
-        return DataLayer.mapOf(
-            FIELD_PRODUCT_NAME, gridData.name,
-            FIELD_PRODUCT_ID, gridData.id,
-            FIELD_PRODUCT_PRICE, formatPrice(gridData.price),
-            FIELD_PRODUCT_BRAND, Value.NONE_OTHER,
-            FIELD_PRODUCT_CATEGORY, Value.NONE_OTHER,
-            FIELD_PRODUCT_VARIANT, Value.NONE_OTHER,
-            FIELD_PRODUCT_POSITION, position,
-            FIELD_PRODUCT_LIST, list,
-            FIELD_DIMENSION_38, gridData.attribution
-        )
+        val bundle = Bundle().apply {
+            putString(Event.KEY, SELECT_CONTENT)
+            putString(Category.KEY, OS_MICROSITE_SINGLE)
+            putString(Action.KEY, eventAction)
+            putString(Label.KEY, eventLabel)
+            putString(UserId.KEY, userId)
+            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+            putString(ItemList.KEY, list)
+            val items = arrayListOf(
+                Bundle().apply {
+                    putString(Items.ITEM_NAME, productItem.name)
+                    putString(Items.ITEM_ID, productItem.id)
+                    putString(Items.PRICE, formatPrice(productItem.price))
+                    putString(Items.ITEM_BRAND, Value.NONE_OTHER)
+                    putString(Items.ITEM_CATEGORY, Value.NONE_OTHER)
+                    putString(Items.ITEM_VARIANT, Value.NONE_OTHER)
+                    putString(Items.INDEX, productPosition)
+                    putString(FIELD_DIMENSION_38, productItem.attribution)
+                }
+            )
+            putString(TrackerId.KEY, trackerId)
+            putParcelableArrayList(Items.KEY, items)
+        }
+        getTracker().sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
     }
 
     private fun formatPrice(price: String): String? {
@@ -701,15 +664,15 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             Bundle().apply {
                 putString(Promotion.CREATIVE_NAME, channel.name)
                 putString(Promotion.CREATIVE_SLOT, bannerPosition.toString())
-                putString(Items.ITEM_ID, FORMAT_DASH_TWO_VALUES.format(channel.channelBanner.id, channel.id))
-                putString(Items.ITEM_NAME, FORMAT_ITEM_NAME_FOUR_VALUES.format(
+                putString(Promotion.ITEM_ID, FORMAT_DASH_TWO_VALUES.format(channel.channelBanner.id, channel.id))
+                putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME_FOUR_VALUES.format(
                     categoryName, VALUE_DYNAMIC_MIX_LEFT_CAROUSEL,
                     channel.channelHeader.name, channel.channelBanner.applink))
             }
         )
         val bundle = Bundle().apply {
             putString(Event.KEY, SELECT_CONTENT)
-            putString(Action.KEY, CLICK_BANNER.format(VALUE_DYNAMIC_MIX_LEFT_CAROUSEL))
+            putString(Action.KEY, FORMAT_CLICK_BANNER.format(VALUE_DYNAMIC_MIX_LEFT_CAROUSEL))
             putString(Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_MIX_LEFT_CAROUSEL, channel.id, channel.channelHeader.name, categoryName))
             putString(Category.KEY, OS_MICROSITE_SINGLE)
             putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
@@ -726,7 +689,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         val trackerBuilder = BaseTrackerBuilder()
             .constructBasicPromotionView(
                 event = PROMO_VIEW,
-                eventAction = IMPRESSION_BANNER.format(VALUE_DYNAMIC_MIX_LEFT_CAROUSEL),
+                eventAction = FORMAT_IMPRESSION_BANNER.format(VALUE_DYNAMIC_MIX_LEFT_CAROUSEL),
                 eventCategory = OS_MICROSITE_SINGLE,
                 eventLabel = FORMAT_DASH_FOUR_VALUES.format(
                     VALUE_DYNAMIC_MIX_LEFT_CAROUSEL,
@@ -746,7 +709,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                             channel.channelHeader.name,
                             channel.channelBanner.applink
                         ),
-                        position = (bannerPosition + 1).toString(),
+                        position = bannerPosition.toString(),
                         creative = channel.name
                     )
                 )
@@ -754,7 +717,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)
-            .appendCustomKeyValue(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_MIX_LEFT_BANNER)
+            .appendCustomKeyValue(TrackerId.KEY, VALUE_TRACKER_ID_IMPRESSION_MIX_LEFT_BANNER)
             .build()
         trackingQueue.putEETracking(trackerBuilder as HashMap<String, Any>)
     }
@@ -955,14 +918,14 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
 
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem, isLogin: Boolean, position: String): Any {
         return DataLayer.mapOf(
-                FIELD_PRODUCT_NAME, item.name,
-                FIELD_PRODUCT_ID, item.productId.toString(),
-                FIELD_PRODUCT_PRICE, item.priceInt.toString(),
-                FIELD_PRODUCT_BRAND, item.shopName,
-                FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                Items.ITEM_NAME, item.name,
+                Items.ITEM_ID, item.productId.toString(),
+                Items.PRICE, item.priceInt.toString(),
+                Items.ITEM_BRAND, item.shopName,
+                Items.ITEM_CATEGORY, item.categoryBreadcrumbs,
+                Items.ITEM_VARIANT, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_LIST, getListProductInsideProductField(item.recommendationType, item.isTopAds, isLogin),
-                FIELD_PRODUCT_POSITION, position,
+                Items.INDEX, position,
                 ATTRIBUTION, VALUE_NONE_OTHER
         )
     }
