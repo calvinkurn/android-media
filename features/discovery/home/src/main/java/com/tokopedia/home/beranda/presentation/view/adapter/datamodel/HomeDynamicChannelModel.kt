@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel
 
+import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
@@ -119,6 +120,7 @@ data class HomeDynamicChannelModel(
         val homeHeaderOvoDataModel = processList.find { visitable -> visitable is HomeHeaderDataModel }
         val headerIndex = processList.indexOfFirst { visitable -> visitable is HomeHeaderDataModel }
         (homeHeaderOvoDataModel as? HomeHeaderDataModel)?.let {
+            Log.d("dhabalog", "evaluateChooseAddressData")
             it.needToShowChooseAddress = homeChooseAddressData.isActive
             _list[headerIndex] = homeHeaderOvoDataModel
         }

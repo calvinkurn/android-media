@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -217,6 +218,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getBalanceWidgetLoadingState() {
         if (!userSession.get().isLoggedIn) return
+        Log.d("dhabalog", "getBalanceWidgetLoadingState")
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
                 val visitable = updateHeaderData(homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel))
@@ -238,6 +240,7 @@ open class HomeRevampViewModel @Inject constructor(
                 val initialHeaderModel = headerModel.copy(
                         headerDataModel = headerDataModel)
                 updateHeaderData(initialHeaderModel, index)
+                Log.d("dhabalog", "HomeRevampViewModel getBalanceWidgetData")
                 val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData()
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
                 visitable?.let {
@@ -250,7 +253,8 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun updateHeaderData(visitable: Visitable<*>?, index: Int = 0): Visitable<*>? {
-        visitable?.let { findWidget<HomeHeaderDataModel> { model, index -> updateWidget(it, index) } }
+        Log.d("dhabalog", "updateheaderdata")
+        visitable?.let { findWidget<HomeHeaderDataModel> { model, _ -> updateWidget(it, index) } }
         return visitable
     }
 
@@ -387,6 +391,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun onRefreshMembership(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
+            Log.d("dhabalog", "onRefreshMembership")
             launch {
                 val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
                     .onGetTokopointData(headerModel, position, headerTitle)
@@ -400,6 +405,7 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
+                Log.d("dhabalog", "onRefreshWalletApp")
                 val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
                     .onGetWalletAppData(headerModel, position, headerTitle)
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
@@ -578,6 +584,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
         findWidget<HomeHeaderDataModel> { headerModel, index ->
+            Log.d("dhabalog", "updateChooseAddressData")
             updateHeaderData(headerModel, index)
         }
     }

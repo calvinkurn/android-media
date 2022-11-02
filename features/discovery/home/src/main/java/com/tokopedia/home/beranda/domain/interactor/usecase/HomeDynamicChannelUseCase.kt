@@ -169,6 +169,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      * Get header data
                      */
                     if(currentHeaderDataModel==null){
+                        Log.d("dhabalog", "HomeDynamicChannelUseCase if(currentHeaderDataModel==null){")
                         currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
                     }
                     currentHeaderDataModel?.let {

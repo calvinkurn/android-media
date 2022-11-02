@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.domain.interactor.repository
 
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
 import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
@@ -13,6 +14,7 @@ class GetHomeBalanceWidgetRepository @Inject constructor(
         private val getHomeBalanceWidgetUseCase: GetHomeBalanceWidgetUseCase
 ): HomeRepository<GetHomeBalanceWidgetData> {
     override suspend fun getRemoteData(bundle: Bundle): GetHomeBalanceWidgetData {
+        Log.d("dhabalog", "remotedata balance widget")
         return getHomeBalanceWidgetUseCase.executeOnBackground()
     }
 
