@@ -14,8 +14,6 @@ import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.utils.AspectRatio
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.media.loader.listener.MediaListenerBuilder.callback as callbackListener
 import com.tokopedia.media.loader.transform.BlurHashDecoder.decode as blurHashDecode
 
@@ -42,9 +40,6 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
         // startTimeRequest will use for performance tracking
         val startTimeRequest = System.currentTimeMillis()
 
-        //initialize userSession to get the cdn name to monitoring purpose
-        val userSession: UserSessionInterface = UserSession(context)
-
         /*
         * because the medialoader placeholder has a different behavior,
         * a builder is needed to handle it. the blurhash only work for URL
@@ -61,7 +56,6 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                     properties,
                     startTimeRequest,
                     loaderListener,
-                    userSession
             ))
         }
     }

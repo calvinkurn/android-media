@@ -9,9 +9,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.common.util.NetworkManager
-import com.tokopedia.media.loader.utils.ServerIpAddressLocator
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.media.loader.utils.RemoteCdnService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -91,7 +89,6 @@ object MediaLoaderTracker : CoroutineScope {
         url: String,
         loadTime: String = "",
         exception: GlideException?,
-        userSession: UserSessionInterface
     ) {
         val pageName = try {
             context.javaClass.name.split(".").last()
@@ -111,24 +108,25 @@ object MediaLoaderTracker : CoroutineScope {
         launchCatchError(block = {
             var ipInfo = NOT_AVAILABLE
             var hostName = NOT_AVAILABLE
+            var cdnName = ""
             try {
-                val remoteInfo = ServerIpAddressLocator.fetchServerInfo(url)
+                val remoteInfo = RemoteCdnService.fetchServerInfo(url)
+                cdnName = RemoteCdnService.getCdnNameHeader(url)
                 ipInfo = remoteInfo.hostAddress
                 hostName = remoteInfo.hostName
             } catch (ignored: Exception) { /* no-op */ }
 
             map[CDN_IP_MAP_KEY] = ipInfo
             map[CDN_HOST_NAME_MAP_KEY] = hostName
-            map[CDN_NAME_KEY] = userSession.cdnName
+            map[CDN_NAME_KEY] = cdnName
             map[CDN_ERROR_DETAIL] = "localizedMessage=${exception?.localizedMessage}, cause=${exception?.cause}, rootCauses=${exception?.rootCauses}"
 
-            if (userSession.cdnAssetUrl == url) {
-                ServerLogger.log(
-                    priority = Priority.P1,
-                    tag = TAG_CDN_MONITORING,
-                    message = map
-                )
-            }
+            ServerLogger.log(
+                priority = Priority.P1,
+                tag = TAG_CDN_MONITORING,
+                message = map
+            )
+
         }, onError = {})
     }
 

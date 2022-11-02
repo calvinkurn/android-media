@@ -11,10 +11,8 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.media.loader.interceptor.CdnMonitoringInterceptor
 import okhttp3.OkHttpClient
 import java.io.InputStream
-import java.util.concurrent.TimeUnit
 
 
 @GlideModule
@@ -35,7 +33,6 @@ class LoaderGlideModule: AppGlideModule() {
         if (GlobalConfig.isAllowDebuggingTools()) {
             okHttpClient.addInterceptor(ChuckerInterceptor(context))
         }
-        okHttpClient.addInterceptor(CdnMonitoringInterceptor(context))
         val okHttpLoaderFactory = OkHttpUrlLoader.Factory(okHttpClient.build())
         registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
     }
