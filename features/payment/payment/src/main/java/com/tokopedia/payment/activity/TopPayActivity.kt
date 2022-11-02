@@ -69,6 +69,7 @@ import com.tokopedia.user.session.Constants.GCM_ID
 import com.tokopedia.user.session.Constants.GCM_STORAGE
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.WebViewHelper
+import kotlinx.android.synthetic.main.activity_top_pay_payment_module.*
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -697,13 +698,17 @@ class TopPayActivity :
 
                 // cc loading
                 if (uriString.equals(CC_LOADING_URL)) {
-                    showToaster("Inside start loader", Toaster.TYPE_NORMAL)
-                    showFullLoading()
+                    activity_topay_container.post {
+                        showToaster("Inside start loader", Toaster.TYPE_NORMAL)
+                        showFullLoading()
+                    }
                 }
 
                 if (uriString.equals(CC_LOADING_COMPLETE)) {
-                    showToaster("Complete loader", Toaster.TYPE_NORMAL)
-                    hideFullLoading()
+                    activity_topay_container.post {
+                        showToaster("Complete loader", Toaster.TYPE_NORMAL)
+                        hideFullLoading()
+                    }
                 }
             }
 
