@@ -34,7 +34,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 205
+        const val SIZE_MAPPER = 206
     }
 
     override fun setup() {
@@ -2263,9 +2263,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check KYC_FORM_ONLY_NO_PARAM customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-only/abc/def"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/user-identification-only"
         assertEqualsDeepLinkMapper(
-            ApplinkConst.KYC_FORM_ONLY_NO_PARAM + "/abc/def",
+            ApplinkConst.KYC_FORM_ONLY_NO_PARAM,
             expectedDeepLink
         )
     }
