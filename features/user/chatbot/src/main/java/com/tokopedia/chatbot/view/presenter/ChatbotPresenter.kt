@@ -469,12 +469,6 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    private fun onError(): (Throwable) -> Unit {
-        return {
-            view.showErrorToast(it)
-        }
-    }
-
     override fun showErrorSnackbar(stringId: Int) {
         view.showSnackbarError(stringId)
     }
