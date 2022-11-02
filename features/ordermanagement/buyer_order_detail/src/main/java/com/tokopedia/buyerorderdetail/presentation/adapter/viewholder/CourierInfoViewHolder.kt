@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.buyerorderdetail.R
@@ -11,7 +12,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.loadImagePod
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CourierInfoViewHolder(
@@ -85,22 +86,38 @@ class CourierInfoViewHolder(
         }
     }
 
-    private fun setupPod(pod: ShipmentInfoUiModel.CourierInfoUiModel.Pod?) {
+    private fun setupPod(pod: ShipmentInfoUiModel.CourierInfoUiModel.Pod?) = binding?.run {
         if (pod == null) {
-            binding?.layoutBuyerOrderDetailPod?.gone()
+            layoutBuyerOrderDetailPod.gone()
         } else {
-            binding?.ivBuyerOrderDetailPodPicture?.loadImage(pod.podPictureUrl)
-            binding?.tvBuyerOrderDetailPodLabel?.text = pod.podLabel
-            binding?.tvBuyerOrderDetailPodCta?.text = pod.podCtaText
-            binding?.contentBuyerOrderDetailPod?.setOnClickListener {
+            setupPodImage(pod)
+            tvBuyerOrderDetailPodLabel.text = pod.podLabel
+            tvBuyerOrderDetailPodCta.text = pod.podCtaText
+            contentBuyerOrderDetailPod.setOnClickListener {
                 navigator.openAppLink(appLink = pod.podCtaUrl, shouldRefreshWhenBack = false)
             }
-            binding?.layoutBuyerOrderDetailPod?.show()
+            layoutBuyerOrderDetailPod.show()
         }
     }
 
     private fun getArrivalEstimationTopMargin(freeShipping: Boolean): Int {
         return if (freeShipping) 0 else itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toInt()
+    }
+
+    private fun setupPodImage(pod: ShipmentInfoUiModel.CourierInfoUiModel.Pod) = binding?.run {
+        ivBuyerOrderDetailPodPicture.loadImagePod(
+            context = root.context,
+            accessToken = pod.accessToken,
+            url = pod.podPictureUrl,
+            drawableImagePlaceholder = ContextCompat.getDrawable(
+                root.context,
+                com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder
+            ),
+            drawableImageError = ContextCompat.getDrawable(
+                root.context,
+                com.tokopedia.unifycomponents.R.drawable.imagestate_error
+            )
+        )
     }
 
     interface CourierInfoViewHolderListener {

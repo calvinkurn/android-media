@@ -59,7 +59,8 @@ data class ShipmentInfoUiModel(
             val podPictureUrl: String,
             val podLabel: String,
             val podCtaText: String,
-            val podCtaUrl: String
+            val podCtaUrl: String,
+            val accessToken: String
         )
     }
 

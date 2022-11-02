@@ -6,11 +6,13 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<GetBuyerOrderDetailResponse.Data>,
-        private val mapper: GetBuyerOrderDetailMapper
+    private val useCase: GraphqlUseCase<GetBuyerOrderDetailResponse.Data>,
+    private val mapper: GetBuyerOrderDetailMapper,
+    private val userSessionInterface: UserSessionInterface
 ) {
 
     init {
@@ -20,7 +22,12 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
 
     suspend fun execute(params: GetBuyerOrderDetailParams): BuyerOrderDetailUiModel {
         useCase.setRequestParams(createRequestParam(params))
-        return mapper.mapDomainModelToUiModel(useCase.executeOnBackground().buyerOrderDetail)
+        return mapper.mapDomainModelToUiModel(
+            buyerOrderDetail = useCase.executeOnBackground().buyerOrderDetail,
+            userId = userSessionInterface.userId,
+            deviceId = userSessionInterface.deviceId,
+            accessToken = userSessionInterface.accessToken
+        )
     }
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {

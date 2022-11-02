@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.mapper
 
+import android.net.Uri
 import androidx.annotation.StringRes
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
@@ -20,13 +21,25 @@ import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.DEFAULT_OS_TYPE
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.IMAGE_SMALL_SIZE
 import javax.inject.Inject
 
 class GetBuyerOrderDetailMapper @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) {
+
+    companion object {
+        private const val QUERY_PARAM_POD_IMAGE_ID = "image_id"
+    }
+
     fun mapDomainModelToUiModel(
-        buyerOrderDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail
+        buyerOrderDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
+        userId: String,
+        deviceId: String,
+        accessToken: String
     ): BuyerOrderDetailUiModel {
         return BuyerOrderDetailUiModel(
             actionButtonsUiModel = mapActionButtons(
@@ -62,7 +75,10 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 buyerOrderDetail.orderStatus.id,
                 buyerOrderDetail.dropship,
                 buyerOrderDetail.getDriverTippingInfo(),
-                buyerOrderDetail.getPodInfo()
+                buyerOrderDetail.getPodInfo(),
+                userId,
+                deviceId,
+                accessToken
             ),
             pgRecommendationWidgetUiModel = mapToRecommendationWidgetUiModel(
                 buyerOrderDetail.adsPageName,
@@ -209,13 +225,16 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         orderStatusId: String,
         dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship,
         driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?,
-        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?
+        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?,
+        userId: String,
+        deviceId: String,
+        accessToken: String
     ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
             awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum, orderStatusId, orderId),
             courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
             driverTippingInfoUiModel = mapDriverTippingInfoUiModel(driverTippingInfo),
-            courierInfoUiModel = mapCourierInfoUiModel(shipment, meta, podInfo),
+            courierInfoUiModel = mapCourierInfoUiModel(shipment, meta, podInfo, orderId, userId, deviceId, accessToken),
             dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship),
             headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
             receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(shipment.receiver),
@@ -505,7 +524,11 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     private fun mapCourierInfoUiModel(
         shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment,
         meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta,
-        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?
+        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?,
+        orderId: String,
+        userId: String,
+        deviceId: String,
+        accessToken: String
     ): ShipmentInfoUiModel.CourierInfoUiModel {
         return ShipmentInfoUiModel.CourierInfoUiModel(
             arrivalEstimation = composeETA(shipment.eta),
@@ -514,23 +537,41 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             boBadgeUrl = meta.boImageUrl,
             etaChanged = shipment.etaIsUpdated,
             etaUserInfo = shipment.userUpdatedInfo,
-            pod = mapPod(podInfo)
+            pod = mapPod(podInfo, orderId, userId, deviceId, accessToken)
         )
     }
 
-    private fun mapPod(podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?): ShipmentInfoUiModel.CourierInfoUiModel.Pod? {
+    private fun mapPod(
+        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?,
+        orderId: String,
+        userId: String,
+        deviceId: String,
+        accessToken: String
+    ): ShipmentInfoUiModel.CourierInfoUiModel.Pod? {
         return podInfo?.let {
-            ShipmentInfoUiModel.CourierInfoUiModel.Pod(
-                podPictureUrl = it.imageUrl,
-                podLabel = it.title,
-                podCtaText = it.action.name,
-                podCtaUrl = it.action.link
-            )
+            Uri.parse(it.imageUrl).getQueryParameter(QUERY_PARAM_POD_IMAGE_ID)?.let { imageId ->
+                val completeImageUrl = LogisticImageDeliveryHelper.getDeliveryImage(
+                    imageId,
+                    orderId.toLongOrZero(),
+                    IMAGE_SMALL_SIZE,
+                    userId,
+                    DEFAULT_OS_TYPE,
+                    deviceId
+                )
+                ShipmentInfoUiModel.CourierInfoUiModel.Pod(
+                    podPictureUrl = completeImageUrl,
+                    podLabel = it.title,
+                    podCtaText = it.action.name,
+                    podCtaUrl = it.action.link,
+                    accessToken = accessToken
+                )
+            }
         }?.takeIf {
             it.podPictureUrl.isNotBlank() &&
                 it.podLabel.isNotBlank() &&
                 it.podCtaText.isNotBlank() &&
-                it.podCtaUrl.isNotBlank()
+                it.podCtaUrl.isNotBlank() &&
+                it.accessToken.isNotBlank()
         }
     }
 
