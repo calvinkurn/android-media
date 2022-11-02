@@ -94,6 +94,7 @@ class UserProfileViewModel @AssistedInject constructor(
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
 
     var ugcOnboardingOpenFrom: Int = 0
+    var fabCreated: Boolean = false
 
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
