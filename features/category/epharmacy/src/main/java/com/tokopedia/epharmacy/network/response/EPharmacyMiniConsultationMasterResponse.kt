@@ -27,6 +27,8 @@ data class EPharmacyMiniConsultationMasterResponse(
         val steps: List<ConsultationSteps?>?,
         @SerializedName("logo_url")
         val logoUrl: String?,
+        @SerializedName("logo_title")
+        val logoTitle: String?,
     ){
         data class ConsultationSteps(
             @SerializedName("image_url")

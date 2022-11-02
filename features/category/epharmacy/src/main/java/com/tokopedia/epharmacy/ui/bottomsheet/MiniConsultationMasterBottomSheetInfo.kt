@@ -150,6 +150,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
                 headingTitle.text = bottomSheetData?.infoTitle.toEmptyStringIfNull()
                 paraSubtitle.text = bottomSheetData?.infoText.toEmptyStringIfNull()
                 headingSubtitle.text = bottomSheetData?.stepTitle.toEmptyStringIfNull()
+                staticTitlePartner.text = bottomSheetData?.logoTitle
                 bottomSheetData?.logoUrl.let {
                     bottomImageLogo.show()
                     bottomImageLogo.loadImage(bottomSheetData?.logoUrl)
