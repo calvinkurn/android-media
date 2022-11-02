@@ -30,7 +30,6 @@ import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestF
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
-import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.preloadRecomOnOSPage
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage

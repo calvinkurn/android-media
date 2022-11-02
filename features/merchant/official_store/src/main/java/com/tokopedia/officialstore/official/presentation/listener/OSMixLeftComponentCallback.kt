@@ -8,7 +8,7 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 /**
  * @author by yoasfs on 09/06/20
  */
-class   OSMixLeftComponentCallback(private val dcEventHandler: DynamicChannelEventHandler)
+class OSMixLeftComponentCallback(private val dcEventHandler: DynamicChannelEventHandler)
     : MixLeftComponentListener {
 
     override fun onMixLeftImpressed(channel: ChannelModel, parentPos: Int) {

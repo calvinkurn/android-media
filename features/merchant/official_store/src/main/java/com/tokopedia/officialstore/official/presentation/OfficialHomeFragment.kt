@@ -601,37 +601,6 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onFlashSaleCardImpressed(position: Int, grid: Grid, channel: Channel) {
-        tracking?.flashSaleCardImpression(
-                viewModel.currentSlug,
-                channel,
-                grid,
-                position.toString(),
-                isLogin()
-        )
-    }
-
-    override fun onMixFlashSaleSeeAllClicked(channel: Channel, applink: String) {
-        tracking?.seeAllMixFlashSaleClicked(
-                viewModel.currentSlug,
-                channel
-        )
-        if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(context, applink)
-        }
-    }
-
-    override fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String) {
-        tracking?.flashSaleCardClicked(
-                viewModel.currentSlug,
-                channel,
-                grid,
-                position.toString(),
-                isLogin()
-        )
-        RouteManager.route(context, applink)
-    }
-
     override fun onClickMixTopBannerItem(applink: String) {
         RouteManager.route(context, applink)
     }
@@ -651,18 +620,6 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickMixLeftBannerImage(channel: Channel, position: Int) {
-        if (RouteManager.route(context, channel.banner?.applink.orEmpty())) {
-            tracking?.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position)
-        }
-    }
-
-
-
-    override fun onMixLeftBannerImpressed(channel: Channel, position: Int) {
-        tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
-    }
-
     override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
         tracking?.trackerObj?.sendEnhanceEcommerceEvent(
                 OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
@@ -675,12 +632,11 @@ class OfficialHomeFragment :
     }
 
     override fun onFlashSaleCardImpressedComponent(position: Int, grid: ChannelGrid, channel: ChannelModel) {
-        tracking?.flashSaleCardImpressionComponent(
+        tracking?.carouselProductCardImpression(
                 viewModel.currentSlugDC,
                 channel,
                 grid,
                 position.toString(),
-                isLogin(),
                 getUserId()
         )
     }
@@ -722,12 +678,11 @@ class OfficialHomeFragment :
     }
 
     override fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String) {
-        tracking?.flashSaleCardClickedComponent(
+        tracking?.carouselProductCardClicked(
                 viewModel.currentSlugDC,
                 channel,
                 grid,
-                position,
-                isLogin(),
+                position.toString(),
                 getUserId()
         )
         RouteManager.route(context, applink)
