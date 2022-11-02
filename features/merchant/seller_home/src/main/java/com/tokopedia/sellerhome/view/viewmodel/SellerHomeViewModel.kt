@@ -56,7 +56,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
-import com.tokopedia.sellerhomecommon.sse.mapper.WidgetSSEMapper
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -67,10 +66,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -104,7 +103,6 @@ class SellerHomeViewModel @Inject constructor(
     private val submitWidgetDismissUseCase: Lazy<SubmitWidgetDismissUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
     private val widgetSse: Lazy<SellerHomeWidgetSSE>,
-    private val widgetSseMapper: Lazy<WidgetSSEMapper>,
     private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
@@ -113,6 +111,7 @@ class SellerHomeViewModel @Inject constructor(
         private const val SELLER_HOME_PAGE_NAME = "seller-home"
         private const val SELLER_HOME_SSE = "home"
         private const val TICKER_PAGE_NAME = "seller"
+        private const val SSE_INITIAL_DELAY = 3000L
     }
 
     private var sseJob: Job? = null
@@ -493,7 +492,7 @@ class SellerHomeViewModel @Inject constructor(
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
         liveData: MutableLiveData<Result<T>>,
-        onResult: (widgets: T) -> Unit = {}
+        onResult: suspend (widgets: T) -> Unit = {}
     ) {
         try {
             useCase.setUseCache(false)
@@ -540,15 +539,13 @@ class SellerHomeViewModel @Inject constructor(
         }
     }
 
-    private fun startSSE(widgets: List<BaseWidgetUiModel<*>>) {
+    private suspend fun startSSE(widgets: List<BaseWidgetUiModel<*>>) {
         sseJob?.cancel()
+        delay(SSE_INITIAL_DELAY)
         sseJob = viewModelScope.launch(dispatcher.io) {
             val dataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
             widgetSse.get().connect(SELLER_HOME_SSE, dataKeys)
             widgetSse.get().listen()
-                .map {
-                    widgetSseMapper.get().mappingWidget(it.event, it.message)
-                }
                 .collect { data ->
                     data?.let {
                         handleSSEMessage(it)
@@ -559,7 +556,6 @@ class SellerHomeViewModel @Inject constructor(
 
     private suspend fun handleSSEMessage(model: BaseDataUiModel) {
         withContext(dispatcher.main) {
-            println("SSE : Model -> $model")
             when (model) {
                 is CardDataUiModel -> setLiveWidgetLiveData(_cardWidgetData, model)
                 is MilestoneDataUiModel -> setLiveWidgetLiveData(_milestoneWidgetData, model)

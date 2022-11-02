@@ -312,7 +312,7 @@ class LayoutMapper @Inject constructor(
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
             tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
-            dataKey = widget.dataKey.orEmpty(),
+            dataKey = widget.id.orZero().toString(),
             ctaText = widget.ctaText.orEmpty(),
             gridSize = WidgetGridSize.GRID_SIZE_4,
             isShowEmpty = widget.isShowEmpty.orFalse(),

@@ -263,6 +263,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
     private var binding by autoClearedNullable<FragmentSahBinding>()
+    private val tempWidgetList: MutableList<BaseWidgetUiModel<*>> = mutableListOf()
 
     private val recyclerView: RecyclerView?
         get() = try {
@@ -1511,6 +1512,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         emptyState?.gone()
         recyclerView?.visible()
 
+        saveWidgets(widgets)
         adapter.hideLoading()
         hideSnackBarRetry()
         updateScrollListenerState(false)
@@ -1603,6 +1605,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         loadNextUnloadedWidget()
+    }
+
+    private fun saveWidgets(widgets: List<BaseWidgetUiModel<*>>) {
+        tempWidgetList.clear()
+        tempWidgetList.addAll(widgets)
     }
 
     private fun isTheSameWidget(
@@ -1952,7 +1959,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     @Suppress("UNCHECKED_CAST")
-    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(
+    private fun <D : BaseDataUiModel> List<D>.setOnSuccessWidgetState(
         widgetType: String
     ) {
         isReloading = false
@@ -1978,7 +1985,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widgetDataList: List<D>,
         widgetType: String
     ) {
-        val newWidgetList = adapter.data.toMutableList()
+        val widgetMap = adapter.data.associateBy { it.dataKey }
+        val newWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
+
+        if (widgetType == WidgetType.CARD) {
+            tempWidgetList.forEach {
+                val widget = widgetMap[it.dataKey] ?: it.copyWidget()
+                newWidgetList.add(widget)
+            }
+        } else {
+            newWidgetList.clear()
+            newWidgetList.addAll(adapter.data)
+        }
+
         widgetDataList.forEach { widgetData ->
             newWidgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType

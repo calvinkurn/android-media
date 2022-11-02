@@ -22,10 +22,11 @@ class WidgetSSEMapper @Inject constructor(
 
     companion object {
         private const val DELIMITER = "-"
+        private const val PATTERN = "\\S+-\\S+"
     }
 
     fun mappingWidget(event: String, data: String): BaseDataUiModel? {
-        if (!event.matches(Regex("\\S+-\\S+"))) {
+        if (!getStatusIsValidDataKey(event)) {
             return null
         }
         return when (getWidgetType(event)) {
@@ -33,6 +34,10 @@ class WidgetSSEMapper @Inject constructor(
             WidgetType.MILESTONE -> getMilestoneData(data)
             else -> null
         }
+    }
+
+    fun getStatusIsValidDataKey(event: String): Boolean {
+        return event.matches(Regex(PATTERN))
     }
 
     private fun getMilestoneData(data: String): MilestoneDataUiModel {
