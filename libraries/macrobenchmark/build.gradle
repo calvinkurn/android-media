@@ -15,7 +15,6 @@ android {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a"
         }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "DEBUGGABLE"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11

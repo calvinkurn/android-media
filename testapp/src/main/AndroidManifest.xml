@@ -21,11 +21,6 @@
         android:requestLegacyExternalStorage="true"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <!-- enable profiling by macrobenchmark -->
-        <profileable
-            android:shell="true"
-            tools:targetApi="q" />
-
         <activity
             android:name=".MainActivity">
             <intent-filter>
