@@ -23,6 +23,7 @@ import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.exception.MessageErrorException
@@ -305,6 +306,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 }
             } else setOnAccountClickListener(null)
         }
+
+        binding.bannerShorts.apply {
+            title = getString(R.string.play_bro_banner_shorts_title)
+            description = getString(R.string.play_bro_banner_shorts_description)
+            bannerIcon = IconUnify.VIDEO
+        }
     }
 
     private fun setupInsets() {
@@ -361,6 +368,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             icBroPreparationSwitchCamera.setOnClickListener {
                 analytic.clickSwitchCameraOnPreparation()
                 broadcaster.flip()
+            }
+
+            bannerShorts.setOnClickListener {
+                /** TODO: will handle this */
             }
         }
     }
