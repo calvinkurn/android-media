@@ -39,6 +39,7 @@ private const val KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED =
 private const val KEY_PRODUCT_MINIMUM_ORDER = "product_minimum_order"
 private const val KEY_HEADLINE_PRODUCT_RATING_AVERAGE = "rating_average"
 private const val KEY_CUSTOM_VIDEO_URL = "customvideo_url"
+private const val KEY_PARENT_ID = "parent_id"
 
 data class Product(
     @SerializedName(KEY_ID)
@@ -169,6 +170,11 @@ data class Product(
     @SerializedName(KEY_CUSTOM_VIDEO_URL)
     @Expose
     var customVideoUrl: String = "",
+
+    @SerializedName(KEY_PARENT_ID)
+    @Expose
+    var parentId: String = "",
+
     var isTopAds: Boolean = false,
     var recommendationType: String = "",
     var isLoaded: Boolean = false,
@@ -287,6 +293,9 @@ data class Product(
         }
         if (!jSONObject.isNull(KEY_CUSTOM_VIDEO_URL)) {
             customVideoUrl = jSONObject.getString(KEY_CUSTOM_VIDEO_URL)
+        }
+        if (!jSONObject.isNull(KEY_PARENT_ID)) {
+            parentId = jSONObject.getString(KEY_PARENT_ID)
         }
     }
 

@@ -211,6 +211,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.dimension131 = externalReference
             item.keywordIntention = keywordIntention
             item.showButtonAtc = showButtonAtc
+            item.parentId = topAds.product.parentId
             return item
         }
 
