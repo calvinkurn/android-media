@@ -14,6 +14,7 @@ class CoachMarkHelper(
     private val context: Context,
     private val dispatcher: CoroutineDispatchers,
 ) {
+
     private val coachMarkMap = mutableMapOf<View, CoachMark2>()
     private val jobMap = mutableMapOf<View, Job>()
 
