@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -271,6 +273,7 @@ class ChatbotFragment :
     var yForReplyBubbleOnboarding: Int  = 0
     var replyBubbleOnBoardingHasBeenShow: Boolean = false
     var videoUploadOnBoardingHasBeenShow: Boolean = false
+    private val coachmarkHandler = Handler(Looper.getMainLooper())
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
@@ -289,6 +292,7 @@ class ChatbotFragment :
         private const val Y_COORDINATE = "y-coordinate"
         private const val ZERO_POSITION = 0
         private const val BUBBLE_NOT_FOUND = -2
+        private const val DELAY_TO_SHOW_COACHMARK = 1000L
 
     }
 
@@ -649,7 +653,7 @@ class ChatbotFragment :
         }
     }
 
-    private fun goToOnboardingActivity(fromScroll: Boolean = false) {
+    private fun goToOnboardingActivity() {
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
         val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
 
@@ -1714,16 +1718,24 @@ class ChatbotFragment :
         }
     }
 
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(getBindingView().composeArea.newComment.windowToken, 0)
+    }
+
     private fun checkReplyBubbleOnboardingStatus() {
-        if (!replyBubbleOnBoarding.hasBeenShown()) {
-            val position = getPositionToAnchorReplyBubbleCoachmark()
-            if (position == BUBBLE_NOT_FOUND) {
-                return
-            } else if (position != RecyclerView.NO_POSITION)
-                smoothScrollToPosition(position)
-        } else {
-            goToOnboardingActivity()
-        }
+        hideKeyboard()
+        coachmarkHandler.postDelayed({
+            if (!replyBubbleOnBoarding.hasBeenShown()) {
+                val position = getPositionToAnchorReplyBubbleCoachmark()
+                if (position == BUBBLE_NOT_FOUND) {
+                    return@postDelayed
+                } else if (position != RecyclerView.NO_POSITION)
+                    smoothScrollToPosition(position)
+            } else {
+                goToOnboardingActivity()
+            }
+        }, DELAY_TO_SHOW_COACHMARK)
     }
 
     private fun getPositionToAnchorReplyBubbleCoachmark(): Int {
@@ -1798,7 +1810,7 @@ class ChatbotFragment :
 
         xForReplyBubbleOnboarding = location[0]
         yForReplyBubbleOnboarding = location[1]
-        goToOnboardingActivity(fromScroll = true)
+        goToOnboardingActivity()
     }
 
     private fun onErrorGetBottomChat(): (Throwable) -> Unit = {
@@ -2048,5 +2060,8 @@ class ChatbotFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
+        videoUploadOnBoarding.flush()
+        replyBubbleOnBoarding.flush()
+        coachmarkHandler.removeCallbacksAndMessages(null)
     }
 }
