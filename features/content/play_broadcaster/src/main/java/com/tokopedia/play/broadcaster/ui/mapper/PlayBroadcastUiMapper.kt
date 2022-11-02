@@ -54,43 +54,6 @@ class PlayBroadcastUiMapper @Inject constructor(
     private val uriParser: UriParser,
 ) : PlayBroadcastMapper {
 
-    override fun mapSearchSuggestionList(
-        keyword: String,
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData
-    ) = productsResponse.data.map {
-        val fullSuggestedText = it.name
-        val startIndex = fullSuggestedText.indexOf(keyword)
-        val lastIndex = startIndex + keyword.length
-
-        SearchSuggestionUiModel(
-            queriedText = keyword,
-            suggestedId = it.id,
-            suggestedText = it.name,
-            spannedSuggestion = SpannableStringBuilder(fullSuggestedText).apply {
-                if (startIndex >= 0) setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    startIndex,
-                    lastIndex,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-            }
-        )
-    }
-
-    override fun mapLiveFollowers(
-        response: GetLiveFollowersResponse
-    ): FollowerDataUiModel {
-        val totalRetrievedFollowers = response.shopFollowerList.data.size
-        return FollowerDataUiModel(
-            followersList = List(TOTAL_FOLLOWERS) {
-                if (it >= totalRetrievedFollowers) FollowerUiModel.Unknown.fromIndex(it)
-                else FollowerUiModel.User(response.shopFollowerList.data[it].photo)
-            },
-            totalFollowers = response.shopInfoById.result.firstOrNull()?.favoriteData?.totalFavorite
-                ?: 0
-        )
-    }
-
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
         LiveStreamInfoUiModel(
             ingestUrl = media.ingestUrl,
@@ -132,31 +95,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                 spannedSentence = textTransformer.transform(it.sentence),
                 type = it.metricType,
                 interval = it.interval
-            )
-        }
-
-    override fun mapProductTag(productTag: ProductTagging): List<ProductData> =
-        productTag.productList.map {
-            ProductData(
-                id = it.id.toString(),
-                name = it.name,
-                imageUrl = it.imageUrl,
-                originalImageUrl = it.imageUrl,
-                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if (it.discount != 0L) {
-                    DiscountedPrice(
-                        originalPrice = it.originalPriceFormatted,
-                        originalPriceNumber = it.originalPrice,
-                        discountedPrice = it.priceFormatted,
-                        discountedPriceNumber = it.price,
-                        discountPercent = it.discount
-                    )
-                } else {
-                    OriginalPrice(
-                        price = it.originalPriceFormatted,
-                        priceNumber = it.originalPrice
-                    )
-                }
             )
         }
 
@@ -213,31 +151,6 @@ class PlayBroadcastUiMapper @Inject constructor(
         coverUrl = channel.basic.coverUrl,
         status = ChannelStatus.getByValue(channel.basic.status.id)
     )
-
-    override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) =
-        productTags.map {
-            ProductData(
-                id = it.productID,
-                name = it.productName,
-                imageUrl = it.imageUrl,
-                originalImageUrl = it.imageUrl,
-                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if (it.discount.toLong() != 0L) {
-                    DiscountedPrice(
-                        originalPrice = it.originalPriceFmt,
-                        originalPriceNumber = it.originalPrice.toDouble(),
-                        discountedPrice = it.priceFmt,
-                        discountedPriceNumber = it.price.toDouble(),
-                        discountPercent = it.discount.toLong()
-                    )
-                } else {
-                    OriginalPrice(
-                        price = it.originalPriceFmt,
-                        priceNumber = it.originalPrice.toDouble()
-                    )
-                }
-            )
-        }
 
     override fun mapChannelSchedule(
         timestamp: GetChannelResponse.Timestamp,

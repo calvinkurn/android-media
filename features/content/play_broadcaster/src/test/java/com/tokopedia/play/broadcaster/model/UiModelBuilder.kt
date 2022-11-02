@@ -38,10 +38,6 @@ class UiModelBuilder {
         return gson.fromJson(loadJsonToString("mock_live_stats.json"), GetLiveStatisticsResponse.ReportChannelSummary::class.java)
     }
 
-    fun buildProductsInEtalase(): GetProductsByEtalaseResponse.GetProductListData {
-        return gson.fromJson(loadJsonToString("mock_products_in_etalase.json"), GetProductsByEtalaseResponse::class.java).productList
-    }
-
     fun buildCreateLiveStreamGetMedia(): CreateLiveStreamChannelResponse.GetMedia {
         return gson.fromJson(loadJsonToString("mock_create_live_stream.json"), CreateLiveStreamChannelResponse::class.java).media
     }

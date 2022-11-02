@@ -5,7 +5,11 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.type.DiscountedPrice
+import com.tokopedia.play.view.type.OriginalPrice
+import com.tokopedia.play.view.type.OutOfStock
+import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
@@ -61,6 +65,15 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapChat(input: PlayChat): PlayChatUiModel {
         return chatMapper.mapChat(input)
+    }
+
+    fun mapHistoryChat(response: PlayChatHistoryResponse): PlayChatHistoryUiModel {
+        return PlayChatHistoryUiModel(
+            chatList = response.wrapper.data.map {
+                mapChat(it)
+            },
+            nextCursor = response.wrapper.pagination.nextCursor
+        )
     }
 
     fun mapStatus(input: ChannelStatusResponse): PlayStatusType {
