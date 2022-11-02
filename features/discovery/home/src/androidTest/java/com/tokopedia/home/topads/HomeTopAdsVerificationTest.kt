@@ -3,12 +3,10 @@ package com.tokopedia.home.topads
 import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -40,11 +38,9 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import org.hamcrest.Matchers
 import org.junit.*
 
 
@@ -164,63 +160,9 @@ class HomeTopAdsVerificationTest {
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
         when (val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)) {
             is MixTopComponentViewHolder -> {
-//                try {
-//                    val childRecyclerView: View =
-//                        viewHolder.itemView.findViewById(R.id.home_component_header_view)
-//                    val tempContentDescription = childRecyclerView.contentDescription
-//                    childRecyclerView.contentDescription = "1a"
-//                    Espresso.onView(
-//                        Matchers.allOf(
-//                            ViewMatchers.withId(childRecyclerView.id),
-//                            ViewMatchers.withContentDescription("1a")
-//                        )
-//                    )
-//                        .perform(ViewActions.click())
-//                    childRecyclerView.contentDescription = tempContentDescription
-//                } catch (e: Exception) {
-//                    val parentView: View = viewHolder.itemView.findViewById(R.id.dc_banner_rv)
-//                    val tempContentDescription = parentView.contentDescription
-//                    parentView.contentDescription = "1"
-//                    Espresso.onView(
-//                        Matchers.allOf(
-//                            ViewMatchers.withId(parentView.id),
-//                            ViewMatchers.withContentDescription("1")
-//                        )
-//                    ).perform(ViewActions.swipeDown())
-//                    parentView.contentDescription = tempContentDescription
-//                }
-
-//                waitForData()
-
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
-//                try {
-//                    val bannerTitle: View = viewHolder.itemView.findViewById(R.id.home_component_header_view)
-//                    val tempContentDescription = bannerTitle.contentDescription
-//                    bannerTitle.contentDescription = "2a"
-//                    Espresso.onView(
-//                        Matchers.allOf(
-//                            ViewMatchers.withId(bannerTitle.id),
-//                            ViewMatchers.withContentDescription("2a")
-//                        )
-//                    )
-//                        .perform(ViewActions.click())
-//                    bannerTitle.contentDescription = tempContentDescription
-//                } catch (e: Exception) {
-//                    val parentView: View = viewHolder.itemView.findViewById(R.id.rv_product)
-//                    val tempContentDescription = parentView.contentDescription
-//                    parentView.contentDescription = "2"
-//                    Espresso.onView(
-//                        Matchers.allOf(
-//                            ViewMatchers.withId(parentView.id),
-//                            ViewMatchers.withContentDescription("2")
-//                        )
-//                    ).perform(ViewActions.swipeDown())
-//                    parentView.contentDescription = tempContentDescription
-//                }
-//                waitForData()
-
                 val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.rv_product)
                 val childItemCount = childRecyclerView.adapter?.itemCount?:0
                 if (childItemCount >= MIX_LEFT_ITEM_COUNT_THRESHOLD) {
