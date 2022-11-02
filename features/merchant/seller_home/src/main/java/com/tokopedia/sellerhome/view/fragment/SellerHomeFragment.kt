@@ -1985,28 +1985,28 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widgetDataList: List<D>,
         widgetType: String
     ) {
-        val widgetMap = adapter.data.associateBy { it.dataKey }
-        val newWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
+        val widgetMap: Map<String, BaseWidgetUiModel<*>> = adapter.data.associateBy { it.dataKey }
+        val widgetList = mutableListOf<BaseWidgetUiModel<*>>()
 
         if (widgetType == WidgetType.CARD) {
             tempWidgetList.forEach {
                 val widget = widgetMap[it.dataKey] ?: it.copyWidget()
-                newWidgetList.add(widget)
+                widgetList.add(widget)
             }
         } else {
-            newWidgetList.clear()
-            newWidgetList.addAll(adapter.data)
+            widgetList.clear()
+            widgetList.addAll(adapter.data)
         }
 
         widgetDataList.forEach { widgetData ->
-            newWidgetList.indexOfFirst {
+            widgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType
             }.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
-                val widget = newWidgetList.getOrNull(index)
+                val widget = widgetList.getOrNull(index)
                 if (widget is W) {
                     if (shouldRemoveWidget(widget, widgetData)) {
-                        newWidgetList.removeAt(index)
-                        removeEmptySections(newWidgetList, index)
+                        widgetList.removeAt(index)
+                        removeEmptySections(widgetList, index)
                     } else {
                         val copiedWidget = widget.copyWidget()
                         copiedWidget.data = widgetData
@@ -2015,14 +2015,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
                         handleShopShareMilestoneWidget(copiedWidget)
 
-                        newWidgetList[index] = copiedWidget
+                        widgetList[index] = copiedWidget
                     }
                 }
             }
         }
 
         notifyWidgetWithSdkChecking {
-            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+            updateWidgets(widgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         }
     }
 
