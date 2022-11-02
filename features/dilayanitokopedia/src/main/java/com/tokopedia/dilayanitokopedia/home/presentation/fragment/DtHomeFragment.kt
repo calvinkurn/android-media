@@ -1,6 +1,8 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
+import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.TextUtils
@@ -30,12 +32,14 @@ import com.tokopedia.dilayanitokopedia.home.domain.model.Data
 import com.tokopedia.dilayanitokopedia.home.domain.model.SearchPlaceholder
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapterTypeFactory
+import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewModel
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtDynamicLegoBannerCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtHomeLeftCarouselCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeViewModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewHolder
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
@@ -45,16 +49,19 @@ import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -65,6 +72,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 /**
  * Created by irpan on 07/09/22.
@@ -73,7 +81,7 @@ class DtHomeFragment : Fragment() {
 
     companion object {
         const val SOURCE = "dilayanitokopedia"
-        const val SOURCE_TRACKING = "tokonow page"
+        const val SOURCE_TRACKING = "dilayanitokopedia page"
 
     }
 
@@ -89,8 +97,11 @@ class DtHomeFragment : Fragment() {
 
     private var rvLayoutManager: CustomLinearLayoutManager? = null
 
+    private var anchorViewHolder: AnchorTabsViewHolder? = null
 
     private var localCacheModel: LocalCacheModel? = null
+
+    private val navBarScrollListener by lazy { createNavBarScrollListener() }
 
 
     private val adapter by lazy {
@@ -125,42 +136,6 @@ class DtHomeFragment : Fragment() {
     }
 
 
-    private fun createFeatureShopCallback(): FeaturedShopListener {
-        return object : FeaturedShopListener {
-            override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onFeaturedShopBannerBackgroundClicked(channel: ChannelModel) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onFeaturedShopItemImpressed(
-                channelModel: ChannelModel,
-                channelGrid: ChannelGrid,
-                position: Int,
-                parentPosition: Int
-            ) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onFeaturedShopItemClicked(
-                channelModel: ChannelModel,
-                channelGrid: ChannelGrid,
-                position: Int,
-                parentPosition: Int
-            ) {
-                TODO("Not yet implemented")
-            }
-
-        }
-    }
-
-
     override fun onAttach(context: Context) {
         initInjector()
         super.onAttach(context)
@@ -185,6 +160,8 @@ class DtHomeFragment : Fragment() {
         initUiVariable()
         initNavToolbar()
         initRecyclerView()
+
+        setupStatusBar()
         updateCurrentPageLocalCacheModelData()
 
         observeLiveData()
@@ -195,6 +172,28 @@ class DtHomeFragment : Fragment() {
          * Remove later
          */
         showLayout()
+
+    }
+
+    private fun setupStatusBar() {
+        /*
+            this status bar background only shows for android Kitkat below
+            In that version, status bar can't be forced to dark mode
+            We must set background to keep status bar icon visible
+        */
+        activity?.let {
+            statusBarBackground?.apply {
+                layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
+                visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
+            }
+            setStatusBarAlpha()
+        }
+    }
+
+    private fun setStatusBarAlpha() {
+        val drawable = statusBarBackground?.background
+        drawable?.alpha = 0
+        statusBarBackground?.background = drawable
     }
 
     private fun initUiVariable() {
@@ -206,7 +205,9 @@ class DtHomeFragment : Fragment() {
 //            swipeLayout = binding?.swipeRefreshLayout
 
         }
+
     }
+
 
     private fun initNavToolbar() {
         setupTopNavigation()
@@ -348,9 +349,9 @@ class DtHomeFragment : Fragment() {
 //    }
 
     private fun addNavBarScrollListener() {
-//        navBarScrollListener?.let {
-//            rvHome?.addOnScrollListener(it)
-//        }
+        navBarScrollListener?.let {
+            rvHome?.addOnScrollListener(it)
+        }
     }
 
 
@@ -429,7 +430,7 @@ class DtHomeFragment : Fragment() {
 //        stopRenderPerformanceMonitoring()
 
         //additional in DT
-//        setupAnchorTabComponent(data)
+        setupAnchorTabComponent(data)
     }
 
     private fun observeLiveData() {
@@ -668,24 +669,26 @@ class DtHomeFragment : Fragment() {
     }
 
 
-//    private fun setupAnchorTabComponent(homeLayoutListUiModel: HomeLayoutListUiModel) {
-//        if(anchorViewHolder == null) {
-//            val view = layoutInflater.inflate(ComponentsList.AnchorTabs.id, null, false)
-//            anchorViewHolder = AnchorTabsViewHolder(view, this)
-//            val viewModel =
-//                AnchorTabsViewModel(context?.applicationContext as Application, homeLayoutListUiModel, 0)
-//            anchorViewHolder?.bindView(viewModel)
+    private fun setupAnchorTabComponent(homeLayoutListUiModel: HomeLayoutListUiModel) {
+        if(anchorViewHolder == null) {
+            val view = layoutInflater.inflate(R.layout.dt_anchor_tabs, null, false)
+            anchorViewHolder = AnchorTabsViewHolder(view, this)
+            val viewModel = AnchorTabsViewModel(context?.applicationContext as Application,
+//                homeLayoutListUiModel,
+                0,
+            )
+            anchorViewHolder?.bindView(viewModel)
 //            viewModel.onAttachToViewHolder()
 //            anchorViewHolder?.onViewAttachedToWindow()
-//        }
-//        setupObserveAndShowAnchor()
-//    }
-//
-//    private fun setupObserveAndShowAnchor() {
-//        if (!stickyHeaderShowing)
-//            anchorViewHolder?.let {
+        }
+        setupObserveAndShowAnchor()
+    }
+
+    private fun setupObserveAndShowAnchor() {
+////        if (!stickyHeaderShowing)
+            anchorViewHolder?.let {
 //                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers())
-//                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
 //                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
 //                    mAnchorHeaderView.removeAllViews()
 //                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
@@ -693,8 +696,8 @@ class DtHomeFragment : Fragment() {
 //                    )
 //                    mAnchorHeaderView.addView(it.itemView)
 //                }
-//            }
-//    }
+            }
+    }
 
     private fun createTopComponentCallback(): HomeComponentListener? {
         return object : HomeComponentListener {
@@ -817,4 +820,79 @@ class DtHomeFragment : Fragment() {
 
         }
     }
+
+    private fun createFeatureShopCallback(): FeaturedShopListener {
+        return object : FeaturedShopListener {
+            override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onFeaturedShopBannerBackgroundClicked(channel: ChannelModel) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onFeaturedShopItemImpressed(
+                channelModel: ChannelModel,
+                channelGrid: ChannelGrid,
+                position: Int,
+                parentPosition: Int
+            ) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onFeaturedShopItemClicked(
+                channelModel: ChannelModel,
+                channelGrid: ChannelGrid,
+                position: Int,
+                parentPosition: Int
+            ) {
+                TODO("Not yet implemented")
+            }
+
+        }
+
+    }
+
+    private val homeMainToolbarHeight: Int
+        get() {
+            val defaultHeight = context?.resources?.getDimensionPixelSize(
+                R.dimen.tokopedianow_default_toolbar_status_height).orZero()
+            val height = (navToolbar?.height ?: defaultHeight)
+            val padding = context?.resources?.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).orZero()
+
+            return height + padding
+        }
+
+    private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
+        return navToolbar?.let { toolbar ->
+            context?.let { context ->
+                NavRecyclerViewScrollListener(
+                    navToolbar = toolbar,
+                    startTransitionPixel = homeMainToolbarHeight,
+                    toolbarTransitionRangePixel = context.resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range),
+                    navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                        override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
+                        }
+
+                        override fun onSwitchToLightToolbar() { /* nothing to do */
+                        }
+
+                        override fun onSwitchToDarkToolbar() {
+                            navToolbar?.hideShadow()
+                        }
+
+                        override fun onYposChanged(yOffset: Int) {}
+                    },
+                    fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+                )
+            }
+        }
+    }
+
+
 }
