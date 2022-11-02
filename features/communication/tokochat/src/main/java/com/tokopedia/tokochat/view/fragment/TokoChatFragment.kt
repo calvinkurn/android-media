@@ -1,7 +1,6 @@
 package com.tokopedia.tokochat.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,13 +25,13 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
-import com.tokopedia.tokochat.R
-import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
+import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatErrorLogger
 import com.tokopedia.tokochat.util.TokoChatViewUtil.loadByteArrayImage
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.tokochat.view.bottomsheet.TokoChatGeneralUnavailableBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
@@ -61,7 +60,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
+class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
     TokoChatReplyTextListener,
@@ -235,8 +234,8 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         return baseBinding?.tokochatReplyBox
     }
 
-    override fun getViewBindingInflate(container: ViewGroup?): FragmentTokoChatBinding {
-        return FragmentTokoChatBinding.inflate(
+    override fun getViewBindingInflate(container: ViewGroup?): TokochatChatroomFragmentBinding {
+        return TokochatChatroomFragmentBinding.inflate(
             LayoutInflater.from(context),
             container,
             false
@@ -357,8 +356,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     private fun observeMemberLeft() {
         observe(viewModel.getMemberLeft()) {
-            Log.d("MEMBER LEFT - CONV", it)
-            // TODO: Add bottomsheet for not available chat
+            showUnavailableBottomSheet()
         }
     }
 
@@ -393,11 +391,14 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         observe(viewModel.getLiveChannel(channelId)) {
             it?.let { channel ->
                 // Show bottom sheet if channel expires
-                if (channel.expiresAt < System.currentTimeMillis()) {
-
+                if (channel.expiresAt < System.currentTimeMillis() && channel.expiresAt > 0) {
+                    showUnavailableBottomSheet()
                 } else {
                     // Check if channel is read only
-                    if (channel.readOnly || (channel.readModeStartsAt?: 0) < System.currentTimeMillis()) {
+                    val readModeStartsAt = channel.readModeStartsAt?: 0
+                    if (channel.readOnly ||
+                        readModeStartsAt > System.currentTimeMillis() &&
+                        readModeStartsAt > 0) {
                         // Hide reply component
                         setupReplySection(
                             false,
@@ -418,10 +419,10 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     private fun setupToolbarData(headerUiModel: TokoChatHeaderUiModel) {
         getTokoChatHeader()?.run {
-            val userTitle = findViewById<Typography>(R.id.tokochat_text_user_title)
-            val subTitle = findViewById<Typography>(R.id.tokochat_text_user_subtitle)
-            val imageUrl = findViewById<ImageUnify>(R.id.tokochat_user_avatar)
-            val callMenu = findViewById<IconUnify>(R.id.tokochat_icon_header_menu)
+            val userTitle = findViewById<Typography>(com.tokopedia.tokochat_common.R.id.tokochat_text_user_title)
+            val subTitle = findViewById<Typography>(com.tokopedia.tokochat_common.R.id.tokochat_text_user_subtitle)
+            val imageUrl = findViewById<ImageUnify>(com.tokopedia.tokochat_common.R.id.tokochat_user_avatar)
+            val callMenu = findViewById<IconUnify>(com.tokopedia.tokochat_common.R.id.tokochat_icon_header_menu)
 
             userTitle.text = headerUiModel.title
             subTitle.text = headerUiModel.subTitle
@@ -431,7 +432,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             val sourceLogoUrl = getSourceLogoUrl(source)
 
             if (sourceLogoUrl.isNotBlank()) {
-                val sourceLogo = findViewById<ImageUnify>(R.id.tokochat_iv_source_logo)
+                val sourceLogo = findViewById<ImageUnify>(com.tokopedia.tokochat_common.R.id.tokochat_iv_source_logo)
                 sourceLogo.setImageUrl(sourceLogoUrl)
             }
 
@@ -635,6 +636,16 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             userSession.deviceId.orEmpty(),
             description
         )
+    }
+
+    private fun showUnavailableBottomSheet() {
+        val bottomSheet = TokoChatGeneralUnavailableBottomSheet()
+        bottomSheet.setListener(tracking = {
+            //TODO: Trackers if any
+        }, buttonAction = {
+            activity?.finish()
+        })
+        bottomSheet.show(childFragmentManager)
     }
 
     companion object {
