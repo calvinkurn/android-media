@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.databinding.WidgetReviewCredibilityHeaderBinding
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
+import com.tokopedia.review.feature.credibility.analytics.ReviewCredibilityTracking
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityHeaderUiModel
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityHeaderUiState
 
@@ -75,18 +76,23 @@ class ReviewCredibilityHeaderWidget @JvmOverloads constructor(
         setupReviewerProfilePicture(data.reviewerProfilePicture)
         setupReviewerName(data.reviewerName)
         setupReviewerJoinDate(data.reviewerJoinDate)
-        setupReviewerProfileButton(data.reviewerProfileButtonText, data.reviewerProfileButtonUrl)
+        setupReviewerProfileButton(data.reviewerProfileButtonText, data.reviewerProfileButtonUrl, data.trackingData)
         headerLoadingBinding.root.gone()
         headerBinding.root.show()
     }
 
     private fun setupReviewerProfileButton(
         reviewerProfileButtonText: String,
-        reviewerProfileUrl: String
+        reviewerProfileUrl: String,
+        trackingData: ReviewCredibilityHeaderUiModel.TrackingData
     ) {
         headerBinding.btnReviewCredibilityHeaderReviewerSeeProfile.apply {
             text = reviewerProfileButtonText
-            setOnClickListener { RouteManager.route(context, reviewerProfileUrl) }
+            setOnClickListener {
+                if (RouteManager.route(context, reviewerProfileUrl)) {
+                    ReviewCredibilityTracking.trackClickSeeProfileButton(trackingData)
+                }
+            }
             showWithCondition(shouldShow = reviewerProfileButtonText.isNotBlank() && reviewerProfileUrl.isNotBlank())
         }
     }

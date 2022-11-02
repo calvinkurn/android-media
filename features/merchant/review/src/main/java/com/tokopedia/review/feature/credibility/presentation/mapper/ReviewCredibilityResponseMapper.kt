@@ -73,14 +73,33 @@ object ReviewCredibilityResponseMapper {
     }
 
     fun toReviewCredibilityHeaderUiModel(
-        response: ReviewerCredibilityStatsWrapper
+        response: ReviewerCredibilityStatsWrapper,
+        reviewerUserID: String,
+        viewerUserId: String,
+        productID: String,
+        source: String
     ): ReviewCredibilityHeaderUiModel {
         return ReviewCredibilityHeaderUiModel(
             reviewerProfilePicture = response.userProfile?.profilePicture.orEmpty(),
             reviewerName = response.userProfile?.firstName.orEmpty(),
             reviewerJoinDate = response.userProfile?.joinDate.orEmpty(),
             reviewerProfileButtonText = response.userProfile?.buttonProfileText.orEmpty(),
-            reviewerProfileButtonUrl = mapProfileButtonUrl(response.userProfile?.buttonProfileLink)
+            reviewerProfileButtonUrl = mapProfileButtonUrl(response.userProfile?.buttonProfileLink),
+            trackingData = mapCredibilityHeaderTrackingData(reviewerUserID, viewerUserId, productID, source)
+        )
+    }
+
+    private fun mapCredibilityHeaderTrackingData(
+        reviewerUserID: String,
+        viewerUserId: String,
+        productID: String,
+        source: String
+    ): ReviewCredibilityHeaderUiModel.TrackingData {
+        return ReviewCredibilityHeaderUiModel.TrackingData(
+            reviewerUserId = reviewerUserID,
+            viewerUserId = viewerUserId,
+            productId = productID,
+            pageSource = source
         )
     }
 
