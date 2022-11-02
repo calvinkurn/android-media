@@ -30,6 +30,7 @@ ext {
             exploreCategory                 : ":features:category:explore_category",
             categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
+            contentCommon                   : ":features:content:content_common",
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
@@ -45,6 +46,7 @@ ext {
             playBroadcaster                 : ":features:content:play_broadcaster",
             contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
+            contentTest                     : ":features:content:content_test",
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
             digitalRecommendation           : ":features:recharge:digital_recommendation",

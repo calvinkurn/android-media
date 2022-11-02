@@ -16,7 +16,9 @@ import com.tokopedia.contactus.inboxticket2.data.model.ChipUploadHostConfig
 import com.tokopedia.contactus.inboxticket2.data.model.SecureImageParameter
 import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets
-import com.tokopedia.contactus.inboxticket2.domain.*
+import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
+import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
+import com.tokopedia.contactus.inboxticket2.domain.CreatedBy
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
 import com.tokopedia.contactus.inboxticket2.view.activity.*
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
@@ -29,20 +31,20 @@ import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
 import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
-import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.EMOJI_STATE
-import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.SELECTED_ITEM
+import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.EMOJI_STATE
+import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.SELECTED_ITEM
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
-import okhttp3.MediaType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 private const val AGENT = "agent"
