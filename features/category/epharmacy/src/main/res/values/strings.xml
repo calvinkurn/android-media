@@ -16,6 +16,11 @@
     <string name="epharmacy_quantity_weight_text">"%s Barang (%s)"</string>
     <string name="epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
     <string name="epharmacy_upload_title_view_only">Foto Resep Dokter</string>
+    <string name="epharmacy_upload_resep_dokter_chooser_title">Upload Resep Dokter</string>
+    <string name="epharmacy_upload_resep_dokter_chooser_subtitle">Sudah punya resep? Bisa langsung upload, ya.</string>
+    <string name="epharmacy_mini_consult_chooser_title">Chat Dokter</string>
+    <string name="eepharmacy_mini_consult_chooser_subtitle">Belum punya resep? Yuk, chat dokter dari Dkonsul buat dapat resep digital.</string>
+    <string name="epharmacy_dilayani_oleh">Dilayani oleh</string>
 
     <string name="epharmacy_prescription_attachment_page_title">Lampirkan resep dokter</string>
     <string name="epharmacy_partner_resmi">Partner resmi</string>

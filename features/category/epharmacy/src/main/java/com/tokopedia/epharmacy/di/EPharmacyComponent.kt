@@ -2,6 +2,7 @@ package com.tokopedia.epharmacy.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.epharmacy.ui.activity.EPharmacyActivity
+import com.tokopedia.epharmacy.ui.fragment.EPharmacyChooserBottomSheet
 import com.tokopedia.epharmacy.ui.activity.EPharmacyAttachPrescriptionActivity
 import com.tokopedia.epharmacy.ui.bottomsheet.MiniConsultationMasterBottomSheetInfo
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
@@ -21,4 +22,7 @@ interface EPharmacyComponent {
     fun inject(epharmacyPrescriptionAttachmentPage: EPharmacyPrescriptionAttachmentPageFragment)
 
     fun inject(miniConsultationMasterBottomSheetInfo: MiniConsultationMasterBottomSheetInfo)
+
+    fun inject(chooserBottomSheet: EPharmacyChooserBottomSheet)
+
 }

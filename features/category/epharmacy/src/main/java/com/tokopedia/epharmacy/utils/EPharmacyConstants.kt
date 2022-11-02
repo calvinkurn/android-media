@@ -49,16 +49,19 @@ const val MAX_MEDIA_SIZE_PICKER = 4_000_000L
 const val ENTRY_POINT_ORDER = "Order"
 const val ENTRY_POINT_CHECKOUT = "Checkout"
 
+const val ENABLER_IMAGE_URL = "enabler_image_url"
+const val UPLOAD_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons.jpg"
+const val MINI_CONS_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons.jpg"
+
+const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
+const val EPHARMACY_ATTACH_PRESCRIPTION_APPLINK = "tokopedia://epharmacy/attach-prescription"
+
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"
 
 const val EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL = "https://images.tokopedia.net/img/green-waves.png"
 const val EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL = "https://images.tokopedia.net/img/miniconsul-toped-illustration.png"
 const val EPHARMACY_PDP_INFO_DATA_TYPE = "obat_keras_info"
-
-const val ENABLER_IMAGE_URL = "enabler_image_url"
-
-const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
 const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
 
 const val EPHARMACY_TICKER_ICON = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc.png"

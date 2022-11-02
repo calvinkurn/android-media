@@ -55,6 +55,7 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 1, mapOf(0 to "invoice.pl")) to INVOICE)
         add(Pattern(GT, 0, mapOf(0 to "blog")) to BLOG)
         add(Pattern(GT, 0, mapOf(0 to "category")) to CATEGORY)
+        add(Pattern(GT, 0, mapOf(0 to "epharmacy")) to EPHARMACY)
         add(Pattern(GT, 0, mapOf(0 to "p")) to CATEGORY)
         add(Pattern(GT, 0, mapOf(0 to "epharmacy")) to EPHARMACY)
         add(Pattern(GT, 0, mapOf(0 to "search")) to BROWSE)
