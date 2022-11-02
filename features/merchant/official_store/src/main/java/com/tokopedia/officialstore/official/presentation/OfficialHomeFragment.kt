@@ -548,13 +548,13 @@ class OfficialHomeFragment :
         return View.OnClickListener {
             channelData.grids.getOrNull(position)?.let { gridData ->
                 val applink = gridData.applink
-                tracking?.dynamicChannelMixCardClick(
+                tracking?.dynamicChannelThematicCardClick(
                         viewModel.currentSlug,
+                        channelData.id,
                         channelData.header?.name ?: "",
                         (position + POS_1).toString(POS_10),
                         gridData,
-                        channelData.campaignCode,
-                        channelData.campaignID.toString()
+                        getUserId()
                 )
 
                 RouteManager.route(context, applink)
@@ -570,10 +570,11 @@ class OfficialHomeFragment :
 
             bannerData?.let {
                 tracking?.dynamicChannelMixBannerClick(
-                        viewModel.currentSlug,
-                        channelData.header?.name ?: "",
-                        it,
-                        channelData
+                    viewModel.currentSlug,
+                    channelData.header?.name ?: "",
+                    it,
+                    channelData,
+                    getUserId()
                 )
             }
 
@@ -585,7 +586,7 @@ class OfficialHomeFragment :
         val impressionTag = "Images Impression"
 
         if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
-            tracking?.dynamicChannelMixCardImpression(viewModel.currentSlug, channelData)
+            tracking?.dynamicChannelThematicImpression(viewModel.currentSlug, channelData)
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
     }
