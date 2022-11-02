@@ -25,7 +25,6 @@ import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
-import com.tokopedia.picker.DebugPickerActivity
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
@@ -164,12 +163,7 @@ open class PickerActivity : BaseActivity()
         param.setParam(pickerParam)
 
         // get pre-included media items
-        param.get().includeMedias()
-            .map { it.asPickerFile() }
-            .map { it.toUiModel() }
-            .also {
-                stateOnChangePublished(it)
-            }
+        viewModel.preSelectedMedias()
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
@@ -217,6 +211,17 @@ open class PickerActivity : BaseActivity()
                     medias.isNotEmpty() && param.get().isMultipleSelectionType()
                 )
             }
+        }
+
+        viewModel.includeMedias.observe(this) { files ->
+            if (files.isEmpty()) return@observe
+
+            val fileToUiModel = files.mapNotNull {
+                val mPickerFile = it?.asPickerFile()
+                mPickerFile?.toUiModel()
+            }
+
+            stateOnChangePublished(fileToUiModel)
         }
     }
 
