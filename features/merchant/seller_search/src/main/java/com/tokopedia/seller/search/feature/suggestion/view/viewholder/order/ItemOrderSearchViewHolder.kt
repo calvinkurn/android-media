@@ -26,29 +26,6 @@ class ItemOrderSearchViewHolder(
 
     override fun bind(element: OrderSellerSearchUiModel) {
         binding?.run {
-            if (element.imageUrl?.isBlank() == true) {
-                when (element.id) {
-                    INV, SHIPPING -> {
-                        ivSearchResultOrder.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                root.context,
-                                R.drawable.ic_invoice_seller_search
-                            )
-                        )
-                    }
-                    CUSTOMER -> {
-                        ivSearchResultOrder.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                root.context,
-                                R.drawable.ic_buyers
-                            )
-                        )
-                    }
-                }
-            } else {
-                ivSearchResultOrder.setImageUrl(element.imageUrl.orEmpty())
-            }
-
             tvSearchResultOrderTitle.bindTitleText(
                 element.title.orEmpty(),
                 element.keyword.orEmpty()

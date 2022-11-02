@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeSlides.HOME_SLIDES_QUERY
 import com.tokopedia.home.beranda.di.module.query.QueryHomeSlides.HOME_SLIDES_QUERY_NAME
 
+@Deprecated("Has been migrated to banner v2")
 @GqlQuery(HOME_SLIDES_QUERY_NAME, HOME_SLIDES_QUERY)
 internal object QueryHomeSlides {
     const val HOME_SLIDES_QUERY_NAME = "HomeSlidesQuery"

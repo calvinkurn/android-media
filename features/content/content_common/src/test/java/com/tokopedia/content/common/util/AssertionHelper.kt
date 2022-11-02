@@ -1,5 +1,7 @@
 package com.tokopedia.content.common.util
 
+import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
+import com.tokopedia.content.common.onboarding.view.uimodel.state.UGCOnboardingUiState
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import org.assertj.core.api.Assertions
@@ -77,4 +79,25 @@ fun ProductTagUiEvent.assertEvent(event: ProductTagUiEvent) {
 
 infix fun <T : Any> T.equalTo(expected: T) {
     this.assertEqualTo(expected)
+}
+
+infix fun UGCOnboardingUiState.andThen(fn: UGCOnboardingUiState.() -> Unit) {
+    fn()
+}
+
+infix fun List<UGCOnboardingUiEvent>.andThen(fn: List<UGCOnboardingUiEvent>.() -> Unit) {
+    fn()
+}
+
+infix fun Pair<UGCOnboardingUiState, List<UGCOnboardingUiEvent>>.andThen(
+    fn: Pair<UGCOnboardingUiState, List<UGCOnboardingUiEvent>>.
+        (UGCOnboardingUiState, List<UGCOnboardingUiEvent>) -> Unit
+) {
+    fn(first, second)
+}
+
+fun UGCOnboardingUiEvent.assertEvent(event: UGCOnboardingUiEvent) {
+    Assertions
+        .assertThat(this)
+        .isInstanceOf(event::class.java)
 }
