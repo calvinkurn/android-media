@@ -3,9 +3,7 @@ package com.tokopedia.usercomponents.explicit.view
 import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableString
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +19,7 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usercomponents.R
+import com.tokopedia.usercomponents.common.NonCopyClickableSpan
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitFailedBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
@@ -216,7 +215,7 @@ class ExplicitView constructor(
         showShadow(true)
         initSuccessMessageText(
             data?.message.orEmpty(),
-            context.getString(R.string.explicit_succes_message_action),
+            data?.textApplink.orEmpty(),
             data?.applink.orEmpty()
         )
         replaceView(bindingSuccess?.root)
@@ -252,27 +251,28 @@ class ExplicitView constructor(
         applink: String
     ) {
         val message = "$messageSuccess $textApplink"
+        val indexStar = messageSuccess.length + 1
+        val indexEnd = indexStar + textApplink.length
+
         val spannable = SpannableString(message)
         spannable.setSpan(
-            object : ClickableSpan() {
-                override fun onClick(view: View) {
-                    goToExplicitProfilePreference(applink)
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
-                    )
-                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                }
-            },
-            message.indexOf(textApplink),
-            message.indexOf(textApplink) + textApplink.length,
+            NonCopyClickableSpan(onClick = {
+                goToExplicitProfilePreference(applink)
+            }, updateDrawableStateCallback = {
+                it.color = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                )
+                it.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            }),
+            indexStar,
+            indexEnd,
             0
         )
-        bindingSuccess?.txtSuccessTitle?.movementMethod = LinkMovementMethod.getInstance()
-        bindingSuccess?.txtSuccessTitle?.setText(spannable, TextView.BufferType.SPANNABLE)
+        bindingSuccess?.txtSuccessTitle?.apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            setText(spannable, TextView.BufferType.SPANNABLE)
+        }
     }
 
     private fun goToExplicitProfilePreference(applink: String) {

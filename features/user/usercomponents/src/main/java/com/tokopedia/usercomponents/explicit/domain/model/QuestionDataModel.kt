@@ -8,13 +8,16 @@ data class OptionsItem(
     val caption: String = "",
 
     @SerializedName("value")
-    var value: String = "",
+    val value: String = "",
 
     @SerializedName("message")
-    var message: String = "",
+    val message: String = "",
 
     @SerializedName("applink")
-    var applink: String = ""
+    val applink: String = "",
+
+    @SerializedName("textApplink")
+    val textApplink: String = ""
 )
 
 data class Property(
