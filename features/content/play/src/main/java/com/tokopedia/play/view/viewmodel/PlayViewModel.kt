@@ -2326,7 +2326,7 @@ class PlayViewModel @AssistedInject constructor(
         if (product.isVariantAvailable) openVariantDetail(product, sectionInfo, isProductFeatured)
         else {
             needLogin {
-                addProductToCart(product) { cartId ->
+                addProductToCart(product, action) { cartId ->
                     _uiEvent.emit(
                         when (action){
                             ProductAction.Buy -> BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
@@ -2348,7 +2348,7 @@ class PlayViewModel @AssistedInject constructor(
         if (selectedVariant !is NetworkResult.Success ||
             selectedVariant.data.variantDetail.id != productId) return@needLogin
 
-        addProductToCart(selectedVariant.data.variantDetail) { cartId ->
+        addProductToCart(selectedVariant.data.variantDetail, action) { cartId ->
             _uiEvent.emit(
                 when (action) {
                     ProductAction.Buy -> BuySuccessEvent(
@@ -2404,20 +2404,34 @@ class PlayViewModel @AssistedInject constructor(
      */
     private fun addProductToCart(
         product: PlayProductUiModel.Product,
+        action: ProductAction,
         onSuccess: suspend (String) -> Unit,
     ) {
         _loadingBuy.value = true
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val cartId = repo.addProductToCart(
-                id = product.id,
-                name = product.title,
-                shopId = product.shopId,
-                minQty = product.minQty,
-                price = when (product.price) {
-                    is OriginalPrice -> product.price.priceNumber
-                    is DiscountedPrice -> product.price.discountedPriceNumber
-                },
-            )
+            val cartId = if(action == ProductAction.OCC) {
+                repo.addProductToCartOcc(
+                    id = product.id,
+                    name = product.title,
+                    shopId = product.shopId,
+                    minQty = product.minQty,
+                    price = when (product.price) {
+                        is OriginalPrice -> product.price.priceNumber
+                        is DiscountedPrice -> product.price.discountedPriceNumber
+                    },
+                )
+            } else {
+                repo.addProductToCart(
+                    id = product.id,
+                    name = product.title,
+                    shopId = product.shopId,
+                    minQty = product.minQty,
+                    price = when (product.price) {
+                        is OriginalPrice -> product.price.priceNumber
+                        is DiscountedPrice -> product.price.discountedPriceNumber
+                    },
+                )
+            }
             _loadingBuy.value = false
             onSuccess(cartId)
         }) {
