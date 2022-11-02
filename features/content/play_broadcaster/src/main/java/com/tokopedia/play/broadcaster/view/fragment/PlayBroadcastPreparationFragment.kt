@@ -383,7 +383,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun validateAndStartLive() {
-        requireTitleAndCover { startCountDown() }
+        requireTitleAndCover {
+            binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
+            startCountDown()
+        }
     }
 
     private fun setupObserver() {
@@ -690,18 +693,21 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Callback Preparation Menu */
     override fun onClickSetTitle() {
+        binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         analytic.clickSetupTitleMenu()
 
         showTitleForm(true)
     }
 
     override fun onClickSetCover() {
+        binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         analytic.clickSetupCoverMenu()
 
         showCoverForm(true)
     }
 
     override fun onClickSetProduct() {
+        binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         analytic.clickSetupProductMenu()
 
         childFragmentManager.beginTransaction()
@@ -710,6 +716,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onClickSetSchedule() {
+        binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         eventBus.emit(Event.ClickSetSchedule)
     }
 
