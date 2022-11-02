@@ -115,16 +115,12 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-
-        RouteManager.route(this, getDefaultAppLink())
-//        startActivity(Intent(this, TokopediaWatchActivity::class.java))
-
     }
 
     private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here
          */
-        return ApplinkConst.HOME_NAVIGATION
+        return ""
     }
 }
