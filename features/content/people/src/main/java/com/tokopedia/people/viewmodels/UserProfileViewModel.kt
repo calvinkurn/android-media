@@ -131,6 +131,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
             is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
+            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.cursor)
         }
     }
 
@@ -141,6 +142,14 @@ class UserProfileViewModel @AssistedInject constructor(
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
+    }
+
+    private fun handleLoadNextPageShopRecom(cursor: String) {
+        viewModelScope.launchCatchError(block = {
+            loadShopRecom(cursor)
+        }, onError = {
+            _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
+        })
     }
 
     /**
@@ -318,8 +327,8 @@ class UserProfileViewModel @AssistedInject constructor(
             _uiEvent.emit(UserProfileUiEvent.LoadPlayVideo)
     }
 
-    private suspend fun loadShopRecom() {
-        val result = repo.getShopRecom()
+    private suspend fun loadShopRecom(cursor: String = "") {
+        val result = repo.getShopRecom(cursor)
         if (result.isShown) _shopRecom.emit(result)
         else _shopRecom.emit(ShopRecomUiModel())
     }

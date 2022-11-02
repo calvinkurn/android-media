@@ -826,10 +826,19 @@ class FeedViewModel @Inject constructor(
     private fun getShopRecomWidget(model: DynamicFeedDomainModel) {
         if (!shouldGetShopRecomWidget(model)) return
         launchCatchError(block = {
-            val request = requestShopRecomWidget()
+            val request = requestShopRecomWidget("")
             _shopRecom.value = request
         }, onError = {
             _shopRecom.value = ShopRecomWidgetModel()
+        })
+    }
+
+    fun getShopRecomWidgetNextPage(cursor: String) {
+        launchCatchError(block = {
+            val request = requestShopRecomWidget(cursor)
+            _shopRecom.update { request }
+        }, onError = {
+            _shopRecom.update { ShopRecomWidgetModel() }
         })
     }
 
@@ -837,11 +846,11 @@ class FeedViewModel @Inject constructor(
         return model.postList.any { it is ShopRecomWidgetModel }
     }
 
-    private suspend fun requestShopRecomWidget(): ShopRecomWidgetModel {
+    private suspend fun requestShopRecomWidget(cursor: String): ShopRecomWidgetModel {
         val response = shopRecomUseCase.executeOnBackground(
             screenName = VAL_SCREEN_NAME_FEED_UPDATE,
             limit = VAL_LIMIT,
-            cursor = VAL_CURSOR
+            cursor = cursor
         )
         val uiModel = shopRecomMapper.mapShopRecom(response)
         return ShopRecomWidgetModel(uiModel)

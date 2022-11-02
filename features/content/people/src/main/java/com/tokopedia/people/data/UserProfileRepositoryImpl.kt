@@ -107,11 +107,11 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
+    override suspend fun getShopRecom(cursor: String): ShopRecomUiModel = withContext(dispatcher.io) {
         val result = shopRecomUseCase.executeOnBackground(
             screenName = VAL_SCREEN_NAME_USER_PROFILE,
             limit = VAL_LIMIT,
-            cursor = VAL_CURSOR,
+            cursor = cursor,
         )
 
         return@withContext shopRecomMapper.mapShopRecom(result)
