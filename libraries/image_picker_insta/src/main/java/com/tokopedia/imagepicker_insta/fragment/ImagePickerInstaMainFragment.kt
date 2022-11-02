@@ -1,7 +1,6 @@
 package com.tokopedia.imagepicker_insta.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,6 +12,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,11 +27,11 @@ import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
-import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
-import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.di.ImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
@@ -47,11 +47,8 @@ import com.tokopedia.imagepicker_insta.views.MediaView
 import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.imagepicker_insta.views.adapters.ImageAdapter
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
@@ -59,12 +56,12 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+@Suppress("LateinitUsage")
 class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentContract {
 
-    lateinit var viewModel: PickerViewModel
+    private val viewModel: PickerViewModel by viewModels()
 
-    private lateinit var toolbarCommon: ImagePickerCommonToolbar
+    private lateinit var toolbarCommon: ContentAccountToolbar
     lateinit var rv: RecyclerView
     lateinit var selectedMediaView: MediaView
     lateinit var recentSection: LinearLayout
@@ -86,8 +83,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     lateinit var loadingMediaText: String
     lateinit var queryConfiguration: QueryConfiguration
     var maxMultiSelect: Int = DEFAULT_MULTI_SELECT_LIMIT
-    val coachMarkItem = ArrayList<CoachMark2Item>()
-    private  lateinit var coachMark: CoachMark2
 
     @Inject
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
@@ -100,6 +95,18 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             .build()
     }
 
+    private val onErrorLoadImage: (Boolean) -> Unit = { isFileNotFound ->
+        showToast(
+            message = getString(
+                if(isFileNotFound)
+                    R.string.imagepicker_media_not_found_error
+                else
+                    R.string.imagepicker_insta_smwr
+            ),
+            toasterType = Toaster.TYPE_ERROR
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         injectFragment()
         super.onCreate(savedInstanceState)
@@ -110,12 +117,12 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when(childFragment) {
-            is FeedAccountTypeBottomSheet -> {
+            is ContentAccountTypeBottomSheet -> {
                 childFragment.setAnalytic(feedAccountAnalytic)
-                childFragment.setData(viewModel.feedAccountList)
-                childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
-                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                        viewModel.setSelectedFeedAccount(feedAccount)
+                childFragment.setData(viewModel.contentAccountList)
+                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(contentAccount: ContentAccountUiModel) {
+                        viewModel.setSelectedFeedAccount(contentAccount)
                     }
                 })
             }
@@ -186,7 +193,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun initDagger() {
         if (context is AppCompatActivity) {
-            viewModel = ViewModelProviders.of(this)[PickerViewModel::class.java]
             daggerComponent.inject(viewModel)
         }
     }
@@ -314,19 +320,12 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private fun openFeedAccountBottomSheet(){
         try {
             feedAccountAnalytic.clickAccountInfo()
-            FeedAccountTypeBottomSheet
+            ContentAccountTypeBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
-                .showNow(childFragmentManager)
+                .show(childFragmentManager)
         }
         catch (e: Exception) {
 
-        }
-    }
-
-    private fun showFabCoachMark() {
-        Prefs.saveShouldShowCoachMarkValue(activity as Context)
-        if (::coachMark.isInitialized) {
-            coachMark.showCoachMark(coachMarkItem)
         }
     }
 
@@ -496,32 +495,22 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun setObservers() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.selectedFeedAccount.collectLatest {
+            viewModel.selectedContentAccount.collectLatest {
                 toolbarCommon.subtitle = it.name
                 toolbarCommon.icon = it.iconUrl
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.feedAccountListState.collectLatest {
+            viewModel.contentAccountListState.collectLatest {
                 if(viewModel.isAllowChangeAccount) {
-                    toolbarCommon.getToolbarParentView().addOneTimeGlobalLayoutListener {
-                        coachMark = CoachMark2(requireContext())
-
-                        coachMarkItem.add(
-                            CoachMark2Item(
-                                toolbarCommon.getToolbarParentView(),
-                                getString(R.string.imagepicker_coachmark_header),
-                                getString(R.string.imagepicker_coachmark_text),
-                                CoachMark2.POSITION_BOTTOM
-                            )
-                        )
-
-                        if (Prefs.getShouldShowCoachMarkValue(requireContext()))
-                            showFabCoachMark()
+                    if (Prefs.getShouldShowCoachMarkValue(requireContext())) {
+                        Prefs.saveShouldShowCoachMarkValue(requireContext())
+                        toolbarCommon.showCoachMarkSwitchAccount()
                     }
 
                     toolbarCommon.setOnAccountClickListener {
+                        toolbarCommon.hideCoachMarkSwitchAccount()
                         openFeedAccountBottomSheet()
                     }
                 }
@@ -683,7 +672,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         // getting original width of the new selected video
         val originalWidth =
-            originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext()).width
+            originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext(), onErrorLoadImage).width
         val originalHeight =
             originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
 
@@ -744,7 +733,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             }
 
         } else {
-
             if (mediaVmMData?.isNewItem == true) {
                 allImageDataList.addAll(0, tempImageAdapterList)
             }
@@ -849,7 +837,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             zoomInfo = ZoomInfo()
 
             if (imageAdapterData.asset is PhotosData) {
-                val size = imageAdapterData.asset.contentUri.getImageDimensions(requireContext())
+                val size = imageAdapterData.asset.contentUri.getImageDimensions(requireContext(), onErrorLoadImage)
                 zoomInfo.bmpWidth = size.width
                 zoomInfo.bmpHeight = size.height
             } else {

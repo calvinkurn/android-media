@@ -27,7 +27,6 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList: List<Visitable<*>> by lazy { visitableListSlot.captured }
-    private val className = "SearchClassName"
 
     @Test
     fun `Impressed top ads inspiration carousel list`() {
@@ -75,20 +74,16 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
     ): InspirationCarouselDataView.Option.Product {
         val visitableList = visitableListSlot.captured
 
-        val carousel = visitableList.find {
-            it is InspirationCarouselDataView && it.layout == layoutType
-        } as InspirationCarouselDataView
+        val inspirationCarouselLayoutList =
+            visitableList.filter {
+                it is InspirationCarouselDataView && it.layout == layoutType
+            } as List<InspirationCarouselDataView>
 
-        val option =
-            carousel.options.first { it.product.firstOrNull { it.isOrganicAds == isTopAds } != null }
-        return findProductFromInspirationCarouselDataViewOption(option, isTopAds)
-    }
-
-    private fun findProductFromInspirationCarouselDataViewOption(
-        option: InspirationCarouselDataView.Option,
-        isTopAds: Boolean
-    ): InspirationCarouselDataView.Option.Product {
-        return option.product.find { it.isOrganicAds == isTopAds }!!
+        return inspirationCarouselLayoutList.asSequence().map { it.options }
+            .flatten()
+            .map { it.product }
+            .flatten()
+            .find { it.isOrganicAds == isTopAds }!!
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -247,6 +242,13 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Then verify interaction for Inspiration Carousel Product Chips Item impression`(
             inspirationCarouselProduct
         )
+    }
+
+    private fun findProductFromInspirationCarouselDataViewOption(
+        option: InspirationCarouselDataView.Option,
+        isTopAds: Boolean
+    ): InspirationCarouselDataView.Option.Product {
+        return option.product.find { it.isOrganicAds == isTopAds }!!
     }
 
     @Test

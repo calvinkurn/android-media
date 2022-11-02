@@ -2,10 +2,12 @@ package com.tokopedia.picker.common.utils
 
 import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.ContextCompat
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.file.FileUtil
 import java.io.File
@@ -26,15 +28,22 @@ object SaveImageProcessor {
 
         val file = filePath.asPickerFile()
 
-        val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val contentUri: Uri
+        val mimeType: String
+        if (isImageFormat(filePath)) {
+            contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            mimeType = MIME_IMAGE_TYPE
+        } else {
+            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            mimeType = MIME_VIDEO_TYPE
+        }
 
         var resultFile: File? = null
-        val fileName = fileName(file.nameWithoutExtension)
+        val fileName = fileName(file)
 
         val contentValues = ContentValues()
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
 
-        val mimeType = if (isImageFormat(filePath)) MIME_IMAGE_TYPE else MIME_VIDEO_TYPE
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -102,7 +111,10 @@ object SaveImageProcessor {
         }
     }
 
-    private fun fileName(name: String): String {
-        return "${FILE_NAME_PREFIX}_$name"
+    private fun fileName(file: PickerFile): String {
+        val fileName = "${FILE_NAME_PREFIX}_${file.nameWithoutExtension}"
+        val extension = file.extension
+
+        return "$fileName.$extension"
     }
 }

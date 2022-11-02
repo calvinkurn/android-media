@@ -1901,37 +1901,6 @@ object DynamicProductDetailTracking {
             )
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
-
-
-        /**
-         * 26-10-2021
-         * Only triggered when using
-         * oneliner - stock assurance
-         */
-        fun eventOneLinerImpression(
-                trackingQueue: TrackingQueue?,
-                componentTrackDataModel: ComponentTrackDataModel,
-                productInfo: DynamicProductInfoP1?,
-                userId: String,
-                lcaWarehouseId: String,
-                label: String
-        ) {
-            val productId = productInfo?.basic?.productID ?: ""
-            val mapEvent = TrackingUtil.createCommonImpressionTracker(
-                    productInfo = productInfo,
-                    componentTrackDataModel = componentTrackDataModel,
-                    userId = userId,
-                    lcaWarehouseId = lcaWarehouseId,
-                    customAction = "view - pdp oneliner component",
-                    customCreativeName = "",
-                    customItemName = "product detail page - $productId",
-                    customLabel = "",
-                    customPromoCode = "",
-                    customItemId = "text:$label"
-            )
-
-            trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
-        }
     }
 
     object TradeIn {

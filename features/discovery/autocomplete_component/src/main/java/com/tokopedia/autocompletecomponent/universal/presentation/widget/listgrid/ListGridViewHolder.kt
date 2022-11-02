@@ -49,8 +49,8 @@ class ListGridViewHolder(
     }
 
     private fun bindSeeAll(data: ListGridDataView) {
-        binding?.universalSearchListGridSubtitle?.shouldShowWithAction(data.data.applink.isNotEmpty()) {
-            binding?.universalSearchListGridSubtitle?.setOnClickListener {
+        binding?.universalSearchListGridSeeAll?.shouldShowWithAction(data.data.applink.isNotEmpty()) {
+            binding?.universalSearchListGridSeeAll?.setOnClickListener {
                 listGridListener.onListGridSeeAllClick(data)
             }
         }
