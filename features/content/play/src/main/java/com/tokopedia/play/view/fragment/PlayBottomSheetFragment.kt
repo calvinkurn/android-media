@@ -148,21 +148,12 @@ class PlayBottomSheetFragment @Inject constructor(
         closeProductSheet()
     }
 
-    override fun onBuyButtonClicked(
+    override fun onButtonTransactionClicked(
         view: ProductSheetViewComponent,
         product: PlayProductUiModel.Product,
-        sectionInfo: ProductSectionUiModel.Section
+        sectionInfo: ProductSectionUiModel.Section,
+        action: ProductAction
     ) {
-        val action = product.buttons.lastOrNull().orDefault().type.toAction
-        shouldCheckProductVariant(product, sectionInfo, action)
-    }
-
-    override fun onAtcButtonClicked(
-        view: ProductSheetViewComponent,
-        product: PlayProductUiModel.Product,
-        sectionInfo: ProductSectionUiModel.Section
-    ) {
-        val action = product.buttons.firstOrNull().orDefault().type.toAction
         shouldCheckProductVariant(product, sectionInfo, action)
     }
 

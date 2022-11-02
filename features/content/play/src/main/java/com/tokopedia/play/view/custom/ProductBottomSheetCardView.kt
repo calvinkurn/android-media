@@ -98,12 +98,17 @@ class ProductBottomSheetCardView(
             }
         }
 
-        binding.btnProductSecond.setOnClickListener {
-            mListener?.onBuyProduct(this, item, section)
-        }
+        val firstButton = item.buttons.firstOrNull().orDefault()
+        val lastButton = item.buttons.lastOrNull().orDefault()
+
         binding.btnProductFirst.setOnClickListener {
-            mListener?.onAtcProduct(this, item, section)
+            mListener?.onButtonTransactionProduct(this, item, section, firstButton.type.toAction)
         }
+
+        binding.btnProductSecond.setOnClickListener {
+            mListener?.onButtonTransactionProduct(this, item, section, lastButton.type.toAction)
+        }
+
         setOnClickListener {
             if (!item.applink.isNullOrEmpty()) mListener?.onClicked(this, item, section)
         }
@@ -111,10 +116,12 @@ class ProductBottomSheetCardView(
         //Buttons
         binding.btnProductFirst.showWithCondition(item.buttons.isNotEmpty())
         binding.btnProductSecond.showWithCondition(item.buttons.isNotEmpty())
-        binding.btnProductFirst.text = item.buttons.firstOrNull().orDefault().text
-        binding.btnProductSecond.text = item.buttons.lastOrNull().orDefault().text
-        binding.btnProductFirst.generateButton(item.buttons.firstOrNull().orDefault().color)
-        binding.btnProductSecond.generateButton(item.buttons.lastOrNull().orDefault().color)
+
+        binding.btnProductFirst.text = firstButton.text
+        binding.btnProductSecond.text = lastButton.text
+
+        binding.btnProductFirst.generateButton(firstButton.color)
+        binding.btnProductSecond.generateButton(lastButton.color)
     }
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
@@ -151,16 +158,11 @@ class ProductBottomSheetCardView(
             section: ProductSectionUiModel.Section,
         )
 
-        fun onBuyProduct(
+        fun onButtonTransactionProduct(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
-        )
-
-        fun onAtcProduct(
-            view: ProductBottomSheetCardView,
-            product: PlayProductUiModel.Product,
-            section: ProductSectionUiModel.Section,
+            action: ProductAction,
         )
     }
 }
