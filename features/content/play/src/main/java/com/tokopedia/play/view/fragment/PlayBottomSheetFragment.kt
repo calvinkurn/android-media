@@ -660,7 +660,7 @@ class PlayBottomSheetFragment @Inject constructor(
                             )
                         }
                         is OCCSuccessEvent -> {
-                            RouteManager.route(requireContext(),ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT, event.product.id)
+                            RouteManager.route(requireContext(),ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
                         }
                         else -> {}
                     }
