@@ -213,7 +213,7 @@ class RechargeHomepageInstrumentTest {
     private fun check_swipe_banner_section(){
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(12)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(13)
         )
         Thread.sleep(2000)
         onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
