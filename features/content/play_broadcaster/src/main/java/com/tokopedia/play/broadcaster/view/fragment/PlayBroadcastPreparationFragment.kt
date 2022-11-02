@@ -9,6 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
@@ -371,7 +373,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             bannerShorts.setOnClickListener {
-                /** TODO: will handle this */
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }
         }
     }
