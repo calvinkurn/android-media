@@ -2,11 +2,9 @@ package com.tokopedia.tokopoints.view.cataloglisting
 
 import android.content.Context
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.text.TextUtils
 import android.view.*
 import android.widget.*
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
@@ -41,9 +39,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var mPagerSortType: ViewPager? = null
     private var mTabSortType: TabLayout? = null
     private var mTextPoints: TextView? = null
-    private var mTextPointsBottom: TextView? = null
     private var mViewPagerAdapter: CatalogSortTypePagerAdapter? = null
-    var mFlashTimer: CountDownTimer? = null
     private var mAppBarHeader: AppBarLayout? = null
 
     @Inject
@@ -51,11 +47,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     private val mViewModel: CatalogListingViewModel by lazy { ViewModelProviders.of(this, factory).get(CatalogListingViewModel::class.java) }
 
-    private var bottomViewMembership: LinearLayout? = null
-    private var mContainerPointDetail: ConstraintLayout? = null
     private var appBarCollapseListener: onAppBarCollapseListener? = null
     private var isPointsAvailable = false
-    private var menuItemFilter: MenuItem? = null
     private var serverErrorView: ServerErrorView? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -131,14 +124,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         }
     })
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (mFlashTimer != null) {
-            mFlashTimer?.cancel()
-            mFlashTimer = null
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
@@ -178,7 +163,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
         if (!rewardStr.isEmpty()) mTextPoints?.text = rewardStr
-        mTextPointsBottom?.text = CurrencyHelper.convertPriceValue(rewardValue.toDouble(), false)
         isPointsAvailable = true
         mAppBarHeader?.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }
@@ -310,7 +294,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         mPagerSortType = view.findViewById(R.id.view_pager_sort_type)
         mTabSortType = view.findViewById(R.id.tabs_sort_type)
         mTextPoints = view.findViewById(R.id.text_point_value)
-        mContainerPointDetail = view.findViewById(R.id.container_point_detail)
         mAppBarHeader = view.findViewById(R.id.app_bar_header)
         appBarCollapseListener?.hideToolbarElevation()
         if (arguments != null && requireArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
@@ -336,7 +319,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         }
         requireView().findViewById<View>(R.id.text_my_coupon).setOnClickListener(this)
         requireView().findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
-        bottomViewMembership?.setOnClickListener(this)
     }
 
     override fun openWebView(url: String) {
