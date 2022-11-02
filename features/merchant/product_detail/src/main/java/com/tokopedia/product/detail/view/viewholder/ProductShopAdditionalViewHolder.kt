@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
@@ -63,10 +63,10 @@ class ProductShopAdditionalViewHolder(
     private fun setupAppLink(
         element: ProductShopAdditionalDataModel
     ) = with(contentBinding) {
-        shopAdditionalActionLabel.shouldShowWithAction(element.linkText.isNotBlank()) {
-            shopAdditionalActionLabel.text = element.linkText
+        shopAdditionalActionLabel.showIfWithBlock(predicate = element.linkText.isNotBlank()) {
+            text = element.linkText
 
-            shopAdditionalActionLabel.setOnClickListener {
+            setOnClickListener {
                 listener.onLearnButtonShopAdditionalClicked()
                 listener.onLearnButtonShopAdditionalClickedTracking(
                     componentTrackDataModel = getComponentTrackData(element = element),
@@ -80,22 +80,22 @@ class ProductShopAdditionalViewHolder(
      * render widget and set content with condition
      */
     private fun setWidgetContent(element: ProductShopAdditionalDataModel) = with(contentBinding) {
-        shopAdditionalImage.shouldShowWithAction(shouldShow = element.icon.isNotBlank()) {
-            shopAdditionalImage.loadIcon(element.icon)
+        shopAdditionalImage.showIfWithBlock(predicate = element.icon.isNotBlank()) {
+            loadIcon(element.icon)
         }
 
-        shopAdditionalDescription.shouldShowWithAction(shouldShow = element.description.isNotEmpty()) {
-            shopAdditionalDescription.text = element.description.parseAsHtmlLink(
+        shopAdditionalDescription.showIfWithBlock(predicate = element.description.isNotEmpty()) {
+            text = element.description.parseAsHtmlLink(
                 context = context,
                 replaceNewLine = false
             )
         }
 
-        shopAdditionalTitle.shouldShowWithAction(shouldShow = element.title.isNotEmpty()) {
-            shopAdditionalTitle.text = element.title
+        shopAdditionalTitle.showIfWithBlock(predicate = element.title.isNotEmpty()) {
+            text = element.title
         }
 
-        shopAdditionalScrollviewLabel.shouldShowWithAction(shouldShow = element.labels.isNotEmpty()) {
+        shopAdditionalScrollviewLabel.showIfWithBlock(predicate = element.labels.isNotEmpty()) {
             shopAdditionalContainerLabel.removeAllViews()
 
             element.labels.forEach {
