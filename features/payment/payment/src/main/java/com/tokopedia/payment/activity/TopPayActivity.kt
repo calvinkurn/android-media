@@ -697,10 +697,12 @@ class TopPayActivity :
 
                 // cc loading
                 if (uriString.equals(CC_LOADING_URL)) {
+                    Toast.makeText(this@TopPayActivity, "Inside start loader", Toast.LENGTH_SHORT).show()
                     showFullLoading()
                 }
 
-                if (uriString.contains(CC_LOADING_COMPLETE)) {
+                if (uriString.equals(CC_LOADING_COMPLETE)) {
+                    Toast.makeText(this@TopPayActivity, "Complete loader", Toast.LENGTH_SHORT).show()
                     hideFullLoading()
                 }
             }
