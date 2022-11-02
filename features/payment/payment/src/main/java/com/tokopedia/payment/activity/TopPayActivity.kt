@@ -699,14 +699,12 @@ class TopPayActivity :
                 // cc loading
                 if (uriString.equals(CC_LOADING_URL)) {
                     activity_topay_container.post {
-                        showToaster("Inside start loader", Toaster.TYPE_NORMAL)
                         showFullLoading()
                     }
                 }
 
                 if (uriString.equals(CC_LOADING_COMPLETE)) {
                     activity_topay_container.post {
-                        showToaster("Complete loader", Toaster.TYPE_NORMAL)
                         hideFullLoading()
                     }
                 }
@@ -933,8 +931,8 @@ class TopPayActivity :
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
-        private const val CC_LOADING_COMPLETE = "https://centinelapistag.cardinalcommerce.com/V1/Cruise/CollectRedirect"
-        private const val CC_LOADING_URL = "https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect"
+        private const val CC_LOADING_COMPLETE = "https://centinelapi.cardinalcommerce.com/V1/Cruise/CollectRedirect"
+        private const val CC_LOADING_URL = "https://centinelapi.cardinalcommerce.com/V1/Cruise/Collect"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
         private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
