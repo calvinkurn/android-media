@@ -188,6 +188,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var collectionNameDestination = ""
     private var isAturMode = false
     private var bottomSheetCollectionSettings = BottomSheetWishlistCollectionSettings()
+    private var customToolbarView: View? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -976,6 +977,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
 
             viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionDetailNavtoolbar)
+            customToolbarView = View.inflate(activity, Rv2.layout.toolbar_custom, null)
+
             if (isBulkAddShow) {
                 turnOnBulkAddMode()
             } else {
@@ -1140,17 +1143,18 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun updateCustomToolbarTitleAndSubTitle(title: String, subtitle: String) {
-        val titleLayout: Typography
-        val subtitleLayout: Typography
-        val customToolbar = View.inflate(context, Rv2.layout.toolbar_custom_add_bulk, null).also {
-            titleLayout = it.findViewById(Rv2.id.toolbar_title)
-            subtitleLayout = it.findViewById(Rv2.id.toolbar_subtitle)
-        }
-        binding?.run {
-            wishlistCollectionDetailNavtoolbar.setCustomViewContentView(customToolbar)
-            wishlistCollectionDetailNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
-            titleLayout.text = title
-            subtitleLayout.text = subtitle
+        val titleLayout = customToolbarView?.findViewById<Typography>(Rv2.id.toolbar_title)
+        val subtitleLayout = customToolbarView?.findViewById<Typography>(Rv2.id.toolbar_subtitle)
+
+        titleLayout?.text = title
+        subtitleLayout?.text = subtitle
+
+        customToolbarView?.let { toolbarView ->
+            binding?.wishlistCollectionDetailNavtoolbar?.apply {
+                this.let { activity?.lifecycle?.addObserver(it) }
+                setCustomViewContentView(toolbarView)
+                setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
+            }
         }
     }
 
@@ -2567,7 +2571,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun turnOnBulkDeleteMode(isDeleteOnly: Boolean) {
         _isDeleteOnly = isDeleteOnly
-        updateToolbarTitle(getString(Rv2.string.wishlist_manage_label) + " " + toolbarTitle)
         binding?.run {
             wishlistCollectionDetailStickyCountManageLabel.apply {
                 iconGearCollectionDetail.gone()
@@ -2579,6 +2582,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
         isBulkDeleteShow = true
         onManageClicked(showCheckbox = true, isDeleteOnly, false)
+        updateToolbarTitle(toolbarTitle)
     }
 
     private fun turnOnBulkAddMode() {
