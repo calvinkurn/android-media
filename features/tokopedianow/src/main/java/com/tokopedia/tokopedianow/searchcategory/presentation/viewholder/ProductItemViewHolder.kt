@@ -34,7 +34,7 @@ class ProductItemViewHolder(
                     productItemDataView = element
                 )
             }
-            setOnClickQuantityEditorListener { quantity ->
+            setOnClickQuantityEditorListener { quantity, isAnimationRunning ->
                 listener.onProductNonVariantQuantityChanged(
                     productItemDataView = element,
                     quantity = quantity

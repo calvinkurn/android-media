@@ -32,7 +32,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
                     product = element
                 )
             }
-            setOnClickQuantityEditorListener { quantity ->
+            setOnClickQuantityEditorListener { quantity, isAnimationRunning ->
                 listener?.onProductCardQuantityChanged(
                     product = element,
                     quantity = quantity

@@ -54,7 +54,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             }
         }
     var isVariant: Boolean = false
-    var onClickListener: (counter: Int) -> Unit = {}
+    var onClickListener: (counter: Int, isAnimationRunning: Boolean) -> Unit = { _, _ -> }
     var onClickVariantListener: (counter: Int) -> Unit = {}
 
     init {
@@ -142,7 +142,13 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     ) {
         when (currentState) {
             R.id.end -> executeTimer()
-            R.id.startWithValue -> setEditTextPadding()
+            R.id.startWithValue -> {
+                setEditTextPadding()
+                onClickListener(counter, false)
+            }
+            R.id.start -> {
+                onClickListener(counter, false)
+            }
         }
     }
 
@@ -224,6 +230,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         setCounter()
         if (root.currentState != R.id.startWithValue && root.currentState != R.id.start) {
             executeTimer()
+            onClickListener(counter, true)
         }
     }
 
@@ -242,7 +249,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
         root.transitionToEnd()
         cancelTimer()
-        onClickListener(counter)
     }
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextPadding() {
