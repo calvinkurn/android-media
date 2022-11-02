@@ -20,6 +20,7 @@ import com.tokopedia.tokofood.common.domain.response.AdditionalData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.clickWithDebounce
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchSrpCardBinding
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -225,7 +226,7 @@ class MerchantSearchResultViewHolder(
     private fun setOtherBranchButton(merchant: Merchant) {
         binding?.btnTokofoodItemSrpBranch?.run {
             showWithCondition(merchant.hasBranch)
-            setOnClickListener {
+            clickWithDebounce {
                 listener?.onBranchButtonClicked(merchant)
             }
         }
@@ -240,7 +241,7 @@ class MerchantSearchResultViewHolder(
     }
 
     private fun setOnClickListener(merchant: Merchant) {
-        binding?.root?.setOnClickListener {
+        binding?.root?.clickWithDebounce {
             listener?.onClickMerchant(merchant, bindingAdapterPosition)
         }
     }

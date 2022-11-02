@@ -26,7 +26,8 @@
         <activity
             android:name=".view.activity.PlayVideoLiveListActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
         <intent-filter>
             <action android:name="com.tokopedia.internal.VIEW" />
 

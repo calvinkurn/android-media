@@ -12,6 +12,7 @@ import com.tokopedia.profilecompletion.changebiousername.data.SubmitBioUsername
 import com.tokopedia.profilecompletion.changebiousername.data.SubmitBioUsernameResponse
 import com.tokopedia.profilecompletion.changebiousername.data.UsernameValidation
 import com.tokopedia.profilecompletion.changebiousername.data.UsernameValidationResponse
+import com.tokopedia.profilecompletion.common.stub.FileUtils.createResponseFromJson
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeedResponse
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoResponse
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileRoleResponse
@@ -31,7 +32,7 @@ class GraphqlRepositoryStub : GraphqlRepository {
                 }
                 it.contains("userProfileInfo") -> GraphqlResponse(getResponse<ProfileInfoResponse>(R.raw.success_profile_info), mapOf(), false)
                 it.contains("userProfileRole") -> GraphqlResponse(getResponse<ProfileRoleResponse>(R.raw.success_case_profile_role), mapOf(), false)
-                it.contains("checkUserFinancialAssets") -> GraphqlResponse(getResponse<UserFinancialAssetsData>(R.raw.success_case_financial_assets), mapOf(), false)
+                it.contains("checkUserFinancialAssets") -> createResponseFromJson<UserFinancialAssetsData>(R.raw.success_case_financial_assets)
                 it.contains("feedXProfileValidateUsername") -> {
                     if (param?.get("username")?.toString().equals(BioUsernameInstrumentTest.USERNAME_EXISTS))
                         GraphqlResponse(mapOf(UsernameValidationResponse::class.java to

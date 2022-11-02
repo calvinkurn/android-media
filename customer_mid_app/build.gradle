@@ -258,6 +258,12 @@ dependencies {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspectorNoop)
     }
 
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebugger)
+    } else {
+        implementation projectOrAar(rootProject.ext.libraries.journeyDebuggerNoop)
+    }
+
     // in~house dependencies
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
@@ -383,5 +389,5 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 
-    debugImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 }

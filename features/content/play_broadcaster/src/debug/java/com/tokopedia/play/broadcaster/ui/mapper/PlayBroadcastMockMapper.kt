@@ -40,36 +40,6 @@ import kotlin.random.Random
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
-    @Suppress("MagicNumber")
-    override fun mapSearchSuggestionList(keyword: String, productsResponse: GetProductsByEtalaseResponse.GetProductListData): List<SearchSuggestionUiModel> {
-        return List(keyword.length) {
-            val suggestionText = " ${keyword.substring(0, it + 1)}"
-            val fullText = "$keyword$suggestionText"
-            SearchSuggestionUiModel(
-                    queriedText = keyword,
-                    suggestedId = "1",
-                    suggestedText = fullText,
-                    spannedSuggestion = SpannableStringBuilder(fullText).apply {
-                        setSpan(StyleSpan(Typeface.BOLD), fullText.indexOf(suggestionText), fullText.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                    }
-            )
-        }
-    }
-
-    @Suppress("MagicNumber")
-    override fun mapLiveFollowers(response: GetLiveFollowersResponse): FollowerDataUiModel {
-        return FollowerDataUiModel(
-                List(3) {
-                    FollowerUiModel.Unknown(when (it) {
-                        0 -> com.tokopedia.unifyprinciples.R.color.Unify_Y500
-                        1 -> com.tokopedia.unifyprinciples.R.color.Unify_B600
-                        else -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
-                    })
-                },
-                3
-        )
-    }
-
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel {
         return LiveStreamInfoUiModel(
                 ingestUrl = LOCAL_RTMP_URL,
@@ -119,10 +89,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
-    override fun mapProductTag(productTag: ProductTagging): List<ProductData> {
-        return emptyList()
-    }
-
     @Suppress("MagicNumber")
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
@@ -166,10 +132,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 ingestUrl = LOCAL_RTMP_URL,
                 status = ChannelStatus.Draft
         )
-    }
-
-    override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData> {
-        return emptyList()
     }
 
     override fun mapChannelSchedule(
@@ -301,32 +263,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
-    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel {
-        return PlayLeaderboardUiModel(
-            title = dataUiModel.question,
-            reward = dataUiModel.reward,
-            choices = dataUiModel.choices.mapIndexed { index, choice ->
-                QuizChoicesUiModel(
-                    index = index,
-                    id = choice.id,
-                    text = choice.text,
-                    type = PlayQuizOptionState.Participant(
-                        alphabet = generateAlphabetChoices(index),
-                        isCorrect = choice.isCorrectAnswer,
-                        count = choice.participantCount.toString(),
-                        showArrow = true
-                    ),
-                    interactiveId = dataUiModel.interactiveId,
-                    interactiveTitle = dataUiModel.question,
-                )
-            },
-            endsIn = dataUiModel.countDownEnd,
-            otherParticipant = 0,
-            otherParticipantText = "",
-            winners = emptyList(),
-            leaderBoardType = LeadeboardType.Quiz,
-            id = dataUiModel.interactiveId,
-        )
+    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel, endTime: Calendar?): List<LeaderboardGameUiModel> {
+        return emptyList()
     }
 
     override fun mapChoiceDetail(
@@ -374,51 +312,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     override fun mapLeaderBoardWithSlot(
         response: GetSellerLeaderboardSlotResponse,
         allowChat: Boolean
-    ): List<PlayLeaderboardUiModel> {
-        return response.data.slots.map { slot ->
-            PlayLeaderboardUiModel(
-                title = slot.getSlotTitle(),
-                winners = slot.winner.mapIndexed { index, winner ->
-                    PlayWinnerUiModel(
-                        rank = index + 1,
-                        id = winner.userID,
-                        name = winner.userName,
-                        imageUrl = winner.imageUrl,
-                        allowChat = { allowChat },
-                        topChatMessage =
-                        if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
-                            response.data.config.topchatMessage
-                            .replace(FORMAT_FIRST_NAME, winner.userName)
-                            .replace(FORMAT_TITLE, slot.getSlotTitle())
-                        else
-                            response.data.config.topchatMessageQuiz
-                                .replace(FORMAT_FIRST_NAME, winner.userName)
-                                .replace(FORMAT_TITLE, slot.getSlotTitle())
-                        ,
-                    )
-                },
-                choices = slot.choices.mapIndexed { index, choice ->
-                    QuizChoicesUiModel(
-                        index = index,
-                        id = choice.id,
-                        text = choice.text,
-                        type = PlayQuizOptionState.Participant(
-                            alphabet = generateAlphabetChoices(index),
-                            isCorrect = choice.isCorrectAnswer,
-                            count = choice.participantCount.toString(),
-                            showArrow = true
-                        ),
-                        interactiveId = slot.interactiveId,
-                        interactiveTitle = slot.getSlotTitle(),
-                    )
-                },
-                otherParticipantText = slot.otherParticipantCountText,
-                otherParticipant = slot.otherParticipantCount.toLong(),
-                reward = slot.reward,
-                leaderBoardType = getLeaderboardType(slot.type),
-                id = slot.interactiveId
-            )
-        }
+    ): List<LeaderboardGameUiModel> {
+        return emptyList()
     }
 
     /***

@@ -26,6 +26,8 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ViewTopAdsLogUiModel): Int
     fun type(uiModel: ApplinkLogOnNotificationUiModel): Int
     fun type(uiModel: ViewApplinkLogUiModel): Int
+    fun type(uiModel: JourneyLogOnNotificationUiModel): Int
+    fun type(uiModel: ViewJourneyLogUiModel): Int
     fun type(uiModel: FpmLogOnFileUiModel): Int
     fun type(uiModel: FpmLogOnNotificationUiModel): Int
     fun type(uiModel: ViewFpmLogUiModel): Int

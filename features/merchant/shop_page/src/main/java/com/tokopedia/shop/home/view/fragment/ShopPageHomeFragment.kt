@@ -646,7 +646,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             isOwner,
             isLogin,
             isThematicWidgetShown,
-            isEnableDirectPurchase
+            isEnableDirectPurchase,
+            shopId
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1250,7 +1251,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             isOwner,
             isLogin,
             isThematicWidgetShown,
-            isEnableDirectPurchase
+            isEnableDirectPurchase,
+            shopId
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)

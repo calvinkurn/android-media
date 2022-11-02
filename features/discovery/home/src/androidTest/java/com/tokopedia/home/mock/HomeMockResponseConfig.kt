@@ -41,6 +41,7 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         const val KEY_CONTAINS_PLAY_GET_WIDGET_V2 = "playGetWidgetV2"
         const val KEY_CONTAINS_OCC = "mutation add_to_cart_occ_multi"
         const val KEY_CONTAINS_SLIDE = "homeSlides"
+        const val KEY_CONTAINS_HOME_BANNER_V2 ="getHomeBannerV2"
         const val KEY_CONTAINS_CM_HOME_WIDGET = "notifier_getHtdw"
         const val KEY_CONTAINS_PAYLATER_WIDGET = "paylater_getHomeWidget"
         const val KEY_CONTAINS_MISSION_WIDGET = "getHomeMissionWidget"
@@ -239,9 +240,14 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
             FIND_BY_CONTAINS
         )
         addMockResponse(
-                KEY_CONTAINS_SLIDE,
-                getRawString(context, R.raw.response_mock_data_slider_banner),
-                FIND_BY_CONTAINS
+            KEY_CONTAINS_SLIDE,
+            getRawString(context, R.raw.response_mock_data_slider_banner),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_HOME_BANNER_V2,
+            getRawString(context, R.raw.response_mock_data_slider_banner_v2),
+            FIND_BY_CONTAINS
         )
         addMockResponse(
             KEY_CONTAINS_CM_HOME_WIDGET,
