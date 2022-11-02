@@ -2,6 +2,7 @@ package com.tokopedia.play.repo
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.CheckUpcomingCampaign
@@ -54,6 +55,7 @@ class PlayViewerTagItemsRepositoryTest {
     private val mockAddToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val mockCheckUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase = mockk(relaxed = true)
     private val mockPostUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase = mockk(relaxed = true)
+    private val mockAtcOcc: AddToCartOccMultiUseCase = mockk(relaxed = true)
 
     private val modelBuilder = ModelBuilder()
 
@@ -62,14 +64,15 @@ class PlayViewerTagItemsRepositoryTest {
     @Before
     fun setUp(){
         tagItemRepo = PlayViewerTagItemRepositoryImpl(
-            mockGetProductTagUseCase,
-            mockGetProductVariantUseCase,
-            mockAddToCartUseCase,
-            mockCheckUpcomingCampaignReminderUseCase,
-            mockPostUpcomingCampaignReminderUseCase,
-            mockMapper,
-            mockUserSession,
-            testDispatcher
+            getProductTagItemsUseCase = mockGetProductTagUseCase,
+            getProductVariantUseCase = mockGetProductVariantUseCase,
+            addToCartUseCase = mockAddToCartUseCase,
+            checkUpcomingCampaignReminderUseCase = mockCheckUpcomingCampaignReminderUseCase,
+            postUpcomingCampaignReminderUseCase = mockPostUpcomingCampaignReminderUseCase,
+            atcOccUseCase = mockAtcOcc,
+            mapper = mockMapper,
+            userSession = mockUserSession,
+            dispatchers = testDispatcher
         )
     }
 

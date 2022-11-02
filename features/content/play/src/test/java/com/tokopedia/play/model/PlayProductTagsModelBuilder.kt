@@ -35,6 +35,7 @@ class PlayProductTagsModelBuilder {
         isTokoNow: Boolean = false,
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
+        buttons: List<ProductButtonUiModel> = emptyList(),
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -49,6 +50,7 @@ class PlayProductTagsModelBuilder {
         isTokoNow = isTokoNow,
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
+        buttons = buttons,
     )
 
     fun buildMerchantVoucher(
