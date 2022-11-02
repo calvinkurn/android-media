@@ -184,6 +184,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   buttonLink
                 }
               }
+              partnerLabel
             }
             nearestWarehouse {
               product_id
@@ -313,9 +314,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               hour
               speedFmt
             }
-            shopFeature{
-              IsGoApotik
-            }
             restrictionInfo{
                 message
                 restrictionData{
@@ -381,6 +379,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 chipsLabel
                 hasUsedBenefit
               }
+              boMetadata
             }
             merchantVoucherSummary{
                 animatedInfo{
@@ -459,6 +458,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
                 variant{
                   name
+                }
+                userLabel
+                userStat {
+                  formatted
                 }
               }
             }

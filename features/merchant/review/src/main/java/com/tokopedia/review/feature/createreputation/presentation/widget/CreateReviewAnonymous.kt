@@ -13,16 +13,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetCreateReviewAnonymousBinding
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousUiState
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewAnonymous @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewAnonymousBinding>(context, attrs, defStyleAttr) {
-
-    companion object {
-        private const val TRANSITION_DURATION = 300L
-    }
+) : BaseReviewCustomView<WidgetCreateReviewAnonymousBinding>(context, attrs, defStyleAttr) {
 
     private val transitionHandler = TransitionHandler()
     private val checkboxListener = CheckboxListener()
@@ -46,16 +44,20 @@ class CreateReviewAnonymous @JvmOverloads constructor(
         layoutAnonymous.root.isChecked = checked
     }
 
-    fun updateUi(uiState: CreateReviewAnonymousUiState) {
+    fun updateUi(uiState: CreateReviewAnonymousUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewAnonymousUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewAnonymousUiState.Showing -> {
                 trackerData = uiState.trackerData
                 binding.showAnonymous(uiState.checked)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }
@@ -67,7 +69,7 @@ class CreateReviewAnonymous @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutAnonymous.root)
                 addTarget(binding.layoutAnonymousLoading.root)
                 interpolator = AccelerateInterpolator()

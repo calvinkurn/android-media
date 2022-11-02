@@ -31,7 +31,7 @@
             android:layout_marginRight="8dp"
             android:gravity="center_vertical"
             android:text="@string/topads_label_top_ads_choose_group"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN1000"
             app:typographyType="heading_3" />
     </LinearLayout>
 

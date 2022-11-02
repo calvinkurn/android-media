@@ -12,6 +12,7 @@ import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartItems
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartSimplifiedData
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
@@ -84,6 +85,11 @@ class UpdateCartTestHelper(
         `Then assert product item non variant quantity`(miniCartItems, productItems)
         `Then assert product item variant quantity`(miniCartItems, productItems)
         `Then assert updated indices`(miniCartItems, visitableList)
+    }
+
+    private fun `Then assert update toolbar notification true`() {
+        baseViewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     private fun `Then assert product item non variant quantity`(
@@ -197,6 +203,7 @@ class UpdateCartTestHelper(
         `When view reload page`()
 
         `Then assert product quantity is updated`()
+        `Then assert update toolbar notification true`()
     }
 
     private fun `Given view created and resumed`() {

@@ -146,7 +146,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             if (LinkerManager.getInstance().isFirstAppOpen(getApplicationContext())) {
                 installReferral.setInstallReferrerInterface(getInstallReferrerInterface());
             }
-            installReferral.initilizeInstallReferral(this);
+            installReferral.initilizeInstallReferral(this.getApplicationContext());
         }
     }
 

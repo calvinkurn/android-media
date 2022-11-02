@@ -24,13 +24,13 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.setValue
@@ -61,8 +61,8 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
@@ -86,6 +86,7 @@ import kotlinx.coroutines.flow.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.max
 
 /**
@@ -112,6 +113,7 @@ class PlayViewModel @AssistedInject constructor(
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
     private val playLog: PlayLog,
+    chatManagerFactory: ChatManager.Factory,
     chatStreamsFactory: ChatStreams.Factory,
     private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon,
 ) : ViewModel() {
@@ -120,6 +122,8 @@ class PlayViewModel @AssistedInject constructor(
     interface Factory {
         fun create(channelId: String): PlayViewModel
     }
+
+    private val jobMap = mutableMapOf<String, Job>()
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
         get() = _observableChannelInfo
@@ -159,8 +163,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
-    private var selectedUpcomingCampaign: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
-
     private var _winnerStatus: MutableStateFlow<PlayUserWinnerStatusUiModel?> = MutableStateFlow(null)
     /***
      * User Report
@@ -189,6 +191,7 @@ class PlayViewModel @AssistedInject constructor(
         NetworkResult.Loading
     )
     private val _loadingBuy = MutableStateFlow(false)
+    private val _autoOpenInteractive = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
@@ -245,18 +248,50 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _kebabMenuUiState = _bottomInsets.map {
-        PlayKebabMenuUiState(
-            shouldShow = !isFreezeOrBanned && !it.isKeyboardShown
-        )
-    }.flowOn(dispatchers.computation)
-
-    private val _addressUiState = combine(_partnerInfo, _warehouseInfo){ partnerInfo, warehouseInfo ->
+    private val _addressUiState = combine(_partnerInfo, _warehouseInfo, _bottomInsets) { partnerInfo, warehouseInfo, bottomInset ->
         AddressWidgetUiState(
             warehouseInfo = warehouseInfo,
-            shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned
+            shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned && !bottomInset.isAnyShown
         )
     }
+
+    private val _featuredProducts = _tagItems.map { tagItems ->
+        /**
+         * Get first found Pinned Product if any
+         */
+        var pinnedProduct: PlayProductUiModel.Product? = null
+        run {
+            tagItems.product.productSectionList.forEach { section ->
+                if (section is ProductSectionUiModel.Section) {
+                    pinnedProduct = section.productList.firstOrNull { it.isPinned }
+                    if (pinnedProduct != null) return@run
+                }
+            }
+        }
+
+        /**
+         * Get original featured products including the pinned one
+         */
+        val products = mutableListOf<PlayProductUiModel.Product>()
+        tagItems.product.productSectionList.forEach { section ->
+            if (section is ProductSectionUiModel.Section) {
+                products.addAll(
+                    section.productList.take(
+                        (tagItems.maxFeatured - products.size).coerceAtLeast(0)
+                    )
+                )
+            }
+            if (products.size >= tagItems.maxFeatured) return@forEach
+        }
+
+        /**
+         * Move pinned product to the first index if any
+         */
+        pinnedProduct?.let { pinned ->
+            listOf(pinned) + products.filterNot { it.isPinned }
+        } ?: products
+
+    }.flowOn(dispatchers.computation)
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -264,7 +299,7 @@ class PlayViewModel @AssistedInject constructor(
      */
     private val isActive: AtomicBoolean = AtomicBoolean(false)
 
-    val uiState: Flow<PlayViewerNewUiState> = combine(
+    val uiState: StateFlow<PlayViewerNewUiState> = combine(
         _channelDetail,
         _interactive,
         _partnerInfo,
@@ -277,13 +312,14 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems,
         _status,
         _quickReply,
-        _kebabMenuUiState.distinctUntilChanged(),
         _selectedVariant,
         _loadingBuy,
-        _leaderboard,
         _addressUiState,
-    ) { channelDetail, interactive, partner, winnerBadge, bottomInsets, like, totalView,
-        rtn, title, tagItems, status, quickReply, kebabMenu, selectedVariant, isLoadingBuy, leaderboard, address ->
+        _featuredProducts.distinctUntilChanged(),
+    ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
+        like, totalView, rtn, title, tagItems,
+        status, quickReply, selectedVariant, isLoadingBuy, address,
+        featuredProducts ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -297,12 +333,16 @@ class PlayViewModel @AssistedInject constructor(
             tagItems = tagItems,
             status = status,
             quickReply = quickReply,
-            kebabMenu = kebabMenu,
             selectedVariant = selectedVariant,
             isLoadingBuy = isLoadingBuy,
-            address = address
+            address = address,
+            featuredProducts = featuredProducts,
         )
-    }.flowOn(dispatchers.computation)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD),
+        PlayViewerNewUiState.Empty,
+    )
 
     val uiEvent: Flow<PlayViewerNewUiEvent>
         get() = _uiEvent.filter {
@@ -310,10 +350,12 @@ class PlayViewModel @AssistedInject constructor(
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
-    private val chatStreams = chatStreamsFactory.create(viewModelScope)
+    private val chatManager = chatManagerFactory.create(
+        chatStreamsFactory.create(viewModelScope)
+    )
 
     val chats: StateFlow<List<PlayChatUiModel>>
-        get() = chatStreams.chats
+        get() = chatManager.chats
 
     val videoOrientation: VideoOrientation
         get() {
@@ -495,7 +537,7 @@ class PlayViewModel @AssistedInject constructor(
             if (videoLatencyPerformanceMonitoring.hasStarted) {
                 videoLatencyPerformanceMonitoring.stop()
                 val durationInSecond = videoLatencyPerformanceMonitoring.totalDuration / DURATION_DIVIDER
-                playLog.logTimeToFirstByte(durationInSecond.toInt())
+                playLog.logTimeToFirstByte(durationInSecond.toLong())
             }
         }
 
@@ -526,7 +568,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private val gson by lazy { Gson() }
 
-    private var delayQuizJob: Job? = null
     private var delayTapJob: Job? = null
 
     init {
@@ -548,6 +589,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
         }
+
     }
 
     //region lifecycle
@@ -869,6 +911,16 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
             is PlayViewerNewAction.ClickQuizOptionAction -> handleClickQuizOption(action.item)
+            is PlayViewerNewAction.BuyProduct -> handleBuyProduct(
+                product = action.product,
+                action = ProductAction.Buy,
+                isProductFeatured = action.isProductFeatured,
+            )
+            is PlayViewerNewAction.AtcProduct -> handleBuyProduct(
+                product = action.product,
+                action = ProductAction.AddToCart,
+                isProductFeatured = action.isProductFeatured,
+            )
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
@@ -891,12 +943,24 @@ class PlayViewModel @AssistedInject constructor(
             OpenKebabAction -> handleThreeDotsMenuClick()
             is OpenFooterUserReport -> handleFooterClick(action.appLink)
             OpenUserReport -> handleUserReport()
-            is SendUpcomingReminder -> handleSendReminder(action.section, false)
-            is BuyProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.Buy)
+            is SendUpcomingReminder -> handleSendReminder(action.section)
+
+            is BuyProductAction -> handleBuyProduct(
+                action.sectionInfo,
+                action.product,
+                ProductAction.Buy,
+                isProductFeatured = false
+            )
             is BuyProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.Buy)
-            is AtcProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.AddToCart)
+            is AtcProductAction -> handleBuyProduct(
+                action.sectionInfo,
+                action.product,
+                ProductAction.AddToCart,
+                isProductFeatured = false
+            )
             is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
+            PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
         }
     }
@@ -963,7 +1027,7 @@ class PlayViewModel @AssistedInject constructor(
 
         updateTagItems()
         updateChannelStatus()
-
+        updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         sendInitialLog()
     }
@@ -1085,8 +1149,6 @@ class PlayViewModel @AssistedInject constructor(
             val tagItem = repo.getTagItem(channelId, warehouseId)
             _tagItems.value = tagItem
 
-            checkReminderStatus()
-
             sendProductTrackerToBro(
                 productList = tagItem.product.productSectionList
                     .filterIsInstance<ProductSectionUiModel.Section>()
@@ -1095,15 +1157,6 @@ class PlayViewModel @AssistedInject constructor(
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
         }
-    }
-
-    private fun checkReminderStatus(){
-        if(userSession.isLoggedIn)
-            _tagItems.value.product.productSectionList.
-            filter { it is ProductSectionUiModel.Section && it.config.type == ProductSectionType.Upcoming }
-                .forEach { campaign ->
-                    checkUpcomingCampaignSub(campaign as ProductSectionUiModel.Section)
-                }
     }
 
     /**
@@ -1131,6 +1184,19 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(channelStatus = channelStatus)
             }
         }) {}
+    }
+
+    /**
+     * Updating chat history for live channel only
+     */
+    private fun updateLiveChannelChatHistory(channelData: PlayChannelData) {
+        viewModelScope.launchCatchError(block = {
+            if(channelData.channelDetail.channelInfo.channelType.isLive) {
+                chatManager.setWaitingForHistory()
+                val response = repo.getChatHistory(channelId)
+                chatManager.addHistoryChat(response.chatList.reversed())
+            }
+        }) { }
     }
 
     fun sendChat(message: String) {
@@ -1242,12 +1308,22 @@ class PlayViewModel @AssistedInject constructor(
         this._partnerInfo.value = partnerInfo
     }
 
+    private var coachmarkJob: Job? = null
+
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        val userId = userSession.userId
-        if (!playPreference.isOnboardingShown(userId) && !videoMetaInfo.videoPlayer.isYouTube) {
-            viewModelScope.launch(dispatchers.main) {
+        val isShown = playPreference.isCoachMark(userId = userId)
+
+        playAnalytic.screenWithSwipeCoachMark(isShown = isShown, channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
+
+        coachmarkJob?.cancel()
+
+        if (isShown && !videoMetaInfo.videoPlayer.isYouTube) {
+            coachmarkJob = viewModelScope.launch(dispatchers.computation) {
                 delay(ONBOARDING_DELAY)
-                _observableOnboarding.value = Event(Unit)
+
+                withContext(dispatchers.main) {
+                    _observableOnboarding.value = Event(Unit)
+                }
             }
         }
     }
@@ -1362,7 +1438,7 @@ class PlayViewModel @AssistedInject constructor(
      * Private Method
      */
     private fun setNewChat(chat: PlayChatUiModel) {
-        chatStreams.addChat(chat)
+        chatManager.addChat(chat)
     }
 
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
@@ -1373,7 +1449,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
         if(shouldTrack) {
             viewModelScope.launchCatchError(dispatchers.io, block = {
-                repo.trackVisitChannel(channelId, PlaySource.getBySource(sourceType))
+                repo.trackVisitChannel(channelId, sourceType)
             }) { }
         }
         _channelReport.setValue { copy(shouldTrack = true) }
@@ -1399,10 +1475,8 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun setLeaderboardBadgeState(leaderboardInfo: PlayLeaderboardInfoUiModel) {
-        if(leaderboardInfo.leaderboardWinners.isNotEmpty()) {
-            _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
-        }
+    private fun setLeaderboardBadgeState(leaderboardInfo: List<LeaderboardGameUiModel>) {
+        if(leaderboardInfo.isNotEmpty()) _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
     }
 
     private fun checkInteractive(channelId: String) {
@@ -1423,6 +1497,10 @@ class PlayViewModel @AssistedInject constructor(
         cancelAllDelayFromSocketWinner()
         repo.save(interactive)
         repo.setActive(interactive.id)
+
+        //new game set as first game
+        _autoOpenInteractive.setValue { true }
+
         when (interactive) {
             is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
             is InteractiveUiModel.Quiz -> handleQuizFromNetwork(interactive)
@@ -1430,10 +1508,17 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleAutoOpen(){
+        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.interactive.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
+            _autoOpenInteractive.setValue { false }
+            handlePlayingInteractive(shouldPlay = true)
+        }
+    }
+
     private suspend fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
-        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
+        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished || giveaway.status == InteractiveUiModel.Giveaway.Status.Unknown) {
             _interactive.update {
-                it.copy(interactive = InteractiveUiModel.Unknown)
+                it.copy(interactive = InteractiveUiModel.Unknown, isPlaying = false)
             }
             checkLeaderboard(channelId)
         } else {
@@ -1444,9 +1529,9 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun handleQuizFromNetwork(quiz: InteractiveUiModel.Quiz) {
-        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
+        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished || quiz.status == InteractiveUiModel.Quiz.Status.Unknown) {
             _interactive.update {
-                it.copy(interactive = InteractiveUiModel.Unknown)
+                it.copy(interactive = InteractiveUiModel.Unknown, isPlaying = false)
             }
             checkLeaderboard(channelId)
         } else {
@@ -1543,7 +1628,7 @@ class PlayViewModel @AssistedInject constructor(
                 } else if (diffLike > 0) {
                     _uiEvent.emit(
                         ShowLikeBubbleEvent.Single(
-                            diffLike.toInt(),
+                            diffLike,
                             reduceOpacity = true,
                             config = _likeInfo.value.likeBubbleConfig,
                         )
@@ -1588,10 +1673,16 @@ class PlayViewModel @AssistedInject constructor(
             }
             is ProductSection -> {
                 val mappedData = playSocketToModelMapper.mapProductSection(result)
+                val updatedSections = repo.updateCampaignReminderStatus(
+                    mappedData.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
+                )
+                val newProduct = mappedData.product.copy(
+                    productSectionList = updatedSections
+                )
 
                 _tagItems.update {
                     it.copy(
-                        product = mappedData.product,
+                        product = newProduct,
                         bottomSheetTitle = mappedData.bottomSheetTitle,
                         maxFeatured = mappedData.maxFeatured,
                         resultState = mappedData.resultState,
@@ -1777,13 +1868,11 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launch {
             tapGiveawayFlow.emit(Unit)
         }
-
-        val giveaway = _interactive.value.interactive as? InteractiveUiModel.Giveaway ?: return
     }
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            val interactive = _interactive.updateAndGet {
+            _interactive.update {
                 if (it.interactive !is InteractiveUiModel.Quiz) error("Error")
                 val newInteractive = it.interactive.copy(
                     status = InteractiveUiModel.Quiz.Status.Finished
@@ -1793,41 +1882,23 @@ class PlayViewModel @AssistedInject constructor(
                     isPlaying = false,
                 )
             }
-
-            val winnerStatus = _winnerStatus.value
-            val interactiveType = _interactive.value.interactive
-            val isFinished = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.status is InteractiveUiModel.Quiz.Status.Finished else false
-            val isRewardAvailable = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.reward.isNotEmpty() else false
-
-            if (!isRewardAvailable) {
-                showLeaderBoard(interactiveId = interactiveType.id)
-            } else {
-                delayQuizJob?.cancel()
-                delayQuizJob = viewModelScope.launch(dispatchers.computation) {
-                    delay(interactive.interactive.waitingDuration)
-                    if(isFinished) {
-                        if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
-                    }
-                }
-            }
-            /**
-             * _interactive.value = InteractiveStateUiModel.Empty (resetting interactive) is available on
-             * processWinnerStatus() / showLeaderBoard() if we use both there's a case when the delay is still on but the socket
-             * is coming, seller create another quiz it'll ruin the current flow.
-             *
-             * if winner status still didn't come after delay, just showLeaderBoard
-             * */
+            showLeaderBoard(_interactive.value.interactive.id)
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
     }
 
-    private fun showLeaderBoard(interactiveId: String){
+    private suspend fun showLeaderBoard(interactiveId: String){
         if (repo.hasProcessedWinner(interactiveId)) return
 
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
+
+        _uiEvent.emit(
+            ShowCoachMarkWinnerEvent("", UiString.Resource(R.string.play_quiz_finished))
+        )
+
         repo.setHasProcessedWinner(interactiveId)
 
         _interactive.value = InteractiveStateUiModel.Empty
@@ -1852,7 +1923,7 @@ class PlayViewModel @AssistedInject constructor(
                     ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
                 }
                 else {
-                    ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
+                    ShowCoachMarkWinnerEvent(status.loserTitle, UiString.Text(status.loserText))
                 }
             )
             repo.setHasProcessedWinner(interactive.id)
@@ -1891,13 +1962,20 @@ class PlayViewModel @AssistedInject constructor(
             repo.setJoined(interactiveId)
 
             updateQuizOptionUi(selectedId = option.id, correctId = response)
-            _uiEvent.emit(QuizAnsweredEvent)
+            handleEventQuizAnswered(option.id == response)
         }) {
+            handleEventQuizAnswered(false)
             setUpQuizOptionLoader(selectedId = option.id, isLoading = false)
             _uiEvent.emit(
                 ShowErrorEvent(it)
             )
         }
+    }
+
+    private fun handleEventQuizAnswered(isCorrect: Boolean) {
+        viewModelScope.launchCatchError(dispatchers.computation, block = {
+            _uiEvent.emit(QuizAnsweredEvent(isCorrect))
+        }){}
     }
 
     private fun updateQuizOptionUi(selectedId: String, correctId: String){
@@ -1994,14 +2072,12 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
-            REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
             else -> {}
         }
     }
 
     private fun handleClickLike(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_LIKE) {
-
         fun getNewTotalLikes(status: PlayLikeStatus): Pair<Long, String> {
             val currentTotalLike = _channelReport.value.totalLike
             val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
@@ -2245,17 +2321,21 @@ class PlayViewModel @AssistedInject constructor(
      * @param productId the id of the product
      */
     private fun handleBuyProduct(
-        sectionInfo: ProductSectionUiModel.Section,
+        sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty,
         product: PlayProductUiModel.Product,
-        action: ProductAction
+        action: ProductAction,
+        isProductFeatured: Boolean,
     ) {
-        if (product.isVariantAvailable) openVariantDetail(product, action, sectionInfo)
+        if (product.isVariantAvailable) openVariantDetail(product, sectionInfo, isProductFeatured)
         else {
             needLogin {
                 addProductToCart(product) { cartId ->
                     _uiEvent.emit(
-                        if (action == ProductAction.Buy) BuySuccessEvent(product, false, cartId, sectionInfo)
-                        else AtcSuccessEvent(product, false, cartId, sectionInfo)
+                        if (action == ProductAction.Buy) {
+                            BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        } else {
+                            AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        }
                     )
                 }
             }
@@ -2273,8 +2353,22 @@ class PlayViewModel @AssistedInject constructor(
 
         addProductToCart(selectedVariant.data.variantDetail) { cartId ->
             _uiEvent.emit(
-                if (action == ProductAction.Buy) BuySuccessEvent(selectedVariant.data.variantDetail, true, cartId, selectedVariant.data.sectionInfo)
-                else AtcSuccessEvent(selectedVariant.data.variantDetail, true, cartId, selectedVariant.data.sectionInfo)
+                if (action == ProductAction.Buy) {
+                    BuySuccessEvent(
+                        selectedVariant.data.variantDetail,
+                        true,
+                        cartId,
+                        selectedVariant.data.sectionInfo,
+                        selectedVariant.data.isFeatured,
+                    )
+                }
+                else AtcSuccessEvent(
+                    selectedVariant.data.variantDetail,
+                    true,
+                    cartId,
+                    selectedVariant.data.sectionInfo,
+                    selectedVariant.data.isFeatured,
+                )
             )
         }
     }
@@ -2339,6 +2433,17 @@ class PlayViewModel @AssistedInject constructor(
                         applink = ApplinkConst.LOGIN,
                         requestCode = requestCode
                     )
+                )
+            }
+        }
+    }
+
+    private fun authenticated(fn: (wasAuthenticated: Boolean) -> Unit) {
+        if (userSession.isLoggedIn) fn(true)
+        else {
+            viewModelScope.launch {
+                _uiEvent.emit(
+                    LoginEvent { fn(false) }
                 )
             }
         }
@@ -2428,47 +2533,48 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSendReminder(sectionUiModel: ProductSectionUiModel.Section, isFromLogin: Boolean){
-        selectedUpcomingCampaign = sectionUiModel
-        needLogin(REQUEST_CODE_LOGIN_UPCO_REMINDER) {
-            if(isFromLogin) checkUpcomingCampaignSub(selectedUpcomingCampaign)
-            sendReminder()
-        }
-    }
+    private fun handleSendReminder(section: ProductSectionUiModel.Section) = authenticated { wasAuthenticated ->
+        viewModelScope.launchOverride("$REMINDER_JOB_ID-${section.id}", block = {
+            val (isReminded, message) = repo.subscribeUpcomingCampaign(
+                section.id,
+                shouldRemind = if (!wasAuthenticated) true
+                else section.config.reminder == PlayUpcomingBellStatus.Off,
+            )
 
-    private fun sendReminder(){
-        viewModelScope.launchCatchError(block = {
-            playAnalytic.clickUpcomingReminder(selectedUpcomingCampaign, channelId, channelType)
-            val data = repo.subscribeUpcomingCampaign(campaignId = selectedUpcomingCampaign.id.toLongOrZero(), reminderType = selectedUpcomingCampaign.config.reminder)
-            val message = if(data.first) {
-                updateReminderUi(selectedUpcomingCampaign.config.reminder.reversed(selectedUpcomingCampaign.id.toLongOrZero()), selectedUpcomingCampaign.id)
-                if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)
-            } else {
-                if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_error)
-            }
-            _uiEvent.emit(ShowInfoEvent(message))
-        }){
+            updateReminderUi(
+                reminderType = if (isReminded) PlayUpcomingBellStatus.On else PlayUpcomingBellStatus.Off,
+                campaignId = section.id,
+            )
+            _uiEvent.emit(
+                ChangeCampaignReminderSuccess(
+                    isReminded = isReminded,
+                    message = message,
+                )
+            )
+        }) {
             _uiEvent.emit(ShowErrorEvent(it))
         }
     }
 
     private fun checkUpcomingCampaignSub(productUiModel: ProductSectionUiModel.Section){
         viewModelScope.launchCatchError(block = {
-            val data = repo.checkUpcomingCampaign(campaignId = productUiModel.id.toLongOrZero())
-            if (data) updateReminderUi(productUiModel.config.reminder.reversed(productUiModel.id.toLongOrZero()), productUiModel.id)
+            val data = repo.checkUpcomingCampaign(campaignId = productUiModel.id)
+            if (data) updateReminderUi(productUiModel.config.reminder.reversed(), productUiModel.id)
         }){
         }
     }
 
     private fun updateReminderUi(reminderType: PlayUpcomingBellStatus, campaignId: String){
         _tagItems.update { tagItemUiModel ->
+            val sectionList = tagItemUiModel.product.productSectionList
+            val newSections = sectionList.map { section ->
+                if (section is ProductSectionUiModel.Section && section.id == campaignId) {
+                    section.copy(config = section.config.copy(reminder = reminderType))
+                } else section
+            }
             tagItemUiModel.copy(
                 product = tagItemUiModel.product.copy(
-                    productSectionList = tagItemUiModel.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().
-                           map { item ->
-                               if(item.id == campaignId) item.copy(config = item.config.copy(reminder = reminderType))
-                               else item
-                            }
+                    productSectionList = newSections
                 )
             )
         }
@@ -2482,12 +2588,12 @@ class PlayViewModel @AssistedInject constructor(
      */
     private fun openVariantDetail(
         product: PlayProductUiModel.Product,
-        action: ProductAction,
         sectionUiModel: ProductSectionUiModel.Section,
+        isProductFeatured: Boolean,
     ) {
         _selectedVariant.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
-            _selectedVariant.value = NetworkResult.Success(repo.getVariant(product))
+            _selectedVariant.value = NetworkResult.Success(repo.getVariant(product, isProductFeatured))
             _selectedVariant.update {
                 if(it is NetworkResult.Success){
                     it.copy(data = it.data.copy(sectionInfo = sectionUiModel))
@@ -2505,13 +2611,32 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun cancelAllDelayFromSocketWinner() {
-        if(delayQuizJob?.isActive == true) delayQuizJob?.cancel()
         if(delayTapJob?.isActive == true) delayTapJob?.cancel()
     }
 
     private fun sendInitialLog(){
         playLog.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
         playLog.sendAll(channelId, videoPlayer)
+    }
+
+    private fun CoroutineScope.launch(
+        jobId: String = "",
+        context: CoroutineContext = coroutineContext,
+        block: suspend CoroutineScope.() -> Unit,
+        onError: suspend (Throwable) -> Unit,
+    ) {
+        val job = launchCatchError(context, block, onError)
+        jobMap[jobId] = job
+    }
+
+    private fun CoroutineScope.launchOverride(
+        jobId: String = "",
+        context: CoroutineContext = coroutineContext,
+        block: suspend CoroutineScope.() -> Unit,
+        onError: suspend (Throwable) -> Unit,
+    ) {
+        jobMap[jobId]?.cancel()
+        launch(jobId, context, block, onError)
     }
 
     companion object {
@@ -2522,7 +2647,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
-        private const val LIKE_BURST_THRESHOLD = 30
+        private const val LIKE_BURST_THRESHOLD = 30L
 
         /**
          * Request Code When need login
@@ -2542,5 +2667,9 @@ class PlayViewModel @AssistedInject constructor(
          */
         private const val INTERVAL_LIKE_REMINDER_IN_MIN = 5L
         private const val DURATION_DIVIDER = 1000
+        private const val REMINDER_JOB_ID = "RJ"
+
+        private const val SUBSCRIBE_AWAY_THRESHOLD = 5000L
+        private val defaultSharingStarted = SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD)
     }
 }

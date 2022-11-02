@@ -314,9 +314,28 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           webLink
           appLink
         }
+        cta {
+          text
+          color
+          colorGradient {
+          color
+          position
+          }
+          __typename
+        }
+        ribbonImageURL
+        campaign {
+            id
+            status
+            name
+            shortName
+            startTime
+            endTime
+          }
         title
         subTitle
         text
+        webLink
         appLink
         appLinkProductList
         webLinkProductList
@@ -332,6 +351,11 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           star
           price
           priceFmt
+          priceMasked
+          priceMaskedFmt
+          stockWording
+          stockSoldPercentage
+          cartable
           isDiscount
           discount
           discountFmt
@@ -445,6 +469,11 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
         val dynamicFeedResponse = executeOnBackground()
         val shouldShowNewTopadsOnly = context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) }?:true
         return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
+    }
+    suspend fun executeForCDP(cursor: String = "", limit: Int = 5, detailId: String = ""):
+            FeedXData {
+        this.setParams(cursor, limit, detailId)
+        return executeOnBackground()
     }
 
 }

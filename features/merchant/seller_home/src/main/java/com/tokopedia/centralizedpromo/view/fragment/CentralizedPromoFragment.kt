@@ -11,22 +11,29 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.LayoutType
+import com.tokopedia.centralizedpromo.view.LoadingType
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
+import com.tokopedia.centralizedpromo.view.bottomSheet.DetailPromoBottomSheet
 import com.tokopedia.centralizedpromo.view.fragment.partialview.BasePartialView
 import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoCreationView
 import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoOnGoingPromoView
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
+import com.tokopedia.centralizedpromo.view.model.FilterPromoUiModel
+import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoViewModel
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.databinding.FragmentCentralizedPromoBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.view.bottomsheet.AdminRestrictionBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,7 +42,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class CentralizedPromoFragment : BaseDaggerFragment(),
-    PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener, CoachMarkListener {
+    PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener, CoachMarkListener,
+    PartialCentralizedPromoCreationView.RefreshPromotionClickListener {
 
     companion object {
         private const val TOAST_DURATION: Long = 5000
@@ -60,14 +68,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
     private val adapterTypeFactory by lazy {
         CentralizedPromoAdapterTypeFactory(
-            ::trackFreeShippingImpression,
-            ::trackFreeShippingClick,
-            ::trackProductCouponImpression,
-            ::trackProductCouponClick,
-            ::trackProductCouponOngoingPromoClick,
-            ::trackTokoMemberImpression,
-            ::trackTokoMemberClicked,
-            ::trackFlashSaleTokoClick
+            ::onClickPromo,
+            ::onImpressionPromoList
         )
     }
 
@@ -93,6 +95,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
     private var isErrorToastShown: Boolean = false
     private var isCoachMarkShowed: Boolean = false
+    private var currentFilterTab = FilterPromoUiModel()
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -127,6 +130,10 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         getLayoutData(LayoutType.ON_GOING_PROMO)
     }
 
+    override fun onRefreshPromotionListButtonClicked() {
+        getLayoutData(LayoutType.PROMO_CREATION)
+    }
+
     override fun onViewReadyForCoachMark() {
         partialViews.forEach {
             if (it.value?.showCoachMark.orFalse() && !it.value?.readyToShowCoachMark.orFalse()) return
@@ -155,13 +162,22 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
     private fun createPromoRecommendationView(): PartialCentralizedPromoCreationView? {
         return binding?.let {
             PartialCentralizedPromoCreationView(
+                refreshButtonClickListener = this,
                 binding = it,
                 adapterTypeFactory = adapterTypeFactory,
                 coachMarkListener = this,
                 showCoachMark = sharedPref.getBoolean(
                     SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION,
                     true
-                )
+                ),
+                onSelectedFilter = { filter ->
+                    currentFilterTab = filter
+                    CentralizedPromoTracking.sendClickFilter(filter.id)
+                    partialViews[LayoutType.PROMO_CREATION]?.renderLoading(LoadingType.PROMO_LIST)
+                    getLayoutData(
+                        LayoutType.PROMO_CREATION
+                    )
+                }
             )
         }
     }
@@ -176,12 +192,12 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         partialViews.forEach { it.value?.renderLoading() }
         getLayoutData(
             LayoutType.ON_GOING_PROMO,
-            LayoutType.PROMO_CREATION
+            LayoutType.PROMO_CREATION,
         )
     }
 
     private fun getLayoutData(vararg layoutTypes: LayoutType) {
-        centralizedPromoViewModel.getLayoutData(*layoutTypes)
+        centralizedPromoViewModel.getLayoutData(*layoutTypes, tabId = currentFilterTab.id)
     }
 
     private fun observeGetLayoutDataResult() {
@@ -275,36 +291,74 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         }, TOAST_DURATION)
     }
 
-    private fun trackFlashSaleTokoClick(cardTitle: String) {
-        CentralizedPromoTracking.sendClickFlashSaleToko(cardTitle, userSession.shopId)
+    private fun onClickPromo(promoCreationUiModel: PromoCreationUiModel) {
+
+        if (promoCreationUiModel.isEligible()) {
+            if (sharedPref.getBoolean(promoCreationUiModel.title, false)){
+                RouteManager.route(requireContext(),promoCreationUiModel.ctaLink)
+            } else {
+                val detailPromoBottomSheet =
+                    DetailPromoBottomSheet.createInstance(promoCreationUiModel)
+                detailPromoBottomSheet.show(childFragmentManager)
+                detailPromoBottomSheet.onCheckBoxListener { isDontShowBottomSheet ->
+                    updateDontShowBottomSheet(
+                        pageName = promoCreationUiModel.title,
+                        isDontShowBottomSheet
+                    )
+                    CentralizedPromoTracking.sendClickCheckboxBottomSheet(
+                        currentFilterTab.name,
+                        promoCreationUiModel.title
+                    )
+                }
+                detailPromoBottomSheet.onCreateCampaignTracking {
+                    CentralizedPromoTracking.sendClickCreateCampaign(
+                        currentFilterTab.name,
+                        promoCreationUiModel.title
+                    )
+                }
+
+                detailPromoBottomSheet.onClickPaywallTracking {
+                    CentralizedPromoTracking.sendClickPaywall(
+                        currentFilterTab.name,
+                        promoCreationUiModel.title,
+                        promoCreationUiModel.ctaText
+                    )
+                }
+
+
+                detailPromoBottomSheet.onImpressionPaywallTracking {
+                    CentralizedPromoTracking.sendImpressionBottomSheetPaywall(
+                        currentFilterTab.name,
+                        promoCreationUiModel.title,
+                        promoCreationUiModel.ctaText
+                    )
+                }
+
+                CentralizedPromoTracking.sendImpressionBottomSheetPromo(
+                    currentFilterTab.name,
+                    promoCreationUiModel.title
+                )
+            }
+
+        } else {
+            val restrictBottomSheet =
+                AdminRestrictionBottomSheet.createInstance(requireContext(), String.EMPTY)
+            restrictBottomSheet.show(childFragmentManager)
+        }
+
+        CentralizedPromoTracking.sendClickCampaignCard(
+            currentFilterTab.name,
+            promoCreationUiModel.title
+        )
     }
 
-    private fun trackFreeShippingImpression() {
-        centralizedPromoViewModel.trackFreeShippingImpression()
+    private fun updateDontShowBottomSheet(pageName: String, isChecked: Boolean) {
+        sharedPref.edit().putBoolean(pageName, isChecked).apply()
     }
 
-    private fun trackFreeShippingClick() {
-        centralizedPromoViewModel.trackFreeShippingClick()
-    }
+    private fun onImpressionPromoList(promoName: String) {
+        CentralizedPromoTracking.sendImpressionCard(promoName,currentFilterTab.name)
 
-    private fun trackProductCouponImpression() {
-        CentralizedPromoTracking.sendImpressionProductCouponPromoCreation(userSession.shopId)
-    }
-
-    private fun trackProductCouponClick() {
-        CentralizedPromoTracking.sendClickProductCouponPromoCreation(userSession.shopId)
-    }
-
-    private fun trackProductCouponOngoingPromoClick(campaignName: String) {
-        CentralizedPromoTracking.sendClickProductCouponOngoingPromo(campaignName, userSession.shopId)
-    }
-
-    private fun trackTokoMemberImpression() {
-        CentralizedPromoTracking.sendViewTokoMember(userSession.shopId)
-    }
-
-    private fun trackTokoMemberClicked() {
-        CentralizedPromoTracking.sendClickTokoMember(userSession.shopId)
     }
 }
 

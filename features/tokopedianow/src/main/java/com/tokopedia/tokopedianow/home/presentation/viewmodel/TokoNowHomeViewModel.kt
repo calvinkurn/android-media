@@ -27,6 +27,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
@@ -44,6 +45,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
+import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
@@ -144,6 +146,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCartRemove
     val homeAddToCartTracker: LiveData<HomeAddToCartTracker>
         get() = _homeAddToCartTracker
+    val homeRemoveFromCartTracker: LiveData<HomeRemoveFromCartTracker>
+        get() = _homeRemoveFromCartTracker
     val atcQuantity: LiveData<Result<HomeLayoutListUiModel>>
         get() = _atcQuantity
     val openScreenTracker: LiveData<String>
@@ -156,6 +160,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _homeSwitchServiceTracker
     val invalidatePlayImpression: LiveData<Boolean>
         get() = _invalidatePlayImpression
+    val updateToolbarNotification: LiveData<Boolean>
+        get() = _updateToolbarNotification
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -165,12 +171,14 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
     private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
+    private val _homeRemoveFromCartTracker = MutableLiveData<HomeRemoveFromCartTracker>()
     private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _openScreenTracker = MutableLiveData<String>()
     private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
     private val _getReferralResult = MutableLiveData<Result<HomeReferralDataModel>>()
     private val _homeSwitchServiceTracker = MutableLiveData<HomeSwitchServiceTracker>()
     private val _invalidatePlayImpression = MutableLiveData<Boolean>()
+    private val _updateToolbarNotification = MutableLiveData<Boolean>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -388,6 +396,10 @@ class TokoNowHomeViewModel @Inject constructor(
             )
             _atcQuantity.postValue(Success(data))
         }) {}
+    }
+
+    fun updateToolbarNotification() {
+        _updateToolbarNotification.postValue(true)
     }
 
     fun removeTickerWidget(id: String) {
@@ -772,6 +784,7 @@ class TokoNowHomeViewModel @Inject constructor(
         addToCartUseCase.execute({
             trackProductAddToCart(productId, quantity, type, it.data.cartId)
             updateAddToCartQuantity(productId, quantity, type)
+            updateToolbarNotification()
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -814,6 +827,7 @@ class TokoNowHomeViewModel @Inject constructor(
         updateCartUseCase.execute({
             trackProductUpdateCart(productId, quantity, type, cartId)
             updateAddToCartQuantity(productId, quantity, type)
+            updateToolbarNotification()
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
@@ -829,6 +843,7 @@ class TokoNowHomeViewModel @Inject constructor(
             val data = Pair(productId, it.data.message.joinToString(separator = ", "))
             trackProductRemoveCart(productId, type, miniCartItem.cartId)
             updateAddToCartQuantity(productId, DEFAULT_QUANTITY, type)
+            updateToolbarNotification()
             _miniCartRemove.postValue(Success(data))
         }, {
             _miniCartRemove.postValue(Fail(it))
@@ -880,7 +895,7 @@ class TokoNowHomeViewModel @Inject constructor(
         cartId: String
     ) {
         if(type == PRODUCT_RECOM) {
-            trackRecentProductRecomAddToCart(productId, DEFAULT_QUANTITY, cartId)
+            trackRecentProductRecomRemoveCart(productId, cartId)
         }
     }
 
@@ -891,8 +906,7 @@ class TokoNowHomeViewModel @Inject constructor(
         val product = productList.firstOrNull { it.productId == productId }
 
         product?.let {
-            val position = productList.indexOf(it)
-            val data = HomeAddToCartTracker(position, quantity,cartId, it)
+            val data = HomeAddToCartTracker(product.position, quantity,cartId, it)
             _homeAddToCartTracker.postValue(data)
         }
     }
@@ -900,12 +914,27 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun trackRecentProductRecomAddToCart(productId: String, quantity: Int, cartId: String) {
         homeLayoutItemList.updateProductRecom(productId, quantity)?.let { productRecom ->
             val recomItemList = productRecom.recomWidget.recommendationItemList
-            val product = recomItemList.first { it.productId.toString() == productId }
-            val position = recomItemList.indexOf(product)
-
+            val position = getPositionProductRecom(recomItemList, productId)
             val data = HomeAddToCartTracker(position, quantity, cartId, productRecom)
             _homeAddToCartTracker.postValue(data)
         }
+    }
+
+    private fun trackRecentProductRecomRemoveCart(productId: String, cartId: String) {
+        homeLayoutItemList.updateProductRecom(productId, DEFAULT_QUANTITY)?.let { productRecom ->
+            val recomItemList = productRecom.recomWidget.recommendationItemList
+            val position = getPositionProductRecom(recomItemList, productId)
+            val data = HomeRemoveFromCartTracker(position, DEFAULT_QUANTITY, cartId, productRecom)
+            _homeRemoveFromCartTracker.postValue(data)
+        }
+    }
+
+    private fun getPositionProductRecom(
+        recomItemList: List<RecommendationItem>,
+        productId: String
+    ): Int {
+        val product = recomItemList.first { it.productId.toString() == productId }
+        return product.position
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {

@@ -326,6 +326,19 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
+    override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
+        val widgets = mutableListOf<BaseWidgetUiModel<*>>()
+        adapter.data.forEach {
+            val isTheSameWidget = it.widgetType == widget.widgetType
+            if (isTheSameWidget) {
+                it.showLoadingState = true
+                notifyWidgetChanged(it)
+                widgets.add(it)
+            }
+        }
+        getWidgetsData(widgets)
+    }
+
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         StatisticTracker.sendClickCardEvent(model)
     }
@@ -470,8 +483,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
-
     override fun sendTableFilterImpression(element: TableWidgetUiModel) {
         getCategoryPage()?.let { categoryPage ->
             StatisticTracker.sendTableFilterImpressionEvent(categoryPage)
@@ -513,7 +524,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         filter: WidgetFilterUiModel,
         model: TableWidgetUiModel
     ) {
-        val isEmpty = model.data?.dataSet?.all { it.rows.isNullOrEmpty() }.orTrue()
+        val isEmpty = model.data?.dataSet?.all { it.rows.isEmpty() }.orTrue()
         StatisticTracker.sendTableFilterClickEvent(
             statisticPage?.pageSource.orEmpty(),
             model.dataKey,
@@ -984,6 +995,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                     error = message
                 }
                 widget.data = widgetData
+                widget.showLoadingState = false
                 notifyWidgetChanged(widget)
             }
         }
@@ -1006,6 +1018,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }?.let { widget ->
                 if (widget is W) {
                     widget.data = widgetData
+                    widget.showLoadingState = false
                     notifyWidgetChanged(widget)
                 }
             }
@@ -1026,21 +1039,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun observeWidgetLayoutLiveData() {
-        mViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
-
+        mViewModel.widgetLayout.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
                 is Fail -> setOnErrorGetLayout(result.throwable)
             }
-
             setProgressBarVisibility(false)
-        })
-
+        }
         setProgressBarVisibility(true)
     }
 
     private fun observeTickers() {
-        mViewModel.tickers.observe(viewLifecycleOwner, {
+        mViewModel.tickers.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> showTickers(it.data)
                 is Fail -> StatisticLogger.logToCrashlytics(
@@ -1048,14 +1058,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                     StatisticLogger.ERROR_TICKER
                 )
             }
-        })
+        }
     }
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
         liveData: LiveData<Result<List<D>>>,
         type: String
     ) {
-        liveData.observe(viewLifecycleOwner, { result ->
+        liveData.observe(viewLifecycleOwner) { result ->
             startLayoutRenderingPerformanceMonitoring()
 
             when (result) {
@@ -1065,7 +1075,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
             stopPLTPerformanceMonitoring()
             stopWidgetPerformanceMonitoring(type)
-        })
+        }
     }
 
     private fun showTickers(tickers: List<TickerItemUiModel>) {

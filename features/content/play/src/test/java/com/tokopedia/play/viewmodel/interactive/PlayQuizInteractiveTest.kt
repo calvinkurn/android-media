@@ -14,6 +14,7 @@ import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.QuizAnsweredEvent
+import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
@@ -25,7 +26,7 @@ import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -43,7 +44,9 @@ class PlayQuizInteractiveTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val interactiveId = "12398"
     private val title = "Quiz Ikan Koi"
@@ -69,7 +72,6 @@ class PlayQuizInteractiveTest {
     private val socket: PlayWebSocket = mockk(relaxed = true)
     private val mockMapper: PlayUiModelMapper = mockk(relaxed = true)
     private val modelBuilder = UiModelBuilder.get()
-    private val interactiveModelBuilder = PlayInteractiveModelBuilder()
     private val mockInteractiveStorage = object : PlayInteractiveStorage {
         private var hasJoined = false
         private var hasProcessWinner = false
@@ -128,7 +130,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(choice)
         )
 
@@ -150,7 +151,7 @@ class PlayQuizInteractiveTest {
                 it.viewModel.submitAction(
                     PlayViewerNewAction.ClickQuizOptionAction(item = choice)
                 )
-            }.last().assertEqualTo(QuizAnsweredEvent)
+            }.last().assertEqualTo(QuizAnsweredEvent(isTrue = true))
             mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
         }
     }
@@ -166,7 +167,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(choice)
         )
         val err = MessageErrorException("Error gk bs jawab y")
@@ -206,7 +206,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(
                 selectedChoice,
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Default('b')),
@@ -232,7 +231,7 @@ class PlayQuizInteractiveTest {
                 viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item = selectedChoice))
                 mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
             }
-            eventAndState.second.last().assertEqualTo(QuizAnsweredEvent)
+            eventAndState.second.last().assertEqualTo(QuizAnsweredEvent(isTrue = false))
             (eventAndState.first.interactive.interactive as InteractiveUiModel.Quiz).listOfChoices.forEach { quizChoice ->
                 quizChoice.assertType<QuizChoicesUiModel> { choice ->
                     if(choice.id == selectedId) choice.type is PlayQuizOptionState.Answered
@@ -250,7 +249,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
@@ -280,7 +278,6 @@ class PlayQuizInteractiveTest {
         }
     }
 
-
     @Test
     fun `given quiz is finish and has no reward, only show leaderboard`() {
         coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
@@ -290,7 +287,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "", // no reward
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
@@ -312,9 +308,12 @@ class PlayQuizInteractiveTest {
                 setLoggedIn(true)
                 setUserId("1")
 
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
                 viewModel.submitAction(PlayViewerNewAction.QuizEnded)
             }
             eventAndState.first.winnerBadge.shouldShow.assertTrue()
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
         }
     }
 
@@ -327,7 +326,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Ikan Koi",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
@@ -349,10 +347,136 @@ class PlayQuizInteractiveTest {
                 setLoggedIn(true)
                 setUserId("1")
 
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
                 viewModel.submitAction(PlayViewerNewAction.QuizEnded)
             }
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
             eventAndState.first.winnerBadge.shouldShow.assertTrue()
             eventAndState.first.interactive.interactive.assertInstanceOf<InteractiveUiModel.Unknown>()
+        }
+    }
+
+    @Test
+    fun `user participate - given quiz is finish and show coachmark and leaderboard`() {
+        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
+            id = interactiveId,
+            title = title,
+            waitingDuration = waitingDuration,
+            status = InteractiveUiModel.Quiz.Status.Ongoing(
+                endTime = duration,
+            ),
+            listOfChoices = listOf(
+                modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+                modelBuilder.buildQuizChoices(id = "32", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+            )
+        )
+
+        coEvery { mockAnswerQuizUseCase.executeOnBackground() } returns AnswerQuizResponse(data = AnswerQuizResponse.Data(correctAnswerID = "31"))
+
+        val selectedChoice = modelBuilder.buildQuizChoices(id = "31", text = "25 June", type = PlayQuizOptionState.Default('a'))
+
+        createPlayViewModelRobot (
+            playChannelWebSocket = socket,
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            val eventAndState = it.recordStateAndEvent {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+                setLoggedIn(true)
+                setUserId("1")
+
+                viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item = selectedChoice))
+
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+            }
+            mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
+            eventAndState.first.winnerBadge.shouldShow.assertTrue()
+            eventAndState.second.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
+        }
+    }
+
+    @Test
+    fun `user not participate - given quiz is finish and show coachmark and leaderboard`() {
+        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
+            id = interactiveId,
+            title = title,
+            waitingDuration = waitingDuration,
+            status = InteractiveUiModel.Quiz.Status.Ongoing(
+                endTime = duration,
+            ),
+            listOfChoices = listOf(
+                modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+                modelBuilder.buildQuizChoices(id = "32", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+            )
+        )
+
+        coEvery { mockAnswerQuizUseCase.executeOnBackground() } returns AnswerQuizResponse(data = AnswerQuizResponse.Data(correctAnswerID = "31"))
+
+        createPlayViewModelRobot (
+            playChannelWebSocket = socket,
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            val eventAndState = it.recordStateAndEvent {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+                setLoggedIn(true)
+                setUserId("1")
+
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+            }
+            mockInteractiveStorage.hasJoined(interactiveId).assertFalse()
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
+            eventAndState.first.winnerBadge.shouldShow.assertTrue()
+            eventAndState.second.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
+        }
+    }
+
+    @Test
+    fun `non login user - given quiz is finish and show coachmark and leaderboard`() {
+        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
+            id = interactiveId,
+            title = title,
+            waitingDuration = waitingDuration,
+            status = InteractiveUiModel.Quiz.Status.Ongoing(
+                endTime = duration,
+            ),
+            listOfChoices = listOf(
+                modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+                modelBuilder.buildQuizChoices(id = "32", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+            )
+        )
+
+        coEvery { mockAnswerQuizUseCase.executeOnBackground() } returns AnswerQuizResponse(data = AnswerQuizResponse.Data(correctAnswerID = "31"))
+
+        createPlayViewModelRobot (
+            playChannelWebSocket = socket,
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            val eventAndState = it.recordStateAndEvent {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+                setLoggedIn(false)
+
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+            }
+            mockInteractiveStorage.hasJoined(interactiveId).assertFalse()
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
+            eventAndState.first.winnerBadge.shouldShow.assertTrue()
+            eventAndState.second.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
         }
     }
 }

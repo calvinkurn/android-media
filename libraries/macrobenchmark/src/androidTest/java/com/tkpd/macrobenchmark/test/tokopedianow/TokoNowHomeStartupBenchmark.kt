@@ -20,6 +20,12 @@ import org.junit.runners.Parameterized
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
 class TokoNowHomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+    override fun setupEnvironment() {
+    }
+
+    override fun setupMock() {
+    }
+
     override fun getIntent() = MacroIntent.TokopediaNow.getHomeIntent()
 
     override fun waitUntil() {

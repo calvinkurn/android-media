@@ -22,6 +22,7 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_MAINNAV_GET_USER_SHOP_FOLLOW = "GetUserShopFollow"
         const val KEY_CONTAINS_MAINNAV_PRODUCT_REV_WAIT_FOR_FEEDBACK = "productrevWaitForFeedback"
         const val KEY_CONTAINS_MAINNAV_PRODUCT_REV_AFFILIATE = "affiliateUserDetail"
+        const val KEY_CONTAINS_MAINNAV_TOKOPEDIA_PLUS = "tokopediaPlusWidget"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -112,6 +113,12 @@ internal open class MainNavMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_MAINNAV_PRODUCT_REV_AFFILIATE,
             getRawString(context, R.raw.response_success_mock_mainnav_affiliate_user_detail),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_CONTAINS_MAINNAV_TOKOPEDIA_PLUS,
+            getRawString(context, R.raw.response_success_mock_mainnav_tokopedia_plus),
             FIND_BY_CONTAINS
         )
 

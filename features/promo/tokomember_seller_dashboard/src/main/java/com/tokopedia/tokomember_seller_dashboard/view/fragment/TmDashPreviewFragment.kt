@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
@@ -24,12 +25,32 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantC
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponPreviewData
+import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC_NO_INTERNET
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_NO_INTERNET
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_EXTEND_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
+import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -39,6 +60,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_preview.*
 import javax.inject.Inject
+
+private const val PROGRESS_90 = 90
+private const val RESULT_SUCCESS = 200
 
 class TmDashPreviewFragment : BaseDaggerFragment() {
 
@@ -172,7 +196,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     closeLoadingDialog()
-                    if (it.data.merchantPromotionCreateMultipleMV?.status == 200) {
+                    if (it.data.merchantPromotionCreateMultipleMV?.status == RESULT_SUCCESS) {
                         activity?.finish()
                         TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0,cardId, context, isShowBottomSheet, programActionType)
                     } else {
@@ -234,6 +258,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                 if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_BUAT){
                     tmTracker?.clickSummaryBackFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 }
+                else if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_EXTEND){
+                    tmTracker?.clickProgramExtensionSummaryBack(arguments?.getInt(BUNDLE_SHOP_ID).toString(), arguments?.getInt(BUNDLE_PROGRAM_ID).toString())
+                }
                 else {
                     tmTracker?.clickSummaryBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 }
@@ -243,7 +270,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         progressPreview?.apply {
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
             progressBarHeight = ProgressBarUnify.SIZE_SMALL
-            setValue(90, false)
+            setValue(PROGRESS_90, false)
         }
     }
 
@@ -259,14 +286,66 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                     arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
                 )
             }
+            else if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_EXTEND){
+                tmTracker?.clickProgramExtensionSummaryButton(
+                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                )
+            }
             else {
                 tmTracker?.clickSummaryButton(
                     arguments?.getInt(BUNDLE_SHOP_ID).toString(),
                     arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
                 )
             }
+
+            createCoupon(tmCouponCreateUnifyRequest)
+        }
+    }
+
+    private fun createCoupon(tmCouponCreateUnifyRequest: TmMerchantCouponUnifyRequest) {
+        if (com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck.isConnectedToInternet(context)) {
             tmDashCreateViewModel.createCoupon(tmCouponCreateUnifyRequest)
         }
+        else {
+            noInternetUi {
+                createCoupon(tmCouponCreateUnifyRequest)
+            }
+        }
+    }
+
+    private fun noInternetUi(action: () -> Unit) {
+        //show no internet bottomsheet
+
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            ERROR_CREATING_TITLE_NO_INTERNET,
+            ERROR_CREATING_DESC_NO_INTERNET,
+            "",
+            RETRY,
+            errorCount = 0,
+            showSecondaryCta = true
+        )
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener {
+            override fun onButtonClick(errorCount: Int) {
+                action()
+            }})
+        if(programActionType == ProgramActionType.CREATE){
+            bottomsheet.setSecondaryCta {
+                arguments?.getInt(BUNDLE_SHOP_ID)?.let {
+                    TokomemberDashIntroActivity.openActivity(
+                        it,
+                        arguments?.getString(BUNDLE_SHOP_AVATAR).toString(),
+                        arguments?.getString(BUNDLE_SHOP_NAME).toString(),
+                        context = context
+                    )
+                }
+                activity?.finish()
+            }
+        }
+        bottomsheet.show(childFragmentManager,"")
     }
 
     private fun openLoadingDialog() {

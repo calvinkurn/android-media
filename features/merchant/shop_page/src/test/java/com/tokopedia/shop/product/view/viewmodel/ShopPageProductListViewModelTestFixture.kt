@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -80,12 +81,16 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var deleteCartUseCase: DeleteCartUseCase
     @RelaxedMockK
     lateinit var context: Context
+    @RelaxedMockK
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var shopPageProductListResultViewModel: ShopPageProductListResultViewModel
     protected val addressWidgetData: LocalCacheModel = LocalCacheModel()
     protected val mockProductPerPage = 10
-    protected val mockIsDirectPurchase = true
+    protected val mockIsDirectPurchaseTrue = true
+    protected val mockIsDirectPurchaseFalse = false
+    protected val mockShopId = "123"
     private val testCoroutineDispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
     }

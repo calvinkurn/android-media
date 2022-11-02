@@ -2,7 +2,10 @@ package com.tokopedia.logisticorder.view.bottomsheet
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.text.*
+import android.text.Editable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextWatcher
 import android.text.style.BulletSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -38,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import javax.inject.Inject
 
 class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageComponent>, TippingValueAdapter.ActionListener {
@@ -53,6 +57,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     private var orderId: String? = ""
     private var trackingDataModel: TrackingDataModel? = null
     private lateinit var tippingValueAdapter: TippingValueAdapter
+    private var selectedTippingValue: Int? = null
 
     init {
         setOnDismissListener {
@@ -156,6 +161,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.etNominalTip.run {
                     setMessage(getString(R.string.nominal_tip_message, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)))
                     editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout, logisticDriverModel.prepayment.minAmount, logisticDriverModel.prepayment.maxAmount))
+                    counterView?.visibility = View.GONE
                 }
 
                 binding.btnTipping.setOnClickListener {
@@ -185,9 +191,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     tvTipResult.text = getString(if (logisticDriverModel.status == SUCCESS_PAYMENT) com.tokopedia.logisticorder.R.string.tipping_success_payment_text else com.tokopedia.logisticorder.R.string.tipping_success_to_gojek_text)
                     tvTipResultDesc.text = MethodChecker.fromHtml(getString(com.tokopedia.logisticorder.R.string.tipping_result_desc))
                     tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
-                    tvDriverNameValue.text = logisticDriverModel.tippingLastDriver.name
-                    tvPhoneNumberValue.text = logisticDriverModel.tippingLastDriver.phone
-                    tvLicenseValue.text = logisticDriverModel.tippingLastDriver.licenseNumber
+                    tvDriverNameValue.text = logisticDriverModel.lastDriver.name
+                    tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
+                    tvLicenseValue.text = logisticDriverModel.lastDriver.licenseNumber
                     if (logisticDriverModel.payment.methodIcon.isNotEmpty()) {
                         tippingMethod.setImageUrl(logisticDriverModel.payment.methodIcon)
                     } else {
@@ -223,21 +229,30 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val text = binding.etNominalTip.editText.text.toString()
-                if (s.isNotEmpty() && text.toInt() < minAmount) {
+                if (s.isNotEmpty() && text.toIntSafely() < minAmount) {
                     setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.minimum_tipping, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(minAmount)))
                     binding.btnTipping.isEnabled = false
-                } else if (s.isNotEmpty() && text.toInt() > maxAmount) {
+                } else if (s.isNotEmpty() && text.toIntSafely() > maxAmount) {
                     setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.maksimum_tipping, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(maxAmount)))
                     binding.btnTipping.isEnabled = false
                 } else {
                     setWrapperError(wrapper, null)
                     binding.btnTipping.isEnabled = true
                 }
+
+                validateSelectedChip(text)
             }
 
             override fun afterTextChanged(text: Editable) {
 
             }
+        }
+    }
+
+    private fun validateSelectedChip(nominalTip: String?) {
+        if (selectedTippingValue != nominalTip?.toIntOrNull()) {
+            tippingValueAdapter.replaceSelectedChip()
+            selectedTippingValue = null
         }
     }
 
@@ -252,9 +267,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     }
 
     override fun onTippingValueClicked(tippingValue: Int) {
+        selectedTippingValue = tippingValue
         binding.etNominalTip.editText.setText(tippingValue.toString())
     }
-
 
     fun show(fm: FragmentManager, orderId: String?, trackingDataModel: TrackingDataModel) {
         this.orderId = orderId

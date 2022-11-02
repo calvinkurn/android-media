@@ -32,9 +32,9 @@ class DataStoreViewModelTest {
 
     @Before
     fun setUp() {
-        coverDataStore = CoverDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        coverDataStore = CoverDataStoreImpl(dispatcherProvider, mockk())
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
-        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
         mockSetupDataStore = MockSetupDataStore(coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)

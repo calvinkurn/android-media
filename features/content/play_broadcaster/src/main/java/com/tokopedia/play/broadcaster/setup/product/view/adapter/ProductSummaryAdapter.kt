@@ -30,6 +30,6 @@ internal class ProductSummaryAdapter(
 
     sealed class Model {
         data class Header(val text: String, val status: CampaignStatus): Model()
-        data class Body(val product: ProductUiModel): Model()
+        data class Body(val product: ProductUiModel, val isEligibleForPin: Boolean): Model()
     }
 }

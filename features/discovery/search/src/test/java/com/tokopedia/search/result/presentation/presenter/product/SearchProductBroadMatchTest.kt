@@ -5,15 +5,16 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatch
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchProduct
+import com.tokopedia.search.result.product.broadmatch.BroadMatch
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparable
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.every
@@ -24,6 +25,7 @@ import io.mockk.verify
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsCollectionContaining.hasItem
 import org.hamcrest.core.IsInstanceOf.instanceOf
+import org.junit.Assert.assertFalse
 import org.junit.Test
 import rx.Subscriber
 
@@ -107,7 +109,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         `When Load Data`()
 
-        `Then assert view will show product list`()
+        `Then assert view updater will show product list`()
 
         val visitableList = visitableListSlot.captured
         `Then assert visitable list contains SuggestionViewModel as first item`(visitableList)
@@ -117,25 +119,20 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             searchProductModel,
             keyword,
         )
-        `Then assert visitable list does not contain SeparatorViewModel`(visitableList)
+        `Then assert visitable list does not contain Separator`(visitableList)
     }
 
     private fun `Given keyword from view`(keyword: String) {
         every { productListView.queryKey } returns keyword
     }
 
-    private fun `Then assert visitable list does not contain SeparatorViewModel`(visitableList: List<Visitable<*>>) {
-        val separatorIndex = visitableList.indexOfFirst { it is SeparatorDataView }
-
-        separatorIndex.shouldBe(
-                -1,
-                "Separator is found on visitable list index $separatorIndex"
-        )
+    private fun `Then assert visitable list does not contain Separator`(visitableList: List<Visitable<*>>) {
+        assertFalse(visitableList.any { it is VerticalSeparable && it.verticalSeparator !is VerticalSeparator.None })
     }
 
-    private fun `Then assert view will show product list`() {
+    private fun `Then assert view updater will show product list`() {
         verify {
-            productListView.setProductList(capture(visitableListSlot))
+            viewUpdater.setItems(capture(visitableListSlot))
             productListView.updateScrollListener()
             productListView.hideRefreshLayout()
         }
@@ -249,7 +246,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         `When Load Data`()
 
-        `Then assert view will show product list`()
+        `Then assert view updater will show product list`()
 
         val visitableList = visitableListSlot.captured
         `Then assert visitable list contains BroadMatchViewModel`(
@@ -258,7 +255,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             searchProductModel,
             keyword,
         )
-        `Then assert visitable list does not contain SeparatorViewModel`(visitableList)
+        `Then assert visitable list does not contain Separator`(visitableList)
     }
 
     @Test
@@ -304,7 +301,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         `Then assert view will show product list`()
 
         val visitableList = visitableListSlot.captured
-        `Then assert top separator view model and suggestion view model is positioned under product list`(visitableList)
+        `Then assert suggestion view model is positioned under product list and has top separator`(visitableList)
 
         val expectedBroadMatchStartingPosition = visitableList.indexOfLast { it is SuggestionDataView } + 1
         `Then assert visitable list contains BroadMatchViewModel`(
@@ -315,22 +312,25 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         )
     }
 
-    private fun `Then assert top separator view model and suggestion view model is positioned under product list`(visitableList: List<Visitable<*>>) {
+    private fun `Then assert view will show product list`() {
+        verify {
+            productListView.setProductList(capture(visitableListSlot))
+            productListView.updateScrollListener()
+            productListView.hideRefreshLayout()
+        }
+    }
+
+    private fun `Then assert suggestion view model is positioned under product list and has top separator`(visitableList: List<Visitable<*>>) {
         val lastProductItemIndex = visitableList.indexOfLast { it is ProductItemDataView }
 
-        val expectedTopSeparatorViewModelIndex = lastProductItemIndex + 1
-        val actualTopSeparatorViewModelIndex = visitableList.indexOfFirst { it is SeparatorDataView }
-
-        val expectedSuggestionViewModelIndex = lastProductItemIndex + 2
+        val expectedSuggestionViewModelIndex = lastProductItemIndex + 1
         val actualSuggestionViewModelIndex = visitableList.indexOfFirst { it is SuggestionDataView }
+        val suggestionDataView = visitableList[actualSuggestionViewModelIndex] as SuggestionDataView
 
-        expectedTopSeparatorViewModelIndex.shouldBe(actualTopSeparatorViewModelIndex,
-                "Separator View Model is at position $expectedTopSeparatorViewModelIndex, should be at position $actualTopSeparatorViewModelIndex"
+        actualSuggestionViewModelIndex.shouldBe(expectedSuggestionViewModelIndex,
+                "Suggestion View Model is at position $actualSuggestionViewModelIndex, should be at position $expectedSuggestionViewModelIndex"
         )
-
-        expectedSuggestionViewModelIndex.shouldBe(actualSuggestionViewModelIndex,
-                "Suggestion View Model is at position $expectedSuggestionViewModelIndex, should be at position $actualSuggestionViewModelIndex"
-        )
+        suggestionDataView.verticalSeparator.hasTopSeparator.shouldBe(true)
     }
 
     @Test
@@ -359,7 +359,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         `When Load More Data`()
 
         `Then assert view will add product list`(visitableList)
-        `Then assert top separator view model and suggestion view model is positioned under product list`(visitableList)
+        `Then assert suggestion view model is positioned under product list and has top separator`(visitableList)
         val expectedBroadMatchStartingPosition = visitableList.indexOfLast { it is SuggestionDataView } + 1
         `Then assert visitable list contains BroadMatchViewModel`(
             expectedBroadMatchStartingPosition,
@@ -435,13 +435,18 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position0.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        val expectedTopSeparatorPosition = searchProductModelPage1.getTotalProductItem() + searchProductModelPage2.getTotalProductItem() + 1
-        val expectedBottomSeparatorPosition = -1
+        val expectedHasTopSeparator = true
+        val expectedHasBottomSeparator = false
 
-        `Test broad match with position`(searchProductModelPage1, searchProductModelPage2, expectedTopSeparatorPosition, expectedBottomSeparatorPosition) { visitableList ->
+        `Test broad match with position`(
+            searchProductModelPage1,
+            searchProductModelPage2,
+            expectedHasTopSeparator,
+            expectedHasBottomSeparator
+        ) { visitableList ->
             val firstProductItemPosition = visitableList.indexOfFirst { it is ChooseAddressDataView }
 
-            firstProductItemPosition + expectedTopSeparatorPosition + 1
+            firstProductItemPosition + searchProductModelPage1.getTotalProductItem() + searchProductModelPage2.getTotalProductItem() + 1
         }
     }
 
@@ -454,9 +459,9 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        val expectedTopSeparatorPosition = -1
-        val expectedBottomSeparatorPosition = 6
-        val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 2
+        val expectedTopSeparatorPosition = false
+        val expectedBottomSeparatorPosition = true
+        val expectedSuggestionViewModelPosition = 1
 
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
@@ -469,13 +474,13 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position4.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        val expectedTopSeparatorPosition = 5
-        val expectedBottomSeparatorPosition = 11
-        val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+        val expectedHasTopSeparator = true
+        val expectedHasBottomSeparator = true
+        val expectedSuggestionViewModelPosition = 5
 
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
-                expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
+                expectedHasTopSeparator, expectedHasBottomSeparator)
         { expectedSuggestionViewModelPosition }
     }
 
@@ -484,22 +489,22 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position12.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        val expectedTopSeparatorPosition = 13
-        val expectedBottomSeparatorPosition = 19
-        val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+        val expectedHasTopSeparator = true
+        val expectedHasBottomSeparator = true
+        val expectedSuggestionViewModelPosition = 13
 
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
-                expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
+                expectedHasTopSeparator, expectedHasBottomSeparator)
         { expectedSuggestionViewModelPosition }
     }
 
     private fun `Test broad match with position`(
-            searchProductModelPage1: SearchProductModel,
-            searchProductModelPage2: SearchProductModel,
-            expectedTopSeparatorPosition: Int,
-            expectedBottomSeparatorPosition: Int = -1,
-            getExpectedSuggestionViewModelPosition: (List<Visitable<*>>) -> Int
+        searchProductModelPage1: SearchProductModel,
+        searchProductModelPage2: SearchProductModel,
+        expectedHasTopSeparator: Boolean,
+        expectedHasBottomSeparator: Boolean = false,
+        getExpectedSuggestionViewModelPosition: (List<Visitable<*>>) -> Int
     ) {
         val visitableList = mutableListOf<Visitable<*>>()
 
@@ -511,7 +516,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         val expectedSuggestionViewModelPosition = getExpectedSuggestionViewModelPosition(visitableList)
 
-        `Then assert top separator view model is positioned before suggestion`(expectedTopSeparatorPosition, expectedSuggestionViewModelPosition, visitableList)
+        `Then assert suggestion view model has top separator`(expectedHasTopSeparator, expectedSuggestionViewModelPosition, visitableList)
 
         val expectedBroadMatchViewModelPosition = expectedSuggestionViewModelPosition + 1
 
@@ -523,7 +528,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             keyword,
         )
 
-        `Then assert bottom separator view model is positioned after broad match list`(expectedBottomSeparatorPosition,expectedSuggestionViewModelPosition, visitableList)
+        `Then assert last broad match list item has bottom separator`(expectedHasBottomSeparator,expectedSuggestionViewModelPosition, visitableList)
 
     }
 
@@ -554,23 +559,34 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         )
     }
 
-    private fun `Then assert top separator view model is positioned before suggestion`(expectedTopSeparatorPosition: Int, suggestionViewModelIndex: Int, visitableList: List<Visitable<*>>) {
-        val actualTopSeparatorViewModelIndex = visitableList.withIndex().find {
-            it.value is SeparatorDataView && it.index < suggestionViewModelIndex
-        }?.index ?: -1
+    private fun `Then assert suggestion view model has top separator`(
+        expectedHasTopSeparator: Boolean,
+        suggestionViewModelIndex: Int,
+        visitableList: List<Visitable<*>>
+    ) {
+        val suggestionDataView = visitableList[suggestionViewModelIndex] as SuggestionDataView
 
-        actualTopSeparatorViewModelIndex.shouldBe(expectedTopSeparatorPosition,
-                "Separator View Model is at position $actualTopSeparatorViewModelIndex, should be at position $expectedTopSeparatorPosition"
+        suggestionDataView.verticalSeparator.hasTopSeparator.shouldBe(
+            expectedHasTopSeparator,
+            "Suggestion View Model top separator is ${suggestionDataView.verticalSeparator.hasTopSeparator}, should be $expectedHasTopSeparator"
         )
     }
 
-    private fun `Then assert bottom separator view model is positioned after broad match list`(expectedBottomSeparatorPosition: Int, suggestionViewModelIndex: Int, visitableList: List<Visitable<*>>) {
-        val actualBottomSeparatorViewModelIndex = visitableList.withIndex().find {
-            it.value is SeparatorDataView && it.index > suggestionViewModelIndex
-        }?.index ?: -1
+    private fun `Then assert last broad match list item has bottom separator`(
+        expectedHasBottomSeparator: Boolean,
+        suggestionViewModelIndex: Int,
+        visitableList: List<Visitable<*>>
+    ) {
+        val lastBroadMatchDataView = visitableList.subList(
+            suggestionViewModelIndex,
+            visitableList.size
+        ).last {
+            it is BroadMatchDataView
+        } as BroadMatchDataView
 
-        actualBottomSeparatorViewModelIndex.shouldBe(expectedBottomSeparatorPosition,
-                "Separator View Model is at position $actualBottomSeparatorViewModelIndex, should be at position $expectedBottomSeparatorPosition"
+        lastBroadMatchDataView.verticalSeparator.hasBottomSeparator.shouldBe(
+            expectedHasBottomSeparator,
+            "Separator View Model is at position ${lastBroadMatchDataView.verticalSeparator.hasBottomSeparator}, should be at position $expectedHasBottomSeparator"
         )
     }
 
@@ -607,7 +623,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
     private fun `Then verify tracking event impression not hit`() {
         verify(exactly = 0) {
-            productListView.trackEventImpressionBroadMatchItem(any())
+            broadMatchView.trackEventImpressionBroadMatchItem(any())
         }
     }
 }

@@ -50,7 +50,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC_NO_INTERNET
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_NO_INTERNET
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
@@ -65,6 +67,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayFromTimeWindow
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
+import com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
@@ -85,10 +88,12 @@ import javax.inject.Inject
 private const val COUNTRY_ID = "ID"
 private const val LANGUAGE_ID = "in"
 private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
+private const val PROGRESS_33 = 33
 
-class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
+class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
     BottomSheetClickListener {
 
+    private var firstTime = false
     private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
     private var selectedTime = ""
     private var fromEdit = false
@@ -99,7 +104,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private var programUpdateResponse = ProgramUpdateDataInput()
     private var tmTracker: TmTracker? = null
     private var programCreationId = 0
-    private var loaderDialog: LoaderDialog?=null
+    private var loaderDialog: LoaderDialog? = null
     private var errorCodeProgramCreation = ""
 
     @Inject
@@ -124,7 +129,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         if (context is TmOpenFragmentCallback) {
             tmOpenFragmentCallback = context
         } else {
-            throw Exception(context.toString() )
+            throw Exception(context.toString())
         }
     }
 
@@ -141,26 +146,31 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         tmTracker = TmTracker()
         renderHeader()
         observeViewModel()
-        callGQL(programActionType,arguments?.getInt(BUNDLE_SHOP_ID)?:0, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0  )
+        callGQL(
+            programActionType,
+            arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
+            arguments?.getInt(BUNDLE_PROGRAM_ID) ?: 0
+        )
     }
 
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
+        DaggerTokomemberDashComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     private fun observeViewModel() {
-        tmDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
+        tmDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
                 TokoLiveDataResult.STATUS.LOADING -> {
                     containerViewFlipper.displayedChild = SHIMMER
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     if (it.data?.membershipGetProgramForm?.resultStatus?.code == "200") {
                         renderProgramUI(it.data.membershipGetProgramForm)
-                    }
-                    else{
+                    } else {
                         handleErrorOnDataError()
                     }
                 }
@@ -170,60 +180,81 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             }
         })
 
-        tmDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
+        tmDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
 
-                TokoLiveDataResult.STATUS.LOADING ->{
+                TokoLiveDataResult.STATUS.LOADING -> {
                     openLoadingDialog()
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     closeLoadingDialog()
                     when (it.data?.membershipCreateEditProgram?.resultStatus?.code) {
                         CODE_SUCCESS -> {
-                            programCreationId = it?.data.membershipCreateEditProgram.programSeller?.id?:0
+                            programCreationId =
+                                it?.data.membershipCreateEditProgram.programSeller?.id ?: 0
                             onProgramUpdateSuccess()
                         }
-                        CODE_INVALID ->{
-                            view?.let { it1 -> Toaster.build(it1,"Cek dan pastikan semua informasi yang kamu isi sudah benar, ya.",Toaster.LENGTH_LONG,Toaster.TYPE_ERROR).show() }
+                        CODE_INVALID -> {
+                            view?.let { it1 ->
+                                Toaster.build(
+                                    it1,
+                                    "Cek dan pastikan semua informasi yang kamu isi sudah benar, ya.",
+                                    Toaster.LENGTH_LONG,
+                                    Toaster.TYPE_ERROR
+                                ).show()
+                            }
                         }
-                        CODE_OUTSIDE_WINDOW , CODE_PROGRAM_OUTSIDE_V2 -> {
+                        CODE_OUTSIDE_WINDOW, CODE_PROGRAM_OUTSIDE_V2 -> {
                             errorCodeProgramCreation = CODE_OUTSIDE_WINDOW
-                            handleErrorOnUpdate(it.data.membershipCreateEditProgram.resultStatus.message , ERROR_CREATING_CTA)
+                            handleErrorOnUpdate(
+                                it.data.membershipCreateEditProgram.resultStatus.message,
+                                ERROR_CREATING_CTA
+                            )
                         }
                         else -> {
                             handleErrorOnUpdate(null)
                         }
                     }
                 }
-                TokoLiveDataResult.STATUS.ERROR ->{
+                TokoLiveDataResult.STATUS.ERROR -> {
                     closeLoadingDialog()
-                    view?.let { it1 -> Toaster.build(it1, RETRY,Toaster.LENGTH_LONG,Toaster.TYPE_ERROR).show() }
+                    view?.let { it1 ->
+                        Toaster.build(
+                            it1,
+                            RETRY,
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
                 }
             }
         })
     }
 
-    private fun handleErrorOnDataError(){
+    private fun handleErrorOnDataError() {
         containerViewFlipper.displayedChild = ERROR
         globalError.setActionClickListener {
-            callGQL(programActionType,arguments?.getInt(BUNDLE_SHOP_ID)?:0, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0)
+            callGQL(
+                programActionType,
+                arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
+                arguments?.getInt(BUNDLE_PROGRAM_ID) ?: 0
+            )
         }
     }
 
-    private fun handleErrorOnUpdate (message: List<String?>? , ctaError:String = "") {
+    private fun handleErrorOnUpdate(message: List<String?>?, ctaError: String = "") {
         closeLoadingDialog()
-        val title = if(message.isNullOrEmpty()) {
+        val title = if (message.isNullOrEmpty()) {
             when (errorCount) {
                 0 -> ERROR_CREATING_TITLE
                 else -> ERROR_CREATING_TITLE_RETRY
             }
-        }
-        else{
-            message.getOrNull(0)?:""
+        } else {
+            message.getOrNull(0) ?: ""
         }
         var desc = ERROR_CREATING_DESC
-        if(!message.isNullOrEmpty()){
-            desc = message.getOrNull(1)?:""
+        if (!message.isNullOrEmpty()) {
+            desc = message.getOrNull(1) ?: ""
         }
 
         val image: String
@@ -240,35 +271,39 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             }
 
         val bundle = Bundle()
-        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, desc , image , cta , errorCount = errorCount)
-        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
+        val tmIntroBottomSheetModel =
+            TmIntroBottomsheetModel(title, desc, image, cta, errorCount = errorCount)
+        bundle.putString(
+            TokomemberBottomsheet.ARG_BOTTOMSHEET,
+            Gson().toJson(tmIntroBottomSheetModel)
+        )
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(this)
-        bottomSheet.show(childFragmentManager,"")
+        bottomSheet.show(childFragmentManager, "")
         errorCount += 1
     }
 
-    private fun callGQL(programType: Int, shopId: Int , programId:Int = 0){
-        when(programType){
-            ProgramActionType.CREATE ->{
-                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
+    private fun callGQL(programType: Int, shopId: Int, programId: Int = 0) {
+        when (programType) {
+            ProgramActionType.CREATE -> {
+                tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_CREATE)
             }
-            ProgramActionType.CREATE_FROM_COUPON ->{
-                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
+            ProgramActionType.CREATE_FROM_COUPON -> {
+                tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_CREATE)
             }
-            ProgramActionType.CREATE_BUAT ->{
-                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
+            ProgramActionType.CREATE_BUAT -> {
+                tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_CREATE)
             }
-            ProgramActionType.DETAIL ->{
-                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_DETAIL)
+            ProgramActionType.DETAIL -> {
+                tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_DETAIL)
             }
-            ProgramActionType.EXTEND ->{
-                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EXTEND)
+            ProgramActionType.EXTEND -> {
+                tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_EXTEND)
             }
-            ProgramActionType.EDIT ->{
-                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EDIT)
+            ProgramActionType.EDIT -> {
+                tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_EDIT)
             }
-            ProgramActionType.CANCEL ->{
+            ProgramActionType.CANCEL -> {
                 //TODO
             }
         }
@@ -284,23 +319,23 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         bundle.putInt(BUNDLE_CARD_ID, arguments?.getInt(BUNDLE_CARD_ID) ?: 0)
         bundle.putInt(BUNDLE_PROGRAM_DURATION, periodInMonth)
         bundle.putInt(BUNDLE_PROGRAM_ID_IN_TOOLS, programCreationId)
-        when(programActionType){
+        when (programActionType) {
             ProgramActionType.CREATE -> {
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.CREATE_FROM_COUPON -> {
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
-            ProgramActionType.EXTEND ->{
-                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
+            ProgramActionType.EXTEND -> {
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE_EXTEND, bundle)
             }
-            ProgramActionType.EDIT ->{
+            ProgramActionType.EDIT -> {
                 val intent = Intent()
                 intent.putExtra("REFRESH_STATE", REFRESH)
                 activity?.setResult(RESULT_OK, intent)
                 activity?.finish()
             }
-            ProgramActionType.CREATE_BUAT ->{
+            ProgramActionType.CREATE_BUAT -> {
                 tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
         }
@@ -309,17 +344,33 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private fun renderHeader() {
 
         headerProgram.setNavigationOnClickListener {
-            if(programActionType == ProgramActionType.CREATE) {
-                tmTracker?.clickProgramCreationBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
-            }
-            if(programActionType == ProgramActionType.CREATE_BUAT) {
-                tmTracker?.clickProgramCreationBackFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+            when (programActionType) {
+                ProgramActionType.CREATE -> {
+                    tmTracker?.clickProgramCreationBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                }
+                ProgramActionType.CREATE_BUAT -> {
+                    tmTracker?.clickProgramCreationBackFromProgramList(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString()
+                    )
+                }
+                ProgramActionType.EXTEND -> {
+                    tmTracker?.clickProgramExtensionBack(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.EDIT -> {
+                    tmTracker?.clickProgramEditBack(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
             }
             activity?.onBackPressed()
         }
 
-        when(programActionType){
-            ProgramActionType.CREATE ->{
+        when (programActionType) {
+            ProgramActionType.CREATE -> {
                 btnCreateProgram.text = PROGRAM_CTA
                 headerProgram?.apply {
                     title = HEADER_TITLE_CREATE
@@ -332,7 +383,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     setValue(50, false)
                 }
             }
-            ProgramActionType.CREATE_BUAT ->{
+            ProgramActionType.CREATE_BUAT -> {
                 btnCreateProgram.text = PROGRAM_CTA
                 headerProgram?.apply {
                     title = HEADER_TITLE_CREATE_BUAT
@@ -345,7 +396,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     setValue(50, false)
                 }
             }
-            ProgramActionType.CREATE_FROM_COUPON ->{
+            ProgramActionType.CREATE_FROM_COUPON -> {
                 btnCreateProgram.text = PROGRAM_CTA
                 headerProgram?.apply {
                     title = HEADER_TITLE_CREATE_BUAT
@@ -358,7 +409,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     setValue(33, false)
                 }
             }
-            ProgramActionType.EXTEND ->{
+            ProgramActionType.EXTEND -> {
                 headerProgram?.apply {
                     title = HEADER_TITLE_EXTEND
                     subtitle = HEADER_TITLE_EXTEND_DESC
@@ -367,13 +418,13 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 progressProgram?.apply {
                     progressBarColorType = ProgressBarUnify.COLOR_GREEN
                     progressBarHeight = ProgressBarUnify.SIZE_SMALL
-                    setValue(33, false)
+                    setValue(PROGRESS_33, false)
                 }
                 btnCreateProgram.text = PROGRAM_CTA
                 textFieldTranskVip.isEnabled = false
                 textFieldTranskPremium.isEnabled = false
             }
-            ProgramActionType.EDIT ->{
+            ProgramActionType.EDIT -> {
                 //TODO actionType edit pending from backend
                 headerProgram?.apply {
                     title = HEADER_TITLE_EDIT
@@ -391,7 +442,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         containerViewFlipper.displayedChild = DATA
         addPremiumTransactionTextListener(membershipGetProgramForm?.programThreshold)
         addVipTransactionTextListener(membershipGetProgramForm?.programThreshold)
-        if(programActionType == ProgramActionType.EXTEND){
+        if (programActionType == ProgramActionType.EXTEND) {
             textFieldTranskVip.isEnabled = false
             textFieldTranskPremium.isEnabled = false
             cardEditInfo.show()
@@ -399,8 +450,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             textFieldDuration.iconContainer.isEnabled = false
             textFieldTranskPremium.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel1.toString())
             textFieldTranskVip.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel2.toString())
-        }
-        else{
+        } else {
             textFieldTranskVip.isEnabled = true
             textFieldTranskPremium.isEnabled = true
             textFieldDuration.isEnabled = true
@@ -414,10 +464,10 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
         if (programActionType == ProgramActionType.CREATE || programActionType == ProgramActionType.CREATE_BUAT || programActionType == ProgramActionType.CREATE_FROM_COUPON) {
             val currentDate = GregorianCalendar(locale)
-            currentDate.add(Calendar.DAY_OF_MONTH,1)
-            val dayInId =  getDayOfWeekID(currentDate.get(Calendar.DAY_OF_WEEK))
+            currentDate.add(Calendar.DAY_OF_MONTH, 1)
+            val dayInId = getDayOfWeekID(currentDate.get(Calendar.DAY_OF_WEEK))
 
-           val month =  currentDate.getDisplayName(
+            val month = currentDate.getDisplayName(
                 Calendar.MONTH,
                 Calendar.LONG,
                 LocaleUtils.getIDLocale()
@@ -425,16 +475,19 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             textFieldDuration.editText.setText(
                 "$dayInId, ${currentDate.get(Calendar.DATE)} $month ${currentDate.get(Calendar.YEAR)} "
             )
-            membershipGetProgramForm?.programForm?.timeWindow?.startTime = convertDateTime(currentDate.time)
-        }else {
-            val day = getDayFromTimeWindow(membershipGetProgramForm?.programForm?.timeWindow?.startTime?:"")
+            membershipGetProgramForm?.programForm?.timeWindow?.startTime =
+                convertDateTime(currentDate.time)
+        } else {
+            val day = getDayFromTimeWindow(
+                membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: ""
+            )
             membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
                 selectedTime = it
                 textFieldDuration.editText.setText("$day, ${setDatePreview(selectedTime)}")
             }
         }
         membershipGetProgramForm?.timePeriodList?.forEach {
-            if(it?.isSelected == true){
+            if (it?.isSelected == true) {
                 selectedChipPosition = membershipGetProgramForm.timePeriodList.indexOf(it)
             }
         }
@@ -452,28 +505,75 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             clickDatePicker()
         }
         btnCreateProgram?.setOnClickListener {
-            if(programActionType == ProgramActionType.CREATE) {
-                tmTracker?.clickProgramCreationButton(
-                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
-                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
-                )
-            }
-            if(programActionType == ProgramActionType.CREATE_FROM_COUPON) {
-                tmTracker?.clickProgramCreationButton(
-                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
-                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
-                )
-            }
-            if(programActionType == ProgramActionType.CREATE_BUAT) {
-                tmTracker?.clickProgramCreationButtonFromProgramList(
-                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
-                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
-                )
+            when (programActionType) {
+                ProgramActionType.CREATE -> {
+                    tmTracker?.clickProgramCreationButton(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.CREATE_FROM_COUPON -> {
+                    tmTracker?.clickProgramCreationButton(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.CREATE_BUAT -> {
+                    tmTracker?.clickProgramCreationButtonFromProgramList(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.EXTEND -> {
+                    tmTracker?.clickProgramExtensionCreateButton(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
+                ProgramActionType.EDIT -> {
+                    tmTracker?.clickProgramEditButton(
+                        arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                        arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                    )
+                }
             }
             initCreateProgram(membershipGetProgramForm)
         }
     }
 
+    private fun noInternetUi(action: () -> Unit) {
+        //show no internet bottomsheet
+
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            ERROR_CREATING_TITLE_NO_INTERNET,
+            ERROR_CREATING_DESC_NO_INTERNET,
+            "",
+            RETRY,
+            errorCount = 0,
+            showSecondaryCta = true
+        )
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+            override fun onButtonClick(errorCount: Int) {
+                action()
+            }})
+        if(programActionType == ProgramActionType.CREATE){
+            bottomsheet.setSecondaryCta {
+                arguments?.getInt(BUNDLE_SHOP_ID)?.let {
+                    TokomemberDashIntroActivity.openActivity(
+                        it,
+                        arguments?.getString(BUNDLE_SHOP_AVATAR).toString(),
+                        arguments?.getString(BUNDLE_SHOP_NAME).toString(),
+                        context = context
+                    )
+                }
+                activity?.finish()
+            }
+        }
+        bottomsheet.show(childFragmentManager,"")
+    }
     private fun addPremiumTransactionTextListener(programThreshold: ProgramThreshold?) {
         textFieldTranskPremium.let {
             it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
@@ -481,11 +581,19 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     super.onNumberChanged(number)
                     if (number > programThreshold?.maxThresholdLevel1 ?: 0) {
                         textFieldTranskPremium.isInputError = true
-                        textFieldTranskPremium.setMessage("Maks. Rp${CurrencyFormatHelper.convertToRupiah(programThreshold?.maxThresholdLevel1.toString())}")
+                        textFieldTranskPremium.setMessage(
+                            "Maks. Rp${
+                                CurrencyFormatHelper.convertToRupiah(
+                                    programThreshold?.maxThresholdLevel1.toString()
+                                )
+                            }"
+                        )
                     } else if (number <= programThreshold?.maxThresholdLevel1 ?: 0 && number > 0) {
                         tickerInfo.show()
                         if (textFieldTranskVip.editText.text.toString()
-                                .isNotEmpty() && number >= CurrencyFormatHelper.convertRupiahToInt(textFieldTranskVip.editText.text.toString())
+                                .isNotEmpty() && number >= CurrencyFormatHelper.convertRupiahToInt(
+                                textFieldTranskVip.editText.text.toString()
+                            )
                         ) {
                             textFieldTranskPremium.isInputError = true
                             textFieldTranskPremium.setMessage(TM_PROGRAM_MIN_PURCHASE_ERROR)
@@ -495,8 +603,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                             textFieldTranskVip.isInputError = false
                             textFieldTranskVip.setMessage("")
                         }
-                    }
-                    else{
+                    } else {
                         tickerInfo.hide()
                     }
                 }
@@ -510,13 +617,25 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     when {
-                        number> programThreshold?.maxThresholdLevel2 ?: 0 -> {
+                        number > programThreshold?.maxThresholdLevel2 ?: 0 -> {
                             textFieldTranskVip.isInputError = true
-                            textFieldTranskVip.setMessage("Maks. Rp${CurrencyFormatHelper.convertToRupiah(programThreshold?.maxThresholdLevel2.toString())}")
+                            textFieldTranskVip.setMessage(
+                                "Maks. Rp${
+                                    CurrencyFormatHelper.convertToRupiah(
+                                        programThreshold?.maxThresholdLevel2.toString()
+                                    )
+                                }"
+                            )
                         }
                         number < programThreshold?.minThresholdLevel2 ?: 0 -> {
                             textFieldTranskVip.isInputError = true
-                            textFieldTranskVip.setMessage("Min. Rp${CurrencyFormatHelper.convertToRupiah(programThreshold?.minThresholdLevel2.toString())}")
+                            textFieldTranskVip.setMessage(
+                                "Min. Rp${
+                                    CurrencyFormatHelper.convertToRupiah(
+                                        programThreshold?.minThresholdLevel2.toString()
+                                    )
+                                }"
+                            )
                         }
                         else -> {
                             textFieldTranskVip.isInputError = false
@@ -530,16 +649,16 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
     }
 
-    private fun initCreateProgram(membershipGetProgramForm: MembershipGetProgramForm?){
+    private fun initCreateProgram(membershipGetProgramForm: MembershipGetProgramForm?) {
         val pre = textFieldTranskPremium.editText.text.toString()
         val vip = textFieldTranskVip.editText.text.toString()
         if (membershipGetProgramForm != null) {
             membershipGetProgramForm.programForm?.tierLevels?.getOrNull(0)?.threshold =
-                pre.replace(".","").toIntSafely()
+                pre.replace(".", "").toIntSafely()
             membershipGetProgramForm.programForm?.tierLevels?.getOrNull(1)?.threshold =
-                vip.replace(".","").toIntSafely()
+                vip.replace(".", "").toIntSafely()
         }
-        if(selectedCalendar != null) {
+        if (selectedCalendar != null) {
             membershipGetProgramForm?.programForm?.timeWindow?.startTime =
                 selectedCalendar?.time?.let {
                     TmDateUtil.convertDateTimeRemoveTimeDiff(it)
@@ -548,7 +667,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         membershipGetProgramForm?.timePeriodList?.getOrNull(selectedChipPosition)?.months?.let {
             periodInMonth = it
         }
-        if(programActionType == ProgramActionType.EDIT){
+        if (programActionType == ProgramActionType.EDIT) {
             openLoadingDialog()
         }
         programUpdateResponse = ProgramUpdateMapper.formToUpdateMapper(
@@ -556,18 +675,25 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             arguments?.getInt(BUNDLE_PROGRAM_TYPE) ?: 0,
             periodInMonth,
             arguments?.getInt(BUNDLE_CARD_ID) ?: 0,
-            arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS)?:0
+            arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS) ?: 0
         )
-        tmDashCreateViewModel.updateProgram(programUpdateResponse)
+        if (TmInternetCheck.isConnectedToInternet(context)) {
+            tmDashCreateViewModel.updateProgram(programUpdateResponse)
+        }
+        else{
+            noInternetUi {
+                initCreateProgram(membershipGetProgramForm)
+            }
+        }
     }
 
     private fun clickDatePicker() {
-         var date = ""
-         var month = ""
-         var year = ""
-         var day = 1
+        var date = ""
+        var month = ""
+        var year = ""
+        var day = 1
         var dayInId = ""
-        context?.let{
+        context?.let {
             val calMax = Calendar.getInstance()
             calMax.add(Calendar.MONTH, 3)
             calMax.add(Calendar.DAY_OF_MONTH, 1)
@@ -576,35 +702,51 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
 
             val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
-           val currentDate = GregorianCalendar(locale)
+            val minDate = GregorianCalendar(locale)
+            val currentDate = GregorianCalendar(locale)
             if (programActionType == ProgramActionType.EDIT) {
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 try {
-                    currentDate.time = sdf.parse(selectedTime + "00")?: Date()
+                    minDate.time = sdf.parse(selectedTime + "00") ?: Date()
+                    currentDate.time = sdf.parse(selectedTime + "00") ?: Date()
                 } catch (e: Exception) {
                 }
-                maxDate.time = sdf.parse(selectedTime + "00")?: Date()
-                maxDate.add(Calendar.MONTH,3)
-                maxDate.add(Calendar.DAY_OF_MONTH,1)
+                maxDate.time = sdf.parse(selectedTime + "00") ?: Date()
+                maxDate.add(Calendar.MONTH, 3)
+                maxDate.add(Calendar.DAY_OF_MONTH, 1)
             }
-            currentDate.add(Calendar.DAY_OF_MONTH,1)
-            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate ).apply {
-                setTitle(DATE_TITLE)
-                setInfo(DATE_DESC)
-                setInfoVisible(true)
-                datePickerButton.let { button ->
-                    button.setOnClickListener {
-                        selectedCalendar = getDate()
-                        selectedTime = selectedCalendar?.time?.let { it1 -> TmDateUtil.convertDateTimeRemoveTimeDiff(it1) }.toString()
-                         date = selectedCalendar?.get(Calendar.DATE).toString()
-                         month = selectedCalendar?.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale()).toString()
-                         year = selectedCalendar?.get(Calendar.YEAR).toString()
-                         day = selectedCalendar?.get(Calendar.DAY_OF_WEEK)?:0
-                         dayInId =  getDayOfWeekID(day)
-                        dismiss()
+            minDate.add(Calendar.DAY_OF_MONTH, 1)
+            currentDate.add(Calendar.DAY_OF_MONTH, 1)
+
+            if(selectedCalendar != null && firstTime){
+                currentDate.time = selectedCalendar?.time
+            }
+
+            val datepickerObject =
+                DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
+                    setTitle(DATE_TITLE)
+                    setInfo(DATE_DESC)
+                    setInfoVisible(true)
+                    datePickerButton.let { button ->
+                        button.setOnClickListener {
+                            firstTime = true
+                            selectedCalendar = getDate()
+                            selectedTime = selectedCalendar?.time?.let { it1 ->
+                                TmDateUtil.convertDateTimeRemoveTimeDiff(it1)
+                            }.toString()
+                            date = selectedCalendar?.get(Calendar.DATE).toString()
+                            month = selectedCalendar?.getDisplayName(
+                                Calendar.MONTH,
+                                Calendar.LONG,
+                                LocaleUtils.getIDLocale()
+                            ).toString()
+                            year = selectedCalendar?.get(Calendar.YEAR).toString()
+                            day = selectedCalendar?.get(Calendar.DAY_OF_WEEK) ?: 0
+                            dayInId = getDayOfWeekID(day)
+                            dismiss()
+                        }
                     }
                 }
-            }
 
             datepickerObject.setOnDismissListener {
                 if (dayInId.isNotEmpty() && date.isNotEmpty() && month.isNotEmpty() && year.isNotEmpty()) {
@@ -625,11 +767,11 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         const val HEADER_TITLE_DESC = "Langkah 2 dari 4"
         const val HEADER_TITLE_EXTEND = "Perpanjang TokoMember"
         const val HEADER_TITLE_EXTEND_DESC = "Langkah 1 dari 3"
-        const val HEADER_TITLE_EDIT =  "Ubah Program"
+        const val HEADER_TITLE_EDIT = "Ubah Program"
         const val CODE_SUCCESS = "200"
         const val CODE_INVALID = "41002"
         const val CODE_OUTSIDE_WINDOW = "42039"
-        const val CODE_PROGRAM_OUTSIDE_V2  = "42049"
+        const val CODE_PROGRAM_OUTSIDE_V2 = "42049"
 
         const val CODE_ERROR = "50001"
 
@@ -646,8 +788,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     override fun onButtonClick(errorCount: Int) {
-        if (errorCodeProgramCreation == CODE_OUTSIDE_WINDOW){
-        }else {
+        if (errorCodeProgramCreation == CODE_OUTSIDE_WINDOW) {
+        } else {
             if (errorCount == 0) {
                 tmDashCreateViewModel.updateProgram(programUpdateResponse)
             } else {
@@ -669,7 +811,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
     }
 
-    private fun openLoadingDialog(){
+    private fun openLoadingDialog() {
 
         loaderDialog = context?.let { LoaderDialog(it) }
         loaderDialog?.loaderText?.apply {
@@ -679,7 +821,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         loaderDialog?.show()
     }
 
-    private fun closeLoadingDialog(){
+    private fun closeLoadingDialog() {
         loaderDialog?.dialog?.dismiss()
     }
 

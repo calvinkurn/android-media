@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_NN0"
     android:padding="@dimen/spacing_lvl4"
     tools:viewBindingIgnore="true">
 
@@ -25,26 +25,38 @@
             tools:text="Auto Debet" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_3"
-            tools:text="+Rp5000" />
-
-        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_date"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:textColor="@color/light_disabled"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_title"
             app:typographyType="small"
             app:typographyWeight="reguler"
             tools:text="04 Mei 2020, 17:16" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="+Rp5000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_YN500"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_amount"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Menunggu" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>

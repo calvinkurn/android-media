@@ -12,8 +12,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_showcase_item_slider_small"
-        android:layout_width="@dimen/dp_90"
-        android:layout_height="@dimen/dp_90"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         app:unify_image_type="rect"
         />
 

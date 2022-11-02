@@ -1,7 +1,18 @@
 package com.tokopedia.play.broadcaster.analytic.interactive
 
-import com.tokopedia.play.broadcaster.analytic.*
-import com.tokopedia.play_common.model.ui.LeadeboardType
+import com.tokopedia.play.broadcaster.analytic.KEY_EVENT
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_VIEW_EVENT
+import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_CATEGORY
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY
+import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_ACTION
+import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_LABEL
+import com.tokopedia.play.broadcaster.analytic.KEY_CURRENT_SITE
+import com.tokopedia.play.broadcaster.analytic.currentSite
+import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
+import com.tokopedia.play.broadcaster.analytic.KEY_SHOP_ID
+import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
@@ -206,20 +217,6 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
     override fun onClickContinueQuiz(channelId: String, channelTitle: String) {
         sendClickEvent(
             "click - lanjut quiz",
-            "$shopId - $channelId - $channelTitle",
-        )
-    }
-
-    override fun onClickQuizGift(channelId: String, channelTitle: String) {
-        sendClickEvent(
-            "click - giveaway optional",
-            "$shopId - $channelId - $channelTitle",
-        )
-    }
-
-    override fun onClickCloseQuizGift(channelId: String, channelTitle: String) {
-        sendClickEvent(
-            "click - x giveaway optional",
             "$shopId - $channelId - $channelTitle",
         )
     }

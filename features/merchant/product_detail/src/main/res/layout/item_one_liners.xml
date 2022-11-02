@@ -8,7 +8,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/one_liners_top_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
@@ -53,8 +53,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/one_liners_icon_right"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_marginStart="8dp"
             android:visibility="gone"
             app:icon_color_light_enable="@color/Unify_N700"
@@ -66,7 +66,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/one_liners_bottom_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/one_liners_container"
         tools:visibility="visible" />

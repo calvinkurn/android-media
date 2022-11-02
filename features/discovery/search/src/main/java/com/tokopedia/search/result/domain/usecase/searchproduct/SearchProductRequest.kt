@@ -70,12 +70,15 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 componentId
                 meta {
                     productListType
+                    isPostProcessing
+                    showButtonAtc
                 }
             }
             data {
                 isQuerySafe
                 autocompleteApplink
                 backendFilters
+                keywordIntention
                 redirection {
                     redirectApplink
                 }
@@ -207,6 +210,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     wishlist
                     applink
                     customVideoURL
+                    parentId
                 }
                 violation {
                     headerText

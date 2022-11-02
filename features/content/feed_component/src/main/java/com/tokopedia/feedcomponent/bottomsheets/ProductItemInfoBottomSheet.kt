@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.bottomsheets
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,15 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.createpost.common.view.viewmodel.MediaType
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
-import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagAdapter
-import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactoryImpl
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
+import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,14 +22,21 @@ import kotlinx.android.synthetic.main.item_posttag.*
 class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     private lateinit var listProducts: List<FeedXProduct>
-    private lateinit var listener: DynamicPostViewHolder.DynamicPostListener
-    private var postId: Int = 0
+    private var listener: Listener? = null
+    private var postId: String = "0"
+    private val adapter by lazy {
+        listener?.let {
+            ProductInfoBottomSheetAdapter(it)
+        }
+    }
     private var positionInFeed: Int = 0
     private var shopId: String = "0"
     private var shopName: String = ""
     private var mediaType: String = ""
     private var playChannelId: String = "0"
     private var postType: String = ""
+    private var saleType: String = ""
+    private var saleStatus: String = ""
     private var isFollowed: Boolean = false
     var closeClicked: (() -> Unit)? = null
     var disMissed: (() -> Unit)? = null
@@ -77,33 +81,28 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         }
     }
     private fun setAdapter() {
-        rvPosttag.adapter = PostTagAdapter(
-                mapPostTag(listProducts),
-                PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext()))
-        )
-        if (listProducts.isNotEmpty())
-        listener.onPostTagItemBSImpression(
-                if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString(),
-                listProducts,
-                postType,
-                shopId,
-                isFollowed,
-                mediaType
-               )
-        if (rvPosttag != null && rvPosttag.adapter != null && rvPosttag.adapter is PostTagAdapter)
-            (rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
+            rvPosttag.adapter = adapter
+              if (listProducts.isNotEmpty()) {
+                listener?.onTaggedProductCardImpressed(
+                    if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString(),
+                    listProducts,
+                    postType,
+                    shopId,
+                    isFollowed,
+                    mediaType
+                )
+                adapter?.setItemsAndAnimateChanges(mapPostTag(listProducts))
+            }
     }
 
-    private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<BasePostTagViewModel> {
+    private fun mapPostTag(postTagItemList: List<FeedXProduct>): List<ProductPostTagViewModelNew> {
         var postDescription = ""
         var adClickUrl = ""
         val desc = context?.getString(R.string.feed_share_default_text)
-        val itemList: MutableList<BasePostTagViewModel> = ArrayList()
+        val itemList: MutableList<ProductPostTagViewModelNew> = mutableListOf()
         for (postTagItem in postTagItemList) {
-            if (postTagItem.isTopads){
                 postDescription = desc?.replace("%s", postTagItem.authorName).toString()
                 adClickUrl = postTagItem.adClickUrl
-            }
             val item = ProductPostTagViewModelNew(
                 postTagItem.id,
                 postTagItem.name,
@@ -112,7 +111,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 postTagItem.priceFmt,
                 postTagItem.isDiscount,
                 postTagItem.discountFmt,
-                "product",
+                PRODUCT_TYPE,
                 postTagItem.appLink,
                 postTagItem.webLink,
                 postTagItem,
@@ -130,9 +129,11 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 description = postDescription,
                 isTopads = postTagItem.isTopads,
                 adClickUrl = adClickUrl,
-                playChannelId = playChannelId
+                playChannelId = playChannelId,
+                saleType = saleType,
+                saleStatus = saleStatus
             )
-            item.feedType = "product"
+            item.feedType = PRODUCT_TYPE
             item.postId = postId
             item.positionInFeed = positionInFeed
             item.postType = postType
@@ -145,27 +146,65 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     fun show(
         fragmentManager: FragmentManager,
-        products: List<FeedXProduct>,
-        dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
-        postId: Int,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean,
-        positionInFeed: Int,
-        playChannelId: String,
-        shopName:String,
-        mediaType: String
+        listener: Listener?,
+        productBottomSheetData: ProductBottomSheetData
     ) {
-        this.listProducts = products
-        this.listener = dynamicPostListener
-        this.postId = postId
-        this.shopId = shopId
-        this.postType = type
-        this.isFollowed = isFollowed
-        this.positionInFeed = positionInFeed
-        this.playChannelId = playChannelId
-        this.shopName = shopName
-        this.mediaType = mediaType
+        this.listProducts = productBottomSheetData.products
+        this.listener = listener
+        this.postId = productBottomSheetData.postId
+        this.shopId = productBottomSheetData.shopId
+        this.postType = productBottomSheetData.postType
+        this.isFollowed = productBottomSheetData.isFollowed
+        this.positionInFeed = productBottomSheetData.positionInFeed
+        this.playChannelId = productBottomSheetData.playChannelId
+        this.shopName = productBottomSheetData.shopName
+        this.mediaType = productBottomSheetData.mediaType
+        this.saleType = productBottomSheetData.saleType
+        this.saleStatus = productBottomSheetData.saleStatus
         show(fragmentManager, "")
+    }
+
+    fun changeWishlistIconOnWishlistSuccess(rowNumber: Int){
+            val item = adapter?.getItem(rowNumber)
+            item?.isWishlisted = true
+            val payload = Bundle().apply {
+                putBoolean(WISHLIST_ITEM_CLICKED, true)
+            }
+            adapter?.notifyItemChanged(rowNumber, payload)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listener = null
+    }
+
+    interface Listener {
+        fun onBottomSheetThreeDotsClicked(
+            item: ProductPostTagViewModelNew,
+            context: Context,
+            shopId: String = ""
+        )
+        fun onTaggedProductCardImpressed(
+            activityId: String,
+            postTagItemList: List<FeedXProduct>,
+            type: String,
+            shopId: String,
+            isFollowed: Boolean,
+            mediaType: String
+        )
+
+        fun onTaggedProductCardClicked(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            itemPosition: Int,
+            mediaType: String
+        )
+        fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew)
+        fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew, rowNumber: Int)
+    }
+    companion object{
+        private const val WISHLIST_ITEM_CLICKED = "wishlist_button_clicked"
+        private const val PRODUCT_TYPE = "product"
     }
 }

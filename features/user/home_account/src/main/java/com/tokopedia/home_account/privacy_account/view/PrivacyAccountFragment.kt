@@ -1,45 +1,41 @@
 package com.tokopedia.home_account.privacy_account.view
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.consentWithdrawal.data.ConsentGroupListDataModel
 import com.tokopedia.home_account.databinding.FragmentPrivacyAccountBinding
 import com.tokopedia.home_account.privacy_account.data.LinkStatus
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.privacy_account.data.UserAccountDataView
 import com.tokopedia.home_account.privacy_account.di.LinkAccountComponent
-import com.tokopedia.home_account.privacy_account.view.bottomsheet.ClarificationDataUsageBottomSheet
-import com.tokopedia.home_account.privacy_account.view.bottomsheet.VerificationEnabledDataUsageBottomSheet
+import com.tokopedia.home_account.privacy_account.listener.PrivacyAccountListener
+import com.tokopedia.home_account.privacy_account.view.adapter.PrivacyAccountAdapter
 import com.tokopedia.home_account.privacy_account.viewmodel.PrivacyAccountViewModel
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class PrivacyAccountFragment : BaseDaggerFragment() {
+class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,21 +51,19 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     @Inject
     lateinit var homeAccountAnalytics: HomeAccountAnalytics
 
-    private val binding: FragmentPrivacyAccountBinding? by viewBinding()
-
-    private var clarificationDataUsageBottomSheet: ClarificationDataUsageBottomSheet? = null
-    private var verificationEnabledDataUsageBottomSheet: VerificationEnabledDataUsageBottomSheet? =
-        null
-    private var verificationDisabledDataUsageDialog: DialogUnify? = null
-    private var loaderDialog: LoaderDialog? = null
-
-    private var isLoading = false
+    private var remoteConfigInstance: RemoteConfigInstance = RemoteConfigInstance.getInstance()
+    private var viewBinding by autoClearedNullable<FragmentPrivacyAccountBinding>()
+    private val privacyAccountAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        PrivacyAccountAdapter(this)
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_privacy_account, container, false)
+        viewBinding = FragmentPrivacyAccountBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun getScreenName(): String = SCREEN_NAME
@@ -80,29 +74,20 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewDescSocialNetworkConsent()
         initObserver()
+        setViewLinkAccountLoading()
+        viewModel.getLinkStatus()
+
+        if (isShowConsentWithdrawal()) {
+            viewBinding?.layoutConsentWithdrawal?.root?.show()
+            setViewConsentWithdrawalLoading()
+            viewModel.getConsentGroupList()
+        } else {
+            viewBinding?.layoutConsentWithdrawal?.root?.hide()
+        }
     }
 
     private fun initObserver() {
-        setViewDataUsageLoading()
-        setViewLinkAccountLoading()
-        viewModel.getConsentSocialNetwork()
-        viewModel.getLinkStatus()
-
-        viewModel.getConsentSocialNetwork.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    setViewDataUsage(it.data)
-                    setVisibilityDataUsage(true)
-                    switchListener()
-                }
-                is Fail -> {
-                    setVisibilityDataUsage(false)
-                }
-            }
-        }
-
         viewModel.linkStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
@@ -115,64 +100,39 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.setConsentSocialNetwork.observe(viewLifecycleOwner) {
-            showLoaderDialog(false)
-            val isChecked = binding?.switchPermissionDataUsage?.isChecked == true
+        viewModel.getConsentGroupList.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (it.data.isSuccess == SET_CONSENT_SUCCESS) {
-                        binding?.switchPermissionDataUsage?.isChecked = !isChecked
-                    } else {
-                        showToasterFailedSetConsent(isChecked)
-                    }
+                    onSuccessGetConsentGroupList(it.data)
                 }
                 is Fail -> {
-                    showToasterFailedSetConsent(isChecked)
+                    onFailedGetConsentGroupList(it.throwable)
                 }
             }
         }
     }
 
-    private fun setViewDataUsage(isActive: Boolean) {
-        binding?.switchPermissionDataUsage?.isChecked = isActive
+    private fun onFailedGetConsentGroupList(throwable: Throwable) {
+        viewBinding?.layoutConsentWithdrawal?.root?.hide()
+
+        if (throwable !is MessageErrorException) {
+            ErrorHandler.getErrorMessage(context, throwable)
+        } else {
+            showToasterError(throwable.message.toString())
+        }
     }
 
-    private fun setVisibilityDataUsage(isVisible: Boolean) {
-        binding?.apply {
-            incLoaderDataUsage.loaderHeader.gone()
-            incLoaderDataUsage.loaderDesc.gone()
-            incLoaderDataUsage.cardLoad.showWithCondition(!isVisible)
-            switchPermissionDataUsage.visibleWithCondition(isVisible)
-            txtHeaderConsentSocialNetwork.visibleWithCondition(isVisible)
-            txtDescConsentSocialNetwork.visibleWithCondition(isVisible)
-            dividerUnify.visibleWithCondition(isVisible)
-        }
+    private fun onSuccessGetConsentGroupList(data: ConsentGroupListDataModel) {
+        viewBinding?.layoutConsentWithdrawal?.apply {
+            mainLayout.show()
+            loaderShimmering.hide()
 
-        if (!isVisible) {
-            binding?.incLoaderDataUsage?.cardLoad?.apply {
-                title?.text = getString(R.string.opt_text_header_failed)
-                description?.text = getString(R.string.opt_text_desc_failed)
+            consentGroupList.apply {
+                adapter = privacyAccountAdapter
+
+                data.groups.sortedBy { it.priority }
+                privacyAccountAdapter.setItems(data.groups)
             }
-            reloadDataUsageListener()
-        }
-    }
-
-    private fun reloadDataUsageListener() {
-        binding?.incLoaderDataUsage?.cardLoad?.setOnClickListener {
-            setViewDataUsageLoading()
-            viewModel.getConsentSocialNetwork()
-        }
-    }
-
-    private fun setViewDataUsageLoading() {
-        binding?.apply {
-            incLoaderDataUsage.loaderHeader.show()
-            incLoaderDataUsage.loaderDesc.show()
-            incLoaderDataUsage.cardLoad.gone()
-            switchPermissionDataUsage.invisible()
-            txtHeaderConsentSocialNetwork.invisible()
-            txtDescConsentSocialNetwork.invisible()
-            dividerUnify.invisible()
         }
     }
 
@@ -223,21 +183,22 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             val linkStatus = data.response.linkStatus.first()
             val item = linkStatus.toUserAccountDataView()
 
-            binding?.layoutItemLinkAccount?.apply {
-                tvHeaderLinkAccount.text = item.partnerName
-                tvLinkingAccount.showWithCondition(!item.isLinked)
-                icLinkAccount.showWithCondition(item.isLinked)
-                tvDescLinkAccount.text = item.status.plus(if (item.isLinked) item.linkDate else "")
+            viewBinding?.layoutItemLinkAccount?.apply {
+                privacyItemTitle.text = item.partnerName
+                privacyItemTextButton.showWithCondition(!item.isLinked)
+                privacyItemImageButton.showWithCondition(item.isLinked)
+                privacyItemDescription.text =
+                    item.status.plus(if (item.isLinked) item.linkDate else "")
             }
 
             linkedAccountListener(item.isLinked)
         } else {
-            binding?.layoutItemLinkAccount?.root?.gone()
+            viewBinding?.layoutItemLinkAccount?.root?.gone()
         }
     }
 
     private fun linkedAccountListener(isLinked: Boolean) {
-        binding?.layoutItemLinkAccount?.root?.setOnClickListener {
+        viewBinding?.layoutItemLinkAccount?.root?.setOnClickListener {
             if (isLinked) {
                 onViewAccountClicked()
             } else {
@@ -247,7 +208,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     private fun setVisibilityLinkAccount(isVisible: Boolean) {
-        binding?.apply {
+        viewBinding?.apply {
             incLoaderLinkAccount.loaderHeader.gone()
             incLoaderLinkAccount.loaderDesc.gone()
             incLoaderLinkAccount.cardLoad.showWithCondition(!isVisible)
@@ -257,7 +218,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         }
 
         if (!isVisible) {
-            binding?.incLoaderLinkAccount?.cardLoad?.apply {
+            viewBinding?.incLoaderLinkAccount?.cardLoad?.apply {
                 title?.text = getString(R.string.opt_text_header_failed)
                 description?.text = getString(R.string.opt_text_desc_failed)
             }
@@ -267,14 +228,14 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     }
 
     private fun reloadLinkAccountListener() {
-        binding?.incLoaderLinkAccount?.cardLoad?.setOnClickListener {
+        viewBinding?.incLoaderLinkAccount?.cardLoad?.setOnClickListener {
             setViewLinkAccountLoading()
             viewModel.getLinkStatus()
         }
     }
 
     private fun setViewLinkAccountLoading() {
-        binding?.apply {
+        viewBinding?.apply {
             incLoaderLinkAccount.loaderHeader.show()
             incLoaderLinkAccount.loaderDesc.show()
             incLoaderLinkAccount.cardLoad.gone()
@@ -284,11 +245,19 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setViewConsentWithdrawalLoading() {
+        viewBinding?.layoutConsentWithdrawal?.apply {
+            mainLayout.hide()
+            loaderShimmering.show()
+        }
+    }
+
     private fun onLinkAccountClicked() {
         homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
         val intent =
-            RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
-                .apply {
+            RouteManager.getIntent(
+                activity,
+                ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
                     putExtra(
                         ApplinkConstInternalGlobal.PARAM_LD,
                         LinkAccountWebviewFragment.BACK_BTN_APPLINK
@@ -302,126 +271,11 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
     }
 
-    private fun switchListener() {
-        binding?.switchPermissionDataUsage?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (!isLoading) {
-                buttonView.isChecked = !isChecked
-
-                if (!isChecked) {
-                    showVerificationDisabledDataUsage()
-                } else {
-                    showVerificationEnabledDataUsage()
-                }
-            } else {
-                isLoading = false
-            }
-        }
-    }
-
-    private fun setViewDescSocialNetworkConsent() {
-        val message = getString(R.string.opt_desc)
-        val spannable = SpannableString(message)
-        spannable.setSpan(
-            object : ClickableSpan() {
-                override fun onClick(view: View) {
-                    showClarificationDataUsage()
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.isFakeBoldText = true
-                    ds.color = MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
-                    )
-                }
-            },
-            message.indexOf(TEXT_LINK_DESC_CONSENT_SOCIAL_NETWORK),
-            message.length,
-            0
-        )
-        binding?.txtDescConsentSocialNetwork?.apply {
-            movementMethod = LinkMovementMethod.getInstance()
-            highlightColor = Color.TRANSPARENT
-            setText(spannable, TextView.BufferType.SPANNABLE)
-        }
-    }
-
-    private fun showClarificationDataUsage() {
-        clarificationDataUsageBottomSheet = ClarificationDataUsageBottomSheet()
-        clarificationDataUsageBottomSheet?.show(
-            parentFragmentManager,
-            TAG_BOTTOM_SHEET_CLARIFICATION
-        )
-    }
-
-    private fun showVerificationEnabledDataUsage() {
-        verificationEnabledDataUsageBottomSheet = VerificationEnabledDataUsageBottomSheet()
-
-        verificationEnabledDataUsageBottomSheet?.setOnVerificationClickedListener {
-            verificationEnabledDataUsageBottomSheet?.dismiss()
-            showLoaderDialog(true)
-            viewModel.setConsentSocialNetwork(true)
-        }
-
-        verificationEnabledDataUsageBottomSheet?.show(
-            parentFragmentManager,
-            TAG_BOTTOM_SHEET_VERIFICATION
-        )
-    }
-
-    private fun showVerificationDisabledDataUsage() {
-        verificationDisabledDataUsageDialog =
-            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-
-        verificationDisabledDataUsageDialog?.apply {
-            setTitle(getString(R.string.opt_dialog_disabled_title))
-            setDescription(getString(R.string.opt_dialog_disabled_sub_title))
-            setPrimaryCTAText(getString(R.string.opt_ya_matikan))
-            setSecondaryCTAText(getString(R.string.opt_batal))
-        }
-
-        verificationDisabledDataUsageDialog?.setPrimaryCTAClickListener {
-            verificationDisabledDataUsageDialog?.dismiss()
-            showLoaderDialog(true)
-            viewModel.setConsentSocialNetwork(false)
-        }
-
-        verificationDisabledDataUsageDialog?.setSecondaryCTAClickListener {
-            verificationDisabledDataUsageDialog?.dismiss()
-        }
-
-        verificationDisabledDataUsageDialog?.show()
-    }
-
-    private fun showLoaderDialog(isShow: Boolean) {
-        if (isShow) {
-            loaderDialog = LoaderDialog(requireContext())
-            loaderDialog?.setLoadingText(EMPTY_STRING)
-            loaderDialog?.show()
-            isLoading = true
-        } else {
-            loaderDialog?.dismiss()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == LINK_ACCOUNT_WEBVIEW_REQUEST) {
             setViewLinkAccountLoading()
             viewModel.getLinkStatus(userSessionInterface.phoneNumber.isEmpty())
         }
-    }
-
-    private fun showToasterFailedSetConsent(isChecked: Boolean) {
-        isLoading = false
-        showToasterError(
-            getString(
-                if (isChecked) {
-                    R.string.opt_failed_disabled_consent
-                } else {
-                    R.string.opt_failed_enabled_consent
-                }
-            )
-        )
     }
 
     private fun showToasterError(errorMsg: String) {
@@ -433,9 +287,22 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         return super.onFragmentBackPressed()
     }
 
+    override fun onConsentGroupClicked(id: String) {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalUserPlatform.CONSENT_WITHDRAWAL,
+            id
+        )
+
+        startActivity(intent)
+    }
+
+    private fun isShowConsentWithdrawal(): Boolean = remoteConfigInstance
+        .abTestPlatform
+        .getString(ROLLENCE_KEY_CONSENT_WITHDRAWAL) == ROLLENCE_KEY_CONSENT_WITHDRAWAL
+
     companion object {
 
-        private const val SET_CONSENT_SUCCESS = 1
         const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
 
         private const val SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
@@ -443,14 +310,9 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
         private const val TIMEZONE_UTC = "UTC"
         private const val LANGUAGE_CODE = "id"
         private const val COUNTRY_CODE = "ID"
-
         private const val STATUS_LINKED = "linked"
-        private const val EMPTY_STRING = ""
+        private const val ROLLENCE_KEY_CONSENT_WITHDRAWAL = "cpcw_and"
 
-        private const val TAG_BOTTOM_SHEET_CLARIFICATION = "TAG BOTTOM SHEET CLARIFICATION"
-        private const val TAG_BOTTOM_SHEET_VERIFICATION = "TAG BOTTOM SHEET VERIFICATION"
-
-        private const val TEXT_LINK_DESC_CONSENT_SOCIAL_NETWORK = "Cek Data yang Dipakai"
         private val SCREEN_NAME = PrivacyAccountFragment::class.java.simpleName
 
         @JvmStatic

@@ -43,6 +43,7 @@ class PlayBroadcastPrepareViewModelTest {
     private lateinit var coverDataStore: MockCoverDataStore
     private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
     private lateinit var titleDataStore: TitleDataStore
+    private val mockTitleDataStore: TitleDataStore = mockk(relaxed = true)
     private lateinit var tagsDataStore: TagsDataStore
     private lateinit var interactiveDataStore: InteractiveDataStore
     private lateinit var mockSetupDataStore: MockSetupDataStore
@@ -50,7 +51,7 @@ class PlayBroadcastPrepareViewModelTest {
     private lateinit var mockHydraDataStore: HydraConfigStore
     private lateinit var mockBroadcastSetupDataStore: PlayBroadcastSetupDataStore
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser())
 
     private lateinit var createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase
 
@@ -60,18 +61,24 @@ class PlayBroadcastPrepareViewModelTest {
 
     private val modelBuilder = UiModelBuilder()
 
+    private val mockException = modelBuilder.buildException()
+
+    private val authorId = "123"
+
     @Before
     fun setUp() {
         channelConfigStore = ChannelConfigStoreImpl()
 
         coverDataStore = MockCoverDataStore(dispatcherProvider)
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
-        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
         mockSetupDataStore = MockSetupDataStore(coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
         mockHydraDataStore = TestDoubleModelBuilder().buildHydraConfigStore()
-        mockBroadcastSetupDataStore = TestDoubleModelBuilder().buildSetupDataStore()
+        mockBroadcastSetupDataStore = TestDoubleModelBuilder().buildSetupDataStore(
+            titleDataStore = mockTitleDataStore,
+        )
 
         dataStore = PlayBroadcastDataStoreImpl(mockSetupDataStore)
 
@@ -83,14 +90,14 @@ class PlayBroadcastPrepareViewModelTest {
         createLiveStreamChannelUseCase = mockk(relaxed = true)
 
         viewModel = PlayBroadcastPrepareViewModel(
-                dispatcher = dispatcherProvider,
-                hydraConfigStore = mockHydraDataStore,
-                setupDataStore = mockBroadcastSetupDataStore,
-                userSession = userSession,
-                channelConfigStore = channelConfigStore,
-                createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
-                mDataStore = dataStore,
-                playBroadcastMapper = playBroadcastMapper,
+            dispatcher = dispatcherProvider,
+            hydraConfigStore = mockHydraDataStore,
+            setupDataStore = mockBroadcastSetupDataStore,
+            channelConfigStore = channelConfigStore,
+            createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
+            mDataStore = dataStore,
+            playBroadcastMapper = playBroadcastMapper,
+            sharedPref = mockk(relaxed = true),
         )
     }
 
@@ -173,10 +180,23 @@ class PlayBroadcastPrepareViewModelTest {
     /** Setup Title */
     @Test
     fun `when user successfully upload title, it should emit network result success`() {
-        viewModel.uploadTitle("Test Title")
+        coEvery { mockTitleDataStore.uploadTitle(any(), any(), any()) } returns NetworkResult.Success(Unit)
+
+        viewModel.uploadTitle(authorId, "Test Title")
 
         val result = viewModel.observableUploadTitleEvent.getOrAwaitValue()
 
         result.getContentIfNotHandled()?.assertEqualTo(NetworkResult.Success(Unit))
+    }
+
+    @Test
+    fun `when user failed upload title, it should emit network result fail`() {
+        coEvery { mockTitleDataStore.uploadTitle(any(), any(), any()) } returns NetworkResult.Fail(mockException)
+
+        viewModel.uploadTitle(authorId, "Test Title")
+
+        val result = viewModel.observableUploadTitleEvent.getOrAwaitValue()
+
+        result.getContentIfNotHandled()?.assertEqualTo(NetworkResult.Fail(mockException))
     }
 }

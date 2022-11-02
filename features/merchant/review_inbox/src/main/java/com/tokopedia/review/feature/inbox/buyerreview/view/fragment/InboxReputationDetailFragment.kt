@@ -462,7 +462,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     override fun onGoToShopInfo(shopId: String) {
         val intent: Intent =
-            RouteManager.getIntent(activity, ApplinkConst.SHOP, shopId.toString())
+            RouteManager.getIntent(activity, ApplinkConst.SHOP, shopId)
         startActivity(intent)
     }
 

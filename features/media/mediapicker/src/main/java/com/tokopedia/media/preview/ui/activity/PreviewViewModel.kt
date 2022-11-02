@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.media.preview.managers.ImageCompressionManager
-import com.tokopedia.media.preview.managers.SaveToGalleryManager
+import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
+import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import kotlinx.coroutines.flow.*
@@ -14,8 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PreviewViewModel @Inject constructor(
-    private val imageCompressor: ImageCompressionManager,
-    private val mediaSaver: SaveToGalleryManager
+    private val imageCompressor: ImageCompressionRepository,
+    private val mediaSaver: SaveToGalleryRepository,
+    dispatchers: CoroutineDispatchers,
+    private val paramCache: ParamCacheManager
 ) : ViewModel() {
 
     private val _files = MutableSharedFlow<List<MediaUiModel>>()
@@ -51,28 +55,33 @@ class PreviewViewModel @Inject constructor(
 
     // get compressed images
     private val compressedImages: Flow<List<String>> =
-        imageCameraFiles.transform {
-            emitAll(imageCompressor.compress(it))
-        }
+        imageCameraFiles
+            .map { imageCompressor.compress(it) }
+            .flowOn(dispatchers.computation)
 
     val result = combine(
         originalFiles,
         videoCameraFiles,
+        imageCameraFiles,
         compressedImages
-    ) { originalFiles, videoCameraFiles, compressedImages ->
+    ) { originalFiles, videoCameraFiles, imageCameraFiles, compressedImages ->
         _isLoading.value = false
 
         /*
         * dispatch to local device gallery
         * for video and image comes from camera picker
         * */
-        videoCameraFiles.plus(compressedImages)
-            .forEach {
-                mediaSaver.dispatch(it)
-            }
+        if (!paramCache.get().isEditorEnabled()) {
+            imageCameraFiles
+                .plus(videoCameraFiles)
+                .forEach {
+                    mediaSaver.dispatch(it)
+                }
+        }
 
         PickerResult(
             originalPaths = originalFiles,
+            videoFiles = videoCameraFiles,
             compressedImages = compressedImages
         )
     }.shareIn(

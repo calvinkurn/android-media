@@ -14,8 +14,8 @@ import com.tokopedia.unifycomponents.Toaster
 /**
  * @author by nisie on 22/04/19.
  * For navigate
- * default      : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER]
- * clean view   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW]
+ * default      : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER]
+ * clean view   : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER_CLEAN_VIEW]
  * Please add Param
  * {@link ApplinkConstInternalGlobal.PARAM_PHONE}
  * {@link ApplinkConstInternalGlobal.PARAM_UUID}

@@ -120,6 +120,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.navigationUiKtx
     implementation rootProject.ext.miscDependencies.coroutineCore

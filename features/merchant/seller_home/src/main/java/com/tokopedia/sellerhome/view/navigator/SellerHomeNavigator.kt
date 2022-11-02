@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
@@ -158,11 +159,11 @@ class SellerHomeNavigator(
         clearFragments()
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment =
-            sellerHomeRouter?.getProductManageFragment(arrayListOf(), "", navigationHomeMenu)
+            sellerHomeRouter?.getProductManageFragment(arrayListOf(), String.EMPTY, String.EMPTY, navigationHomeMenu)
         chatFragment = sellerHomeRouter?.getChatListFragment()
         somListFragment = sellerHomeRouter?.getSomListFragment(
             context,
-            SomTabConst.STATUS_ALL_ORDER,
+            SomTabConst.STATUS_NEW_ORDER,
             SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
             "",
             ""
@@ -224,27 +225,18 @@ class SellerHomeNavigator(
     }
 
     private fun setupProductManagePage(page: PageFragment): Fragment? {
-        val searchKeyword = page.keywordSearch
-        val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
-
-        when {
-            page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock -> {
-                val filterOptions = arrayListOf(filterOptionEmptyStock)
-                productManageFragment = sellerHomeRouter?.getProductManageFragment(
-                    filterOptions,
-                    searchKeyword,
-                    navigationHomeMenu
-                )
-            }
-            page.tabPage.isBlank() && searchKeyword.isNotBlank() -> {
-                productManageFragment =
-                    sellerHomeRouter?.getProductManageFragment(
-                        arrayListOf(),
-                        searchKeyword,
-                        navigationHomeMenu
-                    )
-            }
+        val filterOptions: ArrayList<String> = if (page.tabPage.isNotBlank()) {
+            arrayListOf(page.tabPage)
+        } else {
+            arrayListOf()
         }
+
+        productManageFragment = sellerHomeRouter?.getProductManageFragment(
+            filterOptions,
+            page.keywordSearch,
+            page.productManageTab,
+            navigationHomeMenu
+        )
 
         return productManageFragment
     }

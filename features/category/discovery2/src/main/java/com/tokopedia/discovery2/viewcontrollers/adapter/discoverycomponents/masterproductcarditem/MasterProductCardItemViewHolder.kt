@@ -80,7 +80,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun openVariantSheet() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(masterProductCardItemViewModel.components,masterProductCardItemViewModel.getUserID())
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(
+            masterProductCardItemViewModel.components,
+            ""
+        )
         masterProductCardItemViewModel.getProductDataItem()?.let { dataItem ->
             (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId?:"")
         }
@@ -116,6 +119,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardItemViewModel.getSyncPageLiveData().observe(lifecycle, Observer {
                 if (it) (fragment as DiscoveryFragment).reSync()
             })
+            masterProductCardItemViewModel.getScrollSimilarProductComponentID().observe(lifecycle, {
+                (fragment as DiscoveryFragment).scrollToComponentWithID(it)
+            })
         }
     }
 
@@ -130,6 +136,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardItemViewModel.showNotifyToastMessage().removeObservers(it)
             masterProductCardItemViewModel.getComponentPosition().removeObservers(it)
             masterProductCardItemViewModel.getSyncPageLiveData().removeObservers(it)
+            masterProductCardItemViewModel.getScrollSimilarProductComponentID().removeObservers(it)
         }
     }
 
@@ -151,6 +158,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
         setWishlist()
         set3DotsWishlistWithAtc(dataItem)
+        setSimilarProductWishlist(dataItem)
+    }
+
+    private fun setSimilarProductWishlist(dataItem: DataItem?) {
+        if(dataItem?.hasSimilarProductWishlist == true)
+            masterProductCardListView?.setSeeSimilarProductWishlistOnClickListener {
+                masterProductCardItemViewModel.scrollToTargetSimilarProducts()
+            }
     }
 
     private fun set3DotsWishlistWithAtc(dataItem: DataItem?) {
@@ -166,6 +181,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun setWishlist() {
         masterProductCardGridView?.setThreeDotsOnClickListener {
+            masterProductCardItemViewModel.saveProductCardComponent()
             showProductCardOptions(
                 fragment,
                 masterProductCardItemViewModel.getProductCardOptionsModel()
@@ -254,11 +270,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun handleATC(quantity: Int, isGeneralCartATC: Boolean) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
-        if (!isGeneralCartATC)
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(
-                masterProductCardItemViewModel.components,
-                masterProductCardItemViewModel.getUserID()
-            )
         if (masterProductCardItemViewModel.isUserLoggedIn()) {
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                 productItem.productId?.let { productId ->

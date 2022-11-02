@@ -100,6 +100,7 @@ class AddEditProductShipmentFragment:
     private var mainLayout: ViewGroup? = null
 
     private var tfWeightAmount: TextFieldUnify? = null
+    private var tickerShipmentDescription: Ticker? = null
     private var shipperServicesIds: ArrayList<Long>? = arrayListOf()
     private var isCPLActivated: Boolean = false
 
@@ -207,6 +208,8 @@ class AddEditProductShipmentFragment:
             hideShipment()
         }
 
+        setupShipmentDescriptionTicker()
+
         initObservers()
 
         // PLT monitoring
@@ -257,6 +260,8 @@ class AddEditProductShipmentFragment:
                         shipmentConventionalAdapter.setProductActiveState(it)
                         shipmentOnDemandAdapter.setProductActiveState(it)
                     }
+                    isCPLActivated = false
+                    updateLayoutShipment()
                 }
             }
         }
@@ -316,6 +321,7 @@ class AddEditProductShipmentFragment:
 
     private fun setupViews() {
         tfWeightAmount = binding.weightInputLayout.tfWeightAmount
+        tickerShipmentDescription = binding.weightInputLayout.tickerWeight
 
         radiosInsurance = binding.insuranceInputLayout.radiosInsurance
         radioRequiredInsurance = binding.insuranceInputLayout.radioRequiredInsurance
@@ -341,10 +347,18 @@ class AddEditProductShipmentFragment:
 
     private fun initShipmentData() {
         if (shipmentViewModel.isAddMode) {
-            shipmentViewModel.getCPLList(shopId.toLong(), "")
+            getCplList("")
         } else {
-            shipmentViewModel.getCPLList(shopId.toLong(), shipmentViewModel.productInputModel?.productId.toString())
+            getCplList(shipmentViewModel.productInputModel?.productId.toString())
         }
+    }
+
+    private fun getCplList(productId: String) {
+        shipmentViewModel.getCPLList(
+            shopId = shopId.toLong(),
+            productId = productId,
+            shipmentServicesIds = shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.shipmentServicesIds
+        )
     }
 
     private fun initObservers() {
@@ -454,8 +468,13 @@ class AddEditProductShipmentFragment:
                     putExtra(EXTRA_PRODUCT_ID, shipmentViewModel.productInputModel?.productId)
                 }
                 putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
+                putIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES, shipperServicesIds.convertToIntArray())
             }, REQUEST_CODE_CPL
         )
+    }
+
+    private fun List<Long>?.convertToIntArray(): ArrayList<Int> {
+        return this?.let { ArrayList(this.map { it.toInt() }) } ?: arrayListOf()
     }
 
     private fun setupShipmentRadios() {
@@ -490,6 +509,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun showDialogStandardShipment() {
+        var isStandardShipment = false
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.title_standard_shipment))
             setDefaultMaxWidth()
@@ -497,13 +517,20 @@ class AddEditProductShipmentFragment:
             setPrimaryCTAText(getString(R.string.primary_button_standard_shipment))
             setSecondaryCTAText(getString(R.string.secondary_button_standard_shipment))
             setPrimaryCTAClickListener {
-                shipmentRadioValue(true)
+                isStandardShipment = true
                 dismiss()
             }
             setSecondaryCTAClickListener {
-                radioStandarShipment?.isChecked = false
-                radioCustomShipment?.isChecked = true
+                isStandardShipment = false
                 dismiss()
+            }
+            setOnDismissListener {
+                if (isStandardShipment) {
+                    shipmentRadioValue(true)
+                } else {
+                    radioStandarShipment?.isChecked = false
+                    radioCustomShipment?.isChecked = true
+                }
             }
         }.show()
     }
@@ -533,9 +560,14 @@ class AddEditProductShipmentFragment:
 
     private fun setupInsuranceTicker() {
         tickerInsurance?.setHtmlDescription(getString(R.string.label_shipment_ticker))
-        tickerInsurance?.setOnClickListener {
+        tickerInsurance?.setDescriptionClick {
             ShipmentInsuranceBottomSheet().show(childFragmentManager)
         }
+    }
+
+
+    private fun setupShipmentDescriptionTicker() {
+        tickerShipmentDescription?.setTextDescription(context?.resources?.getString(R.string.label_shipment_weight_ticker).toString())
     }
 
     fun sendDataBack() {

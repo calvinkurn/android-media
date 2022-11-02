@@ -24,19 +24,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".profilerecommendation.view.activity.FollowRecomActivity"
-            android:label="@string/recommendation_for_you"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" />
-        <activity
-            android:name=".view.activity.FeedOnboardingActivity"
-            android:label="@string/title_feed_onboarding"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".view.activity.PlayVideoLiveListActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
         <intent-filter>
             <action android:name="com.tokopedia.internal.VIEW" />
 

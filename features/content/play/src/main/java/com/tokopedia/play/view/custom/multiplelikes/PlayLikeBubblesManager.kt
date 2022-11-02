@@ -15,6 +15,8 @@ class PlayLikeBubblesManager(
 
     private var timeInterval = getTimeByFps(FULL_FPS)
 
+    private var previouslyHasBubble = false
+
     private var timerJob: Job? = null
 
     private val viewWidth: Int
@@ -45,14 +47,16 @@ class PlayLikeBubblesManager(
                 bubbles.clear()
                 bubbles.addAll(newBubbles)
                 mView?.setBubbles(bubbles)
-                mView?.postInvalidate()
+                if (previouslyHasBubble || bubbles.isNotEmpty()) mView?.postInvalidate()
+
+                previouslyHasBubble = bubbles.isNotEmpty()
             }
         }
     }
 
     fun shot(
-        likeAmount: Int,
-        shotPerBatch: Int,
+        likeAmount: Long,
+        shotPerBatch: Long,
         prioritize: Boolean = false,
         delayPerBatchInMs: Long = 0L,
         reduceOpacity: Boolean = false,
@@ -62,7 +66,7 @@ class PlayLikeBubblesManager(
             for (i in 1..likeAmount) {
                 if (delayPerBatchInMs > 0) delay(delayPerBatchInMs)
                 for(j in 1..shotPerBatch) {
-                    if (j != 1) delay(DEFAULT_DELAY)
+                    if (j != 1L) delay(DEFAULT_DELAY)
                     val chosenBubble = bubbleList.random()
                     shotInternal(
                         chosenBubble.icon,
