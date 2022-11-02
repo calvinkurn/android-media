@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokochat_bs_img_unavailable_general"
+        android:layout_width="264dp"
+        android:layout_height="192dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_bs_title_unavailable_general"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_bs_img_unavailable_general"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        app:typographyType="heading_2"
+        android:text="@string/tokochat_bottomsheet_unavailable_general_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_bs_subtitle_unavailable_general"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_bs_title_unavailable_general"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        app:typographyType="paragraph_2"
+        android:text="@string/tokochat_bottomsheet_unavailable_general_subtitle"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/tokochat_bs_btn_unavailable_general"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_bs_subtitle_unavailable_general"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="24dp"
+        android:text="@string/tokochat_bottomsheet_unavailable_general_button"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
