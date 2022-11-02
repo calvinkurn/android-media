@@ -34,12 +34,12 @@ data class ProductShopAdditionalDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductShopAdditionalDataModel) {
-            title == newData.title
-                && icon == newData.icon
-                && description == newData.description
-                && appLink == newData.appLink
-                && linkText == newData.linkText
-                && labels.hashCode() == newData.labels.hashCode()
+            title == newData.title &&
+                icon == newData.icon &&
+                description == newData.description &&
+                appLink == newData.appLink &&
+                linkText == newData.linkText &&
+                labels.hashCode() == newData.labels.hashCode()
         } else {
             false
         }
