@@ -18,6 +18,7 @@ const val PRESCRIPTION_COMPONENT = "prescription component"
 
 const val PRODUCT_COMPONENT = "product component"
 const val GROUP_COMPONENT = "group component"
+const val TICKER_COMPONENT = "ticker component"
 
 const val EPHARMACY_SCREEN_NAME = "epharmacy page"
 

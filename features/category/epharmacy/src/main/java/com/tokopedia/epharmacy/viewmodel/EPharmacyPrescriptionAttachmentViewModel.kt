@@ -6,15 +6,9 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyProductDataModel
+import com.tokopedia.epharmacy.component.model.*
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.epharmacy.utils.FIRST_INDEX
-import com.tokopedia.epharmacy.utils.GROUP_COMPONENT
-import com.tokopedia.epharmacy.utils.PRESCRIPTION_COMPONENT
-import com.tokopedia.epharmacy.utils.PRODUCT_COMPONENT
+import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -52,6 +46,12 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse) : EPharmacyDataModel{
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
+        if(data.detailData?.groupsData?.attachmentPageTickerText?.isNotBlank() == true){
+            listOfComponents.add(EPharmacyTickerDataModel(TICKER_COMPONENT,
+                TICKER_COMPONENT,
+                data.detailData?.groupsData?.attachmentPageTickerText, "" ))
+        }
+
         data.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
             if(!group?.shopInfo.isNullOrEmpty()){
                 group?.shopInfo?.forEachIndexed { index, info ->
