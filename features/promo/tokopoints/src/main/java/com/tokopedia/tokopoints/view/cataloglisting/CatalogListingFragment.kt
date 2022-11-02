@@ -149,7 +149,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun refreshTab() {
-           val fragment = mViewPagerAdapter?.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment?
+           val fragment = mViewPagerAdapter?.getRegisteredFragment(mPagerSortType!!.currentItem) as? CatalogListItemFragment
            if (fragment != null && fragment.isAdded) {
                fragment.viewModel.pointRange = mViewModel.pointRangeId
                fragment.getCatalogList(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId)
@@ -227,7 +227,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                             "click " + filters.categories[0].subCategory[position].name,
                             "")
-                    val fragment = mViewPagerAdapter?.getRegisteredFragment(position) as CatalogListItemFragment?
+                    val fragment = mViewPagerAdapter?.getRegisteredFragment(position) as? CatalogListItemFragment
                     if (fragment != null
                             && fragment.isAdded) {
                         mViewModel.currentCategoryId = filters.categories[0].id
@@ -345,7 +345,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     private fun updateToolbarTitle(title: String?) {
         if (activity != null && title != null) {
-            (activity as BaseSimpleActivity?)?.updateTitle(title)
+            (activity as? BaseSimpleActivity)?.updateTitle(title)
         }
     }
 
