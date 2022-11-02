@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.shareIn
@@ -76,6 +77,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     companion object {
         private const val FLOW_TIMEOUT_MILLIS = 5000L
+        private const val PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME = 500L
     }
 
     private val _finishOrderResult = MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>()
@@ -95,6 +97,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         ::doGetBuyerOrderDetailData
     ).toShareFlow()
     private val singleAtcRequestStates = MutableStateFlow<Map<String, AddToCartSingleRequestState>>(mapOf())
+    private val productListCollapsed = MutableStateFlow(true)
     private val actionButtonsUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapActionButtonsUiState
     ).toStateFlow(ActionButtonsUiState.Loading)
@@ -107,6 +110,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val productListUiState = combine(
         buyerOrderDetailDataRequestState,
         singleAtcRequestStates,
+        productListCollapsed.debounce(PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME),
         ::mapProductListUiState
     ).toStateFlow(ProductListUiState.Loading)
     private val shipmentInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
@@ -212,6 +216,14 @@ class BuyerOrderDetailViewModel @Inject constructor(
         }, onError = {
             _multiAtcResult.value = MultiATCState.Fail(throwable = it)
         })
+    }
+
+    fun collapseProductList() {
+        productListCollapsed.value = true
+    }
+
+    fun expandProductList() {
+        productListCollapsed.value = false
     }
 
     fun getSecondaryActionButtons(): List<ActionButtonsUiModel.ActionButton> {
@@ -329,12 +341,14 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private fun mapProductListUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean
     ): ProductListUiState {
         return ProductListUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
             productListUiState.value,
-            singleAtcRequestStates
+            singleAtcRequestStates,
+            collapseProductList
         )
     }
 

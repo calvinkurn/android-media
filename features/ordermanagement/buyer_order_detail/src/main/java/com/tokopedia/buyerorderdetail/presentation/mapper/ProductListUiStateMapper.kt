@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.mapper
 
+import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
@@ -11,16 +12,23 @@ import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object ProductListUiStateMapper {
 
+    private const val MAX_PRODUCT_WHEN_COLLAPSED = 1
+
     fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         currentState: ProductListUiState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean
     ): ProductListUiState {
         val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
         val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
@@ -42,7 +50,8 @@ object ProductListUiStateMapper {
                     getBuyerOrderDetailRequestState.result,
                     p1DataRequestState,
                     currentState,
-                    singleAtcRequestStates
+                    singleAtcRequestStates,
+                    collapseProductList
                 )
             }
         }
@@ -77,7 +86,8 @@ object ProductListUiStateMapper {
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         p1DataRequestState: GetP1DataRequestState,
         currentState: ProductListUiState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean
     ): ProductListUiState {
         return when (val insuranceDetailRequestState = p1DataRequestState.getInsuranceDetailRequestState) {
             is GetInsuranceDetailRequestState.Requesting -> {
@@ -85,14 +95,16 @@ object ProductListUiStateMapper {
                     buyerOrderDetailData,
                     insuranceDetailRequestState,
                     currentState,
-                    singleAtcRequestStates
+                    singleAtcRequestStates,
+                    collapseProductList
                 )
             }
             is GetInsuranceDetailRequestState.Complete -> {
                 mapOnGetInsuranceDetailComplete(
                     buyerOrderDetailData,
                     insuranceDetailRequestState,
-                    singleAtcRequestStates
+                    singleAtcRequestStates,
+                    collapseProductList
                 )
             }
         }
@@ -112,20 +124,23 @@ object ProductListUiStateMapper {
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState.Requesting,
         currentState: ProductListUiState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean
     ): ProductListUiState {
         return if (currentState is ProductListUiState.HasData) {
             mapOnReloading(
                 buyerOrderDetailData,
                 insuranceDetailRequestState,
                 currentState,
-                singleAtcRequestStates
+                singleAtcRequestStates,
+                collapseProductList
             )
         } else {
             mapOnDataReady(
                 buyerOrderDetailData,
                 insuranceDetailRequestState,
-                singleAtcRequestStates
+                singleAtcRequestStates,
+                collapseProductList
             )
         }
     }
@@ -139,12 +154,14 @@ object ProductListUiStateMapper {
     private fun mapOnGetInsuranceDetailComplete(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean
     ): ProductListUiState {
         return mapOnDataReady(
             buyerOrderDetailData,
             insuranceDetailRequestState,
-            singleAtcRequestStates
+            singleAtcRequestStates,
+            collapseProductList
         )
     }
 
@@ -162,7 +179,8 @@ object ProductListUiStateMapper {
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         currentState: ProductListUiState.HasData,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean
     ): ProductListUiState {
         val insuranceDetailData = when (insuranceDetailRequestState) {
             is GetInsuranceDetailRequestState.Requesting -> {
@@ -184,7 +202,8 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.orderId,
                 buyerOrderDetailData.orderStatus.id,
                 insuranceDetailData,
-                singleAtcRequestStates
+                singleAtcRequestStates,
+                collapseProductList
             )
         )
     }
@@ -192,7 +211,8 @@ object ProductListUiStateMapper {
     private fun mapOnDataReady(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean
     ): ProductListUiState {
         val insuranceDetailData = insuranceDetailRequestState.let {
             if (it is GetInsuranceDetailRequestState.Complete.Success) {
@@ -208,7 +228,8 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.orderId,
                 buyerOrderDetailData.orderStatus.id,
                 insuranceDetailData,
-                singleAtcRequestStates
+                singleAtcRequestStates,
+                collapseProductList
             )
         )
     }
@@ -294,25 +315,74 @@ object ProductListUiStateMapper {
         orderId: String,
         orderStatusId: String,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
-        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
+        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean
     ): ProductListUiModel {
-        val productList = details?.let {
-            mapProductList(it, orderId, orderStatusId, insuranceDetailData, singleAtcResultFlow)
-        }.orEmpty()
-        val productBundlingList = mapProductBundle(
+        val (numOfRemovedProductBundle, productBundlingList) = mapProductBundle(
             details?.bundles,
             bundleIcon,
             orderId,
             orderStatusId,
             insuranceDetailData,
-            singleAtcResultFlow
+            singleAtcResultFlow,
+            collapseProductList,
+            MAX_PRODUCT_WHEN_COLLAPSED
+        )
+        val (numOfRemovedNonProductBundle, nonProductBundlingList) = details?.let {
+            mapProductList(
+                details = it,
+                orderId = orderId,
+                orderStatusId = orderStatusId,
+                insuranceDetailData = insuranceDetailData,
+                singleAtcResultFlow = singleAtcResultFlow,
+                collapseProductList = collapseProductList,
+                remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBundlingList.size
+            )
+        } ?: (Int.ZERO to emptyList())
+        val (numOfRemovedAddOn, addOnList) = getAddonsSectionOrderLevel(
+            addonInfo = addonInfo,
+            collapseProductList = collapseProductList,
+            remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBundlingList.size - nonProductBundlingList.size
         )
         return ProductListUiModel(
-            productList = productList,
+            productList = nonProductBundlingList,
             productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),
             productBundlingList = productBundlingList,
-            addonsListUiModel = getAddonsSectionOrderLevel(addonInfo)
+            addonsListUiModel = addOnList,
+            productListToggleUiModel = mapProductListToggleUiModel(
+                collapseProductList = collapseProductList,
+                numOfRemovedProductBundle = numOfRemovedProductBundle,
+                numOfRemovedNonProductBundle = numOfRemovedNonProductBundle,
+                numOfRemovedAddOnsList = numOfRemovedAddOn
+            )
         )
+    }
+
+    private fun mapProductListToggleUiModel(
+        collapseProductList: Boolean,
+        numOfRemovedProductBundle: Int,
+        numOfRemovedNonProductBundle: Int,
+        numOfRemovedAddOnsList: Int
+    ): ProductListUiModel.ProductListToggleUiModel? {
+        return if (collapseProductList) {
+            val numOfRemovedItems = numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOnsList
+            if (numOfRemovedItems.isMoreThanZero()) {
+                ProductListUiModel.ProductListToggleUiModel(
+                    collapsed = true,
+                    text = StringRes(
+                        R.string.buyer_order_detail_product_list_expand,
+                        listOf(numOfRemovedItems)
+                    )
+                )
+            } else {
+                null
+            }
+        } else {
+            ProductListUiModel.ProductListToggleUiModel(
+                collapsed = false,
+                text = StringRes(R.string.buyer_order_detail_product_list_collapse)
+            )
+        }
     }
 
     private fun mapProductList(
@@ -320,9 +390,18 @@ object ProductListUiStateMapper {
         orderId: String,
         orderStatusId: String,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
-        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
-    ): List<ProductListUiModel.ProductUiModel> {
-        return details.nonBundles?.map {
+        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean,
+        remainingSlot: Int
+    ): Pair<Int, List<ProductListUiModel.ProductUiModel>> {
+        val (numOfRemovedNonBundles, reducedNonBundles) = details.nonBundles?.run {
+            if (collapseProductList) {
+                (size - remainingSlot).coerceAtLeast(Int.ZERO) to take(remainingSlot)
+            } else {
+                Int.ZERO to this
+            }
+        } ?: (Int.ZERO to null)
+        val mappedNonBundles = reducedNonBundles?.map {
             mapProduct(
                 details,
                 it,
@@ -333,17 +412,28 @@ object ProductListUiStateMapper {
                 singleAtcResultFlow
             )
         }.orEmpty()
+        return numOfRemovedNonBundles to mappedNonBundles
     }
 
+    @Suppress("SameParameterValue")
     private fun mapProductBundle(
         bundleDetail: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bundle>?,
         bundleIcon: String,
         orderId: String,
         orderStatusId: String,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
-        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
-    ): List<ProductListUiModel.ProductBundlingUiModel> {
-        return bundleDetail?.map { bundle ->
+        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
+        collapseProductList: Boolean,
+        remainingSlot: Int
+    ): Pair<Int, List<ProductListUiModel.ProductBundlingUiModel>> {
+        val (numOfRemovedBundleDetail, reducedBundleDetail) = bundleDetail?.run {
+            if (collapseProductList) {
+                (size - remainingSlot).coerceAtLeast(Int.ZERO) to take(remainingSlot)
+            } else {
+                Int.ZERO to this
+            }
+        } ?: (Int.ZERO to null)
+        val mappedProductBundle =  reducedBundleDetail?.map { bundle ->
             ProductListUiModel.ProductBundlingUiModel(
                 bundleId = bundle.bundleId,
                 bundleName = bundle.bundleName,
@@ -354,6 +444,7 @@ object ProductListUiStateMapper {
                     mapProductBundleItem(bundleDetail, orderId, orderStatusId, bundle.bundleId, insuranceDetailData, singleAtcResultFlow)
                 })
         }.orEmpty()
+        return numOfRemovedBundleDetail to mappedProductBundle
     }
 
     private fun mapProductListHeaderUiModel(
@@ -372,9 +463,11 @@ object ProductListUiStateMapper {
     }
 
     private fun getAddonsSectionOrderLevel(
-        addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?
-    ): AddonsListUiModel? {
-        return if (addonInfo != null) {
+        addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
+        collapseProductList: Boolean,
+        remainingSlot: Int
+    ): Pair<Int, AddonsListUiModel?> {
+        val mappedAddOn = addonInfo?.let { addonInfo ->
             AddonsListUiModel(
                 addonsTitle = addonInfo.label,
                 addonsLogoUrl = addonInfo.iconUrl,
@@ -394,7 +487,16 @@ object ProductListUiStateMapper {
                     )
                 }.orEmpty()
             )
-        } else null
+        }
+        return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
+            Int.ZERO to null
+        } else {
+            if (collapseProductList && remainingSlot.isZero()) {
+                Int.ONE to mappedAddOn
+            } else {
+                Int.ZERO to mappedAddOn
+            }
+        }
     }
 
     private fun mapProduct(
