@@ -29,17 +29,15 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun mixImageImpression(channelData: Channel)
     fun mixBannerImpression(channelData: Channel)
 
-    //flash sale card listener
+    //mix top & mix left
     fun onClickMixTopBannerItem(applink: String)
-    fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String = "")
-
-    //mixleft global component
+    fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, headerName: String, channelBannerAttribution: String = "")
     fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int)
     fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int)
-    fun onFlashSaleCardImpressedComponent(position: Int,grid: ChannelGrid, channel: ChannelModel)
-    fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String)
-    fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String)
-    fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String)
+    fun onProductCardImpressed(position: Int, grid: ChannelGrid, channel: ChannelModel)
+    fun onProductCardClicked(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String)
+    fun onCarouselSeeAllCardClicked(channel: ChannelModel, applink: String)
+    fun onCarouselSeeAllHeaderClicked(channel: ChannelModel, applink: String)
 
     //featured shop OS
     fun onFeaturedShopDCClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)

@@ -9,7 +9,7 @@ import com.tokopedia.home_component.model.ChannelModel
 interface MixTopComponentListener {
     fun onMixTopImpressed(channel: ChannelModel, parentPos: Int)
 
-    fun onSeeAllBannerClicked(channel: ChannelModel, applink: String)
+    fun onSeeAllHeaderClicked(channel: ChannelModel, applink: String)
     fun onMixtopButtonClicked(channel: ChannelModel)
     fun onSectionItemClicked(applink: String)
     fun onBackgroundClicked(channel: ChannelModel)

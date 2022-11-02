@@ -159,9 +159,6 @@ class OSTopAdsVerificationTest {
             is MixLeftComponentViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
             }
-            is DynamicChannelMixTopViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
-            }
             is OfficialProductRecommendationViewHolder -> {
                 Espresso.onView(firstView(withId(R.id.os_child_recycler_view)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))

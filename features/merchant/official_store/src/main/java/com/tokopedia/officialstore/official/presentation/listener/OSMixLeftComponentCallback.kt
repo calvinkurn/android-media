@@ -17,16 +17,16 @@ class OSMixLeftComponentCallback(private val dcEventHandler: DynamicChannelEvent
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
-        dcEventHandler.onFlashSaleCardImpressedComponent(position, channelGrid, channel)
+        dcEventHandler.onProductCardImpressed(position, channelGrid, channel)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
-        dcEventHandler.onFlashSaleCardClickedComponent(position, channel, channelGrid, applink)
+        dcEventHandler.onProductCardClicked(position, channel, channelGrid, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        dcEventHandler.onMixFlashSaleSeeAllClickedComponent(channel, applink)
+        dcEventHandler.onCarouselSeeAllCardClicked(channel, applink)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
@@ -42,6 +42,6 @@ class OSMixLeftComponentCallback(private val dcEventHandler: DynamicChannelEvent
     }
 
     override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
-        dcEventHandler.onSeeAllBannerClickedComponent(channel, applink)
+        dcEventHandler.onCarouselSeeAllHeaderClicked(channel, applink)
     }
 }

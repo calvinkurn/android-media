@@ -38,11 +38,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OSPerformanceConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
-import com.tokopedia.officialstore.OSFeaturedShopTracking
+import com.tokopedia.officialstore.analytics.OSFeaturedShopTracking
 import com.tokopedia.officialstore.ApplinkConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
@@ -51,7 +50,6 @@ import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
@@ -605,11 +603,13 @@ class OfficialHomeFragment :
         RouteManager.route(context, applink)
     }
 
-    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String) {
+    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, headerName: String, channelBannerAttribution: String) {
         tracking?.mixTopBannerCtaButtonClicked(
                 viewModel.currentSlug,
                 cta.text,
-                channelId
+                channelId,
+                headerName,
+                channelBannerAttribution
         )
         if (cta.couponCode.isEmpty()) {
             RouteManager.route(context, applink)
@@ -621,17 +621,15 @@ class OfficialHomeFragment :
     }
 
     override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
-        tracking?.trackerObj?.sendEnhanceEcommerceEvent(
-                OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
-        RouteManager.route(context, channel.channelBanner?.applink.orEmpty())
+        tracking?.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position, getUserId())
+        RouteManager.route(context, channel.channelBanner.applink)
     }
 
     override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
-        tracking?.trackingQueueObj?.putEETracking(
-                OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position, getUserId()) as HashMap<String, Any>)
+        tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position, getUserId())
     }
 
-    override fun onFlashSaleCardImpressedComponent(position: Int, grid: ChannelGrid, channel: ChannelModel) {
+    override fun onProductCardImpressed(position: Int, grid: ChannelGrid, channel: ChannelModel) {
         tracking?.carouselProductCardImpression(
                 viewModel.currentSlugDC,
                 channel,
@@ -641,8 +639,8 @@ class OfficialHomeFragment :
         )
     }
 
-    override fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String) {
-        tracking?.seeAllMixFlashSaleClickedComponent(
+    override fun onCarouselSeeAllCardClicked(channel: ChannelModel, applink: String) {
+        tracking?.carouselViewAllCardClicked(
                 viewModel.currentSlugDC,
                 channel
         )
@@ -667,8 +665,8 @@ class OfficialHomeFragment :
         return tracking
     }
 
-    override fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String) {
-        tracking?.seeAllBannerFlashSaleClickedComponent(
+    override fun onCarouselSeeAllHeaderClicked(channel: ChannelModel, applink: String) {
+        tracking?.carouselHeaderSeeAllClick(
                 viewModel.currentSlugDC,
                 channel
         )
@@ -677,7 +675,7 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String) {
+    override fun onProductCardClicked(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String) {
         tracking?.carouselProductCardClicked(
                 viewModel.currentSlugDC,
                 channel,

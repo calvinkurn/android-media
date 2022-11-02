@@ -96,6 +96,7 @@ class MixTopComponentViewHolder(
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
         setChannelDivider(element = element)
+
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
                 mixTopComponentListener?.onMixTopImpressed(element.channelModel, element.channelModel.verticalPosition)
@@ -334,7 +335,7 @@ class MixTopComponentViewHolder(
     private fun setHeaderComponent(element: MixTopDataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                mixTopComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
+                mixTopComponentListener?.onSeeAllHeaderClicked(element.channelModel, element.channelModel.channelHeader.applink)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
