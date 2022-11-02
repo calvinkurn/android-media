@@ -1649,6 +1649,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     EXTRA_CHECKOUT_ID_STRING,
                     uploadPrescriptionUiModel.checkoutId
                 )
+                uploadPrescriptionIntent.putExtra(
+                    EXTRA_SOURCE_STRING,
+                    SOURCE_OCC
+                )
                 startActivityForResult(
                     uploadPrescriptionIntent,
                     REQUEST_CODE_UPLOAD_PRESCRIPTION
@@ -1728,6 +1732,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         private const val SOURCE_OTHERS = "others"
         private const val SOURCE_PDP = "pdp"
+        private const val SOURCE_OCC = "occ"
         private const val SOURCE_MINICART = "minicart"
         private const val SOURCE_FINTECH = "fintech"
 
