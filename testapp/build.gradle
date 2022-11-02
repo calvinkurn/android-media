@@ -44,13 +44,11 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
             ext.enableHansel = false
             ext.enableCrashlytics = false
-            debuggable false
         }
         release {
             minifyEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
             signingConfig signingConfigs.debug
-            debuggable false
         }
     }
     defaultConfig {
@@ -64,7 +62,6 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
-        testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "DEBUGGABLE,NOT-PROFILEABLE"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
