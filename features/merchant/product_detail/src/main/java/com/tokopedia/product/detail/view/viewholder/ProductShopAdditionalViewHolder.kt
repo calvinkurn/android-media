@@ -70,8 +70,7 @@ class ProductShopAdditionalViewHolder(
             text = element.linkText
 
             setOnClickListener {
-                listener.onLearnButtonShopAdditionalClicked()
-                listener.onLearnButtonShopAdditionalClickedTracking(
+                listener.onLearnButtonShopAdditionalClicked(
                     componentTrackDataModel = getComponentTrackData(element = element),
                     eventLabel = getEventLabel(element = element)
                 )

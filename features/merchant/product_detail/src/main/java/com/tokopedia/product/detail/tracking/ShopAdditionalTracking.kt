@@ -42,7 +42,7 @@ object ShopAdditionalTracking {
         trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
     }
 
-    fun clickSeeMoreButton(
+    fun clickLearnButton(
         component: ComponentTrackDataModel,
         productInfo: DynamicProductInfoP1?,
         userId: String,

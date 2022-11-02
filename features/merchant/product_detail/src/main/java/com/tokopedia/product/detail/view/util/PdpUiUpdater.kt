@@ -154,7 +154,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val contentWidgetData: ContentWidgetDataModel?
         get() = mapOfData[ProductDetailConstant.PLAY_CAROUSEL] as? ContentWidgetDataModel
 
-    val dilayaniTokopdia: ProductShopAdditionalDataModel?
+    val dilayaniTokopedia: ProductShopAdditionalDataModel?
         get() = mapOfData[ProductDetailConstant.DILAYANI_TOKOPEDIA] as? ProductShopAdditionalDataModel
 
     private val verticalRecommendationItems = mutableListOf<ProductRecommendationVerticalDataModel>()
@@ -477,7 +477,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             updateData(ProductDetailConstant.DILAYANI_TOKOPEDIA) {
-                dilayaniTokopdia?.apply {
+                dilayaniTokopedia?.apply {
                     title = it.shopAdditional.title
                     description = it.shopAdditional.subTitle
                     icon = it.shopAdditional.icon

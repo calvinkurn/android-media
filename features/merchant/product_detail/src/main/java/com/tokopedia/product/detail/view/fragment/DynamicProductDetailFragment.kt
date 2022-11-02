@@ -1109,31 +1109,43 @@ open class DynamicProductDetailFragment :
     /**
      * [ProductShopAdditionalViewHolder]
      */
-    override fun onLearnButtonShopAdditionalClicked() {
-        val ctx = context ?: return
-        val uspUrl = viewModel.p2Data.value?.uspImageUrl.orEmpty()
-        val tag = "bottom_sheet_unique_selling_point"
-
-        if (uspUrl.isNotBlank()) {
-            showImmediately(childFragmentManager, tag) {
-                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(
-                    context = ctx,
-                    uspTokoCabangImgUrl = uspUrl
-                )
-            }
-        }
-    }
-
-    override fun onLearnButtonShopAdditionalClickedTracking(
+    override fun onLearnButtonShopAdditionalClicked(
         componentTrackDataModel: ComponentTrackDataModel,
         eventLabel: String
     ) {
-        ShopAdditionalTracking.clickSeeMoreButton(
+        val uspUrl = viewModel.p2Data.value?.uspImageUrl.orEmpty()
+
+        if (uspUrl.isNotBlank()) {
+            showUspBottomSheet(uspUrl = uspUrl)
+            onShopAdditionalLearnButtonClickTracking(
+                componentTrackDataModel = componentTrackDataModel,
+                eventLabel = eventLabel
+            )
+        }
+    }
+
+    private fun onShopAdditionalLearnButtonClickTracking(
+        componentTrackDataModel: ComponentTrackDataModel,
+        eventLabel: String
+    ) {
+        ShopAdditionalTracking.clickLearnButton(
             component = componentTrackDataModel,
             productInfo = viewModel.getDynamicProductInfoP1,
             userId = viewModel.userId,
             eventLabel = eventLabel
         )
+    }
+
+    private fun showUspBottomSheet(uspUrl: String) {
+        val ctx = context ?: return
+        val tag = "bottom_sheet_unique_selling_point"
+
+        showImmediately(childFragmentManager, tag) {
+            ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(
+                context = ctx,
+                uspTokoCabangImgUrl = uspUrl
+            )
+        }
     }
 
     override fun onImpressShopAdditional(
