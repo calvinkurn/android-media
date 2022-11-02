@@ -205,8 +205,6 @@ class ChatbotPresenter @Inject constructor(
     private var mSubscription: CompositeSubscription
     private var isUploading: Boolean = false
     private var listInterceptor: ArrayList<Interceptor>
-    private var isErrorOnLeaveQueue = false
-    lateinit var chatResponse: ChatSocketPojo
     private val job = SupervisorJob()
 
     private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
@@ -257,10 +255,9 @@ class ChatbotPresenter @Inject constructor(
 
                     val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
                     if (pojo.msgId != messageId) return
-                    chatResponse = pojo
                     mappingEvent(webSocketResponse, messageId)
 
-                    val attachmentType = chatResponse.attachment?.type
+                    val attachmentType = pojo.attachment?.type
 
                     if (attachmentType == OPEN_CSAT) {
                         val csatResponse: WebSocketCsatResponse = Gson().fromJson(
@@ -271,32 +268,32 @@ class ChatbotPresenter @Inject constructor(
                     }
 
                     if (attachmentType == UPDATE_TOOLBAR) {
-                        val tool = Gson().fromJson(chatResponse.attachment?.attributes, ToolbarAttributes::class.java)
+                        val tool = Gson().fromJson(pojo.attachment?.attributes, ToolbarAttributes::class.java)
                         updateToolbar(tool)
                     }
 
                     val liveChatDividerAttribute = Gson().fromJson(
-                        chatResponse.attachment?.attributes,
+                        pojo.attachment?.attributes,
                         LiveChatDividerAttributes::class.java
                     )
                     if (attachmentType == CHAT_DIVIDER_DEBUGGING) {
                         val model = ChatSepratorUiModel(
                             sepratorMessage = liveChatDividerAttribute?.divider?.label,
-                            dividerTiemstamp = chatResponse.message.timeStampUnixNano
+                            dividerTiemstamp = pojo.message.timeStampUnixNano
                         )
-                        view.onReceiveChatSepratorEvent(model, getLiveChatQuickReply())
+                        view.onReceiveChatSepratorEvent(model, getLiveChatQuickReply(pojo))
                     }
 
                     if(attachmentType == SESSION_CHANGE) {
                         val agentMode: SessionChangeAttributes = Gson().fromJson(
-                            chatResponse.attachment?.attributes,
+                            pojo.attachment?.attributes,
                             SessionChangeAttributes::class.java
                         )
                         handleSessionChange(agentMode)
                     }
 
                     if (attachmentType == DYNAMIC_ATTACHMENT) {
-                        handleReplyBoxWSToggle()
+                        handleReplyBoxWSToggle(pojo)
                     }
 
                 } catch (e: JsonSyntaxException) { }
@@ -353,26 +350,24 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun handleSessionChange(agentMode: SessionChangeAttributes) {
-        if (agentMode != null) {
-            if (agentMode.sessionChange.mode == MODE_AGENT) {
-                view.sessionChangeStateHandler(true)
-            } else if (agentMode.sessionChange.mode == MODE_BOT) {
-                view.sessionChangeStateHandler(false)
-            }
+        if (agentMode.sessionChange.mode == MODE_AGENT) {
+            view.sessionChangeStateHandler(true)
+        } else if (agentMode.sessionChange.mode == MODE_BOT) {
+            view.sessionChangeStateHandler(false)
         }
     }
 
-    private fun getLiveChatQuickReply(): List<QuickReplyUiModel> {
+    private fun getLiveChatQuickReply(pojo: ChatSocketPojo): List<QuickReplyUiModel> {
         val quickReplyListPojo = GsonBuilder().create()
             .fromJson<QuickReplyAttachmentAttributes>(
-                chatResponse.attachment?.attributes,
+                pojo.attachment?.attributes,
                 QuickReplyAttachmentAttributes::class.java
             )
         val list = ArrayList<QuickReplyUiModel>()
         if (quickReplyListPojo != null && !quickReplyListPojo.quickReplies.isEmpty()) {
-            for (pojo in quickReplyListPojo.quickReplies) {
-                if (!TextUtils.isEmpty(pojo.text)) {
-                    list.add(QuickReplyUiModel(pojo.text, pojo.value, pojo.action))
+            for (currPojo in quickReplyListPojo.quickReplies) {
+                if (!TextUtils.isEmpty(currPojo.text)) {
+                    list.add(QuickReplyUiModel(currPojo.text, currPojo.value, currPojo.action))
                 }
             }
         }
@@ -380,9 +375,9 @@ class ChatbotPresenter @Inject constructor(
     }
 
     @VisibleForTesting
-    fun handleReplyBoxWSToggle() {
+    fun handleReplyBoxWSToggle(pojo: ChatSocketPojo) {
         val dynamicAttachmentContents =
-            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+            Gson().fromJson(pojo.attachment?.attributes, DynamicAttachment::class.java)
 
         val replyBoxAttribute =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
@@ -399,7 +394,7 @@ class ChatbotPresenter @Inject constructor(
                 }
                 else -> {
                     //TODO need to show fallback message
-                    mapToVisitable(chatResponse)
+                    mapToVisitable(pojo)
                 }
             }
         }
@@ -407,6 +402,8 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun convertToBigReplyBoxData(dynamicContent: String?) {
+        if(dynamicContent == null)
+            return
         val bigReplyBoxContent = Gson().fromJson(
             dynamicContent,
             BigReplyBoxAttribute::class.java
@@ -415,6 +412,8 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun convertToSmallReplyBoxData(dynamicContent: String?) {
+        if (dynamicContent == null)
+            return
         val smallReplyBoxContent = Gson().fromJson(
             dynamicContent,
             SmallReplyBoxAttribute::class.java
