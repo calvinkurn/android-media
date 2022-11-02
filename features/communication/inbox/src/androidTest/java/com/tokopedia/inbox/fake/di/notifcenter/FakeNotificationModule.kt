@@ -1,10 +1,8 @@
 package com.tokopedia.inbox.fake.di.notifcenter
 
-import android.content.Context
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterCacheManager
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.topads.FakeTopAdsRepository
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
-import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -34,14 +32,6 @@ class FakeNotificationModule {
 
     @Provides
     @NotificationScope
-    fun provideRemoveWishlistUseCase(
-        @NotificationContext context: Context
-    ): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
-    }
-
-    @Provides
-    @NotificationScope
     fun provideNotifCacheManager(
         fake: FakeNotifcenterCacheManager
     ): NotifcenterCacheManager {
@@ -53,6 +43,4 @@ class FakeNotificationModule {
     fun provideFakeNotifCacheManager(): FakeNotifcenterCacheManager {
         return FakeNotifcenterCacheManager()
     }
-
 }
-
