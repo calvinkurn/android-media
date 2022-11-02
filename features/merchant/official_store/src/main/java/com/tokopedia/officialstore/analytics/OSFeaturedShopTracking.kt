@@ -3,6 +3,13 @@ package com.tokopedia.officialstore.analytics
 import android.os.Bundle
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_BANNER
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_DASH_FIVE_VALUES
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_DASH_THREE_VALUES
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_IMPRESSION_BANNER
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_ITEM_NAME
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_ITEM_NAME_FOUR_VALUES
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.OS_MICROSITE_SINGLE
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_CLICK
@@ -23,9 +30,9 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
     ) {
         val bundle = Bundle().apply {
             putString(Event.KEY, Event.SELECT_CONTENT)
-            putString(Category.KEY, OfficialStoreTracking.OS_MICROSITE_SINGLE)
-            putString(Action.KEY, OfficialStoreTracking.FORMAT_CLICK_BANNER.format(VALUE_FEATURED_SHOP))
-            putString(Label.KEY, OfficialStoreTracking.FORMAT_DASH_FIVE_VALUES.format(
+            putString(Category.KEY, OS_MICROSITE_SINGLE)
+            putString(Action.KEY, FORMAT_CLICK_BANNER.format(VALUE_FEATURED_SHOP))
+            putString(Label.KEY, FORMAT_DASH_FIVE_VALUES.format(
                 VALUE_FEATURED_SHOP, channel.id, channel.channelHeader.name,
                 grid.shopId, categoryName))
             putString(UserId.KEY, userId)
@@ -35,8 +42,8 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, grid.attribution)
                     putString(Promotion.CREATIVE_SLOT, (bannerPosition+1).toString())
-                    putString(Promotion.ITEM_ID, OfficialStoreTracking.FORMAT_DASH_THREE_VALUES.format(channel.channelBanner.id, channel.id, grid.shopId))
-                    putString(Promotion.ITEM_NAME, OfficialStoreTracking.FORMAT_ITEM_NAME.format(categoryName, VALUE_FEATURED_SHOP))
+                    putString(Promotion.ITEM_ID, FORMAT_DASH_THREE_VALUES.format(channel.channelBanner.id, channel.id, grid.shopId))
+                    putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_FEATURED_SHOP))
                 }
             )
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_CATEGORY)
@@ -50,16 +57,16 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
         return BaseTrackerBuilder()
             .constructBasicPromotionView(
                 event = PROMO_VIEW,
-                eventAction = OfficialStoreTracking.FORMAT_IMPRESSION_BANNER.format(VALUE_FEATURED_SHOP),
-                eventCategory = OfficialStoreTracking.OS_MICROSITE_SINGLE,
-                eventLabel = OfficialStoreTracking.FORMAT_DASH_FIVE_VALUES.format(
+                eventAction = FORMAT_IMPRESSION_BANNER.format(VALUE_FEATURED_SHOP),
+                eventCategory = OS_MICROSITE_SINGLE,
+                eventLabel = FORMAT_DASH_FIVE_VALUES.format(
                     VALUE_FEATURED_SHOP, channel.id, channel.channelHeader.id,
                     grid.shop.id, categoryName),
                 promotions = listOf(
                     Promotion(
-                        id = OfficialStoreTracking.FORMAT_DASH_THREE_VALUES.format(
+                        id = FORMAT_DASH_THREE_VALUES.format(
                             channel.channelBanner.id, channel.id, grid.shopId),
-                        name = OfficialStoreTracking.FORMAT_ITEM_NAME_FOUR_VALUES.format(
+                        name = FORMAT_ITEM_NAME_FOUR_VALUES.format(
                             categoryName, VALUE_FEATURED_SHOP,
                             channel.channelHeader.name, grid.applink),
                         position = bannerPosition.toString(),
