@@ -10,6 +10,7 @@ import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -22,8 +23,8 @@ import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveMod
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
@@ -58,6 +59,15 @@ class PlayUiModelMapper @Inject constructor(
         return chatMapper.mapChat(input)
     }
 
+    fun mapHistoryChat(response: PlayChatHistoryResponse): PlayChatHistoryUiModel {
+        return PlayChatHistoryUiModel(
+            chatList = response.wrapper.data.map {
+                mapChat(it)
+            },
+            nextCursor = response.wrapper.pagination.nextCursor
+        )
+    }
+
     fun mapStatus(input: ChannelStatusResponse): PlayStatusType {
         return channelStatusMapper.mapStatusFromResponse(input)
     }
@@ -78,8 +88,8 @@ class PlayUiModelMapper @Inject constructor(
         return interactiveMapper.mapInteractive(input)
     }
 
-    fun mapInteractiveLeaderboard(input: GetLeaderboardSlotResponse): PlayLeaderboardInfoUiModel {
-        return interactiveLeaderboardMapper.mapNewLeaderboard(input) { false }
+    fun mapInteractiveLeaderboard(input: GetLeaderboardSlotResponse): List<LeaderboardGameUiModel> {
+        return interactiveLeaderboardMapper.mapNewPlayLeaderboard(input) { false }
     }
 
     fun mapAddToCartFeedback(input: AddToCartDataModel): CartFeedbackResponseModel {

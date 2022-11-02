@@ -16,7 +16,8 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity  android:name=".view.activity.TokomemberMainActivity">
+        <activity  android:name=".view.activity.TokomemberMainActivity"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

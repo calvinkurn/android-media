@@ -436,8 +436,8 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickAllCategory()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String) {
-        analytics.onClickCategory(position, categoryId, headerName)
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) {
+        analytics.onClickCategory(position, categoryId, headerName, categoryName)
     }
 
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {

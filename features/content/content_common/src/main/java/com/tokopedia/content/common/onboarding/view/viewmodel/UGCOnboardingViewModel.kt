@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
 import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
-import com.tokopedia.content.common.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
+import com.tokopedia.content.common.onboarding.view.uimodel.state.UGCOnboardingUiState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -26,7 +26,7 @@ class UGCOnboardingViewModel @AssistedInject constructor(
         ): UGCOnboardingViewModel
     }
 
-    val uiState: Flow<FeedUGCOnboardingUiState>
+    val uiState: Flow<UGCOnboardingUiState>
         get() = onboardingStrategy.uiState
 
     val uiEvent: Flow<UGCOnboardingUiEvent>

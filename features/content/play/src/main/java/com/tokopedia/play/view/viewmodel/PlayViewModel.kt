@@ -30,6 +30,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.setValue
@@ -60,8 +61,8 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
@@ -112,6 +113,7 @@ class PlayViewModel @AssistedInject constructor(
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
     private val playLog: PlayLog,
+    chatManagerFactory: ChatManager.Factory,
     chatStreamsFactory: ChatStreams.Factory,
     private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon,
 ) : ViewModel() {
@@ -348,10 +350,12 @@ class PlayViewModel @AssistedInject constructor(
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
-    private val chatStreams = chatStreamsFactory.create(viewModelScope)
+    private val chatManager = chatManagerFactory.create(
+        chatStreamsFactory.create(viewModelScope)
+    )
 
     val chats: StateFlow<List<PlayChatUiModel>>
-        get() = chatStreams.chats
+        get() = chatManager.chats
 
     val videoOrientation: VideoOrientation
         get() {
@@ -1035,7 +1039,7 @@ class PlayViewModel @AssistedInject constructor(
 
         updateTagItems()
         updateChannelStatus()
-
+        updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         sendInitialLog()
     }
@@ -1192,6 +1196,19 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(channelStatus = channelStatus)
             }
         }) {}
+    }
+
+    /**
+     * Updating chat history for live channel only
+     */
+    private fun updateLiveChannelChatHistory(channelData: PlayChannelData) {
+        viewModelScope.launchCatchError(block = {
+            if(channelData.channelDetail.channelInfo.channelType.isLive) {
+                chatManager.setWaitingForHistory()
+                val response = repo.getChatHistory(channelId)
+                chatManager.addHistoryChat(response.chatList.reversed())
+            }
+        }) { }
     }
 
     fun sendChat(message: String) {
@@ -1433,7 +1450,7 @@ class PlayViewModel @AssistedInject constructor(
      * Private Method
      */
     private fun setNewChat(chat: PlayChatUiModel) {
-        chatStreams.addChat(chat)
+        chatManager.addChat(chat)
     }
 
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
@@ -1470,10 +1487,8 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun setLeaderboardBadgeState(leaderboardInfo: PlayLeaderboardInfoUiModel) {
-        if(leaderboardInfo.leaderboardWinners.isNotEmpty()) {
-            _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
-        }
+    private fun setLeaderboardBadgeState(leaderboardInfo: List<LeaderboardGameUiModel>) {
+        if(leaderboardInfo.isNotEmpty()) _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
     }
 
     private fun checkInteractive(channelId: String) {
