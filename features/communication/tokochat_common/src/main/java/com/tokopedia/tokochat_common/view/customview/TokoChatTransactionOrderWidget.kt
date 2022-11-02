@@ -268,7 +268,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         if (tokoChatOrderProgressUiModel?.labelTitle?.isNotBlank() == true &&
             tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true) {
             partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
-                StringBuilder(tokoChatOrderProgressUiModel?.labelTitle.orEmpty()).append(":")
+                StringBuilder(tokoChatOrderProgressUiModel?.labelTitle.orEmpty())
             partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
                 tokoChatOrderProgressUiModel?.labelValue.orEmpty()
         } else {
