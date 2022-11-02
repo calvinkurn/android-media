@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityAchievementBoxUiModel
+import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityHeaderUiModel
 import com.tokopedia.reviewcommon.constant.AnalyticConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
@@ -185,5 +186,30 @@ object ReviewCredibilityTracking {
             )
             .appendImpressAchievementPromotionsEE(achievements)
             .sendEnhancedEcommerce(AnalyticConstant.EVENT_VIEW_ITEM)
+    }
+
+    fun trackClickSeeProfileButton(
+        trackingData: ReviewCredibilityHeaderUiModel.TrackingData
+    ) {
+        val otherUserCredibility = trackingData.viewerUserId != trackingData.reviewerUserId
+        if (otherUserCredibility) {
+            mutableMapOf<String, Any>()
+                .appendGeneralEventData(
+                    eventName = AnalyticConstant.EVENT_CLICK_PG,
+                    eventCategory = ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET,
+                    eventAction = ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_SEE_PROFILE_BUTTON,
+                    eventLabel = String.format(
+                        ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_SEE_PROFILE_BUTTON,
+                        trackingData.reviewerUserId
+                    )
+                )
+                .appendUserId(trackingData.viewerUserId)
+                .appendProductId(trackingData.productId)
+                .appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
+                .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
+                .appendPageSource(trackingData.pageSource)
+                .appendTrackerIdIfNotBlank(ReviewCredibilityTrackingConstant.TRACKER_ID_CLICK_SEE_PROFILE_BUTTON)
+                .sendGeneralEvent()
+        }
     }
 }
