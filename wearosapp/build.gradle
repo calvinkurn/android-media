@@ -24,11 +24,11 @@ buildscript {
 }
 
 def getTkpdVersionName() {
-    return project.hasProperty('versionName') ? versionName : "2.128";
+    return project.hasProperty('versionName') ? versionName : "2.198-wear";
 }
 
 def getTkpdVersionCode() {
-    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : 1422128002;
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : 1422128050;
 }
 
 kapt {
