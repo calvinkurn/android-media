@@ -36,6 +36,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewTopAdsLogUiModel): Int = ViewTopAdsLogViewHolder.LAYOUT
     override fun type(uiModel: ApplinkLogOnNotificationUiModel): Int = ApplinkLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewApplinkLogUiModel): Int = ViewApplinkLogViewHolder.LAYOUT
+    override fun type(uiModel: JourneyLogOnNotificationUiModel): Int = JourneyLogOnNotificationViewHolder.LAYOUT
+    override fun type(uiModel: ViewJourneyLogUiModel): Int = ViewJourneyLogViewHolder.LAYOUT
     override fun type(uiModel: FpmLogOnFileUiModel): Int = FpmLogOnFileViewHolder.LAYOUT
     override fun type(uiModel: FpmLogOnNotificationUiModel): Int = FpmLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewFpmLogUiModel): Int = ViewFpmLogViewHolder.LAYOUT
@@ -64,6 +66,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: TypographySwitchUiModel): Int = TypographySwitcherViewHolder.LAYOUT
     override fun type(uiModel: ConvertResourceIdUiModel): Int = ConvertResourceIdViewHolder.LAYOUT
     override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
+    override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -84,6 +87,8 @@ class DeveloperOptionTypeFactoryImpl(
             ViewTopAdsLogViewHolder.LAYOUT -> ViewTopAdsLogViewHolder(view)
             ApplinkLogOnNotificationViewHolder.LAYOUT -> ApplinkLogOnNotificationViewHolder(view)
             ViewApplinkLogViewHolder.LAYOUT -> ViewApplinkLogViewHolder(view)
+            JourneyLogOnNotificationViewHolder.LAYOUT -> JourneyLogOnNotificationViewHolder(view)
+            ViewJourneyLogViewHolder.LAYOUT -> ViewJourneyLogViewHolder(view)
             FpmLogOnFileViewHolder.LAYOUT -> FpmLogOnFileViewHolder(view)
             FpmLogOnNotificationViewHolder.LAYOUT -> FpmLogOnNotificationViewHolder(view)
             ViewFpmLogViewHolder.LAYOUT -> ViewFpmLogViewHolder(view)
@@ -111,6 +116,7 @@ class DeveloperOptionTypeFactoryImpl(
             PlayWebSocketSseLoggingViewHolder.LAYOUT -> PlayWebSocketSseLoggingViewHolder(view)
             TypographySwitcherViewHolder.LAYOUT -> TypographySwitcherViewHolder(view)
             ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
+            ViewHanselPatchViewHolder.LAYOUT -> ViewHanselPatchViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

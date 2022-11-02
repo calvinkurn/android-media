@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -78,8 +79,13 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                         public void onPermissionGranted() {
                             try {
                                 if (nfcAdapter.isEnabled()) {
-                                    pendingIntent = PendingIntent.getActivity(activity, 0,
-                                            activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                        pendingIntent = PendingIntent.getActivity(activity, 0,
+                                                activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_MUTABLE);
+                                    }else{
+                                        pendingIntent = PendingIntent.getActivity(activity, 0,
+                                                activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                                    }
                                     nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
                                 }
                             } catch (SecurityException e) {

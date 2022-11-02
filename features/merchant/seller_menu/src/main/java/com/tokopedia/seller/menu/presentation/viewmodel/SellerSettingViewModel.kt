@@ -14,7 +14,11 @@ import javax.inject.Inject
 class SellerSettingViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val shopLocWhitelist: ShopMultilocWhitelistUseCase,
-) : BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.io) {
+
+    companion object {
+        private const val SHOP_MULTILOC_ELIGIBLE = 1
+    }
 
     val shopLocEligible: LiveData<Result<Boolean>>
         get() = _shopLocEligible
@@ -25,8 +29,8 @@ class SellerSettingViewModel @Inject constructor(
         launchCatchError(block = {
             val shopLocWhitelist = shopLocWhitelist.invoke(shopId).shopLocWhitelist
             val eligibilityState = shopLocWhitelist.data.eligibilityState
-            val isMultilocation = eligibilityState==1
-            _shopLocEligible.postValue(Success(isMultilocation))
+            val isMultiLocation = eligibilityState == SHOP_MULTILOC_ELIGIBLE
+            _shopLocEligible.postValue(Success(isMultiLocation))
         }, onError = {
             _shopLocEligible.postValue(Fail(it))
         })

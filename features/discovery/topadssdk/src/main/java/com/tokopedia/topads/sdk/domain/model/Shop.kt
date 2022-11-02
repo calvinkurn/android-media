@@ -1,10 +1,9 @@
 package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import org.json.JSONObject
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 private const val KEY_ID = "id"
@@ -25,6 +24,7 @@ private const val KEY_IS_OWNER = "is_owner"
 private const val KEY_BADGES = "badges"
 private const val KEY_SHOP_RATING_AVG = "shop_rating_avg"
 
+@Parcelize
 data class Shop(
     @SerializedName(KEY_ID)
     @Expose
@@ -96,128 +96,4 @@ data class Shop(
     @SerializedName(KEY_SHOP_RATING_AVG)
     @Expose
     var shopRatingAvg: String = ""
-) : Parcelable {
-
-
-    constructor(jSONObject: JSONObject) : this() {
-        if (!jSONObject.isNull(KEY_ID)) {
-            id = jSONObject.getString(KEY_ID)
-        }
-        if (!jSONObject.isNull(KEY_NAME)) {
-            name = jSONObject.getString(KEY_NAME)
-        }
-        if (!jSONObject.isNull(KEY_DOMAIN)) {
-            domain = jSONObject.getString(KEY_DOMAIN)
-        }
-        if (!jSONObject.isNull(KEY_TAGLINE)) {
-            tagline = jSONObject.getString(KEY_TAGLINE)
-        }
-        if (!jSONObject.isNull(KEY_LOCATION)) {
-            location = jSONObject.getString(KEY_LOCATION)
-        }
-        if (!jSONObject.isNull(KEY_CITY)) {
-            city = jSONObject.getString(KEY_CITY)
-        }
-        if (!jSONObject.isNull(KEY_IMAGE_SHOP)) {
-            imageShop = ImageShop(jSONObject.getJSONObject(KEY_IMAGE_SHOP))
-        }
-        if (!jSONObject.isNull(KEY_GOLD_SHOP)) {
-            isGoldShop = jSONObject.getBoolean(KEY_GOLD_SHOP)
-        }
-        if (!jSONObject.isNull(KEY_GOLD_SHOP_BADGE)) {
-            isGoldShopBadge = jSONObject.getBoolean(KEY_GOLD_SHOP_BADGE)
-        }
-        if (!jSONObject.isNull(KEY_LUCKY_SHOP)) {
-            luckyShop = jSONObject.getString(KEY_LUCKY_SHOP)
-        }
-        if (!jSONObject.isNull(KEY_SHOP_IS_OFFICIAL)) {
-            isShop_is_official = jSONObject.getBoolean(KEY_SHOP_IS_OFFICIAL)
-        }
-        if (!jSONObject.isNull(KEY_URI)) {
-            uri = jSONObject.getString(KEY_URI)
-        }
-        if (!jSONObject.isNull(KEY_OWNER_ID)) {
-            ownerId = jSONObject.getString(KEY_OWNER_ID)
-        }
-        if (!jSONObject.isNull(KEY_IS_OWNER)) {
-            isOwner = (jSONObject.getBoolean(KEY_IS_OWNER))
-        }
-        if (!jSONObject.isNull(KEY_IMAGE_PRODUCT)) {
-            val imageProductArray = jSONObject.getJSONArray(KEY_IMAGE_PRODUCT)
-            for (i in 0 until imageProductArray.length()) {
-                imageProduct?.add(ImageProduct(imageProductArray.getJSONObject(i)))
-            }
-        }
-        if (!jSONObject.isNull(KEY_BADGES)) {
-            val badgeArray = jSONObject.getJSONArray(KEY_BADGES)
-            for (i in 0 until badgeArray.length()) {
-                badges?.add(Badge(badgeArray.getJSONObject(i)))
-            }
-        }
-        if (!jSONObject.isNull(KEY_SHOP_RATING_AVG)) {
-            shopRatingAvg = jSONObject.getString(KEY_SHOP_RATING_AVG)
-        }
-    }
-
-    constructor(parcel: Parcel) : this() {
-        parcel.readString()
-        parcel.readString()
-        parcel.readString()
-        parcel.readString()
-        parcel.readString()
-        parcel.readString()
-        parcel.readString()
-        parcel.readString()
-        parcel.readParcelable(ImageShop::class.java.classLoader) ?: ImageShop()
-        parcel.readByte().toInt() != 0
-        parcel.readByte().toInt() != 0
-        parcel.readString()
-        parcel.readByte().toInt() != 0
-        parcel.readString()
-        parcel.createTypedArrayList(ImageProduct.CREATOR)
-        parcel.readString()
-        parcel.readByte().toInt() != 0
-        parcel.createTypedArrayList(Badge)
-        parcel.readString()
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(adRefKey)
-        parcel.writeString(adId)
-        parcel.writeString(name)
-        parcel.writeString(domain)
-        parcel.writeString(tagline)
-        parcel.writeString(location)
-        parcel.writeString(city)
-        parcel.writeParcelable(imageShop, flags)
-        parcel.writeByte((if (isGoldShop) 1 else 0).toByte())
-        parcel.writeByte((if (isGoldShopBadge) 1 else 0).toByte())
-        parcel.writeString(luckyShop)
-        parcel.writeByte((if (isShop_is_official) 1 else 0).toByte())
-        parcel.writeString(uri)
-        parcel.writeTypedList(imageProduct)
-        parcel.writeString(ownerId)
-        parcel.writeByte((if (isOwner) 1 else 0).toByte())
-        parcel.writeTypedList(badges)
-        parcel.writeString(shopRatingAvg)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object {
-
-        @JvmField
-        val CREATOR: Parcelable.Creator<Shop> = object : Parcelable.Creator<Shop> {
-            override fun createFromParcel(parcel: Parcel): Shop {
-                return Shop(parcel)
-            }
-
-            override fun newArray(size: Int): Array<Shop?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-}
+) : Parcelable
