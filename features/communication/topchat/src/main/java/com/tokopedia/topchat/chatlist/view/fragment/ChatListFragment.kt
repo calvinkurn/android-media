@@ -378,6 +378,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     override fun onDismissTicker(element: ChatListTickerUiModel) {
+        adapter?.removeElement(element)
         if (element.sharedPreferenceKey.isNotBlank()) {
             chatItemListViewModel.saveTickerPref(ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME)
         }
