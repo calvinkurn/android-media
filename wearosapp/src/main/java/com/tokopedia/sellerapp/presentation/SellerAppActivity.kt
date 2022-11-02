@@ -68,6 +68,7 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                     if (!it) {
                         phoneStateFlow.value = STATE.COMPANION_NOT_INSTALLED
                         phoneStateProgressFlow.value = timeoutMaxProgress
+                        timer?.cancel()
                     }
                 }
             }
