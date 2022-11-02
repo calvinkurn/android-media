@@ -46,6 +46,7 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         adapterPosition: Int,
         dimension90: String,
         externalReference: String,
+        chooseAddressParams: Map<String, String>?,
     ) {
         if (viewUpdater.itemCount < adapterPosition) return
 
@@ -59,7 +60,7 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         if (!item.isKeywordIntentionLow) return
 
         val sameSessionRequestParams = requestParamsGenerator
-            .createSameSessionRecommendationParam(item)
+            .createSameSessionRecommendationParam(item, chooseAddressParams)
 
         sameSessionRecommendationUseCase.execute(
             sameSessionRequestParams,

@@ -22,7 +22,7 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PARAM_POST_ID
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PARAM_TYPE
 import com.tokopedia.createpost.view.util.ConnectionLiveData
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -142,7 +142,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         isFromTemplateToken: Boolean,
     ) {
         val feedAccountList = feedContentForm.authors.map {
-            FeedAccountUiModel(
+            ContentAccountUiModel(
                 id = it.id,
                 name = it.name,
                 iconUrl = it.thumbnail,
@@ -153,7 +153,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
             )
         }
 
-        activityListener?.setFeedAccountList(feedAccountList)
+        activityListener?.setContentAccountList(feedAccountList)
         createPostModel.shopName = feedAccountList.firstOrNull { it.isShop }?.name ?: ""
         createPostModel.shopBadge = feedAccountList.firstOrNull { it.isShop }?.badge ?: ""
         createPostModel.token = feedContentForm.token

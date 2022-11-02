@@ -147,11 +147,6 @@ class ProductListAdapter(
 
     fun isListEmpty() = list.isEmpty()
 
-    fun removePriceFilterTicker() {
-        val tickerIndex = list.indexOfFirst { it is TickerDataView }
-        removeItem(tickerIndex)
-    }
-
     fun refreshItemAtIndex(index: Int) {
         if (index !in list.indices) return
 

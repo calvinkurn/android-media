@@ -5,10 +5,14 @@ import android.content.Intent
 import android.text.TextWatcher
 import android.view.MenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxticket2.data.ImageUpload
-import com.tokopedia.contactus.inboxticket2.data.model.*
+import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail
+import com.tokopedia.contactus.inboxticket2.data.model.Data
+import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse
+import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse
@@ -25,10 +29,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.Assert.*
 
 
 @ExperimentalCoroutinesApi
@@ -1648,7 +1652,7 @@ class InboxDetailPresenterTest {
     fun `run on Options Item Selected is action search`() {
         presenter.attachView(view)
         val menu = mockk<MenuItem>(relaxed = true)
-        every { menu.itemId } returns 2131296681
+        every { menu.itemId } returns R.id.action_search
 
         val actualResult = presenter.onOptionsItemSelected(menu)
         assertTrue(actualResult)
@@ -1658,7 +1662,7 @@ class InboxDetailPresenterTest {
     /*@Test
     fun `run on Options Item Selected is action search but view empty`() {
         val menu = mockk<MenuItem>(relaxed = true)
-        every { menu.itemId } returns 2131296681
+        every { menu.itemId } returns R.id.action_search
 
         val actualResult = presenter.onOptionsItemSelected(menu)
         assertTrue(actualResult)

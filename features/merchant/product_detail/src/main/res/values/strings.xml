@@ -149,8 +149,6 @@
 
     <string name="shop_chat_speed_in_minute">%1d menit</string>
 
-    <string name="label_go_apotik">Go-Apotik</string>
-
     <string name="pdp_tradein_text_permission_description">Izinkan Tokopedia mengakses IMEI, WiFi, dan lainnya untuk tes fungsi HP</string>
     <string name="pdp_tradein_text_request_access">Izin akses ke HP-mu</string>
 
@@ -200,4 +198,8 @@
 
     <string name="pdp_media_label_builder">%1$s • %2$s </string>
     <string name="pdp_general_info_see">Lihat</string>
+
+    <!-- One Liners -->
+    <string name="pdp_oneliners_ims100_coachmark_title">Stok terpantau aman oleh Tokopedia!</string>
+    <string name="pdp_oneliners_ims100_coachmark_description">Nggak perlu chat tokonya lagi untuk nanya stok, deh. Yuk, langsung beli aja.</string>
 </resources>

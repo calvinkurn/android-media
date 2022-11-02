@@ -258,6 +258,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                 if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_BUAT){
                     tmTracker?.clickSummaryBackFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 }
+                else if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_EXTEND){
+                    tmTracker?.clickProgramExtensionSummaryBack(arguments?.getInt(BUNDLE_SHOP_ID).toString(), arguments?.getInt(BUNDLE_PROGRAM_ID).toString())
+                }
                 else {
                     tmTracker?.clickSummaryBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 }
@@ -279,6 +282,12 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             openLoadingDialog()
             if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_BUAT){
                 tmTracker?.clickSummaryButtonFromProgramList(
+                    arguments?.getInt(BUNDLE_SHOP_ID).toString(),
+                    arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
+                )
+            }
+            else if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.PREVIEW_EXTEND){
+                tmTracker?.clickProgramExtensionSummaryButton(
                     arguments?.getInt(BUNDLE_SHOP_ID).toString(),
                     arguments?.getInt(BUNDLE_PROGRAM_ID).toString()
                 )
