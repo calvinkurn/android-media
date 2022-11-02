@@ -5,7 +5,6 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -16,9 +15,8 @@ import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldTex
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
-import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.scheduledelivery.view.bottomsheet.ScheduleSlotBottomSheet
-import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleDeliveryMapper
+import com.tokopedia.logisticcart.scheduledelivery.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.scheduledelivery.preference.ScheduleDeliveryPreferences
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper

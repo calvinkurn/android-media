@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.scheduledelivery.utils
+package com.tokopedia.logisticcart.scheduledelivery.mapper
 
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
