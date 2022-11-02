@@ -43,7 +43,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstru
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.*
 
-
 /**
  * Created by DevAra
  * Instrumented test, which will execute on an Android device.
