@@ -111,7 +111,7 @@ object MediaLoaderTracker : CoroutineScope {
             var cdnName = ""
             try {
                 val remoteInfo = RemoteCdnService.fetchServerInfo(url)
-                cdnName = RemoteCdnService.getCdnNameHeader(url)
+                cdnName = RemoteCdnService.getCdnName(url)
                 ipInfo = remoteInfo.hostAddress
                 hostName = remoteInfo.hostName
             } catch (ignored: Exception) { /* no-op */ }
