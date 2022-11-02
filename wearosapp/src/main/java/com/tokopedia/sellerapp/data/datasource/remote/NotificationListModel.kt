@@ -15,7 +15,16 @@ data class NotificationListModel(
         val shortDescription: String = "",
         @SerializedName("status")
         val status: Int = 0,
+        @SerializedName("create_time_unix")
+        val createTimeUnix: Long = 0L,
         @SerializedName("title")
-        val title: String = ""
+        val title: String = "",
+        @SerializedName("data_notification")
+        val dataNotification: DataNotification = DataNotification()
+    )
+
+    data class DataNotification(
+        @SerializedName("info_thumbnail_url")
+        val infoThumbnailUrl: String = ""
     )
 }

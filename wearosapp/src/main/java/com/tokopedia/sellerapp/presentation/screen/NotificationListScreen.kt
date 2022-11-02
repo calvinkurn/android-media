@@ -8,16 +8,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.*
+import com.tokopedia.sellerapp.R
 import com.tokopedia.sellerapp.domain.model.NotificationModel
 import com.tokopedia.sellerapp.navigation.ScreenNavigation
 import com.tokopedia.sellerapp.presentation.theme.ChipGrayColor
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.UiState
-import com.tokopedia.tkpd.R
 
 @Composable
 fun NotificationListScreen(
@@ -43,15 +45,18 @@ private fun NotificationListScaffold(
     sharedViewModel: SharedViewModel
 ) {
     Scaffold(
-        positionIndicator = {
-            PositionIndicator(
-                scalingLazyListState = scalingLazyListState
-            )
-        },
         timeText = {
             if (!scalingLazyListState.isScrollInProgress) {
                 TimeText()
             }
+        },
+        vignette = {
+            Vignette(vignettePosition = VignettePosition.TopAndBottom)
+        },
+        positionIndicator = {
+            PositionIndicator(
+                scalingLazyListState = scalingLazyListState
+            )
         }
     ) {
         val notifications by sharedViewModel.notifications.collectAsState()
@@ -59,7 +64,8 @@ private fun NotificationListScaffold(
             is UiState.Success -> {
                 NotificationList(
                     screenNavigation = screenNavigation,
-                    notifications = notifications.data ?: listOf()
+                    notifications = notifications.data ?: listOf(),
+                    state = scalingLazyListState
                 )
             }
             else -> {}
@@ -70,9 +76,13 @@ private fun NotificationListScaffold(
 @Composable
 private fun NotificationList(
     screenNavigation: ScreenNavigation,
-    notifications: List<NotificationModel>
+    notifications: List<NotificationModel>,
+    state: ScalingLazyListState
 ) {
-    ScalingLazyColumn(modifier = Modifier.fillMaxWidth()) {
+    ScalingLazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        state = state
+    ) {
         item {
             ListHeader { }
         }
@@ -80,15 +90,16 @@ private fun NotificationList(
             AppCard(
                 appImage = {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_seller_app),
+                        painter = painterResource(id = R.drawable.ic_seller_toped),
                         contentDescription = stringResource(id = R.string.content_description_app_icon),
                         modifier = Modifier
                             .size(CardDefaults.AppImageSize)
-                            .wrapContentSize(align = Alignment.Center)
+                            .wrapContentSize(align = Alignment.Center),
+                        tint = Color.Unspecified
                     )
                 },
                 appName = {
-                    Text(text = stringResource(id = R.string.home_title) )
+                    Text(text = stringResource(id = R.string.home_title))
                 },
                 title = {
                     Text(notifications[index].title, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -101,7 +112,7 @@ private fun NotificationList(
                     )
                 },
                 time = {
-                    Text("now")
+                    Text(text = notifications[index].getTimeRelative(), fontSize = 10.sp)
                 },
                 backgroundPainter = CardDefaults.cardBackgroundPainter(
                     ChipGrayColor,

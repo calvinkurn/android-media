@@ -75,7 +75,11 @@ class GetNotificationListUseCase(
             			notif_id
             			title
             			status
+                        create_time_unix
             			read_status
+                        data_notification {
+                            info_thumbnail_url
+                        }
             		}
             	}
             }

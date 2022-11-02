@@ -17,7 +17,9 @@ object NotificationDataMapper {
                 readStatus = it.readStatus,
                 status = it.status,
                 title = it.title,
-                shortDescription = it.shortDescription
+                shortDescription = it.shortDescription,
+                createTimeUnix = it.createTimeUnix,
+                infoThumbnailUrl = it.dataNotification.infoThumbnailUrl
             )
         }
     }

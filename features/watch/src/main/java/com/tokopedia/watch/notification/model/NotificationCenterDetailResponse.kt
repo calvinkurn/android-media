@@ -2,6 +2,7 @@ package com.tokopedia.watch.notification.model
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.utils.time.TimeHelper
 
 data class NotificationCenterDetailResponse(
     @SerializedName("notifcenter_detail_v3")
@@ -23,6 +24,15 @@ data class NotificationModel(
     val shortDescription: String = "",
     @SerializedName("status")
     val status: Int = 0,
+    @SerializedName("create_time_unix")
+    val createTimeUnix: Long = 0,
     @SerializedName("title")
-    val title: String = ""
+    val title: String = "",
+    @SerializedName("data_notification")
+    val dataNotification: DataNotification = DataNotification()
+)
+
+data class DataNotification(
+    @SerializedName("info_thumbnail_url")
+    val infoThumbnailUrl: String = ""
 )

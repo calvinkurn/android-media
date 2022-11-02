@@ -214,7 +214,7 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    private val _ifPhoneHasApp = MutableStateFlow(false)
+    private val _ifPhoneHasApp = MutableStateFlow(true)
     val ifPhoneHasApp: StateFlow<Boolean>
         get() = _ifPhoneHasApp
 

@@ -19,7 +19,9 @@ object NotificationDomainMapper {
             readStatus = notificationEntity.readStatus,
             status = notificationEntity.status,
             title = notificationEntity.title,
-            shortDescription = notificationEntity.shortDescription
+            shortDescription = notificationEntity.shortDescription,
+            createTimeUnix = notificationEntity.createTimeUnix,
+            infoThumbnailUrl = notificationEntity.infoThumbnailUrl
         )
     }
 }
