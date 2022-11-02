@@ -60,6 +60,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.features.createpostCommon)
 
+    implementation project(rootProject.ext.features.contentCommon)
+
     implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.unifyDependencies.principles

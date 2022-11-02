@@ -46,6 +46,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
 
+    implementation project(rootProject.ext.features.contentCommon)
+
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
