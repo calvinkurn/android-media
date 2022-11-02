@@ -825,7 +825,7 @@ class FeedViewModel @Inject constructor(
      */
     private fun getShopRecomWidget(model: DynamicFeedDomainModel) {
         if (!shouldGetShopRecomWidget(model)) return
-        launchCatchError(block = {
+        launchCatchError(baseDispatcher.io, block = {
             val request = requestShopRecomWidget()
             _shopRecom.value = request
         }, onError = {
