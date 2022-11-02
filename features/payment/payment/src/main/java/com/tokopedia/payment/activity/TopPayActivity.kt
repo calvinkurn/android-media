@@ -928,8 +928,8 @@ class TopPayActivity :
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
-        private const val CC_LOADING_COMPLETE = " https://centinelapistag.cardinalcommerce.com/V1/Cruise/CollectRedirect"
-        private const val CC_LOADING_URL = " https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect"
+        private const val CC_LOADING_COMPLETE = "https://centinelapistag.cardinalcommerce.com/V1/Cruise/CollectRedirect"
+        private const val CC_LOADING_URL = "https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
         private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
