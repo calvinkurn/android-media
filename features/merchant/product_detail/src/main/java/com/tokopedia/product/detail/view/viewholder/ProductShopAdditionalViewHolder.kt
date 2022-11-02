@@ -53,7 +53,10 @@ class ProductShopAdditionalViewHolder(
     private fun impressComponent(element: ProductShopAdditionalDataModel) {
         val componentTrack = getComponentTrackData(element)
         itemView.addOnImpressionListener(element.impressHolder) {
-            listener.onImpressShopAdditional(componentTrackDataModel = componentTrack)
+            listener.onImpressShopAdditional(
+                componentTrackDataModel = componentTrack,
+                eventLabel = getEventLabel(element = element)
+            )
         }
     }
 

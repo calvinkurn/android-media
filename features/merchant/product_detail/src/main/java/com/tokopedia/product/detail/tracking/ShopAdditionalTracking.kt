@@ -1,11 +1,11 @@
 package com.tokopedia.product.detail.tracking
 
+import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.PDP
 import com.tokopedia.product.detail.common.ProductTrackingConstant.PDP.EVENT_CLICK_PG
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil
-import com.tokopedia.product.detail.tracking.TrackingConstant.Hit.CURRENT_SITE
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit.SHOP_ID
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit.TRACKER_ID
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit.USER_ID
@@ -29,14 +29,14 @@ object ShopAdditionalTracking {
         componentTrackDataModel: ComponentTrackDataModel,
         productInfo: DynamicProductInfoP1?,
         userId: String,
+        eventLabel: String
     ) {
-        val productId = productInfo?.basic?.productID ?: ""
         val mapEvent = TrackingUtil.createCommonImpressionTracker(
             productInfo = productInfo,
             componentTrackDataModel = componentTrackDataModel,
             userId = userId,
             customAction = "view - dilayani tokopedia component",
-            customItemName = "product detail page - $productId",
+            customItemName = eventLabel,
             trackedId = "38258"
         )
         trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
@@ -60,7 +60,7 @@ object ShopAdditionalTracking {
                 BUSINESS_UNIT to PDP,
                 SHOP_ID to productInfo?.basic?.shopID.orEmpty(),
                 USER_ID to userId,
-                TrackerConstant.CURRENT_SITE to CURRENT_SITE
+                TrackerConstant.CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE
             ),
             productInfo = productInfo,
             componentTrackDataModel = component,

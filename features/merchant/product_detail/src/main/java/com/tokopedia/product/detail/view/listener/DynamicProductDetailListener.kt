@@ -180,7 +180,7 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel,
         eventLabel: String
     )
-    fun onImpressShopAdditional(componentTrackDataModel: ComponentTrackDataModel)
+    fun onImpressShopAdditional(componentTrackDataModel: ComponentTrackDataModel, eventLabel: String)
 
     /**
      * ProductRecommendationAnnotationChipViewHolder
@@ -299,9 +299,12 @@ interface DynamicProductDetailListener {
      * ProductTickerViewHolder
      */
     fun onTickerShopClicked(
-        tickerTitle: String, tickerType: Int,
+        tickerTitle: String,
+        tickerType: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
-        tickerDescription: String, applink: String, actionType: String,
+        tickerDescription: String,
+        applink: String,
+        actionType: String,
         tickerActionBs: TickerActionBs?
     )
 
