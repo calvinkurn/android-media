@@ -73,7 +73,9 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         const val FORMAT_ITEM_NAME_THREE_VALUES = "${SLASH_OFFICIAL_STORE}/%s - %s - %s"
         const val FORMAT_ITEM_NAME_FOUR_VALUES = "${SLASH_OFFICIAL_STORE}/%s - %s - %s - %s"
         const val FORMAT_IMPRESSION_BANNER = "impression banner - %s"
+        const val FORMAT_IMPRESSION_ON_BANNER = "impression on banner - %s"
         const val FORMAT_CLICK_BANNER = "click banner - %s"
+        const val FORMAT_CLICK_ON_BANNER = "click on banner - %s"
         const val FORMAT_IMPRESSION_PRODUCT = "impression product - %s"
         const val FORMAT_CLICK_PRODUCT = "click product - %s"
         const val FORMAT_CLICK_VIEW_ALL = "click view all - %s"
@@ -853,50 +855,6 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         ) as HashMap<String, Any>)
     }
 
-    // No 21
-    fun eventClickProductRecommendation(
-            item: RecommendationItem,
-            position: String,
-            recommendationTitle: String,
-            isLogin: Boolean,
-            categoryName: String
-    ) {
-        val data = DataLayer.mapOf(
-                Event.KEY, EVENT_PRODUCT_CLICK,
-                Category.KEY, "$OS_MICROSITE$categoryName", // Here
-                Action.KEY, "click - $PRODUCT_EVENT_ACTION",
-                Label.KEY, recommendationTitle,
-                Ecommerce.KEY, DataLayer.mapOf(
-                CLICK, DataLayer.mapOf(
-                FIELD_ACTION_FIELD, DataLayer.mapOf(
-                    FIELD_PRODUCT_LIST, getListProductClickInsideActionField(categoryName, item.recommendationType)
-                ),
-                FIELD_PRODUCTS, DataLayer.listOf(
-                convertRecommendationItemToDataImpressionObject(item, isLogin, position)
-        ))))
-        getTracker().sendEnhanceEcommerceEvent(data)
-    }
-
-    // No 22
-    fun eventImpressionProductRecommendation(
-            item: RecommendationItem,
-            isLogin: Boolean,
-            categoryName: String,
-            recommendationTitle: String,
-            position: String) {
-        val data = DataLayer.mapOf(
-                Event.KEY, EVENT_PRODUCT_VIEW,
-                Category.KEY, String.format(OS_MICROSITE, categoryName),
-                Action.KEY, "impression - $PRODUCT_EVENT_ACTION",
-                Label.KEY, recommendationTitle,
-                Ecommerce.KEY, DataLayer.mapOf(
-                ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
-                convertRecommendationItemToDataImpressionObject(item, isLogin, position)
-        )))
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
-    }
-
     private fun getDynamicChannelImpressionPromotion(categoryName: String, channelData: Channel,
                                                      channelType: String, headerName: String): List<Any> {
         val promotionBody: MutableList<Any> = DataLayer.listOf()
@@ -914,6 +872,48 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             }
         }
         return promotionBody
+    }
+
+    fun eventClickProductRecommendation(
+        item: RecommendationItem,
+        position: String,
+        recommendationTitle: String,
+        isLogin: Boolean,
+        categoryName: String
+    ) {
+        val data = DataLayer.mapOf(
+            Event.KEY, EVENT_PRODUCT_CLICK,
+            Category.KEY, "$OS_MICROSITE$categoryName", // Here
+            Action.KEY, "click - $PRODUCT_EVENT_ACTION",
+            Label.KEY, recommendationTitle,
+            Ecommerce.KEY, DataLayer.mapOf(
+                CLICK, DataLayer.mapOf(
+                    FIELD_ACTION_FIELD, DataLayer.mapOf(
+                        FIELD_PRODUCT_LIST, getListProductClickInsideActionField(categoryName, item.recommendationType)
+                    ),
+                    FIELD_PRODUCTS, DataLayer.listOf(
+                        convertRecommendationItemToDataImpressionObject(item, isLogin, position)
+                    ))))
+        getTracker().sendEnhanceEcommerceEvent(data)
+    }
+
+    fun eventImpressionProductRecommendation(
+        item: RecommendationItem,
+        isLogin: Boolean,
+        categoryName: String,
+        recommendationTitle: String,
+        position: String) {
+        val data = DataLayer.mapOf(
+            Event.KEY, EVENT_PRODUCT_VIEW,
+            Category.KEY, String.format(OS_MICROSITE, categoryName),
+            Action.KEY, "impression - $PRODUCT_EVENT_ACTION",
+            Label.KEY, recommendationTitle,
+            Ecommerce.KEY, DataLayer.mapOf(
+                ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                    convertRecommendationItemToDataImpressionObject(item, isLogin, position)
+                )))
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem, isLogin: Boolean, position: String): Any {
@@ -952,10 +952,6 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                                 "$OS_MICROSITE$categoryName",
                                 eventAction,
                                 eventLabel))
-    }
-
-    fun sendAll() {
-        trackingQueue.sendAll()
     }
 
     @Deprecated("old shop tracker")
@@ -1046,5 +1042,9 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                     "$OS_MICROSITE$categoryName",
                     "all brands - $CLICK",
                     "$CLICK view all"))
+    }
+
+    fun sendAll() {
+        trackingQueue.sendAll()
     }
 }
