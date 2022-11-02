@@ -3169,6 +3169,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         if (isFromBubble) {
             TopChatAnalyticsKt.clickLongHoldMessageFromBubble(msg.replyId)
+        } else {
+            TopChatAnalyticsKt.eventTapAndHoldBubbleChat(msg.replyId)
         }
     }
 
