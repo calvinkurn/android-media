@@ -34,7 +34,7 @@ class PlatformFeeInfoViewHolder(
     private fun ItemBuyerOrderDetailPlatformFeeInfoBinding.bindPlatformFeeInfoText(text: StringRes) {
         tvBuyerOrderDetailPlatformFeeInfo.movementMethod = LinkMovementMethod.getInstance()
         tvBuyerOrderDetailPlatformFeeInfo.text = HtmlLinkHelper(
-            root.context, text.getString(root.context)
+            root.context, text.getStringValue(root.context)
         ).attachLinkClickListener().spannedString
     }
 
