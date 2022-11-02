@@ -24,6 +24,7 @@
         app:layout_constraintTop_toTopOf="@id/ic_back"
         app:layout_constraintBottom_toBottomOf="@id/ic_back"
         app:search_bar_clearable="true"
+        app:search_bar_placeholder="@string/cc_product_tag_search_hint"
         app:search_bar_show_icon="false"
         />
 
