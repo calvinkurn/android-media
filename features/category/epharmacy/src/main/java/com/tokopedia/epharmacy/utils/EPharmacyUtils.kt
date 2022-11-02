@@ -14,3 +14,8 @@ object EPharmacyUtils {
     }
 
 }
+
+enum class PRESCRIPTION_SOURCE_TYPE(val type : String){
+    MINI_CONSULT("MINI_CONSULT"),
+    UPLOAD("UPLOAD")
+}

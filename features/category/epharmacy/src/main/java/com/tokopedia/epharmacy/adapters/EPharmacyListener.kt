@@ -21,6 +21,7 @@ interface EPharmacyListener {
      * Attachment Accordion
      */
 
-    fun onInteractAccordion(adapterPosition: Int, isExpanded: Boolean, modelKey: String){}
+    fun onInteractAccordion(adapterPosition: Int, isExpanded: Boolean, modelKey: String?){}
 
+    fun onCTACClick(adapterPosition: Int, modelKey: String?){}
 }

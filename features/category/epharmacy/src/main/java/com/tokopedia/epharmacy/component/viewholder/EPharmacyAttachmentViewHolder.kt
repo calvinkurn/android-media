@@ -87,17 +87,12 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                     )
                 }
                 productAccordionView.setOnClickListener {
-                    ePharmacyListener?.onInteractAccordion(bindingAdapterPosition,dataModel?.productsIsExpanded ?: false, "${dataModel?.epharmacyGroupId},${dataModel?.shopInfo?.shopId ?: ""}")
+                    ePharmacyListener?.onInteractAccordion(bindingAdapterPosition,dataModel?.productsIsExpanded ?: false, dataModel?.name)
                 }
             }else {
                 dataModel?.shopInfo?.products?.let { products ->
-                    // TODO OPTIMIZE
-                    val productSubList = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>()
-                    products.forEachIndexed { index, product ->
-                        if(index != 0){ productSubList.add(product) }
-                    }
                     (productAccordionRV.adapter as EPharmacyAttachmentProductAccordionAdapter).setData(
-                        productSubList
+                        getProductsWithoutFirst(products)
                     )
                 }
             }
@@ -115,12 +110,15 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun getAttachmentAccordionAdapter(products: ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>): EPharmacyAttachmentProductAccordionAdapter {
-        // TODO OPTIMIZE
+        return EPharmacyAttachmentProductAccordionAdapter(getProductsWithoutFirst(products))
+    }
+
+    private fun getProductsWithoutFirst(products: ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>): ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?> {
         val productSubList = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>()
         products.forEachIndexed { index, product ->
             if(index != 0){ productSubList.add(product) }
         }
-        return EPharmacyAttachmentProductAccordionAdapter(productSubList)
+        return productSubList
     }
 
     private fun renderButton() {
@@ -129,7 +127,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             chatDokterUploadText.text = dataModel?.uploadWidgetText
             chatDokterUploadIcon.loadImage(dataModel?.uploadWidgetIcon)
             chatDokterUploadLayout.setOnClickListener {
-
+                ePharmacyListener?.onCTACClick(bindingAdapterPosition,dataModel?.name)
             }
         }else {
             chatDokterUploadLayout.hide()

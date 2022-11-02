@@ -11,6 +11,8 @@ const val MAX_MEDIA_ITEM = 5
 
 const val MEDIA_PICKER_REQUEST_CODE = 10020
 const val EPHARMACY_REQUEST_CODE = 10021
+const val EPHARMACY_CHOOSER_REQUEST_CODE = 10022
+const val EPHARMACY_MINI_CONSULTATION__CODE = 10023
 const val EPHARMACY_PRESCRIPTION_IDS = "epharmacy_prescription_ids"
 
 const val STATIC_INFO_COMPONENT = "static info component"
@@ -52,3 +54,8 @@ const val ENABLER_NAME = "enabler_name"
 const val EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL = "https://images.tokopedia.net/img/green-waves.png"
 const val EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL = "https://images.tokopedia.net/img/miniconsul-toped-illustration.png"
 const val EPHARMACY_PDP_INFO_DATA_TYPE = "obat_keras_info"
+
+const val ENABLER_IMAGE_URL = "enabler_image_url"
+
+const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
+const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"

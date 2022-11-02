@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
@@ -207,12 +208,61 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         ePharmacyAdapter.submitList(visitableList)
     }
 
-    override fun onInteractAccordion(adapterPosition: Int, isExpanded: Boolean, modelKey: String) {
+    override fun onInteractAccordion(adapterPosition: Int, isExpanded: Boolean, modelKey: String?) {
         super.onInteractAccordion(adapterPosition, isExpanded, modelKey)
-        val copy = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel).copy()
-        copy.productsIsExpanded = !isExpanded
-        ePharmacyAttachmentUiUpdater.updateModel(copy)
+        val updated = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel).copy()
+        updated.productsIsExpanded = !isExpanded
+        ePharmacyAttachmentUiUpdater.updateModel(updated)
         updateUi()
+    }
+
+    override fun onCTACClick(adapterPosition: Int, modelKey: String?) {
+        super.onCTACClick(adapterPosition, modelKey)
+        val model = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel)
+        redirectAttachmentCTA(model.partnerLogo, model.tokoConsultationId,model.prescriptionSource, model.uploadWidgetAppLink)
+    }
+
+    private fun redirectAttachmentCTA(enablerImage : String?, tokoConsultationId : String?,prescriptionSource: List<String?>?, miniConsultationWebLink : String?) {
+        prescriptionSource?.let {
+            if(it.size > 1){
+                startAttachmentChooser(enablerImage,tokoConsultationId)
+            }else {
+                it.firstOrNull()?.let { source ->
+                    when(source){
+                        PRESCRIPTION_SOURCE_TYPE.MINI_CONSULT.type ->{
+                            startMiniConsultation(miniConsultationWebLink)
+                        }
+
+                        PRESCRIPTION_SOURCE_TYPE.UPLOAD.type ->{
+                            startPhotoUpload(tokoConsultationId)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun startAttachmentChooser(enablerImage : String?, tokoConsultationId : String?) {
+        RouteManager.getIntent(activity,EPHARMACY_CHOOSER_APPLINK).apply {
+            putExtra(ENABLER_IMAGE_URL,enablerImage)
+            putExtra(EXTRA_CHECKOUT_ID_STRING,tokoConsultationId)
+        }.also {
+            startActivityForResult(it,EPHARMACY_CHOOSER_REQUEST_CODE)
+        }
+    }
+
+    private fun startPhotoUpload(tokoConsultationId : String?) {
+        RouteManager.getIntent(activity,EPHARMACY_APPLINK).apply {
+            putExtra(EXTRA_CHECKOUT_ID_STRING,tokoConsultationId)
+        }.also {
+            startActivityForResult(it,EPHARMACY_REQUEST_CODE)
+        }
+    }
+
+    private fun startMiniConsultation(miniConsultationLink : String?) {
+        miniConsultationLink?.let { webLink ->
+            RouteManager.route(activity,webLink)
+        }
     }
 
     override fun getScreenName() = EPHARMACY_SCREEN_NAME

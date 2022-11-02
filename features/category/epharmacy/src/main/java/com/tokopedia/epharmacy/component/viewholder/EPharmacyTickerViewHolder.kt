@@ -1,5 +1,7 @@
 package com.tokopedia.epharmacy.component.viewholder
 
+import android.os.Build
+import android.text.Html
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.epharmacy.R
@@ -15,8 +17,14 @@ class EPharmacyTickerViewHolder(
         val LAYOUT = R.layout.epharmacy_ticker_view_item
     }
 
-    override fun bind(element: EPharmacyTickerDataModel) {
-        view.findViewById<ImageUnify>(R.id.ticker_icon).loadImage(element.tickerLogo)
-        view.findViewById<Typography>(R.id.ticker_text).text = element.tickerText
+    override fun bind(data: EPharmacyTickerDataModel) {
+        view.findViewById<ImageUnify>(R.id.ticker_icon).loadImage(data.tickerLogo)
+        view.findViewById<Typography>(R.id.ticker_text).run {
+            text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(data.tickerText, Html.FROM_HTML_MODE_LEGACY)
+            } else {
+                Html.fromHtml(data.tickerText)
+            }
+        }
     }
 }
