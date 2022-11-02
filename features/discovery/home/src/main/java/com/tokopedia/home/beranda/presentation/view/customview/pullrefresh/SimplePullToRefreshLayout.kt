@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
@@ -41,6 +42,7 @@ open class SimplePullToRefreshLayout @JvmOverloads constructor(context: Context,
     }
 
     init {
+        Log.d("dhabalog", "init" )
         context.theme.obtainStyledAttributes(attrs, R.styleable.SimplePullToRefreshLayout, defStyle, 0).let {
             val defaultValue = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -1f, context.resources.displayMetrics).toInt()
 
@@ -74,10 +76,12 @@ open class SimplePullToRefreshLayout @JvmOverloads constructor(context: Context,
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         fun measureChild(childView: ChildView, widthMeasureSpec: Int, heightMeasureSpec: Int) {
+            Log.d("dhabalog", "measureChild" )
             measureChildWithMargins(childView.view, widthMeasureSpec, 0, heightMeasureSpec, 0)
         }
 
         fun setInitialValues() {
+            Log.d("dhabalog", "setInitialValues" )
             val topView = topChildView.view
             val layoutParams = topView.layoutParams as LayoutParams
             val topViewHeight = topView.measuredHeight + layoutParams.topMargin + layoutParams.bottomMargin
@@ -95,6 +99,7 @@ open class SimplePullToRefreshLayout @JvmOverloads constructor(context: Context,
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         fun layoutTopView() {
+            Log.d("dhabalog", "layoutTopView $changed" )
             val topView = topChildView.view
             val topViewAttr = topChildView.positionAttr
 
@@ -109,6 +114,7 @@ open class SimplePullToRefreshLayout @JvmOverloads constructor(context: Context,
         }
 
         fun layoutContentView() {
+            Log.d("dhabalog", "layoutContentView $changed" )
             val contentView = contentChildView.view
 
             val lp = contentView.layoutParams as LayoutParams
@@ -126,12 +132,14 @@ open class SimplePullToRefreshLayout @JvmOverloads constructor(context: Context,
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        fun checkIfScrolledFurther(ev: MotionEvent, dy: Float, dx: Float) =
-                if (!contentChildView.view.canScrollVertically(-1)) {
+        fun checkIfScrolledFurther(ev: MotionEvent, dy: Float, dx: Float) : Boolean {
+            Log.d("dhabalog", "checkIfScrolledFurther $dy $dx ${MotionEvent.ACTION_UP}" )
+            return if (!contentChildView.view.canScrollVertically(-1)) {
                     ev.y > downY && Math.abs(dy) > Math.abs(dx)
                 } else {
                     false
                 }
+        }
 
         var shouldStealTouchEvents = false
 
@@ -155,6 +163,7 @@ open class SimplePullToRefreshLayout @JvmOverloads constructor(context: Context,
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        Log.d("dhabalog", "onTouchEvent " )
         var handledTouchEvent = true
 
         if (currentState != State.IDLE) {
@@ -178,6 +187,7 @@ open class SimplePullToRefreshLayout @JvmOverloads constructor(context: Context,
     }
 
     private fun move() {
+        Log.d("dhabalog", "move" )
         val pullFraction: Float = if (offsetY == 0F) 0F else if (triggerOffSetTop > offsetY) offsetY / triggerOffSetTop else 1F
         offsetY = if (offsetY < 0) 0f else if (offsetY > maxOffSetTop) maxOffSetTop.toFloat() else offsetY
 

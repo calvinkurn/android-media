@@ -104,6 +104,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout
 import com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshListener
+import com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.SimpleSwipeRefreshLayout
 import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
 import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
 import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread

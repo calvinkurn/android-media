@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
@@ -24,8 +25,11 @@ import androidx.core.widget.ListViewCompat
 import com.tokopedia.home.R
 
 @SuppressLint("DrawAllocation")
-open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0)
-    : ViewGroup(context, attrs, defStyle), NestedScrollingParent, NestedScrollingChild {
+open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : ViewGroup(context, attrs, defStyle), NestedScrollingParent, NestedScrollingChild {
 
     private var lottieSwipeRefreshListener: LottieSwipeRefreshListener? = null
     private var canChildScrollUp = false
@@ -92,11 +96,26 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     }
 
     init {
-        context.theme.obtainStyledAttributes(attrs, R.styleable.SimpleSwipeRefreshLayout, defStyle, 0).let {
-            val defaultValue = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_INDICATOR_TARGET, context.resources.displayMetrics).toInt()
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.SimpleSwipeRefreshLayout,
+            defStyle,
+            0
+        ).let {
+            val defaultValue = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                DEFAULT_INDICATOR_TARGET,
+                context.resources.displayMetrics
+            ).toInt()
 
-            triggerOffSetTop = it.getDimensionPixelOffset(R.styleable.SimpleSwipeRefreshLayout_trigger_offset_top_swipe, defaultValue)
-            maxOffSetTop = it.getDimensionPixelOffset(R.styleable.SimpleSwipeRefreshLayout_max_offset_top_swipe, defaultValue * 2)
+            triggerOffSetTop = it.getDimensionPixelOffset(
+                R.styleable.SimpleSwipeRefreshLayout_trigger_offset_top_swipe,
+                defaultValue
+            )
+            maxOffSetTop = it.getDimensionPixelOffset(
+                R.styleable.SimpleSwipeRefreshLayout_max_offset_top_swipe,
+                defaultValue * 2
+            )
 
             if (maxOffSetTop <= triggerOffSetTop)
                 maxOffSetTop = triggerOffSetTop * 2
@@ -129,14 +148,18 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+//        Log.d("dhabalog", "onMeasure")
         fun measureChild(childView: ChildView, widthMeasureSpec: Int, heightMeasureSpec: Int) {
+//            Log.d("dhabalog", "measureChild $childView $widthMeasureSpec $heightMeasureSpec")
             measureChildWithMargins(childView.view, widthMeasureSpec, 0, heightMeasureSpec, 0)
         }
 
         fun setInitialValues() {
+//            Log.d("dhabalog", "setInitialValues")
             val topView = topChildView.view
             val layoutParams = topView.layoutParams as LayoutParams
-            val topViewHeight = topView.measuredHeight + layoutParams.topMargin + layoutParams.bottomMargin
+            val topViewHeight =
+                topView.measuredHeight + layoutParams.topMargin + layoutParams.bottomMargin
             topChildView = topChildView.copy(positionAttr = PositionAttr(height = topViewHeight))
         }
 
@@ -152,6 +175,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     }
 
     private fun layoutTopView() {
+//        Log.d("dhabalog", "layoutTopView")
         val topView = topChildView.view
         val topViewAttr = topChildView.positionAttr
 //        topView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -161,8 +185,15 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
             val left: Int = paddingLeft + lp.leftMargin
             val top: Int = (paddingTop + lp.topMargin) - topViewAttr.height - ELEVATION
             val right: Int = left + topView.measuredWidth
-            val bottom = - ELEVATION
-            topChildView = topChildView.copy(positionAttr = PositionAttr(left = left, top = top, right = right, bottom = bottom))
+            val bottom = -ELEVATION
+            topChildView = topChildView.copy(
+                positionAttr = PositionAttr(
+                    left = left,
+                    top = top,
+                    right = right,
+                    bottom = bottom
+                )
+            )
 //            topView.background = ColorDrawable(resources.getColor(R.color.bg_corner_red))
             topView.layout(left, top, right, bottom)
         } else {
@@ -172,13 +203,21 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
             val right: Int = width / 2 + indicatorWidth / 2
             val bottom = -ELEVATION
 
-            topChildView = topChildView.copy(positionAttr = PositionAttr(left = left, top = top, right = right, bottom = bottom))
+            topChildView = topChildView.copy(
+                positionAttr = PositionAttr(
+                    left = left,
+                    top = top,
+                    right = right,
+                    bottom = bottom
+                )
+            )
             topView.layout(left, top, right, bottom)
         }
 
     }
 
     private fun layoutContentView() {
+//        Log.d("dhabalog", "layoutContentView")
         val contentView = contentChildView.view
 
         val lp = contentView.layoutParams as LayoutParams
@@ -187,16 +226,25 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
         val right: Int = left + contentView.measuredWidth
         val bottom: Int = top + contentView.measuredHeight
 
-        contentChildView = contentChildView.copy(positionAttr = PositionAttr(left = left, top = top, right = right, bottom = bottom))
+        contentChildView = contentChildView.copy(
+            positionAttr = PositionAttr(
+                left = left,
+                top = top,
+                right = right,
+                bottom = bottom
+            )
+        )
         contentView.layout(left, top, right, bottom)
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        Log.d("dhabalog", "onInterceptTouchEvent")
         if (!isEnabled || isRefreshing || currentState == State.ROLLING || mNestedScrollInProgress || canChildScrollUp()) {
             return false
         }
 
         fun checkIfScrolledFurther(ev: MotionEvent, dy: Float, dx: Float) =
+//            Log.d("dhabalog", "checkIfScrolledFurther" )
             if (!contentChildView.view.canScrollVertically(-1)) {
                 ev.y > downY && Math.abs(dy) > Math.abs(dx)
             } else {
@@ -217,6 +265,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
             MotionEvent.ACTION_MOVE -> {
                 val dx = ev.x - downX
                 val dy = ev.y - downY
+                Log.d("dhabalog", "actionMove $dy")
                 shouldStealTouchEvents = checkIfScrolledFurther(ev, dy, dx)
             }
         }
@@ -225,6 +274,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+//        Log.d("dhabalog", "onTouchEvent $event")
         if (!isEnabled || isRefreshing || currentState == State.ROLLING || mNestedScrollInProgress || canChildScrollUp()) {
             return false
         }
@@ -239,6 +289,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
         when (event.action) {
             MotionEvent.ACTION_MOVE -> {
                 offsetY = (event.y - downY) * (1 - STICKY_FACTOR * STICKY_MULTIPLIER)
+                Log.d("dhabalog", "offsetY $offsetY")
                 notify = true
                 move()
             }
@@ -246,6 +297,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
             MotionEvent.ACTION_UP
             -> {
                 currentState = State.ROLLING
+                Log.d("dhabalog", "currentState $currentState")
                 stopRefreshing()
             }
         }
@@ -254,7 +306,8 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     }
 
     open fun startRefreshing() {
-        val triggerOffset: Float = if (offsetY > triggerOffSetTop) offsetY else triggerOffSetTop.toFloat()
+        val triggerOffset: Float =
+            if (offsetY > triggerOffSetTop) offsetY else triggerOffSetTop.toFloat()
 
         ValueAnimator.ofFloat(0F, 1F).apply {
             duration = ROLL_BACK_DURATION
@@ -272,7 +325,8 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     }
 
     private fun move() {
-        val pullFraction: Float = if (offsetY == 0F) 0F else if (triggerOffSetTop > offsetY) offsetY / triggerOffSetTop else 1F
+        val pullFraction: Float =
+            if (offsetY == 0F) 0F else if (triggerOffSetTop > offsetY) offsetY / triggerOffSetTop else 1F
         offsetY = offsetY.coerceIn(0f, maxOffSetTop.toFloat())
 
         onProgressListeners.forEach { it(pullFraction) }
@@ -282,6 +336,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     }
 
     open fun stopRefreshing() {
+        Log.d("dhabalog", "stopRefreshing")
         val rollBackOffset = if (offsetY > triggerOffSetTop) offsetY - triggerOffSetTop else offsetY
         val triggerOffset = if (rollBackOffset != offsetY) triggerOffSetTop else 0
 
@@ -314,8 +369,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
 
         if (offset > 0) {
             lottieSwipeRefreshListener?.changeStatusBarToDark()
-        }
-        else {
+        } else {
             lottieSwipeRefreshListener?.changeStatusBarToLight()
         }
 
@@ -347,7 +401,8 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
 
     override fun checkLayoutParams(p: ViewGroup.LayoutParams?) = null != p && p is LayoutParams
 
-    override fun generateDefaultLayoutParams() = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    override fun generateDefaultLayoutParams() =
+        LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
     override fun generateLayoutParams(attrs: AttributeSet?) = LayoutParams(context, attrs)
 
@@ -369,7 +424,13 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     }
 
     data class ChildView(val view: View, val positionAttr: PositionAttr = PositionAttr())
-    data class PositionAttr(val left: Int = 0, val top: Int = 0, val right: Int = 0, val bottom: Int = 0, val height: Int = 0)
+    data class PositionAttr(
+        val left: Int = 0,
+        val top: Int = 0,
+        val right: Int = 0,
+        val bottom: Int = 0,
+        val height: Int = 0
+    )
     //</editor-fold>
 
     // NestedScrollingParent
@@ -434,8 +495,10 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
         dxUnconsumed: Int, dyUnconsumed: Int
     ) {
         // Dispatch up to the nested parent first
-        dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
-            mParentOffsetInWindow)
+        dispatchNestedScroll(
+            dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
+            mParentOffsetInWindow
+        )
 
         // This is a bit of a hack. Nested scrolling works from the bottom up, and as we are
         // sometimes between two nested scrolling views, we need a way to be able to know when any
@@ -474,16 +537,28 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
         dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int,
         dyUnconsumed: Int, offsetInWindow: IntArray?
     ): Boolean {
-        return mNestedScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed,
-            dxUnconsumed, dyUnconsumed, offsetInWindow)
+        return mNestedScrollingChildHelper.dispatchNestedScroll(
+            dxConsumed, dyConsumed,
+            dxUnconsumed, dyUnconsumed, offsetInWindow
+        )
     }
 
-    override fun dispatchNestedPreScroll(dx: Int, dy: Int, consumed: IntArray?, offsetInWindow: IntArray?): Boolean {
+    override fun dispatchNestedPreScroll(
+        dx: Int,
+        dy: Int,
+        consumed: IntArray?,
+        offsetInWindow: IntArray?
+    ): Boolean {
         return mNestedScrollingChildHelper.dispatchNestedPreScroll(
-            dx, dy, consumed, offsetInWindow)
+            dx, dy, consumed, offsetInWindow
+        )
     }
 
-    override fun dispatchNestedFling(velocityX: Float, velocityY: Float, consumed: Boolean): Boolean {
+    override fun dispatchNestedFling(
+        velocityX: Float,
+        velocityY: Float,
+        consumed: Boolean
+    ): Boolean {
         return mNestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed)
     }
 
