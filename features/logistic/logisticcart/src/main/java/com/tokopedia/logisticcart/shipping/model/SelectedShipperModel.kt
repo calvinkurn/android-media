@@ -26,7 +26,7 @@ data class SelectedShipperModel(
             shipperId = scheduleDelivery.deliveryProduct?.shipperId?.toInt() ?: 0
             shipperProductId = scheduleDelivery.deliveryProduct?.shipperProductId?.toInt() ?: 0
             shipperPrice = scheduleDelivery.deliveryProduct?.finalPrice?.toInt() ?: 0
-            promoCode = scheduleDelivery.deliveryProduct?.promoCode
+            promoCode = scheduleDelivery.deliveryProduct?.promoStacking?.promoCode
             freeShippingMetadata = scheduleDelivery.deliveryProduct?.freeShippingMetadata ?: ""
             etaText = scheduleDelivery.deliveryProduct?.textEta
         }

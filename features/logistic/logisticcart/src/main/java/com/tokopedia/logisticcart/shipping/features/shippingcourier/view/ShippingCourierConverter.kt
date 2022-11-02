@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.ScheduleDeliveryData
 import com.tokopedia.logisticcart.shipping.model.*
 import javax.inject.Inject
 
@@ -113,7 +113,7 @@ class ShippingCourierConverter @Inject constructor() {
         }
 
         /*Schedule Delivery*/
-        shippingRecommendationData?.additionalDeliveryData?.takeIf { it.hidden.not() }?.apply {
+        shippingRecommendationData?.scheduleDeliveryData?.takeIf { it.hidden.not() }?.apply {
             courierItemData.scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel()
         }
 
@@ -140,13 +140,13 @@ class ShippingCourierConverter @Inject constructor() {
         return courierData
     }
 
-    private fun AdditionalDeliveryData.convertToScheduleDeliveryUiModel(
+    private fun ScheduleDeliveryData.convertToScheduleDeliveryUiModel(
         scheduleDate: String? = null,
         timeslotId: Long? = null
     ): ScheduleDeliveryUiModel {
 
         return ScheduleDeliveryUiModel(
-            isSelected = recommendAdditionalShipper,
+            isSelected = recommend,
             available = available,
             hidden = hidden,
             title = title,

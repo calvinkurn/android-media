@@ -513,12 +513,110 @@ internal fun ratesQuery() = """
     }
 """.trimIndent()
 
-internal fun scheduleDeliveryQuery() = """
-    query scheduleDelivery(${"$"}param : ScheduleDeliveryParam!) {
-      scheduleDelivery(input: ${"$"}param) {
-        schedule_delivery_data {
-            rates_validation
-            additional_delivery_data
+internal fun scheduleDeliveryRatesQuery() = """
+    query getScheduledDeliveryRates(${"$"}param : ScheduleDeliveryParam!) {
+      getScheduledDeliveryRates(input: ${"$"}param) {
+        data {
+            rates_id
+            available
+            hidden
+            recommend
+            delivery_type
+            text
+            notice {
+                title
+                text
+            }
+            ticker {
+                title
+                text
+            }
+            labels
+            error {
+                error_id
+                error_message
+            }
+            delivery_services {
+                title
+                title_label
+                id
+                available
+                hidden
+                error
+                error_id
+                error_message
+            }
+            delivery_products {
+                title
+                text
+                text_eta
+                promo_text
+                timeslot_id
+                available
+                hidden
+                recommend
+                service_id
+                service_name
+                shipper_id
+                shipper_name
+                shipper_product_id
+                shipper_product_name
+                final_price
+                real_price
+                text_final_price
+                text_real_price
+                checksum
+                insurance {
+                    insurance_price
+                    insurance_type
+                    insurance_type_info
+                    insurance_used_type
+                    insurance_used_info
+                    insurance_used_default
+                    insurance_actual_price
+                    insurance_pay_type
+                  }
+                cod {
+                    is_cod_available
+                    cod_text
+                    cod_price
+                    formatted_price
+                    tnc_text
+                    tnc_link
+                }
+                features {
+                    ontime_delivery_guarantee {
+                        available
+                        value
+                        text_label
+                        text_detail
+                        url_detail
+                        url_text
+                        icon_url
+                        bom {
+                           title
+                           notes
+                           url_detail
+                           url_text
+                        }
+                    }
+                }
+                shipping_metadata {
+                    sla_delivery {
+                        etd
+                    }
+                }
+                ut
+                promo_stacking {
+                    promo_code
+                    promo_chargeable
+                    benefit_class
+                    is_bebas_ongkir_extra
+                    shipping_subsidy
+                }
+                validation_metadata
+               }
+            ]
         }
       }
     }

@@ -12,12 +12,12 @@ class DeliveryService(
     val titleLabel: String = "",
     @SerializedName("id")
     val id: String = "",
-    @SerializedName("shipper_id")
-    val shipperId: Long = 0L,
     @SerializedName("available")
     val available: Boolean = false,
     @SerializedName("hidden")
     val hidden: Boolean = false,
+    @SerializedName("error")
+    val error: Error = Error(),
     @SerializedName("delivery_products")
     val deliveryProducts: List<DeliveryProduct> = arrayListOf(),
 ) : Parcelable

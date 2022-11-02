@@ -2,7 +2,7 @@ package com.tokopedia.logisticcart.scheduledelivery.usecase
 
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
-import com.tokopedia.logisticcart.scheduledelivery.model.ScheduleDeliveryParam
+import com.tokopedia.logisticcart.scheduledelivery.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -12,12 +12,13 @@ import javax.inject.Inject
 class GetRatesWithScheduleUseCase @Inject constructor(
     private val getRatesUseCase: GetRatesUseCase,
     private val getScheduleDeliveryUseCase: GetScheduleDeliveryUseCase,
-    private val scheduler: SchedulerProvider
+    private val scheduler: SchedulerProvider,
+    private val mapper: ScheduleDeliveryMapper,
 ) {
 
     private var gql: GraphqlUseCase? = null
 
-    fun execute(ratesParam: RatesParam, scheduleDeliveryParam: ScheduleDeliveryParam): Observable<ShippingRecommendationData> {
+    fun execute(ratesParam: RatesParam, warehouseId: String): Observable<ShippingRecommendationData> {
         return Observable.just(ShippingRecommendationData())
             .flatMap { shippingRecommendationData ->
                 getRatesUseCase.execute(ratesParam)
@@ -32,9 +33,9 @@ class GetRatesWithScheduleUseCase @Inject constructor(
                     }
             }
             .flatMap { shippingRecommendationData ->
-                getScheduleDeliveryUseCase.execute(scheduleDeliveryParam)
+                getScheduleDeliveryUseCase.execute(mapper.map(ratesParam, warehouseId))
                     .map {
-                        shippingRecommendationData.additionalDeliveryData = it.scheduleDeliveryData.additionalDeliveryData
+                        shippingRecommendationData.scheduleDeliveryData = it.scheduleDeliveryData
                         shippingRecommendationData
                     }
             }
