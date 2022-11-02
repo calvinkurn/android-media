@@ -282,7 +282,6 @@ class OfficialHomeContainerFragment
                                         category.title,
                                         category.categoryId,
                                         index,
-                                        category.icon,
                                         userSession.userId
                                 )
                             }
@@ -330,7 +329,6 @@ class OfficialHomeContainerFragment
                     category.title,
                     category.categoryId,
                     index,
-                    category.icon,
                     userSession.userId
             ) }
         }

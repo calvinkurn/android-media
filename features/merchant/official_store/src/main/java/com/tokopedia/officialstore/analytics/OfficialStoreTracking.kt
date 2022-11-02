@@ -149,30 +149,26 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         categorySelected: com.tokopedia.officialstore.category.data.model.Category,
         userId: String
     ) {
-        val data = DataLayer.mapOf(
-            Event.KEY, PROMO_CLICK,
-            Category.KEY, "$OS_MICROSITE${categorySelected.title}",
-            Action.KEY, CLICK_BANNER.format(VALUE_CATEGORY_ICON),
-            Label.KEY, FORMAT_DASH_TWO_VALUES.format(VALUE_CATEGORY_ICON, categorySelected.title),
-            Ecommerce.KEY, DataLayer.mapOf(
-                PROMO_CLICK, DataLayer.mapOf(
-                    Promotion.KEY ,DataLayer.listOf(
-                        DataLayer.mapOf(
-                            "id", categorySelected.categoryId,
-                            "name", FORMAT_ITEM_NAME.format(categorySelected.title, VALUE_CATEGORY_NAVIGATION),
-                            "position", categoryPosition,
-                            "creative", categorySelected.title,
-                            "creative_url", categorySelected.icon,
-                            "promo_id", null,
-                            "promo_code", null
-                        )
-                    )
-                )
-            ),
-            TrackerId.KEY, VALUE_TRACKER_ID_CLICK_CATEGORY,
-            UserId.KEY, userId
-        )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
+        val bundle = Bundle().apply {
+            putString(Event.KEY, SELECT_CONTENT)
+            putString(Category.KEY, OS_MICROSITE_SINGLE)
+            putString(Action.KEY, CLICK_BANNER.format(VALUE_CATEGORY_ICON))
+            putString(Label.KEY, FORMAT_DASH_TWO_VALUES.format(VALUE_CATEGORY_ICON, categorySelected.title))
+            putString(UserId.KEY, userId)
+            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+            val promotions = arrayListOf(
+                Bundle().apply {
+                    putString(Promotion.CREATIVE_NAME, categorySelected.title)
+                    putString(Promotion.CREATIVE_SLOT, (categoryPosition+1).toString())
+                    putString(Promotion.ITEM_ID, categorySelected.categoryId)
+                    putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME.format(categorySelected.title, VALUE_CATEGORY_NAVIGATION))
+                }
+            )
+            putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_BANNER)
+            putParcelableArrayList(Promotion.KEY, promotions)
+        }
+        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
     }
 
     // Row 2
@@ -180,25 +176,21 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         categoryName: String,
         categoryId: String,
         categoryPosition: Int,
-        imageUrl: String,
         userId: String
     ) {
         val data = DataLayer.mapOf(
             Event.KEY, PROMO_VIEW,
-            Category.KEY, "$OS_MICROSITE$categoryName",
+            Category.KEY, OS_MICROSITE_SINGLE,
             Action.KEY, IMPRESSION_BANNER.format(VALUE_CATEGORY_ICON),
             Label.KEY, FORMAT_DASH_TWO_VALUES.format(VALUE_CATEGORY_ICON, categoryName),
             Ecommerce.KEY, DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
                     Promotion.KEY,DataLayer.listOf(
                         DataLayer.mapOf(
-                            "id", categoryId,
-                            "name", FORMAT_ITEM_NAME.format(categoryName, VALUE_CATEGORY_NAVIGATION),
-                            "position", categoryPosition,
-                            "creative", categoryName,
-                            "creative_url", imageUrl,
-                            "promo_id", null,
-                            "promo_code", null
+                            Promotion.ITEM_ID, categoryId,
+                            Promotion.ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_CATEGORY_NAVIGATION),
+                            Promotion.CREATIVE_SLOT, (categoryPosition+1).toString(),
+                            Promotion.CREATIVE_NAME, categoryName,
                         )
                     )
                 )
@@ -245,7 +237,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 eventLabel = FORMAT_DASH_THREE_VALUES.format(VALUE_SLIDER_BANNER, bannerItem.bannerId, categoryName),
                 promotions = listOf(Promotion(
                     creative = bannerItem.title,
-                    position = bannerPosition.toString(),
+                    position = (bannerPosition+1).toString(),
                     name = FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER),
                     id = bannerItem.bannerId,
                     creativeUrl = bannerItem.applink
