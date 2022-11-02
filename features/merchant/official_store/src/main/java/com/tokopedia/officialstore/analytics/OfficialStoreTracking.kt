@@ -100,7 +100,6 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         private const val VALUE_PRODUCT_IMPRESSION = "$IMPRESSION product"
         private const val VALUE_PRODUCT_CLICK = "$CLICK product"
 
-        private const val KEY_TRACKER_ID = "trackerId"
         private const val VALUE_TRACKER_ID_CLICK_CATEGORY = "4660"
         private const val VALUE_TRACKER_ID_IMPRESSION_CATEGORY = "4694"
         private const val VALUE_TRACKER_ID_CLICK_BANNER = "4695"
@@ -114,6 +113,12 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         private const val VALUE_TRACKER_ID_IMPRESSION_FLASH_SALE = "4703"
         private const val VALUE_TRACKER_ID_CLICK_LEGO = "4704"
         private const val VALUE_TRACKER_ID_IMPRESSION_LEGO = "4706"
+        private const val VALUE_TRACKER_ID_IMPRESSION_MIX_TOP_PRODUCT = "4713"
+        private const val VALUE_TRACKER_ID_CLICK_MIX_TOP_PRODUCT = "4714"
+        private const val VALUE_TRACKER_ID_CLICK_MIX_TOP_VIEW_ALL = "4715"
+        private const val VALUE_TRACKER_ID_CLICK_MIX_TOP_CTA = "4716"
+        private const val VALUE_TRACKER_ID_IMPRESSION_MIX_LEFT_PRODUCT = "4717"
+        private const val VALUE_TRACKER_ID_CLICK_MIX_LEFT_PRODUCT = "4718"
 
         private const val VALUE_CATEGORY_ICON = "category icon"
         private const val VALUE_CATEGORY_NAVIGATION = "category navigation"
@@ -159,7 +164,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                     )
                 )
             ),
-            KEY_TRACKER_ID, VALUE_TRACKER_ID_CLICK_CATEGORY,
+            TrackerId.KEY, VALUE_TRACKER_ID_CLICK_CATEGORY,
             UserId.KEY, userId
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
@@ -193,7 +198,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                     )
                 )
             ),
-            KEY_TRACKER_ID, VALUE_TRACKER_ID_IMPRESSION_CATEGORY,
+            TrackerId.KEY, VALUE_TRACKER_ID_IMPRESSION_CATEGORY,
             UserId.KEY, userId
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
@@ -218,7 +223,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                     putString(Items.ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER))
                 }
             )
-            putString(KEY_TRACKER_ID, VALUE_TRACKER_ID_CLICK_BANNER)
+            putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_BANNER)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
         getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
@@ -244,7 +249,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 .appendUserId(userId)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendCustomKeyValue(KEY_TRACKER_ID, VALUE_TRACKER_ID_IMPRESSION_BANNER)
+                .appendCustomKeyValue(TrackerId.KEY, VALUE_TRACKER_ID_IMPRESSION_BANNER)
         }.build() as HashMap<String, Any>
         trackingQueue.putEETracking(trackerBuilder)
     }
@@ -259,7 +264,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         ).apply {
             appendBusinessUnit(BusinessUnit.DEFAULT)
             appendCurrentSite(CurrentSite.DEFAULT)
-            appendCustomKeyValue(KEY_TRACKER_ID, VALUE_TRACKER_ID_VIEW_ALL_BANNER)
+            appendCustomKeyValue(TrackerId.KEY, VALUE_TRACKER_ID_VIEW_ALL_BANNER)
         }.build()
         getTracker().sendGeneralEvent(trackingBuilder)
     }
@@ -284,7 +289,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         ).apply {
             appendBusinessUnit(BusinessUnit.DEFAULT)
             appendCurrentSite(CurrentSite.DEFAULT)
-            appendCustomKeyValue(KEY_TRACKER_ID, VALUE_TRACKER_ID_VIEW_ALL_FEATURED_BRAND)
+            appendCustomKeyValue(TrackerId.KEY, VALUE_TRACKER_ID_VIEW_ALL_FEATURED_BRAND)
         }.build()
         getTracker().sendGeneralEvent(trackingBuilder)
     }
@@ -333,7 +338,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
-            KEY_TRACKER_ID, VALUE_TRACKER_ID_CLICK_FEATURED_BRAND
+            TrackerId.KEY, VALUE_TRACKER_ID_CLICK_FEATURED_BRAND
         )
         getTracker().sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
@@ -380,7 +385,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             ),
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
-            KEY_TRACKER_ID, VALUE_TRACKER_ID_IMPRESSION_FEATURED_BRAND
+            TrackerId.KEY, VALUE_TRACKER_ID_IMPRESSION_FEATURED_BRAND
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
@@ -399,7 +404,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         ).apply {
             appendBusinessUnit(BusinessUnit.DEFAULT)
             appendCurrentSite(CurrentSite.DEFAULT)
-            appendCustomKeyValue(KEY_TRACKER_ID, VALUE_TRACKER_ID_VIEW_ALL_FLASH_SALE)
+            appendCustomKeyValue(TrackerId.KEY, VALUE_TRACKER_ID_VIEW_ALL_FLASH_SALE)
         }.build()
         getTracker().sendGeneralEvent(trackingBuilder)
     }
@@ -437,7 +442,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_FLASH_SALE, channelId, headerName, categoryName),
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
-            KEY_TRACKER_ID, VALUE_TRACKER_ID_CLICK_PDP_FLASH_SALE,
+            TrackerId.KEY, VALUE_TRACKER_ID_CLICK_PDP_FLASH_SALE,
             Ecommerce.KEY, ecommerceBody,
             UserId.KEY, userId
         ))
@@ -472,7 +477,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)
-            .appendCustomKeyValue(KEY_TRACKER_ID, VALUE_TRACKER_ID_IMPRESSION_FLASH_SALE)
+            .appendCustomKeyValue(TrackerId.KEY, VALUE_TRACKER_ID_IMPRESSION_FLASH_SALE)
         trackingQueue.putEETracking(trackerBuilder.build() as HashMap<String, Any>)
     }
 
@@ -498,7 +503,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL, channelModel.id, headerName, categoryName),
             Ecommerce.KEY, ecommerceBody,
             UserId.KEY, userId,
-            KEY_TRACKER_ID, VALUE_TRACKER_ID_CLICK_LEGO
+            TrackerId.KEY, VALUE_TRACKER_ID_CLICK_LEGO
         ))
     }
 
@@ -527,7 +532,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 )
             ),
             UserId.KEY, userId,
-            KEY_TRACKER_ID, VALUE_TRACKER_ID_IMPRESSION_LEGO
+            TrackerId.KEY, VALUE_TRACKER_ID_IMPRESSION_LEGO
         ) as HashMap<String, Any>)
     }
 
@@ -542,6 +547,11 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         val valueDynamicMix = when (channel.layout) {
             DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            else -> ""
+        }
+        val trackerId = when (channel.layout) {
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_TRACKER_ID_IMPRESSION_MIX_TOP_PRODUCT
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_TRACKER_ID_IMPRESSION_MIX_LEFT_PRODUCT
             else -> ""
         }
         val eventAction = IMPRESSION_PRODUCT.format(valueDynamicMix)
@@ -563,7 +573,8 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                     )
                 )
             ),
-            UserId.KEY, userId
+            UserId.KEY, userId,
+            TrackerId.KEY, trackerId
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
@@ -579,6 +590,11 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         val valueDynamicMix = when (channel.layout) {
             DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
             DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            else -> ""
+        }
+        val trackerId = when (channel.layout) {
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_TRACKER_ID_CLICK_MIX_TOP_PRODUCT
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_TRACKER_ID_CLICK_MIX_LEFT_PRODUCT
             else -> ""
         }
         val eventAction = CLICK_PRODUCT.format(valueDynamicMix)
@@ -601,7 +617,8 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                     )
                 )
             ),
-            UserId.KEY, userId
+            UserId.KEY, userId,
+            TrackerId.KEY, trackerId
         )
         getTracker().sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
