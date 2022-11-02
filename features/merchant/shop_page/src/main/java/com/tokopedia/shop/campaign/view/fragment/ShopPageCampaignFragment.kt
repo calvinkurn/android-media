@@ -168,7 +168,8 @@ class ShopPageCampaignFragment :
                     isOwner,
                     isLogin,
                     isThematicWidgetShown,
-                    isEnableDirectPurchase
+                    isEnableDirectPurchase,
+                    shopId
                 )
             shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
         }
@@ -282,7 +283,7 @@ class ShopPageCampaignFragment :
             VALUE_MULTIPLE_BUNDLING,
             selectedMultipleBundle.bundleId
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun onSingleBundleProductClicked(
@@ -309,7 +310,7 @@ class ShopPageCampaignFragment :
             VALUE_SINGLE_BUNDLING,
             selectedSingleBundle.bundleId
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun impressionProductItemBundleMultiple(
@@ -383,7 +384,7 @@ class ShopPageCampaignFragment :
             widgetModel.header.title,
             ShopUtil.getActualPositionFromIndex(position)
         )
-        goToPDP(model.id ?: "")
+        goToPDP(model.productUrl)
     }
 
     override fun onFlashSaleProductImpression(
@@ -430,7 +431,7 @@ class ShopPageCampaignFragment :
             )
         }
         shopHomeProductViewModel?.let {
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 

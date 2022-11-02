@@ -1,17 +1,18 @@
 package com.tokopedia.review.feature.reading.presentation.adapter.viewholder
 
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReviewResponse
@@ -26,6 +27,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.Re
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoThreeDotsListener
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewViewHolder(
@@ -38,9 +40,8 @@ class ReadReviewViewHolder(
 
     companion object {
         val LAYOUT = com.tokopedia.review.R.layout.item_read_review
-        private const val MAX_CHAR = 140
-        private const val ALLOW_CLICK = true
-        private const val MAX_LINES_REVIEW = 3
+        private const val MAX_LINES_REVIEW_COLLAPSED = 3
+        private const val MAX_LINES_REVIEW_EXPANDED = Int.MAX_VALUE
         private const val EMPTY_REVIEW_LIKE = 0
     }
 
@@ -54,6 +55,7 @@ class ReadReviewViewHolder(
     private var likeImage: IconUnify? = null
     private var likeCount: Typography? = null
     private var reviewMessage: Typography? = null
+    private var tvReviewMessageSeeMore: Typography? = null
     private var attachedMedia: ReviewMediaThumbnail? = null
     private var showResponseText: Typography? = null
     private var showResponseChevron: IconUnify? = null
@@ -62,6 +64,8 @@ class ReadReviewViewHolder(
     private var reviewId = ""
     private var shopId = ""
     private var badRatingReason: ReviewBadRatingReasonWidget? = null
+
+    private val reviewMessageEllipsizeChecker = ReviewMessageEllipsizeChecker()
 
     init {
         bindViews()
@@ -131,6 +135,7 @@ class ReadReviewViewHolder(
         with(itemView) {
             productInfo = findViewById(R.id.read_review_product_info)
             reviewMessage = findViewById(R.id.read_review_item_review)
+            tvReviewMessageSeeMore = findViewById(R.id.read_review_item_review_see_more)
             attachedMedia = findViewById(R.id.read_review_attached_media)
             likeImage = findViewById(R.id.read_review_like_button)
             likeCount = findViewById(R.id.read_review_like_count)
@@ -138,6 +143,40 @@ class ReadReviewViewHolder(
             showResponseChevron = findViewById(R.id.read_review_show_response_chevron)
             sellerResponse = findViewById(R.id.read_review_seller_response)
             badRatingReason = findViewById(R.id.read_review_bad_rating_reason)
+        }
+    }
+
+    private fun setupReviewMessageSeeMore(message: String, feedbackId: String, productId: String, expanded: Boolean) {
+        setupReviewMessageSeeMoreText(expanded)
+        setupReviewMessageSeeMoreListener(message, feedbackId, productId, expanded)
+        reviewMessage?.viewTreeObserver?.addOnPreDrawListener(reviewMessageEllipsizeChecker)
+    }
+
+    private fun setupReviewMessageSeeMoreText(expanded: Boolean) {
+        tvReviewMessageSeeMore?.text = HtmlLinkHelper(
+            itemView.context,
+            if (expanded) {
+                getString(R.string.review_reading_collapse)
+            } else {
+                getString(R.string.review_expand)
+            }
+        ).spannedString
+    }
+
+    private fun setupReviewMessageSeeMoreListener(
+        message: String,
+        feedbackId: String,
+        productId: String,
+        expanded: Boolean
+    ) {
+        tvReviewMessageSeeMore?.apply {
+            setOnClickListener {
+                if (expanded) {
+                    onCollapseReviewTextClicked(message, feedbackId, productId)
+                } else {
+                    onExpandReviewTextClicked(message, feedbackId, productId)
+                }
+            }
         }
     }
 
@@ -196,47 +235,24 @@ class ReadReviewViewHolder(
     }
 
     private fun setReview(message: String, feedbackId: String, productId: String) {
+        setupReviewMessageSeeMore(message, feedbackId, productId, false)
         if (message.isEmpty()) {
-            reviewMessage?.apply {
-                text = getString(R.string.review_reading_empty_review)
-                isEnabled = false
-            }
+            setReviewText(
+                message = getString(R.string.review_reading_empty_review),
+                maxLines = MAX_LINES_REVIEW_COLLAPSED,
+                enable = false
+            )
             return
         }
-        setExpandableReview(message, feedbackId, productId)
+        setReviewText(message = message, maxLines = MAX_LINES_REVIEW_COLLAPSED, enable = true)
     }
 
-    private fun setExpandableReview(message: String, feedbackId: String, productId: String) {
+    private fun setReviewText(message: String, maxLines: Int, enable: Boolean) {
         reviewMessage?.apply {
-            isEnabled = true
-            val formattingResult = ReviewUtil.formatReviewExpand(itemView.context, message, MAX_CHAR, ALLOW_CLICK)
-            maxLines = MAX_LINES_REVIEW
-            text = formattingResult.first
-            if (formattingResult.second) {
-                setOnClickListener {
-                    if(isProductReview) {
-                        ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
-                    } else {
-                        ReadReviewTracking.trackOnShopReviewSeeFullReviewClicked(feedbackId, shopId)
-                    }
-                    setCollapsableReview(message, feedbackId, productId)
-                }
-            } else {
-                setOnClickListener {  }
-            }
-            typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
+            isEnabled = enable
+            this.maxLines = maxLines
+            text = HtmlLinkHelper(context, message).spannedString ?: ""
             show()
-        }
-    }
-
-    private fun setCollapsableReview(message: String, feedbackId: String, productId: String) {
-        reviewMessage?.apply {
-            text = ReviewUtil.formatReviewCollapse(context, message)
-            maxLines = Integer.MAX_VALUE
-            setOnClickListener {
-                setExpandableReview(message, feedbackId, productId)
-            }
-            typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
         }
     }
 
@@ -370,6 +386,52 @@ class ReadReviewViewHolder(
                 val greyColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                 likeImage?.setImage(IconUnify.THUMB, greyColor)
             }
+        }
+    }
+
+    private fun onCollapseReviewTextClicked(
+        message: String,
+        feedbackId: String,
+        productId: String
+    ) {
+        setupReviewMessageSeeMore(message, feedbackId, productId, false)
+        setReviewText(
+            message = message,
+            maxLines = MAX_LINES_REVIEW_COLLAPSED,
+            enable = true
+        )
+    }
+
+    private fun onExpandReviewTextClicked(
+        message: String,
+        feedbackId: String,
+        productId: String
+    ) {
+        if (isProductReview) {
+            ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
+        } else {
+            ReadReviewTracking.trackOnShopReviewSeeFullReviewClicked(feedbackId, shopId)
+        }
+        setupReviewMessageSeeMore(message, feedbackId, productId, true)
+        setReviewText(
+            message = message,
+            maxLines = MAX_LINES_REVIEW_EXPANDED,
+            enable = true
+        )
+    }
+
+    private inner class ReviewMessageEllipsizeChecker: ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+            reviewMessage?.layout?.run {
+                val lines = lineCount
+                val ellipsisCount = getEllipsisCount(lines.dec())
+                val isEllipsized = ellipsisCount.isMoreThanZero()
+                val isCollapsed = reviewMessage?.maxLines == MAX_LINES_REVIEW_COLLAPSED
+                val isEllipsizedWhenCollapsed = isEllipsized && isCollapsed
+                tvReviewMessageSeeMore?.showWithCondition(isEllipsizedWhenCollapsed || !isCollapsed)
+            }
+            reviewMessage?.viewTreeObserver?.removeOnPreDrawListener(this)
+            return true
         }
     }
 }

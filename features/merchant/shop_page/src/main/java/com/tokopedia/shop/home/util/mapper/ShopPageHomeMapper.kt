@@ -44,7 +44,6 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
@@ -84,7 +83,7 @@ object ShopPageHomeMapper {
                 it.isPo = flags.isPreorder
                 it.isFreeReturn = flags.isFreereturn
                 it.isWishList = flags.isWishlist
-                it.productUrl = productUrl
+                it.productUrl = appLink
                 it.isSoldOut = flags.isSold
                 it.isShowWishList = !isMyOwnProduct
                 it.isShowFreeOngkir = freeOngkir.isActive
@@ -392,7 +391,8 @@ object ShopPageHomeMapper {
             isMyOwnProduct: Boolean,
             isLoggedIn: Boolean,
             isThematicWidgetShown: Boolean,
-            isEnableDirectPurchase: Boolean
+            isEnableDirectPurchase: Boolean,
+            shopId: String
     ): Visitable<*>? {
         if (widgetResponse.name == VOUCHER_STATIC) {
             return mapToVoucherUiModel(widgetResponse)
@@ -437,7 +437,7 @@ object ShopPageHomeMapper {
             )
             SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse)
             CARD.lowercase() -> mapToCardDonationUiModel(widgetResponse)
-            BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse)
+            BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse, shopId)
             else -> {
                 null
             }
@@ -488,19 +488,21 @@ object ShopPageHomeMapper {
     }
 
     private fun mapToProductBundleListUiModel(
-            widgetResponse: ShopLayoutWidget.Widget
+        widgetResponse: ShopLayoutWidget.Widget,
+        shopId: String
     ) = ShopHomeProductBundleListUiModel(
             widgetId = widgetResponse.widgetID,
             layoutOrder = widgetResponse.layoutOrder,
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = mapToHeaderModel(widgetResponse.header),
-            productBundleList = mapToProductBundleListItemUiModel(widgetResponse.data, widgetResponse.name)
+            productBundleList = mapToProductBundleListItemUiModel(widgetResponse.data, widgetResponse.name, shopId)
     )
 
     private fun mapToProductBundleListItemUiModel(
-            widgetData: List<ShopLayoutWidget.Widget.Data>,
-            widgetName: String,
+        widgetData: List<ShopLayoutWidget.Widget.Data>,
+        widgetName: String,
+        shopId: String,
     ): List<ShopHomeProductBundleItemUiModel> {
         return widgetData.map {
             ShopHomeProductBundleItemUiModel().apply {
@@ -530,6 +532,7 @@ object ShopPageHomeMapper {
                         productAppLink = bundleProduct.productAppLink
                     }
                 }
+                this.shopId = shopId
             }
         }
     }
@@ -805,6 +808,7 @@ object ShopPageHomeMapper {
     private fun mapToHeaderModel(header: ShopLayoutWidget.Widget.Header): BaseShopHomeWidgetUiModel.Header {
         return BaseShopHomeWidgetUiModel.Header(
             header.title,
+            header.subtitle,
             header.ctaText,
             header.ctaLink,
             header.cover,
@@ -944,11 +948,12 @@ object ShopPageHomeMapper {
             myShop: Boolean,
             isLoggedIn: Boolean,
             isThematicWidgetShown: Boolean,
-            isEnableDirectPurchase: Boolean
+            isEnableDirectPurchase: Boolean,
+            shopId: String
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true)}.onEach {
-                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase)) {
+                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase, shopId)) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetUiModel.let { model ->
                             model.widgetMasterId = it.widgetMasterID
@@ -986,7 +991,8 @@ object ShopPageHomeMapper {
             myShop: Boolean,
             isLoggedIn: Boolean,
             isThematicWidgetShown: Boolean,
-            isEnableDirectPurchase: Boolean
+            isEnableDirectPurchase: Boolean,
+            shopId: String
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             listWidgetLayout.onEach {
@@ -995,7 +1001,7 @@ object ShopPageHomeMapper {
                                 widgetID = it.widgetId,
                                 type = it.widgetType,
                                 name = it.widgetName,
-                        ), myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase
+                        ), myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase, shopId
                 )?.let{ resModel ->
                     when (resModel) {
                         is BaseShopHomeWidgetUiModel -> {

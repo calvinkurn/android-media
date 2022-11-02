@@ -6,6 +6,7 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -18,7 +19,6 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -33,18 +33,19 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val doFavoriteShopUseCase by memoized<ToggleFavouriteShopUseCase>()
     val followKolPostGqlUseCase by memoized<FollowKolPostGqlUseCase>()
     val likeKolPostUseCase by memoized<LikeKolPostUseCase>()
-    val atcUseCase by memoized<AddToCartUseCase>()
+    val atcUseCase by memoized<com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase>()
     val trackAffiliateClickUseCase by memoized<TrackAffiliateClickUseCase>()
     val deletePostUseCase by memoized<DeletePostUseCase>()
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
     val playWidgetTools by memoized<PlayWidgetTools>()
     val getDynamicFeedNewUseCase by memoized<GetDynamicFeedNewUseCase>()
-    val getWhitelistNewUseCase by memoized<GetWhitelistNewUseCase>()
-    val addWishListUseCase by memoized<AddWishListUseCase>()
+    val getWhitelistNewUseCase by memoized<GetWhiteListNewUseCase>()
     val addToWishlistV2UseCase by memoized<AddToWishlistV2UseCase>()
     val sendReportUseCase by memoized<SendReportUseCase>()
     val feedBroadcastTrackerUseCase by memoized<FeedBroadcastTrackerUseCase>()
     val feedXTrackViewerUseCase by memoized<FeedXTrackViewerUseCase>()
+    val feedXCheckUpcomingCapaignReminderUseCase by memoized<CheckUpcomingCampaignReminderUseCase>()
+    val feedXPostUpcomingCampaignReminderUseCase by memoized<PostUpcomingCampaignReminderUseCase>()
 
     return FeedViewModel(
         CoroutineTestDispatchersProvider,
@@ -60,11 +61,11 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
         getDynamicFeedNewUseCase,
         getWhitelistNewUseCase,
         sendReportUseCase,
-        addWishListUseCase,
         addToWishlistV2UseCase,
         feedBroadcastTrackerUseCase,
-        feedXTrackViewerUseCase
-
+        feedXTrackViewerUseCase,
+        feedXCheckUpcomingCapaignReminderUseCase,
+        feedXPostUpcomingCampaignReminderUseCase
     )
 }
 
@@ -111,13 +112,10 @@ fun FeatureBody.createFeedTestInstance() {
         mockk<PlayWidgetTools>(relaxed = true)
     }
     val getWhitelistNewUseCase by memoized {
-        mockk<GetWhitelistNewUseCase>(relaxed = true)
+        mockk<GetWhiteListNewUseCase>(relaxed = true)
     }
     val getDynamicFeedNewUseCase by memoized {
         mockk<GetDynamicFeedNewUseCase>(relaxed = true)
-    }
-    val addWishListUseCase by memoized {
-        mockk<AddWishListUseCase>(relaxed = true)
     }
     val addWishListV2UseCase by memoized {
         mockk<AddToWishlistV2UseCase>(relaxed = true)
@@ -135,7 +133,7 @@ fun GetDynamicFeedNewUseCase.getMockData(data: MutableList<Visitable<*>>, cursor
             DynamicFeedDomainModel(postList = data)
 }
 
-fun GetWhitelistNewUseCase.getMockData(data: WhitelistQuery) {
+fun GetWhiteListNewUseCase.getMockData(data: WhitelistQuery) {
     coEvery {
         execute("interest")
     } returns data

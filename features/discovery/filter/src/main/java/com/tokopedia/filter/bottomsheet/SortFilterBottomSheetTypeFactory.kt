@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 
 internal interface SortFilterBottomSheetTypeFactory {
@@ -16,6 +17,8 @@ internal interface SortFilterBottomSheetTypeFactory {
     fun type(priceFilterViewModel: PriceFilterViewModel): Int
 
     fun type(keywordFilterDataView: KeywordFilterDataView): Int
+
+    fun type(priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }

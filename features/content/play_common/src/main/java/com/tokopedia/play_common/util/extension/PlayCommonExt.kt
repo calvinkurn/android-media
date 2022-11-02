@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -27,6 +28,9 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.unifycomponents.Toaster
@@ -35,6 +39,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.reflect.KProperty1
 
 /**
@@ -177,7 +182,12 @@ suspend inline fun View.awaitPreDraw() = suspendCancellableCoroutine<Unit> { con
             return true
         }
     }
-    cont.invokeOnCancellation { vto.removeOnPreDrawListener(listener) }
+    cont.invokeOnCancellation {
+        when {
+            vto.isAlive -> vto.removeOnPreDrawListener(listener)
+            else -> viewTreeObserver.removeOnPreDrawListener(listener)
+        }
+    }
     vto.addOnPreDrawListener(listener)
 }
 
@@ -316,15 +326,36 @@ fun SpannableStringBuilder.append(
     return this
 }
 
+@Deprecated(
+    message = "please use hideKeyboard() from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "hideKeyboard()",
+        imports = ["com.tokopedia.content.common.util.hideKeyboard"]
+    )
+)
 fun Activity.hideKeyboard() {
     val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 }
 
+@Deprecated(
+    message = "please use hideKeyboard() from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "hideKeyboard()",
+        imports = ["com.tokopedia.content.common.util.hideKeyboard"]
+    )
+)
 fun Fragment.hideKeyboard() {
     activity?.hideKeyboard()
 }
 
+@Deprecated(
+    message = "please use showKeyboard() from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "showKeyboard()",
+        imports = ["com.tokopedia.content.common.util.showKeyboard"]
+    )
+)
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
@@ -335,6 +366,13 @@ fun View.hideKeyboard() {
     imm.hideSoftInputFromWindow(windowToken, 0)
 }
 
+@Deprecated(
+    message = "please use showKeyboard(isShow: Boolean) from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "showKeyboard(isShow)",
+        imports = ["com.tokopedia.content.common.util.showKeyboard"]
+    )
+)
 fun EditText.showKeyboard(isShow: Boolean) {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     if (isShow) imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
@@ -384,4 +422,31 @@ inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit):
     val builder = SpannableStringBuilder()
     builder.builderAction()
     return SpannedString(builder)
+}
+
+suspend fun getBitmapFromUrl(
+    context: Context,
+    url: String,
+): Bitmap = suspendCancellableCoroutine { cont ->
+    val target = object : CustomTarget<Bitmap>() {
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            if (cont.isActive) cont.resume(resource)
+        }
+
+        override fun onLoadCleared(placeholder: Drawable?) {
+            if (!cont.isActive || cont.isCompleted) return
+            cont.resumeWithException(
+                IllegalStateException("Failed to load image from url: $url")
+            )
+        }
+    }
+
+    Glide.with(context)
+        .asBitmap()
+        .load(url)
+        .into(target)
+
+    cont.invokeOnCancellation {
+        Glide.with(context).clear(target)
+    }
 }

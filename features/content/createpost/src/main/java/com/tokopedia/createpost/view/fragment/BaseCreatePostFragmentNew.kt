@@ -10,27 +10,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
-import com.tokopedia.createpost.common.data.pojo.getcontentform.Author
 import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.common.domain.entity.FeedDetail
-import com.tokopedia.createpost.view.activity.PARAM_POST_ID
-import com.tokopedia.createpost.view.activity.PARAM_TYPE
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.common.view.type.ShareType
 import com.tokopedia.createpost.view.viewmodel.CreateContentPostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PARAM_POST_ID
+import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PARAM_TYPE
 import com.tokopedia.createpost.view.util.ConnectionLiveData
-import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
-import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -147,7 +142,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         isFromTemplateToken: Boolean,
     ) {
         val feedAccountList = feedContentForm.authors.map {
-            FeedAccountUiModel(
+            ContentAccountUiModel(
                 id = it.id,
                 name = it.name,
                 iconUrl = it.thumbnail,
@@ -158,7 +153,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
             )
         }
 
-        activityListener?.setFeedAccountList(feedAccountList)
+        activityListener?.setContentAccountList(feedAccountList)
         createPostModel.shopName = feedAccountList.firstOrNull { it.isShop }?.name ?: ""
         createPostModel.shopBadge = feedAccountList.firstOrNull { it.isShop }?.badge ?: ""
         createPostModel.token = feedContentForm.token
@@ -202,30 +197,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         }
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
 
-    }
-
-    override fun onErrorNoQuota() {
-        //DO nothing
-    }
-
-    override fun onSuccessGetPostEdit(feedDetail: FeedDetail) {
-        hideLoading()
-    }
-
-    override fun onErrorGetPostEdit(e: Throwable?) {
-        //Do noting
-    }
-
-    override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
-        //Do noting
-    }
-
-    override fun onAuthenticateTwitter(authenticator: TwitterAuthenticator) {
-        //Do noting
-    }
-
-    override fun changeShareHeaderText(text: String) {
-        //Do noting
     }
 
     override fun getScreenName(): String {

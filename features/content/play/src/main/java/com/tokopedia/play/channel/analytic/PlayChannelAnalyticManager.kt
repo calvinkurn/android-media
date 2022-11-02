@@ -47,6 +47,7 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
     }
 
     private var analytic2 : PlayAnalytic2? = null
+    private var partnerType: PartnerType = PartnerType.Unknown
 
     fun observe(
         scope: CoroutineScope,
@@ -63,6 +64,7 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
                     trackingQueue = trackingQueue,
                     channelInfo = it.channel.channelInfo,
                 )
+                partnerType = it.partner.type
             }
         }
 
@@ -81,6 +83,7 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
                             analytic2?.impressPinnedProductInCarousel(entry.key, entry.value)
                         }
                         productAnalyticHelper.trackImpressedProducts(it.productMap)
+                        productAnalyticHelper.sendImpressedFeaturedProducts(partnerType)
                     }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                 }
@@ -131,5 +134,6 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
 
     fun sendPendingTrackers(partnerType: PartnerType) {
         productAnalyticHelper.sendImpressedFeaturedProducts(partnerType)
+        productAnalyticHelper.sendImpressedBottomSheet(partnerType)
     }
 }

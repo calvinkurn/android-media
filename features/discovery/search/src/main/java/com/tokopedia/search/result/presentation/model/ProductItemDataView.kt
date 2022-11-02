@@ -7,6 +7,9 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_PARENT_ID
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
 import com.tokopedia.topads.sdk.domain.model.Badge
@@ -58,8 +61,6 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var pageTitle: String? = null
     val isAds: Boolean
         get() = isTopAds || isOrganicAds
-    val pageNumber: Int
-        get() = (position - 1) / SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt() + 1
     val categoryString: String?
         get() = if (StringUtils.isBlank(categoryName)) categoryBreadcrumb else categoryName
     var dimension90: String = ""
@@ -68,6 +69,9 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var customVideoURL: String = ""
     var productListType: String = ""
     var dimension131: String = ""
+    var keywordIntention: Int = DEFAULT_KEYWORD_INTENT
+    var showButtonAtc: Boolean = false
+    var parentId: String = DEFAULT_PARENT_ID
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -101,6 +105,35 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
         )
     }
 
+    fun getAtcObjectDataLayer(
+        filterSortParams: String,
+        componentId: String,
+        cartId: String?,
+    ): Any {
+        return DataLayer.mapOf(
+            "name", productName,
+            "id", productID,
+            "price", priceInt,
+            "brand", "none / other",
+            "category", categoryBreadcrumb,
+            "variant", "none / other",
+            "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
+            "position", position.toString(),
+            "dimension45", cartId,
+            "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
+            "dimension87", "search result",
+            "dimension88", "search - product",
+            "dimension115", dimension115,
+            "dimension131", dimension131.orNone(),
+            "quantity", minOrder,
+            "shop_id", shopID,
+            "shop_name", shopName,
+            "shop_type", "none / other"
+        )
+    }
+
+    fun shouldOpenVariantBottomSheet(): Boolean = parentId != "" && parentId != DEFAULT_PARENT_ID
+
     private fun getDimension81(): String {
         val shopType = badgesList?.find { it.isShown && it.imageUrl.isNotEmpty() && it.title.isNotEmpty() }
         return shopType?.title ?: "regular merchant"
@@ -126,6 +159,9 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     val dimension115: String
         get() = labelGroupList.getFormattedPositionName()
 
+    val isKeywordIntentionLow : Boolean
+        get() = keywordIntention == KEYWORD_INTENT_LOW
+
     companion object {
         fun create(
             topAds: TopAdsProductData,
@@ -133,6 +169,8 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             dimension90: String,
             productListType: String,
             externalReference: String,
+            keywordIntention: Int,
+            showButtonAtc: Boolean,
         ): ProductItemDataView {
             val item = ProductItemDataView()
             item.productID = topAds.product.id
@@ -171,6 +209,8 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.customVideoURL = topAds.product.customVideoUrl
             item.productListType = productListType
             item.dimension131 = externalReference
+            item.keywordIntention = keywordIntention
+            item.showButtonAtc = showButtonAtc
             return item
         }
 

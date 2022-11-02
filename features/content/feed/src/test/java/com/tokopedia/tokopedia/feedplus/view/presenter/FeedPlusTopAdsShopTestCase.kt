@@ -46,18 +46,19 @@ class FeedPlusTopAdsShopTestCase {
                 doFavoriteShopUseCase = mockk(),
                 followKolPostGqlUseCase =  mockk(),
                 likeKolPostUseCase = mockk(),
-                atcUseCase = mockk(),
+                addToCartUseCase = mockk(),
                 trackAffiliateClickUseCase = trackAffiliateClickUseCase,
                 deletePostUseCase = mockk(),
                 sendTopAdsUseCase = sendTopAdsUseCase,
                 playWidgetTools = mockk(),
                 getDynamicFeedNewUseCase = mockk(),
-                getWhitelistNewUseCase = mockk(),
+                getWhiteListNewUseCase = mockk(),
                 sendReportUseCase = mockk(),
-                addWishListUseCase = mockk(),
                 addToWishlistV2UseCase = mockk(),
                 trackVisitChannelBroadcasterUseCase = mockk(),
-                feedXTrackViewerUseCase = mockk()
+                feedXTrackViewerUseCase = mockk(),
+                checkUpcomingCampaignReminderUseCase = mockk(),
+                postUpcomingCampaignReminderUseCase = mockk()
             )
         )
     }

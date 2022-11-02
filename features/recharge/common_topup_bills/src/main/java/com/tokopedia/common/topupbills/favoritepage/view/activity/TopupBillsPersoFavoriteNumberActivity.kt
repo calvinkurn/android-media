@@ -10,6 +10,7 @@ import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.favoritepage.view.fragment.SingleTabSavedNumberFragment
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
@@ -23,6 +24,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
     protected lateinit var dgOperatorIds: ArrayList<String>
     protected var currentCategoryName = ""
     protected var loyaltyStatus: String = ""
+    protected var pageConfig: FavoriteNumberPageConfig = FavoriteNumberPageConfig.TELCO
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_digital_favorite_number
@@ -54,6 +56,12 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             this.dgCategoryIds = extras.getStringArrayList(EXTRA_DG_CATEGORY_IDS) ?: arrayListOf()
             this.dgOperatorIds = extras.getStringArrayList(EXTRA_DG_OPERATOR_IDS) ?: arrayListOf()
             this.loyaltyStatus = extras.getString(EXTRA_LOYALTY_STATUS, "")
+
+            val favoriteNumberPageConfig = extras
+                .getSerializable(EXTRA_FAVORITE_NUMBER_PAGE_CONFIG) as? FavoriteNumberPageConfig
+            if (favoriteNumberPageConfig != null) {
+                pageConfig = favoriteNumberPageConfig
+            }
         }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.common_topup_fav_number_title))
@@ -72,7 +80,8 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             currentCategoryName,
             dgCategoryIds,
             dgOperatorIds,
-            loyaltyStatus
+            loyaltyStatus,
+            pageConfig,
         )
     }
 
@@ -88,7 +97,8 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             dgCategoryIds: ArrayList<String>,
             dgOperatorIds: ArrayList<String>,
             categoryName: String,
-            loyaltyStatus: String
+            loyaltyStatus: String,
+            favoriteNumberPageConfig: FavoriteNumberPageConfig = FavoriteNumberPageConfig.TELCO,
         ): Intent {
             val intent = Intent(context, TopupBillsPersoFavoriteNumberActivity::class.java)
             val extras = Bundle()
@@ -98,6 +108,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             extras.putStringArrayList(EXTRA_DG_OPERATOR_IDS, dgOperatorIds)
             extras.putString(EXTRA_LOYALTY_STATUS, loyaltyStatus)
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
+            extras.putSerializable(EXTRA_FAVORITE_NUMBER_PAGE_CONFIG, favoriteNumberPageConfig)
             intent.putExtras(extras)
             return intent
         }
@@ -108,6 +119,7 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
         const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
         const val EXTRA_DG_OPERATOR_IDS = "EXTRA_DG_OPERATOR_IDS"
         const val EXTRA_LOYALTY_STATUS = "EXTRA_LOYALTY_STATUS"
+        const val EXTRA_FAVORITE_NUMBER_PAGE_CONFIG = "EXTRA_FAVORITE_NUMBER_PAGE_CONFIG"
     }
 
 }

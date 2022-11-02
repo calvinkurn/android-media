@@ -193,6 +193,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       }
                     }
                     ... on pdpDataProductDetail {
+                      title
                       content {
                         title
                         subtitle
@@ -201,6 +202,17 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         icon
                         showAtFront
                         isAnnotation
+                        showAtBottomsheet
+                      }
+                      catalogBottomsheet {
+                        actionTitle
+                        bottomSheetTitle
+                        param
+                      }
+                      bottomsheet {
+                        actionTitle
+                        bottomSheetTitle
+                        param
                       }
                     }
                     ... on pdpDataSocialProof {
@@ -336,6 +348,15 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        separator
                        icon
                        isVisible
+                       eduLink {
+                          appLink
+                       }
+                    },
+                    ... on pdpDataBundleComponentInfo {
+                       title
+                       widgetType
+                       productID
+                       whID
                     }
                   }
                 }

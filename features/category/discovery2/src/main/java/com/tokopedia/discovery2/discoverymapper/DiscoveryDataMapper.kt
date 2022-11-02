@@ -6,8 +6,6 @@ import com.tokopedia.discovery2.*
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.CAROUSEL_ITEM_DESIGN
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.SINGLE_ITEM_DESIGN
 import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
-import com.tokopedia.discovery2.Constant.ProductCardModel.PRODUCT_STOCK
-import com.tokopedia.discovery2.Constant.ProductCardModel.SALE_PRODUCT_STOCK
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -19,11 +17,13 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
+import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import kotlin.math.roundToInt
 
 private const val CHIPS = "Chips"
@@ -293,7 +293,7 @@ class DiscoveryDataMapper {
                 productName = productName,
                 slashedPrice = slashedPrice,
                 formattedPrice = formattedPrice,
-                discountPercentage = if (dataItem.discountPercentage?.toIntOrZero() != 0) {
+                discountPercentage = if (!dataItem.discountPercentage.isNullOrEmpty() && dataItem.discountPercentage?.toIntOrZero() != 0) {
                     "${dataItem.discountPercentage}%"
                 } else {
                     ""
@@ -326,6 +326,60 @@ class DiscoveryDataMapper {
                 nonVariant = nonVariantProductCard(dataItem),
                 cardInteraction = true
         )
+    }
+
+    fun mapListToBundleProductList(dataItem: List<DataItem>): ArrayList<BundleUiModel> {
+        val bundleModelList: ArrayList<BundleUiModel> = arrayListOf()
+        dataItem.forEach { bundleData ->
+            val bundleShopUiModel = BundleShopUiModel(
+                shopId = bundleData.shopId ?: "",
+                shopName = bundleData.shopName ?: "",
+                shopIconUrl = bundleData.shopLogo ?: ""
+            )
+            val bundleDetailUiModelList: ArrayList<BundleDetailUiModel> = arrayListOf()
+            val bundleProductUiModel: ArrayList<BundleProductUiModel> = arrayListOf()
+            val bundleModel = BundleUiModel(
+                bundleName = bundleData.bundleName ?: "",
+                bundleType = if (bundleData.bundleType == "multiple_bundling") BundleTypes.MULTIPLE_BUNDLE else BundleTypes.SINGLE_BUNDLE,
+                bundleDetails = bundleDetailUiModelList.apply {
+                    bundleData.bundleDetails?.forEach { bundleDetails ->
+                        add(BundleDetailUiModel(
+                            bundleId = (bundleDetails?.bundleId ?: "").toString(),
+                            originalPrice = bundleDetails?.originalPrice ?: "",
+                            displayPrice = bundleDetails?.displayPrice ?: "",
+                            displayPriceRaw = bundleDetails?.displayPriceRaw ?: 0,
+                            discountPercentage = bundleDetails?.discountPercentage?.roundToIntOrZero()
+                                ?: 0,
+                            isPreOrder = bundleDetails?.preOrder ?: false,
+                            preOrderInfo = bundleDetails?.preOrderInfo ?: "",
+                            savingAmountWording = bundleDetails?.savingAmountWording ?: "",
+                            minOrder = bundleDetails?.minOrder.toZeroIfNull(),
+                            minOrderWording = bundleDetails?.minOrderWording ?: "",
+                            isSelected = false,
+                            totalSold = 0,
+                            shopInfo = null, //bundleShopUiModel,
+                            bundleType = bundleData.bundleType ?: "",
+                            products = bundleProductUiModel.apply {
+                                bundleData.bundleProducts?.forEach { bundleProducts ->
+                                    add(BundleProductUiModel(
+                                        productId = (bundleProducts?.productId
+                                            ?: "").toString(),
+                                        productName = bundleProducts?.productName.toString(),
+                                        productImageUrl = bundleProducts?.imageUrl
+                                            ?: "",
+                                        productAppLink = bundleProducts?.applink ?: "",
+                                        hasVariant = bundleDetails?.isProductHaveVariant
+                                            ?: false
+                                    ))
+                                }
+                            }
+                        ))
+                    }
+                }
+            )
+            bundleModelList.add(bundleModel)
+        }
+        return bundleModelList
     }
 
     private fun nonVariantProductCard(dataItem: DataItem): ProductCardModel.NonVariant? {

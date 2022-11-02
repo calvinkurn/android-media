@@ -9,20 +9,18 @@ import tokopedia.applink.R
 object DeepLinkMapperFind {
     fun getRegisteredNavigationFindFromHttp(context: Context, uri: Uri): String {
         val segments = uri.pathSegments
-        if (segments.joinToString("/").startsWith(context.getString(R.string.host_find), false) ||
-                segments.joinToString("/").startsWith(context.getString(R.string.host_amp_find), false)) {
+        val segmentsString = segments.joinToString("/")
 
-            val searchSegments = getPathAfter(segments, "find")
-            var query = ""
-            if (searchSegments.isNotEmpty()) {
-                val city = if (searchSegments.indexOf("c") == 1) "-di-" + searchSegments[searchSegments.lastIndex] else ""
-                query = searchSegments[0] + city
-            }
+        val findPrefix = "${context.getString(R.string.host_find)}/"
+        val ampFindPrefix = "${context.getString(R.string.host_amp_find)}/"
+        val isFind = segmentsString.startsWith(findPrefix) || segmentsString.startsWith(ampFindPrefix)
 
-            return getRegisteredFind(ApplinkConst.FIND + "/" + query)
-        }
+        if (!isFind) return ""
 
-        return ""
+        val searchSegments = getPathAfter(segments, "find")
+        val query = getQuery(searchSegments)
+
+        return getRegisteredFind(ApplinkConst.FIND + "/" + query)
     }
 
     fun getRegisteredFind(deepLink: String): String {
@@ -45,5 +43,16 @@ object DeepLinkMapperFind {
         return segments.filterIndexed { index, _ ->
             index > indexOfFindSegment
         }
+    }
+
+    private fun getQuery(searchSegments: List<String>) =
+        if (searchSegments.isNotEmpty()) searchSegments.first() + getCity(searchSegments)
+        else ""
+
+    private fun getCity(searchSegments: List<String>): String {
+        val cityKeyIndex = searchSegments.indexOf("c")
+
+        return if (cityKeyIndex == 1) "-di-" + searchSegments.last()
+        else ""
     }
 }

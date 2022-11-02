@@ -1,6 +1,7 @@
 package com.tokopedia.play.analytic.tokonow
 
 import com.tokopedia.play.analytic.*
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.PlayChannelType
@@ -204,35 +205,32 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     }
 
     override fun impressProductBottomSheetNow(
-        products: List<Pair<PlayProductUiModel.Product, Int>>,
-        sectionInfo: ProductSectionUiModel.Section,
+        products: List<ProductSheetAdapter.Item.Product>
     ) {
-        if (products.isEmpty()) return
-
         trackingQueue.putEETracking(
             event = EventModel(
                 "productView",
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "view - now product bottomsheet",
-                "$channelId - ${products.first().first.id} - ${channelType.value}"
+                "$channelId - ${products.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value}"
             ),
             enhanceECommerceMap = hashMapOf(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        products.forEach {
-                            add(convertProductToHashMapWithList(it.first, it.second, "bottom sheet"))
+                        products.map { it.product }.forEachIndexed { index: Int, product: PlayProductUiModel.Product ->
+                            add(convertProductToHashMapWithList(product, index, "bottom sheet"))
                         }
                     }
                 )
             ),
             customDimension =
-                hashMapOf(
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
+            hashMapOf(
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+            )
 
         )
     }

@@ -164,6 +164,8 @@ object ApplinkConstInternalGlobal {
 
     const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE = "$INTERNAL_GLOBAL/deals-slug/"
 
+    const val GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT = "$GLOBAL_INTERNAL_DIGITAL_DEAL/checkout"
+
     const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG = "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE{slug}/"
 
     // PhoneVerificationProfileActivity
@@ -227,10 +229,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/general-setting
     const val GENERAL_SETTING = "$INTERNAL_GLOBAL/general-setting"
 
-    // PushNotificationCheckerActivity
-    // tokopedia-android-internal://global/push-notification-troubleshooter
-    const val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
-
     /**
      * Go to chat list
      */
@@ -260,9 +258,6 @@ object ApplinkConstInternalGlobal {
     const val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
     const val GAMIFICATION_TAP_TAP_GIFT = "$INTERNAL_GLOBAL/gamification_gift_60s"
 
-    //ManageNotificationActivity
-    const val MANAGE_NOTIFICATION = "$INTERNAL_GLOBAL/manage-notification"
-
     // ScreenRecorderActivity
     // tokopedia-android-internal://global/screen-recorder
     const val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
@@ -276,10 +271,6 @@ object ApplinkConstInternalGlobal {
 
     //FeedbackPageActivity
     const val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
-
-    // TelephonyActivity
-    // tokopedia-android-internal://global/telephony-masking
-    const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking"
 
     // GlobalSharingActivity
     // tokopedia-android-internal://global/global-sharing

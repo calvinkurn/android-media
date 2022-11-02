@@ -646,7 +646,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             isOwner,
             isLogin,
             isThematicWidgetShown,
-            isEnableDirectPurchase
+            isEnableDirectPurchase,
+            shopId
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1250,7 +1251,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             isOwner,
             isLogin,
             isThematicWidgetShown,
-            isEnableDirectPurchase
+            isEnableDirectPurchase,
+            shopId
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1645,7 +1647,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             bundlePosition = bundlePosition,
             clickedProduct = selectedProduct
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
@@ -1706,7 +1708,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             clickedProduct = selectedProduct,
             selectedPackage = selectedSingleBundle.minOrderWording
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun addMultipleBundleToCart(
@@ -2162,7 +2164,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                     shopHomeProductViewModel.isShowFreeOngkir
                 )
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -2326,7 +2328,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                 shopHomeCarousellProductUiModel?.name ?: "",
                 customDimensionShopPage
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -2357,8 +2359,29 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                 customDimensionShopPage,
                     shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
+    }
+
+    override fun onPersonalizationTrendingCarouselProductItemClicked(
+        parentPosition: Int,
+        itemPosition: Int,
+        shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel,
+        shopHomeProductViewModel: ShopHomeProductUiModel
+    ) {
+        sendShopHomeWidgetClickedTracker(
+            ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
+            shopHomeCarousellProductUiModel.name,
+            shopHomeCarousellProductUiModel.widgetId,
+            ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
+        shopPageHomeTracking.clickProductPersonalizationTrendingWidget(
+            itemPosition,
+            shopHomeProductViewModel,
+            shopId,
+            userId
+        )
+        goToPDP(shopHomeProductViewModel.productUrl)
     }
 
     override fun onCarouselPersonalizationProductItemClickAddToCart(
@@ -2504,6 +2527,18 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         )
     }
 
+    override fun onCarouselProductPersonalizationTrendingItemImpression(
+        itemPosition: Int,
+        shopHomeProductViewModel: ShopHomeProductUiModel
+    ) {
+        shopPageHomeTracking.impressionProductPersonalizationTrendingWidget(
+            itemPosition,
+            shopHomeProductViewModel,
+            shopId,
+            userId
+        )
+    }
+
     override fun onCarouselProductPersonalizationReminderItemImpression(
         parentPosition: Int,
         itemPosition: Int,
@@ -2563,7 +2598,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                     shopHomeProductViewModel.isShowFreeOngkir
                 )
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -2653,7 +2688,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                     shopHomeProductUiModel.isShowFreeOngkir
                 )
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -2801,6 +2836,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         )
     }
 
+    override fun onCarouselProductPersonalizationTrendingWidgetImpression() {
+        shopPageHomeTracking.impressionPersonalizationTrendingWidget(shopId, userId)
+    }
+
     private fun onSuccessRemoveWishList(
         shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
         shopHomeProductViewModel: ShopHomeProductUiModel?
@@ -2944,33 +2983,15 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    fun goToPDP(productId: String) {
-        val pdpAppLink = getPdpAppLink(productId)
+    fun goToPDP(pdpAppLink: String) {
+        val updatedPdpAppLink = createAffiliateLink(pdpAppLink)
         context?.let {
             val intent = RouteManager.getIntent(
                 context,
-                pdpAppLink
+                updatedPdpAppLink
             )
             startActivity(intent)
         }
-    }
-
-    fun goToPDPWithAppLink(appLinkPdp: String = "") {
-        context?.let {
-            val intent = RouteManager.getIntent(
-                context,
-                createAffiliateLink(appLinkPdp)
-            )
-            startActivity(intent)
-        }
-    }
-
-    private fun getPdpAppLink(productId: String): String {
-        val basePdpAppLink = UriUtil.buildUri(
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        return createAffiliateLink(basePdpAppLink)
     }
 
     private fun createAffiliateLink(basePdpAppLink: String): String {
@@ -3036,26 +3057,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel?.clearGetShopProductUseCase()
-        val isUsingV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            if (isUsingV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
-            else handleWishlistActionAddToWishlist(productCardOptionsModel)
+            handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
-            if (isUsingV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
-            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessAddWishlist(
-                threeDotsClickShopCarouselProductUiModel,
-                threeDotsClickShopProductViewModel
-            )
-        } else {
-            onErrorAddWishlist(
-                getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-            )
+            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
         }
     }
 
@@ -3071,19 +3076,6 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                 trackClickWishlist(threeDotsClickShopCarouselProductUiModel,
                     it, true)
             }
-        }
-    }
-
-    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessRemoveWishList(
-                threeDotsClickShopCarouselProductUiModel,
-                threeDotsClickShopProductViewModel
-            )
-        } else {
-            onErrorRemoveWishList(
-                getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
-            )
         }
     }
 
@@ -3221,7 +3213,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             )
         }
         shopHomeProductViewModel?.let {
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -3340,7 +3332,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int) {
-        goToPDP(model.id ?: "")
+        goToPDP(model.productUrl)
     }
 
     override fun onFlashSaleProductImpression(
@@ -4058,7 +4050,7 @@ shopHomeAdapter.itemCount
                 product = product,
                 position = position
             )
-            goToPDPWithAppLink(product.productUrl.orEmpty())
+            goToPDP(product.productUrl.orEmpty())
         }
 
         override fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {

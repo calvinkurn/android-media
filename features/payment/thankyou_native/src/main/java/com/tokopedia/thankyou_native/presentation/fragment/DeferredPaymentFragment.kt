@@ -20,16 +20,16 @@ import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.ThanksPageHelper.copyTOClipBoard
 import com.tokopedia.thankyou_native.presentation.views.GyroView
-import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.htmltags.HtmlUtil
+import java.util.Calendar
+import java.util.Date
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 
-class DeferredPaymentFragment : ThankYouBaseFragment(),
-    ThankYouPageTimerView.ThankTimerViewListener {
+class DeferredPaymentFragment : ThankYouBaseFragment() {
 
     var paymentType: PaymentType? = null
 
@@ -153,13 +153,13 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
         }
         if (thanksPageData.additionalInfo.bankName.isNotBlank()) {
             tvBankName.text =
-                "${thanksPageData.additionalInfo.bankName} ${thanksPageData.additionalInfo.bankBranch}"
+                "${thanksPageData.additionalInfo.bankBranch}"
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
         tvSeePaymentMethods.setOnClickListener { openHowToPay(thanksPageData) }
         tvDeadlineTime.text = thanksPageData.expireTimeStr
-        tvDeadlineTimer.setExpireTimeUnix(thanksPageData.expireTimeUnix, this)
+        setDeadlineTimer(thanksPageData.expireTimeUnix)
         if (paymentType == VirtualAccount
             && (thanksPageData.combinedAmount > thanksPageData.amount)
         ) {
@@ -267,18 +267,15 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
         }
     }
 
-    override fun onTimerFinished() {
-        refreshThanksPageData()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        tvDeadlineTimer.startTimer()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        tvDeadlineTimer.stopTimer()
+    private fun setDeadlineTimer(expireOnTimeUnix: Long) {
+        tvDeadlineTimer?.let { timerView ->
+            val calendar = Calendar.getInstance()
+            calendar.time = Date(expireOnTimeUnix * ONE_SECOND_TO_MILLIS)
+            timerView.targetDate = calendar
+            timerView.onFinish = {
+                refreshThanksPageData()
+            }
+        }
     }
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
@@ -290,20 +287,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
     private fun isTimerExpired(thanksPageData: ThanksPageData): Boolean {
         if (thanksPageData.expireTimeUnix * 1000L <= System.currentTimeMillis())
             return true
-        return false
-    }
-
-    private fun isPaymentTimerExpired(): Boolean {
-        if (thanksPageData.expireTimeUnix <= System.currentTimeMillis() / ONE_SECOND_TO_MILLIS)
-            return true
-        return false
-    }
-
-    internal fun onBackPressed(): Boolean {
-        if (!isPaymentTimerExpired()) {
-            refreshThanksPageData()
-            return true
-        }
         return false
     }
 

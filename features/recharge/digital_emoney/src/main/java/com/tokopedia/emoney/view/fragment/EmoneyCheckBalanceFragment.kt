@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -112,22 +113,19 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun executeCard(intent: Intent) {
-        val timeCheckCardDuration = intent.getStringExtra(EMONEY_TIME_CHECK_LOGIC_TAG)
-            ?: context?.resources?.getString(com.tokopedia.emoney.R.string.emoney_nfc_no_need_to_check_logic) ?: ""
-        val startTimeBeforeCallGql = System.currentTimeMillis()
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
-                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery, startTimeBeforeCallGql, timeCheckCardDuration)
+                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 issuerActive = ISSUER_ID_EMONEY
                 showLoading(getOperatorName(issuerActive))
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
-                        0, startTimeBeforeCallGql, timeCheckCardDuration)
+                        0)
             } else {
                 val errorMessage = ErrorHandler.getErrorMessagePair(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD), errorHanlderBuilder)
                 showError(errorMessage.first.orEmpty(),
@@ -316,7 +314,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             } else {
                 if (userSession.isLoggedIn) {
                     it.intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    val pendingIntent = PendingIntent.getActivity(it, 0, it.intent, 0)
+                    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        PendingIntent.getActivity(it, 0, it.intent, PendingIntent.FLAG_MUTABLE)
+                    } else {
+                        PendingIntent.getActivity(it, 0, it.intent, 0)
+                    }
                     nfcAdapter.enableForegroundDispatch(it, pendingIntent,
                             arrayOf<IntentFilter>(), null)
                     nfcDisabledView.visibility = View.GONE
@@ -353,8 +355,6 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
         const val CLASS_NAME = "EmoneyCheckBalanceFragment"
-
-        private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

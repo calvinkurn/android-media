@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
 import com.tokopedia.tokomember_seller_dashboard.util.CANCELED
@@ -44,7 +46,14 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
     lateinit var optionMenu: ImageUnify
 
     @SuppressLint("ResourcePackage")
-    fun bind(item: ProgramSellerListItem, shopId: Int, programActions: ProgramActions, homeFragmentCallback: TmProgramDetailCallback) {
+    fun bind(
+        item: ProgramSellerListItem,
+        shopId: Int,
+        programActions: ProgramActions,
+        homeFragmentCallback: TmProgramDetailCallback,
+        tmTracker: TmTracker?
+    ) {
+
         programStatus = itemView.findViewById(R.id.programStatus)
         periodProgram = itemView.findViewById(R.id.periodProgram)
         programStartDate = itemView.findViewById(R.id.programStartDate)
@@ -65,8 +74,10 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         programStartTime.text = item.timeWindow?.startTime?.let { getTime(it) }
         programEndTime.text = item.timeWindow?.endTime?.let { getTime(it) }
 
-        programMemberValue.text = item.analytics?.totalNewMember
-        programMemberTransaksivalue.text = item.analytics?.trxCount
+        programMemberValue.text = if(item.analytics?.totalNewMember.isNullOrEmpty()) "-"
+                                  else item.analytics?.totalNewMember
+        programMemberTransaksivalue.text = if(item.analytics?.trxCount.isNullOrEmpty()) "-"
+                                           else item.analytics?.trxCount
 
         if(item.actions?.tripleDots.isNullOrEmpty()){
             optionMenu.hide()
@@ -76,7 +87,10 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         itemView.setOnClickListener {
-            item.id?.toInt()?.let { it1 -> homeFragmentCallback.openDetailFragment(shopId, it1) }
+            item.id?.toIntOrZero()?.let { it1 ->
+            tmTracker?.clickProgramItemButton(shopId.toString(), it1.toString())
+                homeFragmentCallback.openDetailFragment(shopId, it1)
+            }
 //            val intent = Intent(itemView.context, TokomemberDashProgramDetailActivity::class.java)
 //            intent.putExtra(BUNDLE_PROGRAM_ID, item.id?.toInt())
 //            intent.putExtra(BUNDLE_SHOP_ID, shopId)
@@ -84,14 +98,23 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         optionMenu.setOnClickListener {
-            item.id?.toInt()?.let { it1 ->
+            item.id?.toIntOrZero()?.let { it1 ->
+                if(item.status == WAITING){
+                    tmTracker?.clickProgramWaitingThreeDot(shopId.toString(), it1.toString())
+                }
+                else {
+                    tmTracker?.clickProgramActiveThreeDot(shopId.toString(), it1.toString())
+                }
                 TokomemberOptionsMenuBottomsheet.show(Gson().toJson(item.actions), shopId,
-                    it1, fragmentManager, programActions)
+                    it1, fragmentManager, programActions, tmTracker)
             }
         }
 
         btn_edit.setOnClickListener {
-            item.id?.toInt()?.let { it1 -> programActions.option(EDIT, programId = it1, shopId = shopId) }
+            item.id?.toIntOrZero()?.let { it1 ->
+                tmTracker?.clickProgramEdit(shopId.toString(), it1.toString())
+                programActions.option(EDIT, programId = it1, shopId = shopId)
+            }
         }
          /*   val intent = Intent(itemView.context, TokomemberDashCreateProgramActivity::class.java)
             intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
@@ -120,7 +143,10 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
                 btn_edit.show()
                 btn_edit.text = "Perpanjang Program"
                 btn_edit.setOnClickListener {
-                    item.id?.toInt()?.let { it1 -> programActions.option(EXTEND, programId = it1, shopId = shopId) }
+                    item.id?.toIntOrZero()?.let { it1 ->
+                        tmTracker?.clickProgramExtensionButton(it1.toString(), shopId.toString())
+                        programActions.option(EXTEND, programId = it1, shopId = shopId)
+                    }
                 }
             }
             ENDED ->{
@@ -145,5 +171,8 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
 
     private fun getTime(time: String): String {
         return time.substringAfter(" ")
+    }
+    companion object{
+        val LAYOUT = R.layout.tm_dash_program_item
     }
 }

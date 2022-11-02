@@ -128,7 +128,7 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 app:unify_progress_bar_color_type="color_green"
-                app:unify_progress_bar_from_color="@color/green_50"
+                app:unify_progress_bar_from_color="@color/Unify_G100"
                 app:unify_progress_bar_height="10" />
 
             <com.tokopedia.unifycomponents.ImageUnify

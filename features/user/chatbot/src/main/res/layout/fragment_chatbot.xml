@@ -16,21 +16,12 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/float_chat_item"
+        <com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
+            android:id="@+id/floating_invoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/chatbot_chat_background"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <include
-                layout="@layout/attached_invoice_float_chat_item"
-                android:layout_width="@dimen/dp_chatbot_220"
-                android:layout_height="wrap_content">
-
-            </include>
-        </RelativeLayout>
+            android:background="@color/Unify_N50"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/add_comment_area"
@@ -45,17 +36,18 @@
                 android:id="@+id/list_quick_reply"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_chatbot_3"
                 android:layout_marginRight="@dimen/dp_chatbot_3"
-                android:background="@color/chatbot_chat_background"
-                android:paddingLeft="@dimen/spacing_lvl4"
-                android:paddingTop="@dimen/spacing_lvl3"
+                android:background="@color/chatbot_dms_quick_reply_bg"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
                 android:visibility="gone"
                 tools:itemCount="1"
                 tools:listitem="@layout/chatbot_item_quick_reply"
                 tools:visibility="visible" />
 
-            <include layout="@layout/compose_message_area"
+            <include
+                android:id="@+id/compose_area"
+                layout="@layout/compose_message_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -110,14 +102,14 @@
         android:layout_marginTop="14dp"
         android:visibility="gone"
         app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="#E5F5FF"
+        app:cardBackgroundColor="@color/chatbot_dms_date_indicator_bg"
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/dateIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/chatbot_color_date"
+            android:textColor="@color/chatbot_dms_date_indicator_text"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:paddingTop="@dimen/spacing_lvl1"
@@ -165,7 +157,7 @@
         android:id="@+id/notifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#333333"
+        android:background="@color/Unify_N700"
         android:gravity="center_vertical"
         android:minHeight="56dp"
         android:orientation="horizontal"
@@ -178,7 +170,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             tools:text="JJJJ"
             app:typographyType="body_2" />
 
