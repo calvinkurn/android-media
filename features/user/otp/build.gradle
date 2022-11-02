@@ -29,6 +29,10 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
+
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 dependencies {
@@ -53,7 +57,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation projectOrAar(rootProject.ext.libraries.logger)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.design
 
@@ -96,6 +99,10 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.networkDependencies.loggingInterceptor
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.playServicesDependencies.phone
     api (rootProject.ext.firebase.crashlytics) {
