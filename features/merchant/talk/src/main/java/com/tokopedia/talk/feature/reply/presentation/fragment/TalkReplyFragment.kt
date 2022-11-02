@@ -456,7 +456,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showBlockDialog() {
         context?.let {
-            blockDialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            blockDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.talk_block_dialog_title))
                 setDescription(getString(R.string.talk_block_dialog_description))
                 setPrimaryCTAText(getString(R.string.talk_block_dialog_primary_cta_text))
@@ -707,6 +707,25 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         )
     }
 
+    private fun onSuccessBlockContent() {
+        adapter?.clearAllElements()
+        getDiscussionData()
+        showSuccessToaster(
+            getString(R.string.talk_block_toaster_success_text),
+            resources.getBoolean(R.bool.reply_adjust_toaster_height)
+        )
+        blockDialog?.dismiss()
+    }
+
+    private fun onFailBlockCommentOrQuestion(throwable: Throwable) {
+        logException(throwable)
+        hidePageLoading()
+        showErrorToaster(
+            getString(R.string.talk_block_toaster_fail_text),
+            resources.getBoolean(R.bool.reply_adjust_toaster_height)
+        )
+    }
+
     private fun adjustToasterHeight() {
         if (viewModel.attachedProducts.value?.isNotEmpty() == true) {
             Toaster.toasterCustomBottomHeight = TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT.toPx()
@@ -856,8 +875,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun observeBlockTalk() {
         viewModel.blockTalkResult.observe(viewLifecycleOwner) {
             when (it) {
-                is Success -> onHideReportedContent()
-                is Fail -> onFailUnmaskCommentOrQuestion(it.throwable)
+                is Success -> onSuccessBlockContent()
+                is Fail -> onFailBlockCommentOrQuestion(it.throwable)
             }
         }
     }

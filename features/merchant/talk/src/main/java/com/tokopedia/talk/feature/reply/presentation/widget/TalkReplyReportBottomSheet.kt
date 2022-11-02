@@ -82,6 +82,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
                 this.dismiss()
             }
             binding.talkReplyReport.show()
+            binding.dividerTalkReplyReport.show()
         }
     }
 
@@ -92,6 +93,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
                 this.dismiss()
             }
             binding.talkReplyBlock.show()
+            binding.dividerTalkReplyBlock.show()
         }
     }
 
