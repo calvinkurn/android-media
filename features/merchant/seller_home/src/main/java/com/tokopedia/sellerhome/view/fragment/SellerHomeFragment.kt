@@ -161,6 +161,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -2626,8 +2627,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun startWidgetSse() {
         lifecycleScope.launchWhenResumed {
-            if (tempWidgetList.isNotEmpty()) {
-                sellerHomeViewModel.startSse(tempWidgetList)
+            withContext(Dispatchers.IO) {
+                val isAnyRealtimeWidget = tempWidgetList.any { it.useRealtime }
+                if (isAnyRealtimeWidget) {
+                    sellerHomeViewModel.startSse(tempWidgetList)
+                }
             }
         }
     }

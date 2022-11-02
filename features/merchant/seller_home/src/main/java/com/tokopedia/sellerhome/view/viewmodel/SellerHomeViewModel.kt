@@ -489,14 +489,16 @@ class SellerHomeViewModel @Inject constructor(
         cancelSseJob()
         sseJob = viewModelScope.launch(dispatcher.io) {
             delay(SSE_INITIAL_DELAY)
-            val dataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
-            widgetSse.get().connect(SELLER_HOME_SSE, dataKeys)
-            widgetSse.get().listen()
-                .collect { data ->
-                    data?.let {
-                        handleSSEMessage(it)
+            val realTimeDataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
+            if (realTimeDataKeys.isNotEmpty()) {
+                widgetSse.get().connect(SELLER_HOME_SSE, realTimeDataKeys)
+                widgetSse.get().listen()
+                    .collect { data ->
+                        data?.let {
+                            handleSSEMessage(it)
+                        }
                     }
-                }
+            }
         }
     }
 
