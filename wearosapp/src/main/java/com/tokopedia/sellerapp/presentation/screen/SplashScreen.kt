@@ -40,10 +40,6 @@ fun SplashScreen(
     var startAnimation by remember { mutableStateOf(false) }
     val ifPhoneHasApp = sharedViewModel.ifPhoneHasApp.collectAsState()
 
-    if (Build.VERSION.SDK_INT <= 25) {
-        sharedViewModel.checkIfPhoneHasApp()
-    }
-
     val offState by animateDpAsState(
         targetValue = if (startAnimation) DP_0 else DP_100,
         animationSpec = tween(
@@ -65,10 +61,12 @@ fun SplashScreen(
         delay(DELAY_SPLASH_DURATION)
         animVisibleState = false
         delay(DELAY_SPLASH_DURATION)
-        if (ifPhoneHasApp.value) {
-            navigateToHomeScreen()
-        } else {
-            navigateToAppNotInstalledScreen()
+        ifPhoneHasApp.value?.let {
+            if (it) {
+                navigateToHomeScreen()
+            } else {
+                navigateToAppNotInstalledScreen()
+            }
         }
     }
 

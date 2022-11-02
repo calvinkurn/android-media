@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.presentation.viewmodel
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.lifecycle.viewModelScope
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
@@ -103,7 +104,7 @@ class SharedViewModel @Inject constructor(
 
     fun checkPhoneState() {
         viewModelScope.launch {
-            clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+            checkIfPhoneHasApp()
         }
     }
 
@@ -177,8 +178,8 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    private val _ifPhoneHasApp = MutableStateFlow(false)
-    val ifPhoneHasApp: StateFlow<Boolean>
+    private val _ifPhoneHasApp: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+    val ifPhoneHasApp: StateFlow<Boolean?>
         get() = _ifPhoneHasApp
 
     fun checkIfPhoneHasApp() {
@@ -194,7 +195,12 @@ class SharedViewModel @Inject constructor(
                     val nodes = capabilityInfo.nodes
                     val androidPhoneNodeWithApp =
                         nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
-                    _ifPhoneHasApp.value = androidPhoneNodeWithApp != null
+                    val phoneHasApp = androidPhoneNodeWithApp != null
+                    _ifPhoneHasApp.value = phoneHasApp
+
+                    if (phoneHasApp) {
+                        clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+                    }
                 }
             } catch (cancellationException: CancellationException) {
                 // Request was cancelled normally
