@@ -147,13 +147,18 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
+    fun provideWebSocket(
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers,
+        localCacheHandler: LocalCacheHandler,
+    ): PlayWebSocket {
         return PlayWebSocketImpl(
-                OkHttpClient.Builder(),
-                userSession,
-                dispatchers,
-                mContext,
-                localCacheHandler,
+            OkHttpClient.Builder(),
+            userSession,
+            dispatchers,
+            context,
+            localCacheHandler,
         )
     }
 
