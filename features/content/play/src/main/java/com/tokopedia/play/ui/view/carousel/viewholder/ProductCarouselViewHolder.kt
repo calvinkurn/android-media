@@ -89,10 +89,13 @@ class ProductCarouselViewHolder private constructor() {
              * Buttons
              * First button must be ATC
              */
+            val firstButton = item.buttons.firstOrNull { it.type == ProductButtonType.ATC }.orDefault()
+            val lastButton = item.buttons.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
+
             binding.btnFirst.showWithCondition(item.buttons.isNotEmpty())
             binding.btnSecond.showWithCondition(item.buttons.isNotEmpty())
-            binding.btnFirst.configButton(item.buttons.firstOrNull { it.type == ProductButtonType.ATC }.orDefault())
-            binding.btnSecond.configButton(item.buttons.firstOrNull { it.type != ProductButtonType.ATC }.orDefault())
+            binding.btnFirst.configButton(firstButton)
+            binding.btnSecond.configButton(lastButton)
 
             when (item.price) {
                 is DiscountedPrice -> {
@@ -114,11 +117,13 @@ class ProductCarouselViewHolder private constructor() {
             binding.tvInfo.text = getInfo(item)
 
             binding.btnFirst.setOnClickListener {
-                listener.onAtcClicked(this, item)
+                listener.onTransactionClicked(this, item, firstButton.type.toAction)
             }
-            binding.btnFirst.setOnClickListener {
-                listener.onBuyClicked(this, item)
+
+            binding.btnSecond.setOnClickListener {
+                listener.onTransactionClicked(this, item, lastButton.type.toAction)
             }
+
             binding.root.setOnClickListener {
                 listener.onClicked(this, item)
             }
@@ -159,8 +164,7 @@ class ProductCarouselViewHolder private constructor() {
 
         interface Listener {
             fun onClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
-            fun onAtcClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
-            fun onBuyClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
+            fun onTransactionClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product, action: ProductAction)
         }
     }
 }

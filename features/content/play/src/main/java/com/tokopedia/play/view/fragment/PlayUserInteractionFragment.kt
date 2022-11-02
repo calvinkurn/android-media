@@ -1881,7 +1881,7 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private fun onProductCarouselEvent(event: ProductCarouselUiComponent.Event) {
         when (event) {
-            is ProductCarouselUiComponent.Event.OnBuyClicked -> {
+            is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
                 //TODO("Temporary, maybe best to combine bottom sheet into this fragment")
                 val action = event.product.buttons.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
                 if (event.product.isVariantAvailable) {
@@ -1892,33 +1892,20 @@ class PlayUserInteractionFragment @Inject constructor(
                 }
 
                 playViewModel.submitAction(
-                    if (action.type == ProductButtonType.OCC) {
-                        PlayViewerNewAction.OCCProduct(
+                    when (event.action) {
+                        ProductAction.Buy -> PlayViewerNewAction.BuyProduct(
                             event.product,
                             isProductFeatured = true,
                         )
-                    } else {
-                        PlayViewerNewAction.BuyProduct(
+                        ProductAction.AddToCart -> PlayViewerNewAction.AtcProduct(
+                            event.product,
+                            isProductFeatured = true,
+                        )
+                        ProductAction.OCC -> PlayViewerNewAction.OCCProduct(
                             event.product,
                             isProductFeatured = true,
                         )
                     }
-                )
-            }
-            // ATC is always the first button no need to change
-            is ProductCarouselUiComponent.Event.OnAtcClicked -> {
-                if (event.product.isVariantAvailable) {
-                    playFragment.openVariantBottomSheet(
-                        ProductAction.AddToCart,
-                        event.product
-                    )
-                }
-
-                playViewModel.submitAction(
-                    PlayViewerNewAction.AtcProduct(
-                        event.product,
-                        isProductFeatured = true,
-                    )
                 )
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {
