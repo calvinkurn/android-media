@@ -68,8 +68,6 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                     if (!it) {
                         phoneStateFlow.value = STATE.COMPANION_NOT_INSTALLED
                         phoneStateProgressFlow.value = timeoutMaxProgress
-                    } else {
-                        startStateTimeoutTimer()
                     }
                 }
             }
@@ -160,6 +158,7 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
     fun checkCompanionState() {
         phoneStateProgressFlow.value = timeoutStartProgress
         phoneStateFlow.value = STATE.SYNC
+        startStateTimeoutTimer()
         sharedViewModel.checkPhoneState()
     }
 
