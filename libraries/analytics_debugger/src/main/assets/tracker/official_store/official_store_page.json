@@ -253,6 +253,42 @@
     },
 
     {
+      "eventAction": "click banner - dynamic channel shop",
+      "eventCategory": "os microsite",
+      "event": "select_content",
+      "sessionIris" : ".*",
+      "promotions": [{
+        "item_id": ".*_.*_.*",
+        "creative_slot": ".*",
+        "creative_name": ".*",
+        "item_name": "/official-store/.* - dynamic channel shop - .* - .*"
+      }],
+      "eventLabel": "dynamic channel shop - .* - .* - .* - .*",
+      "businessUnit" : "home & browse",
+      "userId" : ".*",
+      "currentSite" : "tokopediamarketplace",
+      "trackerId": "19948"
+    },
+    {
+      "eventAction": "impression banner - dynamic channel shop",
+      "eventCategory": "os microsite",
+      "event": "view_item",
+      "sessionIris" : ".*",
+      "promotions": [{
+        "item_id": ".*_.*_.*",
+        "creative_slot": ".*",
+        "creative_name": ".*",
+        "item_name": "/official-store/.* - dynamic channel shop - .* - .*"
+      }],
+      "eventLabel": "dynamic channel shop - .* - .* - .* - .*",
+      "businessUnit" : "home & browse",
+      "userId" : ".*",
+      "currentSite" : "tokopediamarketplace",
+      "trackerId": "19949"
+    },
+
+
+    {
       "eventCategory": ".*",
       "event": "select_content",
       "eventAction": "click - shop - all brands - login|click - shop - all brands - nonlogin",
@@ -322,39 +358,6 @@
       }],
       "eventLabel": ".*"
     },
-    {
-      "eventCategory": "os microsite",
-      "event": "view_item",
-      "eventAction": "impression banner - dynamic channel shop",
-      "sessionIris" : ".*",
-      "promotions": [{
-        "item_id": ".*_.*",
-        "creative_slot": ".*",
-        "creative_name": ".*",
-        "creative_url": ".*",
-        "item_name": "/official-store/.* - dynamic channel shop - .* - Android Featured Shop"
-      }],
-      "eventLabel": "dynamic channel shop - .* - Android Featured Shop - .*",
-      "businessUnit" : "home & browse",
-      "userId" : ".*",
-      "currentSite" : "tokopediamarketplace"
-    },
-    {
-      "eventCategory": "os microsite",
-      "event": "select_content",
-      "eventAction": "click banner - dynamic channel shop",
-      "sessionIris" : ".*",
-      "promotions": [{
-        "item_id": ".*_.*",
-        "creative_slot": ".*",
-        "creative_name": ".*",
-        "creative_url": ".*",
-        "item_name": "/official-store/.* - dynamic channel shop - .* - Android Featured Shop"
-      }],
-      "eventLabel": "dynamic channel shop - .* - Android Featured Shop - .*",
-      "businessUnit" : "home & browse",
-      "userId" : ".*",
-      "currentSite" : "tokopediamarketplace"
-    }
+
   ]
 }

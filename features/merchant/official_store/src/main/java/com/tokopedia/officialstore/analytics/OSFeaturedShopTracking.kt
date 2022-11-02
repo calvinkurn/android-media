@@ -11,6 +11,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_VIEW
 object OSFeaturedShopTracking: BaseTrackerConst() {
     private const val VALUE_FEATURED_SHOP = "dynamic channel shop"
     private const val VALUE_TRACKER_ID_CLICK_CATEGORY = "19948"
+    private const val VALUE_TRACKER_ID_IMPRESSION_CATEGORY = "19949"
 
     // Row 31
     fun getEventClickShopWidget(
@@ -68,6 +69,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)
+            .appendCustomKeyValue(TrackerId.KEY, VALUE_TRACKER_ID_IMPRESSION_CATEGORY)
             .build() as HashMap<String, Any>
     }
 }
