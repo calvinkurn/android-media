@@ -39,7 +39,6 @@ import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.utils.VideoDurationRetriever
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey.PICKER_TO_EDITOR
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -158,7 +157,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
         if (pickerParam.isEditorEnabled()) {
             val isEditorAllowed =
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(PICKER_TO_EDITOR) == PICKER_TO_EDITOR
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(PICKER_TO_EDITOR_ROLLENCE) == PICKER_TO_EDITOR_ROLLENCE
 
             if (!isEditorAllowed) {
                 pickerParam.withoutEditor()
