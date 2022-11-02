@@ -20,6 +20,7 @@ class DefaultTopChatWebSocket @Inject constructor(
 
     var webSocket: WebSocket? = null
     private var isDestroyed = false
+    private var hasConnection = false
 
     override fun connectWebSocket(listener: WebSocketListener) {
         if (isDestroyed) return
@@ -33,6 +34,14 @@ class DefaultTopChatWebSocket @Inject constructor(
 
     override fun destroy() {
         isDestroyed = true
+    }
+
+    override fun connect(isWebSocketConnected: Boolean) {
+        hasConnection = isWebSocketConnected
+    }
+
+    override fun hasConnection(): Boolean {
+        return hasConnection
     }
 
     override fun sendPayload(wsPayload: String) {

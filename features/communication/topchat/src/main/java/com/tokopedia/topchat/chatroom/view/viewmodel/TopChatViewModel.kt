@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
+import android.util.Log
 import androidx.collection.ArrayMap
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -273,9 +274,30 @@ open class TopChatViewModel @Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
+        chatWebSocket.connect(false)
         chatWebSocket.close()
         chatWebSocket.destroy()
         cancel()
+    }
+
+    /**
+     * If user hide bubble chat, close WebSocket
+     */
+    fun onStop(isFromBubble: Boolean) {
+        if (isFromBubble) {
+            chatWebSocket.close()
+        }
+    }
+
+    /**
+     * If user re-open bubble chat &&
+     * user has connection before, then reconnect
+     * If user does not have any connection before, skip
+     */
+    fun onResume(isFromBubble: Boolean) {
+        if (isFromBubble && chatWebSocket.hasConnection()) {
+            retryConnectWebSocket()
+        }
     }
 
     fun connectWebSocket() {
@@ -284,6 +306,7 @@ open class TopChatViewModel @Inject constructor(
                 Timber.d("$TAG - onOpen")
                 handleOnOpenWebSocket()
                 markAsRead()
+                chatWebSocket.connect(true) // flag connect
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
