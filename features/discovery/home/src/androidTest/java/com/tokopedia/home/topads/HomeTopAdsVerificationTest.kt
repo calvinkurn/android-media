@@ -190,7 +190,7 @@ class HomeTopAdsVerificationTest {
 //                    parentView.contentDescription = tempContentDescription
 //                }
 
-                waitForData()
+//                waitForData()
 
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
@@ -219,7 +219,7 @@ class HomeTopAdsVerificationTest {
 //                    ).perform(ViewActions.swipeDown())
 //                    parentView.contentDescription = tempContentDescription
 //                }
-                waitForData()
+//                waitForData()
 
                 val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.rv_product)
                 val childItemCount = childRecyclerView.adapter?.itemCount?:0
