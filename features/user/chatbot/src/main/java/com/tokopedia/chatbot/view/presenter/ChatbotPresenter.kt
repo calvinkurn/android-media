@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -14,6 +15,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
@@ -24,6 +26,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.Attachment
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
@@ -114,6 +117,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOURCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.view.util.Attachment34RenderType
+import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
@@ -375,7 +379,8 @@ class ChatbotPresenter @Inject constructor(
         return list
     }
 
-    private fun handleReplyBoxWSToggle() {
+    @VisibleForTesting
+    fun handleReplyBoxWSToggle() {
         val dynamicAttachmentContents =
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
@@ -387,18 +392,10 @@ class ChatbotPresenter @Inject constructor(
         ) {
             when (replyBoxAttribute?.contentCode) {
                 TYPE_BIG_REPLY_BOX -> {
-                    val bigReplyBoxContent = Gson().fromJson(
-                        replyBoxAttribute.dynamicContent,
-                        BigReplyBoxAttribute::class.java
-                    )
-                    handleBigReplyBoxWS(bigReplyBoxContent)
+                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
                 }
                 TYPE_SMALL_REPLY_BOX -> {
-                    val smallReplyBoxContent = Gson().fromJson(
-                        replyBoxAttribute.dynamicContent,
-                        SmallReplyBoxAttribute::class.java
-                    )
-                    handleSmallReplyBoxWS(smallReplyBoxContent)
+                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
                 }
                 else -> {
                     //TODO need to show fallback message
@@ -409,6 +406,22 @@ class ChatbotPresenter @Inject constructor(
 
     }
 
+    private fun convertToBigReplyBoxData(dynamicContent: String?) {
+        val bigReplyBoxContent = Gson().fromJson(
+            dynamicContent,
+            BigReplyBoxAttribute::class.java
+        )
+        handleBigReplyBoxWS(bigReplyBoxContent)
+    }
+
+    private fun convertToSmallReplyBoxData(dynamicContent: String?) {
+        val smallReplyBoxContent = Gson().fromJson(
+            dynamicContent,
+            SmallReplyBoxAttribute::class.java
+        )
+        handleSmallReplyBoxWS(smallReplyBoxContent)
+    }
+
     private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
         if (bigReplyBoxContent.isActive) {
             view.setBigReplyBoxTitle(bigReplyBoxContent.title, bigReplyBoxContent.placeholder)
@@ -417,6 +430,44 @@ class ChatbotPresenter @Inject constructor(
 
     private fun handleSmallReplyBoxWS(smallReplyBoxContent: SmallReplyBoxAttribute) {
         view.handleSmallReplyBox(smallReplyBoxContent.isHidden)
+    }
+
+    fun processDynamicAttachmentFromHistory(chatroom: ChatroomViewModel) {
+        chatroom.listChat.forEach {
+            if (it !is FallbackAttachmentUiModel) {
+                return@forEach
+            }
+            if (it.attachmentType != DYNAMIC_ATTACHMENT)
+                return@forEach
+
+            if (it.attachment is Attachment) {
+                val attachment = it.attachment as Attachment
+
+                try {
+                    val dynamicAttachmentContents =
+                        Gson().fromJson(attachment.attributes, DynamicAttachment::class.java)
+
+                    val replyBoxAttribute =
+                        dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+                    if (CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute?.contentCode)) {
+                        when(replyBoxAttribute?.contentCode) {
+                            TYPE_BIG_REPLY_BOX -> {
+                                convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                            }
+                            TYPE_SMALL_REPLY_BOX -> {
+                                convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                            }
+                        }
+
+                        return
+                    }
+
+                } catch (e: JsonSyntaxException) {
+                    return@forEach
+                }
+            }
+        }
     }
 
     private fun onError(): (Throwable) -> Unit {

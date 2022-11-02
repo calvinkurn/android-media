@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
@@ -71,7 +70,6 @@ import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_VIDEO
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.ALLOWED_DYNAMIC_ATTACHMENT_TYPE
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.ChatbotConstant.VIDEO_URL
@@ -149,6 +147,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
+import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -231,12 +230,8 @@ class ChatbotFragment :
     private var _viewBinding: FragmentChatbotBinding? = null
     private fun getBindingView() = _viewBinding!!
 
-    lateinit var replyEditText: EditText
-    lateinit var replyEditTextContainer: LinearLayout
-
     lateinit var mCsatResponse: WebSocketCsatResponse
     lateinit var attribute: Attributes
-    private var isBackAllowed = true
     private var ticker: Ticker? = null
     private var dateIndicator: Typography? = null
     private var dateIndicatorContainer: CardView? = null
@@ -564,6 +559,8 @@ class ChatbotFragment :
         ticker = getBindingView().chatbotTicker
         dateIndicator = getBindingView().dateIndicator
         dateIndicatorContainer = getBindingView().dateIndicatorContainer
+        attachmentMenuRecyclerView = getBindingView().rvAttachmentMenu
+
 
         //TODO fix guideline issue
  //       guideline = getBindingView().composeArea.guidelineReplyBubble
@@ -582,11 +579,7 @@ class ChatbotFragment :
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
         chatbotAdapter = adapter as ChatbotAdapter
 
-        getBindingView().chatbotViewHelpRate.btnInactive1.setOnClickListener(this@ChatbotFragment)
-        getBindingView().chatbotViewHelpRate.btnInactive2.setOnClickListener(this@ChatbotFragment)
-        getBindingView().chatbotViewHelpRate.btnInactive3.setOnClickListener(this@ChatbotFragment)
-        getBindingView().chatbotViewHelpRate.btnInactive4.setOnClickListener(this@ChatbotFragment)
-        getBindingView().chatbotViewHelpRate.btnInactive5.setOnClickListener(this@ChatbotFragment)
+        attachListenersForRating()
 
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
@@ -601,6 +594,15 @@ class ChatbotFragment :
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
         }
     }
+
+    private fun attachListenersForRating() {
+        getBindingView().chatbotViewHelpRate.btnInactive1.setOnClickListener(this@ChatbotFragment)
+        getBindingView().chatbotViewHelpRate.btnInactive2.setOnClickListener(this@ChatbotFragment)
+        getBindingView().chatbotViewHelpRate.btnInactive3.setOnClickListener(this@ChatbotFragment)
+        getBindingView().chatbotViewHelpRate.btnInactive4.setOnClickListener(this@ChatbotFragment)
+        getBindingView().chatbotViewHelpRate.btnInactive5.setOnClickListener(this@ChatbotFragment)
+    }
+
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
@@ -782,6 +784,7 @@ class ChatbotFragment :
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroomViewModel, chatReplies ->
+            presenter.processDynamicAttachmentFromHistory(chatroomViewModel)
             val list = filterChatList(chatroomViewModel)
 
             updateViewData(chatroomViewModel)
@@ -1782,7 +1785,7 @@ class ChatbotFragment :
                 val replyBoxAttribute =
                     dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
-                if (!checkDynamicAttachmentValidility(replyBoxAttribute?.contentCode))
+                if (!CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute?.contentCode))
                     return false
 
             } catch (e: JsonSyntaxException) {
@@ -1790,12 +1793,6 @@ class ChatbotFragment :
             }
         }
         return true
-    }
-
-    private fun checkDynamicAttachmentValidility(contentCode : Int?) : Boolean {
-        if(contentCode == null)
-            return false
-        return ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
     }
 
     private fun onSuccessGetTopChatData(replyTime: String = "", fromOnClick: Boolean = false): (ChatroomViewModel, ChatReplies) -> Unit {
