@@ -26,7 +26,6 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
-import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
@@ -397,7 +396,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
                 } else {
                     // Check if channel is read only
-                    if (channel.readOnly || (channel.readModeStartsAt?: 0) < System.currentTimeMillis()) {
+                    if (channel.readOnly || (channel.readModeStartsAt?: 0) > System.currentTimeMillis()) {
                         // Hide reply component
                         setupReplySection(
                             false,
@@ -418,10 +417,10 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     private fun setupToolbarData(headerUiModel: TokoChatHeaderUiModel) {
         getTokoChatHeader()?.run {
-            val userTitle = findViewById<Typography>(R.id.tokochat_text_user_title)
-            val subTitle = findViewById<Typography>(R.id.tokochat_text_user_subtitle)
-            val imageUrl = findViewById<ImageUnify>(R.id.tokochat_user_avatar)
-            val callMenu = findViewById<IconUnify>(R.id.tokochat_icon_header_menu)
+            val userTitle = findViewById<Typography>(com.tokopedia.tokochat_common.R.id.tokochat_text_user_title)
+            val subTitle = findViewById<Typography>(com.tokopedia.tokochat_common.R.id.tokochat_text_user_subtitle)
+            val imageUrl = findViewById<ImageUnify>(com.tokopedia.tokochat_common.R.id.tokochat_user_avatar)
+            val callMenu = findViewById<IconUnify>(com.tokopedia.tokochat_common.R.id.tokochat_icon_header_menu)
 
             userTitle.text = headerUiModel.title
             subTitle.text = headerUiModel.subTitle
@@ -431,7 +430,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             val sourceLogoUrl = getSourceLogoUrl(source)
 
             if (sourceLogoUrl.isNotBlank()) {
-                val sourceLogo = findViewById<ImageUnify>(R.id.tokochat_iv_source_logo)
+                val sourceLogo = findViewById<ImageUnify>(com.tokopedia.tokochat_common.R.id.tokochat_iv_source_logo)
                 sourceLogo.setImageUrl(sourceLogoUrl)
             }
 
