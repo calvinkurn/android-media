@@ -10,7 +10,7 @@ import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseC
 
 object ChooseProductUiMapper {
 
-    private const val MAX_PRODUCT_SELECTION = 20
+    private const val MAX_PRODUCT_SELECTION = 40
 
     private fun List<CriteriaSelection>.validateMax(): Boolean {
         return !any { it.selectionCount >= it.selectionCountMax }
