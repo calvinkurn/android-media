@@ -84,7 +84,7 @@ import kotlin.collections.HashMap
 /**
  * Created by Rafli Syam 20/07/2020
  */
-class UniversalShareBottomSheet : BottomSheetUnify() {
+open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     companion object {
         @LayoutRes
@@ -142,9 +142,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private var isAffiliateUser: String = KEY_GENERAL_USER
 
         //Image Type
-        const val KEY_NO_IMAGE = "no image"
+        const val KEY_NO_IMAGE = "no_image"
         const val KEY_IMAGE_DEFAULT = "default"
-        const val KEY_CONTEXTUAL_IMAGE = "contextual image"
+        const val KEY_CONTEXTUAL_IMAGE = "contextual_image"
         const val KEY_PRODUCT_ID = "productId";
 
 
@@ -344,6 +344,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         inject()
     }
+    private var affiliateListener: ((userType: String) -> Unit)? = null
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -491,6 +493,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
             showAffiliateRegister(generateAffiliateLinkEligibility, deeplink)
         }
+        affiliateListener?.invoke(isAffiliateUser)
     }
 
     private fun isShowAffiliateComission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
@@ -515,8 +518,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
             affiliateCommissionTextView?.visibility = View.VISIBLE
-            tracker.viewOnAffiliateRegisterTicker(true, affiliateQueryData?.product?.productID
-                ?: "")
+            tracker.viewOnAffiliateRegisterTicker(true, affiliateQueryData?.getIdFactory() ?: "", affiliateQueryData?.pageType ?: "")
             isAffiliateUser = KEY_AFFILIATE_USER
             return
         }
@@ -524,15 +526,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String) {
-        affiliateRegisterContainer?.visible()
         generateAffiliateLinkEligibility.banner?.let { banner ->
             if (banner.title.isBlank() && banner.message.isBlank()) return
 
             affiliateRegisterContainer?.visible()
-            tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.product?.productID
-                ?: "")
+            tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.getIdFactory() ?: "", affiliateQueryData?.pageType ?: "")
+
+            val id = affiliateQueryData?.getIdFactory() ?: ""
+            val page = affiliateQueryData?.pageType ?: ""
             affiliateRegisterContainer?.setOnClickListener { _ ->
-                tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
+                tracker.onClickRegisterTicker(false, id, page)
                 dismiss()
                 RouteManager.route(context, Uri.parse(ApplinkConst.AFFILIATE_ONBOARDING).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString())
             }
@@ -546,9 +549,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 affiliateRegisterTitle?.text = Html.fromHtml(banner.title)
                 affiliateRegisterMsg?.text = Html.fromHtml(banner.message)
             }
+
+            isAffiliateUser = KEY_GENERAL_USER
         }
         affiliateQueryData = null
     }
+
+    fun setOnGetAffiliateData(callback: (userType: String) -> Unit) {
+        affiliateListener = callback
+    }
+
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment) {
         parentFragmentContainer = fragment
@@ -1005,6 +1015,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun executeShareOptionClick(shareModel: ShareModel) {
+        setIfAffiliate(shareModel)
         if (getImageFromMedia) {
             when (sourceId) {
                 ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
@@ -1019,7 +1030,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
                 }
             }
-
         } else {
             executeSharingFlow(shareModel)
         }
@@ -1062,11 +1072,14 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
+        bottomSheetListener?.onShareOptionClicked(shareModel)
+    }
+
+    private fun setIfAffiliate(shareModel: ShareModel) {
         if (affiliateQueryData != null &&
             affiliateCommissionTextView?.visibility == View.VISIBLE) {
             shareModel.isAffiliate = true
         }
-        bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 
     private fun transformOgImageURL(imageURL: String): String {
@@ -1124,6 +1137,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     override fun dismiss() {
         try {
             onViewReadyAction = null
+            affiliateListener = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {
@@ -1141,6 +1155,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     override fun onDismiss(dialog: DialogInterface) {
         try {
             onViewReadyAction = null
+            affiliateListener = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {

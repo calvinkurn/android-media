@@ -488,6 +488,9 @@ data class DataItem(
         @SerializedName("widget_home_banner")
         val widgetHomeBanner: String? = "",
 
+        @SerializedName("gtm_item_name")
+        var gtmItemName : String? = "",
+
         @field:SerializedName("products")
         val products: List<ProductsItem?>? = null,
 

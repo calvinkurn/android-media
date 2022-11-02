@@ -38,6 +38,11 @@ sealed interface MiniCartSource {
             get() = "tokonow_recom_page"
     }
 
+    object TokonowRecipe: MiniCartSource {
+        override val value: String
+            get() = "tokonow_recipe"
+    }
+
     object PDPRecommendationWidget: MiniCartSource {
         override val value: String
             get() = "pdp_recom_widget"

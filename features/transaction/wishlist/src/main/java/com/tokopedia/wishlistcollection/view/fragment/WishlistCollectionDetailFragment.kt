@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -29,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.config.GlobalConfig
@@ -187,6 +189,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
     private var isAturMode = false
+    private var isCTAResetOfferFilterClicked = false
     private var bottomSheetCollectionSettings = BottomSheetWishlistCollectionSettings()
     private var customToolbarView: View? = null
 
@@ -1583,11 +1586,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         if (filterItem.isActive) {
             if (filterItem.name == FILTER_OFFERS) {
                 filterBottomSheet.setAction(CTA_RESET) {
+                    isCTAResetOfferFilterClicked = true
+                    listOptionIdSelected.clear()
+                    listTitleCheckboxIdSelected.clear()
                     filterBottomSheetAdapter.isResetCheckbox = true
                     filterBottomSheetAdapter.notifyDataSetChanged()
                     filterBottomSheet.showButtonSave()
-                    listOptionIdSelected.clear()
-                    listTitleCheckboxIdSelected.clear()
                 }
             } else {
                 filterBottomSheet.setAction(CTA_RESET) {
@@ -1622,6 +1626,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         nameSelected = FILTER_OFFERS
                     }
                 }
+
                 if (isChecked) {
                     nameSelected = name
                     if (!listOptionIdSelected.contains(optionId)) {
@@ -1631,6 +1636,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         listTitleCheckboxIdSelected.add(titleCheckbox)
                     }
                 } else {
+                    if (isCTAResetOfferFilterClicked) {
+                        isCTAResetOfferFilterClicked = false
+                        paramGetCollectionItems.sortFilters.forEach { sortFilterParam ->
+                            if (sortFilterParam.name == FILTER_OFFERS) {
+                                listOptionIdSelected.clear()
+                            }
+                        }
+                    }
+
                     listOptionIdSelected.remove(optionId)
                     listTitleCheckboxIdSelected.remove(titleCheckbox)
                 }
@@ -1651,8 +1665,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
 
             override fun onSaveCheckboxSelection() {
+                paramGetCollectionItems.sortFilters.removeAll { it.name == nameSelected }
                 if (listOptionIdSelected.isNotEmpty()) {
-                    paramGetCollectionItems.sortFilters.removeAll { it.name == nameSelected }
                     paramGetCollectionItems.sortFilters.add(
                         GetWishlistCollectionItemsParams.WishlistSortFilterParam(
                             name = nameSelected,
@@ -2076,10 +2090,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         )
 
         activity?.let {
-            val intent = if (wishlistItem.url.isNotEmpty()) {
-                RouteManager.getIntent(it, wishlistItem.url)
+            val intent: Intent
+            if (wishlistItem.url.isNotEmpty()) {
+                intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+                intent.data = Uri.parse(wishlistItem.url)
             } else {
-                RouteManager.getIntent(
+                intent = RouteManager.getIntent(
                     it,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     wishlistItem.id
@@ -2824,8 +2840,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
-        } else if (requestCode == REQUEST_CODE_GO_TO_PDP
-            || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST
+        } else if (requestCode ==  REQUEST_CODE_GO_TO_SEMUA_WISHLIST
             || requestCode == EDIT_WISHLIST_COLLECTION_REQUEST_CODE
             && data != null) {
             val isFinishActivity = data?.getBooleanExtra(
@@ -2856,7 +2871,18 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             } else {
+                doRefresh()showToasterFromIntent(data)
+        } else if (requestCode == REQUEST_CODE_GO_TO_COLLECTION_DETAIL) {
+            doRefresh()
+        } else if (requestCode == REQUEST_CODE_GO_TO_PDP) {
+            if (resultCode == Activity.RESULT_OK && data?.getBooleanExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_NEED_REFRESH, false) == true) {
                 doRefresh()
+            }
+            showToasterFromIntent(data)
+        }
+    }
+
+    private fun showToasterFromIntent(data: Intent?) {
                 val isSuccess = data?.getBooleanExtra(
                     ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
                     false
@@ -2884,6 +2910,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             } else {
                 activity?.finish()
             }
+        if (isSuccess == true) {
+            messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
+        } else {
+            messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
         }
     }
 
