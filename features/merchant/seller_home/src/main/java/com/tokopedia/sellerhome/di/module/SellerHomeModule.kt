@@ -15,6 +15,7 @@ import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
 import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSEImpl
+import com.tokopedia.sellerhomecommon.sse.mapper.WidgetSSEMapper
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -90,9 +91,11 @@ class SellerHomeModule {
     @SellerHomeScope
     @Provides
     fun provideSellerHomeSSE(
-        dispatchers: CoroutineDispatchers,
-        userSession: UserSessionInterface
+        @ApplicationContext context: Context,
+        sseMapper: WidgetSSEMapper,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers
     ): SellerHomeWidgetSSE {
-        return SellerHomeWidgetSSEImpl(dispatchers, userSession)
+        return SellerHomeWidgetSSEImpl(context, userSession, sseMapper, dispatchers)
     }
 }

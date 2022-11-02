@@ -1,7 +1,11 @@
 package com.tokopedia.sellerhomecommon.sse
 
+import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analyticsdebugger.debugger.SSELogger
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
+import com.tokopedia.sellerhomecommon.sse.mapper.WidgetSSEMapper
 import com.tokopedia.sellerhomecommon.sse.model.WidgetSSEModel
 import com.tokopedia.sse.OkSse
 import com.tokopedia.sse.ServerSentEvent
@@ -13,19 +17,24 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import okhttp3.Request
 import okhttp3.Response
+import timber.log.Timber
 
 /**
  * Created by @ilhamsuaib on 10/10/22.
  */
 
 class SellerHomeWidgetSSEImpl(
-    private val dispatchers: CoroutineDispatchers,
-    private val userSession: UserSessionInterface
+    private val context: Context,
+    private val userSession: UserSessionInterface,
+    private val widgetSseMapper: WidgetSSEMapper,
+    private val dispatchers: CoroutineDispatchers
 ) : SellerHomeWidgetSSE {
 
     companion object {
+        private const val LOG_KEY = "SellerHomeWidgetSSE"
         private const val DATA_KEY_SEPARATOR = ","
         private const val HEADER_AUTHORIZATION = "Accounts-Authorization"
         private const val HEADER_X_DEVICE = "X-Device"
@@ -37,6 +46,7 @@ class SellerHomeWidgetSSEImpl(
     private var sseFlow = MutableSharedFlow<WidgetSSEModel>(extraBufferCapacity = 100)
 
     override fun connect(page: String, dataKeys: List<String>) {
+        initLogger()
         printLog("SSE Connecting...")
 
         val baseSseUrl = getBaseSseUrl()
@@ -58,8 +68,10 @@ class SellerHomeWidgetSSEImpl(
         sse?.close()
     }
 
-    override fun listen(): Flow<WidgetSSEModel> {
-        return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io)
+    override fun listen(): Flow<BaseDataUiModel?> {
+        return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io).map {
+            widgetSseMapper.mappingWidget(it.event, it.message)
+        }
     }
 
     private fun getBaseSseUrl(): String {
@@ -74,7 +86,7 @@ class SellerHomeWidgetSSEImpl(
         return object : ServerSentEvent.Listener {
 
             override fun onOpen(sse: ServerSentEvent, response: Response) {
-                printLog("SellerHomeWidgetSSE : onOpen")
+                printLog("onOpen")
             }
 
             override fun onMessage(
@@ -83,16 +95,18 @@ class SellerHomeWidgetSSEImpl(
                 event: String,
                 message: String
             ) {
-                printLog("SellerHomeWidgetSSE : onMessage -> $event")
-                sseFlow.tryEmit(WidgetSSEModel(event = event, message = message))
+                printLog("onMessage -> $event -> $message")
+                if (widgetSseMapper.getStatusIsValidDataKey(event)) {
+                    sseFlow.tryEmit(WidgetSSEModel(event = event, message = message))
+                }
             }
 
             override fun onComment(sse: ServerSentEvent, comment: String) {
-                printLog("SellerHomeWidgetSSE : onComment")
+                printLog("onComment")
             }
 
             override fun onRetryTime(sse: ServerSentEvent, milliseconds: Long): Boolean {
-                printLog("SellerHomeWidgetSSE : onRetryTime : $milliseconds")
+                printLog("onRetryTime : $milliseconds")
                 return true
             }
 
@@ -101,22 +115,27 @@ class SellerHomeWidgetSSEImpl(
                 throwable: Throwable,
                 response: Response?
             ): Boolean {
-                printLog("SellerHomeWidgetSSE : onRetryError : ${throwable.message}")
+                printLog("onRetryError : ${throwable.message}")
                 return true
             }
 
             override fun onClosed(sse: ServerSentEvent) {
-                printLog("SellerHomeWidgetSSE : onClosed")
+                printLog("onClosed")
             }
 
             override fun onPreRetry(sse: ServerSentEvent, originalRequest: Request): Request {
-                printLog("SellerHomeWidgetSSE : onPreRetry")
+                printLog("onPreRetry")
                 return request
             }
         }
     }
 
+    private fun initLogger() {
+        SSELogger.getInstance(context).init(LOG_KEY)
+    }
+
     private fun printLog(s: String) {
-        println(s)
+        SSELogger.getInstance(context).send(s)
+        println("$LOG_KEY : $s")
     }
 }

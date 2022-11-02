@@ -52,6 +52,12 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
+    if(rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
+
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.network)
 
