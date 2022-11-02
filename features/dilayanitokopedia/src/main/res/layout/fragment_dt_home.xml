@@ -33,11 +33,10 @@
         app:toolbarInvertSearchBarColor="true"
         app:toolbarPageName="/" />
 
-    <FrameLayout
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/header_comp_holder"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/black"
+        android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_view" />

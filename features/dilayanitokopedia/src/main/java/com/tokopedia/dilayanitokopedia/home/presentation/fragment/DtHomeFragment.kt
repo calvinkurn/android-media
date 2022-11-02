@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -30,16 +31,18 @@ import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companio
 import com.tokopedia.dilayanitokopedia.home.di.component.DaggerHomeComponent
 import com.tokopedia.dilayanitokopedia.home.domain.model.Data
 import com.tokopedia.dilayanitokopedia.home.domain.model.SearchPlaceholder
+import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtAnchorTabAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapterTypeFactory
+import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewHolder
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewModel
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtDynamicLegoBannerCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtHomeLeftCarouselCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeViewModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewHolder
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
@@ -72,7 +75,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 /**
  * Created by irpan on 07/09/22.
@@ -160,7 +162,7 @@ class DtHomeFragment : Fragment() {
         initUiVariable()
         initNavToolbar()
         initRecyclerView()
-
+        initAnchorTabMenu()
         setupStatusBar()
         updateCurrentPageLocalCacheModelData()
 
@@ -172,6 +174,32 @@ class DtHomeFragment : Fragment() {
          * Remove later
          */
         showLayout()
+
+    }
+
+    private fun initAnchorTabMenu() {
+        //data anchor tab
+
+        val dataDummyAnchorTab = mutableListOf<AnchorTabUiModel>()
+        for (number in 1..10) {
+            dataDummyAnchorTab.add(AnchorTabUiModel(number, "title$number", ""))
+        }
+
+
+        //init adapter
+        // update data adapter
+        val anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
+        anchorTabAdapter.addList(dataDummyAnchorTab)
+        binding?.headerCompHolder?.layoutManager =  LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding?.headerCompHolder?.adapter = anchorTabAdapter
+    }
+
+    private fun anchorTabListener(): DtAnchorTabAdapter.ManageAddressItemAdapterListener {
+        return object : DtAnchorTabAdapter.ManageAddressItemAdapterListener {
+            override fun onManageAddressEditClicked(peopleAddress: AnchorTabUiModel) {
+            }
+
+        }
 
     }
 
@@ -670,10 +698,11 @@ class DtHomeFragment : Fragment() {
 
 
     private fun setupAnchorTabComponent(homeLayoutListUiModel: HomeLayoutListUiModel) {
-        if(anchorViewHolder == null) {
+        if (anchorViewHolder == null) {
             val view = layoutInflater.inflate(R.layout.dt_anchor_tabs, null, false)
             anchorViewHolder = AnchorTabsViewHolder(view, this)
-            val viewModel = AnchorTabsViewModel(context?.applicationContext as Application,
+            val viewModel = AnchorTabsViewModel(
+                context?.applicationContext as Application,
 //                homeLayoutListUiModel,
                 0,
             )
@@ -686,9 +715,9 @@ class DtHomeFragment : Fragment() {
 
     private fun setupObserveAndShowAnchor() {
 ////        if (!stickyHeaderShowing)
-            anchorViewHolder?.let {
+        anchorViewHolder?.let {
 //                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers())
-                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+            anchorViewHolder?.setUpObservers(viewLifecycleOwner)
 //                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
 //                    mAnchorHeaderView.removeAllViews()
 //                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
@@ -696,7 +725,7 @@ class DtHomeFragment : Fragment() {
 //                    )
 //                    mAnchorHeaderView.addView(it.itemView)
 //                }
-            }
+        }
     }
 
     private fun createTopComponentCallback(): HomeComponentListener? {
@@ -749,7 +778,7 @@ class DtHomeFragment : Fragment() {
                 position: Int,
                 applink: String
             ) {
-               onActionLinkClicked(channelGrid.applink)
+                onActionLinkClicked(channelGrid.applink)
             }
 
             override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -789,7 +818,7 @@ class DtHomeFragment : Fragment() {
 
 
     private fun createSlideBannerCallback(): BannerComponentListener? {
-       return object :BannerComponentListener{
+        return object : BannerComponentListener {
             override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
                 if (userSession.isLoggedIn) {
                     openApplink(channelGrid.applink)
@@ -860,10 +889,12 @@ class DtHomeFragment : Fragment() {
     private val homeMainToolbarHeight: Int
         get() {
             val defaultHeight = context?.resources?.getDimensionPixelSize(
-                R.dimen.tokopedianow_default_toolbar_status_height).orZero()
+                R.dimen.tokopedianow_default_toolbar_status_height
+            ).orZero()
             val height = (navToolbar?.height ?: defaultHeight)
             val padding = context?.resources?.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).orZero()
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
+            ).orZero()
 
             return height + padding
         }
