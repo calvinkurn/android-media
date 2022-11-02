@@ -143,6 +143,14 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
+            OPEN_READY_TO_SHIP -> {
+                val intent = RouteManager.getIntent(this, ApplinkConst.SELLER_SHIPMENT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            OPEN_NEW_ORDER_LIST -> {
+                val intent = RouteManager.getIntent(this, ApplinkConst.SELLER_NEW_ORDER).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
         }
     }
 
@@ -346,6 +354,9 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
         const val ACCEPT_BULK_ORDER_PATH = "/accept-bulk-order"
         const val TAG = "DataLayerServiceListener"
         const val OPEN_LOGIN_PAGE = "/open-login-page"
+
+        const val OPEN_READY_TO_SHIP = "/open-ready-to-ship"
+        const val OPEN_NEW_ORDER_LIST = "/open-new-order-list"
         private val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
     }
 }

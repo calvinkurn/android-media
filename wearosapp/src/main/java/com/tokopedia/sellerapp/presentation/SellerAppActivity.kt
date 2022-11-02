@@ -102,10 +102,15 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                         stateMessage = mutableStateOf(phoneStateFlow.value.getMessageBasedOnState()),
                         stateBtnText = if (phoneStateFlow.value == STATE.COMPANION_NOT_LOGIN) {
                             mutableStateOf(stringResource(id = R.string.state_button_login_in_app))}
+                        else if (phoneStateFlow.value == STATE.COMPANION_NOT_INSTALLED) {
+                            mutableStateOf(stringResource(id = R.string.state_button_install_app))}
                         else {
                             mutableStateOf(stringResource(id = R.string.state_button_retry))},
                         stateAction = if (phoneStateFlow.value == STATE.COMPANION_NOT_LOGIN) { mutableStateOf({
                             sharedViewModel.openLoginPageInApp()
+                            finish()
+                        }) } else if (phoneStateFlow.value == STATE.COMPANION_NOT_INSTALLED) { mutableStateOf({
+                            sharedViewModel.openAppInStoreOnPhone()
                             finish()
                         }) } else { mutableStateOf({
                             phoneConnectionFailed.value = false

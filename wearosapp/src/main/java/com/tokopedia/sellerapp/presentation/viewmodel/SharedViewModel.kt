@@ -22,6 +22,7 @@ import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
+import com.tokopedia.sellerapp.util.MenuHelper
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
@@ -220,6 +221,18 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    fun openNewOrderList() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_NEW_ORDER_LIST)
+        }
+    }
+
+    fun openReadyToShip() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_READY_TO_SHIP)
+        }
+    }
+
     fun openLoginPageInApp() {
         launch {
             clientMessageDatasource.sendMessagesToNodes(Action.OPEN_LOGIN_PAGE)
@@ -244,6 +257,14 @@ class SharedViewModel @Inject constructor(
         launchCatchError(block = {
             _acceptBulkOrder.emit(UiState.Success())
         }){
+        }
+    }
+
+    fun openOrderPageBasedOnType(orderType: String) {
+        if (orderType == MenuHelper.DATAKEY_NEW_ORDER) {
+            openNewOrderList()
+        } else {
+            openReadyToShip()
         }
     }
 

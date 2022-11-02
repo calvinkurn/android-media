@@ -99,7 +99,7 @@ fun CreateListNewOrder(
             if (orderType == DATAKEY_NEW_ORDER) {
                 createItemButtonAcceptAllOrder(this, orderList, screenNavigation, sharedViewModel)
             }
-            createItemOpenOnPhone(this)
+            createItemOpenOnPhone(this, orderType, sharedViewModel)
         }
     }
 }
@@ -124,7 +124,7 @@ fun createItemMoreOrder(
     }
 }
 
-fun createItemOpenOnPhone(scalingLazyListScope: ScalingLazyListScope) {
+fun createItemOpenOnPhone(scalingLazyListScope: ScalingLazyListScope, orderType: String, sharedViewModel: SharedViewModel) {
     scalingLazyListScope.item {
         Box(
             modifier = Modifier
@@ -132,7 +132,7 @@ fun createItemOpenOnPhone(scalingLazyListScope: ScalingLazyListScope) {
                 .fillMaxWidth()
                 .height(52.dp)
                 .clickable {
-
+                    sharedViewModel.openOrderPageBasedOnType(orderType)
                 }
                 .background(color = ChipGrayColor),
             contentAlignment = Alignment.Center
