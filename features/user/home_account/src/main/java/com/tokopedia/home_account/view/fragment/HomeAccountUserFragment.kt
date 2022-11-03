@@ -55,6 +55,7 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.data.model.*
@@ -144,6 +145,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     @Inject
     lateinit var tokopediaAnalytics: TokopediaPlusAnalytics
+
+    @Inject
+    lateinit var addVerifyPhoneAnalytics: AddVerifyPhoneAnalytics
 
     @Inject
     lateinit var biometricTracker: BiometricTracker
@@ -1636,22 +1640,20 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun isShown(isShown: Boolean, pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) { }
 
-    override fun onClick(
-        pageSource: String,
-        tokopediaPlusDataModel: TokopediaPlusDataModel
-    ) {
+    override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
         tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
-
         val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
         startActivity(intent)
     }
 
     override fun onAddPhoneClicked() {
+        addVerifyPhoneAnalytics.sendClickAddPhoneNumberEvent()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE)
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
     override fun onVerifyPhoneCLicked(phoneNumber: String) {
+        addVerifyPhoneAnalytics.sendClickVerifiedPhoneNumberEvent()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE_WITH, phoneNumber)
         startActivityForResult(intent, REQUEST_CODE_VERIFY_PHONE)
     }

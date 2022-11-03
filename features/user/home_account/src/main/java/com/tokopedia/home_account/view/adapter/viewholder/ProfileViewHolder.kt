@@ -23,9 +23,12 @@ import com.tokopedia.home_account.view.SpanningLinearLayoutManager
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
@@ -145,7 +148,12 @@ class ProfileViewHolder(
             labelPhoneVerify.hide()
             linkAccountProfileBtn.apply {
                 text = ADD_PHONE
-                setDrawable(MethodChecker.getDrawable(context, R.drawable.ic_protection))
+                setDrawable(getIconUnifyDrawable(
+                    context,
+                    IconUnify.PROTECTION,
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)),
+                    UnifyButton.DrawablePosition.LEFT
+                )
                 setOnClickListener {
                     listener.onAddPhoneClicked()
                 }
@@ -159,13 +167,15 @@ class ProfileViewHolder(
             labelPhoneVerify.show()
             linkAccountProfileBtn.apply {
                 text = VERIFY_PHONE
-                setDrawable(MethodChecker.getDrawable(context, R.drawable.ic_protection))
+                setDrawable(getIconUnifyDrawable(
+                    context,
+                    IconUnify.PROTECTION,
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)),
+                    UnifyButton.DrawablePosition.LEFT
+                )
                 setOnClickListener {
                     listener.onVerifyPhoneCLicked(phoneNumber)
                 }
-            }.show()
-            accountUserItemProfilePhone.apply {
-                text = Utils.formatPhoneNumber("089683328209")
             }.show()
         }
     }
