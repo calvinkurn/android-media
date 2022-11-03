@@ -93,6 +93,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                     renderByDefault = true,
                     properties = Properties(targetId = component.targetId.toString(),
                     background = component.properties.background,
+                    backgroundImageUrl = component.properties.backgroundImageURL,
                     dynamic = component.properties.dynamic,
                     categoryDetail = component.properties.categoryDetail))
             if(component.data.isNotEmpty()) {

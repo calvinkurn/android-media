@@ -78,18 +78,28 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             val dataItem = DataItem()
             componentsItem.position = index
             componentsItem.parentComponentId = componentId
-            if(productComponentName == ComponentNames.CategoryBestSeller.componentName) {
-                componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName
-                componentsItem.lihatSemua = LihatSemua(applink = recommendationData.firstOrNull()?.seeMoreAppLink ?: "", header = recommendationData.firstOrNull()?.title ?: "")
-                dataItem.typeProductCard = ComponentNames.ProductCardCarouselItem.componentName
-            }else if(productComponentName == ComponentNames.CLPFeaturedProducts.componentName) {
-                componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName
-                componentsItem.lihatSemua = LihatSemua(applink = recommendationData.firstOrNull()?.seeMoreAppLink ?: "", header = recommendationData.firstOrNull()?.title ?: "")
-                dataItem.typeProductCard = ComponentNames.ProductCardCarouselItem.componentName
-            }
-            else {
-                dataItem.typeProductCard = ComponentNames.ProductCardRevampItem.componentName
-                componentsItem.name = ComponentNames.ProductCardRevampItem.componentName
+            when (productComponentName) {
+                ComponentNames.CategoryBestSeller.componentName -> {
+                    componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName
+                    componentsItem.lihatSemua = LihatSemua(
+                        applink = recommendationData.firstOrNull()?.seeMoreAppLink ?: "",
+                        header = recommendationData.firstOrNull()?.title ?: ""
+                    )
+                    dataItem.typeProductCard = ComponentNames.ProductCardCarouselItem.componentName
+                }
+                ComponentNames.CLPFeaturedProducts.componentName -> {
+                    componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName
+                    componentsItem.lihatSemua = LihatSemua(
+                        applink = recommendationData.firstOrNull()?.seeMoreAppLink ?: "",
+                        header = recommendationData.firstOrNull()?.title ?: "",
+                        subheader = recommendationData.firstOrNull()?.subtitle ?: ""
+                    )
+                    dataItem.typeProductCard = ComponentNames.ProductCardCarouselItem.componentName
+                }
+                else -> {
+                    dataItem.typeProductCard = ComponentNames.ProductCardRevampItem.componentName
+                    componentsItem.name = ComponentNames.ProductCardRevampItem.componentName
+                }
             }
             val dataItems = mutableListOf<DataItem>()
             val labelsGroupList = arrayListOf<LabelsGroup>()
