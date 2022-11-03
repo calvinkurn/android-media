@@ -29,6 +29,7 @@ class TokoChatImageBubbleViewHolder(
         bindBackground(element)
         bindImage(element)
         bindRetryButton(element)
+        bindOnClick(element)
     }
 
     private fun bindImage(element: TokoChatImageBubbleUiModel) {
@@ -58,6 +59,14 @@ class TokoChatImageBubbleViewHolder(
             binding?.tokochatImageBubbleError?.show()
         } else {
             binding?.tokochatImageBubbleError?.hide()
+        }
+    }
+
+    private fun bindOnClick(element: TokoChatImageBubbleUiModel) {
+        binding?.tokochatImageBubble?.setOnClickListener {
+            if (element.isImageReady) {
+                tokoChatImageAttachmentListener.onClickImage(element)
+            }
         }
     }
 

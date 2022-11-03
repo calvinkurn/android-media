@@ -29,6 +29,8 @@ import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
+import com.tokopedia.tokochat.util.TokoChatViewUtil.downloadAndSaveByteArrayImage
+import com.tokopedia.tokochat.util.TokoChatViewUtil.getTokoChatPhotoPath
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -47,7 +49,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
+import java.io.File
 import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
@@ -342,19 +344,35 @@ class TokoChatViewModel @Inject constructor(
     fun getImageWithId(
         imageId: String,
         channelId: String,
-        onSuccess: (TokoChatImageResult, ResponseBody) -> Unit
+        onImageReady: (File?) -> Unit,
+        onError: () -> Unit
     ) {
-        launchCatchError(block = {
+        launchCatchError(context = dispatcher.io, block = {
             val imageUrlResponse = getImageUrlUseCase(
                 TokoChatGetImageUseCase.Param(imageId, channelId)
             )
-            imageUrlResponse.data?.url?.let {
-                val imageResult = getImageUrlUseCase.getImage(it)
-                onSuccess(imageUrlResponse, imageResult)
+            val cachedImage = getTokoChatPhotoPath(generateImageName(imageId, channelId))
+            // If image has never been downloaded, then download
+            if (!cachedImage.exists()) {
+                imageUrlResponse.data?.url?.let {
+                    downloadAndSaveByteArrayImage(
+                        generateImageName(imageId, channelId),
+                        getImageUrlUseCase.getImage(it).byteStream(),
+                        onImageReady,
+                        onError
+                    )
+                }
+            } else { // Else use the downloaded image
+                onImageReady(cachedImage)
             }
         }, onError = {
             _error.value = it
+            onError()
         })
+    }
+
+    private fun generateImageName(imageId: String, channelId: String): String {
+        return "${imageId}_${channelId}"
     }
 
     companion object {

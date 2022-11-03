@@ -1,66 +1,29 @@
 package com.tokopedia.tokochat.util
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.utils.file.FileUtil
+import java.io.File
 import java.io.InputStream
 
 object TokoChatViewUtil {
 
-    fun loadByteArrayImage(
-        context: Context,
-        imageView: ImageView,
+    private const val TOKOCHAT_RELATIVE_PATH = "/TokoChat"
+    private const val JPEG_EXT = ".jpeg"
+
+    fun downloadAndSaveByteArrayImage(
+        fileName: String,
         inputStream: InputStream,
-        onFinishLoading: () -> Unit
+        onImageReady: (File?) -> Unit,
+        onError: () -> Unit
     ) {
         try {
-            Glide.with(context)
-                .asBitmap()
-                .load(inputStream.readBytes())
-                .centerInside()
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .listener(getRequestListenerByteArray(inputStream, onFinishLoading))
-                .into(imageView)
+            val imageResult: File? = writeImageToTokoChatPath(inputStream.readBytes(), fileName)
+            onImageReady(imageResult)
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
+            onError()
         } finally {
             closeInputStream(inputStream)
-        }
-    }
-
-    private fun getRequestListenerByteArray(
-        inputStream: InputStream,
-        onFinishLoading: () -> Unit
-    ): RequestListener<Bitmap> {
-        return object : RequestListener<Bitmap> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                onFinishLoading()
-                closeInputStream(inputStream)
-                return false
-            }
-
-            override fun onResourceReady(
-                resource: Bitmap?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                onFinishLoading()
-                closeInputStream(inputStream)
-                return false
-            }
         }
     }
 
@@ -70,5 +33,30 @@ object TokoChatViewUtil {
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
         }
+    }
+
+    private fun writeImageToTokoChatPath(buffer: ByteArray?, fileName: String): File? {
+        if (buffer != null) {
+            val photo: File = getTokoChatPhotoPath(fileName)
+            if (photo.exists()) {
+                photo.delete()
+            }
+            if (FileUtil.writeBufferToFile(buffer, photo.path)) {
+                return photo
+            }
+        }
+        return null
+    }
+
+    fun getTokoChatPhotoPath(fileName: String): File {
+        return File(getInternalCacheDirectory().absolutePath, fileName + JPEG_EXT)
+    }
+
+    private fun getInternalCacheDirectory(): File {
+        val directory = File(GlobalConfig.INTERNAL_CACHE_DIR, TOKOCHAT_RELATIVE_PATH)
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+        return directory
     }
 }
