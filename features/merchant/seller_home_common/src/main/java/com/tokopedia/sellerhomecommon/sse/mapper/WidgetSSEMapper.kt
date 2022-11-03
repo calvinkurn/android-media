@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.sse.mapper
 
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.mapper.CardMapper
 import com.tokopedia.sellerhomecommon.domain.mapper.MilestoneMapper
@@ -9,6 +10,7 @@ import com.tokopedia.sellerhomecommon.domain.model.MilestoneData
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -40,14 +42,36 @@ class WidgetSSEMapper @Inject constructor(
         return event.matches(Regex(PATTERN))
     }
 
-    private fun getMilestoneData(data: String): MilestoneDataUiModel {
-        val model = Gson().fromJson(data, MilestoneData::class.java)
-        return milestoneMapper.mapToUiModel(model, false)
+    private fun getMilestoneData(data: String): MilestoneDataUiModel? {
+        return try {
+            val model = Gson().fromJson(data, MilestoneData::class.java)
+            val uiModel = milestoneMapper.mapToUiModel(model, false)
+            val isError = uiModel.error.isNotBlank()
+            if (isError) {
+                null
+            } else {
+                uiModel
+            }
+        } catch (e: JsonSyntaxException) {
+            Timber.e(e)
+            null
+        }
     }
 
-    private fun getCardData(data: String): CardDataUiModel {
-        val model = Gson().fromJson(data, CardDataModel::class.java)
-        return cardMapper.mapToCardUiModel(model, false)
+    private fun getCardData(data: String): CardDataUiModel? {
+        return try {
+            val model = Gson().fromJson(data, CardDataModel::class.java)
+            val uiModel = cardMapper.mapToCardUiModel(model, false)
+            val isError = uiModel.error.isNotBlank()
+            if (isError) {
+                null
+            } else {
+                uiModel
+            }
+        } catch (e: JsonSyntaxException) {
+            Timber.e(e)
+            null
+        }
     }
 
     private fun getWidgetType(event: String): String {

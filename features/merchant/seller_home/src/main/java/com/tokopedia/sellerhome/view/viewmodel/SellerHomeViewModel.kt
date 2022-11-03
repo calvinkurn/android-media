@@ -66,7 +66,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -111,7 +110,6 @@ class SellerHomeViewModel @Inject constructor(
         private const val SELLER_HOME_PAGE_NAME = "seller-home"
         private const val SELLER_HOME_SSE = "home"
         private const val TICKER_PAGE_NAME = "seller"
-        private const val SSE_INITIAL_DELAY = 3000L
     }
 
     private var sseJob: Job? = null
@@ -256,16 +254,12 @@ class SellerHomeViewModel @Inject constructor(
             val useCase = getLayoutUseCase.get()
             useCase.params = params
             if (heightDp == null) {
-                getDataFromUseCase(useCase, _widgetLayout) { widgets ->
-                    startSse(widgets)
-                }
+                getDataFromUseCase(useCase, _widgetLayout)
             } else {
                 getDataFromUseCase(useCase, _widgetLayout) { widgets, isFromCache ->
-                    val initialWidgetFlow = sellerHomeLayoutHelper.get()
+                    return@getDataFromUseCase sellerHomeLayoutHelper.get()
                         .getInitialWidget(widgets, heightDp, isFromCache)
                         .flowOn(dispatcher.io)
-                    startSse(widgets)
-                    return@getDataFromUseCase initialWidgetFlow
                 }
             }
         }, onError = {
@@ -488,7 +482,6 @@ class SellerHomeViewModel @Inject constructor(
     fun startSse(widgets: List<BaseWidgetUiModel<*>>) {
         cancelSseJob()
         sseJob = viewModelScope.launch(dispatcher.io) {
-            delay(SSE_INITIAL_DELAY)
             val realTimeDataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
             if (realTimeDataKeys.isNotEmpty()) {
                 widgetSse.get().connect(SELLER_HOME_SSE, realTimeDataKeys)
@@ -513,21 +506,18 @@ class SellerHomeViewModel @Inject constructor(
 
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
-        liveData: MutableLiveData<Result<T>>,
-        onResult: (widgets: T) -> Unit = {}
+        liveData: MutableLiveData<Result<T>>
     ) {
         try {
             useCase.setUseCache(false)
             val result = useCase.executeUseCase()
             liveData.value = Success(result)
-            onResult(result)
         } catch (networkException: Exception) {
             if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
                 try {
                     useCase.setUseCache(true)
                     val result = useCase.executeUseCase()
                     liveData.value = Success(result)
-                    onResult(result)
                 } catch (_: Exception) {
                     throw networkException
                 }

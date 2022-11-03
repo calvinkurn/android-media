@@ -70,6 +70,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiMode
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
+import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
@@ -185,6 +186,9 @@ class SellerHomeViewModelTest {
     @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
+    @RelaxedMockK
+    lateinit var widgetSse: SellerHomeWidgetSSE
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -242,6 +246,7 @@ class SellerHomeViewModelTest {
             { shopQuestGeneralTrackerUseCase },
             { submitWidgetDismissUseCase },
             { sellerHomeLayoutHelper },
+            { widgetSse },
             remoteConfig,
             coroutineTestRule.dispatchers
         )

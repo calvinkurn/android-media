@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import okhttp3.Request
 import okhttp3.Response
-import timber.log.Timber
 
 /**
  * Created by @ilhamsuaib on 10/10/22.
@@ -69,9 +68,12 @@ class SellerHomeWidgetSSEImpl(
     }
 
     override fun listen(): Flow<BaseDataUiModel?> {
-        return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io).map {
-            widgetSseMapper.mappingWidget(it.event, it.message)
-        }
+        return sseFlow.filterNotNull()
+            .buffer()
+            .flowOn(dispatchers.io)
+            .map {
+                widgetSseMapper.mappingWidget(it.event, it.message)
+            }
     }
 
     private fun getBaseSseUrl(): String {

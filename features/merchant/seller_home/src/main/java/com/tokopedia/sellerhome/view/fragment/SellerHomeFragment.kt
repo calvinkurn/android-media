@@ -334,8 +334,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onResume() {
         super.onResume()
-        if (!isFirstLoad)
+        if (!isFirstLoad) {
             reloadPage()
+        }
+        startWidgetSse()
     }
 
     override fun onPause() {
@@ -360,7 +362,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (hidden) {
             rebateCoachMark?.dismissCoachMark()
             unificationWidgetCoachMark?.dismissCoachMark()
-            stopWidgetSse()
         } else {
             SellerHomeTracking.sendScreen(screenName)
             view?.post {
@@ -370,7 +371,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 resetWidgetImpressionHolder()
                 showRebateCoachMark()
             }
-            startWidgetSse()
         }
     }
 
@@ -1460,7 +1460,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             when (result) {
                 is Success -> {
                     stopLayoutCustomMetric(result.data)
+                    saveWidgets(result.data)
                     setOnSuccessGetLayout(result.data)
+                    startWidgetSse()
                 }
                 is Fail -> {
                     stopCustomMetric(
@@ -1517,7 +1519,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         emptyState?.gone()
         recyclerView?.visible()
 
-        saveWidgets(widgets)
         adapter.hideLoading()
         hideSnackBarRetry()
         updateScrollListenerState(false)
@@ -1622,10 +1623,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         newWidget: BaseWidgetUiModel<*>
     ): Boolean {
         return oldWidget.widgetType == newWidget.widgetType && oldWidget.title == newWidget.title &&
-            oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
-            oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
-            oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
-            oldWidget.emptyState == newWidget.emptyState
+                oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
+                oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
+                oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
+                oldWidget.emptyState == newWidget.emptyState
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -2361,7 +2362,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
-            this !is DescriptionWidgetUiModel
+                this !is DescriptionWidgetUiModel
     }
 
     private fun handleRebateCoachMark() {
@@ -2370,9 +2371,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getSellerHomeLayoutManager()?.let { layoutManager ->
             val rebateWidget = adapter.data.indexOfFirst {
                 val isRebateMvp = it.dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY
-                    && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
+                        && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
                 val isRebateUltimate = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus() &&
-                    it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
+                        it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
                 return@indexOfFirst isRebateMvp || isRebateUltimate
             }
             val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
