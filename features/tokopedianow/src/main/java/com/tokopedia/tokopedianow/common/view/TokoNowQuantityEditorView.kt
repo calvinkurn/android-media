@@ -1,9 +1,13 @@
 package com.tokopedia.tokopedianow.common.view
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -132,11 +136,12 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private fun cancelTimer() {
         if (timer != null) {
             timer?.cancel()
+            timer?.purge()
+            timer = null
             timerTaskChangingQuantity?.cancel()
             timerTaskChangingQuantity =  null
             timerTaskCollapsingWidget?.cancel()
             timerTaskCollapsingWidget = null
-            timer = null
         }
     }
 
@@ -212,6 +217,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                         counter.toString()
                     )
                 }
+                executeTimer()
             }
         }
     }
@@ -223,6 +229,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                 collapseAnimation()
             } else {
                 editText.setText(counter.toString())
+                executeTimer()
             }
         }
     }
@@ -236,21 +243,24 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             if (text != it) {
                 text = it
                 editText.setSelection(text.length)
-                changeViewDisplayAndRestartTimer()
+                setCounter()
+            }
+        }
+
+        editText.setOnKeyListener { _, keyCode, keyEvent ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+                collapseAnimation()
+                true
+            } else {
+                false
             }
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.changeViewDisplayAndRestartTimer() {
-        setCounter()
-        if (root.currentState != R.id.startWithValue && root.currentState != R.id.start) {
-            executeTimer()
-        }
-    }
-
     private fun LayoutTokopedianowQuantityEditorViewBinding.collapseAnimation() {
-        editText.setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_start_with_value)
         editText.clearFocus()
+        editText.setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_start_with_value)
+        hideKeyboardFrom(context, editText)
 
         if (counter < minQuantity || binding.editText.text?.isBlank() == true) {
             counter = 0
@@ -287,6 +297,11 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private fun executeTimer() {
         cancelTimer()
         startTimer()
+    }
+
+    private fun hideKeyboardFrom(context: Context, view: View) {
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     fun setQuantity(quantity: Int) {
