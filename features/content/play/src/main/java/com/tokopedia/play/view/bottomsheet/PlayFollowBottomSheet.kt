@@ -11,6 +11,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
+import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
@@ -72,11 +73,17 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         binding.tvPartnerName.text = playViewModel.latestCompleteChannelData.partnerInfo.name
 
         binding.clFollowContainer.setOnClickListener {
-            playViewModel.latestCompleteChannelData.partnerInfo.appLink
+            playViewModel.submitAction(ClickPartnerNameAction(playViewModel.latestCompleteChannelData.partnerInfo.appLink))
         }
-        binding.clFollowContainer.setOnClickListener {
-            playViewModel.submitAction((PlayViewerNewAction.Follow))
+
+        binding.btnFollow.setOnClickListener {
+            playViewModel.submitAction(PlayViewerNewAction.Follow)
         }
+    }
+
+    fun show(fragmentManager: FragmentManager){
+        if(isAdded || isVisible) return
+        show(fragmentManager, TAG)
     }
 
     override fun onDestroyView() {
@@ -86,7 +93,7 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
     }
 
     companion object {
-        const val TAG = "PlayFollowBottomSheet"
+        private const val TAG = "PlayFollowBottomSheet"
         fun getOrCreate(
             fragmentManager: FragmentManager,
         ): PlayFollowBottomSheet {

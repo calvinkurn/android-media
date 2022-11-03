@@ -997,7 +997,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         interactiveResultView?.hideCoachMark()
                     }
                     ShowPopUp -> {
-                        PlayFollowBottomSheet.getOrCreate(childFragmentManager).show(childFragmentManager, PlayFollowBottomSheet.TAG)
+                        PlayFollowBottomSheet.getOrCreate(childFragmentManager).show(childFragmentManager)
                     }
                 }
             }
