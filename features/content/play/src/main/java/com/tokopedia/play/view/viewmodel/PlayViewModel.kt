@@ -180,7 +180,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusUiModel.Empty)
-    private val _interactive = MutableStateFlow<InteractiveStateUiModel>(InteractiveStateUiModel.Empty)
+    private val _interactive = MutableStateFlow(InteractiveStateUiModel.Empty)
     private val _leaderboard = MutableStateFlow(LeaderboardUiModel.Empty)
     private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
@@ -248,8 +248,6 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    //TODO () = add Ui State; from SharedPred, following and field has follow
-
     private val _addressUiState = combine(_partnerInfo, _warehouseInfo, _bottomInsets) { partnerInfo, warehouseInfo, bottomInset ->
         AddressWidgetUiState(
             warehouseInfo = warehouseInfo,
@@ -297,7 +295,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _followPopUpState = combine(_channelDetail, _partnerInfo, _bottomInsets) { channelDetail, partnerInfo, bottomInsets ->
         FollowPopUpUiState(
-            shouldShow = partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && !bottomInsets.isAnyShown && !isFreezeOrBanned && playPreference.isFollowPopup(partnerId.toString()),
+            shouldShow = partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && !bottomInsets.isAnyShown && !isFreezeOrBanned && playPreference.isFollowPopup(partnerInfo.id.toString()),
             popupConfig = channelDetail.popupConfig
         )
     }.flowOn(dispatchers.computation)
@@ -1042,7 +1040,7 @@ class PlayViewModel @AssistedInject constructor(
         updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         sendInitialLog()
-        showPopUp()
+        setupPopUp()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -2569,14 +2567,6 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun checkUpcomingCampaignSub(productUiModel: ProductSectionUiModel.Section){
-        viewModelScope.launchCatchError(block = {
-            val data = repo.checkUpcomingCampaign(campaignId = productUiModel.id)
-            if (data) updateReminderUi(productUiModel.config.reminder.reversed(), productUiModel.id)
-        }){
-        }
-    }
-
     private fun updateReminderUi(reminderType: PlayUpcomingBellStatus, campaignId: String){
         _tagItems.update { tagItemUiModel ->
             val sectionList = tagItemUiModel.product.productSectionList
@@ -2632,8 +2622,8 @@ class PlayViewModel @AssistedInject constructor(
         playLog.sendAll(channelId, videoPlayer)
     }
 
-    private fun showPopUp () {
-        playPreference.setFollowPopUp(partnerId.toString())
+    private fun setupPopUp () {
+        playPreference.setFollowPopUp(_partnerInfo.value.id.toString())
     }
 
     private fun CoroutineScope.launch(

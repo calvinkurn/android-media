@@ -88,7 +88,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
-        android:text="Yuk, follow kreator supaya kamu nggak ketinggalan update seru dari mereka!"
+        tools:text="Yuk, follow kreator supaya kamu nggak ketinggalan update seru dari mereka!"
         app:layout_constraintEnd_toEndOf="@+id/cl_follow_container"
         app:layout_constraintStart_toStartOf="@+id/cl_follow_container"
         app:layout_constraintTop_toBottomOf="@+id/cl_follow_container"
