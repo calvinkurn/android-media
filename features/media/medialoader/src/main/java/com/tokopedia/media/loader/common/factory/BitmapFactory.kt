@@ -55,7 +55,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                     context,
                     properties,
                     startTimeRequest,
-                    loaderListener,
+                    loaderListener
             ))
         }
     }
