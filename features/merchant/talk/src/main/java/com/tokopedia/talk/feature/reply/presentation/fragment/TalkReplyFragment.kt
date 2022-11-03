@@ -115,7 +115,23 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var toaster: Snackbar? = null
     private var inboxType = ""
     private var templateAdapter: TalkReplyTemplateAdapter? = null
-    private var blockDialog: DialogUnify? = null
+    private val blockDialog by lazy {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.talk_block_dialog_title))
+                setDescription(getString(R.string.talk_block_dialog_description))
+                setPrimaryCTAText(getString(R.string.talk_block_dialog_primary_cta_text))
+                setSecondaryCTAText(getString(R.string.talk_block_dialog_secondary_cta_text))
+                setPrimaryCTAClickListener {
+                    viewModel.blockTalk(questionId)
+                    dialogPrimaryCTA.isLoading = true
+                    dialogSecondaryCTA.isEnabled = false
+                }
+                setSecondaryCTAClickListener { dismiss() }
+                setOverlayClose(false)
+            }
+        }
+    }
 
     override fun getScreenName(): String {
         return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
@@ -442,21 +458,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun showBlockDialog() {
-        context?.let {
-            blockDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.talk_block_dialog_title))
-                setDescription(getString(R.string.talk_block_dialog_description))
-                setPrimaryCTAText(getString(R.string.talk_block_dialog_primary_cta_text))
-                setSecondaryCTAText(getString(R.string.talk_block_dialog_secondary_cta_text))
-                setPrimaryCTAClickListener {
-                    viewModel.blockTalk(questionId)
-                    dialogPrimaryCTA.isLoading = true
-                    dialogSecondaryCTA.isEnabled = false
-                }
-                setSecondaryCTAClickListener { dismiss() }
-                setOverlayClose(false)
-                show()
-            }
+        blockDialog?.run {
+            dialogPrimaryCTA.isLoading = false
+            dialogSecondaryCTA.isEnabled = true
+            show()
         }
     }
 
