@@ -107,7 +107,7 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         )
         promotion.putString(
             Promotion.ITEM_NAME,
-            FORMAT_ITEM_NAME_THREE_VALUES.format(categoryName, MERCHANT_VOUCHER_MULTIPLE, element.headerName)
+            FORMAT_ITEM_NAME_THREE_VALUES.format(categoryName, MERCHANT_VOUCHER_MULTIPLE_UNDERSCORED, element.headerName)
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         bundle.putString(UserId.KEY, element.userId)
@@ -165,8 +165,8 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(
             ItemList.KEY,
             FORMAT_ITEM_NAME_FOUR_VALUES.format(
-                MERCHANT_VOUCHER_MULTIPLE_UNDERSCORED,
                 categoryName,
+                MERCHANT_VOUCHER_MULTIPLE_UNDERSCORED,
                 element.headerName,
                 element.productAppLink,
             )

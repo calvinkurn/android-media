@@ -9,6 +9,7 @@ import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FOR
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_IMPRESSION_BANNER
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_ITEM_NAME
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_ITEM_NAME_FOUR_VALUES
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_UNDERSCORE_THREE_VALUES
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.OS_MICROSITE_SINGLE
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -42,8 +43,10 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, grid.attribution)
                     putString(Promotion.CREATIVE_SLOT, (bannerPosition+1).toString())
-                    putString(Promotion.ITEM_ID, FORMAT_DASH_THREE_VALUES.format(channel.channelBanner.id, channel.id, grid.shopId))
-                    putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_FEATURED_SHOP))
+                    putString(Promotion.ITEM_ID, FORMAT_UNDERSCORE_THREE_VALUES.format(channel.channelBanner.id, channel.id, grid.shopId))
+                    putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME_FOUR_VALUES.format(
+                        categoryName, VALUE_FEATURED_SHOP,
+                        channel.channelHeader.name, grid.applink))
                 }
             )
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_CATEGORY)
@@ -64,7 +67,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
                     grid.shop.id, categoryName),
                 promotions = listOf(
                     Promotion(
-                        id = FORMAT_DASH_THREE_VALUES.format(
+                        id = FORMAT_UNDERSCORE_THREE_VALUES.format(
                             channel.channelBanner.id, channel.id, grid.shopId),
                         name = FORMAT_ITEM_NAME_FOUR_VALUES.format(
                             categoryName, VALUE_FEATURED_SHOP,

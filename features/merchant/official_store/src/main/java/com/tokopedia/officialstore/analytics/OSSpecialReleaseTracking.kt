@@ -5,7 +5,9 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.TrackingAttributionModel.Companion.CAMPAIGN_TYPE_FLASH_SALE_TOKO
 import com.tokopedia.home_component.model.TrackingAttributionModel.Companion.CAMPAIGN_TYPE_SPECIAL_RELEASE
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.ATTRIBUTION
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_ON_BANNER
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_VIEW_ALL_CARD_ON
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_VIEW_ALL_ON
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_DASH_FOUR_VALUES
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_DASH_THREE_VALUES
@@ -16,6 +18,7 @@ import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.OS_
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.CLICK_HOMEPAGE
+import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_CLICK
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_VIEW
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.HashMap
@@ -42,7 +45,7 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
             eventCategory = OS_MICROSITE_SINGLE,
             eventAction = FORMAT_IMPRESSION_ON_BANNER.format(VALUE_FEATURE_CAMPAIGN),
             eventLabel = String.format(
-                FORMAT_DASH_FOUR_VALUES.format(channel.id, channel.channelHeader.name, categoryName)
+                FORMAT_DASH_FOUR_VALUES.format(VALUE_FEATURE_CAMPAIGN, channel.id, channel.channelHeader.name, categoryName)
             ),
             promotions = listOf(
                 Promotion(
@@ -78,13 +81,14 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
 
     // Row 39
     fun sendSpecialReleaseItemClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String, categoryName: String) {
-        getTracker().sendEnhanceEcommerceEvent(Event.PROMO_CLICK, getSpecialReleaseItemClick(
+        val bundle = getSpecialReleaseItemClick(
             channelModel, channelGrid, position, userId, categoryName
-        ))
+        )
+        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
     }
 
     private fun getSpecialReleaseItemClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String, categoryName: String) : Bundle {
-        return Bundle().apply {
+        val bundle = Bundle().apply {
             putString(Event.KEY, Event.SELECT_CONTENT)
             putString(Category.KEY, OS_MICROSITE_SINGLE)
             putString(Action.KEY, FORMAT_CLICK_ON_BANNER.format(VALUE_FEATURE_CAMPAIGN))
@@ -116,8 +120,10 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
                 }
             )
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_FEATURE_CAMPAIGN)
+            putString(ATTRIBUTION, channelGrid.attribution)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
+        return bundle
     }
 
     // Row 40
@@ -142,7 +148,7 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
         trackerBuilder.constructBasicGeneralClick(
             event = CLICK_HOMEPAGE,
             eventCategory = OS_MICROSITE_SINGLE,
-            eventAction = FORMAT_CLICK_VIEW_ALL_ON.format(VALUE_FEATURE_CAMPAIGN),
+            eventAction = FORMAT_CLICK_VIEW_ALL_CARD_ON.format(VALUE_FEATURE_CAMPAIGN),
             eventLabel = FORMAT_DASH_FOUR_VALUES.format(
                 VALUE_FEATURE_CAMPAIGN, channelModel.id, channelModel.channelHeader.name, categoryName
             ))
