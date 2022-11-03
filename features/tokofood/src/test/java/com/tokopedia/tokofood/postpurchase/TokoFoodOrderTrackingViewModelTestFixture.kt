@@ -7,6 +7,7 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderS
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetUnreadChatCountUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,6 +42,9 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     protected lateinit var getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>
 
     @RelaxedMockK
+    protected lateinit var getTokoChatUnreadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>
+
+    @RelaxedMockK
     protected lateinit var userSession: UserSessionInterface
 
     protected lateinit var tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper
@@ -60,7 +64,8 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
             CoroutineTestDispatchersProvider,
             getTokoFoodOrderDetailUseCase,
             getTokoFoodOrderStatusUseCase,
-            getDriverPhoneNumberUseCase
+            getDriverPhoneNumberUseCase,
+            getTokoChatUnreadChatCountUseCase
         )
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.postpurchase
 
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
@@ -13,6 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.verify
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -395,5 +397,41 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
                 getTokoFoodOrderStatusUseCase.get().execute(ORDER_ID_DUMMY)
             }
         }
+    }
+
+    @Test
+    fun `when getUnreadChatCount should return set live data success`() {
+        val expectedUnreadCount = 5
+
+        every {
+            getTokoChatUnreadChatCountUseCase.get().unReadCount()
+        } returns MutableLiveData(expectedUnreadCount)
+
+        val actualResult = (viewModel.getUnReadChatCount().observeAwaitValue() as Success).data
+
+        verify {
+            getTokoChatUnreadChatCountUseCase.get().unReadCount()
+        }
+
+        assertEquals(expectedUnreadCount, actualResult)
+    }
+
+    @Test
+    fun `when getUnreadChatCount should set live data error`() {
+        val errorException = Throwable()
+
+        every {
+            getTokoChatUnreadChatCountUseCase.get().unReadCount()
+        } throws errorException
+
+        val actualResult =
+            (viewModel.getUnReadChatCount().observeAwaitValue() as Fail).throwable::class.java
+
+        verify {
+            getTokoChatUnreadChatCountUseCase.get().unReadCount()
+        }
+
+        val expectedResult = errorException::class.java
+        assertEquals(expectedResult, actualResult)
     }
 }

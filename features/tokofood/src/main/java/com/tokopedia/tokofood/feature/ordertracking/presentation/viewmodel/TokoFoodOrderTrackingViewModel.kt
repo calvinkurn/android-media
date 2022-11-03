@@ -49,7 +49,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     private val getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>,
     private val getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>,
     private val getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>,
-    private val getUnReadChatCountUseCase: GetUnreadChatCountUseCase
+    private val getUnReadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>
 ) : BaseViewModel(coroutineDispatchers.main) {
 
     private val _orderDetailResult = MutableLiveData<Result<OrderDetailResultUiModel>>()
@@ -150,12 +150,12 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     }
 
     fun getUnReadChatCount(): LiveData<Result<Int>> {
-         return Transformations.map(getUnReadChatCountUseCase.unReadCount()) {
-            try {
-                return@map Success(it)
-            } catch (t: Throwable) {
-                Fail(t)
+        return try {
+            Transformations.map(getUnReadChatCountUseCase.get().unReadCount()) {
+                Success(it)
             }
+        } catch (t: Throwable) {
+            MutableLiveData(Fail(t))
         }
     }
 
