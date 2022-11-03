@@ -43,7 +43,8 @@ class AddEditProductShipmentViewModelTest {
     @RelaxedMockK
     lateinit var resourceProvider: IMSResourceProvider
 
-    private val customProductLogisticMapper: CustomProductLogisticMapper = mockk()
+    private val customProductLogisticMapper: CustomProductLogisticMapper =
+        CustomProductLogisticMapper()
 
     private val cplListObserver: Observer<Result<CustomProductLogisticModel>> =
         mockk(relaxed = true)
@@ -54,7 +55,8 @@ class AddEditProductShipmentViewModelTest {
             customProductLogisticUseCase,
             customProductLogisticMapper,
             resourceProvider,
-            CoroutineTestDispatchersProvider)
+            CoroutineTestDispatchersProvider
+        )
     }
 
     @Before
@@ -64,16 +66,17 @@ class AddEditProductShipmentViewModelTest {
     }
 
     @Test
-    fun `When save and get product draft are success Expect can be saved and retrieved data draft`() = runBlocking {
-        val draftIdResult = 1L
-        val productInputModel = ProductInputModel().apply {
-            productId = 220
-        }
+    fun `When save and get product draft are success Expect can be saved and retrieved data draft`() =
+        runBlocking {
+            val draftIdResult = 1L
+            val productInputModel = ProductInputModel().apply {
+                productId = 220
+            }
 
-        coEvery { saveProductDraftUseCase.executeOnBackground() } returns draftIdResult
-        viewModel.saveProductDraft(productInputModel)
-        coVerify { saveProductDraftUseCase.executeOnBackground() }
-    }
+            coEvery { saveProductDraftUseCase.executeOnBackground() } returns draftIdResult
+            viewModel.saveProductDraft(productInputModel)
+            coVerify { saveProductDraftUseCase.executeOnBackground() }
+        }
 
     @Test
     fun `When save product error, should log error to crashlytics`() {
@@ -82,7 +85,9 @@ class AddEditProductShipmentViewModelTest {
         //Mock FirebaseCrashlytics because .getInstance() method is a static method
         mockkStatic(FirebaseCrashlytics::class)
 
-        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+        every {
+            FirebaseCrashlytics.getInstance().recordException(any())
+        } returns mockk(relaxed = true)
 
         val productInputModel = ProductInputModel().apply {
             productId = 220
@@ -110,16 +115,12 @@ class AddEditProductShipmentViewModelTest {
 
     @Test
     fun `Get CPL List success`() {
-        val testData = CustomProductLogisticModel()
-
+        val cplParam = listOf<Long>(6,22)
         coEvery {
             customProductLogisticUseCase(any())
         } returns OngkirGetCPLQGLResponse()
-        every {
-            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data, any())
-        } returns testData
-        viewModel.getCPLList(1234, 9876, null, null)
-        verify { cplListObserver.onChanged(Success(testData)) }
+        viewModel.getCPLList(1234, 9876, null, cplParam)
+        verify { cplListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
@@ -131,14 +132,17 @@ class AddEditProductShipmentViewModelTest {
         viewModel.getCPLList(1234, 9876, null, null)
         verify {
             cplListObserver.onChanged(Fail(testError))
-            customProductLogisticMapper wasNot Called
         }
     }
 
     @Test
     fun `setProductInputModel should invoke shipmentInputModel and productInputModel changes`() {
-        viewModel.setProductInputModel(ProductInputModel(productId = 123L,
-            shipmentInputModel = ShipmentInputModel(weight = 100)))
+        viewModel.setProductInputModel(
+            ProductInputModel(
+                productId = 123L,
+                shipmentInputModel = ShipmentInputModel(weight = 100)
+            )
+        )
         assertEquals(100, viewModel.shipmentInputModel.getOrAwaitValue().weight)
         assertEquals(123L, viewModel.productInputModel?.productId)
     }
@@ -151,9 +155,13 @@ class AddEditProductShipmentViewModelTest {
 
     @Test
     fun `setProductInputModel should invoke shipmentInputModel hasVariant true`() {
-        viewModel.setProductInputModel(ProductInputModel(variantInputModel = VariantInputModel(
-            products = listOf(ProductVariantInputModel())
-        )))
+        viewModel.setProductInputModel(
+            ProductInputModel(
+                variantInputModel = VariantInputModel(
+                    products = listOf(ProductVariantInputModel())
+                )
+            )
+        )
         assertEquals(true, viewModel.hasVariant.getOrAwaitValue())
     }
 
@@ -168,9 +176,13 @@ class AddEditProductShipmentViewModelTest {
         val resultOutRange = viewModel.validateWeightInput("100.000.000")
         val resultInRange = viewModel.validateWeightInput("1.000")
 
-        viewModel.setProductInputModel(ProductInputModel(variantInputModel = VariantInputModel(
-            listOf(ProductVariantInputModel())
-        )))
+        viewModel.setProductInputModel(
+            ProductInputModel(
+                variantInputModel = VariantInputModel(
+                    listOf(ProductVariantInputModel())
+                )
+            )
+        )
         viewModel.hasVariant.getOrAwaitValue()
         val resultHasVariant = viewModel.validateWeightInput("1.000")
 
@@ -179,5 +191,66 @@ class AddEditProductShipmentViewModelTest {
         assertEquals("out range", resultOutRange)
         assertEquals("", resultInRange)
         assertEquals("", resultHasVariant)
+    }
+
+    @Test
+    fun `setAllCPLProductActiveState needs to activate all CPL shipper when user choose shipment radio button`() {
+        val mockResponse = CPLDataProvider.provideCPLResponse()
+        val isCPLActivated = true
+        coEvery {
+            customProductLogisticUseCase(any())
+        } returns mockResponse
+        viewModel.getCPLList(1234, 9876, null, null)
+
+        viewModel.setAllCPLProductActiveState(isCPLActivated)
+
+        val result = (viewModel.cplList.value as Success).data.shipperList
+        assertEquals(result.all { it.shipper.all { s -> s.isActive } }, isCPLActivated)
+
+
+    }
+
+    @Test
+    fun `setAllCPLProductActiveState does nothing when failed to get CPL data`() {
+        val testError = Throwable("test error")
+        coEvery {
+            customProductLogisticUseCase(any())
+        } throws testError
+        viewModel.getCPLList(1234, 9876, null, null)
+
+        viewModel.setAllCPLProductActiveState(true)
+
+        Assert.assertFalse(viewModel.cplList.value is Success)
+    }
+
+    @Test
+    fun `setProductActiveState needs to refresh CPL shipper state based on shipper ids from CPL page`() {
+        val mockResponse = CPLDataProvider.provideCPLResponse()
+        val activatedSpIds = listOf<Long>(18)
+        coEvery {
+            customProductLogisticUseCase(any())
+        } returns mockResponse
+        viewModel.getCPLList(1234, 9876, null, null)
+
+        viewModel.setProductActiveState(activatedSpIds)
+
+        val activatedShipperProduct = (viewModel.cplList.value as Success).data.shipperList[0].shipper[1].shipperProduct[0]
+        val notActivatedShipperProduct = (viewModel.cplList.value as Success).data.shipperList[0].shipper[2].shipperProduct[0]
+        assertEquals(activatedShipperProduct.isActive, true)
+        assertEquals(notActivatedShipperProduct.isActive, false)
+    }
+
+    @Test
+    fun `setProductActiveState does nothing if failed to get CPL data`() {
+        val testError = Throwable("test error")
+        coEvery {
+            customProductLogisticUseCase(any())
+        } throws testError
+        viewModel.getCPLList(1234, 9876, null, null)
+        val activatedSpIds = listOf<Long>(18)
+
+        viewModel.setProductActiveState(activatedSpIds)
+
+        Assert.assertFalse(viewModel.cplList.value is Success)
     }
 }

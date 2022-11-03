@@ -112,31 +112,15 @@ class AddEditProductShipmentViewModel @Inject constructor(
         }
     }
 
-    fun setAllProductActivated() {
+    fun setAllCPLProductActiveState(active: Boolean) {
         _cplList.value.let {
             if (it is Success) {
                 it.data.shipperList.forEach { shipperGroup ->
                     shipperGroup.shipper.forEach { s ->
                         s.shipperProduct.forEach { sp ->
-                            sp.isActive = true
+                            sp.isActive = active
                         }
-                        s.isActive = true
-                    }
-                }
-                _cplList.value = it
-            }
-        }
-    }
-
-    fun setAllProductDeactivated() {
-        _cplList.value.let {
-            if (it is Success) {
-                it.data.shipperList.forEach { shipperGroup ->
-                    shipperGroup.shipper.forEach { s ->
-                        s.shipperProduct.forEach { sp ->
-                            sp.isActive = false
-                        }
-                        s.isActive = false
+                        s.isActive = active
                     }
                 }
                 _cplList.value = it

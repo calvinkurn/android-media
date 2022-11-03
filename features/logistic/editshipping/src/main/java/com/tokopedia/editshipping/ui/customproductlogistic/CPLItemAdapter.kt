@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.databinding.ItemShippingEditorCardBinding
-import com.tokopedia.logisticCommon.data.model.CPLProductModel
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 
 class CPLItemAdapter(private val listener: CPLItemAdapterListener) :

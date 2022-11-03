@@ -69,7 +69,6 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
-import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInfoBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInsuranceBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
@@ -432,11 +431,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun changeShipmentType(isStandardShipment: Boolean) {
-        if (isStandardShipment) {
-            shipmentViewModel.setAllProductDeactivated()
-        } else {
-            shipmentViewModel.setAllProductActivated()
-        }
+        shipmentViewModel.setAllCPLProductActiveState(!isStandardShipment)
     }
 
     private fun showDialogStandardShipment() {

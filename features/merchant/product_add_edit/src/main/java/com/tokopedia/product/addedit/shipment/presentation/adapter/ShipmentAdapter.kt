@@ -7,11 +7,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticCommon.data.model.CPLProductModel
-import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 import com.tokopedia.logisticCommon.data.model.ShipperListCPLModel
 import com.tokopedia.product.addedit.R
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>() {

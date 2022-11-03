@@ -67,8 +67,9 @@ class CustomProductLogisticMapper @Inject constructor() {
         draftShipperServices: List<Long>?,
         serviceName: String
     ): List<ShipperProductCPLModel> {
+        val isWhitelabelShipperServiceActive = draftShipperServices?.containsAll(spIds) ?: false
         return spIds.map { id ->
-            val isSpActive = draftShipperServices?.contains(id) ?: isWhitelabelServiceActive
+            val isSpActive = isWhitelabelShipperServiceActive || isWhitelabelServiceActive
             ShipperProductCPLModel(
                 shipperProductId = id,
                 isActive = isSpActive,
@@ -102,7 +103,7 @@ class CustomProductLogisticMapper @Inject constructor() {
         return allShipperData
     }
 
-    fun mapShipperProduct(
+    private fun mapShipperProduct(
         response: List<ShipperProduct>,
         draftShipperServices: List<Long>?
     ): List<ShipperProductCPLModel> {
@@ -112,7 +113,7 @@ class CustomProductLogisticMapper @Inject constructor() {
                 shipperProductName = it.shipperProductName,
                 uiHidden = it.uiHidden,
                 shipperServiceName = it.shipperServiceName,
-                isActive = draftShipperServices?.contains(it.shipperProductId) ?: it.isActive
+                isActive = (draftShipperServices?.contains(it.shipperProductId) ?: false) || it.isActive
             )
         }
     }
