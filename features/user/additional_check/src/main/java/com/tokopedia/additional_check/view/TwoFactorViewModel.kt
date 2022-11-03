@@ -2,7 +2,6 @@ package com.tokopedia.additional_check.view
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.additional_check.common.OfferingType
 import com.tokopedia.additional_check.data.OfferingData
 import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
@@ -41,8 +40,6 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
                     OfferInterruptUseCase.PARAM_DEVICE_BIOMETRIC to fingerprintPreference.getUniqueId()
                 ))
                 additionalCheckPreference.setInterval(offering.data.interval)
-                offering.data.offers.add(OfferingData(OfferingType.ACC_LINK.value, true))
-                offering.data.offers.add(OfferingData(OfferingType.ACC_LINK.value, true))
                 if (offering.data.errorMessages.isNotEmpty() && offering.data.errorMessages.first().isEmpty()) {
                     if(offering.data.offers.size > 1) {
                         val firstOffering = offering.data.offers[1]
