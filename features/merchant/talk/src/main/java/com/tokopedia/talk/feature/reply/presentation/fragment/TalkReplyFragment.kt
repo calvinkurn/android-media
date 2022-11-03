@@ -20,21 +20,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY
-import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
-import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY
-import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
+import com.tokopedia.applink.ApplinkConst.AttachProduct.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -61,14 +55,7 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyEm
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyProductHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnReplyBottomSheetClickedListener
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyProductHeaderListener
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyTemplateListener
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyTextboxListener
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
 import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -712,7 +699,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         getDiscussionData()
         showSuccessToaster(
             getString(R.string.talk_block_toaster_success_text),
-            resources.getBoolean(R.bool.reply_adjust_toaster_height)
+            context?.resources?.getBoolean(R.bool.reply_adjust_toaster_height).orTrue()
         )
         blockDialog?.dismiss()
     }
@@ -722,7 +709,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         hidePageLoading()
         showErrorToaster(
             getString(R.string.talk_block_toaster_fail_text),
-            resources.getBoolean(R.bool.reply_adjust_toaster_height)
+            context?.resources?.getBoolean(R.bool.reply_adjust_toaster_height).orTrue()
         )
     }
 
