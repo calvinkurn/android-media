@@ -87,8 +87,8 @@ data class EPharmacyPrepareProductsGroupResponse(
                     val id: String?,
                     @SerializedName("operating_schedule")
                     val operatingSchedule: OperatingSchedule?,
-                    @SerializedName("partner_logo_url")
-                    val partnerLogoUrl: String?,
+                    @SerializedName("enabler_logo_url")
+                    val enablerLogoUrl: String?,
                     @SerializedName("pwa_link")
                     val pwaLink: String?,
                     @SerializedName("status")
@@ -165,4 +165,15 @@ data class EPharmacyPrepareProductsGroupResponse(
             }
         }
     }
+}
+data class EPharmacyItemButtonData(
+    @SerializedName("iconUrl")
+    var iconUrl: String? = "",
+    @SerializedName("text")
+    var text: String? = "",
+    @SerializedName("subText")
+    var subText: String? = "",
+    @SerializedName("appLink")
+    var appLink: String? = ""
+) {
 }
