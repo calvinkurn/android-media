@@ -22,11 +22,11 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
@@ -107,8 +107,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
-    private lateinit var productAnalyticHelper: ProductAnalyticHelper
-
     override fun getScreenName(): String = "Play Bottom Sheet"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,7 +125,6 @@ class PlayBottomSheetFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupObserve()
-        initAnalytic()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -189,15 +186,17 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onProductImpressed(
         view: ProductSheetViewComponent,
-        product: PlayProductUiModel.Product,
-        sectionInfo: ProductSectionUiModel.Section,
-        position: Int
+        products: Map<ProductSheetAdapter.Item.Product, Int>
     ) {
-        if (playViewModel.bottomInsets.isProductSheetsShown) {
-            if(sectionInfo.config.type == ProductSectionType.TokoNow) {
-                newAnalytic.impressProductBottomSheetNow(product, position)
-            } else analytic.impressBottomSheetProduct(product, sectionInfo, position)
+        if (!playViewModel.bottomInsets.isProductSheetsShown) return
+
+        val impressedProduct = products.apply {
+            keys.distinctBy { it.product.id}
         }
+
+        if (playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.TokoNow)
+            newAnalytic.impressProductBottomSheetNow(impressedProduct)
+        else analytic.impressBottomSheetProduct(impressedProduct)
     }
 
     private fun onProductCountChanged() {
@@ -318,10 +317,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
         observeUiState()
         observeUiEvent()
-    }
-
-    private fun initAnalytic() {
-        productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
     }
 
     private fun closeProductSheet() {
@@ -480,7 +475,9 @@ class PlayBottomSheetFragment @Inject constructor(
             }
 
             it[BottomInsetsType.ProductSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) productSheetView.showWithHeight(state.estimatedInsetsHeight)
+                if (state is BottomInsetsState.Shown) {
+                    productSheetView.showWithHeight(state.estimatedInsetsHeight)
+                }
                 else productSheetView.hide()
             }
 
@@ -698,7 +695,10 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
-        if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
+        if (playViewModel.bottomInsets.isCouponSheetsShown)
+            vouchers.firstOrNull { it.highlighted }?.let {
+                analytic.impressionPrivateVoucher(voucher = it)
+            }
     }
 
     override fun onInformationClicked(
@@ -737,7 +737,6 @@ class PlayBottomSheetFragment @Inject constructor(
                 voucherList = tagItem.voucher.voucherList,
                 title = bottomSheetTitle,
             )
-            productAnalyticHelper.sendImpressedProductSheets()
         } else {
             productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }

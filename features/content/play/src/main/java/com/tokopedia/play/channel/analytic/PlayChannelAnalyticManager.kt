@@ -1,12 +1,10 @@
 package com.tokopedia.play.channel.analytic
 
-import android.content.Context
 import androidx.lifecycle.Lifecycle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -17,36 +15,27 @@ import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Created by kenny.hadisaputra on 06/07/22
  */
-class PlayChannelAnalyticManager @AssistedInject constructor(
+class PlayChannelAnalyticManager @Inject constructor(
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
     private val analytic2Factory: PlayAnalytic2.Factory,
     private val dispatchers: CoroutineDispatchers,
     private val trackingQueue: TrackingQueue,
-    @Assisted private val productAnalyticHelper: ProductAnalyticHelper,
 ) {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(
-            productAnalyticHelper: ProductAnalyticHelper,
-        ) : PlayChannelAnalyticManager
-    }
-
     private var analytic2 : PlayAnalytic2? = null
+    private var partnerType: PartnerType = PartnerType.Unknown
 
     fun observe(
         scope: CoroutineScope,
@@ -63,6 +52,7 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
                     trackingQueue = trackingQueue,
                     channelInfo = it.channel.channelInfo,
                 )
+                partnerType = it.partner.type
             }
         }
 
@@ -80,7 +70,12 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
                             if (!entry.key.isPinned) return@forEach
                             analytic2?.impressPinnedProductInCarousel(entry.key, entry.value)
                         }
-                        productAnalyticHelper.trackImpressedProducts(it.productMap)
+                        /**
+                         * Send double tracker due to DA request
+                         */
+                        val finalProducts = it.productMap.map { it.key to it.value }
+                        analytic.impressFeaturedProducts(finalProducts)
+                        if(partnerType == PartnerType.TokoNow) newAnalytic.impressFeaturedProductNow(finalProducts)
                     }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                 }
@@ -127,9 +122,5 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
         } else {
             analytic.clickFeaturedProduct(product, position)
         }
-    }
-
-    fun sendPendingTrackers(partnerType: PartnerType) {
-        productAnalyticHelper.sendImpressedFeaturedProducts(partnerType)
     }
 }

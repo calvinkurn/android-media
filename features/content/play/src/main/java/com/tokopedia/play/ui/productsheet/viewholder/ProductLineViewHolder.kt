@@ -61,9 +61,9 @@ class ProductLineViewHolder(
     fun bind(item: ProductSheetAdapter.Item.Product) {
         binding.root.setItem(item.product, item.section)
 
-        binding.root.addImpressionListener(
-            item.product.impressHolder
-        ) { listener.onProductImpressed(this, item.product, item.section) }
+        binding.root.addImpressionListener(item.product.impressHolder) {
+            listener.onProductImpressed(this, item, adapterPosition)
+        }
     }
 
     companion object {
@@ -82,11 +82,6 @@ class ProductLineViewHolder(
     }
 
     interface Listener {
-        fun onProductImpressed(
-            viewHolder: ProductLineViewHolder,
-            product: PlayProductUiModel.Product,
-            section: ProductSectionUiModel.Section,
-        )
         fun onProductClicked(
             viewHolder: ProductLineViewHolder,
             product: PlayProductUiModel.Product,
@@ -101,6 +96,11 @@ class ProductLineViewHolder(
             viewHolder: ProductLineViewHolder,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
+        )
+        fun onProductImpressed(
+            viewHolder: ProductLineViewHolder,
+            product: ProductSheetAdapter.Item.Product,
+            position: Int,
         )
     }
 }

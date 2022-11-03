@@ -115,7 +115,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
     private val newAnalytic: PlayNewAnalytic,
-    analyticManagerFactory: PlayChannelAnalyticManager.Factory,
+    private val analyticManager: PlayChannelAnalyticManager
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -239,14 +239,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
-    private val productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
-
-    private val analyticManager by lazy(LazyThreadSafetyMode.NONE) {
-        analyticManagerFactory.create(
-            productAnalyticHelper = productAnalyticHelper,
-        )
-    }
-
     private var localCache: LocalCacheModel = LocalCacheModel()
 
     /**
@@ -305,13 +297,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         isOpened = false
-        productAnalyticHelper.sendImpressedFeaturedProducts(
-            partner = playViewModel.latestCompleteChannelData.partnerInfo.type
-        )
         analytic.getTrackingQueue().sendAll()
-        analyticManager.sendPendingTrackers(
-            partnerType = playViewModel.latestCompleteChannelData.partnerInfo.type
-        )
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {

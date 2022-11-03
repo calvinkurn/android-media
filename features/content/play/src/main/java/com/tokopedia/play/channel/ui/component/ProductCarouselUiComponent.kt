@@ -11,7 +11,6 @@ import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +25,8 @@ class ProductCarouselUiComponent(
     bus: EventBus<Any>,
     scope: CoroutineScope,
 ) : UiComponent<PlayViewerNewUiState> {
+
+    private var isProductUpdate : Boolean = false
 
     private val uiView = ProductCarouselUiView(
         binding,
@@ -85,9 +86,16 @@ class ProductCarouselUiComponent(
 
         val tagItems = state.value.tagItems
 
+        if (state.isChanged { it.tagItems } && !isProductUpdate) {
+            uiView.clearImpress()
+            uiView.sendImpression()
+        }
+
         if (tagItems.resultState.isLoading && state.value.featuredProducts.isEmpty()) {
             uiView.setLoading()
         } else if (state.isChanged { it.featuredProducts }) {
+            isProductUpdate = true
+
             uiView.setProducts(state.value.featuredProducts)
 
             val oldPinnedProduct = state.prevValue?.featuredProducts?.firstOrNull()?.takeIf { it.isPinned }
@@ -112,6 +120,13 @@ class ProductCarouselUiComponent(
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
+            Lifecycle.Event.ON_RESUME -> {
+                if(!isProductUpdate && uiView.isShown) uiView.sendImpression()
+            }
+            Lifecycle.Event.ON_STOP -> {
+                isProductUpdate = false
+                uiView.clearImpress()
+            }
             Lifecycle.Event.ON_DESTROY -> uiView.cleanUp()
             else -> {}
         }
