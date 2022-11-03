@@ -12,8 +12,14 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class CampaignListStartupBenchmark(startupMode: StartupMode) :
-    BaseStartupBenchmark(startupMode) {
+class CampaignListStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
+    override fun setupMock() {
+
+    }
+
+    override fun setupEnvironment() {
+
+    }
 
     override fun getIntent() = MacroIntent.CampaignList.getCampaignListIntent()
 
@@ -22,8 +28,4 @@ class CampaignListStartupBenchmark(startupMode: StartupMode) :
     }
 
     override fun traceName() = "mp_campaign_list"
-
-    override fun getPackageName(): String {
-        return MacroIntent.TKPD_PACKAGE_SELLER_APP
-    }
 }
