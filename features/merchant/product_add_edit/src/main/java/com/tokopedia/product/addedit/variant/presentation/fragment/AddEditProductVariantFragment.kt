@@ -576,6 +576,14 @@ class AddEditProductVariantFragment :
                         viewModel.updateSizechart(it)
                     }
                 }
+
+                REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER -> {
+                    val imageUrlOrPathList = MediaPicker.result(data).editedImages
+                    imageUrlOrPathList.forEach {
+                        viewModel.updateSizechart(it)
+                    }
+                }
+
                 REQUEST_CODE_VARIANT_PHOTO_IMAGE -> {
                     val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS).orEmpty()
                     imageUrlOrPathList.firstOrNull()?.let {
@@ -1146,7 +1154,7 @@ class AddEditProductVariantFragment :
             MAX_IMAGE_VARIANT,
             arrayListOf(urlOrPath)
         )
-        startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
+        startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER)
     }
 
     private fun showGetVariantCategoryCombinationErrorToast(errorMessage: String) {
