@@ -21,6 +21,7 @@ import com.tokopedia.tokofood.common.domain.response.AdditionalData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
 import com.tokopedia.tokofood.common.presentation.customview.TokofoodPromoRibbonView
+import com.tokopedia.tokofood.common.util.TokofoodExt.clickWithDebounce
 import com.tokopedia.tokofood.databinding.ItemTokofoodMerchantListCardBinding
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -86,7 +87,7 @@ class TokoFoodMerchantListViewHolder (
         setPriceLevel(merchant.priceLevel)
         setViewDividerCategoryPriceLevel(merchant.merchantCategories, merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
-        binding?.root?.setOnClickListener {
+        binding?.root?.clickWithDebounce {
             listener?.onClickMerchant(merchant, adapterPosition)
         }
         itemView.addOnImpressionListener(merchant){
