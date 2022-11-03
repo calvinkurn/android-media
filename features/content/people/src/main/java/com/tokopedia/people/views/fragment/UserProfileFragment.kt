@@ -24,7 +24,6 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.types.BundleData.KEY_AUTHOR_TYPE
-import com.tokopedia.content.common.types.BundleData.VALUE_PLAY_BROADCASTER_ENTRY_POINT_USER_PROFILE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
