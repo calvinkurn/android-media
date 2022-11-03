@@ -59,6 +59,7 @@ import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
@@ -136,7 +137,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     ProductDetailBottomSheet.OnProductDetailClickListener,
     ShareBottomsheetListener,
     ChangeMerchantBottomSheet.ChangeMerchantListener,
-    PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener {
+    PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener,
+    TokofoodScrollChangedListener {
 
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
 
@@ -194,6 +196,8 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private var cartDataUpdateJob: Job? = null
     private var uiEventUpdateJob: Job? = null
+    private var onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener? = null
+    private var onScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> = mutableListOf()
 
     private var mvcImpressHolder: ImpressHolder? = null
     private var mvcOnScrollChangeListener: ViewTreeObserver.OnScrollChangedListener? = null
@@ -270,6 +274,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         binding = null
         currentPromoName = null
         removeCurrentMvcScrollChangedListener()
+        removeListeners()
     }
 
     override fun onStart() {
@@ -388,26 +393,31 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setupAppBarLayoutListener() {
-        binding?.toolbarParent?.addOnOffsetChangedListener(object :
-            AppBarLayout.OnOffsetChangedListener {
+        if (onOffsetChangedListener == null) {
+            onOffsetChangedListener = object :
+                AppBarLayout.OnOffsetChangedListener {
 
-            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (appBarLayout == null) return
-                val offset = abs(verticalOffset)
-                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbarMerchantPage?.height.orZero())
-                ) {
-                    // show sticky filter
-                    binding?.cardUnifySticky?.show()
-                    setToolbarWhiteColor()
-                    viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
-                } else {
-                    // hide stick filter
-                    binding?.cardUnifySticky?.hide()
-                    setToolbarTransparentColor()
-                    viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
+                override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+                    if (appBarLayout == null) return
+                    val offset = abs(verticalOffset)
+                    if (offset >= (appBarLayout.totalScrollRange - binding?.toolbarMerchantPage?.height.orZero())
+                    ) {
+                        // show sticky filter
+                        binding?.cardUnifySticky?.show()
+                        setToolbarWhiteColor()
+                        viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
+                    } else {
+                        // hide stick filter
+                        binding?.cardUnifySticky?.hide()
+                        setToolbarTransparentColor()
+                        viewModel.isStickyBarVisible = binding?.cardUnifySticky?.isVisible ?: false
+                    }
                 }
             }
-        })
+        }
+        onOffsetChangedListener?.let {
+            binding?.toolbarParent?.addOnOffsetChangedListener(it)
+        }
     }
 
     private fun setupCardSticky() {
@@ -896,7 +906,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setupProductList() {
-        productListAdapter = ProductListAdapter(this)
+        productListAdapter = ProductListAdapter(this, this)
         binding?.rvProductList?.let {
             it.adapter = productListAdapter
             it.layoutManager = LinearLayoutManager(
@@ -1416,6 +1426,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
+    override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
+        onScrollChangedListenerList.add(onScrollChangedListener)
+    }
+
     private fun showChangeMerchantBottomSheet(
         productUiModel: ProductUiModel,
         cardPositions: Pair<Int, Int>
@@ -1626,6 +1640,16 @@ class MerchantPageFragment : BaseMultiFragment(),
             KeyboardHandler.hideSoftKeyboard(activity)
         } catch (ex: Exception) {
             Timber.e(ex)
+        }
+    }
+
+    private fun removeListeners() {
+        onOffsetChangedListener?.let {
+            binding?.toolbarParent?.removeOnOffsetChangedListener(it)
+        }
+        onOffsetChangedListener = null
+        onScrollChangedListenerList.forEach {
+            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
         }
     }
 
