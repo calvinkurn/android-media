@@ -187,12 +187,4 @@ public interface UserSessionInterface {
     boolean isMultiLocationShop();
 
     void setIsMultiLocationShop(boolean isMultiLocationShop);
-
-    String getCdnName();
-
-    void setCdnName(String cdnName);
-
-    String getCdnAssetUrl();
-
-    void setCdnAssetUrl(String cdnAssetUrl);
 }
