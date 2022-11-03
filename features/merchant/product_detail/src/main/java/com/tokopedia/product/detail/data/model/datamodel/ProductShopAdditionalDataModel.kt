@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductShopAdditionalDataModel(
     val name: String = String.EMPTY,
     val type: String = String.EMPTY,
-
     var title: String = String.EMPTY,
     var icon: String = String.EMPTY,
     var description: String = String.EMPTY,
