@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -12,8 +13,13 @@ class ProductAnalyticHelper(
     private val newAnalytic: PlayNewAnalytic,
 ) {
 
+    //different product bcs it might be diff add new
     @TrackingField
     private val impressedProducts = mutableListOf<Pair<PlayProductUiModel.Product, Int>>()
+
+    //For bottom sheet products
+    @TrackingField
+    private val impressedBottomSheet = mutableListOf<ProductSheetAdapter.Item.Product>()
 
     private var sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
 
@@ -29,6 +35,13 @@ class ProductAnalyticHelper(
         sectionInfo = section
     }
 
+    fun trackImpressedProductsBottomSheet(
+        products : List<ProductSheetAdapter.Item.Product>
+    ) {
+        if (products.isEmpty()) return
+        impressedBottomSheet.addAll(products)
+    }
+
     /**
      * Send double tracker due to DA request
      */
@@ -38,7 +51,13 @@ class ProductAnalyticHelper(
         clearProducts()
     }
 
-    private fun getFinalProducts() = impressedProducts.distinctBy { it.first.id }
+    fun sendImpressedBottomSheet(partner: PartnerType){
+        if(partner == PartnerType.TokoNow) newAnalytic.impressProductBottomSheetNow(impressedBottomSheet)
+        else analytic.impressBottomSheetProduct(impressedBottomSheet)
+        impressedBottomSheet.clear()
+    }
+
+    private fun getFinalProducts() = impressedProducts
 
     private fun clearProducts() {
         impressedProducts.clear()
