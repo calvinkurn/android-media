@@ -2,14 +2,18 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cla
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.HABIS
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.claimcoupon.RedeemCouponResponse
+import com.tokopedia.discovery2.usecase.ClaimCouponClickUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -30,6 +34,13 @@ class ClaimCouponItemViewModelTest {
         spyk(ClaimCouponItemViewModel(application, componentsItem, 99))
     }
 
+    private val claimCouponClickUseCase: ClaimCouponClickUseCase by lazy {
+        mockk()
+    }
+
+    private val userSession: UserSessionInterface by lazy {
+        mockk()
+    }
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -41,6 +52,33 @@ class ClaimCouponItemViewModelTest {
     @Test
     fun `position test`() {
         assert(viewModel.position == 99)
+    }
+
+    @Test
+    fun `test for application`(){
+        assert(viewModel.application === application)
+    }
+
+    @Test
+    fun `test for claimCouponClickUseCase useCase`() {
+        val viewModel: ClaimCouponItemViewModel =
+            spyk(ClaimCouponItemViewModel(application, componentsItem, 99))
+
+        val claimCouponClickUseCase = mockk<ClaimCouponClickUseCase>()
+        viewModel.claimCouponClickUseCase = claimCouponClickUseCase
+
+        assert(viewModel.claimCouponClickUseCase === claimCouponClickUseCase)
+    }
+
+    @Test
+    fun `test for userSession useCase`() {
+        val viewModel: ClaimCouponItemViewModel =
+            spyk(ClaimCouponItemViewModel(application, componentsItem, 99))
+
+        val userSession = mockk<UserSessionInterface>()
+        viewModel.userSession = userSession
+
+        assert(viewModel.userSession === userSession)
     }
 
     /**************************** getComponentData() *******************************************/
@@ -56,15 +94,41 @@ class ClaimCouponItemViewModelTest {
         assertEquals(viewModel.getComponentData().value?.status, claimString)
     }
 
+    @Test
+    fun `getComponentData when dataItem is null`() {
+        every { componentsItem.data } returns null
+
+        viewModel.onAttachToViewHolder()
+
+        assertEquals(viewModel.getComponentData().value?.status, null)
+    }
+
+    @Test
+    fun `getComponentData when claimButtonStr is null`() {
+        val data = arrayListOf(DataItem())
+        every { componentsItem.data } returns data
+
+        viewModel.onAttachToViewHolder()
+
+        assertEquals(viewModel.getComponentData().value?.status, Constant.ClaimCouponConstant.HABIS)
+    }
+
     /**************************** getComponentData() *******************************************/
 
     /**************************** getIsDouble() *******************************************/
 
     @Test
-    fun getIsDouble() {
+    fun `getIsDouble when columns returs DOUBLE_COLUMNS`() {
         every { componentsItem.properties?.columns } returns DOUBLE_COLUMNS
 
         assertEquals(viewModel.getIsDouble(), true)
+    }
+
+    @Test
+    fun `getIsDouble when columns returs HABIS`() {
+        every { componentsItem.properties?.columns } returns HABIS
+
+        assertEquals(viewModel.getIsDouble(), false)
     }
 
     /**************************** getIsDouble() *******************************************/
@@ -98,6 +162,49 @@ class ClaimCouponItemViewModelTest {
             assertEquals(viewModel.getRedeemCouponCode().value, code)
     }
 
+    @Test
+    fun `redeemCoupon when isLoggedIn is true and HachikoRedeem is null`() {
+        val data = RedeemCouponResponse()
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { claimCouponClickUseCase.redeemCoupon(any()) } returns data
+
+        viewModel.redeemCoupon { }
+
+        assertEquals(viewModel.getRedeemCouponCode().value, null)
+    }
+
+    @Test
+    fun `redeemCoupon when isLoggedIn is true and coupons list empty`() {
+        val data = RedeemCouponResponse(hachikoRedeem =
+        RedeemCouponResponse.HachikoRedeem(coupons = arrayListOf()))
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { claimCouponClickUseCase.redeemCoupon(any()) } returns data
+
+        viewModel.redeemCoupon { }
+
+        assertEquals(viewModel.getRedeemCouponCode().value, null)
+    }
+
+    @Test
+    fun `redeemCoupon when claimCouponClickUseCase redeemCoupon throws MessageErrorException`() {
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { claimCouponClickUseCase.redeemCoupon(any()) } throws MessageErrorException("error")
+
+        viewModel.redeemCoupon { }
+
+        assertEquals(viewModel.getRedeemCouponCode().value, null)
+    }
+
+    @Test
+    fun `redeemCoupon when claimCouponClickUseCase redeemCoupon throws Exception`() {
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { claimCouponClickUseCase.redeemCoupon(any()) } throws Exception("error")
+
+        viewModel.redeemCoupon { }
+
+        assertEquals(viewModel.getRedeemCouponCode().value, null)
+    }
+
     /**************************** redeemCoupon() *******************************************/
 
     /**************************** setClick() *******************************************/
@@ -110,6 +217,36 @@ class ClaimCouponItemViewModelTest {
     }
 
     /**************************** setClick() *******************************************/
+
+
+    /**************************** getCouponAppLink() *******************************************/
+
+    @Test
+    fun `getCouponAppLink when applinks is not null`() {
+        val applink = "tokopedia://discovery/deals"
+        val data = arrayListOf(DataItem(applinks = applink))
+        every { componentsItem.data } returns data
+
+        assertEquals(viewModel.getCouponAppLink(), applink)
+    }
+
+    @Test
+    fun `getCouponAppLink when dataItem is empty`() {
+        val data = arrayListOf(DataItem())
+        every { componentsItem.data } returns data
+
+        assertEquals(viewModel.getCouponAppLink(), "")
+    }
+
+    @Test
+    fun `getCouponAppLink when dataItem is null`() {
+        every { componentsItem.data } returns null
+
+        assertEquals(viewModel.getCouponAppLink(), "")
+
+    }
+
+    /**************************** getCouponAppLink() *******************************************/
 
 
     @After

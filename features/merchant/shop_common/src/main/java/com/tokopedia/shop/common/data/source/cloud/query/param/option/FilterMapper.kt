@@ -39,7 +39,8 @@ class FilterMapper {
                     FilterByCondition.PreorderOnly.id -> FilterByCondition.PreorderOnly
                     FilterByCondition.FeaturedOnly.id -> FilterByCondition.FeaturedOnly
                     FilterByCondition.CampaignOnly.id -> FilterByCondition.CampaignOnly
-                    else -> FilterByCondition.StockAlertOnly //FilterOption.STOCK_ALERT_ONLY
+                    FilterByCondition.NotifyMeOnly.id -> FilterByCondition.NotifyMeOnly
+                    else -> FilterByCondition.FeaturedOnly // FilterOption.FEATURED_ONLY
                 }
             }
         }

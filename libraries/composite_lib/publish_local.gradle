@@ -41,13 +41,13 @@ publishing {
 }
 
 artifactory {
-    contextUrl = rootProject.ext.artifactoryUrl
+    contextUrl = rootProject.ext.gcp_artifactory_url
     publish {
         repository {
             repoKey = 'libs-release-local'
 
-            username = artifactory_username
-            password = artifactory_password
+            username = gcp_artifactory_username
+            password = gcp_artifactory_password
         }
         defaults {
             publications('aar')

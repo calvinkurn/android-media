@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
 import com.tokopedia.topads.sdk.decoration.TdnCarouselItemDecoration
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.view.adapter.TdnCarouselAdapter
@@ -48,9 +49,11 @@ class TdnCarouselView : BaseCustomView {
         tdnCarouselAdapter = TdnCarouselAdapter(onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
         val tdnRv = findViewById<RecyclerView>(R.id.tdnCarouselRv)
         tdnRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        val snapHelper: SnapHelper = PagerSnapHelper()
-        tdnRv.onFlingListener = null
-        snapHelper.attachToRecyclerView(tdnRv)
+        if (topAdsImageViewModel.firstOrNull()?.layoutType != TYPE_VERTICAL_CAROUSEL){
+            val snapHelper: SnapHelper = PagerSnapHelper()
+            tdnRv.onFlingListener = null
+            snapHelper.attachToRecyclerView(tdnRv)
+        }
         tdnRv.removeAllItemDecoration()
         tdnRv.addItemDecoration(TdnCarouselItemDecoration())
         tdnRv.adapter = tdnCarouselAdapter
