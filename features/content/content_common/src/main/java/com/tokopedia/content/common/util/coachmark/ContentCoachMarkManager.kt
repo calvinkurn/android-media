@@ -1,26 +1,37 @@
-package com.tokopedia.feedcomponent.util.coachmark
+package com.tokopedia.content.common.util.coachmark
 
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import kotlinx.coroutines.*
+import com.tokopedia.createpost.common.di.ActivityContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on September 21, 2022
  */
-class CoachMarkHelper(
-    private val context: Context,
+class ContentCoachMarkManager @Inject constructor(
+    @ActivityContext private val context: Context,
     private val dispatcher: CoroutineDispatchers,
+    private val coachMarkSharedPref: ContentCoachMarkSharedPref,
 ) {
 
     private val coachMarkMap = mutableMapOf<View, CoachMark2>()
+    private val coachMarkConfigMap = mutableMapOf<View, ContentCoachMarkConfig>()
     private val jobMap = mutableMapOf<View, Job>()
 
     fun showCoachMark(
-        config: CoachMarkConfig,
+        config: ContentCoachMarkConfig,
     ) {
+        if(config.hasPrefKey) {
+            if(coachMarkSharedPref.hasBeenShown(config.coachMarkPrefKey, config.coachMarkPrefKeyId)) return
+        }
+
         if(config.delay == 0L && config.duration == 0L)
             showCoachMarkInternal(config)
         else {
@@ -33,7 +44,7 @@ class CoachMarkHelper(
                 if(config.duration != 0L) {
                     delay(config.duration)
 
-                    val coachMark = getOrCreateCoachMark(config.view)
+                    val coachMark = getOrCreateCoachMark(config)
                     if(coachMark.isShowing) {
                         coachMark.dismissCoachMark()
                     }
@@ -44,6 +55,7 @@ class CoachMarkHelper(
 
     fun dismissCoachmark(view: View) {
         coachMarkMap[view]?.dismissCoachMark()
+        jobMap[view]?.cancel()
     }
 
     fun dismissAllCoachMark() {
@@ -56,10 +68,17 @@ class CoachMarkHelper(
         }
     }
 
+    fun hasBeenShown(view: View) {
+        val config = coachMarkConfigMap[view]
+        if(config != null && config.hasPrefKey) {
+            coachMarkSharedPref.setHasBeenShown(config.coachMarkPrefKey, config.coachMarkPrefKeyId)
+        }
+    }
+
     private fun showCoachMarkInternal(
-        config: CoachMarkConfig,
+        config: ContentCoachMarkConfig,
     ) {
-        val coachMark = getOrCreateCoachMark(config.view)
+        val coachMark = getOrCreateCoachMark(config)
 
         coachMark.isDismissed = false
         coachMark.showCoachMark(
@@ -73,7 +92,11 @@ class CoachMarkHelper(
         )
 
         coachMark.simpleCloseIcon?.setOnClickListener {
-            coachMark.dismissCoachMark()
+            if(config.hasPrefKey) {
+                coachMarkSharedPref.setHasBeenShown(config.coachMarkPrefKey, config.coachMarkPrefKeyId)
+            }
+
+            dismissCoachmark(config.view)
             config.onClickCloseListener()
         }
 
@@ -82,9 +105,10 @@ class CoachMarkHelper(
         }
     }
 
-    private fun getOrCreateCoachMark(view: View): CoachMark2 {
-        return coachMarkMap[view] ?: CoachMark2(context).also {
-            coachMarkMap[view] = it
+    private fun getOrCreateCoachMark(config: ContentCoachMarkConfig): CoachMark2 {
+        return coachMarkMap[config.view] ?: CoachMark2(context).also {
+            coachMarkMap[config.view] = it
+            coachMarkConfigMap[config.view] = config
         }
     }
 }

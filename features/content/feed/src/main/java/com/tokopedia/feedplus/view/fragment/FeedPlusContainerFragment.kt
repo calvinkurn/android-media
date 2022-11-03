@@ -21,8 +21,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
@@ -32,13 +30,13 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.util.coachmark.CoachMarkConfig
-import com.tokopedia.feedcomponent.util.coachmark.CoachMarkHelper
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
@@ -137,7 +135,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
 
     @JvmField @Inject
-    var dispatchers: CoroutineDispatchers? = null
+    var coachMarkManager: ContentCoachMarkManager? = null
 
     /** View */
     private lateinit var fabFeed: FloatingButtonUnify
@@ -168,10 +166,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         feedFloatingButton.expand()
                     }
                 }
-    }
-
-    private val coachMarkHelper by lazy(LazyThreadSafetyMode.NONE) {
-        CoachMarkHelper(requireContext(), dispatchers ?: CoroutineDispatchersProvider)
     }
 
     private var badgeNumberNotification: Int = 0
@@ -345,7 +339,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         viewModel.flush()
         postProgressUpdateView?.unregisterBroadcastReceiver()
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
-        coachMarkHelper.dismissAllCoachMark()
+        coachMarkManager?.dismissAllCoachMark()
         super.onDestroy()
     }
 
@@ -573,7 +567,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
-        val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
+        //        val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
+
+        var feedData = mutableListOf<FeedTabs.FeedData>()
+        feedData.addAll(data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM  })
+        feedData.add(FeedTabs.FeedData(title = "Video", key = "video", type = "custom",position = 4,isActive = true))
 
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         feedData.forEach {
@@ -677,16 +675,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             ivFeedUser.show()
 
             if(!affiliatePreference.isUserProfileEntryPointCoachMarkShown(userSession.userId)) {
-                coachMarkHelper.showCoachMark(
-                    CoachMarkConfig(ivFeedUser)
-                        .setSubtitle(getString(R.string.feed_user_profile_entry_point_coach_mark))
-                        .setDuration(USER_ICON_COACH_MARK_DURATION)
-                        .setOnClickCloseListener {
+                coachMarkManager?.showCoachMark(
+                    ContentCoachMarkConfig(ivFeedUser).apply {
+                        subtitle = getString(R.string.feed_user_profile_entry_point_coach_mark)
+                        duration = USER_ICON_COACH_MARK_DURATION
+                        onClickCloseListener = {
                             affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
                         }
-                        .setOnClickListener {
+                        onClickListener = {
                             dismissUserProfileCoachMark()
                         }
+                    }
                 )
             }
         }
@@ -694,7 +693,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun dismissUserProfileCoachMark() {
         affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
-        ivFeedUser?.let { coachMarkHelper.dismissCoachmark(it) }
+        ivFeedUser?.let { coachMarkManager?.dismissCoachmark(it) }
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
