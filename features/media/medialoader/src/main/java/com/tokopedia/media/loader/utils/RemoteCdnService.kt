@@ -23,9 +23,9 @@ object RemoteCdnService {
 
         try {
             url = URL(urlRemote)
-            urlConnection = url.openConnection() as HttpURLConnection
-            urlConnection = urlConnection.setRequestProperty()
-            cdnNameHeader = urlConnection.getHeaderField(cdnHeaderKey).orEmpty()
+            urlConnection = url.openConnection() as? HttpURLConnection
+            urlConnection = urlConnection?.setRequestProperty()
+            cdnNameHeader = urlConnection?.getHeaderField(cdnHeaderKey).orEmpty()
         } catch (e: Throwable) {
             e.printStackTrace()
         } finally {
