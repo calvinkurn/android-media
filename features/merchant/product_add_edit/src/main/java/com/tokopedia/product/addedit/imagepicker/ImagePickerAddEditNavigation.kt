@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.ImageRatioType
@@ -42,7 +43,7 @@ object ImagePickerAddEditNavigation {
         imageFile.forEach {uri ->
             filesImage.add(File(uri))
         }
-        return MediaPicker.intent(context) {
+        return MediaPicker.intentWithGalleryFirst(context) {
             pageSource(PageSource.AddEditProduct)
             multipleSelectionMode()
             modeType(ModeType.IMAGE_ONLY)
@@ -56,6 +57,19 @@ object ImagePickerAddEditNavigation {
                 autoCropRatio = ImageRatioType.RATIO_1_1
                 editorToolsList = arrayListOf(BRIGHTNESS, CONTRAST, CROP, ROTATE, REMOVE_BACKGROUND, WATERMARK)
             })
+        }
+    }
+
+    fun getIntentMediaEditor(context: Context, imageFile : ArrayList<String>): Intent {
+        val editorImageSource = EditorImageSource(imageFile)
+
+        return RouteManager.getIntent(context, ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR).apply {
+            putExtra(EXTRA_EDITOR_PARAM, EditorParam().apply {
+                autoCropRatio = ImageRatioType.RATIO_1_1
+                editorToolsList = arrayListOf(BRIGHTNESS, CONTRAST, CROP, ROTATE, REMOVE_BACKGROUND, WATERMARK)
+            })
+        }.apply {
+            putExtra(EXTRA_INTENT_EDITOR, editorImageSource)
         }
     }
 

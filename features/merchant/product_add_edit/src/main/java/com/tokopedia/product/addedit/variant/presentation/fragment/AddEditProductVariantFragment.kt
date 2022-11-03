@@ -1149,9 +1149,8 @@ class AddEditProductVariantFragment :
     private fun showEditorImagePickerSizeGuide(){
         val ctx = context ?: return
         val urlOrPath = viewModel.variantSizechart.value?.urlOriginal ?: ""
-        val intent = ImagePickerAddEditNavigation.getIntent(
+        val intent = ImagePickerAddEditNavigation.getIntentMediaEditor(
             ctx,
-            MAX_IMAGE_VARIANT,
             arrayListOf(urlOrPath)
         )
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER)
