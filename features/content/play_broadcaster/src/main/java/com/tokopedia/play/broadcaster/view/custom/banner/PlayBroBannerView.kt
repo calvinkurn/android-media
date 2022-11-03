@@ -39,9 +39,7 @@ class PlayBroBannerView(
             binding.icBanner.setImage(value)
         }
 
-    fun setBannerClick(onClick: () -> Unit) {
-        binding.root.setOnClickListener {
-            onClick()
-        }
+    override fun setOnClickListener(l: OnClickListener?) {
+        binding.root.setOnClickListener(l)
     }
 }
