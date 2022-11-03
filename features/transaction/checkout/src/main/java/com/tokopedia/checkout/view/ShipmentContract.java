@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
@@ -23,6 +22,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
@@ -178,8 +178,6 @@ public interface ShipmentContract {
         void showPopUp(PopUpData popUpData);
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
-
-        void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions);
 
         void onNeedUpdateViewItem(int position);
 
@@ -381,6 +379,8 @@ public interface ShipmentContract {
         void fetchEpharmacyData();
 
         void setPrescriptionIds(ArrayList<String> prescriptionIds);
+
+        void setMiniConsultationResult(ArrayList<EPharmacyMiniConsultationResult> results);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 

@@ -73,7 +73,6 @@ import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.analytics.EPharmacyAnalytics;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -103,6 +102,7 @@ import com.tokopedia.coachmark.CoachMark2;
 import com.tokopedia.coachmark.CoachMark2Item;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow;
@@ -222,6 +222,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_PROMO = 954;
     public static final int REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021;
+    public static final int REQUEST_CODE_MINI_CONSULTATION = 10022;
     private static final int REQUEST_CODE_UPSELL = 777;
     private static final int ADD_ON_STATUS_ACTIVE = 1;
     private static final int ADD_ON_STATUS_DISABLE = 2;
@@ -1408,6 +1409,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onUpdateResultAddOnOrderLevelBottomSheet(data);
         } else if (requestCode == REQUEST_CODE_UPLOAD_PRESCRIPTION) {
             onUploadPrescriptionResult(data, false);
+        } else if (requestCode == REQUEST_CODE_MINI_CONSULTATION) {
+            onMiniConsultationResult(data);
         } else if (requestCode == REQUEST_CODE_UPSELL) {
             onResultFromUpsell(data);
         }
@@ -3670,6 +3673,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
                 startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
             }
+        } else {
+            Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
+            startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
         }
     }
 
@@ -3687,6 +3693,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             updateUploadPrescription(uploadModel);
         }
+    }
+
+    private void onMiniConsultationResult(Intent data) {
+        ArrayList<EPharmacyMiniConsultationResult> results = new ArrayList<>();
+        shipmentPresenter.setMiniConsultationResult(results);
     }
 
     @Override
@@ -3802,19 +3813,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
-    }
-
-    @Override
-    public void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions) {
-        ArrayList<String> prescriptionsIds = new ArrayList<>();
-        for (int i = 0; i < prescriptions.size(); i++) {
-            if (prescriptions.get(i).getPrescriptionId() != null) {
-                prescriptionsIds.add(prescriptions.get(i).getPrescriptionId());
-            }
-        }
-        Intent intent = new Intent();
-        intent.putStringArrayListExtra(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA, prescriptionsIds);
-        onUploadPrescriptionResult(intent, true);
     }
 
     @Override
