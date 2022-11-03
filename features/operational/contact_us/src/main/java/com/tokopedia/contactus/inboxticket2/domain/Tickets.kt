@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxticket2.domain
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class Tickets(
@@ -20,7 +21,7 @@ data class Tickets(
         @SerializedName("created_by")
         val createdBy: CreatedBy? = null,
         @SerializedName("solution_id")
-        val solutionId: Int = 0,
+        val solutionId: Long = 0,
         @SerializedName("show_bad_CSAT_reason")
         val isShowBadCSATReason: Boolean = false,
         @SerializedName("show_rating")
@@ -29,6 +30,7 @@ data class Tickets(
         val number: String? = null,
         @SerializedName("attachment")
         var attachment: List<AttachmentItem>? = null,
+        @SuppressLint("Invalid Data Type") // can not use string or long since ids is a list
         @SerializedName("bad_rating_comment_id")
         val badRatingCommentId: List<String>? = null,
         @SerializedName("need_attachment")

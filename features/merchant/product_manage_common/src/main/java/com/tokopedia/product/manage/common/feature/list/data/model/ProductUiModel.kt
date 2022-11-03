@@ -31,6 +31,7 @@ data class ProductUiModel(
     val stockAlertActive: Boolean,
     val stockAlertCount: Int,
     val maxStock: Int?,
+    val isShopModerate: Boolean,
     val haveNotifyMeOOS: Boolean,
     val notifyMeOOSCount: String,
     val notifyMeOOSWording: String,
