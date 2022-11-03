@@ -1739,6 +1739,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
 
         private const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
+        private const val EXTRA_SOURCE_STRING = "source"
         private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
 
         @JvmStatic
