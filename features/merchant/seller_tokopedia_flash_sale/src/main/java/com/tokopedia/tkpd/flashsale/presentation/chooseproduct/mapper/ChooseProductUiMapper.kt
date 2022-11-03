@@ -10,7 +10,7 @@ import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseC
 
 object ChooseProductUiMapper {
 
-    private const val MAX_PRODUCT_SELECTION = 20
+    private const val MAX_PRODUCT_SELECTION = 40
 
     private fun List<CriteriaSelection>.validateMax(): Boolean {
         return !any { it.selectionCount >= it.selectionCountMax }
@@ -98,17 +98,24 @@ object ChooseProductUiMapper {
         return productCount.orZero() >= MAX_PRODUCT_SELECTION
     }
 
-    fun isExceedMaxQuota(productCount: Int, maxProduct: Int): Boolean {
-        return productCount.orZero() >= maxProduct
+    fun isExceedMaxQuota(
+        productCount: Int, 
+        maxProduct: Int,
+        remainingQuota: Int,
+        selectedProductList: List<ChooseProductItem>): Boolean {
+        return productCount >= maxProduct || selectedProductList.size >= remainingQuota
     }
 
     fun getSelectionValidationResult(
         selectedProductCount: Int,
         criteriaList: List<CriteriaSelection>,
-        maxSelectedProduct: Int
+        maxSelectedProduct: Int,
+        remainingQuota: Int,
+        selectedProductList: List<ChooseProductItem>
     ): SelectionValidationResult {
         val isExceedMaxProduct = isExceedMaxProduct(selectedProductCount)
-        val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, maxSelectedProduct)
+        val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, maxSelectedProduct,
+            remainingQuota, selectedProductList)
         val disabledCriteriaIds = criteriaList.getDisabledCriteriaIds()
         return SelectionValidationResult(isExceedMaxProduct, isExceedMaxQuota, disabledCriteriaIds)
     }
