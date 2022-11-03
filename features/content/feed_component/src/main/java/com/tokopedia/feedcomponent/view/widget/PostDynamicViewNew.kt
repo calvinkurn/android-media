@@ -1969,7 +1969,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         else context.getString(R.string.feeds_cek_sekarang)
 
     private fun getCTAButtonSubtitle(card: FeedXCard) =
-        if (card.isTypeProductHighlight) card.cta.subtitle
+        if (card.isTypeProductHighlight) card.cta.subtitle.firstOrNull()
         else null
 
     override fun onDetachedFromWindow() {
