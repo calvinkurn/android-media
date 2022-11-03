@@ -56,5 +56,5 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
-    implementation projectOrAar(rootProject.ext.features.privacyaccount)
+    implementation projectOrAar(rootProject.ext.features.privacyAccount)
 }
