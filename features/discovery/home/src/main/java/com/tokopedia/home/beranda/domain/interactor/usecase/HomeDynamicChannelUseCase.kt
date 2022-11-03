@@ -84,6 +84,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
     private var currentHeaderDataModel: HomeHeaderDataModel? = null
+    private var previousCurrentHeaderDataModel: HomeHeaderDataModel? = null
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
@@ -170,12 +171,15 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      */
                     if(currentHeaderDataModel==null){
                         currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
-                    } else {
+                    }
+//                    if (previousCurrentHeaderDataModel == null || previousCurrentHeaderDataModel == currentHeaderDataModel) {
                         currentHeaderDataModel?.let {
+                            Log.d("dhabalog", it.toString())
                             updateHeaderData(it, dynamicChannelPlainResponse)
                             emit(dynamicChannelPlainResponse)
                         }
-                    }
+//                        previousCurrentHeaderDataModel = currentHeaderDataModel
+//                    }
                 }
 
                 if (isCacheDc) {
