@@ -46,6 +46,7 @@ import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
+import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
@@ -596,7 +597,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.fcmcommon.R.raw.query_update_fcm_token)
                 ),
                 PreferenceManager.getDefaultSharedPreferences(context),
-                userSession
+                userSession,
+                new SendTokenToCMUseCase(getApplicationContext(), com.tokopedia.fcmcommon.R.raw.query_send_token_to_server)
         );
     }
 }

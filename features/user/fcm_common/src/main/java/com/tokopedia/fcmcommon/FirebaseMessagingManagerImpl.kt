@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.iid.FirebaseInstanceId
+import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -12,7 +13,8 @@ import javax.inject.Inject
 class FirebaseMessagingManagerImpl @Inject constructor(
         private val updateFcmTokenUseCase: UpdateFcmTokenUseCase,
         private val sharedPreferences: SharedPreferences,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val sendTokenToCMUseCase: SendTokenToCMUseCase
 ) : FirebaseMessagingManager {
 
     override fun onNewToken(newToken: String?) {
@@ -21,6 +23,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         storeNewToken(newToken)
 
         if(isNewToken(newToken)){
+            updateTokenOnCMServer(newToken)
             if(userSession.isLoggedIn){
                 updateTokenOnServer(newToken)
             } else {
@@ -61,11 +64,16 @@ class FirebaseMessagingManagerImpl @Inject constructor(
             }
 
             updateTokenOnServer(currentFcmToken, listener)
+            updateTokenOnCMServer(currentFcmToken)
         }
     }
 
     override fun currentToken(): String {
         return getTokenFromPref()?: ""
+    }
+
+    private fun updateTokenOnCMServer(token: String) {
+        sendTokenToCMUseCase.updateToken(token, true)
     }
 
     private fun updateTokenOnServer(

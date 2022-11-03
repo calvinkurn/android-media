@@ -8,6 +8,7 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl
 import com.tokopedia.fcmcommon.R
 import com.tokopedia.fcmcommon.data.UpdateFcmTokenResponse
+import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -30,12 +31,14 @@ class FcmModule(@ApplicationContext private val context: Context) {
     fun provideFcmManager(
             updateFcmTokenUseCase: UpdateFcmTokenUseCase,
             sharedPreferences: SharedPreferences,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            sendTokenToCMUseCase: SendTokenToCMUseCase
     ): FirebaseMessagingManager {
         return FirebaseMessagingManagerImpl(
                 updateFcmTokenUseCase,
                 sharedPreferences,
-                userSession
+                userSession,
+                sendTokenToCMUseCase
         )
     }
 
@@ -62,6 +65,12 @@ class FcmModule(@ApplicationContext private val context: Context) {
     ): UpdateFcmTokenUseCase {
         val query = loadRaw(context.resources, R.raw.query_update_fcm_token)
         return UpdateFcmTokenUseCase(useCase, query)
+    }
+
+    @Provides
+    @FcmScope
+    fun provideFcmTokenCMUseCase(): SendTokenToCMUseCase {
+        return SendTokenToCMUseCase(context, R.raw.query_send_token_to_server)
     }
 
     @Provides
