@@ -56,6 +56,7 @@ class ContentCoachMarkManager @Inject constructor(
     fun dismissCoachmark(view: View) {
         coachMarkMap[view]?.dismissCoachMark()
         jobMap[view]?.cancel()
+        coachMarkConfigMap.remove(view)
     }
 
     fun dismissAllCoachMark() {
@@ -66,6 +67,8 @@ class ContentCoachMarkManager @Inject constructor(
         jobMap.forEach {
             jobMap[it.key]?.cancel()
         }
+
+        coachMarkConfigMap.clear()
     }
 
     fun hasBeenShown(view: View) {
