@@ -6,28 +6,14 @@
     android:paddingBottom="8dp"
     android:background="@color/Unify_Static_White"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/orderName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        tools:text="Pesanan"
-        tools:visibility="visible"
-        android:visibility="gone"
-        />
-
+    
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/orderName"
-        app:layout_constraintTop_toBottomOf="@id/orderName"
-        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="32dp"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         android:layout_marginTop="8dp"

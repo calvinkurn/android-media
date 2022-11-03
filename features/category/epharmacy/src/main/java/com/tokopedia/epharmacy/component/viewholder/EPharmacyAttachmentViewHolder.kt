@@ -22,7 +22,6 @@ import com.tokopedia.unifyprinciples.Typography
 
 class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyAttachmentDataModel?>(view) {
 
-    private val orderName = view.findViewById<Typography>(R.id.orderName)
     private val productText = view.findViewById<Typography>(R.id.product_name)
     private val shopNameText = view.findViewById<Typography>(R.id.shop_name)
     private val shopIcon = view.findViewById<ImageUnify>(R.id.shop_icon)
@@ -58,7 +57,6 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderPartnerData() {
-        orderName.displayTextOrHide(dataModel?.orderName ?: "")
         enablerImage.show()
         partnerTitle.show()
         enablerImage.loadImage(dataModel?.partnerLogo)
@@ -73,7 +71,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderProductsData() {
         dataModel?.shopInfo?.products?.firstOrNull()?.let {  firstProduct ->
             productText.text = firstProduct.name
-            productQuantity.text = firstProduct.quantityString
+            productQuantity.text = "${firstProduct.quantity} Barang (${firstProduct.productTotalWeightFmt})"
             productImageUnify.loadImage(firstProduct.productImage)
         }
 
@@ -124,8 +122,8 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderButton() {
         if(dataModel?.uploadWidget == true){
             chatDokterUploadLayout.show()
-            chatDokterUploadText.text = dataModel?.uploadWidgetText
-            chatDokterUploadIcon.loadImage(dataModel?.uploadWidgetIcon)
+//            chatDokterUploadText.text = dataModel?.uploadWidgetText
+//            chatDokterUploadIcon.loadImage(dataModel?.uploadWidgetIcon)
             chatDokterUploadLayout.setOnClickListener {
                 ePharmacyListener?.onCTACClick(bindingAdapterPosition,dataModel?.name)
             }

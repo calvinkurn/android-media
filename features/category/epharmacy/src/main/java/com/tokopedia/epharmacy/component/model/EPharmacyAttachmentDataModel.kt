@@ -9,7 +9,6 @@ import com.tokopedia.epharmacy.network.response.EPharmacyProduct
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 
 data class EPharmacyAttachmentDataModel(val name : String = "", val type : String = "",
-                                        val orderName : String?,
                                         val epharmacyGroupId : String?,
                                         val partnerName : String?, val partnerLogo: String?,
                                         val shopInfo : EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
@@ -20,9 +19,8 @@ data class EPharmacyAttachmentDataModel(val name : String = "", val type : Strin
                                         val tokoConsultationId: String?,
                                         val prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?,
                                         val prescriptionSource: List<String?>?,
+                                        val consultationSource: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource?,
                                         var productsIsExpanded : Boolean = false,
-                                        val uploadWidgetText : String?, val uploadWidgetIcon : String?,
-                                        val uploadWidgetAppLink : String?,
                                         val uploadWidget : Boolean = false
 )
     : BaseEPharmacyDataModel {

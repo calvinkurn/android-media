@@ -19,6 +19,7 @@ class EPharmacyTickerViewHolder(
 
     override fun bind(data: EPharmacyTickerDataModel) {
         view.findViewById<ImageUnify>(R.id.ticker_icon).loadImage(data.tickerLogo)
+        view.findViewById<ImageUnify>(R.id.ticker_background_image).loadImage(data.tickerBackground)
         view.findViewById<Typography>(R.id.ticker_text).run {
             text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(data.tickerText, Html.FROM_HTML_MODE_LEGACY)
