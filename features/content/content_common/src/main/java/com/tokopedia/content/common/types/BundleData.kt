@@ -19,5 +19,4 @@ object BundleData {
     const val DEFAULT_MULTI_SELECT_LIMIT = 5
 
     const val KEY_IS_OPEN_FROM = "key_is_open_from"
-    const val KEY_AUTHOR_TYPE = "author_type"
 }

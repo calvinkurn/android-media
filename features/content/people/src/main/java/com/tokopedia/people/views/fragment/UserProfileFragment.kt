@@ -21,7 +21,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
-import com.tokopedia.content.common.types.BundleData.KEY_AUTHOR_TYPE
+import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator

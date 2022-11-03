@@ -28,7 +28,7 @@ import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.content.common.types.BundleData.KEY_AUTHOR_TYPE
+import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
