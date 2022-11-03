@@ -22,4 +22,8 @@ class CampaignListStartupBenchmark(startupMode: StartupMode) :
     }
 
     override fun traceName() = "mp_campaign_list"
+
+    override fun getPackageName(): String {
+        return MacroIntent.TKPD_PACKAGE_SELLER_APP
+    }
 }

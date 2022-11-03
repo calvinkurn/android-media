@@ -5,6 +5,7 @@ import androidx.test.filters.SdkSuppress
 import com.tkpd.macrobenchmark.base.BaseFrameTimingBenchmark
 import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
+import com.tkpd.macrobenchmark.util.MacroIntent.TKPD_PACKAGE_SELLER_APP
 import com.tkpd.macrobenchmark.util.MacroInteration
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -24,4 +25,7 @@ class CampaignListFrameTimingBenchmark: BaseFrameTimingBenchmark() {
 
     override fun getIntent() = MacroIntent.CampaignList.getCampaignListIntent()
 
+    override fun getPackageName(): String {
+        return TKPD_PACKAGE_SELLER_APP
+    }
 }
