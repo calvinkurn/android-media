@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class FeedXCta (
     @SerializedName("text")
     val text: String = "",
+    @SerializedName("subtitle")
+    val subtitle: String = "",
     @SerializedName("color")
     val color: String = "",
     @SerializedName("colorGradient")

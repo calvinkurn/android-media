@@ -16,6 +16,7 @@ import javax.inject.Inject
 /**
  * ViewModel for Product Item Info BottomSheet
  *
+ * IMO
  * This "presentation" package later on will be used instead of "view"
  * because the "view" package have many tech debts in structure and naming
  *
