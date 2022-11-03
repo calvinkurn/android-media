@@ -693,21 +693,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Callback Preparation Menu */
     override fun onClickSetTitle() {
-        binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         analytic.clickSetupTitleMenu()
 
         showTitleForm(true)
     }
 
     override fun onClickSetCover() {
-        binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         analytic.clickSetupCoverMenu()
 
         showCoverForm(true)
     }
 
     override fun onClickSetProduct() {
-        binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         analytic.clickSetupProductMenu()
 
         childFragmentManager.beginTransaction()
@@ -716,7 +713,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onClickSetSchedule() {
-        binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         eventBus.emit(Event.ClickSetSchedule)
     }
 
@@ -746,6 +742,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
+        if (!isShow) binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         binding.groupPreparationMain.showWithCondition(isShow)
     }
 
