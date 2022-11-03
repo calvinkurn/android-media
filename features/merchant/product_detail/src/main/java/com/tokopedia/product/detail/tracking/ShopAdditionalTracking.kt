@@ -15,7 +15,6 @@ import com.tokopedia.track.constant.TrackerConstant.EVENT
 import com.tokopedia.track.constant.TrackerConstant.EVENT_ACTION
 import com.tokopedia.track.constant.TrackerConstant.EVENT_CATEGORY
 import com.tokopedia.track.constant.TrackerConstant.EVENT_LABEL
-import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * Created by yovi.putra on 27/10/22"
@@ -23,24 +22,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
  **/
 
 object ShopAdditionalTracking {
-
-    fun onImpression(
-        trackingQueue: TrackingQueue?,
-        componentTrackDataModel: ComponentTrackDataModel,
-        productInfo: DynamicProductInfoP1?,
-        userId: String,
-        eventLabel: String
-    ) {
-        val mapEvent = TrackingUtil.createCommonImpressionTracker(
-            productInfo = productInfo,
-            componentTrackDataModel = componentTrackDataModel,
-            userId = userId,
-            customAction = "view - dilayani tokopedia component",
-            customItemName = eventLabel,
-            trackedId = "38258"
-        )
-        trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
-    }
 
     fun clickLearnButton(
         component: ComponentTrackDataModel,

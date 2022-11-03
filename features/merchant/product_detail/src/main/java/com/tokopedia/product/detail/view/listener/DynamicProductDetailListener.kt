@@ -179,7 +179,6 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel,
         eventLabel: String
     )
-    fun onImpressShopAdditional(componentTrackDataModel: ComponentTrackDataModel, eventLabel: String)
 
     /**
      * ProductRecommendationAnnotationChipViewHolder

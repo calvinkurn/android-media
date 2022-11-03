@@ -53,10 +53,7 @@ class ProductShopAdditionalViewHolder(
     private fun impressComponent(element: ProductShopAdditionalDataModel) {
         val componentTrack = getComponentTrackData(element)
         itemView.addOnImpressionListener(element.impressHolder) {
-            listener.onImpressShopAdditional(
-                componentTrackDataModel = componentTrack,
-                eventLabel = getEventLabel(element = element)
-            )
+            listener.onImpressComponent(componentTrackDataModel = componentTrack)
         }
     }
 
@@ -113,7 +110,7 @@ class ProductShopAdditionalViewHolder(
     }
 
     private fun getEventLabel(element: ProductShopAdditionalDataModel): String {
-        val labels = element.labels.joinToString(" ")
+        val labels = element.labels.joinToString("+")
         return "title:${element.title};subtitle:${element.description};label:$labels;"
     }
 }

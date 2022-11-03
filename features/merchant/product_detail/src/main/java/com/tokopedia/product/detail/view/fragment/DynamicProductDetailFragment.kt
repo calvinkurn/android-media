@@ -1148,19 +1148,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun onImpressShopAdditional(
-        componentTrackDataModel: ComponentTrackDataModel,
-        eventLabel: String
-    ) {
-        ShopAdditionalTracking.onImpression(
-            trackingQueue = trackingQueue,
-            componentTrackDataModel = componentTrackDataModel,
-            productInfo = viewModel.getDynamicProductInfoP1,
-            userId = viewModel.userId,
-            eventLabel = eventLabel
-        )
-    }
-
     /**
      * ProductShopInfoViewHolder
      */
