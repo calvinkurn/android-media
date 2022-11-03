@@ -7,10 +7,14 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.unmockkAll
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 abstract class TokoChatViewModelTestFixture {
 
     @get:Rule
