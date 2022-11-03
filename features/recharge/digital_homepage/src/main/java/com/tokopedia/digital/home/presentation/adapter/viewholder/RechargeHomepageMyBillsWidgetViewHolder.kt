@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.Label
 
 
 /**
@@ -87,6 +88,10 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         companion object {
             @LayoutRes
             val LAYOUT = R.layout.view_recharge_home_my_bills_item
+
+            private const val LABEL_TEAL = "Teal"
+            private const val LABEL_ORANGE = "Orange"
+            private const val LABEL_RED = "Red"
         }
 
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel) {
@@ -115,7 +120,17 @@ class RechargeHomepageMyBillsWidgetViewHolder(
             element: RechargeHomepageSections.Item
         ) {
             binding.tvExpired.text = element.attributes.specialInfoText
-            binding.tvExpired.setTextColor(element.attributes.specialInfoColor)
+            binding.tvExpired.setLabelColor(element.attributes.specialInfoColor)
+        }
+
+        private fun Label.setLabelColor(style: String) {
+            val type = when(style) {
+                LABEL_TEAL -> Label.GENERAL_TEAL
+                LABEL_ORANGE -> Label.GENERAL_ORANGE
+                LABEL_RED -> Label.GENERAL_RED
+                else -> Label.GENERAL_TEAL
+            }
+            setLabelType(type)
         }
 
         private fun Typography.setTextColor(color: String) {
