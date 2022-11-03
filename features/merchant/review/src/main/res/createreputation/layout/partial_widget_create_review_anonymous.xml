@@ -21,7 +21,6 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:padding="4dp"
-        app:icon_color_night_enable="@color/Unify_NN900"
         app:icon_name="INFORMATION"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
