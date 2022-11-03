@@ -11,6 +11,7 @@ import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemImageBubbleBinding
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatImageBubbleViewHolderBinder.generateLeftBg
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatImageBubbleViewHolderBinder.generateRightBg
+import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder.bindChatReadStatus
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -29,6 +30,7 @@ class TokoChatImageBubbleViewHolder(
         bindBackground(element)
         bindImage(element)
         bindRetryButton(element)
+        bindStatus(element)
     }
 
     private fun bindImage(element: TokoChatImageBubbleUiModel) {
@@ -58,6 +60,12 @@ class TokoChatImageBubbleViewHolder(
             binding?.tokochatImageBubbleError?.show()
         } else {
             binding?.tokochatImageBubbleError?.hide()
+        }
+    }
+
+    private fun bindStatus(element: TokoChatImageBubbleUiModel) {
+        binding?.tokochatImageBubbleStatus?.let {
+            bindChatReadStatus(element, it)
         }
     }
 

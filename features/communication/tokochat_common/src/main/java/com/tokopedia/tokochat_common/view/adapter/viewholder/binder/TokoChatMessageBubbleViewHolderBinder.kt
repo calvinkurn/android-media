@@ -15,6 +15,7 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWO_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ZERO_DP
 import com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
+import com.tokopedia.tokochat_common.view.uimodel.base.TokoChatSendableBaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 
 object TokoChatMessageBubbleViewHolderBinder {
@@ -123,7 +124,7 @@ object TokoChatMessageBubbleViewHolderBinder {
         }
     }
 
-    private fun bindChatReadStatus(element: TokoChatMessageBubbleUiModel, checkMark: ImageUnify) {
+    fun bindChatReadStatus(element: TokoChatSendableBaseUiModel, checkMark: ImageUnify) {
         if (element.isSender) {
             checkMark.show()
             val imageResource = when {
