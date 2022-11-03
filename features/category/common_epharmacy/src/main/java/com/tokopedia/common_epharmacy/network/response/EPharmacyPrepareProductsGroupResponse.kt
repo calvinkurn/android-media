@@ -159,9 +159,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("product_total_weight_fmt")
                         val productTotalWeightFmt: String?,
                         @SerializedName("quantity")
-                        val quantity: Int?,
-                        @SerializedName("quantity_string")
-                        val quantityString: String?
+                        val quantity: Int?
                     )
                 }
             }
