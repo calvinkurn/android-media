@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone">
+        android:visibility="visible">
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
             android:layout_width="0dp"
@@ -25,7 +25,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_2"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Jangan lupa bayar tagihanmu, ya!"/>
         <androidx.recyclerview.widget.RecyclerView
@@ -41,6 +41,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     <include
         android:id="@+id/shimmer_my_bills"
-        android:visibility="visible"
+        android:visibility="gone"
         layout="@layout/view_recharge_home_my_bills_shimmering"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
