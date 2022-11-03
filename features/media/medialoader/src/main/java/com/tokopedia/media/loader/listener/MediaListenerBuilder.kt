@@ -34,7 +34,7 @@ object MediaListenerBuilder {
                 context = context.applicationContext,
                 url = properties.data.toString(),
                 loadTime = loadTime,
-                exception = e,
+                exception = e
             )
             return false
         }

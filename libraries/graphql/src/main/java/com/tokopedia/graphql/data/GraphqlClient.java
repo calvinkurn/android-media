@@ -16,6 +16,7 @@ import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.fakeresponse.FakeResponseInterceptorProvider;
 import com.tokopedia.graphql.FingerprintManager;
+import com.tokopedia.graphql.MacroInterceptorProvider;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;

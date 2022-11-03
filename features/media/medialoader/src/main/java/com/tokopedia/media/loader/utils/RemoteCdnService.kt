@@ -35,7 +35,8 @@ object RemoteCdnService {
     }
 
     private fun HttpURLConnection.setRequestProperty(): HttpURLConnection {
-        requestMethod = CdnMonitoringConstants.METHOD_GET
+        val methodGet = "GET"
+        requestMethod = methodGet
         useCaches = false
         setRequestProperty(HEADER_USER_AGENT, AuthHelper.getUserAgent())
         return this

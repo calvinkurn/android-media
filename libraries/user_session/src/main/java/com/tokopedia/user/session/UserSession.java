@@ -495,8 +495,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     }
 
     @Override
-    public void
-    setIsMultiLocationShop(boolean isMultiLocationShop) {
+    public void setIsMultiLocationShop(boolean isMultiLocationShop) {
         setBoolean(LOGIN_SESSION, IS_MULTI_LOCATION_SHOP, isMultiLocationShop);
     }
 

@@ -69,7 +69,6 @@ public class Constants {
     public static final String IS_PII_MIGRATED = "_PII_MIGRATED";
     public static final String PII_BACKUP = "_PII_BACKUP";
 
-
     public static HashSet<String> PII_DATA_SET = SetsKt.hashSetOf(
             "FULL_NAME_v2",
             "EMAIL_v2",
