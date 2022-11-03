@@ -277,7 +277,7 @@ data class ChannelDetailsWithRecomResponse(
         val isEnabled: Boolean = false,
 
         @SerializedName("duration_to_pop_up")
-        val duration: Int = 0,
+        val duration: Long = 0,
 
         @SerializedName("copy_text_bottomsheet")
         val copyText: String = "",

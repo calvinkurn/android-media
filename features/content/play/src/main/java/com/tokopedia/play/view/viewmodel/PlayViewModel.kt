@@ -295,6 +295,14 @@ class PlayViewModel @AssistedInject constructor(
 
     }.flowOn(dispatchers.computation)
 
+    private val _followPopUpState = combine(_channelDetail, _partnerInfo, _bottomInsets) { channelDetail, partnerInfo, bottomInsets ->
+        FollowPopUpUiState(
+            shouldShow = partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && !bottomInsets.isAnyShown && !isFreezeOrBanned && playPreference.isFollowPopup(partnerId.toString()),
+            popupConfig = channelDetail.popupConfig
+        )
+    }.flowOn(dispatchers.computation)
+
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -318,10 +326,11 @@ class PlayViewModel @AssistedInject constructor(
         _loadingBuy,
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
+        _followPopUpState.distinctUntilChanged(),
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,
-        featuredProducts ->
+        featuredProducts, followPopUp ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -339,6 +348,7 @@ class PlayViewModel @AssistedInject constructor(
             isLoadingBuy = isLoadingBuy,
             address = address,
             featuredProducts = featuredProducts,
+            followPopUp = followPopUp
         )
     }.stateIn(
         viewModelScope,
@@ -2623,11 +2633,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun showPopUp () {
-        //logic show / no
-        viewModelScope.launch(dispatchers.computation) {
-            delay(6000) // 1minute
-            _uiEvent.emit(ShowPopUp)
-        }
+        playPreference.setFollowPopUp(partnerId.toString())
     }
 
     private fun CoroutineScope.launch(

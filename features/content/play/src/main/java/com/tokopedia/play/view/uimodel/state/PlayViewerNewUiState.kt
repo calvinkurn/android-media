@@ -8,6 +8,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPopUpConfigUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -34,6 +35,7 @@ data class PlayViewerNewUiState(
     val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
+    val followPopUp: FollowPopUpUiState,
 ) {
 
     companion object {
@@ -64,6 +66,10 @@ data class PlayViewerNewUiState(
                     warehouseInfo = WarehouseInfoUiModel.Empty,
                 ),
                 featuredProducts = emptyList(),
+                followPopUp = FollowPopUpUiState(
+                    shouldShow = false,
+                    popupConfig = PlayPopUpConfigUiModel.Empty,
+                ),
             )
     }
 }
@@ -122,4 +128,9 @@ enum class KebabMenuType{
 data class AddressWidgetUiState(
     val shouldShow: Boolean,
     val warehouseInfo: WarehouseInfoUiModel
+)
+
+data class FollowPopUpUiState(
+    val shouldShow: Boolean,
+    val popupConfig: PlayPopUpConfigUiModel,
 )

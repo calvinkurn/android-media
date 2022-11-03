@@ -59,6 +59,7 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         setupView()
     }
 
+    //TODO() setupview from ui state
 
     private fun setupView() {
         headerBinding.ivSheetClose.setOnClickListener {

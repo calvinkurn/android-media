@@ -890,6 +890,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                     viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
                 }
+                handleFollowPopUp(prevState?.followPopUp, state.followPopUp)
             }
         }
     }
@@ -1741,6 +1742,17 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderAddressWidget(addressUiState: AddressWidgetUiState){
         chooseAddressView?.rootView?.showWithCondition(addressUiState.shouldShow)
+    }
+
+    private fun handleFollowPopUp(prevState: FollowPopUpUiState?, state: FollowPopUpUiState) {
+        if (prevState == state || !state.shouldShow || !state.popupConfig.isEnabled) return
+
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.computation) {
+            delay(state.popupConfig.duration)
+            withContext(dispatchers.main) {
+                PlayFollowBottomSheet.getOrCreate(childFragmentManager).show(childFragmentManager)
+            }
+        }
     }
 
     private fun castViewOnStateChanged(
