@@ -34,6 +34,8 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         private const val MIN_NUMBER = 1
         private const val DEFAULT_NUMBER = 0
         private const val DEFAULT_DP = 0
+        private const val NO_PROGRESS = 0F
+        private const val HIDE_SOFT_INPUT_KEYBOARD_FLAG = 0
     }
 
     private var binding: LayoutTokopedianowQuantityEditorViewBinding
@@ -203,9 +205,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                         startId = R.id.start,
                         endId = R.id.end
                     )
-                    editText.setText(
-                        minQuantity.toString()
-                    )
+                    editText.setText(minQuantity.toString())
                 } else if (root.currentState == R.id.startWithValue) {
                     expandAnimation(
                         startId = R.id.startWithValue,
@@ -213,9 +213,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                     )
                 } else if (counter < maxQuantity) {
                     counter++
-                    editText.setText(
-                        counter.toString()
-                    )
+                    editText.setText(counter.toString())
                 }
                 executeTimer()
             }
@@ -294,6 +292,32 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         setOnTouchListener(null)
     }
 
+    private fun LayoutTokopedianowQuantityEditorViewBinding.setStartTransition() {
+        root.setTransition(
+            R.id.start,
+            R.id.end
+        )
+        root.progress = NO_PROGRESS
+
+        editText.text?.clear()
+        editText.clearFocus()
+    }
+
+    private fun LayoutTokopedianowQuantityEditorViewBinding.setStartTransitionWithValue() {
+        root.setTransition(
+            R.id.startWithValue,
+            R.id.end
+        )
+        root.progress = NO_PROGRESS
+
+        editText.apply {
+            setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_start_with_value)
+            setText(counter.toString())
+            clearFocus()
+            setEditTextPadding()
+        }
+    }
+
     private fun executeTimer() {
         cancelTimer()
         startTimer()
@@ -301,36 +325,16 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun hideKeyboardFrom(context: Context, view: View) {
         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+        imm.hideSoftInputFromWindow(view.windowToken, HIDE_SOFT_INPUT_KEYBOARD_FLAG)
     }
 
     fun setQuantity(quantity: Int) {
         binding.apply {
             if (quantity > DEFAULT_NUMBER) {
                 counter = quantity
-                root.setTransition(
-                    R.id.startWithValue,
-                    R.id.end
-                )
-                root.progress = 0f
-                editText.apply {
-                    setDimenAsTextSize(
-                        id = R.dimen.tokopedianow_quantity_editor_text_size_start_with_value
-                    )
-                    setText(
-                        counter.toString()
-                    )
-                    clearFocus()
-                    setEditTextPadding()
-                }
+                setStartTransitionWithValue()
             } else {
-                root.setTransition(
-                    R.id.start,
-                    R.id.end
-                )
-                root.progress = 0f
-                editText.text?.clear()
-                editText.clearFocus()
+                setStartTransition()
             }
         }
     }

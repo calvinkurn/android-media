@@ -13,12 +13,13 @@ data class TokoNowProductCardViewUiModel(
     val name: String = "",
     val rating: String = "",
     val progressBarLabel: String = "",
-    val progressBarLabelColor: String = "",
     val progressBarPercentage: Int = 0,
     val hasBeenWishlist: Boolean = false,
+    val isSimilarProductShown: Boolean = false,
+    val isWishlistShown: Boolean = false,
     val isVariant: Boolean = false,
     val needToShowQuantityEditor: Boolean = false,
-    val labelGroupList: List<LabelGroup> = listOf(),
+    val labelGroupList: List<LabelGroup> = listOf()
 ) {
     private companion object {
         private const val NORMAL_BRIGHTNESS = 1f
@@ -32,6 +33,7 @@ data class TokoNowProductCardViewUiModel(
     fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { availableStock < minOrder && it.isStatusPosition() && it.isTransparentBlackColor() }
     fun getAssignedValueLabelGroup(): LabelGroup? = if (isBestSellerLabelAvailable()) getBestSellerLabelGroup() else getNewProductLabelGroup()
     fun getPriceLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isPricePosition() && it.isLightGreenColor() }
+    fun getWeightLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isWeightPosition() }
     fun getImageBrightness(): Float = if (isOos()) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
 
     fun isOos() = getOosLabelGroup() != null
@@ -49,6 +51,7 @@ data class LabelGroup(
     fun isBestSellerPosition() = position == LABEL_BEST_SELLER
     fun isNewProductLabelPosition() = position == LABEL_GIMMICK
     fun isPricePosition() = position == LABEL_PRICE
+    fun isWeightPosition() = position == LABEL_WEIGHT
 
     fun isTransparentBlackColor() = type == TRANSPARENT_BLACK
     fun isTextDarkOrangeColor() = type == TEXT_DARK_ORANGE
@@ -62,6 +65,7 @@ internal const val LABEL_STATUS = "status"
 internal const val LABEL_PRICE = "price"
 internal const val LABEL_GIMMICK = "gimmick"
 internal const val LABEL_BEST_SELLER = "best_seller"
+internal const val LABEL_WEIGHT = "weight"
 
 /**
  * Background Color

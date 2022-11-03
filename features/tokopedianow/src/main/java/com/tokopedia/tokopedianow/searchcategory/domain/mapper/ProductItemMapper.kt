@@ -25,6 +25,8 @@ object ProductItemMapper {
         name = product.name,
         rating = product.ratingAverage,
         hasBeenWishlist = product.isWishlist,
+        isWishlistShown = true,
+        isSimilarProductShown = true,
         isVariant = product.childs.isNotEmpty(),
         needToShowQuantityEditor = product.minOrder <= product.maxOrder && product.maxOrder != DEFAULT_MAX_ORDER,
         labelGroupList = product.labelGroupList.map {
