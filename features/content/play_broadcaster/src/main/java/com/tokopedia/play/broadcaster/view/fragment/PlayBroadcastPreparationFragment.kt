@@ -372,7 +372,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 broadcaster.flip()
             }
 
-            bannerShorts.setOnClickListener {
+            bannerShorts.setBannerClick {
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }
         }
