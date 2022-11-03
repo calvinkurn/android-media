@@ -120,6 +120,7 @@ class UserProfileFragment @Inject constructor(
 
     private var shouldRefreshRecyclerView: Boolean = false
     private var isViewMoreClickedBio: Boolean = false
+    private var fabCreated: Boolean = false
 
     private var _binding: UpFragmentUserProfileBinding? = null
 
@@ -538,13 +539,13 @@ class UserProfileFragment @Inject constructor(
             prev.profileWhitelist == value.profileWhitelist
         ) return
 
-        if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist && !viewModel.fabCreated) {
+        if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist && !fabCreated) {
             val items = arrayListOf<FloatingButtonItem>()
             items.add(createLiveFab())
             items.add(createPostFab())
             mainBinding.fabUp.addItem(items)
             mainBinding.fabUserProfile.show()
-            viewModel.fabCreated = true
+            fabCreated = true
         } else mainBinding.fabUserProfile.hide()
     }
 
