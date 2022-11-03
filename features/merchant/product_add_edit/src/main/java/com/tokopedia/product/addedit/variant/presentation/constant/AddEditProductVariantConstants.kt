@@ -31,5 +31,6 @@ class AddEditProductVariantConstants {
         const val MAX_IMAGE_VARIANT = 1
         const val REQUEST_CODE_VARIANT_PHOTO_IMAGE_MEDIA_PICKER = 3
         const val REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER = 4
+        const val REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER = 5
     }
 }

@@ -57,6 +57,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_CUSTOM_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_IMAGE_VARIANT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_DETAIL
@@ -579,6 +580,13 @@ class AddEditProductVariantFragment :
 
                 REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER -> {
                     val imageUrlOrPathList = MediaPicker.result(data)
+                    imageUrlOrPathList.editedImages.forEach {
+                        viewModel.updateSizechart(it)
+                    }
+                }
+
+                REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER -> {
+                    val imageUrlOrPathList = ImagePickerAddEditNavigation.resultExtrasEditor(data)
                     imageUrlOrPathList.editedImages.forEach {
                         viewModel.updateSizechart(it)
                     }
@@ -1153,7 +1161,7 @@ class AddEditProductVariantFragment :
             ctx,
             arrayListOf(urlOrPath)
         )
-        startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER)
+        startActivityForResult(intent, REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER)
     }
 
     private fun showGetVariantCategoryCombinationErrorToast(errorMessage: String) {

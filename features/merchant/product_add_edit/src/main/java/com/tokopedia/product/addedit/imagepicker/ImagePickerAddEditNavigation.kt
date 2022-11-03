@@ -73,6 +73,10 @@ object ImagePickerAddEditNavigation {
         }
     }
 
+    fun resultExtrasEditor(data: Intent?): PickerResult {
+        return data?.getParcelableExtra(RESULT_INTENT_EDITOR)?: PickerResult()
+    }
+
     @SuppressLint("WrongConstant")
     private fun createImagePickerBuilder(context: Context, selectedImagePathList: ArrayList<String>?, maxImageCount: Int): ImagePickerBuilder {
         val listPlaceholderImage = List(maxImageCount) {
