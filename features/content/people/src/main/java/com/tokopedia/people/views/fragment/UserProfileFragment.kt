@@ -806,6 +806,9 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun openUGCOnboardingBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
+        if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
         val bundle = Bundle().apply {
             putInt(
                 UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
