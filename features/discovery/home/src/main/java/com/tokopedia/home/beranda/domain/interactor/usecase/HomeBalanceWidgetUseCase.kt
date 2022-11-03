@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
@@ -47,6 +48,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
     }
 
     suspend fun onGetBalanceWidgetData(): HomeHeaderDataModel {
+        Log.d("dhabalog", "onGetBalanceWidgetData")
         val homeHeaderDataModel = HomeHeaderDataModel()
         if (!userSession.isLoggedIn) return homeHeaderDataModel
 

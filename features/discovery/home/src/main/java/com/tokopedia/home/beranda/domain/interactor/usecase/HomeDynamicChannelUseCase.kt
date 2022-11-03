@@ -23,6 +23,7 @@ import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.helper.MissionWidgetHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
@@ -171,13 +172,25 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      */
                     if(currentHeaderDataModel==null){
                         currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
+                        if (currentHeaderDataModel is HomeHeaderDataModel) {
+                            (currentHeaderDataModel as HomeHeaderDataModel).let {
+                                if (it.headerDataModel?.homeBalanceModel?.status != HomeBalanceModel.STATUS_LOADING) {
+                                    updateHeaderData(it, dynamicChannelPlainResponse)
+                                    emit(dynamicChannelPlainResponse)
+                                }
+                            }
+                        }
+                    } else {
+                        currentHeaderDataModel?.let {
+                            if (currentHeaderDataModel?.headerDataModel?.homeBalanceModel?.status != HomeBalanceModel.STATUS_LOADING) {
+                                Log.d("dhabalog", it.toString())
+                                updateHeaderData(it, dynamicChannelPlainResponse)
+                                emit(dynamicChannelPlainResponse)
+                            }
+                        }
                     }
 //                    if (previousCurrentHeaderDataModel == null || previousCurrentHeaderDataModel == currentHeaderDataModel) {
-                        currentHeaderDataModel?.let {
-                            Log.d("dhabalog", it.toString())
-                            updateHeaderData(it, dynamicChannelPlainResponse)
-                            emit(dynamicChannelPlainResponse)
-                        }
+
 //                        previousCurrentHeaderDataModel = currentHeaderDataModel
 //                    }
                 }

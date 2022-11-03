@@ -931,7 +931,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
         }
-//        manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
 
         refreshQuestWidget()
         adapter?.onResumeSpecialRelease()
@@ -1995,11 +1994,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         when (isVisibleToUser) {
             false -> {
                 if (tokonowCoachmarkIsShowing) {
+                    tokonowCoachmarkIsShowing = false
                     coachmarkTokonow?.hideCoachMark()
                 }
                 else if (subscriptionCoachmarkIsShowing) {
+                    subscriptionCoachmarkIsShowing = false
                     coachmarkSubscription?.hideCoachMark()
                 }
+            }
+            true -> {
+
             }
         }
     }
