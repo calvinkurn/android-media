@@ -608,6 +608,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         if(viewModel.isShowLiveButton) items.add(createLiveFab())
         if(viewModel.isShowPostButton) items.add(createPostFab())
+        if(viewModel.isShowShortsButton) items.add(createShortsFab())
 
         if (items.isNotEmpty() && userSession.isLoggedIn) {
             fabFeed.addItem(items)
@@ -646,6 +647,20 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
                 startActivity(intent)
                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+            }
+        )
+    }
+
+    private fun createShortsFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            title = getString(R.string.feed_fab_create_shorts_video),
+            listener = {
+                fabFeed.menuOpen = false
+                /** TODO: attach analytic here */
+//                entryPointAnalytic.clickCreateLiveEntryPoint()
+
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }
         )
     }
