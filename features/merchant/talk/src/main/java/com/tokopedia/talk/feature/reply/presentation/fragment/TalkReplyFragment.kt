@@ -115,7 +115,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var toaster: Snackbar? = null
     private var inboxType = ""
     private var templateAdapter: TalkReplyTemplateAdapter? = null
-    private val blockDialog by lazy {
+    private val blockDialog by lazy(LazyThreadSafetyMode.NONE) {
         context?.let {
             DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.talk_block_dialog_title))
