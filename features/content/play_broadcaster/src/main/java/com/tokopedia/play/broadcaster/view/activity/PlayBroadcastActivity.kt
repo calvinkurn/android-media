@@ -31,6 +31,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.BundleData.KEY_PLAY_BROADCASTER_ENTRY_POINT
 import com.tokopedia.content.common.types.BundleData.VALUE_PLAY_BROADCASTER_ENTRY_POINT_FEED_PAGE
 import com.tokopedia.content.common.types.BundleData.VALUE_PLAY_BROADCASTER_ENTRY_POINT_USER_PROFILE
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -292,9 +293,9 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun getConfiguration() {
         startNetworkMonitoring()
         val entryPoint = intent.getIntExtra(KEY_PLAY_BROADCASTER_ENTRY_POINT, VALUE_PLAY_BROADCASTER_ENTRY_POINT_FEED_PAGE)
-        if (entryPoint == VALUE_PLAY_BROADCASTER_ENTRY_POINT_USER_PROFILE) {
-            viewModel.submitAction(PlayBroadcastAction.GetAccountList(TYPE_USER))
-        } else viewModel.submitAction(PlayBroadcastAction.GetAccountList())
+        val action = if (entryPoint == VALUE_PLAY_BROADCASTER_ENTRY_POINT_USER_PROFILE) TYPE_USER
+        else TYPE_UNKNOWN
+        viewModel.submitAction(PlayBroadcastAction.GetAccountList(action))
     }
 
     private fun populateSavedState(savedInstanceState: Bundle) {
