@@ -578,8 +578,8 @@ class AddEditProductVariantFragment :
                 }
 
                 REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER -> {
-                    val imageUrlOrPathList = MediaPicker.result(data).editedImages
-                    imageUrlOrPathList.forEach {
+                    val imageUrlOrPathList = MediaPicker.result(data)
+                    imageUrlOrPathList.editedImages.forEach {
                         viewModel.updateSizechart(it)
                     }
                 }
