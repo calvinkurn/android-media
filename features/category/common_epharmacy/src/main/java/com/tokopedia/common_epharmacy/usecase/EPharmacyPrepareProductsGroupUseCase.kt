@@ -31,8 +31,7 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                                                 name = "",
                                                 productImage = "",
                                                 productTotalWeightFmt = "",
-                                                quantity = 1,
-                                                quantityString = "1"
+                                                quantity = 1
                                             )
                                         ),
                                         partnerLogoUrl = "",
@@ -40,7 +39,6 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                                         shopLogoUrl = "",
                                         shopName = "",
                                         shopType = "",
-                                        orderName = null
                                     )
                                 ),
                                 numberPrescriptionImages = 0,
@@ -70,7 +68,6 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
                                 ),
                                 consultationSource = null,
                                 prescriptionSource = null,
-                                cta = null
                             )
                         ),
                         attachmentPageTickerText = null

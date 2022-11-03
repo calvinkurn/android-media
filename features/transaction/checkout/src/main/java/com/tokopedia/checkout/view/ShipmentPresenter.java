@@ -2541,7 +2541,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                 shipmentCartItemModel.setTokoConsultationId(result.getTokoConsultationId());
                                                                 shipmentCartItemModel.setPartnerConsultationId(result.getPartnerConsultationId());
                                                                 shipmentCartItemModel.setConsultationDataString(result.getConsultationString());
-                                                                mapPrescriptionCount.put("result.getEpharmacyGroupId()", result.getPrescription().size());
+                                                                mapPrescriptionCount.put(result.getEpharmacyGroupId(), result.getPrescription().size());
                                                                 updated = true;
                                                                 break;
                                                             }
@@ -2553,7 +2553,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                 }
                                                             }
                                                             shipmentCartItemModel.setPrescriptionIds(prescriptionIds);
-                                                            mapPrescriptionCount.put("result.getEpharmacyGroupId()", prescriptionIds.size());
+                                                            mapPrescriptionCount.put(result.getEpharmacyGroupId(), prescriptionIds.size());
                                                             updated = true;
                                                             break;
                                                         }
