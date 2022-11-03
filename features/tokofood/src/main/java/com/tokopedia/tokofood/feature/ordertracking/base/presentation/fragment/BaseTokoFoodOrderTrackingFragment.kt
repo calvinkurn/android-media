@@ -130,6 +130,7 @@ class BaseTokoFoodOrderTrackingFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         AndroidThreeTen.init(context?.applicationContext)
+        initializeChatProfile()
         setupToolbar()
         setupRvOrderTracking()
         fetchOrderDetail()
@@ -220,6 +221,13 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
+
+    private fun initializeChatProfile() {
+        val userId = viewModel.getUserId()
+        if (userId.isEmpty() || userId.isBlank()) {
+            viewModel.initializeProfile()
+        }
+    }
 
     private fun showLoaderDriverCall() {
         context?.let {

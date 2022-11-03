@@ -10,10 +10,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetUnreadChatCountUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
@@ -49,7 +46,8 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     private val getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>,
     private val getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>,
     private val getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>,
-    private val getUnReadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>
+    private val getUnReadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>,
+    private val tokoChatConfigMutationProfileUseCase: Lazy<TokoChatConfigMutationProfileUseCase>,
 ) : BaseViewModel(coroutineDispatchers.main) {
 
     private val _orderDetailResult = MutableLiveData<Result<OrderDetailResultUiModel>>()
@@ -157,6 +155,14 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         } catch (t: Throwable) {
             MutableLiveData(Fail(t))
         }
+    }
+
+    fun initializeProfile() {
+        tokoChatConfigMutationProfileUseCase.get().initializeConversationProfile()
+    }
+
+    fun getUserId(): String {
+        return tokoChatConfigMutationProfileUseCase.get().getUserId()
     }
 
     private fun fetchOrderCompletedLiveTracking(orderId: String) {
