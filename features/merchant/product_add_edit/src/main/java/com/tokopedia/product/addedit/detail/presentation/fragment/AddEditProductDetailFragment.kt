@@ -1416,7 +1416,14 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         } else {
             ProductAddMainTracking.trackAddPhoto(shopId)
         }
-        /*if(RollenceUtil.getImagePickerRollence()) {
+        //if(RollenceUtil.getImagePickerRollence()) {
+            val intent = ImagePickerAddEditNavigation.getIntent(
+                ctx,
+                maxProductPhotoCount,
+                ArrayList(imageUrlOrPathList)
+            )
+            startActivityForResult(intent, REQUEST_CODE_IMAGE_IMPROVEMENT)
+        /*} else {
             val intent = ImagePickerAddEditNavigation.getIntent(
                 ctx,
                 ArrayList(imageUrlOrPathList),
@@ -1424,14 +1431,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 isAdding
             )
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
-        } else {*/
-            val intent = ImagePickerAddEditNavigation.getIntent(
-                ctx,
-                maxProductPhotoCount,
-                ArrayList(imageUrlOrPathList)
-            )
-            startActivityForResult(intent, REQUEST_CODE_IMAGE_IMPROVEMENT)
-        //}
+        }*/
 
     }
 

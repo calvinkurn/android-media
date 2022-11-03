@@ -1369,19 +1369,19 @@ class AddEditProductPreviewFragment :
                 else urlOrPath
             }.orEmpty()
 
-            /*if (RollenceUtil.getImagePickerRollence()) {
-                val intent = ImagePickerAddEditNavigation.getIntent(
-                    requireContext(), ArrayList(imageUrlOrPathList), maxProductPhotoCount,
-                    isAdding
-                )
-                startActivityForResult(intent, REQUEST_CODE_IMAGE)
-            } else {*/
+            //if (RollenceUtil.getImagePickerRollence()) {
                 val intent = ImagePickerAddEditNavigation.getIntent(
                     requireContext(), maxProductPhotoCount,
                     ArrayList(imageUrlOrPathList)
                 )
                 startActivityForResult(intent, REQUEST_CODE_IMAGE_IMPROVEMENT)
-            //}
+            /*} else {
+                val intent = ImagePickerAddEditNavigation.getIntent(
+                    requireContext(), ArrayList(imageUrlOrPathList), maxProductPhotoCount,
+                    isAdding
+                )
+                startActivityForResult(intent, REQUEST_CODE_IMAGE)
+            }*/
         }
     }
 
