@@ -3560,7 +3560,8 @@ open class DynamicProductDetailFragment :
                 if (viewModel.getShopInfo().isShopInfoNotEmpty()) viewModel.getShopInfo() else null
             val affiliateData =
                 generateAffiliateShareData(productInfo, shopInfo, viewModel.variantData)
-            val pdpImageGeneratorParam = generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId())
+            val pdpImageGeneratorParam =
+                generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId())
             checkAndExecuteReferralAction(productData, affiliateData, pdpImageGeneratorParam)
         }
     }
@@ -3582,7 +3583,12 @@ open class DynamicProductDetailFragment :
             val fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
                 ?: ""
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
-                doReferralShareAction(productData, fireBaseRemoteMsg, affiliateData, imageGeneratorData)
+                doReferralShareAction(
+                    productData,
+                    fireBaseRemoteMsg,
+                    affiliateData,
+                    imageGeneratorData
+                )
                 return
             }
         }
@@ -3630,7 +3636,11 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    private fun executeProductShare(productData: ProductData, affiliateData: AffiliatePDPInput, imageGeneratorData: PdpParamModel) {
+    private fun executeProductShare(
+        productData: ProductData,
+        affiliateData: AffiliatePDPInput,
+        imageGeneratorData: PdpParamModel
+    ) {
         val enablePdpCustomSharing = remoteConfig.getBoolean(
             REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
             REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
@@ -3656,7 +3666,11 @@ open class DynamicProductDetailFragment :
         }, true)
     }
 
-    private fun executeUniversalShare(productData: ProductData, affiliateData: AffiliatePDPInput, imageGeneratorData: PdpParamModel) {
+    private fun executeUniversalShare(
+        productData: ProductData,
+        affiliateData: AffiliatePDPInput,
+        imageGeneratorData: PdpParamModel
+    ) {
         activity?.let {
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
                 ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
@@ -3975,7 +3989,10 @@ open class DynamicProductDetailFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
 
-            setIconCustomColor(darkColor = getLightToolbarIconColor(), lightColor = getDarkToolbarIconColor())
+            setIconCustomColor(
+                darkColor = getLightToolbarIconColor(),
+                lightColor = getDarkToolbarIconColor()
+            )
 
             setIcon(
                 IconBuilder()
@@ -3993,7 +4010,10 @@ open class DynamicProductDetailFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
 
-            setIconCustomColor(darkColor = getLightToolbarIconColor(), lightColor = getDarkToolbarIconColor())
+            setIconCustomColor(
+                darkColor = getLightToolbarIconColor(),
+                lightColor = getDarkToolbarIconColor()
+            )
 
             setIcon(
                 IconBuilder()
@@ -5138,7 +5158,10 @@ open class DynamicProductDetailFragment :
                 override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                     try {
                         val errorMsg =
-                            com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                            com.tokopedia.network.utils.ErrorHandler.getErrorMessage(
+                                context,
+                                throwable
+                            )
                         val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
                         ProductDetailLogger.logMessage(
                             errorMsg,
@@ -5160,12 +5183,24 @@ open class DynamicProductDetailFragment :
                     productId: String
                 ) {
                     context?.let { context ->
-                        if (result.success && WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)) {
-                            val applinkCollection = "$WISHLIST_COLLECTION_BOTTOMSHEET?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
-                            val intentBottomSheetWishlistCollection = RouteManager.getIntent(context, applinkCollection)
-                            val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0
-                            intentBottomSheetWishlistCollection.putExtra(WishlistV2CommonConsts.IS_PRODUCT_ACTIVE, !isOos)
-                            startActivityForResult(intentBottomSheetWishlistCollection, REQUEST_CODE_ADD_WISHLIST_COLLECTION)
+                        if (result.success && WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(
+                                context
+                            )
+                        ) {
+                            val applinkCollection =
+                                "$WISHLIST_COLLECTION_BOTTOMSHEET?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
+                            val intentBottomSheetWishlistCollection =
+                                RouteManager.getIntent(context, applinkCollection)
+                            val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()
+                                ?.toIntOrNull() == 0
+                            intentBottomSheetWishlistCollection.putExtra(
+                                WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
+                                !isOos
+                            )
+                            startActivityForResult(
+                                intentBottomSheetWishlistCollection,
+                                REQUEST_CODE_ADD_WISHLIST_COLLECTION
+                            )
                         } else {
                             view?.let { v ->
                                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
@@ -5602,5 +5637,6 @@ open class DynamicProductDetailFragment :
         verticalRecommendationTrackDataModel = componentTrackDataModel
     }
 
-    override fun getRecommendationVerticalTrackData(): ComponentTrackDataModel? = verticalRecommendationTrackDataModel
+    override fun getRecommendationVerticalTrackData(): ComponentTrackDataModel? =
+        verticalRecommendationTrackDataModel
 }
