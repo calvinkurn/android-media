@@ -12,8 +12,8 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelModel
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 
 object LeftCarouselMapper {
@@ -92,6 +92,7 @@ object LeftCarouselMapper {
         channelGrid: ChannelGrid,
         miniCartData: MiniCartSimplifiedData? = null
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        productID = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
         minOrder = channelGrid.minOrder,
         maxOrder = channelGrid.maxOrder,

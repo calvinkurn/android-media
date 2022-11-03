@@ -5,10 +5,19 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.di.component.DaggerCommonComponent
+import com.tokopedia.tokopedianow.common.viewmodel.TokoNowWishlistViewModel
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowWishlistButtonViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
 class TokoNowWishlistButtonView @JvmOverloads constructor(
     context: Context,
@@ -22,10 +31,18 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         private const val ANIMATION_DURATION = 500
     }
 
+    private var productID: String = ""
     private var binding: LayoutTokopedianowWishlistButtonViewBinding
     private var hasBeenSelected: Boolean = false
 
+    @Inject
+    lateinit var viewModel: TokoNowWishlistViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     init {
+        initInjector()
         binding = LayoutTokopedianowWishlistButtonViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
             val ringingAnimation = ObjectAnimator.ofFloat(
                 icon,
@@ -37,9 +54,19 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             ).setDuration(ANIMATION_DURATION.toLong())
 
             root.setTransitionListener(object : MotionLayout.TransitionListener {
-                    override fun onTransitionStarted(motionLayout: MotionLayout?, p1: Int, p2: Int) = ringingAnimation.start()
+                    override fun onTransitionStarted(motionLayout: MotionLayout?, p1: Int, p2: Int) {
+                        ringingAnimation.start()
+                        if(!hasBeenSelected){
+                            viewModel.addToWishlist(productID)
+                        }
+                        else{
+                            viewModel.removeFromWishlist(productID)
+                        }
+                    }
 
-                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) { hasBeenSelected = !hasBeenSelected }
+                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+
+                    }
 
                     override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) { /* nothing to do */ }
 
@@ -47,6 +74,66 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                 }
             )
         }
+
+        observeLiveData()
+    }
+
+    private fun initInjector() {
+        DaggerCommonComponent.builder()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
+
+    private fun observeLiveData() {
+        viewModel.addToWishlistLiveData.observe(context as AppCompatActivity, {
+            when(it){
+                is Success ->{
+                    if(it.data.wishlistAdd?.success == true){
+                        setValue(true)
+                        Toaster.build(rootView, "Added to wishlist").show()
+                    }
+                    else{
+                        setValue(false)
+                        it.data.wishlistAdd?.message?.let { it1 ->
+                            Toaster.build(binding.icon,
+                                it1, Toaster.TYPE_ERROR
+                            ).show()
+                        }
+                    }
+                }
+                is Fail ->{
+                    setValue(false)
+                    it.throwable.message
+                }
+            }
+        })
+        viewModel.removeFromWishlistLiveData.observe(context as AppCompatActivity, {
+            when(it){
+                is Success ->{
+                    if(it.data.wishlistRemove?.success == true){
+                        setValue(false)
+                        Toaster.build(rootView, "Removed from wishlist").show()
+                    }
+                    else{
+                        setValue(true)
+                        it.data.wishlistRemove?.message?.let { it1 ->
+                            Toaster.build(binding.icon,
+                                it1, Toaster.TYPE_ERROR
+                            ).show()
+                        }
+                    }
+                }
+                is Fail ->{
+                    setValue(true)
+                    it.throwable.message
+                }
+            }
+        })
+    }
+
+    fun setProductId(productID: String){
+        this.productID = productID
     }
 
     fun setValue(isSelected: Boolean) {
