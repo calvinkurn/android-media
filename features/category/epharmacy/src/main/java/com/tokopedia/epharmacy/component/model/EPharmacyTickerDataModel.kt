@@ -1,14 +1,12 @@
 package com.tokopedia.epharmacy.component.model
 
 import android.os.Bundle
-import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactory
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
-import com.tokopedia.epharmacy.network.response.EPharmacyProduct
-import com.tokopedia.epharmacy.network.response.PrescriptionImage
 
 data class EPharmacyTickerDataModel(val name : String = "", val type : String = "",
-                                    val tickerText : String?, val tickerLogo : String?
+                                    val tickerText : String?, val tickerLogo : String?,
+                                    val tickerBackground : String?
 )
     : BaseEPharmacyDataModel {
 

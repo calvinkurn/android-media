@@ -4,6 +4,7 @@ const val EXTRA_ORDER_ID_LONG = "extra_order_id_long"
 const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
 const val EXTRA_ENTRY_POINT_STRING = "extra_entry_point_string"
 const val EXTRA_SOURCE_STRING = "source"
+const val EXTRA_ORIGIN_STRING = "extra_origin_string"
 
 const val DEFAULT_ZERO_VALUE = 0L
 
@@ -59,3 +60,6 @@ const val ENABLER_IMAGE_URL = "enabler_image_url"
 
 const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
 const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
+
+const val EPHARMACY_TICKER_ICON = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc.png"
+const val EPHARMACY_TICKER_BACKGROUND = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_mini_consult_ticker_background.png"

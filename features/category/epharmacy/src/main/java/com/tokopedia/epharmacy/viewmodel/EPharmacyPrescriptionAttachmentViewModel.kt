@@ -49,7 +49,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         if(data.detailData?.groupsData?.attachmentPageTickerText?.isNotBlank() == true){
             listOfComponents.add(EPharmacyTickerDataModel(TICKER_COMPONENT,
                 TICKER_COMPONENT,
-                data.detailData?.groupsData?.attachmentPageTickerText, "" ))
+                data.detailData?.groupsData?.attachmentPageTickerText, EPHARMACY_TICKER_ICON,EPHARMACY_TICKER_BACKGROUND ))
         }
 
         data.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
