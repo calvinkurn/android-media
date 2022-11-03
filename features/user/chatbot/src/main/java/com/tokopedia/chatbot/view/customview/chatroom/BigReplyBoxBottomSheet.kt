@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
-    private lateinit var context: FragmentActivity
+    private var context: FragmentActivity? = null
     private var isSendButtonActivated: Boolean = false
     private var labelText = ""
     private var hintText = ""
@@ -48,11 +48,13 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     }
 
     private fun setUpEditText() {
-        getBindingView().chatText.minLine = MINIMUM_NUMBER_OF_LINES
-        getBindingView().chatText.labelText.text = labelText
-        getBindingView().chatText.textInputLayout.hint= hintText
-//        getBindingView().chatText.labelText.text = "LABEL"
-//        getBindingView().chatText.textInputLayout.hint= "HINT"
+        val chatText = getBindingView().chatText
+        with(chatText) {
+            minLine = MINIMUM_NUMBER_OF_LINES
+            maxLine = MAXIMUM_NUMBER_OF_LINES
+            labelText.text = this@BigReplyBoxBottomSheet.labelText
+            setPlaceholder(hintText)
+        }
     }
 
     private fun setUpTextWatcher() {
@@ -62,10 +64,12 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     private fun bindClickListeners() {
         getBindingView().sendButton.setOnClickListener {
-            replyBoxClickListener?.getMessageContentFromBottomSheet(
-                getBindingView().chatText.editText.text?.toString() ?: ""
-            )
-            dismissAllowingStateLoss()
+            if (isSendButtonActivated) {
+                replyBoxClickListener?.getMessageContentFromBottomSheet(
+                    getBindingView().chatText.editText.text?.toString() ?: ""
+                )
+                dismissAllowingStateLoss()
+            }
         }
         getBindingView().ivChatMenu.setOnClickListener {
             dismissAllowingStateLoss()
@@ -122,9 +126,9 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         }
 
         var replyBoxClickListener: ReplyBoxClickListener? = null
-        val LAYOUT = R.layout.bottom_sheet_big_reply_box
         const val MINIMUM_NUMBER_OF_WORDS = 2
         const val MINIMUM_NUMBER_OF_LINES = 3
+        const val MAXIMUM_NUMBER_OF_LINES = 10
     }
 
 }
