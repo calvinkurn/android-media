@@ -270,4 +270,6 @@
     <!-- Banner -->
     <string name="play_bro_banner_shorts_title">Lebih asik buat video pendek</string>
     <string name="play_bro_banner_shorts_description">Buat video yang menarik &amp; inspiratif, yuk</string>
+    <string name="play_bro_banner_shorts_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
+    <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
 </resources>

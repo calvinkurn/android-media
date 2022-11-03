@@ -18,10 +18,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class FeedContainerModule(val activityContext: Context) {
+class FeedContainerModule(
+    private val activityContext: Context
+) {
 
     @Provides
-    @ActivityContext
+    @FeedContainerScope
     fun provideActivityContext(): Context = activityContext
 
     @Provides

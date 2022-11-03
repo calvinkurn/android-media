@@ -24,6 +24,9 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.toolbar.ContentColor
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -69,6 +72,7 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -85,6 +89,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayBroadcastAnalytic,
     private val analyticManager: PreparationAnalyticManager,
+    private val userSession: UserSessionInterface,
+    private val coachMarkManager: ContentCoachMarkManager,
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
     PreparationMenuView.Listener,
     TitleFormView.Listener,
@@ -175,6 +181,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        dismissAllCoachmark()
         _binding = null
     }
 
@@ -314,6 +321,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             description = getString(R.string.play_bro_banner_shorts_description)
             bannerIcon = IconUnify.VIDEO
         }
+
+        coachMarkManager.showCoachMark(
+            ContentCoachMarkConfig(binding.bannerShorts).apply {
+                title = getString(R.string.play_bro_banner_shorts_coachmark_title)
+                subtitle = getString(R.string.play_bro_banner_shorts_coachmark_description)
+                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+            }
+        )
     }
 
     private fun setupInsets() {
@@ -373,6 +388,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             bannerShorts.setOnClickListener {
+                coachMarkManager.hasBeenShown(binding.bannerShorts)
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }
         }
@@ -380,7 +396,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun requireTitleAndCover(isTitleAndCoverSet: () -> Unit) {
         if (parentViewModel.channelTitle.isNotEmpty()) {
-            if (viewModel.isCoverAvailable()) isTitleAndCoverSet()
+            if (viewModel.isCoverAvailable()) {
+                dismissAllCoachmark()
+                isTitleAndCoverSet()
+            }
             else {
                 val errorMessage = getString(R.string.play_bro_cover_empty_error)
                 toaster.showError(
@@ -645,6 +664,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** Form */
     private fun showTitleForm(isShow: Boolean) {
         if(isShow) {
+            dismissAllCoachmark()
             showMainComponent(false)
 
             binding.formTitle.setTitle(parentViewModel.channelTitle)
@@ -660,6 +680,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun showCoverForm(isShow: Boolean) {
         if(isShow) {
+            dismissAllCoachmark()
             showMainComponent(false)
 
             binding.formCover.setTitle(parentViewModel.channelTitle)
@@ -948,6 +969,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun startBroadcast(ingestUrl: String) {
         broadcaster.start(ingestUrl)
+    }
+
+    private fun dismissAllCoachmark() {
+        coachMarkManager.dismissAllCoachMark()
     }
 
     companion object {

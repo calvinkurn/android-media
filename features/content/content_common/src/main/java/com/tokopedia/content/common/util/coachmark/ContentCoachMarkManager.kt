@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on September 21, 2022
  */
 class ContentCoachMarkManager @Inject constructor(
-    @ActivityContext private val context: Context,
+    private val context: Context,
     private val dispatcher: CoroutineDispatchers,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
 ) {

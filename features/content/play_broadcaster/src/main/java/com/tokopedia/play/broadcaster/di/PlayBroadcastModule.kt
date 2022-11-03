@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.BroadcastManager
 import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
@@ -43,7 +45,13 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 
 @Module(includes = [MediaUploaderModule::class])
-class PlayBroadcastModule {
+class PlayBroadcastModule(
+    private val activityContext: Context
+) {
+
+    @Provides
+    @ActivityRetainedScope
+    fun provideActivityContext() = activityContext
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {

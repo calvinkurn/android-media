@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
@@ -78,6 +79,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private val retainedComponent by retainedComponent {
         DaggerActivityRetainedComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .playBroadcastModule(PlayBroadcastModule(this))
             .build()
     }
 

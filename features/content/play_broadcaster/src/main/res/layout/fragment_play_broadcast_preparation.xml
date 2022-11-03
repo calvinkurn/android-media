@@ -106,8 +106,9 @@
         android:id="@+id/group_preparation_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="toolbar_content_common, view_preparation_menu,
-                                        fl_bro_start_livestream, ic_bro_preparation_switch_camera"
+        app:constraint_referenced_ids="toolbar_content_common, banner_shorts,
+                                        view_preparation_menu, fl_bro_start_livestream,
+                                        ic_bro_preparation_switch_camera"
         />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

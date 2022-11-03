@@ -23,7 +23,10 @@ class ContentCoachMarkConfig(
     val hasPrefKey: Boolean
         get() = coachMarkPrefKey != ContentCoachMarkSharedPref.Key.Unknown
 
-    fun setCoachmarkPrefKey(coachMarkPrefKey: ContentCoachMarkSharedPref.Key, coachMarkPrefKeyId: String) = chainable {
+    fun setCoachmarkPrefKey(
+        coachMarkPrefKey: ContentCoachMarkSharedPref.Key,
+        coachMarkPrefKeyId: String = "",
+    ) = chainable {
         this.coachMarkPrefKey = coachMarkPrefKey
         this.coachMarkPrefKeyId = coachMarkPrefKeyId
     }
