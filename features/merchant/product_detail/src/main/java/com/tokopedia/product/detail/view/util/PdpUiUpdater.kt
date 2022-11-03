@@ -667,6 +667,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (it.helpfulReviews?.isEmpty() == true && countReview.toIntOrZero() == 0) {
             removeComponent(ProductDetailConstant.REVIEW)
         }
+
+        if (it.shopAdditional.isEmpty()) {
+            removeComponent(ProductDetailConstant.DILAYANI_TOKOPEDIA)
+        }
     }
 
     fun removeEmptyRecommendation(data: RecommendationWidget) {

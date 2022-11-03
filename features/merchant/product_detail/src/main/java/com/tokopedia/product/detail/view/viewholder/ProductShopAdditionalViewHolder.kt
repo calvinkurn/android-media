@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
@@ -38,16 +39,28 @@ class ProductShopAdditionalViewHolder(
     }
 
     override fun bind(element: ProductShopAdditionalDataModel) {
-        if (!element.isLoading) {
-            prepareRenderContent()
-            impressComponent(element = element)
-            setWidgetContent(element = element)
-            setupAppLink(element = element)
+        if (element.isLoading) {
+            onLoadingState()
+        } else {
+            onDataLoaded(element = element)
         }
     }
 
-    private fun prepareRenderContent() = with(binding) {
-        shopAdditionalShimmerLoader.root.gone()
+    private fun onLoadingState() = with(binding) {
+        shopAdditionalShimmerLoader.root.visible()
+        contentBinding.root.gone()
+    }
+
+    private fun onDataLoaded(element: ProductShopAdditionalDataModel) = with(binding) {
+        prepareContentView()
+        impressComponent(element = element)
+        setWidgetContent(element = element)
+        setAppLink(element = element)
+    }
+
+    private fun prepareContentView() {
+        binding.shopAdditionalShimmerLoader.root.gone()
+        contentBinding.root.visible()
     }
 
     private fun impressComponent(element: ProductShopAdditionalDataModel) {
@@ -57,10 +70,7 @@ class ProductShopAdditionalViewHolder(
         }
     }
 
-    /**
-     * show label `see` and set event click if appLink is not empty
-     */
-    private fun setupAppLink(
+    private fun setAppLink(
         element: ProductShopAdditionalDataModel
     ) = with(contentBinding) {
         shopAdditionalActionLabel.showIfWithBlock(predicate = element.linkText.isNotBlank()) {
@@ -75,36 +85,46 @@ class ProductShopAdditionalViewHolder(
         }
     }
 
-    /**
-     * render widget and set content with condition
-     */
-    private fun setWidgetContent(element: ProductShopAdditionalDataModel) = with(contentBinding) {
-        shopAdditionalImage.showIfWithBlock(predicate = element.icon.isNotBlank()) {
-            loadIcon(element.icon)
-        }
+    private fun setWidgetContent(element: ProductShopAdditionalDataModel) = with(element) {
+        renderImage(iconUrl = icon)
+        renderTitle(title = title)
+        renderDescription(description = description)
+        renderLabels(labels = labels)
+    }
 
-        shopAdditionalDescription.showIfWithBlock(predicate = element.description.isNotEmpty()) {
-            text = element.description.parseAsHtmlLink(
+    private fun renderImage(iconUrl: String) = with(contentBinding) {
+        shopAdditionalImage.showIfWithBlock(predicate = iconUrl.isNotBlank()) {
+            loadIcon(iconUrl)
+        }
+    }
+
+    private fun renderTitle(title: String) = with(contentBinding) {
+        shopAdditionalTitle.showIfWithBlock(predicate = title.isNotEmpty()) {
+            text = title
+        }
+    }
+
+    private fun renderDescription(description: String) = with(contentBinding) {
+        shopAdditionalDescription.showIfWithBlock(predicate = description.isNotEmpty()) {
+            text = description.parseAsHtmlLink(
                 context = context,
                 replaceNewLine = false
             )
         }
+    }
 
-        shopAdditionalTitle.showIfWithBlock(predicate = element.title.isNotEmpty()) {
-            text = element.title
-        }
-
-        shopAdditionalScrollviewLabel.showIfWithBlock(predicate = element.labels.isNotEmpty()) {
+    private fun renderLabels(labels: List<String>) = with(contentBinding) {
+        shopAdditionalScrollviewLabel.showIfWithBlock(predicate = labels.isNotEmpty()) {
             shopAdditionalContainerLabel.removeAllViews()
 
-            element.labels.forEach {
-                val view = renderLabels(label = it)
+            labels.forEach {
+                val view = renderLabel(label = it)
                 shopAdditionalContainerLabel.addView(view)
             }
         }
     }
 
-    private fun renderLabels(label: String) = Label(context = context).apply {
+    private fun renderLabel(label: String) = Label(context = context).apply {
         text = label
         setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
     }

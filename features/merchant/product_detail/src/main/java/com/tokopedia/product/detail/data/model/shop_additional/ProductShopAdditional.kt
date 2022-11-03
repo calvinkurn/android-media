@@ -28,4 +28,7 @@ data class ProductShopAdditional(
     @SerializedName("label")
     @Expose
     val label: List<String> = emptyList()
-)
+) {
+
+    fun isEmpty() = title.isEmpty()
+}

@@ -53,5 +53,5 @@ data class ProductShopAdditionalDataModel(
         return null
     }
 
-    val isLoading get() = title.isEmpty() && description.isEmpty()
+    val isLoading get() = title.isEmpty()
 }
