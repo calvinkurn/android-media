@@ -15,6 +15,7 @@ import com.tokopedia.search.utils.orNone
 import com.tokopedia.topads.sdk.domain.model.Badge
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.topads.sdk.domain.model.LabelGroup
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.topads.sdk.domain.model.Data as TopAdsProductData
 
@@ -182,6 +183,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.topadsTag = topAds.tag
             item.productName = topAds.product.name
             item.price = topAds.product.priceFormat
+            item.priceInt = CurrencyFormatHelper.convertRupiahToInt(topAds.product.priceFormat)
             item.shopCity = topAds.shop.location
             item.imageUrl = topAds.product.image.s_ecs
             item.imageUrl300 = topAds.product.image.m_ecs
