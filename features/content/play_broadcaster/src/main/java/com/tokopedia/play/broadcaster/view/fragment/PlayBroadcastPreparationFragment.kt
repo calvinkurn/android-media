@@ -383,10 +383,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun validateAndStartLive() {
-        requireTitleAndCover {
-            binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
-            startCountDown()
-        }
+        requireTitleAndCover { startCountDown() }
     }
 
     private fun setupObserver() {
