@@ -47,7 +47,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_product_detail_name"
             app:layout_constraintStart_toEndOf="@id/bg_product_icon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:typographyType="paragraph_3"
+            app:typographyType="display_3"
             tools:text="Rumah Papa (802930293023)"/>
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_main_price"
