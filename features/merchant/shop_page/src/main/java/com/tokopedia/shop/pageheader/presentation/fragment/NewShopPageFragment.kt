@@ -1045,12 +1045,14 @@ class NewShopPageFragment :
             observeShopPageFollowingStatusSharedViewModel()
             observeShopPageFeedTabSharedViewModel()
             observeShopPageMiniCartSharedViewModel()
+            observeShopAffiliateTrackerId()
             getInitialData()
             inflateViewStub()
             initViews(view)
             if (swipeToRefresh?.isRefreshing == false) {
                 setViewState(VIEW_LOADING)
             }
+            getShopAffiliateTrackerId()
         }
         context?.let {
            screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
@@ -1061,6 +1063,21 @@ class NewShopPageFragment :
            )
         }
         initAffiliateCookie()
+    }
+
+    private fun getShopAffiliateTrackerId() {
+        shopViewModel?.getShopAffiliateTrackerId()
+    }
+
+    private fun observeShopAffiliateTrackerId() {
+        shopViewModel?.shopAffiliateTrackerId?.observe(viewLifecycleOwner){
+            val affiliateTrackerId = it.ifEmpty {
+                val affiliateTrackerId = UUID.randomUUID().toString()
+                saveAffiliateTrackerId(affiliateTrackerId)
+                affiliateTrackerId
+            }
+            affiliateData?.affiliateTrackerId = affiliateTrackerId
+        }
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {
@@ -1080,12 +1097,9 @@ class NewShopPageFragment :
     }
 
     private fun setAffiliateData(uri: Uri) {
-        val affiliateTrackerId = UUID.randomUUID().toString()
-        saveAffiliateTrackerId(affiliateTrackerId)
         affiliateData = ShopAffiliateData(
             uri.getQueryParameter(QUERY_AFFILIATE_UUID).orEmpty(),
-            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty(),
-            affiliateTrackerId
+            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
         )
     }
 

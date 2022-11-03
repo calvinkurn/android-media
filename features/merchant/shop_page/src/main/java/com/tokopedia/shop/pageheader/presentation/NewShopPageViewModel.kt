@@ -156,6 +156,10 @@ class NewShopPageViewModel @Inject constructor(
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
 
+    val shopAffiliateTrackerId: LiveData<String>
+        get() = _shopAffiliateTrackerId
+    private val _shopAffiliateTrackerId = MutableLiveData<String>()
+
     fun getShopPageTabData(
             shopId: String,
             shopDomain: String,
@@ -643,5 +647,12 @@ class NewShopPageViewModel @Inject constructor(
                 affiliateTrackerId
             ).apply()
         }) {}
+    }
+
+    fun getShopAffiliateTrackerId() {
+        launchCatchError(dispatcherProvider.io, block = {
+            val shopAffiliateTrackerId = sharedPreferences.getString(SHARED_PREF_AFFILIATE_TRACKER_ID, "")
+            _shopAffiliateTrackerId.postValue(shopAffiliateTrackerId)
+        }){}
     }
 }
