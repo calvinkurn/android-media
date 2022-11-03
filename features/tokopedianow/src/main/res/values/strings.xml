@@ -35,6 +35,15 @@
     <string name="tokopedianow_20m_category_aisle_header">Kategori 20 menit tiba lainnya</string>
     <string name="tokopedianow_content_desc_image_empty_product">Image Empty Product</string>
     <string name="tokopedianow_find_item_in_tokopedia_now">Jelajahi NOW! 2 Jam Tiba</string>
+    <string name="tokopedianow_feedback_widget_title">Produk yang kamu cari belum ada?</string>
+    <string name="tokopedianow_feedback_widget_desc">Kirim saran biar produk yang kamu butuhkan tersedia di NOW!</string>
+    <string name="tokopedianow_feedback_widget_cta_text">Sarankan Produk</string>
+    <string name="tokopedianow_feedback_bottomsheet_desc">Produk apa yang kamu butuhkan?</string>
+    <string name="tokopedianow_feedback_bottomsheet_input_hint">Tulis nama brand produk, boleh\n lengkap dengan varian, ukuran\n dll.</string>
+    <string name="tokopedianow_feedback_bottomsheet_btn_text">Kirim</string>
+    <string name="tokopedianow_feedback_bottomsheet_title">Sarankan produk untuk NOW!</string>
+    <string name="tokopedianow_feedback_bottomsheet_input_message">Gunakan koma (,) jika produk lebih dari 1</string>
+
 
     <string name="tokopedianow_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
     <string name="tokopedianow_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>

@@ -60,11 +60,7 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
@@ -475,6 +471,7 @@ abstract class BaseSearchCategoryViewModel(
                 miniCartSource = miniCartSource
             )
         )
+        visitableList.add(TokoNowFeedbackWidgetUiModel())
     }
 
     private fun createVisitableListWithProduct(
@@ -483,6 +480,8 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         visitableList.addAll(createHeaderVisitableList(headerDataView))
         visitableList.addAll(createContentVisitableList(contentDataView))
+        if(contentDataView.aceSearchProductData.productList.size<=6)
+            visitableList.add(TokoNowFeedbackWidgetUiModel(true))
         visitableList.addFooter()
     }
 

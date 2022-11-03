@@ -45,14 +45,16 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val switcherWidgetListener: SwitcherWidgetListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
-    private val recommendationCarouselBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?
+    private val recommendationCarouselBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?,
+    private val feedbackWidgetListener:TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 ):  BaseAdapterTypeFactory(),
     BaseSearchCategoryTypeFactory,
     TokoNowEmptyStateNoResultTypeFactory,
     TokoNowRecommendationCarouselTypeFactory,
     TokoNowCategoryGridTypeFactory,
     TokoNowRepurchaseTypeFactory,
-    TokoNowEmptyStateOocTypeFactory{
+    TokoNowEmptyStateOocTypeFactory,
+    TokoNowFeedbackWidgetTypeFactory{
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = BaseChooseAddressViewHolder.LAYOUT
 
@@ -83,6 +85,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     override fun type(progressBarDataView: ProgressBarDataView): Int = ProgressBarViewHolder.LAYOUT
 
     override fun type(switcherWidgetDataView: SwitcherWidgetDataView): Int = SwitcherWidgetViewHolder.LAYOUT
+
+    override fun type(uiModel: TokoNowFeedbackWidgetUiModel): Int = TokoNowFeedbackWidgetViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -130,6 +134,10 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
                 listener = switcherWidgetListener
             )
             ProgressBarViewHolder.LAYOUT -> ProgressBarViewHolder(view)
+            TokoNowFeedbackWidgetViewHolder.LAYOUT -> TokoNowFeedbackWidgetViewHolder(
+                itemView = view,
+                listener = feedbackWidgetListener
+            )
             else -> super.createViewHolder(view, type)
         }
     }
