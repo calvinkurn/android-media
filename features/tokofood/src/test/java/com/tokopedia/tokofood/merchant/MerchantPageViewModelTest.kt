@@ -273,6 +273,25 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
     }
 
     @Test
+    fun `when getting product list items with promo is not shown expect mvc data is null`() {
+        coEvery {
+            getMerchantDataUseCase.executeOnBackground()
+        } returns GetMerchantDataResponse(
+            TokoFoodGetMerchantData(
+                ticker = TokoFoodTickerDetail(),
+                topBanner = TokoFoodTopBanner(isShown = false),
+                merchantProfile = TokoFoodMerchantProfile(),
+                filters = listOf(),
+                categories = generateTestFoodCategories()
+            )
+        )
+        viewModel.getMerchantData("merchantId", "latlong", "timezone")
+
+        val actualResult = viewModel.mvcLiveData.value
+        assert(actualResult == null)
+    }
+
+    @Test
     fun `when getting product list items with promo is shown expect mvc data is not null`() {
         coEvery {
             getMerchantDataUseCase.executeOnBackground()

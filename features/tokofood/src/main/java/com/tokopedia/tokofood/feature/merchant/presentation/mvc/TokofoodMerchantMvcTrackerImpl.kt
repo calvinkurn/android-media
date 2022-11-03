@@ -2,6 +2,10 @@ package com.tokopedia.tokofood.feature.merchant.presentation.mvc
 
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 
+/**
+ * These class is created because we will need to implement custom trackers for Tokofood related trackers.
+ * However, we do not need some of the default trackers to be hit, so we create a class that implement methods with no operations.
+ */
 class TokofoodMerchantMvcTrackerImpl: MvcTrackerImpl {
 
     override fun userClickEntryPoints(
