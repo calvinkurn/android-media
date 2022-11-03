@@ -16,7 +16,6 @@ object BundleData {
     const val VALUE_IS_OPEN_FROM_SHOP_PAGE = "is_open_from_shop_page"
     const val VALUE_POST_SEBAGAI = "Post sebagai"
     const val VALUE_MAX_MULTI_SELECT_ALLOWED = 5
-    const val DEFAULT_MULTI_SELECT_LIMIT = 5
 
     const val KEY_IS_OPEN_FROM = "key_is_open_from"
 }

@@ -80,7 +80,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     lateinit var noMediaAvailableText: String
     lateinit var loadingMediaText: String
     lateinit var queryConfiguration: QueryConfiguration
-    var maxMultiSelect: Int = BundleData.DEFAULT_MULTI_SELECT_LIMIT
+    var maxMultiSelect: Int = BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
 
     @Inject
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic

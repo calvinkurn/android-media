@@ -15,7 +15,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
     var toolbarTitle = ""
     var menuTitle = ""
     var toolbarIconUrl = ""
-    var maxMultiSelectAllowed = BundleData.DEFAULT_MULTI_SELECT_LIMIT
+    var maxMultiSelectAllowed = BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
     var applinkToNavigateAfterMediaCapture = ""
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
@@ -61,10 +61,10 @@ class ImagePickerInstaActivity : PermissionActivity() {
         val defaultTitle = getString(commonR.string.feed_content_post_sebagai)
         toolbarTitle = intent.extras?.getString(BundleData.TITLE, defaultTitle) ?: defaultTitle
         menuTitle = intent.extras?.getString(BundleData.MENU_TITLE) ?: getString(R.string.imagepicker_insta_lanjut)
-        maxMultiSelectAllowed = intent.extras?.getInt(BundleData.MAX_MULTI_SELECT_ALLOWED) ?: BundleData.DEFAULT_MULTI_SELECT_LIMIT
+        maxMultiSelectAllowed = intent.extras?.getInt(BundleData.MAX_MULTI_SELECT_ALLOWED) ?: BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
         isOpenFrom = intent.extras?.getString(BundleData.KEY_IS_OPEN_FROM, "") ?: ""
         if (maxMultiSelectAllowed == 0) {
-            maxMultiSelectAllowed = BundleData.DEFAULT_MULTI_SELECT_LIMIT
+            maxMultiSelectAllowed = BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
         }
         applinkToNavigateAfterMediaCapture = intent.extras?.getString(BundleData.APPLINK_AFTER_CAMERA_CAPTURE) ?: ""
         applinkForGalleryProceed = intent.extras?.getString(BundleData.APPLINK_FOR_GALLERY_PROCEED) ?: ""
