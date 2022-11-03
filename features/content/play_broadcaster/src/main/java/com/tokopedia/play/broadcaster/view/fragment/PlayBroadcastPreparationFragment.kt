@@ -170,6 +170,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupInsets()
         setupListener()
         setupObserver()
+        setupDismissCoachMark()
 
         binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
@@ -396,10 +397,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun requireTitleAndCover(isTitleAndCoverSet: () -> Unit) {
         if (parentViewModel.channelTitle.isNotEmpty()) {
-            if (viewModel.isCoverAvailable()) {
-                dismissAllCoachmark()
-                isTitleAndCoverSet()
-            }
+            if (viewModel.isCoverAvailable()) isTitleAndCoverSet()
             else {
                 val errorMessage = getString(R.string.play_bro_cover_empty_error)
                 toaster.showError(
@@ -428,6 +426,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeViewEvent()
+    }
+
+    private fun setupDismissCoachMark() {
+        binding.bannerShorts.onVisibilityChanged = { currVisibility ->
+            if(currVisibility != View.VISIBLE)
+                coachMarkManager.dismissCoachmark(binding.bannerShorts)
+        }
     }
 
     private fun observeConfigInfo() {
@@ -664,7 +669,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** Form */
     private fun showTitleForm(isShow: Boolean) {
         if(isShow) {
-            dismissAllCoachmark()
             showMainComponent(false)
 
             binding.formTitle.setTitle(parentViewModel.channelTitle)
@@ -680,7 +684,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun showCoverForm(isShow: Boolean) {
         if(isShow) {
-            dismissAllCoachmark()
             showMainComponent(false)
 
             binding.formCover.setTitle(parentViewModel.channelTitle)

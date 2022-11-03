@@ -70,9 +70,11 @@ class ContentCoachMarkManager @Inject constructor(
 
     fun hasBeenShown(view: View) {
         val config = coachMarkConfigMap[view]
-        if(config != null && config.hasPrefKey) {
+        if (config != null && config.hasPrefKey) {
             coachMarkSharedPref.setHasBeenShown(config.coachMarkPrefKey, config.coachMarkPrefKeyId)
         }
+
+        dismissCoachmark(view)
     }
 
     private fun showCoachMarkInternal(
@@ -92,11 +94,7 @@ class ContentCoachMarkManager @Inject constructor(
         )
 
         coachMark.simpleCloseIcon?.setOnClickListener {
-            if(config.hasPrefKey) {
-                coachMarkSharedPref.setHasBeenShown(config.coachMarkPrefKey, config.coachMarkPrefKeyId)
-            }
-
-            dismissCoachmark(config.view)
+            hasBeenShown(config.view)
             config.onClickCloseListener()
         }
 

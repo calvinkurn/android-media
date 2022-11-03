@@ -2,7 +2,9 @@ package com.tokopedia.play.broadcaster.view.custom.banner
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroBannerBinding
 import com.tokopedia.unifycomponents.CardUnify2
@@ -39,7 +41,14 @@ class PlayBroBannerView(
             binding.icBanner.setImage(value)
         }
 
+    var onVisibilityChanged: ((currentVisibility: Int) -> Unit)? = null
+
     override fun setOnClickListener(l: OnClickListener?) {
         binding.root.setOnClickListener(l)
+    }
+
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+        onVisibilityChanged?.invoke(visibility)
     }
 }
