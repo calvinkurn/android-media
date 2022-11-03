@@ -41,6 +41,7 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
+import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -201,9 +202,9 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
 
-    val createAffiliateCookieAtcDirectPurchase: LiveData<String>
-        get() = _createAffiliateCookieAtcDirectPurchase
-    private val _createAffiliateCookieAtcDirectPurchase = MutableLiveData<String>()
+    val createAffiliateCookieAtcProduct: LiveData<AffiliateAtcProductModel>
+        get() = _createAffiliateCookieAtcProduct
+    private val _createAffiliateCookieAtcProduct = MutableLiveData<AffiliateAtcProductModel>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -293,8 +294,10 @@ class ShopHomeViewModel @Inject constructor(
             val addToCartSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCart(shopId, product)
             }
-            if (addToCartSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE)
+            if (addToCartSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCart(addToCartSubmitData.data)
+                checkShouldCreateAffiliateCookieAtcProduct(ShopPageAtcTracker.AtcType.ADD, product)
+            }
             else
                 onErrorAddToCart(MessageErrorException(addToCartSubmitData.data.message.first()))
         }) {
@@ -312,8 +315,10 @@ class ShopHomeViewModel @Inject constructor(
             val addToCartOccSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCartOcc(shopId, product)
             }
-            if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE)
+            if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCartOcc(addToCartOccSubmitData.data)
+                checkShouldCreateAffiliateCookieAtcProduct(ShopPageAtcTracker.AtcType.ADD, product)
+            }
             else
                 onErrorAddToCartOcc(MessageErrorException(addToCartOccSubmitData.data.message.first()))
         }) {
@@ -959,7 +964,7 @@ class ShopHomeViewModel @Inject constructor(
                 atcType,
                 componentName
             )
-            checkShouldCreateAffiliateCookieDirectPurchase(atcType, shopHomeProductUiModel.id)
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopHomeProductUiModel)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -1000,20 +1005,24 @@ class ShopHomeViewModel @Inject constructor(
                 atcType,
                 componentName
             )
-            checkShouldCreateAffiliateCookieDirectPurchase(atcType, shopHomeProductUiModel.id)
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopHomeProductUiModel)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
         })
     }
 
-    private fun checkShouldCreateAffiliateCookieDirectPurchase(
+    private fun checkShouldCreateAffiliateCookieAtcProduct(
         atcType: ShopPageAtcTracker.AtcType,
-        productId: String
+        shopHomeProductUiModel: ShopHomeProductUiModel
     ) {
         when (atcType) {
             ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
-                _createAffiliateCookieAtcDirectPurchase.postValue(productId)
+                _createAffiliateCookieAtcProduct.postValue(AffiliateAtcProductModel(
+                    shopHomeProductUiModel.id,
+                    shopHomeProductUiModel.isVariant,
+                    shopHomeProductUiModel.stock
+                ))
             }
             else -> {}
         }

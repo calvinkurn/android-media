@@ -1800,7 +1800,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartAdd.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
-        assert(viewModel.createAffiliateCookieAtcDirectPurchase.value?.isNotEmpty() == true)
+        assert(viewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
     }
 
     @Test
@@ -1856,7 +1856,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartRemove.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.REMOVE)
-        assert(viewModel.createAffiliateCookieAtcDirectPurchase.value == null)
+        assert(viewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test
@@ -1913,7 +1913,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartUpdate.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
-        assert(viewModel.createAffiliateCookieAtcDirectPurchase.value?.isNotEmpty() == true)
+        assert(viewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
     }
 
     @Test
@@ -1946,7 +1946,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartUpdate.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_REMOVE)
-        assert(viewModel.createAffiliateCookieAtcDirectPurchase.value == null)
+        assert(viewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test

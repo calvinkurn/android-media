@@ -3055,12 +3055,18 @@ class NewShopPageFragment :
         return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
-    fun createAffiliateCookieAtcDirectPurchase(productId: String) {
+    fun createAffiliateCookieAtcDirectPurchase(
+        productId: String,
+        isVariant: Boolean,
+        stockQty: Int
+    ) {
         shopViewModel?.createAffiliateCookieShopAtcDirectPurchase(
             affiliateCookieHelper,
             affiliateData?.affiliateChannel.orEmpty(),
             shopId,
-            productId
+            productId,
+            isVariant,
+            stockQty
         )
     }
 }

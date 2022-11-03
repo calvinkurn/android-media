@@ -67,6 +67,7 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_RENDER
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.util.ShopProductViewGridType
@@ -1167,19 +1168,23 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         observeDeleteCartLiveData()
         observeUpdatedShopProductListQuantityData()
         observeShopAtcTrackerLiveData()
-        observeIsCreateAffiliateCookieAtcDirectPurchase()
+        observeIsCreateAffiliateCookieAtcProduct()
     }
 
-    private fun observeIsCreateAffiliateCookieAtcDirectPurchase() {
-        viewModel.createAffiliateCookieAtcDirectPurchase.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                createAffiliateCookieAtcDirectPurchase(it)
+    private fun observeIsCreateAffiliateCookieAtcProduct() {
+        viewModel.createAffiliateCookieAtcProduct.observe(viewLifecycleOwner) {
+            it?.let {
+                createAffiliateCookieAtcProduct(it)
             }
         }
     }
 
-    private fun createAffiliateCookieAtcDirectPurchase(productId: String) {
-        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase(productId)
+    private fun createAffiliateCookieAtcProduct(affiliateAtcProductModel: AffiliateAtcProductModel) {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcProduct(
+            affiliateAtcProductModel.productId,
+            affiliateAtcProductModel.isVariant,
+            affiliateAtcProductModel.stockQty
+        )
     }
 
     private fun observeShopAtcTrackerLiveData() {

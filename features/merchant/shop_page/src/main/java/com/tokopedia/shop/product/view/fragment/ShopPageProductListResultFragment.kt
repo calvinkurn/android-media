@@ -621,7 +621,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         observeDeleteCartLiveData()
         observeUpdatedShopProductListQuantityData()
         observeShopAtcTrackerLiveData()
-        observeIsCreateAffiliateCookieAtcDirectPurchase()
+        observeIsCreateAffiliateCookieAtcProduct()
         observeShopAffiliateChannel()
     }
 
@@ -631,20 +631,22 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-    private fun observeIsCreateAffiliateCookieAtcDirectPurchase() {
-        viewModel.createAffiliateCookieAtcDirectPurchase.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                createAffiliateCookieAtcDirectPurchase(it)
+    private fun observeIsCreateAffiliateCookieAtcProduct() {
+        viewModel.createAffiliateCookieAtcProduct.observe(viewLifecycleOwner) {
+            it?.let {
+                createAffiliateCookieAtcProduct(it)
             }
         }
     }
 
-    private fun createAffiliateCookieAtcDirectPurchase(productId: String) {
-        viewModel.createAffiliateCookieShopAtcDirectPurchase(
+    private fun createAffiliateCookieAtcProduct(affiliateAtcProductModel: AffiliateAtcProductModel) {
+        viewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
             affiliateChannel,
             shopId.orEmpty(),
-            productId
+            affiliateAtcProductModel.productId,
+            affiliateAtcProductModel.isVariant,
+            affiliateAtcProductModel.stockQty
         )
     }
 

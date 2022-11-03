@@ -1154,7 +1154,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartAdd.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
-        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcDirectPurchase.value?.isNotEmpty() == true)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
     }
 
     @Test
@@ -1210,7 +1210,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartRemove.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.REMOVE)
-        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcDirectPurchase.value == null)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test
@@ -1267,7 +1267,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartUpdate.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
-        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcDirectPurchase.value?.isNotEmpty() == true)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
     }
 
     @Test
@@ -1300,7 +1300,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartUpdate.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_REMOVE)
-        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcDirectPurchase.value == null)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test
@@ -1385,7 +1385,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
         } returns Unit
-        shopPageProductListResultViewModel.createAffiliateCookieShopAtcDirectPurchase(
+        shopPageProductListResultViewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
             mockAffiliateChannel,
             mockShopId,
@@ -1403,7 +1403,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
         } throws Exception()
-        shopPageProductListResultViewModel.createAffiliateCookieShopAtcDirectPurchase(
+        shopPageProductListResultViewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
             mockAffiliateChannel,
             mockShopId,

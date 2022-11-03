@@ -212,8 +212,16 @@ class ShopPageActivity : BaseSimpleActivity(),
         return (fragment as? NewShopPageFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
 
-    override fun createAffiliateCookieAtcDirectPurchase(productId: String) {
-        (fragment as? NewShopPageFragment)?.createAffiliateCookieAtcDirectPurchase(productId)
+    override fun createAffiliateCookieAtcProduct(
+        productId: String,
+        isVariant: Boolean,
+        stockQty: Int
+    ) {
+        (fragment as? NewShopPageFragment)?.createAffiliateCookieAtcDirectPurchase(
+            productId,
+            isVariant,
+            stockQty
+        )
     }
 
 }
