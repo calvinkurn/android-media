@@ -9,7 +9,10 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSessionInterface
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -42,6 +45,11 @@ object MediaUploaderNetwork {
                     ))
                 }
             }
+            .addInterceptor(Interceptor { chain ->
+                // testing only, need to exclude Authorization due to end point validation
+                val request = chain.request().newBuilder().removeHeader("Authorization").build()
+                chain.proceed(request)
+            })
     }
 
     fun retrofitBuilder(): Retrofit.Builder {

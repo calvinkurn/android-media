@@ -13,6 +13,11 @@ class MediaUploaderUrl @Inject constructor(
     fun imageUpload(sourceId: String)
         = "$host/$UPEDIA_VERSION/upload/image/$sourceId"
 
+    fun imageUploadSecure(sourceId: String)
+        = "http://uploadpedia-secure.service.aws-main-staging-ap-southeast-1-staging.consul/v1/upload/image/geDGcq"
+
+//    fun imageUploadSecure(sourceId: String) = "https://chat.tokopedia.com/tc/v1/upload_secure"
+
     fun simpleVodUpload(sourceId: String)
         = "$host/$VOD_VERSION/video/upload/simple/$sourceId"
 
