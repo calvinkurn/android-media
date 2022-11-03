@@ -117,7 +117,7 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
-    debugImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
