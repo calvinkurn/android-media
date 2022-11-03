@@ -36,7 +36,7 @@ open class GetImageUploaderUseCase @Inject constructor(
 
         val extraHeaderParam = HashMap<String, String>()
         for ((key, value) in params.extraHeader){
-            extraBodyParam[key] = RequestBody.create("text/plain".toMediaTypeOrNull(), value)
+            extraHeaderParam[key] = value
         }
 
         return services.uploadImage(

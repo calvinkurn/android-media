@@ -34,7 +34,11 @@ class UploaderUseCase @Inject constructor(
         sourceId = params.getString(PARAM_SOURCE_ID, "")
         file = params.getObject(PARAM_FILE_PATH) as File
         isSecure = params.getBoolean(PARAM_IS_SECURE, false)
+
+        @Suppress("UNCHECKED_CAST")
         extraHeader = params.getObject(PARAM_EXTRA_HEADER) as Map<String, String>
+
+        @Suppress("UNCHECKED_CAST")
         extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>
 
         return if (isVideoFormat(file.absolutePath)) {
