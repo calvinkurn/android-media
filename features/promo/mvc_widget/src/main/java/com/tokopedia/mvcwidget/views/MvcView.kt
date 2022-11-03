@@ -29,11 +29,11 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         const val RESULT_CODE_OK = 1
     }
 
-    var imageChevron: AppCompatImageView
-    var mvcTextContainerFirst: MvcTextContainer
-    var mvcTextContainerSecond: MvcTextContainer
-    var mvcContainer: View
-    var imageCouponBackground: SquareImageView
+    var imageChevron: AppCompatImageView?
+    var mvcTextContainerFirst: MvcTextContainer?
+    var mvcTextContainerSecond: MvcTextContainer?
+    var mvcContainer: View?
+    var imageCouponBackground: SquareImageView?
 
     var mvcAnimationHandler: MvcAnimationHandler
     private var startActivityForResultFunction: (() -> Unit)? = null
@@ -63,7 +63,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     }
 
     private fun setClicks() {
-        mvcContainer.setOnClickListener {
+        mvcContainer?.setOnClickListener {
             (context.applicationContext as Application).let {
                 it.unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
                 it.registerActivityLifecycleCallbacks(mvcActivityCallbacks)
@@ -115,7 +115,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 mvcAnimationHandler.isTokomember = isTokomember
                 val animatedInfo = animatedInfos.first()
                 animatedInfo?.let {
-                    mvcTextContainerFirst.setData(it.title ?: "", it.subTitle ?: "", it.iconURL ?: "")
+                    mvcTextContainerFirst?.setData(it.title ?: "", it.subTitle ?: "", it.iconURL ?: "")
                 }
             } else {
                 isTokomember = true
