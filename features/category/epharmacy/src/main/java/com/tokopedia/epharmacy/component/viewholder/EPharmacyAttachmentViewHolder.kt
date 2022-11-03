@@ -35,6 +35,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val productAccordionChevron = view.findViewById<IconUnify>(R.id.iv_expand_other_product)
     private val chatDokterUploadLayout = view.findViewById<LinearLayout>(R.id.chat_dokter_upload_layout)
     private val chatDokterUploadText = view.findViewById<Typography>(R.id.upload_prescription_text)
+    private val chatDokterUploadSubText = view.findViewById<Typography>(R.id.upload_description_text)
     private val chatDokterUploadIcon = view.findViewById<ImageUnify>(R.id.upload_icon)
 
     companion object {
@@ -59,7 +60,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderPartnerData() {
         enablerImage.show()
         partnerTitle.show()
-        enablerImage.loadImage(dataModel?.partnerLogo)
+        enablerImage.loadImage(dataModel?.enablerLogo)
     }
 
     private fun renderShopData() {
@@ -120,10 +121,16 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderButton() {
-        if(dataModel?.uploadWidget == true){
+        if(dataModel?.uploadWidget == true && !dataModel?.epharmacyButton?.text.isNullOrBlank()){
             chatDokterUploadLayout.show()
-//            chatDokterUploadText.text = dataModel?.uploadWidgetText
-//            chatDokterUploadIcon.loadImage(dataModel?.uploadWidgetIcon)
+            chatDokterUploadText.text = dataModel?.epharmacyButton?.text
+            if(!dataModel?.epharmacyButton?.subText.isNullOrBlank()){
+                chatDokterUploadSubText.show()
+                chatDokterUploadSubText.text = "${dataModel?.epharmacyButton?.subText} ${dataModel?.consultationSource?.enablerName}"
+            }else {
+                chatDokterUploadSubText.hide()
+            }
+            chatDokterUploadIcon.loadImage(dataModel?.epharmacyButton?.iconUrl)
             chatDokterUploadLayout.setOnClickListener {
                 ePharmacyListener?.onCTACClick(bindingAdapterPosition,dataModel?.name)
             }

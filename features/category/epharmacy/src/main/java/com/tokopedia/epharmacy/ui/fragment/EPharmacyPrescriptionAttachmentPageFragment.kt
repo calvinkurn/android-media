@@ -219,7 +219,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
     override fun onCTACClick(adapterPosition: Int, modelKey: String?) {
         super.onCTACClick(adapterPosition, modelKey)
         val model = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel)
-        redirectAttachmentCTA(model.partnerLogo, model.tokoConsultationId,model.prescriptionSource, model.consultationSource?.pwaLink)
+        redirectAttachmentCTA(model.enablerLogo, model.tokoConsultationId,model.prescriptionSource, model.consultationSource?.pwaLink)
     }
 
     private fun redirectAttachmentCTA(enablerImage : String?, tokoConsultationId : String?,prescriptionSource: List<String?>?, miniConsultationWebLink : String?) {

@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingBottom="8dp"
     android:background="@color/Unify_Static_White"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
@@ -16,7 +15,7 @@
         android:layout_marginStart="32dp"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         tools:text="Apotek Century Meruya Raden Saleh"
         tools:visibility="visible"
         android:visibility="gone"

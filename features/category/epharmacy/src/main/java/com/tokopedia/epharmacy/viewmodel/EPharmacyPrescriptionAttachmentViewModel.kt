@@ -3,6 +3,7 @@ package com.tokopedia.epharmacy.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.common_epharmacy.network.response.EPharmacyItemButtonData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
@@ -60,7 +61,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                             "${group.epharmacyGroupId},${info?.shopId  ?: ""}",GROUP_COMPONENT,
                             group.epharmacyGroupId,
                             group.consultationSource?.enablerName,
-                            group.consultationSource?.partnerLogoUrl,
+                            group.consultationSource?.enablerLogoUrl,
                             info,
                             group.consultationData?.consultationStatus,
                             group.consultationData?.consultationString,
@@ -71,6 +72,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                             group.prescriptionSource,
                             group.consultationSource,
                             false,
+                            prepareCtaData(group.prescriptionSource,group.consultationData?.prescription,group.prescriptionImages),
                             index == ((group.shopInfo?.size ?: 0) - 1)
                             )
                         listOfComponents.add(ePharmacyGroupData)
@@ -88,5 +90,39 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     override fun onCleared() {
         ePharmacyPrepareProductsGroupUseCase.cancelJobs()
         super.onCleared()
+    }
+
+    private fun prepareCtaData(
+        prescriptionSource: List<String?>?,
+        prescription: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription?>?,
+        prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?
+    ) : EPharmacyItemButtonData {
+        var buttonText = "Chat Dokter Buat Dapat Resep"
+        var buttonSubText = ""
+        var buttonIconUrl = ""
+        prescriptionSource?.let {
+            if(it.size > 1){
+                buttonText = "Upload Resep atau Chat Dokter"
+            }else {
+                it.firstOrNull()?.let { source ->
+                    buttonText = when(source){
+                        PRESCRIPTION_SOURCE_TYPE.MINI_CONSULT.type ->{
+                            "Chat Dokter Buat Dapat Resep"
+                        }
+                        PRESCRIPTION_SOURCE_TYPE.UPLOAD.type ->{
+                            "Upload Resep"
+                        }
+                        else -> {
+                            ""
+                        }
+                    }
+                }
+            }
+        }
+        if(prescriptionImages?.size ?: 0 > 1 || prescription?.size ?:0 > 1){
+            buttonText = "Resep Digital Terlampir"
+            buttonSubText = "Resep dari dokter"
+        }
+        return EPharmacyItemButtonData(buttonIconUrl,buttonText,buttonSubText,"")
     }
 }
