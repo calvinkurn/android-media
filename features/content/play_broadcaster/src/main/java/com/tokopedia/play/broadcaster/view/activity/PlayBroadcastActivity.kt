@@ -28,11 +28,8 @@ import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.content.common.types.BundleData.KEY_PLAY_BROADCASTER_ENTRY_POINT
-import com.tokopedia.content.common.types.BundleData.VALUE_PLAY_BROADCASTER_ENTRY_POINT_FEED_PAGE
-import com.tokopedia.content.common.types.BundleData.VALUE_PLAY_BROADCASTER_ENTRY_POINT_USER_PROFILE
+import com.tokopedia.content.common.types.BundleData.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
-import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
@@ -292,10 +289,8 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun getConfiguration() {
         startNetworkMonitoring()
-        val entryPoint = intent.getIntExtra(KEY_PLAY_BROADCASTER_ENTRY_POINT, VALUE_PLAY_BROADCASTER_ENTRY_POINT_FEED_PAGE)
-        val action = if (entryPoint == VALUE_PLAY_BROADCASTER_ENTRY_POINT_USER_PROFILE) TYPE_USER
-        else TYPE_UNKNOWN
-        viewModel.submitAction(PlayBroadcastAction.GetAccountList(action))
+        val authorType = intent.getStringExtra(KEY_AUTHOR_TYPE) ?: TYPE_UNKNOWN
+        viewModel.submitAction(PlayBroadcastAction.GetAccountList(authorType))
     }
 
     private fun populateSavedState(savedInstanceState: Bundle) {

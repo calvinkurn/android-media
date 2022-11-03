@@ -19,7 +19,5 @@ object BundleData {
     const val DEFAULT_MULTI_SELECT_LIMIT = 5
 
     const val KEY_IS_OPEN_FROM = "key_is_open_from"
-    const val KEY_PLAY_BROADCASTER_ENTRY_POINT = "key_play_broadcaster_entry_point"
-    const val VALUE_PLAY_BROADCASTER_ENTRY_POINT_FEED_PAGE = 1
-    const val VALUE_PLAY_BROADCASTER_ENTRY_POINT_USER_PROFILE = 2
+    const val KEY_AUTHOR_TYPE = "author_type"
 }
