@@ -3,6 +3,8 @@ package com.tokopedia.common_epharmacy.network.response
 import com.google.gson.annotations.SerializedName
 
 data class EPharmacyMiniConsultationResult(
+    @SerializedName("epharmacy_group_id")
+    val epharmacyGroupId: String?,
     @SerializedName("products_info")
     val shopInfo: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?>?,
     @SerializedName("consultation_status")
@@ -16,7 +18,5 @@ data class EPharmacyMiniConsultationResult(
     @SerializedName("toko_consultation_id")
     val tokoConsultationId: String?,
     @SerializedName("prescription_images")
-    val prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?,
-) {
-
-}
+    val prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?
+)
