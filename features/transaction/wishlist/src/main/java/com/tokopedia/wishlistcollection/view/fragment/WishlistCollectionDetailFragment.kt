@@ -425,7 +425,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         if (deleteCollectionItems.data.success && deleteCollectionItems.status == OK) {
                             showToasterActionOke(deleteCollectionItems.data.message, Toaster.TYPE_NORMAL)
                             setRefreshing()
-                            (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
                         } else {
                             var errorMessage =
                                 context?.getString(Rv2.string.wishlist_v2_common_error_msg)
@@ -1202,11 +1201,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         collectionItemsAdapter.hideCheckbox()
         countRemovableAutomaticDelete = 0
         doRefresh()
+        showFilter()
+        showSearchBar()
 
         binding?.run {
             bottomButtonLayout.gone()
-            showFilter()
-            showSearchBar()
             if (collectionId == "0") {
                 wishlistCollectionDetailStickyCountManageLabel.apply {
                     iconGearCollectionDetail.gone()
@@ -2840,9 +2839,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
-        } else if (requestCode ==  REQUEST_CODE_GO_TO_SEMUA_WISHLIST
-            || requestCode == EDIT_WISHLIST_COLLECTION_REQUEST_CODE
-            && data != null) {
+        } else if (requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST || requestCode == EDIT_WISHLIST_COLLECTION_REQUEST_CODE && data != null) {
             val isFinishActivity = data?.getBooleanExtra(
                 ApplinkConstInternalPurchasePlatform.NEED_FINISH_ACTIVITY,
                 false
@@ -2871,7 +2868,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             } else {
-                doRefresh()showToasterFromIntent(data)
+                doRefresh()
+                showToasterFromIntent(data)
+            }
         } else if (requestCode == REQUEST_CODE_GO_TO_COLLECTION_DETAIL) {
             doRefresh()
         } else if (requestCode == REQUEST_CODE_GO_TO_PDP) {
@@ -2883,33 +2882,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun showToasterFromIntent(data: Intent?) {
-                val isSuccess = data?.getBooleanExtra(
-                    ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
-                    false
-                )
-                val messageToaster =
-                    data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
+        val isSuccess = data?.getBooleanExtra(
+            ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+            false
+        )
+        val messageToaster =
+            data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
 
-                if (isSuccess == true) {
-                    messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
-                } else {
-                    messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
-                }
-            }
-        } else if (requestCode == REQUEST_CODE_GO_TO_COLLECTION_DETAIL) {
-            doRefresh()
-        } else if (requestCode == REQUEST_CODE_LOGIN_ATC) {
-            if (resultCode == Activity.RESULT_OK) {
-                doAtc()
-            } else {
-                activity?.finish()
-            }
-        } else if (requestCode == REQUEST_CODE_LOGIN_GO_TO_CART) {
-            if (resultCode == Activity.RESULT_OK) {
-                goToCartPage()
-            } else {
-                activity?.finish()
-            }
         if (isSuccess == true) {
             messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
         } else {
