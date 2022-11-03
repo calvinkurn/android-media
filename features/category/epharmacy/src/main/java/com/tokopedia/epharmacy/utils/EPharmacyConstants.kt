@@ -45,3 +45,6 @@ const val ENTRY_POINT_CHECKOUT = "Checkout"
 
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"
+
+
+const val EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL = "https://images.tokopedia.net/img/green-waves.png"

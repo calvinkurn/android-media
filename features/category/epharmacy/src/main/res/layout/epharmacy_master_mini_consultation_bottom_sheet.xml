@@ -86,18 +86,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/bottom_image"
             android:layout_width="match_parent"
-            android:layout_height="125dp"
+            android:layout_height="78dp"
             android:layout_marginTop="8dp"
             android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/static_title_partner"
-            app:completeUrl="https://images.tokopedia.net/img/miniconsul-toped-illustration.png"
-            app:imageDpiSupportType="singleDpi"
             />
 
         <com.tokopedia.unifycomponents.ImageUnify

@@ -16,6 +16,7 @@ import com.tokopedia.epharmacy.network.response.EPharmacyMiniConsultationMasterR
 import com.tokopedia.epharmacy.ui.adapter.EpharmacyMiniConsultationStepsAdapter
 import com.tokopedia.epharmacy.utils.DATA_TYPE
 import com.tokopedia.epharmacy.utils.ENABLER_NAME
+import com.tokopedia.epharmacy.utils.EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL
 import com.tokopedia.epharmacy.viewmodel.MiniConsultationMasterBsViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
@@ -155,6 +156,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
                     bottomImageLogo.show()
                     bottomImageLogo.loadImage(bottomSheetData?.logoUrl)
                 }
+                bottomImage.loadImage(EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL)
             }
         }
 
