@@ -996,9 +996,6 @@ abstract class BaseSearchCategoryViewModel(
 
     open fun onViewUpdateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData) {
         updateMiniCartWidgetData(miniCartSimplifiedData)
-        miniCartSimplifiedData.miniCartItems.forEach {
-            Log.d("QUANTITY PRODUCT | ", "MINICART ${it.value}")
-        }
 
         viewModelScope.launchCatchError(
             block = { updateMiniCartInBackground(miniCartSimplifiedData) },
