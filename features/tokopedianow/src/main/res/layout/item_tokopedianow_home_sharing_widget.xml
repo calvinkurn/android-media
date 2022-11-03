@@ -57,9 +57,18 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toTopOf="@+id/btn_sharing"
             app:layout_constraintStart_toStartOf="@+id/iu_close_sharing"
-            app:layout_constraintEnd_toStartOf="@+id/iu_sharing"
+            app:layout_constraintEnd_toStartOf="@+id/barrier"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="iu_sharing, lottie_referral"
+            app:barrierDirection="start"/>
+
+
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_sharing"
@@ -72,6 +81,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_referral"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:translationZ="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_sharing"

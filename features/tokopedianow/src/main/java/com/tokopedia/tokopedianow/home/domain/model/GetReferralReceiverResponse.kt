@@ -18,7 +18,7 @@ data class GetReferralReceiverHomeResponse(
 
         @Expose
         @SerializedName("benefits")
-        val benefits: Benefit
+        val benefits: List<Benefit> = listOf()
     ) {
         data class ResultStatus(
             @Expose
@@ -38,13 +38,13 @@ data class GetReferralReceiverHomeResponse(
 
         data class Benefit(
             @SerializedName("description")
-            val description: String,
+            val description: String = "",
 
             @SerializedName("benefitText")
-            val benefitText: String,
+            val benefitText: String = "",
 
             @SerializedName("title")
-            val title: String
+            val title: String = ""
         )
     }
 }

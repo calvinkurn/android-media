@@ -80,7 +80,7 @@ class GetHomeReferralUseCase @Inject constructor(
                 maxReward = reward.maxReward,
                 isSender = false,
                 isEligible = true,
-                ogDescription = gamiReferralReceiverHome.benefits.description
+                ogDescription = gamiReferralReceiverHome.benefits.firstOrNull()?.description ?: ""
             )
         } else {
             throw MessageErrorException(gamiReferralReceiverHome.resultStatus.reason)
