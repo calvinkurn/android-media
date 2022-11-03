@@ -1,17 +1,16 @@
 package com.tokopedia.common_epharmacy.network.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class EPharmacyPrepareProductsGroupResponse(
     @SerializedName("prepareProductsGroup")
-    val detailData : EPharmacyPrepareProductsGroupData?,
+    val detailData: EPharmacyPrepareProductsGroupData?
 ) {
 
     data class EPharmacyPrepareProductsGroupData(
         @SerializedName("data")
-        val groupsData : GroupData?,
-    ){
+        val groupsData: GroupData?
+    ) {
 
         data class GroupData(
             @SerializedName("attachment_page_ticker_text")
@@ -24,8 +23,6 @@ data class EPharmacyPrepareProductsGroupResponse(
                 val consultationData: ConsultationData?,
                 @SerializedName("consultation_source")
                 val consultationSource: ConsultationSource?,
-                @SerializedName("cta")
-                val cta: CTAButton?,
                 @SerializedName("epharmacy_group_id")
                 val epharmacyGroupId: String?,
                 @SerializedName("number_prescription_images")
@@ -118,7 +115,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                     @SerializedName("applink")
                     val appLink: String?,
                     @SerializedName("icon")
-                    val icon: String?,
+                    val icon: String?
                 )
 
                 data class PrescriptionImage(
@@ -146,9 +143,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                     @SerializedName("shop_name")
                     val shopName: String?,
                     @SerializedName("shop_type")
-                    val shopType: String?,
-                    @SerializedName("order_name")
-                    val orderName: String?
+                    val shopType: String?
                 ) {
                     data class Product(
                         @SerializedName("is_ethical_drug")
