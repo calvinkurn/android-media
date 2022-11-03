@@ -341,7 +341,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         app:backgroundTint="@color/Unify_GN500"
-        app:fbType="circle"
         app:srcCompat="@drawable/ic_feed_post_plus" />
 
     <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
