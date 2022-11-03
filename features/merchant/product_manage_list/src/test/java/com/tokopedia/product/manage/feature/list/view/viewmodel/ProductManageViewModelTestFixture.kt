@@ -15,6 +15,7 @@ import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDat
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -93,6 +94,9 @@ open class ProductManageViewModelTestFixture {
     @RelaxedMockK
     lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
 
+    @RelaxedMockK
+    lateinit var remoteConfigImpl: FirebaseRemoteConfigImpl
+
     protected lateinit var viewModel: ProductManageViewModel
 
     @Before
@@ -100,27 +104,28 @@ open class ProductManageViewModelTestFixture {
         MockKAnnotations.init(this)
 
         viewModel = ProductManageViewModel(
-                editPriceUseCase,
-                gqlGetShopInfoUseCase,
-                getShopInfoTopAdsUseCase,
-                userSessionInterface,
-                getShopManagerPopupsUseCase,
-                getProductListUseCase,
-                setFeaturedProductUseCase,
-                editStatusUseCase,
-                editStockUseCase,
-                deleteProductUseCase,
-                multiEditProductUseCase,
-                getProductListMetaUseCase,
-                getProductManageAccessUseCase,
-                editProductVariantUseCase,
-                getProductVariantUseCase,
-                getAdminInfoShopLocationUseCase,
-                getUploadStatusUseCase,
-                clearUploadStatusUseCase,
-                getMaxStockThresholdUseCase,
-                tickerStaticDataProvider,
-                CoroutineTestDispatchersProvider
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            getShopInfoTopAdsUseCase,
+            userSessionInterface,
+            getShopManagerPopupsUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStatusUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            getProductManageAccessUseCase,
+            editProductVariantUseCase,
+            getProductVariantUseCase,
+            getAdminInfoShopLocationUseCase,
+            getUploadStatusUseCase,
+            clearUploadStatusUseCase,
+            getMaxStockThresholdUseCase,
+            tickerStaticDataProvider,
+            remoteConfigImpl,
+            CoroutineTestDispatchersProvider
         )
     }
 

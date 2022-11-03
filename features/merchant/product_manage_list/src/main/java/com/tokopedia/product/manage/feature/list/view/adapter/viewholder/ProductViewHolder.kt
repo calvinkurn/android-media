@@ -4,13 +4,13 @@ import android.graphics.PorterDuff
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
@@ -45,23 +45,43 @@ class ProductViewHolder(
         showProductButton(product)
 
         showProductImage(product)
+        showNotifyMeBuyer(product)
         showStockHintImage(product)
-        showStockAlertImage(product)
-        showStockAlertActiveImage(product)
-
+        if (!product.isVariant()) {
+            showStockAlertImage(product)
+            showStockAlertActiveImage(product)
+        } else {
+            binding?.imageStockReminder?.gone()
+            binding?.imageStockAlertActive?.gone()
+        }
         showProductCheckBox(product)
         showProductTopAdsIcon(product)
         showCampaignCountText(product)
 
         setOnClickListeners(product)
 
+        impressionView()
+
+    }
+
+    private fun impressionView() {
+        val impressHolder = ImpressHolder()
+        if (adapterPosition.orZero() == Int.ZERO) {
+            binding?.imageNotifyMeBuyer?.addOnImpressionListener(impressHolder) {
+                listener.onImpressionNotifyMe()
+            }
+        }
+
         if (binding?.imageStockReminder?.isVisible.orTrue()) {
-            listener.onFinishBindProductStockReminder()
+            listener.onImpressionProductStockReminder()
         } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
             && GlobalConfig.isSellerApp()
         ) {
-            listener.onFinishBindMoreOption()
+            if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()) {
+                listener.onImpressionMoreOption()
+            }
         }
+
     }
 
     private fun setTitleAndPrice(product: ProductUiModel) {
@@ -76,7 +96,7 @@ class ProductViewHolder(
     private fun showProductTicker(product: ProductUiModel) {
         binding?.tickerProductManageViolation?.showWithCondition(
             product.isPending()
-                    || product.isSuspendLevelTwoUntilFour()
+                || product.isSuspendLevelTwoUntilFour()
         )
         if (product.isPending()) {
             binding?.tickerProductManageViolation?.setTextDescription(getString(R.string.product_manage_violation_ticker_message))
@@ -119,7 +139,7 @@ class ProductViewHolder(
             binding?.btnContactCS?.run {
                 showWithCondition(
                     product.isViolation() || product.isPending()
-                            || product.isSuspendLevelTwoUntilFour()
+                        || product.isSuspendLevelTwoUntilFour()
                 )
                 when {
                     product.isViolation() -> {
@@ -133,7 +153,6 @@ class ProductViewHolder(
             binding?.btnEditPrice?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
-
 
         }
 
@@ -154,12 +173,25 @@ class ProductViewHolder(
 
     private fun showStockHintImage(product: ProductUiModel) {
         binding?.imageStockInformation
-            ?.showWithCondition((product.isEmpty() && product.isNotViolation()) || product.isSuspend())
+            ?.showWithCondition((product.isEmptyStock && product.isNotViolation() && !product.haveNotifyMeOOS) || product.isSuspend())
         binding?.clImage
             ?.showWithCondition(
-                binding?.imageStockInformation?.isVisible.orFalse()
-                        || binding?.imageStockReminder?.isVisible.orFalse()
-                        || binding?.imageStockAlertActive?.isVisible.orFalse()
+                binding?.imageStockInformation?.isVisible.orFalse() ||
+                    binding?.imageStockReminder?.isVisible.orFalse() ||
+                    binding?.imageStockAlertActive?.isVisible.orFalse() ||
+                    binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+            )
+    }
+
+    private fun showNotifyMeBuyer(product: ProductUiModel) {
+        binding?.imageNotifyMeBuyer
+            ?.showWithCondition(product.haveNotifyMeOOS)
+        binding?.clImage
+            ?.showWithCondition(
+                binding?.imageStockInformation?.isVisible.orFalse() ||
+                    binding?.imageStockReminder?.isVisible.orFalse() ||
+                    binding?.imageStockAlertActive?.isVisible.orFalse() ||
+                    binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
@@ -173,29 +205,32 @@ class ProductViewHolder(
         binding?.imageStockReminder
             ?.showWithCondition(
                 product.hasStockAlert && !product.stockAlertActive
-                        && !binding?.imageStockInformation?.isVisible.orTrue()
+                    && !binding?.imageStockInformation?.isVisible.orTrue()
+                    && !product.haveNotifyMeOOS
             )
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
-                        || binding?.imageStockReminder?.isVisible.orFalse()
-                        || binding?.imageStockAlertActive?.isVisible.orFalse()
+                    || binding?.imageStockReminder?.isVisible.orFalse()
+                    || binding?.imageStockAlertActive?.isVisible.orFalse()
+                    || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
-
     }
 
     private fun showStockAlertActiveImage(product: ProductUiModel) {
         binding?.imageStockAlertActive
             ?.showWithCondition(
                 product.stockAlertActive
-                        && !binding?.imageStockInformation?.isVisible.orTrue()
+                    && !binding?.imageStockInformation?.isVisible.orTrue()
+                    && !product.haveNotifyMeOOS
 
             )
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
-                        || binding?.imageStockReminder?.isVisible.orFalse()
-                        || binding?.imageStockAlertActive?.isVisible.orFalse()
+                    || binding?.imageStockReminder?.isVisible.orFalse()
+                    || binding?.imageStockAlertActive?.isVisible.orFalse()
+                    || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
@@ -223,6 +258,9 @@ class ProductViewHolder(
                 product.stockAlertCount,
                 product.stockAlertActive
             )
+        }
+        binding?.imageNotifyMeBuyer?.setOnClickListener {
+            listener.onClickNotifyMeBuyerInformation(product)
         }
         binding?.btnContactCS?.setOnClickListener { listener.onClickContactCsButton(product) }
     }
@@ -325,6 +363,7 @@ class ProductViewHolder(
 
     interface ProductViewHolderView {
         fun onClickStockInformation()
+        fun onClickNotifyMeBuyerInformation(product: ProductUiModel)
         fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean)
         fun onClickMoreOptionsButton(product: ProductUiModel)
         fun onClickProductItem(product: ProductUiModel)
@@ -334,8 +373,8 @@ class ProductViewHolder(
         fun onClickEditVariantPriceButton(product: ProductUiModel)
         fun onClickEditVariantStockButton(product: ProductUiModel)
         fun onClickContactCsButton(product: ProductUiModel)
-        fun onFinishBindMoreOption()
-        fun onFinishBindProductStockReminder()
-
+        fun onImpressionMoreOption()
+        fun onImpressionProductStockReminder()
+        fun onImpressionNotifyMe()
     }
 }
