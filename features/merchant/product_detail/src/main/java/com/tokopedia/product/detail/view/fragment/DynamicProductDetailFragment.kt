@@ -2397,9 +2397,9 @@ open class DynamicProductDetailFragment :
                 viewModel.p2Data.value?.getTotalStockMiniCartByParentId(it.data.variant.parentID)
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
-                    cartTypeData?.availableButtons?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false &&
-                    (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
+                cartTypeData?.availableButtons?.firstOrNull()
+                    ?.isCartTypeDisabledOrRemindMe() == false &&
+                (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
                 TokoNowButtonData(
@@ -2420,7 +2420,8 @@ open class DynamicProductDetailFragment :
                 isShopOwner = viewModel.isShopOwner(),
                 hasTopAdsActive = hasTopAds(),
                 cartTypeData = cartTypeData,
-                tokonowButtonData = tokonowVariantButtonData
+                tokonowButtonData = tokonowVariantButtonData,
+                isShopModerate = viewModel.getShopInfo().statusInfo.isOnModerationMode()
             )
         }
         showOrHideButton()
@@ -3016,7 +3017,7 @@ open class DynamicProductDetailFragment :
             if (items.isEmpty()) navigation?.stop(recyclerView)
             else {
                 val offsetY = getNavTabBarOffset(isToolbarTransparent = data.isToolbarTransparent)
-                navigation?.start(recyclerView, items, this, offsetY =  offsetY)
+                navigation?.start(recyclerView, items, this, offsetY = offsetY)
             }
         }
     }
@@ -3845,7 +3846,10 @@ open class DynamicProductDetailFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
 
-            setIconCustomColor(darkColor = getLightToolbarIconColor(), lightColor = getDarkToolbarIconColor())
+            setIconCustomColor(
+                darkColor = getLightToolbarIconColor(),
+                lightColor = getDarkToolbarIconColor()
+            )
 
             setIcon(
                 IconBuilder()
@@ -3863,7 +3867,10 @@ open class DynamicProductDetailFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
 
-            setIconCustomColor(darkColor = getLightToolbarIconColor(), lightColor = getDarkToolbarIconColor())
+            setIconCustomColor(
+                darkColor = getLightToolbarIconColor(),
+                lightColor = getDarkToolbarIconColor()
+            )
 
             setIcon(
                 IconBuilder()
@@ -4002,8 +4009,8 @@ open class DynamicProductDetailFragment :
     private fun getLocalSearchApplink(): String {
         val isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE +
-                if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
-                else ""
+            if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
+            else ""
         return applink
     }
 
@@ -4964,7 +4971,8 @@ open class DynamicProductDetailFragment :
     }
 
     private fun addWishlistV2(
-        componentTrackDataModel: ComponentTrackDataModel?) {
+        componentTrackDataModel: ComponentTrackDataModel?
+    ) {
         val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         viewModel.addWishListV2(productId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
@@ -4989,12 +4997,24 @@ open class DynamicProductDetailFragment :
                 productId: String
             ) {
                 context?.let { context ->
-                    if (result.success && WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)) {
-                        val applinkCollection = "${WISHLIST_COLLECTION_BOTTOMSHEET}?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
-                        val intentBottomSheetWishlistCollection = RouteManager.getIntent(context, applinkCollection)
-                        val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0
-                        intentBottomSheetWishlistCollection.putExtra(WishlistV2CommonConsts.IS_PRODUCT_ACTIVE, !isOos)
-                        startActivityForResult(intentBottomSheetWishlistCollection, REQUEST_CODE_ADD_WISHLIST_COLLECTION)
+                    if (result.success && WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(
+                            context
+                        )
+                    ) {
+                        val applinkCollection =
+                            "${WISHLIST_COLLECTION_BOTTOMSHEET}?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
+                        val intentBottomSheetWishlistCollection =
+                            RouteManager.getIntent(context, applinkCollection)
+                        val isOos =
+                            viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0
+                        intentBottomSheetWishlistCollection.putExtra(
+                            WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
+                            !isOos
+                        )
+                        startActivityForResult(
+                            intentBottomSheetWishlistCollection,
+                            REQUEST_CODE_ADD_WISHLIST_COLLECTION
+                        )
                     } else {
                         view?.let { v ->
                             AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
@@ -5421,5 +5441,6 @@ open class DynamicProductDetailFragment :
         verticalRecommendationTrackDataModel = componentTrackDataModel
     }
 
-    override fun getRecommendationVerticalTrackData(): ComponentTrackDataModel? = verticalRecommendationTrackDataModel
+    override fun getRecommendationVerticalTrackData(): ComponentTrackDataModel? =
+        verticalRecommendationTrackDataModel
 }

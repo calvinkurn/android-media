@@ -1,8 +1,8 @@
 package com.tokopedia.people.model.shoprecom
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 
 class ShopRecomModelBuilder {
 
