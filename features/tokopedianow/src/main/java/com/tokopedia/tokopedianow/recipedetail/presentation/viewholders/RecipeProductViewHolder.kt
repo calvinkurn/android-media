@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.recipedetail.presentation.viewholders
 import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -15,6 +16,7 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeProductBindi
 import com.tokopedia.tokopedianow.recipedetail.analytics.ProductAnalytics
 import com.tokopedia.tokopedianow.recipedetail.presentation.activity.TokoNowRecipeSimilarProductActivity
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -217,7 +219,12 @@ class RecipeProductViewHolder(
             addButton.isEnabled = input < product.maxOrder
             subtractButton.isEnabled = input > product.minOrder
             onQuantityChanged(product)
+            closeSoftKeyboard()
         }
+    }
+
+    private fun QuantityEditorUnify.closeSoftKeyboard() {
+        KeyboardHandler.DropKeyboard(itemView.context, this)
     }
 
     interface RecipeProductListener {

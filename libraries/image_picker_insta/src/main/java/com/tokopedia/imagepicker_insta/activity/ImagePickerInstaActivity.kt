@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker_insta.activity
 import android.os.Bundle
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.R
+import com.tokopedia.content.common.R as commonR
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
@@ -58,7 +59,8 @@ class ImagePickerInstaActivity : PermissionActivity() {
     }
 
     private fun processIntentData() {
-        toolbarTitle = intent.extras?.getString(BundleData.TITLE, "") ?: ""
+        val defaultTitle = getString(commonR.string.feed_content_post_sebagai)
+        toolbarTitle = intent.extras?.getString(BundleData.TITLE, defaultTitle) ?: defaultTitle
         menuTitle = intent.extras?.getString(BundleData.MENU_TITLE) ?: getString(R.string.imagepicker_insta_lanjut)
         maxMultiSelectAllowed = intent.extras?.getInt(BundleData.MAX_MULTI_SELECT_ALLOWED) ?: DEFAULT_MULTI_SELECT_LIMIT
         isOpenFrom = intent.extras?.getString(BundleData.KEY_IS_OPEN_FROM, "") ?: ""

@@ -4,14 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.databinding.ChipsListInitialStatePopularSearchBinding
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.CompletedStatusInfoUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.ChipsItemAdapter
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.itemdecoration.ChipsItemDecoration
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.ChipsListUiModel

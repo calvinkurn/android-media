@@ -52,7 +52,7 @@ class GreenGradientButton @JvmOverloads constructor(
     fun initPaintProps() {
         shadowStrokeWidth = 15.toPx().toFloat()
         blurRadius = 10.toPx().toFloat()
-        shadowColor = ContextCompat.getColor(context, com.tokopedia.promoui.common.R.color.promo_ui_com_shadow_color)
+        shadowColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32)
 
         blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
         setLayerType(View.LAYER_TYPE_SOFTWARE, null)

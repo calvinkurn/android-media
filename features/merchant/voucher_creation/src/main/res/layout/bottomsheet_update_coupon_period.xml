@@ -7,6 +7,7 @@
 
     <ImageView
         android:id="@+id/imgCoupon"
+        android:contentDescription="@string/image_coupon_content_description"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:layout_marginStart="@dimen/layout_lvl2"

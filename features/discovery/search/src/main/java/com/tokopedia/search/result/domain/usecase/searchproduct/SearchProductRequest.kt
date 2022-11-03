@@ -71,6 +71,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 meta {
                     productListType
                     isPostProcessing
+                    showButtonAtc
                 }
             }
             data {
@@ -209,6 +210,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     wishlist
                     applink
                     customVideoURL
+                    parentId
                 }
                 violation {
                     headerText

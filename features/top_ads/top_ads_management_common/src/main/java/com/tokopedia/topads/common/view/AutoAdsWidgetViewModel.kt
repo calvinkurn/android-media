@@ -12,7 +12,9 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
 import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.NonDeliveryResponse
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.util.Utils
@@ -45,17 +47,17 @@ class AutoAdsWidgetViewModel @Inject constructor(
     val autoAdsStatus = MutableLiveData<TopAdsAutoAdsModel>()
     val adsDeliveryStatus = MutableLiveData<NonDeliveryResponse.TopAdsGetShopStatus.DataItem>()
 
-    fun getAutoAdsStatus(shopId: Int) {
+    fun getAutoAdsStatus(shopId: String) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_auto_ads_status),
-                        TopAdsAutoAds.Response::class.java, mapOf(SHOP_ID to shopId))
+                    AutoAdsResponse::class.java, mapOf(SHOP_ID to shopId, SOURCE to SOURCE_AUTO_ADS))
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
 
                 repository.response(listOf(request), cacheStrategy)
             }
-            data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
-                _autoAdsData.postValue(Success(it.mapToDomain))
+            data.getSuccessData<AutoAdsResponse>().let {
+                _autoAdsData.postValue(Success(it.topAdsGetAutoAds.data.mapToDomain))
             }
         }) {
             it.printStackTrace()
@@ -86,8 +88,10 @@ class AutoAdsWidgetViewModel @Inject constructor(
 
     companion object {
         const val SHOP_ID = "shopId"
+        const val SOURCE = "source"
         const val SHOPID = "shopID"
         const val ADTYPE = "adTypes"
+        const val SOURCE_AUTO_ADS = "android.topads_autoads_common"
     }
 
 }

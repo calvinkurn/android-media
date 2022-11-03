@@ -1,6 +1,6 @@
 package com.tokopedia.people.analytic.tracker
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_ACCESS_MEDIA
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_BACK
 import com.tokopedia.people.analytic.UserProfileAnalytics.Action.CLICK_BURGER_MENU

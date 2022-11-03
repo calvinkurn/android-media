@@ -9,6 +9,7 @@ object TokoFoodAnalyticsConstants {
     const val DESTINATION_ID = "destinationId"
     const val PRODUCT_ID = "productId"
     const val TRACKER_ID = "trackerId"
+    const val PROMO_ID = "promoId"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val SCREEN_NAME = "screenName"
     const val GOFOOD_PAGENAME = "gofood"
@@ -35,6 +36,10 @@ object TokoFoodAnalyticsConstants {
     const val HOME_PAGE = "Tokofood Homepage"
     const val OUT_OF_COVERAGE = "Error State Out of Coverage"
     const val NO_PIN_POIN = "Error State No Pinpoint"
+    const val TRACKER_ID_31288 = "31288"
+    const val TRACKER_ID_31289 = "31289"
+    const val TRACKER_ID_32007 = "32007"
+    const val TRACKER_ID_32008 = "32008"
 
     //post purchase
     const val ORDER_DETAIL_PAGE = "Order detail page"
@@ -70,6 +75,11 @@ object TokoFoodAnalyticsConstants {
     const val VIEW_ON_SHARING_CHANNEL = "view on sharing channel"
     const val USER_ID_FORMAT = "UserID %s"
     const val VIEW_MERCHANT_PAGE = "view_merchant_page"
+
+    const val IMPRESSION_ON_PROMO_BUTTON = "impression on promo button"
+    const val TRACKER_ID_37402 = "37402"
+    const val CLICK_ON_PROMO_BUTTON = "click on promo button"
+    const val TRACKER_ID_37403 = "37403"
 
     //Search Page
     const val CLICK_SEARCH_BAR_TOKOFOOD = "click search bar tokofood"

@@ -38,21 +38,26 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.utils.VideoDurationRetriever
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
 import javax.inject.Inject
 
-open class PickerActivity : BaseActivity()
-    , PermissionFragment.Listener
-    , NavToolbarComponent.Listener
-    , PickerActivityContract
-    , BottomNavComponent.Listener {
+open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
+    NavToolbarComponent.Listener, PickerActivityContract, BottomNavComponent.Listener {
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var pickerAnalytics: PickerAnalytics
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var param: ParamCacheManager
+
+    @Inject
+    lateinit var pickerAnalytics: PickerAnalytics
 
     private val hasPermissionGranted: Boolean by permissionGranted()
 
@@ -88,6 +93,8 @@ open class PickerActivity : BaseActivity()
         )
     }
 
+    private var editorParam: EditorParam? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
@@ -121,6 +128,12 @@ open class PickerActivity : BaseActivity()
                     onFinishIntent(it)
                 }
             }
+        } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_EDITOR_PAGE && data != null) {
+            data.getParcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
+                onFinishIntent(
+                    PickerResult(it.originalPaths, editedImages = it.editedImages)
+                )
+            }
         }
     }
 
@@ -138,9 +151,20 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
+        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM) ?: PickerParam()
 
         onPageSourceNotFound(pickerParam)
+
+        if (pickerParam.isEditorEnabled()) {
+            val isEditorAllowed =
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(PICKER_TO_EDITOR_ROLLENCE) == PICKER_TO_EDITOR_ROLLENCE
+
+            if (!isEditorAllowed) {
+                pickerParam.withoutEditor()
+            } else {
+                editorParam = pickerParam.getEditorParam() ?: EditorParam()
+            }
+        }
 
         // get data from uri query parameter
         intent?.data?.let {
@@ -246,11 +270,10 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        /*
-        * TODO: we didn't supported the editor yet,
-        *  need to change after editor developed on Q3.
-        *  */
-        onFinishIntent(data)
+        editorParam?.let {
+            val intent = MediaEditor.intent(this, data.originalPaths, it)
+            startActivityForResult(intent, REQUEST_EDITOR_PAGE)
+        }
     }
 
     private fun onPermissionPageView() {
@@ -509,6 +532,7 @@ open class PickerActivity : BaseActivity()
 
     companion object {
         const val REQUEST_PREVIEW_PAGE = 123
+        const val REQUEST_EDITOR_PAGE = 456
 
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
 
