@@ -23,7 +23,6 @@ import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.helper.MissionWidgetHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
@@ -85,7 +84,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
     private var currentHeaderDataModel: HomeHeaderDataModel? = null
-    private var previousCurrentHeaderDataModel: HomeHeaderDataModel? = null
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
@@ -172,27 +170,11 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      */
                     if(currentHeaderDataModel==null){
                         currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
-                        if (currentHeaderDataModel is HomeHeaderDataModel) {
-                            (currentHeaderDataModel as HomeHeaderDataModel).let {
-                                if (it.headerDataModel?.homeBalanceModel?.status != HomeBalanceModel.STATUS_LOADING) {
-                                    updateHeaderData(it, dynamicChannelPlainResponse)
-                                    emit(dynamicChannelPlainResponse)
-                                }
-                            }
-                        }
-                    } else {
-                        currentHeaderDataModel?.let {
-                            if (currentHeaderDataModel?.headerDataModel?.homeBalanceModel?.status != HomeBalanceModel.STATUS_LOADING) {
-                                Log.d("dhabalog", it.toString())
-                                updateHeaderData(it, dynamicChannelPlainResponse)
-                                emit(dynamicChannelPlainResponse)
-                            }
-                        }
                     }
-//                    if (previousCurrentHeaderDataModel == null || previousCurrentHeaderDataModel == currentHeaderDataModel) {
-
-//                        previousCurrentHeaderDataModel = currentHeaderDataModel
-//                    }
+                    currentHeaderDataModel?.let {
+                        updateHeaderData(it, dynamicChannelPlainResponse)
+                        emit(dynamicChannelPlainResponse)
+                    }
                 }
 
                 if (isCacheDc) {

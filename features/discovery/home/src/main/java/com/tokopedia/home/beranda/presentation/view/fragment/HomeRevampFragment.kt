@@ -2002,9 +2002,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     coachmarkSubscription?.hideCoachMark()
                 }
             }
-            true -> {
-
-            }
         }
     }
 
