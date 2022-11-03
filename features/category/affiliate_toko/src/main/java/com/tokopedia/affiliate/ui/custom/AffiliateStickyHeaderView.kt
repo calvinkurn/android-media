@@ -75,7 +75,7 @@ class AffiliateStickyHeaderView : FrameLayout, OnStickyHeaderListener {
                         this@AffiliateStickyHeaderView.adapter = adapter
                         this@AffiliateStickyHeaderView.adapter?.setListener(this@AffiliateStickyHeaderView)
                         linearLayoutManager =
-                            mRecyclerView?.layoutManager as LinearLayoutManager?
+                            mRecyclerView?.layoutManager as? LinearLayoutManager
                     }
                     stickyPositions = adapter?.stickyHeaderPositions() ?: intArrayOf()
                 }
@@ -126,7 +126,6 @@ class AffiliateStickyHeaderView : FrameLayout, OnStickyHeaderListener {
                 refreshSticky = false
             }
         }
-
     }
 
     override val isStickyShowed: Boolean
@@ -151,7 +150,6 @@ class AffiliateStickyHeaderView : FrameLayout, OnStickyHeaderListener {
             }
         }
     }
-
 
     override fun refreshSticky() {
         refreshSticky = true

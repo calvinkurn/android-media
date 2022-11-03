@@ -43,7 +43,6 @@ class AffiliateAdapter(
         private const val PRODUCT_ACTIVE = 1
         const val SOURCE_HOME = "home"
         const val SOURCE_PROMOSIKAN = "promosikan"
-
     }
 
     private val itemImpressionSet = HashSet<Int>()
@@ -109,7 +108,6 @@ class AffiliateAdapter(
                             productModel.promotionItem,
                             holder.bindingAdapterPosition
                         )
-
                     }
                 }
             }
@@ -150,11 +148,11 @@ class AffiliateAdapter(
             position,
             item.itemTitle,
             "${item.itemID} - ${
-                item.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue
+            item.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue
             } - ${
-                item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
+            item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
             } - ${
-                item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
+            item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
             } - $status",
         )
     }
@@ -175,11 +173,11 @@ class AffiliateAdapter(
             position,
             item.itemTitle,
             "${item.itemID} - ${
-                item.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue
+            item.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue
             } - ${
-                item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
+            item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
             } - ${
-                item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
+            item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
             } - $status",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
         )
@@ -237,10 +235,8 @@ class AffiliateAdapter(
         visitables?.indexOfFirst { it is AffiliatePerformanceChipRVModel }.orZero()
     )
 
-
     override fun createStickyViewHolder(parent: ViewGroup?): List<AffiliateStickyHeaderView.StickyState> {
         return stickyHeaderPositions().map {
-
             val stickyViewType = getItemViewType(it)
             val view = onCreateViewItem(parent, stickyViewType)
             AffiliateStickyHeaderView.StickyState(
@@ -261,8 +257,8 @@ class AffiliateAdapter(
             is AffiliatePerformanceChipRVVH -> {
                 visitables.filterIsInstance(AffiliatePerformanceChipRVModel::class.java)
                     .firstOrNull()?.let {
-                    viewHolder.bind(it)
-                }
+                        viewHolder.bind(it)
+                    }
             }
         }
     }
@@ -270,5 +266,4 @@ class AffiliateAdapter(
     override fun setListener(onAffiliateStickyHeaderViewListener: OnStickyHeaderListener?) {
         this.onAffiliateStickyHeaderViewListener = onAffiliateStickyHeaderViewListener
     }
-
 }
