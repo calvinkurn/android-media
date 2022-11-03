@@ -897,6 +897,7 @@
               "product_rating": 0,
               "product_rating_format": "",
               "product_item_sold_payment_verified": "Terjual 1",
+              "product_minimum_order": 1,
               "free_ongkir": {
                 "is_active": false,
                 "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -988,6 +989,7 @@
               "product_rating": 100,
               "product_rating_format": "5.0",
               "product_item_sold_payment_verified": "Terjual 78",
+              "product_minimum_order": 1,
               "free_ongkir": {
                 "is_active": true,
                 "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -1074,6 +1076,7 @@
               "product_rating": 0,
               "product_rating_format": "",
               "product_item_sold_payment_verified": "",
+              "product_minimum_order": 1,
               "free_ongkir": {
                 "is_active": true,
                 "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -1160,6 +1163,7 @@
               "product_rating": 100,
               "product_rating_format": "5.0",
               "product_item_sold_payment_verified": "Terjual 6",
+              "product_minimum_order": 1,
               "free_ongkir": {
                 "is_active": true,
                 "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -1240,6 +1244,7 @@
               "product_rating": 100,
               "product_rating_format": "5.0",
               "product_item_sold_payment_verified": "Terjual 5",
+              "product_minimum_order": 1,
               "free_ongkir": {
                 "is_active": true,
                 "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -1326,6 +1331,7 @@
               "product_rating": 100,
               "product_rating_format": "5.0",
               "product_item_sold_payment_verified": "Terjual 106",
+              "product_minimum_order": 1,
               "free_ongkir": {
                 "is_active": true,
                 "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
