@@ -74,7 +74,9 @@ object ImagePickerAddEditNavigation {
     }
 
     fun resultExtrasEditor(data: Intent?): PickerResult {
-        return data?.getParcelableExtra(RESULT_INTENT_EDITOR)?: PickerResult()
+        return data?.getParcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
+             PickerResult(it.originalPaths, editedImages = it.editedImages)
+        } ?: PickerResult()
     }
 
     @SuppressLint("WrongConstant")
