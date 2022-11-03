@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -22,6 +24,7 @@ import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.mediauploader.MediaUploaderStateManager.Companion.UploadState
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -32,7 +35,10 @@ import com.tokopedia.mediauploader.services.UploaderWorker
 import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_UPLOAD_ID
 import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_VIDEO_URL
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import java.io.File
 import javax.inject.Inject
@@ -47,9 +53,18 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var btnRemove: UnifyButton
     private lateinit var btnUpload: UnifyButton
     private lateinit var btnAbort: UnifyButton
-    private lateinit var edtUrl: AppCompatEditText
+    private lateinit var edtUrl: TextFieldUnify2
+    private lateinit var checkboxSecure: CheckboxUnify
+    private lateinit var edtExtraHeader: AppCompatEditText
+    private lateinit var edtExtraBody: AppCompatEditText
+    private lateinit var secureParamBox: LinearLayout
+    private lateinit var checkboxExtraHeader: CheckboxUnify
+    private lateinit var checkboxExtraBody: CheckboxUnify
+    private lateinit var edtSourceId: TextFieldUnify2
+    private lateinit var edtUserId: TextFieldUnify2
 
     @Inject lateinit var uploaderUseCase: UploaderUseCase
+    @Inject lateinit var userSession: UserSessionInterface
 
     private val viewModel by lazy {
         ViewModelProvider(this)
@@ -62,13 +77,18 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private var isLargeUpload = false
 
     private var isAborted = false
+    private var isSecure = false
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.IO
 
     val sourceId: String
         get() = if (isUploadImage) {
-            "tuOYCg" // sourceId for image upload
+            if (isSecure) {
+                "tNsKPH" // sourceId for image upload secure
+            } else {
+                "tuOYCg" // sourceId for image upload
+            }
         } else {
             "VsrJDL" // sourceId for video upload (simple and large)
         }
@@ -96,6 +116,25 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             progressBar.setValue(0, true)
             showPickUploadPopUpMenu()
         }
+
+        checkboxSecure.setOnCheckedChangeListener { _, isChecked ->
+            isSecure = isChecked
+            showAllSecureField(isChecked)
+        }
+
+        checkboxExtraHeader.setOnCheckedChangeListener { _, isChecked ->
+            edtExtraHeader.showWithCondition(isChecked)
+        }
+
+        checkboxExtraBody.setOnCheckedChangeListener { _, isChecked ->
+            edtExtraBody.showWithCondition(isChecked)
+        }
+
+        edtExtraHeader.setText("{\n\t\n}")
+        edtExtraBody.setText("{\n\t\n}")
+        edtSourceId.editText.setText(sourceId)
+        edtUserId.editText.setText(userSession.userId)
+        edtUserId.editText.isEnabled = false
 
         abortButtonClicked()
     }
@@ -188,10 +227,10 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         if (result is UploadResult.Success) {
             if (isUploadImage) {
                 appendInfo("${result.uploadId}\n")
-                edtUrl.setText(result.uploadId)
+                edtUrl.editText.setText(if (result.uploadId.isEmpty()) result.fileUrl else result.uploadId)
             } else {
                 appendInfo("${result.videoUrl}\n")
-                edtUrl.setText(result.videoUrl)
+                edtUrl.editText.setText(result.videoUrl)
             }
         }
     }
@@ -227,11 +266,17 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
         btnUpload.isEnabled = false
 
+        val extraHeader = Gson().fromJson(edtExtraHeader.text?.toString() ?: "", HashMap::class.java)
+        val extraBody = Gson().fromJson(edtExtraBody.text?.toString() ?: "", HashMap::class.java)
+
         if (!withWorker) {
             val param = uploaderUseCase.createParams(
                 sourceId = sourceId,
                 filePath = File(mediaFilePath),
-                withTranscode = isVideoTranscodeSupported
+                withTranscode = isVideoTranscodeSupported,
+                isSecure = this.isSecure,
+                extraBody = extraBody as HashMap<String, String>,
+                extraHeader = extraHeader as HashMap<String, String>
             )
 
             uploaderUseCase.trackProgress { progress ->
@@ -380,6 +425,14 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         btnUpload = findViewById(R.id.btn_upload)
         btnAbort = findViewById(R.id.btn_abort)
         edtUrl = findViewById(R.id.edt_url)
+        checkboxSecure = findViewById(R.id.upload_secure_checkbox)
+        edtExtraHeader = findViewById(R.id.extra_header)
+        edtExtraBody = findViewById(R.id.extra_body)
+        secureParamBox = findViewById(R.id.secure_param_box)
+        checkboxExtraBody = findViewById(R.id.extra_body_checkbox)
+        checkboxExtraHeader = findViewById(R.id.extra_header_checkbox)
+        edtSourceId = findViewById(R.id.sourceId)
+        edtUserId = findViewById(R.id.userId)
     }
 
     private fun initInjector() {
@@ -388,6 +441,14 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             .mediaUploaderTestModule(MediaUploaderTestModule(applicationContext))
             .build()
             .inject(this)
+    }
+
+    private fun showAllSecureField(isShow: Boolean) {
+        if (isShow) {
+            secureParamBox.show()
+        } else {
+            secureParamBox.hide()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
