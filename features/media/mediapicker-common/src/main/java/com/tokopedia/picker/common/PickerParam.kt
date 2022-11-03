@@ -84,6 +84,7 @@ data class PickerParam(
         withEditor = true
         editorParam = EditorParam().apply(param)
     }
+    fun withoutEditor() = apply { withEditor = false }
     fun includeAnimationGif(value: Boolean) = apply { isIncludeAnimation = value }
     fun includeMedias(value: List<File>) = apply { includeMedias = value }
     fun excludeMedias(value: List<File>) = apply { excludedMedias = value }

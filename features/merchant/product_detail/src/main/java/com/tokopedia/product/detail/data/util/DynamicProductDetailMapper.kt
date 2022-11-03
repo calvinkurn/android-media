@@ -32,6 +32,8 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -64,8 +66,10 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.share.ProductData
@@ -209,8 +213,26 @@ object DynamicProductDetailMapper {
                                         categoryList = carouselData.categoryCarouselList))
                     }
                 }
-                ProductDetailConstant.PRODUCT_BUNDLING -> {
-                    listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                PRODUCT_BUNDLING -> {
+                    if (component.componentName == GLOBAL_BUNDLING) {
+                        val bundlingData = component.componentData.firstOrNull()
+                        if (bundlingData != null) {
+                            listOfComponent.add(
+                                GlobalBundlingDataModel(
+                                    type = component.type,
+                                    name = component.componentName,
+                                    data = generateGlobalBundlingData(bundlingData)
+                                )
+                            )
+                        }
+                    } else if (component.componentName == PRODUCT_BUNDLING) {
+                        listOfComponent.add(
+                            ProductBundlingDataModel(
+                                type = component.type,
+                                name = component.componentName
+                            )
+                        )
+                    }
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
@@ -669,6 +691,15 @@ object DynamicProductDetailMapper {
                     stockQty = productInfo.getFinalStock().toIntOrZero()
                 )
             )
+        )
+    }
+
+    private fun generateGlobalBundlingData(bundlingData: ComponentData): GlobalBundling {
+        return GlobalBundling(
+            title = bundlingData.title,
+            widgetType = bundlingData.widgetType,
+            productId = bundlingData.productId,
+            whId = bundlingData.whId
         )
     }
 }

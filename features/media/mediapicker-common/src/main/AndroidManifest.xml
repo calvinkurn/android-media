@@ -3,7 +3,8 @@
     package="com.tokopedia.picker.common">
 
     <application>
-        <activity android:name="com.tokopedia.picker.DebugPickerActivity">
+        <activity android:name="com.tokopedia.picker.DebugPickerActivity"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
