@@ -23,7 +23,9 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.types.BundleData.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
+import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
@@ -59,7 +61,6 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
-import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_LIVE
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_POST
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
@@ -209,7 +210,7 @@ class UserProfileFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         mainBinding.fabUserProfile.stopTimer()
-        impressionCoordinator.sendTracker()
+        impressionCoordinator.sendTracker { userProfileTracker.sendAll() }
     }
 
     override fun onDestroyView() {
@@ -314,12 +315,6 @@ class UserProfileFragment @Inject constructor(
         fabUserProfile.setOnClickListener {
             fabUp.menuOpen = !fabUp.menuOpen
         }
-    }
-
-    private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
-        layoutManager = linearLayoutManager
-        adapter = mAdapterShopRecom
-        if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(requireContext()))
     }
 
     private fun initUserPost(userId: String) {
@@ -928,70 +923,6 @@ class UserProfileFragment @Inject constructor(
         universalShareBottomSheet?.show(childFragmentManager, this, screenShotDetector)
     }
 
-    companion object {
-        const val PAGE_NAME_PROFILE = "UserProfile"
-        const val FEATURE_SHARE = "share"
-        const val VAL_FEEDS_PROFILE = "feeds-profile"
-        const val VAL_SOURCE_BUYER = "buyer"
-        const val EXTRA_DISPLAY_NAME = "display_name"
-        const val EXTRA_TOTAL_FOLLOWERS = "total_followers"
-        const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
-        const val EXTRA_USER_NAME = "user_name"
-        const val EXTRA_USER_ID = "userid"
-        const val EXTRA_PROFILE_USER_ID = "profileUserid"
-        const val EXTRA_IS_FOLLOWERS = "is_followers"
-        const val APPLINK_MENU = "tokopedia://navigation/main"
-        const val APPLINK_PROFILE = "tokopedia://setting/profile"
-        const val OFFSET_USERINFO = 136F
-        const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
-        const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
-        const val REQUEST_CODE_EDIT_PROFILE = 2423
-        const val REQUEST_CODE_USER_PROFILE = 99
-        const val EXTRA_POSITION_OF_PROFILE = "profile_position"
-        const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
-        const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
-        const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
-        private const val LOADING = -94567
-
-        const val PAGE_CONTENT = 0
-        const val PAGE_ERROR = 2
-        const val PAGE_LOADING = 1
-        const val PAGE_EMPTY = 3
-        const val SEE_ALL_LINE = 3
-        const val MAX_LINE = 20
-        const val SUCCESS_STATUS = 200
-        
-        private const val REQUEST_CODE_PLAY_ROOM = 123
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-
-        private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
-        private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
-        private const val KEY_MAX_MULTI_SELECT_ALLOWED_VALUE = 5
-        private const val KEY_TITLE = "title"
-        private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
-        private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
-        private const val KEY_IS_OPEN_FROM = "key_is_open_from"
-        private const val VALUE_IS_OPEN_FROM_USER_PROFILE = "is_open_from_user_profile"
-
-        private const val TAG = "UserProfileFragment"
-
-        fun getFragment(
-            fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-            bundle: Bundle,
-        ): UserProfileFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileFragment
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                UserProfileFragment::class.java.name
-            ).apply {
-                arguments = bundle
-            } as UserProfileFragment
-        }
-    }
-
     override fun onShareOptionClicked(shareModel: ShareModel) {
         val desc = buildString {
             append("Lihat foto & video menarik dari ${viewModel.displayName}")
@@ -1117,4 +1048,69 @@ class UserProfileFragment @Inject constructor(
     override fun onChildRefresh() {
         /** Not yet implemented */
     }
+
+    companion object {
+        const val PAGE_NAME_PROFILE = "UserProfile"
+        const val FEATURE_SHARE = "share"
+        const val VAL_FEEDS_PROFILE = "feeds-profile"
+        const val VAL_SOURCE_BUYER = "buyer"
+        const val EXTRA_DISPLAY_NAME = "display_name"
+        const val EXTRA_TOTAL_FOLLOWERS = "total_followers"
+        const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
+        const val EXTRA_USER_NAME = "user_name"
+        const val EXTRA_USER_ID = "userid"
+        const val EXTRA_PROFILE_USER_ID = "profileUserid"
+        const val EXTRA_IS_FOLLOWERS = "is_followers"
+        const val APPLINK_MENU = "tokopedia://navigation/main"
+        const val APPLINK_PROFILE = "tokopedia://setting/profile"
+        const val OFFSET_USERINFO = 136F
+        const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
+        const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
+        const val REQUEST_CODE_EDIT_PROFILE = 2423
+        const val REQUEST_CODE_USER_PROFILE = 99
+        const val EXTRA_POSITION_OF_PROFILE = "profile_position"
+        const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
+        const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
+        const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
+        private const val LOADING = -94567
+
+        const val PAGE_CONTENT = 0
+        const val PAGE_ERROR = 2
+        const val PAGE_LOADING = 1
+        const val PAGE_EMPTY = 3
+        const val SEE_ALL_LINE = 3
+        const val MAX_LINE = 20
+        const val SUCCESS_STATUS = 200
+
+        private const val REQUEST_CODE_PLAY_ROOM = 123
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
+        private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
+        private const val KEY_MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+        private const val KEY_TITLE = "title"
+        private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
+        private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
+        private const val KEY_IS_OPEN_FROM = "key_is_open_from"
+        private const val VALUE_IS_OPEN_FROM_USER_PROFILE = "is_open_from_user_profile"
+
+        private const val TAG = "UserProfileFragment"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle,
+        ): UserProfileFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                UserProfileFragment::class.java.name
+            ).apply {
+                arguments = bundle
+            } as UserProfileFragment
+        }
+    }
+
 }
