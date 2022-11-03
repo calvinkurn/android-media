@@ -181,14 +181,14 @@ class FlashSaleListViewModel @Inject constructor(
                 val formattedFlashSales = formatFlashSaleData(currentState.tabId, response.flashSales)
 
                 val allItems = currentState.allItems + formattedFlashSales
-                _uiEffect.emit(FlashSaleListUiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
+                _uiEffect.emit(FlashSaleListUiEffect.LoadNextPageSuccess(response.totalFlashSaleCount, allItems, formattedFlashSales))
 
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         allItems = allItems,
-                        searchResultCount = response.flashSales.size,
-                        totalFlashOnCurrentPage = response.totalFlashSaleCount
+                        totalFlashSaleOnCurrentPage = response.flashSales.size,
+                        totalFlashSale = response.totalFlashSaleCount
                     )
                 }
             },
