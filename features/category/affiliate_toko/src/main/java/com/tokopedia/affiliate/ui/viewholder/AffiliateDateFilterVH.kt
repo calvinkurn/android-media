@@ -27,13 +27,9 @@ class AffiliateDateFilterVH(
             append(element?.data?.message)
             append(")")
         }
-        itemView.findViewById<Typography>(R.id.filter_message)?.apply {
-            text = element?.data?.message
-        }
+        itemView.findViewById<Typography>(R.id.filter_message).text = element?.data?.dateUpdateDescription
         itemView.findViewById<ConstraintLayout>(R.id.date_range).setOnClickListener {
             onDateRangeClickInterface?.onRangeSelectionButtonClicked()
         }
-
-
     }
 }

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapterFactory
 import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapter
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapterFactory
 import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetDiffcallback
 import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -153,7 +153,6 @@ class AffiliateBottomDatePicker : BottomSheetUnify(), AffiliateDatePickerInterfa
             in TIME_START..TIME_END -> tickerCv?.show()
             else -> tickerCv?.hide()
         }
-
     }
 
     private fun setBundleData() {
@@ -186,13 +185,13 @@ class AffiliateBottomDatePicker : BottomSheetUnify(), AffiliateDatePickerInterfa
     private fun setData() {
         dateRV?.layoutManager = LinearLayoutManager(context)
         dateRV?.adapter = adapter
-        affiliateDatePickerBottomSheetViewModel.getAffiliateFilterData()
+        affiliateDatePickerBottomSheetViewModel.getAffiliateFilterData(IDENTIFIER_HOME)
     }
 
     override fun onDateRangeClicked(position: Int) {
         updateItem(position)
         adapter.notifyDataSetChanged()
-        if (identifier == IDENTIFIER_HOME){
+        if (identifier == IDENTIFIER_HOME) {
             affiliateDatePickerBottomSheetViewModel.getItemList()?.forEach { visitable ->
                 if ((visitable as AffiliateDateRangePickerModel).dateRange.isSelected) {
                     rangeChangeInterface?.rangeChanged(visitable.dateRange)
