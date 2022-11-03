@@ -78,7 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/static_title_partner"
-        app:completeUrl="https://images.tokopedia.net/img/miniconsul-toped-illustration.png"
+        app:completeUrl="https://images.tokopedia.net/img/green-waves.png"
         app:imageDpiSupportType="singleDpi"
         />
 

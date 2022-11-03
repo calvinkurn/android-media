@@ -51,7 +51,7 @@ const val ENTRY_POINT_CHECKOUT = "Checkout"
 
 const val ENABLER_IMAGE_URL = "enabler_image_url"
 const val UPLOAD_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons.jpg"
-const val MINI_CONS_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons.jpg"
+const val MINI_CONS_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc.png"
 
 const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
 const val EPHARMACY_ATTACH_PRESCRIPTION_APPLINK = "tokopedia://epharmacy/attach-prescription"
