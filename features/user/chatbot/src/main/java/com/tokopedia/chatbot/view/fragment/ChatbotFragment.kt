@@ -784,7 +784,7 @@ class ChatbotFragment :
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroomViewModel, chatReplies ->
-            presenter.processDynamicAttachmentFromHistory(chatroomViewModel)
+            processDynamicAttachmentFromHistory(chatroomViewModel)
             val list = filterChatList(chatroomViewModel)
 
             updateViewData(chatroomViewModel)
@@ -798,6 +798,37 @@ class ChatbotFragment :
             replyBubbleContainer?.setReplyListener(this)
         }
     }
+
+    private fun processDynamicAttachmentFromHistory(chatroom: ChatroomViewModel) {
+        chatroom.listChat.forEach {
+            if (it !is FallbackAttachmentUiModel) {
+                return@forEach
+            }
+            if (it.attachmentType != DYNAMIC_ATTACHMENT)
+                return@forEach
+
+            if (it.attachment is Attachment) {
+                val attachment = it.attachment as Attachment
+
+                try {
+                    val dynamicAttachmentContents =
+                        Gson().fromJson(attachment.attributes, DynamicAttachment::class.java)
+
+                    val replyBoxAttribute =
+                        dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+                    val state =  presenter.validateHistoryForAttachment34(replyBoxAttribute)
+
+                    if (state)
+                        return
+
+                } catch (e: JsonSyntaxException) {
+                    return@forEach
+                }
+            }
+        }
+    }
+
 
     private fun onSuccessResetChatToFirstPage(): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroomViewModel, chatReplies ->

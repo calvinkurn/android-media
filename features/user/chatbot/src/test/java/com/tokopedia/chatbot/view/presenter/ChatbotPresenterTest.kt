@@ -181,8 +181,9 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if render=android, content_code=100,is_active=true` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_TRUE_RENDER_ANDROID)
+    fun `handleReplyBoxWSToggle if render=android, content_code=100,is_active=true`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_TRUE_RENDER_ANDROID)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -191,14 +192,15 @@ class ChatbotPresenterTest {
         val replyBoxAttribute =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(replyBoxAttribute?.contentCode, 100)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if render=android, content_code=100, is_active=false` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_ANDROID)
+    fun `handleReplyBoxWSToggle if render=android, content_code=100, is_active=false`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_ANDROID)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -207,14 +209,15 @@ class ChatbotPresenterTest {
         val replyBoxAttribute =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(replyBoxAttribute?.contentCode, 100)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if render=ios, content_code=100, is_active=false` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_IOS)
+    fun `handleReplyBoxWSToggle if render=ios, content_code=100, is_active=false`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_IOS)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -223,27 +226,29 @@ class ChatbotPresenterTest {
         val replyBoxAttribute =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(replyBoxAttribute?.contentCode, 100)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if attachment is null` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_ATTACHMENT_NULL)
+    fun `handleReplyBoxWSToggle if attachment is null`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_ATTACHMENT_NULL)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
             Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(dynamicAttachmentContents, null)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if dynamic attachment is null` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_IS_NULL)
+    fun `handleReplyBoxWSToggle if dynamic attachment is null`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_IS_NULL)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -252,14 +257,17 @@ class ChatbotPresenterTest {
         val dynamicAttachmentAttribute =
             dynamicAttachmentContents?.dynamicAttachmentAttribute
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(dynamicAttachmentAttribute, null)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if dynamic attachment-attribute is null` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_DYNAMIC_CONTENT_IS_NULL)
+    fun `handleReplyBoxWSToggle if dynamic attachment-attribute is null`() {
+        val fullResponse =
+            SocketResponse.getResponse(
+                SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_DYNAMIC_CONTENT_IS_NULL
+            )
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -268,14 +276,17 @@ class ChatbotPresenterTest {
         val dynamicAttachmentAttribute =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(dynamicAttachmentAttribute, null)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if replyBoxAttribute is null` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_DYNAMIC_CONTENT_IS_NULL)
+    fun `handleReplyBoxWSToggle if replyBoxAttribute is null`() {
+        val fullResponse =
+            SocketResponse.getResponse(
+                SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_DYNAMIC_CONTENT_IS_NULL
+            )
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -284,14 +295,15 @@ class ChatbotPresenterTest {
         val dynamicContent =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(dynamicContent, null)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if content_code=101, render= android, hidden=true` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_TRUE)
+    fun `handleReplyBoxWSToggle if content_code=101, render= android, hidden=true`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_TRUE)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -300,14 +312,15 @@ class ChatbotPresenterTest {
         val dynamicContentCode =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(dynamicContentCode, 101)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if content_code=101, render= android, hidden=false` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE)
+    fun `handleReplyBoxWSToggle if content_code=101, render= android, hidden=false`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -316,14 +329,15 @@ class ChatbotPresenterTest {
         val dynamicContentCode =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(dynamicContentCode, 101)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if content_code=101, render= ios` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_IOS)
+    fun `handleReplyBoxWSToggle if content_code=101, render= ios`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_IOS)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -332,14 +346,15 @@ class ChatbotPresenterTest {
         val dynamicContentCode =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(dynamicContentCode, 101)
     }
 
     @Test
-    fun `handleReplyBoxWSToggle if content_code=101, dynamic content is null ` () {
-        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_DYNAMIC_CONTENT_NULL)
+    fun `handleReplyBoxWSToggle if content_code=101, dynamic content is null `() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_DYNAMIC_CONTENT_NULL)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
         val dynamicAttachmentContents =
@@ -348,14 +363,83 @@ class ChatbotPresenterTest {
         val dynamicContent =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(dynamicContent, null)
     }
 
+    @Test
+    fun `validateHistoryForAttachment34 if content_code=101, render=android, hidden=false`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+        val dynamicContentCode = replyBoxAttribute?.contentCode
+
+        presenter.validateHistoryForAttachment34(replyBoxAttribute)
+
+        assertEquals(dynamicContentCode, 101)
+    }
 
     @Test
-    fun `handleReplyBoxWSToggle if content_code=102 , goes to mapToVisitable` () {
+    fun `validateHistoryForAttachment34 if render=android, content_code=100, is_active=false`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_ANDROID)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+        presenter.validateHistoryForAttachment34(replyBoxAttribute)
+
+        assertEquals(replyBoxAttribute?.contentCode, 100)
+    }
+
+    @Test
+    fun `validateHistoryForAttachment34 attachment is null`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_IS_NULL)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+        presenter.validateHistoryForAttachment34(replyBoxAttribute)
+
+        assertEquals(replyBoxAttribute, null)
+    }
+
+    @Test
+    fun `validateHistoryForAttachment34 if content_code=102, does not process`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+        presenter.validateHistoryForAttachment34(replyBoxAttribute)
+
+        assertEquals(replyBoxAttribute?.contentCode, 102)
+    }
+
+
+    @Test
+    fun `handleReplyBoxWSToggle if content_code=102 , goes to mapToVisitable`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_102)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
@@ -365,7 +449,7 @@ class ChatbotPresenterTest {
         val dynamicContentCode =
             dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
 
-        presenter.handleReplyBoxWSToggle(chatResponse)
+        presenter.handleDynamicAttachment34(chatResponse)
 
         assertEquals(dynamicContentCode, 102)
     }
@@ -1902,7 +1986,8 @@ class ChatbotPresenterTest {
 //        val isSuccess = 1
 //        val mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
 //        val mockkHelpfullQuestion = mockk<HelpFullQuestionsViewModel>(relaxed = true)
-//        val mockkRatingList = mockk<ChipGetChatRatingListResponse.ChipGetChatRatingList.RatingListData.RatingList>(relaxed = true)
+//        val mockkRatingList = mockk<ChipGetChatRatingListResponse.ChipGetChatRatingList
+//        .RatingListData.RatingList>(relaxed = true)
 //        var mockkRateListMsg= mockk<MutableList<HelpFullQuestionsViewModel>>(relaxed = true)
 //        mockkRateListMsg.add(mockkHelpfullQuestion)
 //

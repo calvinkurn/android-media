@@ -15,7 +15,6 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
@@ -26,7 +25,6 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.parentreply.ParentReply
-import com.tokopedia.chat_common.domain.pojo.Attachment
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
@@ -90,6 +88,7 @@ import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.replyBox.BigReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.replyBox.ReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.replyBox.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
@@ -293,7 +292,7 @@ class ChatbotPresenter @Inject constructor(
                     }
 
                     if (attachmentType == DYNAMIC_ATTACHMENT) {
-                        handleReplyBoxWSToggle(pojo)
+                        handleDynamicAttachment34(pojo)
                     }
 
                 } catch (e: JsonSyntaxException) { }
@@ -375,7 +374,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     @VisibleForTesting
-    fun handleReplyBoxWSToggle(pojo: ChatSocketPojo) {
+    fun handleDynamicAttachment34(pojo: ChatSocketPojo) {
         val dynamicAttachmentContents =
             Gson().fromJson(pojo.attachment?.attributes, DynamicAttachment::class.java)
 
@@ -431,42 +430,23 @@ class ChatbotPresenter @Inject constructor(
         view.handleSmallReplyBox(smallReplyBoxContent.isHidden)
     }
 
-    fun processDynamicAttachmentFromHistory(chatroom: ChatroomViewModel) {
-        chatroom.listChat.forEach {
-            if (it !is FallbackAttachmentUiModel) {
-                return@forEach
-            }
-            if (it.attachmentType != DYNAMIC_ATTACHMENT)
-                return@forEach
+    fun validateHistoryForAttachment34(replyBoxAttribute: ReplyBoxAttribute?): Boolean {
+        if (replyBoxAttribute == null)
+            return false
 
-            if (it.attachment is Attachment) {
-                val attachment = it.attachment as Attachment
-
-                try {
-                    val dynamicAttachmentContents =
-                        Gson().fromJson(attachment.attributes, DynamicAttachment::class.java)
-
-                    val replyBoxAttribute =
-                        dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
-
-                    if (CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute?.contentCode)) {
-                        when(replyBoxAttribute?.contentCode) {
-                            TYPE_BIG_REPLY_BOX -> {
-                                convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
-                            }
-                            TYPE_SMALL_REPLY_BOX -> {
-                                convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
-                            }
-                        }
-
-                        return
-                    }
-
-                } catch (e: JsonSyntaxException) {
-                    return@forEach
+        if (CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute.contentCode)) {
+            when (replyBoxAttribute.contentCode) {
+                TYPE_BIG_REPLY_BOX -> {
+                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                    return true
+                }
+                TYPE_SMALL_REPLY_BOX -> {
+                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                    return true
                 }
             }
         }
+        return false
     }
 
     override fun showErrorSnackbar(stringId: Int) {
