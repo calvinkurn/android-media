@@ -32,7 +32,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
                     product = element
                 )
             }
-            setOnClickQuantityEditorListener { quantity, isAnimationRunning ->
+            setOnClickQuantityEditorListener { quantity ->
                 listener?.onProductCardQuantityChanged(
                     product = element,
                     quantity = quantity
@@ -40,6 +40,12 @@ class HomeLeftCarouselAtcProductCardViewHolder(
             }
             setOnClickQuantityEditorVariantListener { quantity ->
                 listener?.onProductCardQuantityChanged(
+                    product = element,
+                    quantity = quantity
+                )
+            }
+            setOnAnimationFinishedListener { quantity ->
+                listener?.onProductCardAnimationFinished(
                     product = element,
                     quantity = quantity
                 )
@@ -55,6 +61,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     interface HomeLeftCarouselAtcProductCardListener {
         fun onProductCardAddVariantClicked(product: HomeLeftCarouselAtcProductCardUiModel)
+        fun onProductCardAnimationFinished(product: HomeLeftCarouselAtcProductCardUiModel, quantity: Int)
         fun onProductCardQuantityChanged(product: HomeLeftCarouselAtcProductCardUiModel, quantity: Int)
         fun onProductCardClicked(position: Int, product: HomeLeftCarouselAtcProductCardUiModel)
         fun onProductCardImpressed(position: Int, product: HomeLeftCarouselAtcProductCardUiModel)

@@ -23,6 +23,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MA
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MEDIUM_PLAY_WIDGET
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
@@ -320,8 +321,8 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.updateLeftCarouselProductQuantity(
         miniCartData: MiniCartSimplifiedData,
     ) {
-        updateAllProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC)
-        updateDeletedProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC)
+        updateAllProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED)
+        updateDeletedProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED)
     }
 
     // Update all product with quantity from cart
@@ -347,7 +348,7 @@ object HomeLayoutMapper {
         when (type) {
             REPURCHASE_PRODUCT -> updateRepurchaseProductQuantity(productId, quantity)
             PRODUCT_RECOM -> updateProductRecomQuantity(productId, quantity)
-            MIX_LEFT_CAROUSEL_ATC -> updateLeftCarouselProductQuantity(productId, quantity)
+            MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED -> updateLeftCarouselProductQuantity(productId, quantity)
         }
     }
 
@@ -401,7 +402,7 @@ object HomeLayoutMapper {
                     }
                 }
             }
-            MIX_LEFT_CAROUSEL_ATC -> {
+            MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED -> {
                 filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel->
                     val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselAtcUiModel
                     val miniCartItems = miniCartData.miniCartItems.values
@@ -499,8 +500,8 @@ object HomeLayoutMapper {
         productId: String,
         quantity: Int
     ) {
-        firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.run {
-            val layoutUiModel = layout as HomeLeftCarouselAtcUiModel
+        filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach {
+            val layoutUiModel = it.layout as HomeLeftCarouselAtcUiModel
             val productList = layoutUiModel.productList.toMutableList()
             val productUiModel = productList.firstOrNull {
                 if (it is HomeLeftCarouselAtcProductCardUiModel) {
@@ -512,11 +513,11 @@ object HomeLayoutMapper {
             val index = layoutUiModel.productList.indexOf(productUiModel)
 
             (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.productCardModel?.copy(orderQuantity = quantity)?.apply {
-                updateItemById(layout.getVisitableId()) {
+                updateItemById(it.layout.getVisitableId()) {
                     (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.copy(productCardModel = this)?.apply {
                         productList[index] = this
                     }
-                    copy(layout = layoutUiModel.copy(productList = productList))
+                    it.copy(layout = layoutUiModel.copy(productList = productList))
                 }
             }
         }

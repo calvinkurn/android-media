@@ -474,7 +474,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     fun setOnClickQuantityEditorListener(
-        onClickListener: (Int, Boolean) -> Unit
+        onClickListener: (Int) -> Unit
     ) {
         binding.quantityEditor.onClickListener = onClickListener
     }
@@ -483,5 +483,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
         onClickVariantListener: (Int) -> Unit
     ) {
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
+    }
+
+    fun setOnAnimationFinishedListener(
+        onAnimationFinished: (Int) -> Unit
+    ) {
+        binding.quantityEditor.onAnimationFinished = onAnimationFinished
     }
 }

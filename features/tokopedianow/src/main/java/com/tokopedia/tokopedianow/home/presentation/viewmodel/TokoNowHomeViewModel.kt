@@ -184,6 +184,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
     private var channelToken = ""
+    private var currentLayoutType: String = ""
 
     private var getHomeLayoutJob: Job? = null
     private var getMiniCartJob: Job? = null
@@ -796,6 +797,10 @@ class TokoNowHomeViewModel @Inject constructor(
         quantity: Int,
         @TokoNowLayoutType type: String
     ) {
+        currentLayoutType = type
+
+        if (type == MIX_LEFT_CAROUSEL_ATC) return
+
         homeLayoutItemList.updateProductQuantity(productId, quantity, type)
 
         val data = HomeLayoutListUiModel(
@@ -852,7 +857,11 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
         setMiniCartSimplifiedData(miniCart)
-        updateProductQuantity(miniCart)
+
+        if (currentLayoutType != MIX_LEFT_CAROUSEL_ATC) {
+            updateProductQuantity(miniCart)
+            currentLayoutType = ""
+        }
     }
 
     private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {

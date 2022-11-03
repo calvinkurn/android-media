@@ -26,6 +26,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     companion object {
         private const val DELAY_TIME_BACK_TO_START_STATE = 2000L
+        private const val DELAY_TIME_BEFORE_CHANGING_QUANTITY = 1000L
         private const val MIN_NUMBER = 1
         private const val DEFAULT_NUMBER = 0
         private const val DEFAULT_DP = 0
@@ -34,7 +35,8 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private var binding: LayoutTokopedianowQuantityEditorViewBinding
 
     private var timer: Timer? = null
-    private var timerTask: TimerTask? = null
+    private var timerTaskChangingQuantity: TimerTask? = null
+    private var timerTaskCollapsingWidget: TimerTask? = null
     private var counter = DEFAULT_NUMBER
     private var text: String = ""
 
@@ -53,8 +55,10 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                 binding.setCounter()
             }
         }
+
     var isVariant: Boolean = false
-    var onClickListener: (counter: Int, isAnimationRunning: Boolean) -> Unit = { _, _ -> }
+    var onClickListener: (counter: Int) -> Unit = {}
+    var onAnimationFinished: (counter: Int) -> Unit = {}
     var onClickVariantListener: (counter: Int) -> Unit = {}
 
     init {
@@ -65,7 +69,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
             safeRunBlock {
                 root.setTransitionListener(object : MotionLayout.TransitionListener {
-                        override fun onTransitionCompleted(motionLayout: MotionLayout, p1: Int) = onAnimationFinished(
+                        override fun onTransitionCompleted(motionLayout: MotionLayout, p1: Int) = onTransitionCompleted(
                             currentState = motionLayout.currentState
                         )
 
@@ -101,13 +105,22 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         timer = Timer()
         initializeTimerTask()
         timer?.schedule(
-            timerTask,
+            timerTaskChangingQuantity,
+            DELAY_TIME_BEFORE_CHANGING_QUANTITY
+        )
+        timer?.schedule(
+            timerTaskCollapsingWidget,
             DELAY_TIME_BACK_TO_START_STATE
         )
     }
 
     private fun initializeTimerTask() {
-        timerTask = object : TimerTask() {
+        timerTaskChangingQuantity = object : TimerTask() {
+            override fun run() {
+                onClickListener(counter)
+            }
+        }
+        timerTaskCollapsingWidget = object : TimerTask() {
             override fun run() {
                 context.getActivityFromContext()?.runOnUiThread {
                     binding.collapseAnimation()
@@ -119,8 +132,10 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private fun cancelTimer() {
         if (timer != null) {
             timer?.cancel()
-            timerTask?.cancel()
-            timerTask =  null
+            timerTaskChangingQuantity?.cancel()
+            timerTaskChangingQuantity =  null
+            timerTaskCollapsingWidget?.cancel()
+            timerTaskCollapsingWidget = null
             timer = null
         }
     }
@@ -137,17 +152,17 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.onAnimationFinished(
+    private fun LayoutTokopedianowQuantityEditorViewBinding.onTransitionCompleted(
         currentState: Int
     ) {
         when (currentState) {
             R.id.end -> executeTimer()
             R.id.startWithValue -> {
                 setEditTextPadding()
-                onClickListener(counter, false)
+                onAnimationFinished(counter)
             }
             R.id.start -> {
-                onClickListener(counter, false)
+                onAnimationFinished(counter)
             }
         }
     }
@@ -230,7 +245,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         setCounter()
         if (root.currentState != R.id.startWithValue && root.currentState != R.id.start) {
             executeTimer()
-            onClickListener(counter, true)
         }
     }
 
@@ -240,7 +254,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
         if (counter < minQuantity || binding.editText.text?.isBlank() == true) {
             counter = 0
-            editText.setText("")
+            editText.text?.clear()
             root.setTransition(R.id.end, R.id.start)
         } else {
             editText.setText(counter.toString())
@@ -252,7 +266,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextPadding() {
-        editText.clearAnimation()
         editText.setPadding(
             getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
             DEFAULT_DP,
@@ -284,16 +297,26 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                     R.id.startWithValue,
                     R.id.end
                 )
-                editText.setDimenAsTextSize(
-                    id = R.dimen.tokopedianow_quantity_editor_text_size_start_with_value
+                root.progress = 0f
+                editText.apply {
+                    setDimenAsTextSize(
+                        id = R.dimen.tokopedianow_quantity_editor_text_size_start_with_value
+                    )
+                    setText(
+                        counter.toString()
+                    )
+                    clearFocus()
+                    setEditTextPadding()
+                }
+            } else {
+                root.setTransition(
+                    R.id.start,
+                    R.id.end
                 )
-                editText.setText(
-                    counter.toString()
-                )
-                setEditTextPadding()
+                root.progress = 0f
+                editText.text?.clear()
+                editText.clearFocus()
             }
         }
     }
-
-    fun getQuantity(): Int = counter
 }
