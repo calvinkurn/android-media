@@ -6,6 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
@@ -69,7 +70,7 @@ class MenuSettingAdapter(
         ),
         MenuItemUiModel(
             context?.getString(R.string.setting_notification_troubleshooter).orEmpty(),
-            clickApplink = ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER,
+            clickApplink = ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER,
             settingTypeInfix = SettingTrackingConstant.APP_SETTING
         ),
         MenuItemUiModel(

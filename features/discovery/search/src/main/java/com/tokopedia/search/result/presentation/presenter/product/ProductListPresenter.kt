@@ -31,7 +31,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -41,22 +40,21 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelG
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
@@ -91,6 +89,7 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
@@ -438,7 +437,7 @@ class ProductListPresenter @Inject constructor(
         processHeadlineAdsLoadMore(searchProductModel, list)
         processTopAdsImageViewModel(searchParameter, list)
         processInspirationWidgetPosition(searchParameter, list)
-        processInspirationCarouselPosition(searchParameter, list)
+        processInspirationCarouselPosition(list)
         processBannerAndBroadMatchInSamePosition(list)
         bannerDelegate.processBanner(list, productList) { index, banner ->
             list.add(index, banner)
@@ -947,7 +946,7 @@ class ProductListPresenter @Inject constructor(
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
             inspirationCarouselDataView = productDataView.inspirationCarouselDataView.toMutableList()
-            processInspirationCarouselPosition(searchParameter, list)
+            processInspirationCarouselPosition(list)
         }
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
@@ -1122,10 +1121,7 @@ class ProductListPresenter @Inject constructor(
             val widgetPosition = data.data.position
             if (widgetPosition <= productList.size) {
                 try {
-                    val productListPosition = maxOf(widgetPosition, 1)
-                    val product = productList[productListPosition - 1]
-                    val addIndex = minOf(widgetPosition, 1)
-                    val visitableIndex = list.indexOf(product) + addIndex
+                    val visitableIndex = getVisitableIndex(list, widgetPosition)
 
                     list.add(visitableIndex, data)
                     inspirationWidgetVisitableIterator.remove()
@@ -1140,35 +1136,49 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun processInspirationCarouselPosition(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
+    private fun getVisitableIndex(list: List<Visitable<*>>, widgetPosition: Int): Int {
+        val productListPosition = maxOf(widgetPosition, 1)
+        val product = productList[productListPosition - 1]
+        val addIndex = minOf(widgetPosition, 1)
+
+        return list.indexOf(product) + addIndex
+    }
+
+    private fun processInspirationCarouselPosition(list: MutableList<Visitable<*>>) {
         if (inspirationCarouselDataView.isEmpty()) return
 
         val inspirationCarouselViewModelIterator = inspirationCarouselDataView.iterator()
         while (inspirationCarouselViewModelIterator.hasNext()) {
             val data = inspirationCarouselViewModelIterator.next()
 
-            if (isInvalidInspirationCarousel(data)) {
+            if (isInvalidInspirationCarouselLayout(data)) {
                 inspirationCarouselViewModelIterator.remove()
                 continue
             }
 
             if (data.position <= productList.size && shouldShowInspirationCarousel(data.layout)) {
-                try {
-                    val inspirationCarouselVisitableList = constructInspirationCarouselVisitableList(data)
-                    val product = productList[data.position - 1]
-                    list.addAll(list.indexOf(product) + 1, inspirationCarouselVisitableList)
-                    inspirationCarouselViewModelIterator.remove()
-                } catch (exception: java.lang.Exception) {
-                    Timber.w(exception)
-                    view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
-                }
+                val inspirationCarouselVisitableList = constructInspirationCarouselVisitableList(data)
+                val visitableIndex = getVisitableIndex(list, data.position)
+
+                list.addAll(visitableIndex, inspirationCarouselVisitableList)
+                inspirationCarouselViewModelIterator.remove()
             }
         }
     }
 
-    private fun isInvalidInspirationCarousel(data: InspirationCarouselDataView): Boolean {
-        if (data.position <= 0) return true
-        return isInvalidInspirationCarouselLayout(data)
+    private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
+        return data.isInvalidCarouselChipsLayout()
+            || data.isInvalidCarouselVideoLayout()
+            || data.isInvalidProductBundleLayout()
+    }
+
+    private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
+        return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+            && isFirstOptionHasNoProducts()
+    }
+
+    private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
+        return isVideoLayout() && isFirstOptionHasNoProducts()
     }
 
     private fun InspirationCarouselDataView.isFirstOptionHasNoProducts() : Boolean {
@@ -1176,18 +1186,9 @@ class ProductListPresenter @Inject constructor(
         return firstOption != null && !firstOption.hasProducts()
     }
 
-    private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
-        return isVideoLayout() && isFirstOptionHasNoProducts()
-    }
     private fun InspirationCarouselDataView.isInvalidProductBundleLayout() : Boolean {
         return isBundleLayout()
             && (options.size < PRODUCT_BUNDLE_MINIMUM_SIZE || options.size > PRODUCT_BUNDLE_MAXIMUM_SIZE)
-    }
-
-    private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
-        return data.isInvalidCarouselChipsLayout()
-            || data.isInvalidCarouselVideoLayout()
-            || data.isInvalidProductBundleLayout()
     }
 
     private fun shouldShowInspirationCarousel(layout: String): Boolean {
@@ -1203,14 +1204,11 @@ class ProductListPresenter @Inject constructor(
                 inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
             else -> listOf(data)
         }
-    private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
-        return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
-                && isFirstOptionHasNoProducts()
-    }
+
     private fun InspirationCarouselDataView.isDynamicProductLayout() =
-            layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
+        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
     private fun InspirationCarouselDataView.isVideoLayout() =
-            layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
+        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
     private fun InspirationCarouselDataView.isBundleLayout() =
         layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
     private fun InspirationCarouselDataView.isListAtcLayout() =
@@ -1766,6 +1764,7 @@ class ProductListPresenter @Inject constructor(
             adapterPosition,
             dimension90,
             externalReference,
+            chooseAddressDelegate.getChooseAddressParams(),
         )
 
         view.routeToProductDetail(item, adapterPosition)

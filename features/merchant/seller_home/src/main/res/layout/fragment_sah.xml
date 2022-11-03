@@ -14,7 +14,8 @@
         android:focusableInTouchMode="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relTicker" />
+        app:layout_constraintTop_toBottomOf="@+id/relTicker"
+        app:unify_image_corner_radius="0" />
 
     <RelativeLayout
         android:id="@+id/relTicker"

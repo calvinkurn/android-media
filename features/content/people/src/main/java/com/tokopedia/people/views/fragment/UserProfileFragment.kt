@@ -12,21 +12,20 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
-import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
+import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
+import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
-import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
-import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
@@ -48,7 +47,6 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
-import com.tokopedia.people.analytic.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
@@ -96,12 +94,8 @@ class UserProfileFragment @Inject constructor(
     ScreenShotListener,
     PermissionListener,
     UserPostBaseAdapter.PlayWidgetCallback,
-    ShopRecommendationCallback,
+    ShopRecomWidgetCallback,
     FeedPlusContainerListener {
-
-    private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        LinearLayoutManager(activity, HORIZONTAL, false)
-    }
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, 2)
@@ -122,10 +116,6 @@ class UserProfileFragment @Inject constructor(
         get() = _binding!!.mainLayout
 
     private lateinit var viewModel: UserProfileViewModel
-
-    private val mAdapterShopRecom: ShopRecomAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ShopRecomAdapter(this)
-    }
 
     private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserPostBaseAdapter(this, this) { cursor ->
@@ -160,7 +150,6 @@ class UserProfileFragment @Inject constructor(
 
         initObserver()
         initListener()
-        initShopRecommendation()
         setHeader()
         setupPlayVideo()
 
@@ -171,7 +160,7 @@ class UserProfileFragment @Inject constructor(
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             mainBinding.userPostContainer.displayedChild = PAGE_LOADING
-            if (viewModel.isShopRecomShow) showLoadingShopRecom()
+            if (viewModel.isShopRecomShow) mainBinding.shopRecommendation.showLoadingShopRecom()
             refreshLandingPageData(true)
         }
 
@@ -205,7 +194,7 @@ class UserProfileFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        impressionCoordinator.sendTracker()
+        impressionCoordinator.sendTracker { userProfileTracker.sendAll() }
     }
 
     override fun onDestroyView() {
@@ -219,8 +208,8 @@ class UserProfileFragment @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when(childFragment) {
-            is FeedUGCOnboardingParentFragment -> {
-                childFragment.setListener(object : FeedUGCOnboardingParentFragment.Listener {
+            is UGCOnboardingParentFragment -> {
+                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
                         submitAction(UserProfileAction.LoadProfile())
                         goToCreatePostPage()
@@ -249,6 +238,9 @@ class UserProfileFragment @Inject constructor(
                             viewModel.profileUserID
                         )
                     }
+
+                    override fun clickCloseIcon() {}
+
                 })
             }
         }
@@ -264,6 +256,7 @@ class UserProfileFragment @Inject constructor(
             textFollowingCount.setOnClickListener { goToFollowingFollowerPage(false) }
             textFollowerLabel.setOnClickListener { goToFollowingFollowerPage(true) }
             textFollowerCount.setOnClickListener { goToFollowingFollowerPage(true) }
+            shopRecommendation.setListener(this@UserProfileFragment, this@UserProfileFragment)
 
             textSeeMore.setOnClickListener {
                 userProfileTracker.clickSelengkapnya(userSession.userId, self = viewModel.isSelfProfile)
@@ -291,10 +284,14 @@ class UserProfileFragment @Inject constructor(
                 userProfileTracker.clickCreatePost(viewModel.profileUserID)
                 if(viewModel.needOnboarding) {
                     val bundle = Bundle().apply {
-                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
+                        putInt(
+                            UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
+                            if (viewModel.profileUsername.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETE
+                            else VALUE_ONBOARDING_TYPE_TNC
+                        )
                     }
                     childFragmentManager.beginTransaction()
-                        .add(FeedUGCOnboardingParentFragment::class.java, bundle, FeedUGCOnboardingParentFragment.TAG)
+                        .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
                         .commit()
                 }
                 else {
@@ -307,12 +304,6 @@ class UserProfileFragment @Inject constructor(
                 navigateToEditProfile()
             }
         }
-    }
-
-    private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
-        layoutManager = linearLayoutManager
-        adapter = mAdapterShopRecom
-        if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(requireContext()))
     }
 
     private fun initUserPost(userId: String) {
@@ -549,29 +540,12 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev?.shopRecom == value.shopRecom) return
 
-        mainBinding.shopRecommendation.txtWordingFollow.text = value.shopRecom.title
-        mAdapterShopRecom.updateData(value.shopRecom.items)
+        val shopRecom = value.shopRecom
 
-        if (value.shopRecom.items.isEmpty()) showEmptyShopRecom()
-        else showContentShopRecom()
-    }
+        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items)
 
-    private fun showLoadingShopRecom() = with(mainBinding.shopRecommendation) {
-        txtWordingFollow.hide()
-        rvShopRecom.hide()
-        shimmerShopRecom.root.show()
-    }
-
-    private fun showContentShopRecom() = with(mainBinding.shopRecommendation) {
-        txtWordingFollow.show()
-        rvShopRecom.show()
-        shimmerShopRecom.root.hide()
-    }
-
-    private fun showEmptyShopRecom() = with(mainBinding.shopRecommendation) {
-        txtWordingFollow.hide()
-        rvShopRecom.hide()
-        shimmerShopRecom.root.hide()
+        if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
+        else mainBinding.shopRecommendation.showContentShopRecom()
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
@@ -794,7 +768,13 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
-        impressionCoordinator.initiateShopImpress(viewModel.profileUserID, item, postPosition + 1)
+        impressionCoordinator.initiateShopImpress(item) { shopImpress ->
+            userProfileTracker.impressionProfileRecommendation(
+                viewModel.profileUserID,
+                shopImpress,
+                postPosition
+            )
+        }
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {

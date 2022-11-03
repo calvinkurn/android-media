@@ -1,7 +1,9 @@
 package com.tokopedia.feedplus.view.fragment
 
-import android.content.*
-import android.graphics.drawable.Drawable
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +19,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -38,6 +39,9 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.util.coachmark.CoachMarkConfig
 import com.tokopedia.feedcomponent.util.coachmark.CoachMarkHelper
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
+import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
@@ -45,9 +49,11 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
 import com.tokopedia.feedplus.view.customview.FeedMainToolbar
+import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -56,12 +62,12 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.*
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -73,12 +79,6 @@ import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
-import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
-import com.tokopedia.feedplus.view.di.FeedInjector
-import com.tokopedia.imagepicker_insta.common.BundleData
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.feedcomponent.R as feedComponentR
 
 
@@ -358,7 +358,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onScrollToTop() {
         try {
-            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            val fragment = pagerAdapter.getRegisteredFragment(viewPager?.currentItem ?: 0)
             if (fragment is FeedPlusFragment) {
                 fragment.scrollToTop()
             } else if (fragment is ContentExploreFragment) {
@@ -412,7 +412,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @JvmOverloads
     fun goToExplore(shouldResetCategory: Boolean = false) {
         if (canGoToExplore()) {
-            view_pager.currentItem = pagerAdapter.contentExploreIndex
+            viewPager?.currentItem = pagerAdapter.contentExploreIndex
 
             if (shouldResetCategory) {
                 pagerAdapter.contentExplore?.onCategoryReset()
@@ -520,7 +520,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun setViewPager() {
-        view_pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
@@ -559,7 +559,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         feed_loading.visibility = View.VISIBLE
         feed_error.visibility = View.GONE
         tab_layout.visibility = View.INVISIBLE
-        view_pager.visibility = View.INVISIBLE
+        viewPager?.visibility = View.INVISIBLE
     }
 
     private fun onErrorGetTab(throwable: Throwable) {
@@ -569,7 +569,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         feed_loading.visibility = View.GONE
         feed_error.visibility = View.VISIBLE
         tab_layout.visibility = View.INVISIBLE
-        view_pager.visibility = View.INVISIBLE
+        viewPager?.visibility = View.INVISIBLE
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
@@ -581,21 +581,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
 
         pagerAdapter.setItemList(feedData)
-        view_pager.currentItem = if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
-        view_pager.offscreenPageLimit = pagerAdapter.count
+        viewPager?.currentItem = if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
+        viewPager?.offscreenPageLimit = pagerAdapter.count
         feed_loading.visibility = View.GONE
         feed_error.visibility = View.GONE
         tab_layout.visibility = View.VISIBLE
-        view_pager.visibility = View.VISIBLE
-
-
+        viewPager?.visibility = View.VISIBLE
 
         if (hasCategoryIdParam()) {
             goToExplore()
         }
-        if (userSession.isLoggedIn) {
-            viewModel.getWhitelist()
-        }
+
+        viewModel.getWhitelist()
     }
 
     private fun handleWhitelistData(whitelistDomain: WhitelistDomain) {
@@ -609,45 +606,52 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun renderCompleteFab() {
         hideAllFab()
 
-        val items = arrayListOf<FloatingButtonItem>()
+        try {
+            val items = arrayListOf<FloatingButtonItem>()
 
-        if(userSession.isLoggedIn && userSession.hasShop()) {
-            items.add(createCreateLiveFab())
-        }
+            if(viewModel.isShowLiveButton) items.add(createLiveFab())
+            if(viewModel.isShowPostButton) items.add(createPostFab())
 
-        if(viewModel.isShowPostButton) {
-            items.add(
-                FloatingButtonItem(
-                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-                    title = getString(R.string.feed_fab_create_post),
-                    listener = {
-                        try {
-                            fabFeed.menuOpen = false
-                            entryPointAnalytic.clickCreatePostEntryPoint()
-
-                            val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                            intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                            intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
-                            intent.putExtra(BundleData.TITLE, getString(feedComponentR.string.feed_post_sebagai))
-                            intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                            startActivity(intent)
-                            TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-
-                        } catch (e: Exception) {
-                            Timber.e(e)
-                        }
-                    }
-                )
-            )
-        }
-
-        if (items.isNotEmpty() && userSession.isLoggedIn) {
-            fabFeed.addItem(items)
-            feedFloatingButton.show()
-            showCreatePostOnBoarding()
-        } else {
+            if (items.isNotEmpty() && userSession.isLoggedIn) {
+                fabFeed.addItem(items)
+                feedFloatingButton.show()
+                showCreatePostOnBoarding()
+            } else feedFloatingButton.hide()
+        } catch (e: Exception) {
             feedFloatingButton.hide()
         }
+    }
+
+    private fun createLiveFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            title = getString(R.string.feed_fab_create_live),
+            listener = {
+                fabFeed.menuOpen = false
+                entryPointAnalytic.clickCreateLiveEntryPoint()
+
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
+            }
+        )
+    }
+
+    private fun createPostFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
+            title = getString(R.string.feed_fab_create_post),
+            listener = {
+                fabFeed.menuOpen = false
+                entryPointAnalytic.clickCreatePostEntryPoint()
+
+                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
+                intent.putExtra(BundleData.TITLE, getString(feedComponentR.string.feed_post_sebagai))
+                intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                startActivity(intent)
+                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+            }
+        )
     }
 
     private fun renderUserProfileEntryPoint(userAccount: Author?) {
@@ -695,34 +699,26 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         ivFeedUser?.let { coachMarkHelper.dismissCoachmark(it) }
     }
 
-    private fun createCreateLiveFab(): FloatingButtonItem {
-        return FloatingButtonItem(
-            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
-            title = getString(R.string.feed_fab_create_live),
-            listener = {
-                fabFeed.menuOpen = false
-                entryPointAnalytic.clickCreateLiveEntryPoint()
-
-                RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
-            }
-        )
-    }
-
     private fun onErrorGetWhitelist(throwable: Throwable) {
         view?.let {
-            Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
-                if (userSession.isLoggedIn) {
+            Toaster.build(
+                view = it,
+                text = ErrorHandler.getErrorMessage(context, throwable),
+                duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
+                clickListener = View.OnClickListener {
                     viewModel.getWhitelist()
                 }
-            })
+            ).show()
         }
+
         renderCompleteFab()
     }
 
     private fun setAdapter() {
-        view_pager.adapter = pagerAdapter
-        tab_layout.setupWithViewPager(view_pager)
+        viewPager?.adapter = pagerAdapter
+        viewPager?.let { tab_layout.setupWithViewPager(it) }
     }
 
     private fun hasCategoryIdParam(): Boolean {
@@ -766,8 +762,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
             coachMarkItem = CoachMarkItem(
                 feedFloatingButton,
-                getString(R.string.feed_onboarding_create_post_title),
-                getString(R.string.feed_onboarding_create_post_detail)
+                activity?.getString(R.string.feed_onboarding_create_post_title),
+                activity?.getString(R.string.feed_onboarding_create_post_detail) ?: ""
             ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
 
             showFabCoachMark()
@@ -821,7 +817,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         activity?.intent?.putExtra("show_posting_progress_bar", false)
         try {
-            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            val fragment = pagerAdapter.getRegisteredFragment(viewPager?.currentItem ?: 0)
             if (fragment is FeedPlusFragment) {
                 fragment.onRefreshForNewPostUpdated()
             }
@@ -832,7 +828,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
     fun videoTabAutoPlayJumboWidget(){
         try {
-            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            val fragment = pagerAdapter.getRegisteredFragment(viewPager?.currentItem ?: 0)
             if (fragment is VideoTabFragment) {
                 fragment.autoplayJumboWidget()
             }

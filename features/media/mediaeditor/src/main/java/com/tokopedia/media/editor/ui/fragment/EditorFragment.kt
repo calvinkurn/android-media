@@ -143,7 +143,7 @@ class EditorFragment @Inject constructor(
     }
 
     private fun imageCrop(bitmap: Bitmap, originalPath: String){
-        val cropRatio = viewModel.editorParam.value?.autoCropRatio?.let {
+        val cropRatio = viewModel.editorParam.value?.autoCropRatio()?.let {
             it.getRatioY().toFloat() / it.getRatioX()
         } ?: 1f
 
@@ -321,10 +321,10 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            editorToolComponent.setupView(it.editorToolsList)
+            editorToolComponent.setupView(it.editorToolsList())
             thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
 
-            if (it.autoCropRatio != null) {
+            if (it.autoCropRatio() != null) {
                 startAutoCrop()
             } else {
                 viewBinding?.viewPager?.apply {
@@ -362,7 +362,7 @@ class EditorFragment @Inject constructor(
         loader?.dismiss()
 
         viewBinding?.mainEditorFragmentLayout?.let { editorFragmentContainer ->
-            val autoCropRatio = viewModel.editorParam.value?.autoCropRatio
+            val autoCropRatio = viewModel.editorParam.value?.autoCropRatio()
             val ratioWidth = autoCropRatio?.getRatioX()?.toFloat() ?: 1f
             val ratioHeight = autoCropRatio?.getRatioY()?.toFloat() ?: 1f
 

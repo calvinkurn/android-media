@@ -343,8 +343,16 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     ""
                 )
             )
-            OfficialHomeMapper.updateTopAdsBanner(officialTopAdsBannerDataModel, results, _officialStoreListVisitable) {
-                _officialStoreLiveData.postValue(it)
+            if(results.isEmpty()){
+                _officialStoreListVisitable.run {
+                    removeAll {
+                        it is OfficialTopAdsBannerDataModel
+                    }
+                }
+            } else {
+                OfficialHomeMapper.updateTopAdsBanner(officialTopAdsBannerDataModel, results, _officialStoreListVisitable) {
+                    _officialStoreLiveData.postValue(it)
+                }
             }
         }) {
             _officialStoreListVisitable.run {
