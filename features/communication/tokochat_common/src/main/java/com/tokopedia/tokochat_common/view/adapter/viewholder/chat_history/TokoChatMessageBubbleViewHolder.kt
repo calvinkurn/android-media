@@ -16,10 +16,14 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.getOppositeMargin
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder.generateLeftBg
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder.generateRightBg
+import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-open class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) {
+open class TokoChatMessageBubbleViewHolder(
+    itemView: View,
+    private val bubbleMessageBubbleListener: TokoChatMessageBubbleListener
+): BaseViewHolder(itemView) {
 
     private val binding: TokochatItemMessageBubbleBinding? by viewBinding()
     private val messageBubbleBinding: TokochatPartialMessageBubbleBinding? by viewBinding()
@@ -40,7 +44,7 @@ open class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemV
         bindMargin(msg)
         bindClick()
         bindTextColor(msg)
-        bindMessageInfo(msg)
+        bindMessageReadMore(msg)
         if (msg.isSender) {
             setSenderMessageLayout(msg)
         } else {
@@ -96,8 +100,10 @@ open class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemV
         }
     }
 
-    private fun bindMessageInfo(msg: TokoChatMessageBubbleUiModel) {
-        messageBubbleBinding?.tokochatLayoutMessageChat?.bindInfo(msg)
+    private fun bindMessageReadMore(msg: TokoChatMessageBubbleUiModel) {
+        messageBubbleBinding?.tokochatLayoutMessageChat?.bindReadMore(msg) {
+            bubbleMessageBubbleListener.onClickReadMore(msg)
+        }
     }
 
     private fun bindMargin(message: TokoChatMessageBubbleUiModel) {

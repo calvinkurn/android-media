@@ -22,7 +22,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
-import com.tokopedia.tokochat.domain.response.extension.TokoChatImageResult
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
@@ -241,19 +240,6 @@ class TokoChatViewModel @Inject constructor(
         })
     }
 
-    fun isChatConnected(): Boolean {
-        return chatChannelUseCase.isChatConnected()
-    }
-
-    fun getTotalUnreadCount(): LiveData<Int> {
-        return try {
-            getChatHistoryUseCase.getTotalUnreadCount(listOf(ChannelType.GroupBooking))
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-            MutableLiveData()
-        }
-    }
-
     fun getTokoChatBackground() {
         launchCatchError(block = {
             getTokoChatBackgroundUseCase(Unit).collect {
@@ -366,7 +352,7 @@ class TokoChatViewModel @Inject constructor(
                 onImageReady(cachedImage)
             }
         }, onError = {
-            _error.value = it
+            _error.postValue(it)
             onError()
         })
     }

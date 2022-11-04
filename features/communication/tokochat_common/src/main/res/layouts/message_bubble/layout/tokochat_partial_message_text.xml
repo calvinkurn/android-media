@@ -15,9 +15,20 @@
         android:lineSpacingMultiplier="1.1"
         android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="false"
-        app:typographyType="body_1"
+        app:typographyType="paragraph_2"
         tools:ignore="RtlHardcoded"
         tools:text="Mau cari susu yang bisa buat keker dlm satu malam ada gak ya gan?" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_tv_msg_read_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_GN500"
+        android:textIsSelectable="false"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        android:text="@string/tokochat_read_more" />
 
     <LinearLayout
         android:id="@+id/tokochat_layout_msg_status"
@@ -48,18 +59,5 @@
             app:typographyType="body_3"
             tools:text="11:00" />
     </LinearLayout>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokochat_tv_msg_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_marginTop="6dp"
-        android:textColor="@color/Unify_N700_44"
-        android:textIsSelectable="false"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        tools:text="Pesan ini dibalas oleh sistem"
-        tools:visibility="visible" />
 
 </merge>

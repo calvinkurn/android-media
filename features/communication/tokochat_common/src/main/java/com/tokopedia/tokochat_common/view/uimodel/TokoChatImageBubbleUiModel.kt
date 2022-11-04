@@ -24,6 +24,10 @@ open class TokoChatImageBubbleUiModel protected constructor(
         this.isImageReady = status
     }
 
+    fun updateShouldRetry(shouldRetry: Boolean) {
+        this.shouldRetry = shouldRetry
+    }
+
     open class Builder : TokoChatSendableBaseUiModel.Builder<Builder, TokoChatImageBubbleUiModel>() {
 
         internal var imageId = ""
