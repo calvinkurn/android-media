@@ -21,6 +21,7 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         verify {
+            chatWebSocket.connect(false)
             chatWebSocket.close()
             chatWebSocket.destroy()
         }
