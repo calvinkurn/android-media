@@ -1933,6 +1933,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 .addTarget(topAdsCard)
         )
         topAdsProductName.setTextColor(secondaryColor)
+        topAdsProductSubtitle.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setBackgroundColor(primaryColor)
     }
@@ -1942,6 +1943,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         secondaryColor: Int,
     ) {
         topAdsProductName.setTextColor(secondaryColor)
+        topAdsProductSubtitle.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setGradientBackground(colorArray)
     }
