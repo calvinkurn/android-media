@@ -5,24 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
-import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
-import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
-import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -43,10 +36,10 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setupView()
+        setupSheet()
     }
 
-    private fun setupView () {
+    private fun setupSheet () {
         _binding = PlayFollowBottomSheetBinding.inflate(LayoutInflater.from(requireContext()))
         _headerBinding = BottomSheetHeaderBinding.bind(binding.root)
         setChild(binding.root)
@@ -67,48 +60,25 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bindView()
-        observeState()
-        observeEvent()
+        setupView()
     }
 
-    private fun observeState () {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            playViewModel.uiState.withCache().collectLatest { cachedState ->
-                val state = cachedState.value
-                val prevState = cachedState.prevValue
-
-                if(prevState?.followPopUp != state.followPopUp) setupView(description = state.followPopUp.popupConfig.text, partnerInfo = state.partner)
-            }
-        }
-    }
-
-    private fun observeEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            playViewModel.uiEvent.collect { event ->
-                when (event) {
-                    is ShowInfoEvent -> dismiss()
-                    is ShowErrorEvent -> dismiss()
-                }
-            }
-        }
-    }
-
-    private fun bindView (){
+    fun setupView() {
         headerBinding.ivSheetClose.setOnClickListener {
             dismiss()
         }
 
         headerBinding.tvSheetTitle.text = getString(R.string.play_follow_popup_header_title)
-    }
 
-    fun setupView(partnerInfo: PlayPartnerInfo, description: String) {
+        val partnerInfo = playViewModel.latestCompleteChannelData.partnerInfo
+
         binding.ivBadge.showWithCondition(partnerInfo.badgeUrl.isNotBlank())
         binding.ivIcon.showWithCondition(partnerInfo.iconUrl.isNotBlank())
         binding.ivBadge.loadIcon(partnerInfo.badgeUrl)
         binding.ivIcon.loadIcon(partnerInfo.iconUrl)
         binding.tvPartnerName.text = partnerInfo.name
-        binding.tvFollowDesc.text = description
+
+        binding.tvFollowDesc.text = playViewModel.latestCompleteChannelData.channelDetail.popupConfig.text
 
         binding.clFollowContainer.setOnClickListener {
             playViewModel.submitAction(ClickPartnerNameAction(partnerInfo.appLink))

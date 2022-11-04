@@ -35,7 +35,6 @@ data class PlayViewerNewUiState(
     val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
-    val followPopUp: FollowPopUpUiState,
 ) {
 
     companion object {
@@ -66,10 +65,6 @@ data class PlayViewerNewUiState(
                     warehouseInfo = WarehouseInfoUiModel.Empty,
                 ),
                 featuredProducts = emptyList(),
-                followPopUp = FollowPopUpUiState(
-                    shouldShow = false,
-                    popupConfig = PlayPopUpConfigUiModel.Empty,
-                ),
             )
     }
 }
@@ -128,9 +123,4 @@ enum class KebabMenuType{
 data class AddressWidgetUiState(
     val shouldShow: Boolean,
     val warehouseInfo: WarehouseInfoUiModel
-)
-
-data class FollowPopUpUiState(
-    val shouldShow: Boolean,
-    val popupConfig: PlayPopUpConfigUiModel,
 )

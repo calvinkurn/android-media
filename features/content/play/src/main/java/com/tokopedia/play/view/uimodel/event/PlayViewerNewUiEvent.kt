@@ -5,6 +5,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
+import com.tokopedia.play.view.uimodel.recom.PlayPopUpConfigUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -118,4 +119,4 @@ object OpenUserReportEvent : PlayViewerNewUiEvent()
 data class ChangeCampaignReminderSuccess(val isReminded: Boolean, val message: String) : PlayViewerNewUiEvent()
 data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiEvent()
 
-object ShowPopUp: PlayViewerNewUiEvent()
+data class ShowPopUp(val config: PlayPopUpConfigUiModel): PlayViewerNewUiEvent()
