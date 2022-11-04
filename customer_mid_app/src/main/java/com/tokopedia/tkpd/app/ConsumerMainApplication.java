@@ -415,7 +415,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
-        devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
+        devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), this, new Gson());
 
         DeviceInfo.getAdsIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
             @Override
