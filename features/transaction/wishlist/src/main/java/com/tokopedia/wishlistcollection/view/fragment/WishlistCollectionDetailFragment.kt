@@ -191,7 +191,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var isAturMode = false
     private var isCTAResetOfferFilterClicked = false
     private var bottomSheetCollectionSettings = BottomSheetWishlistCollectionSettings()
-    private var customToolbarView: View? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -961,7 +960,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
 
             viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionDetailNavtoolbar)
-            customToolbarView = View.inflate(activity, Rv2.layout.toolbar_custom, null)
 
             if (isBulkAddShow) {
                 turnOnBulkAddMode()
@@ -1114,19 +1112,19 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun updateCustomToolbarSubTitle(subtitle: String) {
-        val subtitleLayout: Typography
-        val customToolbar = View.inflate(context, Rv2.layout.toolbar_custom_add_bulk, null).also {
-            subtitleLayout =
-                it.findViewById(Rv2.id.toolbar_subtitle)
-        }
+        val customToolbar = LayoutInflater.from(context).inflate(Rv2.layout.toolbar_custom_add_bulk, null, false)
+        val subtitleLayout = customToolbar?.findViewById<Typography>(Rv2.id.toolbar_subtitle)
+        subtitleLayout?.text = subtitle
+
         binding?.run {
             wishlistCollectionDetailNavtoolbar.setCustomViewContentView(customToolbar)
             wishlistCollectionDetailNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
-            subtitleLayout.text = subtitle
         }
     }
 
     private fun updateCustomToolbarTitleAndSubTitle(title: String, subtitle: String) {
+        collectionName = title
+        val customToolbarView = LayoutInflater.from(context).inflate(Rv2.layout.toolbar_custom, null, false)
         val titleLayout = customToolbarView?.findViewById<Typography>(Rv2.id.toolbar_title)
         val subtitleLayout = customToolbarView?.findViewById<Typography>(Rv2.id.toolbar_subtitle)
 
@@ -1135,7 +1133,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
         customToolbarView?.let { toolbarView ->
             binding?.wishlistCollectionDetailNavtoolbar?.apply {
-                this.let { activity?.lifecycle?.addObserver(it) }
                 setCustomViewContentView(toolbarView)
                 setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
             }
@@ -2821,12 +2818,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
-        } else if (requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST || requestCode == EDIT_WISHLIST_COLLECTION_REQUEST_CODE && data != null) {
-            val isFinishActivity = data?.getBooleanExtra(
+        } else if (requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST && data != null) {
+            doRefresh()
+            showToasterFromIntent(data)
+        } else if (requestCode == EDIT_WISHLIST_COLLECTION_REQUEST_CODE && data != null) {
+            val isFinishActivity = data.getBooleanExtra(
                 ApplinkConstInternalPurchasePlatform.NEED_FINISH_ACTIVITY,
                 false
             )
-            if (isFinishActivity == true) {
+            if (isFinishActivity) {
                 val isSuccess = data.getBooleanExtra(
                     ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
                     false
@@ -2903,7 +2903,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.visible()
             }
         }
-        showLoader()
         addEndlessScrollListener()
         collectionItemsAdapter.resetTicker()
     }
