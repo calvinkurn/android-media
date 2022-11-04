@@ -8,7 +8,13 @@ data class SelectedShipperModel(
     var shipperId: Int = 0,
     var shipperProductId: Int = 0,
     var shipperPrice: Int = 0,
+    var serviceId: Int = 0,
+
     var insurancePrice: Int = 0,
+    var insuranceType: Int = 0,
+    var insuranceUsedType: Int = 0,
+    var insuranceUsedInfo: String? = null,
+    var insuranceUsedDefault: Int = 0,
 
     var logPromoCode: String? = null,
     var discountedRate: Int = 0,
@@ -16,16 +22,18 @@ data class SelectedShipperModel(
     var benefitAmount: Int = 0,
     var promoTitle: String? = null,
     var isHideShipperName: Boolean = false,
-    var shipperName: String? = null,
+    var checksum: String? = null,
+    var ut: String? = null,
+    var ontimeDelivery: OntimeDelivery? = null,
+    var codProductData: CashOnDeliveryProduct? = null,
     var etaText: String? = null,
     var etaErrorCode: Int = 0,
+    var shipperName: String? = null,
     var freeShippingChosenCourierTitle: String = "",
     var freeShippingMetadata: String = "",
     var benefitClass: String = "",
     var shippingSubsidy: Long = 0,
     var boCampaignId: Long = 0,
-
-    var serviceId: Int = 0,
 ) {
     fun updateSelectedShipper(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
         scheduleDeliveryUiModel?.takeIf { it.isSelected }?.let { scheduleDelivery ->
@@ -35,7 +43,13 @@ data class SelectedShipperModel(
             shipperId = scheduleDelivery.deliveryProduct?.shipperId?.toInt() ?: 0
             shipperProductId = scheduleDelivery.deliveryProduct?.shipperProductId?.toInt() ?: 0
             shipperPrice = scheduleDelivery.deliveryProduct?.finalPrice?.toInt() ?: 0
+            serviceId = 0
+
             insurancePrice = scheduleDelivery.deliveryProduct?.insurancePrice?.toInt() ?: 0
+            insuranceType = 0
+            insuranceUsedType = 0
+            insuranceUsedInfo = ""
+            insuranceUsedDefault = 0
 
             logPromoCode = scheduleDelivery.deliveryProduct?.promoCode
             discountedRate = scheduleDelivery.deliveryProduct?.finalPrice?.toInt() ?: 0
@@ -43,9 +57,13 @@ data class SelectedShipperModel(
             benefitAmount = 0
             promoTitle = ""
             isHideShipperName = true
-            shipperName = ""
+            checksum = ""
+            ut = ""
+            ontimeDelivery = null
+            codProductData = null
             etaText = scheduleDelivery.deliveryProduct?.textEta
             etaErrorCode = 0
+            shipperName = ""
             freeShippingChosenCourierTitle = ""
             freeShippingMetadata = scheduleDelivery.deliveryProduct?.freeShippingMetadata ?: ""
             benefitClass = ""

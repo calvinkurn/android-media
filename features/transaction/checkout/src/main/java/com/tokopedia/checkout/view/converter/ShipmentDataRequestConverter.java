@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest;
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.SelectedShipperModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -100,18 +101,19 @@ public class ShipmentDataRequestConverter {
 
             if (courierItemData != null) {
                 RatesFeature ratesFeature = generateRatesFeature(courierItemData);
+                SelectedShipperModel selectedShipperModel = courierItemData.getSelectedShipper();
 
                 // Create shop product model for shipment
                 ShippingInfoCheckoutRequest shippingInfoCheckoutRequest = new ShippingInfoCheckoutRequest();
-                shippingInfoCheckoutRequest.setShippingId(courierItemData.getSelectedShipper().getShipperId());
-                shippingInfoCheckoutRequest.setSpId(courierItemData.getSelectedShipper().getShipperProductId());
+                shippingInfoCheckoutRequest.setShippingId(selectedShipperModel.getShipperId());
+                shippingInfoCheckoutRequest.setSpId(selectedShipperModel.getShipperProductId());
                 shippingInfoCheckoutRequest.setRatesId(
                         shipmentDetailData.getShippingCourierViewModels() != null ?
                                 shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
                 );
-                shippingInfoCheckoutRequest.setChecksum(courierItemData.getChecksum());
-                shippingInfoCheckoutRequest.setUt(courierItemData.getUt());
-                shippingInfoCheckoutRequest.setAnalyticsDataShippingCourierPrice(String.valueOf(courierItemData.getSelectedShipper().getShipperPrice()));
+                shippingInfoCheckoutRequest.setChecksum(selectedShipperModel.getChecksum());
+                shippingInfoCheckoutRequest.setUt(selectedShipperModel.getUt());
+                shippingInfoCheckoutRequest.setAnalyticsDataShippingCourierPrice(String.valueOf(selectedShipperModel.getShipperPrice()));
                 shippingInfoCheckoutRequest.setRatesFeature(ratesFeature);
 
                 ShopProductCheckoutRequest shopProductCheckout = new ShopProductCheckoutRequest();
@@ -157,7 +159,7 @@ public class ShipmentDataRequestConverter {
                     shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
                 }
 
-                shopProductCheckout.setFreeShippingMetadata(courierItemData.getSelectedShipper().getFreeShippingMetadata());
+                shopProductCheckout.setFreeShippingMetadata(selectedShipperModel.getFreeShippingMetadata());
                 shopProductCheckout.setNeedPrescription(productInCartNeedsPrescription(shipmentCartItemModel));
 
                 return shopProductCheckout;
@@ -181,9 +183,9 @@ public class ShipmentDataRequestConverter {
     public static RatesFeature generateRatesFeature(CourierItemData courierItemData) {
         RatesFeature result = new RatesFeature();
         OntimeDeliveryGuarantee otdg = new OntimeDeliveryGuarantee();
-        if (courierItemData.getOntimeDelivery() != null) {
-            otdg.setAvailable(courierItemData.getOntimeDelivery().getAvailable());
-            otdg.setDuration(courierItemData.getOntimeDelivery().getValue());
+        if (courierItemData.getSelectedShipper().getOntimeDelivery() != null) {
+            otdg.setAvailable(courierItemData.getSelectedShipper().getOntimeDelivery().getAvailable());
+            otdg.setDuration(courierItemData.getSelectedShipper().getOntimeDelivery().getValue());
         }
         result.setOntimeDeliveryGuarantee(otdg);
         return result;
@@ -204,7 +206,7 @@ public class ShipmentDataRequestConverter {
         String shippingPrice = "";
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
             courierId = String.valueOf(shipmentDetailData.getSelectedCourier().getSelectedShipper().getShipperProductId());
-            serviceId = String.valueOf(shipmentDetailData.getSelectedCourier().getServiceId());
+            serviceId = String.valueOf(shipmentDetailData.getSelectedCourier().getSelectedShipper().getServiceId());
             shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getSelectedShipper().getShipperPrice());
         }
 

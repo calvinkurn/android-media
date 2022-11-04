@@ -44,6 +44,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidge
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel;
+import com.tokopedia.logisticcart.shipping.model.SelectedShipperModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
@@ -1545,7 +1546,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else {
                 courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             }
-            if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
+            final SelectedShipperModel selectedShipperModel = courierItemData.getSelectedShipper();
+            if (selectedShipperModel.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
                 llInsurance.setVisibility(View.VISIBLE);
                 llInsurance.setBackground(null);
                 llInsurance.setOnClickListener(null);
@@ -1556,14 +1558,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
                     mActionListener.onInsuranceChecked(getAdapterPosition());
                 }
-            } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
+            } else if (selectedShipperModel.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
                 cbInsurance.setEnabled(true);
                 cbInsurance.setChecked(false);
                 llInsurance.setVisibility(View.GONE);
                 llInsurance.setBackground(null);
                 llInsurance.setOnClickListener(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(false);
-            } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
+            } else if (selectedShipperModel.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
                 tvLabelInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance);
                 llInsurance.setVisibility(View.VISIBLE);
                 cbInsurance.setEnabled(true);
@@ -1572,19 +1574,19 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 llInsurance.setBackgroundResource(outValue.resourceId);
                 llInsurance.setOnClickListener(getInsuranceClickListener());
                 if (useInsurance == null) {
-                    if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
+                    if (selectedShipperModel.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
                         cbInsurance.setChecked(true);
                         shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
                         mActionListener.onInsuranceChecked(getAdapterPosition());
-                    } else if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
+                    } else if (selectedShipperModel.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
                         cbInsurance.setChecked(shipmentCartItemModel.isInsurance());
                         shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(shipmentCartItemModel.isInsurance());
                     }
                 }
             }
 
-            if (!TextUtils.isEmpty(courierItemData.getInsuranceUsedInfo())) {
-                if (TextUtils.isEmpty(courierItemData.getInsuranceUsedInfo())) {
+            if (!TextUtils.isEmpty(selectedShipperModel.getInsuranceUsedInfo())) {
+                if (TextUtils.isEmpty(selectedShipperModel.getInsuranceUsedInfo())) {
                     imgInsuranceInfo.setVisibility(View.GONE);
                 } else {
                     imgInsuranceInfo.setVisibility(View.VISIBLE);
@@ -1593,7 +1595,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         showInsuranceBottomSheet(
                                 imgInsuranceInfo.getContext(),
                                 imgInsuranceInfo.getContext().getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
-                                courierItemData.getInsuranceUsedInfo()
+                                selectedShipperModel.getInsuranceUsedInfo()
                         );
                     });
                 }

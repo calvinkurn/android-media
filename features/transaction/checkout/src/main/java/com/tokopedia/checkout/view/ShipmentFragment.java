@@ -1777,7 +1777,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                     shipmentCartItemModel.getCartString(),
-                    String.valueOf(selectedCourier.getServiceId()),
+                    String.valueOf(selectedCourier.getSelectedShipper().getServiceId()),
                     String.valueOf(selectedCourier.getSelectedShipper().getShipperPrice()),
                     String.valueOf(shipmentCartItemModel.getSpId())
             );
