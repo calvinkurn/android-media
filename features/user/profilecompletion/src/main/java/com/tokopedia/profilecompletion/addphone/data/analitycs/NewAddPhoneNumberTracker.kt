@@ -32,7 +32,7 @@ class NewAddPhoneNumberTracker @Inject constructor() {
             .send()
     }
 
-    fun sendClickOnButtonCloseEvent () {
+    fun sendClickOnButtonCloseEvent() {
         Tracker.Builder()
             .setEvent("clickAuth")
             .setEventAction("click on button close")
