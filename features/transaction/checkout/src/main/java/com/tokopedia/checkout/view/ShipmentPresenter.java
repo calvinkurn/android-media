@@ -773,7 +773,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 cartShipmentAddressFormData.getEpharmacyData().getCheckoutId(),
                 0, false,
                 cartShipmentAddressFormData.getEpharmacyData().getFrontEndValidation(),
-                cartShipmentAddressFormData.getEpharmacyData().getConsultationFlow(),
+                true,
                 "cartShipmentAddressFormData.getEpharmacyData().getRejectedWording()",
                 false
         ));
