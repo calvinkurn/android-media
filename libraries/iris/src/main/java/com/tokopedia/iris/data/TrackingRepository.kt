@@ -59,7 +59,7 @@ class TrackingRepository(
                     Calendar.getInstance().timeInMillis, GlobalConfig.VERSION_NAME)
                 trackingDao.insert(tracking)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
-                setEmbraceLog("getCount", "total count")
+                setRelicLog("getCount", "total count")
                 val dbCount = trackingDao.getCount()
                 if (dbCount >= getLineDBFlush()) {
                     ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "dbCountFlush", "no" to dbCount.toString()))
@@ -80,7 +80,7 @@ class TrackingRepository(
 
     private fun getFromOldest(maxRow: Int): List<Tracking> {
         return try {
-            setEmbraceLog("getFromOldest", maxRow.toString())
+            setRelicLog("getFromOldest", maxRow.toString())
             trackingDao.getFromOldest(maxRow)
         } catch (e: Throwable) {
             ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to String.format("getFromOldest %s", e.toString())))
@@ -88,14 +88,14 @@ class TrackingRepository(
         }
     }
 
-    private fun setEmbraceLog(queryName: String, queryParam: String) {
+    private fun setRelicLog(queryName: String, queryParam: String) {
         if(getRemoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING)?:false) {
             Log.e("Hii", "Inside Embrace")
             val embraceMap = mapOf(
                 "queryName" to queryName,
                 "detail" to queryParam
             )
-            ServerLogger.log(Priority.P2, EMBRACE_CUSTOMER_TAG, embraceMap)
+            ServerLogger.log(Priority.P2, NEW_RELIC_CUSTOMER_TAG, embraceMap)
         }
     }
 
@@ -205,6 +205,6 @@ class TrackingRepository(
 
     companion object {
         const val ERROR_MAX_LENGTH = 1000
-        const val EMBRACE_CUSTOMER_TAG = "CURSOR_INDEX_OUTOFBOUND"
+        const val NEW_RELIC_CUSTOMER_TAG = "CURSOR_INDEX_OUTOFBOUND"
     }
 }
