@@ -2243,7 +2243,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (isTradeInDropOff) {
             observable = ratesApiUseCase.execute(param);
         } else if (shipmentCartItemModel.isTokoNow()) {
-            observable = ratesWithScheduleUseCase.execute(param, new ScheduleDeliveryParam());
+            observable = ratesWithScheduleUseCase.execute(param, String.valueOf(shipmentCartItemModel.getFulfillmentId()));
         } else {
             observable = ratesUseCase.execute(param);
         }
