@@ -349,9 +349,9 @@ object ApplinkConstInternalUserPlatform {
     const val TELEPHONY_MASKING = "$NEW_INTERNAL_USER/telephony-masking"
 
     /**
-     * com.tokopedia.privacyaccount.PrivacyAccountActivity
-     * @Applink : tokopedia-android-internal://user/main-privacy-account
+     * com.tokopedia.privacyaccount.PrivacyCenterActivity
+     * @Applink : tokopedia-android-internal://user/privacy-center
      **/
-    const val MAIN_PRIVACY_ACCOUNT = "$NEW_INTERNAL_USER/main-privacy-account"
+    const val PRIVACY_CENTER = "$NEW_INTERNAL_USER/privacy-center"
 
 }

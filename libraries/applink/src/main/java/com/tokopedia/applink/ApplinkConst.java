@@ -348,7 +348,6 @@ public interface ApplinkConst {
     String INPUT_INACTIVE_NUMBER = "tokopedia://inputinactivenumber";
     String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
     String ADD_FINGERPRINT_ONBOARDING = "tokopedia://add-fingerprint-onboarding";
-    String PRIVACY_ACCOUNT = "tokopedia://privacy-account";
 
     String KYC_NO_PARAM = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";

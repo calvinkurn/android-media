@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.df.user.privacyaccount">
+    package="com.tokopedia.df.user.privacycenter">
 
-    <dist:module dist:title="@string/title_privacy_account">
+    <dist:module dist:title="@string/title_privacy_center">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>

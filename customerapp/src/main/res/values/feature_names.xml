@@ -61,7 +61,7 @@
     <string name="title_liveness_detection">Liveness Detection</string>
 
     <!--    Dynamic feature for Privacy Account-->
-    <string name="title_privacy_account">Privacy Account</string>
+    <string name="title_privacy_center">Privacy Center</string>
 
     <!--    Dynamic feature for Login Fingerprint-->
     <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>

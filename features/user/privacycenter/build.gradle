@@ -103,10 +103,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'privacyaccount'
+    artifactId = 'privacycenter'
     groupId = 'com.tokopedia.user'
     versionName = '0.0.1'
-    artifactName = 'privacyaccount-release'
+    artifactName = 'privacycenter-release'
 }
 
 apply from: '../../../publish_local.gradle'
