@@ -458,7 +458,7 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
         //when
         viewModel.initializeConversationProfileProfile()
 
-        //get
+        //then
         verify {
             getTokoChatConfigMutationProfileUseCase.initializeConversationProfile()
         }
@@ -477,7 +477,7 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
         //when
         val actualResult = viewModel.getProfileUserId()
 
-        //get
+        //then
         verify {
             getTokoChatConfigMutationProfileUseCase.getUserId()
         }
