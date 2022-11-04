@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.logisticcart.databinding.BottomsheetScheduleShippingInfoBinding
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.BottomSheetInfoUiModel
 import com.tokopedia.media.loader.loadImage
@@ -24,7 +25,9 @@ class ScheduleInfoBottomSheet(private val data: BottomSheetInfoUiModel) : Bottom
     private fun initView() {
         val view = BottomsheetScheduleShippingInfoBinding.inflate(layoutInflater).apply {
             tvScheduleShippingInfo.text = data.description
-            // todo
+            if (data.imageUrl.isEmpty()) {
+                imgScheduleShippingInfo.gone()
+            }
             imgScheduleShippingInfo.loadImage(data.imageUrl)
         }
         setTitle(data.title)

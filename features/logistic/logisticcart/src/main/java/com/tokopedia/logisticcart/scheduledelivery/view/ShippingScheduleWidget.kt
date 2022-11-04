@@ -5,6 +5,7 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -12,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
+import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel

@@ -17,7 +17,7 @@ object ScheduleDeliveryMapper {
     fun mapResponseToUiModel(
         deliveryServices: List<DeliveryService>,
         selectedDateId: String,
-        selectedTimeSlot: DeliveryProduct?,
+        selectedTimeSlot: DeliveryProduct,
         notice: Notice
     ): BottomSheetUiModel {
         val buttonDateUiModel = generateDateUiModel(
@@ -29,8 +29,7 @@ object ScheduleDeliveryMapper {
             date = ChooseDateUiModel(content = buttonDateUiModel),
             availableTitle = TitleSectionUiModel(
                 title = "Jadwal Tersedia",
-                // todo add error message here
-                content = "",
+                content = selectedTimeSlot.promoText,
                 icon = IconUnify.INFORMATION,
             ),
             unavailableTitle = TitleSectionUiModel(
@@ -51,15 +50,14 @@ object ScheduleDeliveryMapper {
 
     private fun generateDateUiModel(
         deliveryServices: List<DeliveryService>,
-        selectedTimeSlot: DeliveryProduct?,
+        selectedTimeSlot: DeliveryProduct,
         selectedDateId: String
     ): List<ButtonDateUiModel> {
         val dateUiModel = mutableListOf<ButtonDateUiModel>()
         deliveryServices.filter { !it.hidden }.forEach { service ->
             val buttonDateUiModel = ButtonDateUiModel(
-                title = service.titleLabel,
-                // todo
-                date = service.title,
+                title = service.title,
+                date = service.titleLabel,
                 isEnabled = service.available,
                 id = service.id,
                 isSelected = selectedDateId == service.id,
@@ -84,7 +82,7 @@ object ScheduleDeliveryMapper {
     private fun generateTimeUiModel(
         timeOptions: List<DeliveryProduct>,
         dayId: String,
-        selectedTimeSlot: DeliveryProduct?,
+        selectedTimeSlot: DeliveryProduct,
         isDateSelected: Boolean
     ): List<ChooseTimeUiModel> {
         return timeOptions.filter { !it.hidden }.map { time ->
@@ -92,7 +90,7 @@ object ScheduleDeliveryMapper {
                 content = time.generateTimeTitle(),
                 note = time.text,
                 isEnabled = time.available,
-                isSelected = time.available && (isDateSelected && time.id == selectedTimeSlot?.id),
+                isSelected = time.available && (isDateSelected && time.id == selectedTimeSlot.id),
                 timeId = time.id,
                 dateId = dayId
             )

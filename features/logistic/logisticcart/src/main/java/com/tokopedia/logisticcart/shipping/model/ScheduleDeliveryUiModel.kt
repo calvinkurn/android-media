@@ -21,7 +21,7 @@ data class ScheduleDeliveryUiModel(
     // product id
     var timeslotId: Long = 0L,
     // selected delivery products
-    var deliveryProduct: DeliveryProduct? = null,
+    var deliveryProduct: DeliveryProduct = DeliveryProduct(),
 ) : Parcelable {
 
     fun setScheduleDateAndTimeslotId(
