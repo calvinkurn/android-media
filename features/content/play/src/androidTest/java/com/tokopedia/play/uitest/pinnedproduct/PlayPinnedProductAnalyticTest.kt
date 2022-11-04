@@ -1,7 +1,6 @@
 package com.tokopedia.play.uitest.pinnedproduct
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -13,10 +12,10 @@ import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
-import com.tokopedia.play.test.cassava.containsEventAction
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.cassava.containsEventAction
+import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
-import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.StockAvailable
@@ -60,7 +59,6 @@ class PlayPinnedProductAnalyticTest {
 
     private val uiModelBuilder = UiModelBuilder.get()
 
-    private val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
     private val trackingQueue = TrackingQueue(targetContext)
 
     private val channelId = "12669"
@@ -69,29 +67,28 @@ class PlayPinnedProductAnalyticTest {
     private val mockUserSession = mockk<UserSessionInterface>(relaxed = true)
 
     init {
-        every { mockChannelStorage.getChannelList() } returns listOf(channelId)
-        every { mockChannelStorage.getData(any()) } returns uiModelBuilder.buildChannelData(
-            id = channelId,
-            channelDetail = PlayChannelDetailUiModel(
-                channelInfo = PlayChannelInfoUiModel(id = channelId, channelType = PlayChannelType.Live)
-            ),
-            tagItems = uiModelBuilder.buildTagItem(
-                product = uiModelBuilder.buildProductModel(
-                    canShow = true,
+        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
+            channelData = listOf(
+                uiModelBuilder.buildChannelData(
+                    id = channelId,
+                    channelDetail = PlayChannelDetailUiModel(
+                        channelInfo = PlayChannelInfoUiModel(id = channelId, channelType = PlayChannelType.Live)
+                    ),
+                    tagItems = uiModelBuilder.buildTagItem(
+                        product = uiModelBuilder.buildProductModel(
+                            canShow = true,
+                        )
+                    ),
+                    videoMetaInfo = PlayVideoMetaInfoUiModel(
+                        //Use YouTube for now because non Youtube shows Unify Loader that can prevent app from being Idle
+                        videoPlayer = PlayVideoPlayerUiModel.YouTube(""),
+                        videoStream = PlayVideoStreamUiModel(
+                            "", VideoOrientation.Vertical, "Video Keren"
+                        ),
+                    ),
                 )
             ),
-            videoMetaInfo = PlayVideoMetaInfoUiModel(
-                videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
-                    params = PlayGeneralVideoPlayerParams(
-                        videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
-                        buffer = PlayBufferControl(),
-                        lastMillis = null,
-                    )
-                ),
-                videoStream = PlayVideoStreamUiModel(
-                    "", VideoOrientation.Vertical, "Video Keren"
-                ),
-            ),
+            cursor = "",
         )
 
         PlayInjector.set(
@@ -99,9 +96,8 @@ class PlayPinnedProductAnalyticTest {
                 .playTestModule(
                     PlayTestModule(
                         targetContext,
-                        mockChannelStorage,
-                        trackingQueue,
-                        { mockUserSession }
+                        trackingQueue = trackingQueue,
+                        userSession = { mockUserSession },
                     )
                 )
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
@@ -224,7 +220,7 @@ class PlayPinnedProductAnalyticTest {
         assertCassavaByEventAction("click - pinned lihat keranjang")
     }
 
-    private fun createRobot() = PlayActivityRobot(channelId)
+    private fun createRobot() = PlayActivityRobot(channelId, initialDelay = 3500, isYouTube = true)
 
     private fun buildTagItemWithPinned(
         numOfSections: Int = 1,

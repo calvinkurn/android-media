@@ -19,12 +19,14 @@ import androidx.annotation.RequiresApi
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_PRODUCT_ID
 import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_TARGET_TITLE_ID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -239,6 +241,9 @@ class Utils {
             }
             if(!queryParameterMap[TARGET_TITLE_ID].isNullOrEmpty()){
                 queryParamValues[RPC_TARGET_TITLE_ID] = queryParameterMap[TARGET_TITLE_ID]!!
+            }
+            if(!queryParameterMap[RECOM_PRODUCT_ID].isNullOrEmpty()){
+                queryParamValues[RPC_PRODUCT_ID] = queryParameterMap[RECOM_PRODUCT_ID]!!
             }
 
             return queryParamValues

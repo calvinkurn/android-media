@@ -8,6 +8,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.ItemMvcVoucherPromoPerformanceBinding
 import com.tokopedia.vouchercreation.shop.detail.model.PromoPerformanceUiModel
+import java.util.Locale
 
 /**
  * Created By @ilhamsuaib on 05/05/20
@@ -29,7 +30,7 @@ class PromoPerformanceViewHolder(
         binding?.apply {
             tvMvcNominalTotalSpending.text = element.totalSpending
             tvMvcPromoUsedQuota.text = element.voucherUsed.toString()
-            tvMvcPromoTotalQuota.text = String.format("/%d",element.voucherQuota)
+            tvMvcPromoTotalQuota.text = String.format(Locale.getDefault(),"/%d",element.voucherQuota)
             mvcImgInfo.setOnClickListener {
                 setOnTooltipClick()
             }

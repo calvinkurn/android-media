@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_common_space_0"
+        android:layout_marginBottom="@dimen/content_common_space_60"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_icon_warning"
+            android:layout_width="@dimen/content_common_space_64"
+            android:layout_height="@dimen/content_common_space_64"
+            app:icon_name="LOCK"
+            android:layout_marginTop="@dimen/content_common_space_32"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_warning_title"
+            android:layout_width="@dimen/content_common_space_0"
+            android:layout_height="wrap_content"
+            android:text="@string/ugc_warning_both_account_banned_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/content_common_space_16"
+            app:layout_constraintTop_toBottomOf="@id/ic_icon_warning"
+            android:gravity="center_horizontal"
+            app:typographyType="heading_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_warning_subtitle"
+            android:layout_width="@dimen/content_common_space_0"
+            android:layout_height="wrap_content"
+            android:text="@string/ugc_warning_both_account_banned_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/content_common_space_8"
+            app:layout_constraintTop_toBottomOf="@id/tv_warning_title"
+            android:gravity="center_horizontal"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ugc_get_to_know_more"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingHorizontal="@dimen/content_common_space_8"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintTop_toBottomOf="@id/tv_warning_subtitle"
+            android:gravity="center_horizontal"
+            app:typographyWeight="bold"
+            app:typographyType="body_2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

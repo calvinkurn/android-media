@@ -70,5 +70,6 @@ object Constants {
     const val KATA_KUNCI = " Kata Kunci"
     const val ATUR_NAME = " Atur"
     const val LAINNYA_NAME = " Lainnya"
+    const val SOURCE_ANDROID_EDIT_GROUP = "android.topads_edit_group"
 
 }

@@ -353,6 +353,7 @@ class TokoNowHomeFragment: Fragment(),
             getMiniCart()
         }
         screenshotDetector?.start()
+        updateToolbarNotification()
     }
 
     override fun onStop() {
@@ -392,6 +393,7 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.hide()
             miniCartWidget?.hideCoachMark()
         }
+        viewModelTokoNow.updateToolbarNotification()
         viewModelTokoNow.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
     }
@@ -434,8 +436,8 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickAllCategory()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String) {
-        analytics.onClickCategory(position, categoryId, headerName)
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) {
+        analytics.onClickCategory(position, categoryId, headerName, categoryName)
     }
 
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {
@@ -925,6 +927,10 @@ class TokoNowHomeFragment: Fragment(),
         navToolbar?.setIcon(icons)
     }
 
+    private fun updateToolbarNotification() {
+        navToolbar?.updateNotification()
+    }
+
     private fun onClickCartButton() {
         analytics.onClickCartButton()
     }
@@ -1183,6 +1189,10 @@ class TokoNowHomeFragment: Fragment(),
             if(invalidate) {
                 playWidgetImpressionValidator.invalidate()
             }
+        }
+
+        observe(viewModelTokoNow.updateToolbarNotification) { update ->
+            if(update) updateToolbarNotification()
         }
     }
 

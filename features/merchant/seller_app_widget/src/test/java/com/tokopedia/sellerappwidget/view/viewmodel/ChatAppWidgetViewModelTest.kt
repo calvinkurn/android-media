@@ -9,6 +9,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -47,47 +48,98 @@ class ChatAppWidgetViewModelTest {
     }
 
     @Test
-    fun `returns success result and notify the UI when get chat list`() = coroutineTestRule.runBlockingTest {
-        getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
+    fun `returns success result and notify the UI when get chat list`() {
+        coroutineTestRule.runBlockingTest {
+            getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
-        val chatModel = ChatUiModel()
+            val chatModel = ChatUiModel()
 
-        coEvery {
-            getChatUseCase.executeOnBackground()
-        } returns chatModel
+            coEvery {
+                getChatUseCase.executeOnBackground()
+            } returns chatModel
 
-        mViewModel.getChatList(testShopId)
+            mViewModel.getChatList(testShopId)
 
-        coVerify {
-            getChatUseCase.executeOnBackground()
+            coVerify {
+                getChatUseCase.executeOnBackground()
+            }
+
+            verify {
+                mView.onSuccess(chatModel)
+            }
+
+            val actualResult = getChatUseCase.executeOnBackground()
+
+            assertEquals(chatModel, actualResult)
         }
-
-        coVerify {
-            mView.onSuccess(chatModel)
-        }
-
-        val actualResult = getChatUseCase.executeOnBackground()
-
-        assertEquals(chatModel, actualResult)
     }
 
     @Test
-    fun `throw Exception and notify the UI when failed to get chat list`() = coroutineTestRule.runBlockingTest {
-        val throwable = RuntimeException("")
-        getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
+    fun `given view null value when get chat data then return success result but will not notify the UI`() {
+        coroutineTestRule.runBlockingTest {
+            getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
-        coEvery {
-            getChatUseCase.executeOnBackground()
-        } throws throwable
+            val chatModel = ChatUiModel()
 
-        mViewModel.getChatList(testShopId)
+            coEvery {
+                getChatUseCase.executeOnBackground()
+            } returns chatModel
 
-        coVerify {
-            getChatUseCase.executeOnBackground()
+            mViewModel.unbind()
+            mViewModel.getChatList(testShopId)
+
+            coVerify {
+                getChatUseCase.executeOnBackground()
+            }
+
+            verify(inverse = true) {
+                mView.onSuccess(chatModel)
+            }
         }
+    }
 
-        coVerify {
-            mView.onError(any())
+    @Test
+    fun `throw Exception and notify the UI when failed to get chat list`() {
+        coroutineTestRule.runBlockingTest {
+            val throwable = RuntimeException("")
+            getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
+
+            coEvery {
+                getChatUseCase.executeOnBackground()
+            } throws throwable
+
+            mViewModel.getChatList(testShopId)
+
+            coVerify {
+                getChatUseCase.executeOnBackground()
+            }
+
+            verify {
+                mView.onError(any())
+            }
+        }
+    }
+
+    @Test
+    fun `given view null value when get chat list then throw Exception will not notify the UI`() {
+        coroutineTestRule.runBlockingTest {
+            val exception = RuntimeException("")
+            getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
+
+            coEvery {
+                getChatUseCase.executeOnBackground()
+            } throws exception
+
+            mViewModel.unbind()
+            mViewModel.getChatList(testShopId)
+
+            coVerify {
+                getChatUseCase.executeOnBackground()
+            }
+
+            verify(inverse = true) {
+                mView.onError(any())
+            }
         }
     }
 }
