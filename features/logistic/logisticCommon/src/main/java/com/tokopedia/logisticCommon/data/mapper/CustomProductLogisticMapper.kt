@@ -8,10 +8,12 @@ class CustomProductLogisticMapper @Inject constructor() {
 
     fun mapCPLData(
         response: GetCPLData,
-        draftShipperServices: List<Long>? = null
+        draftShipperServices: List<Long>? = null,
+        showOnBoarding: Boolean
     ): CustomProductLogisticModel {
         return CustomProductLogisticModel().apply {
             shipperList = mapShipperList(response.shipperList, draftShipperServices)
+            shouldShowOnBoarding = showOnBoarding
         }
     }
 

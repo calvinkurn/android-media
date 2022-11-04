@@ -27,28 +27,19 @@ class CustomProductLogisticViewModel @Inject constructor(
         shopId: Long,
         productId: Long,
         shipperServicesIds: List<Long>?,
-        cplParam: List<Long>?
+        cplParam: List<Long>?,
+        shouldShowOnBoarding: Boolean = false
     ) {
         viewModelScope.launch {
             try {
                 val param = getCplList.getParam(shopId, productId, cplParam?: listOf())
                 val cplList = getCplList(param)
                 _cplList.value =
-                    Success(mapper.mapCPLData(cplList.response.data, shipperServicesIds))
+                    Success(mapper.mapCPLData(cplList.response.data, shipperServicesIds, shouldShowOnBoarding))
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
             }
         }
-    }
-
-    fun isShipperGroupAvailable(shipperGroupIndex: Int): Boolean {
-        _cplList.value.let {
-            if (it is Success) {
-                return it.data.shipperList.getOrNull(shipperGroupIndex)?.shipper?.isNotEmpty()
-                    ?: false
-            }
-        }
-        return false
     }
 
     fun setAllShipperServiceState(active: Boolean, shipperId: Long) {
@@ -107,6 +98,15 @@ class CustomProductLogisticViewModel @Inject constructor(
                         }
                     }
                 }
+                _cplList.value = it
+            }
+        }
+    }
+
+    fun setAlreadyShowOnBoarding() {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shouldShowOnBoarding = false
                 _cplList.value = it
             }
         }

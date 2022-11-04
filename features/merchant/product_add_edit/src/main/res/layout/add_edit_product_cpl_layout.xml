@@ -57,6 +57,7 @@
         android:id="@+id/layout_cpl"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/radios_cpl"
@@ -65,8 +66,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            android:paddingHorizontal="16dp" >
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_shipper_group"
@@ -76,14 +76,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.tokopedia.unifycomponents.UnifyButton
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btn_cpl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/rv_shipper_group"
                 app:layout_constraintStart_toStartOf="parent"
-                app:unifyButtonVariant="text"
-                app:unifyButtonType="main"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/Unify_GN500"
                 android:text="@string/cpl_custom_label" />
 
 

@@ -28,7 +28,11 @@ class CPLItemViewHolder(
     }
 
     private fun bindNormalShipment(data: ShipperCPLModel) {
-        binding.imgShipmentItem.loadImage(data.logo)
+        if (data.logo.isNotEmpty()) {
+            binding.imgShipmentItem.loadImage(data.logo)
+        } else {
+            binding.imgShipmentItem.gone()
+        }
         setAdapterData(data)
         setItemChecked(data)
     }
@@ -36,6 +40,7 @@ class CPLItemViewHolder(
     private fun bindWhitelabelShipment(data: ShipperCPLModel) {
         binding.shipmentItemList.gone()
         binding.imgShipmentItem.gone()
+        binding.dividerShipment.gone()
         binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
             listener.onWhitelabelServiceCheckboxClicked(data.shipperProduct.map { it.shipperProductId }, isChecked)
         }

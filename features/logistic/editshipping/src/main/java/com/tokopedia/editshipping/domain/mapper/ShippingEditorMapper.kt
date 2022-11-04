@@ -22,21 +22,21 @@ class ShippingEditorMapper @Inject constructor() {
         }
     }
 
-    private fun mapShipper(response: Data): ShippersModel {
-        return ShippersModel().apply {
+    private fun mapShipper(response: Data): ShipperGroupModel {
+        return ShipperGroupModel().apply {
             onDemand = mapShipperOnDemand(response.shippers.onDemand)
             conventional = mapShipperConventional(response.shippers.conventional)
         }
     }
 
-    private fun mapShipperOnDemand(response: List<OnDemand>): List<OnDemandModel> {
-        val onDemandModelList = ArrayList<OnDemandModel>()
+    private fun mapShipperOnDemand(response: List<OnDemand>): List<ShipperModel> {
+        val onDemandModelList = ArrayList<ShipperModel>()
         response.forEach { data ->
             val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
             val shipperDescription =
                 if (isWhitelabelShipper) data.shipperProduct.firstOrNull()?.description
                     ?: "" else data.shipperProduct.joinToString(" | ") { it.shipperProductName }
-            val onDemandUiModel = OnDemandModel().apply {
+            val onDemandUiModel = ShipperModel().apply {
                 shipperId = data.shipperId
                 shipperName = data.shipperName
                 isActive = data.isActive
@@ -52,14 +52,14 @@ class ShippingEditorMapper @Inject constructor() {
         return onDemandModelList
     }
 
-    private fun mapShipperConventional(response: List<Conventional>): List<ConventionalModel> {
-        val conventionalModelList = ArrayList<ConventionalModel>()
+    private fun mapShipperConventional(response: List<Conventional>): List<ShipperModel> {
+        val conventionalModelList = ArrayList<ShipperModel>()
         response.forEach { data ->
             val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
             val shipperDescription =
                 if (isWhitelabelShipper) data.shipperProduct.firstOrNull()?.description
                     ?: "" else data.shipperProduct.joinToString(" | ") { it.shipperProductName }
-            val conventionalUiModel = ConventionalModel().apply {
+            val conventionalUiModel = ShipperModel().apply {
                 shipperId = data.shipperId
                 shipperName = data.shipperName
                 isActive = data.isActive

@@ -3,29 +3,37 @@ package com.tokopedia.editshipping.ui.customproductlogistic
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.databinding.FragmentCustomProductLogisticBinding
 import com.tokopedia.editshipping.di.customproductlogistic.DaggerCustomProductLogisticComponent
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.CPL_CONVENTIONAL_INDEX
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.CPL_ON_DEMAND_INDEX
+import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_CPL_ACTIVATED
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_CPL_PARAM
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHOP_ID
+import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHOW_ONBOARDING_CPL
 import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
+import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -94,7 +102,88 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
-        viewModel.getCPLList(shopId, productId, shipperServicesIds, cplParam)
+        val shouldShowOnBoarding = arguments?.getBoolean(EXTRA_SHOW_ONBOARDING_CPL, false) ?: false
+        viewModel.getCPLList(shopId, productId, shipperServicesIds, cplParam, shouldShowOnBoarding)
+
+    }
+
+    private fun getWhitelabelView(): View? {
+        val whitelabelServiceIndex = cplItemOnDemandAdapter.getWhitelabelServicePosition()
+        return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
+            binding.rvOnDemandCpl.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
+        } else null
+    }
+
+    private fun getNormalServiceView() : View? {
+        val normalServiceIndex = cplItemOnDemandAdapter.getFirstNormalServicePosition()
+        return if (normalServiceIndex != RecyclerView.NO_POSITION) {
+            binding.rvOnDemandCpl.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
+        } else null
+    }
+
+    private fun showOnBoardingCoachmark(data: CustomProductLogisticModel) {
+        val whitelabelView = getWhitelabelView()
+        val normalServiceView = getNormalServiceView()
+
+        if (whitelabelView != null || normalServiceView != null) {
+            context?.let {
+                val coachMarkItems = ArrayList<CoachMark2Item>()
+                val coachMark = CoachMark2(it)
+
+                // dummy only
+                coachMarkItems.add(
+                    CoachMark2Item(
+                        binding.tvAntarCpl,
+                        getString(R.string.whitelabel_instan_title_coachmark),
+                        getString(R.string.whitelabel_instan_description_coachmark)
+                    )
+                )
+
+                normalServiceView?.let { normalService ->
+                    coachMarkItems.add(
+                        CoachMark2Item(
+                            normalService,
+                            getString(R.string.whitelabel_onboarding_title_coachmark),
+                            getString(R.string.whitelabel_onboarding_description_coachmark),
+                            CoachMark2.POSITION_TOP
+                        )
+                    )
+                }
+
+                whitelabelView?.let { whitelabel ->
+                    coachMarkItems.add(
+                        CoachMark2Item(
+                            whitelabel,
+                            getString(R.string.whitelabel_instan_title_coachmark),
+                            getString(R.string.whitelabel_instan_description_coachmark),
+                            CoachMark2.POSITION_TOP
+                        )
+                    )
+                }
+                coachMark.setStepListener(object : CoachMark2.OnStepListener {
+                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                        if (currentIndex < 1) {
+                            coachMark.dismissCoachMark()
+                            finishActivity(data.getActivatedSpIds())
+                        } else {
+                            coachMark.hideCoachMark()
+                            coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { item ->
+                                binding.svShippingEditor.smoothScrollTo(0, item.bottom)
+                            }
+                            coachMark.showCoachMark(coachMarkItems, null, currentIndex)
+                        }
+                    }
+                })
+                coachMark.onFinishListener = {
+                    viewModel.setAlreadyShowOnBoarding()
+                }
+                // manual scroll to first item
+                coachMarkItems.getOrNull(1)?.anchorView?.let { rv ->
+                    binding.svShippingEditor.smoothScrollTo(0, rv.bottom)
+                    coachMark.showCoachMark(coachMarkItems, null, 1)
+                }
+            }
+        }
     }
 
     private fun initAdapter() {
@@ -134,44 +223,46 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         binding.svShippingEditor.visible()
         binding.btnSaveShipper.visible()
         binding.globalError.gone()
-        if (viewModel.isShipperGroupAvailable(CPL_ON_DEMAND_INDEX)) {
-            binding.shippingEditorLayoutOndemand.visible()
-        }
-
-        if (viewModel.isShipperGroupAvailable(CPL_CONVENTIONAL_INDEX)) {
-            binding.shippingEditorLayoutConventional.visible()
+        if (data.shouldShowOnBoarding) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                showOnBoardingCoachmark(data)
+            }, COACHMARK_ON_BOARDING_DELAY)
         }
         binding.btnSaveShipper.setOnClickListener { validateSaveButton(data.getActivatedSpIds()) }
     }
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
         if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
-            populateShipperData(data, SHIPPER_ON_DEMAND)
+            populateShipperData(data.shipperList[0].shipper, SHIPPER_ON_DEMAND)
         } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
-            populateShipperData(data, SHIPPER_CONVENTIONAL)
-        } else {
-            populateShipperData(data, ALL_SHIPPER_AVAILABLE)
+            populateShipperData(data.shipperList[0].shipper, SHIPPER_CONVENTIONAL)
+        } else if (data.shipperList.size > 1) {
+            populateShipperData(data.shipperList[CPL_ON_DEMAND_INDEX].shipper, SHIPPER_ON_DEMAND)
+            populateShipperData(data.shipperList[CPL_CONVENTIONAL_INDEX].shipper, SHIPPER_CONVENTIONAL)
         }
     }
 
 
-    private fun populateShipperData(data: CustomProductLogisticModel, shipperCase: Int) {
+    private fun populateShipperData(data: List<ShipperCPLModel>, shipperCase: Int) {
         when (shipperCase) {
             SHIPPER_ON_DEMAND -> {
-                cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+                if (data.isEmpty()) {
+                    binding.shippingEditorLayoutOndemand.gone()
+                } else {
+                    cplItemOnDemandAdapter.addData(data)
+                }
             }
             SHIPPER_CONVENTIONAL -> {
-                cplItemConventionalAdapter.addData(data.shipperList[0].shipper)
-            }
-            else -> {
-                cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
-                cplItemConventionalAdapter.addData(data.shipperList[1].shipper)
+                if (data.isEmpty()) {
+                    binding.shippingEditorLayoutConventional.gone()
+                }
+                cplItemConventionalAdapter.addData(data)
             }
         }
     }
 
     private fun validateSaveButton(activatedSpIds: List<Long>) {
-        if (activatedSpIds.isNotEmpty()) {
+        if (activatedSpIds.isEmpty()) {
             Toaster.build(
                 requireView(),
                 getString(R.string.toaster_cpl_error),
@@ -255,12 +346,15 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         const val ALL_SHIPPER_AVAILABLE = 3
         const val ON_DEMAND_VALIDATION = "Dijemput Kurir"
         const val CONVENTIONAL_VALIDATION = "Antar ke Kantor Agen"
+        private const val COACHMARK_ON_BOARDING_DELAY = 1000L
 
         fun newInstance(extra: Bundle): CustomProductLogisticFragment {
             return CustomProductLogisticFragment().apply {
                 arguments = Bundle().apply {
                     putLong(EXTRA_SHOP_ID, extra.getLong(EXTRA_SHOP_ID))
                     putLong(EXTRA_PRODUCT_ID, extra.getLong(EXTRA_PRODUCT_ID))
+                    putBoolean(EXTRA_CPL_ACTIVATED, extra.getBoolean(EXTRA_CPL_ACTIVATED))
+                    putBoolean(EXTRA_SHOW_ONBOARDING_CPL, extra.getBoolean(EXTRA_SHOW_ONBOARDING_CPL))
                     putLongArray(EXTRA_SHIPPER_SERVICES, extra.getLongArray(EXTRA_SHIPPER_SERVICES))
                     putLongArray(EXTRA_CPL_PARAM, extra.getLongArray(EXTRA_CPL_PARAM))
                 }

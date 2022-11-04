@@ -1,7 +1,8 @@
 package com.tokopedia.logisticCommon.data.model
 
 data class CustomProductLogisticModel(
-    var shipperList: List<ShipperListCPLModel> = listOf()
+    var shipperList: List<ShipperListCPLModel> = listOf(),
+    var shouldShowOnBoarding: Boolean = false
 ) {
     fun getActivatedSpIds() : List<Long> {
         val shipperProductIds = mutableListOf<Long>()

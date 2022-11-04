@@ -103,7 +103,8 @@ class AddEditProductShipmentViewModel @Inject constructor(
                 _cplList.value = Success(
                     customProductLogisticMapper.mapCPLData(
                         cplList.response.data,
-                        shipmentServicesIds
+                        shipmentServicesIds,
+                        true
                     )
                 )
             } catch (e: Throwable) {
@@ -139,6 +140,15 @@ class AddEditProductShipmentViewModel @Inject constructor(
                         s.isActive = s.shipperProduct.any { sp -> sp.isActive }
                     }
                 }
+                _cplList.value = it
+            }
+        }
+    }
+
+    fun setAlreadyShowOnBoarding() {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shouldShowOnBoarding = false
                 _cplList.value = it
             }
         }

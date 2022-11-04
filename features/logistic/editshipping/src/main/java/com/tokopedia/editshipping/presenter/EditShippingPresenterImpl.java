@@ -1,5 +1,7 @@
 package com.tokopedia.editshipping.presenter;
 
+import static com.tokopedia.editshipping.util.EditShippingConstant.KURIR_REKOMENDASI_SHIPPER_ID;
+
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -366,6 +368,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             setCourierService(currentCourier);
             populateCurrentAdditionalOptions(currentCourier, currentCourier.urlAdditionalOption);
         }
+        view.showOnBoarding(getWhitelabelServiceIndex(), getFirstNormalServiceIndex());
     }
 
     private void displayCourierOpenShop(OpenShopData data) {
@@ -375,6 +378,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             setCourierService(currentCourier);
             populateCurrentAdditionalOptions(currentCourier, currentCourier.urlAdditionalOption);
         }
+        view.showOnBoarding(getWhitelabelServiceIndex(), getFirstNormalServiceIndex());
     }
 
     private void setCourierService(Courier currentCourier) {
@@ -877,5 +881,23 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     public String getCompiledShippingId() {
         scanActivatedCourier();
         return compiledShippingId();
+    }
+
+    private int getWhitelabelServiceIndex() {
+        for (int i = 0; i < courierList.size(); i++) {
+            if (courierList.get(i).isWhitelabelService()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int getFirstNormalServiceIndex() {
+        for (int i = 0; i < courierList.size(); i++) {
+            if (!courierList.get(i).isWhitelabelService() && courierList.get(i).id.equals(KURIR_REKOMENDASI_SHIPPER_ID)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

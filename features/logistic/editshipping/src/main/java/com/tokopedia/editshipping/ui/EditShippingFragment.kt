@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -28,7 +29,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics
-import com.tokopedia.editshipping.data.preference.GocarInstanCoachMarkSharePref
+import com.tokopedia.editshipping.data.preference.WhitelabelInstanCoachMarkSharePref
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
@@ -74,6 +75,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     var fragmentShipingMainLayout: LinearLayout? = null
     var fragmentShippingHeader: ShippingHeaderLayout? = null
     var addressLayout: ShippingAddressLayout? = null
+    var scrollView: NestedScrollView? = null
     var submitButtonCreateShop: TextView? = null
     private var editShippingPresenter: EditShippingPresenter? = null
     private var mainProgressDialog: ProgressDialog? = null
@@ -153,6 +155,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         fragmentShippingHeader = mainView.findViewById<View>(R.id.fragment_shipping_header) as  com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
         addressLayout = mainView.findViewById<View>(R.id.shipping_address_layout) as com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
         submitButtonCreateShop = mainView.findViewById<View>(R.id.submit_button_create_shop) as TextView
+        scrollView = mainView.findViewById(R.id.main_scroll)
         submitButtonCreateShop?.setOnClickListener { submitButtonOnClickListener() }
     }
 
@@ -469,20 +472,59 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         
     }
 
-    override fun showCoachmarkGocarInstan(view: View) {
-        val sharedPref = GocarInstanCoachMarkSharePref(requireContext())
-        if (sharedPref.getCoachMarkState() == true) {
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            val coachMark = CoachMark2(requireContext())
-            coachMarkItem.add(
-                CoachMark2Item(
-                    view,
-                    getString(R.string.gocar_instan_title_coachmark),
-                    getString(R.string.gocar_instan_description_coachmark)
-                )
-            )
-            coachMark.showCoachMark(coachMarkItem, null)
-            sharedPref.setCoachMarkState(false)
+    override fun showOnBoarding(whitelabelIndex: Int, normalServiceIndex: Int) {
+        context?.let {
+            val sharedPref = WhitelabelInstanCoachMarkSharePref(it)
+            if (sharedPref.getCoachMarkState() == true) {
+                if (whitelabelIndex != -1 || normalServiceIndex != -1) {
+                    val whitelabelView = fragmentShipingMainLayout?.getChildAt(whitelabelIndex)
+                    val normalServiceView =
+                        fragmentShipingMainLayout?.getChildAt(normalServiceIndex)
+                    val coachMarkItems = ArrayList<CoachMark2Item>()
+                    val coachMark = CoachMark2(it)
+
+                    normalServiceView?.let { normalService ->
+                        coachMarkItems.add(
+                            CoachMark2Item(
+                                normalService,
+                                getString(R.string.whitelabel_onboarding_title_coachmark),
+                                getString(R.string.whitelabel_onboarding_description_coachmark),
+                                CoachMark2.POSITION_TOP
+                            )
+                        )
+                    }
+
+                    whitelabelView?.let { whitelabel ->
+                        coachMarkItems.add(
+                            CoachMark2Item(
+                                whitelabel,
+                                getString(R.string.whitelabel_instan_title_coachmark),
+                                getString(R.string.whitelabel_instan_description_coachmark),
+                                CoachMark2.POSITION_TOP
+                            )
+                        )
+                    }
+
+                    coachMark.setStepListener(object : CoachMark2.OnStepListener {
+                        override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                            coachMark.hideCoachMark()
+                            coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { item ->
+                                scrollView?.smoothScrollTo(0, item.bottom)
+                            }
+                            coachMark.showCoachMark(coachMarkItems, null, currentIndex)
+                        }
+                    })
+                    coachMark.onFinishListener = {
+                        sharedPref.setCoachMarkState(false)
+                    }
+
+                    // manual scroll to first item
+                    coachMarkItems.firstOrNull()?.anchorView?.let { rv ->
+                        scrollView?.smoothScrollTo(0, rv.bottom)
+                        coachMark.showCoachMark(coachMarkItems)
+                    }
+                }
+            }
         }
     }
 

@@ -23,6 +23,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -69,6 +71,8 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOW_ONBOARDING_CPL
+import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInfoBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInsuranceBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
@@ -79,6 +83,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -104,7 +109,7 @@ class AddEditProductShipmentFragment:
     private var radioStandarShipment: RadioButtonUnify? = null
     private var radioCustomShipment: RadioButtonUnify? = null
     private var rvCpl: RecyclerView? = null
-    private var btnCpl: UnifyButton? = null
+    private var btnCpl: Typography? = null
     private var cplLayout: CardUnify2? = null
     private val cplShipmentGroupAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
 
@@ -385,7 +390,7 @@ class AddEditProductShipmentFragment:
         setupShipmentRadios()
     }
 
-    private fun goToCustomProductLogistic() {
+    private fun goToCustomProductLogistic(isOnBoarding: Boolean = false) {
         startActivityForResult(
             RouteManager.getIntent(
                 context,
@@ -397,6 +402,7 @@ class AddEditProductShipmentFragment:
                 } else {
                     putExtra(EXTRA_PRODUCT_ID, shipmentViewModel.productInputModel?.productId)
                 }
+                putExtra(EXTRA_SHOW_ONBOARDING_CPL, isOnBoarding)
                 putExtra(EXTRA_SHIPPER_SERVICES, shipperServicesIds?.toLongArray())
                 putExtra(EXTRA_CPL_PARAM, shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.cplParam?.toLongArray())
             }, REQUEST_CODE_CPL
@@ -427,6 +433,62 @@ class AddEditProductShipmentFragment:
                 goToCustomProductLogistic()
             }
             cplShipmentGroupAdapter.updateData(data.shipperList.filter { it.getActiveServiceName().isNotEmpty() })
+            if (data.shouldShowOnBoarding) { doOnBoardingCpl() }
+        }
+    }
+
+    private fun doOnBoardingCpl() {
+        activity?.let {
+            if (SharedPreferencesUtil.shouldShowCPLWhitelabelOnBoarding(it)) {
+                showOnBoardingCoachmark()
+            }
+        }
+    }
+
+    private fun showOnBoardingCoachmark() {
+        context?.let {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = CoachMark2(it)
+            cplLayout?.let {
+                card ->
+                coachMarkItem.add(
+                    CoachMark2Item(
+                        card,
+                        getString(R.string.cpl_onboarding_title),
+                        getString(R.string.cpl_onboarding_description),
+                    )
+                )
+                // duplicate to show `1 dari 3`
+                coachMarkItem.add(
+                    CoachMark2Item(
+                        card,
+                        getString(R.string.cpl_onboarding_title),
+                        getString(R.string.cpl_onboarding_description),
+                    )
+                )
+
+                // duplicate to show `1 dari 3`
+                coachMarkItem.add(
+                    CoachMark2Item(
+                        card,
+                        getString(R.string.cpl_onboarding_title),
+                        getString(R.string.cpl_onboarding_description),
+                    )
+                )
+            }
+            coachMark.showCoachMark(coachMarkItem)
+            coachMark.setStepListener(object: CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    if (currentIndex > 0) {
+                        coachMark.isDismissed = true
+                        coachMark.dismissCoachMark()
+                        shipmentViewModel.setAlreadyShowOnBoarding()
+                        SharedPreferencesUtil.setCPLWhitelabelOnBoarding(requireActivity(), false)
+                        goToCustomProductLogistic(isOnBoarding = true)
+                    }
+                }
+            })
+
         }
     }
 

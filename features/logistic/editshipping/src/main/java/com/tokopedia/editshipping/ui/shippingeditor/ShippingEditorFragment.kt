@@ -3,6 +3,8 @@ package com.tokopedia.editshipping.ui.shippingeditor
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -13,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,32 +30,27 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.editshipping.R
-import com.tokopedia.editshipping.data.preference.GocarInstanCoachMarkSharePref
+import com.tokopedia.editshipping.data.preference.WhitelabelInstanCoachMarkSharePref
 import com.tokopedia.editshipping.di.shippingeditor.DaggerShippingEditorComponent
-import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
 import com.tokopedia.editshipping.ui.EditShippingActivity
-import com.tokopedia.editshipping.ui.bottomsheet.GocarInfoBottomSheet
 import com.tokopedia.editshipping.ui.bottomsheet.ShipperDetailBottomSheet
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.*
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAdapter.ShippingEditorItemAdapterListener, ShippingEditorConventionalAdapter.ShippingEditorConventionalListener, ShipperProductItemAdapter.ShipperProductItemListener {
+class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.ShippingEditorItemAdapterListener, ShipperProductItemAdapter.ShipperProductItemListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -107,10 +105,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var scrollView: NestedScrollView? = null
     private var globalErrorLayout: GlobalError? = null
 
-    private var shippingEditorOnDemandAdapter = ShippingEditorOnDemandItemAdapter(this, this)
-    private var shippingEditorConventionalAdapter = ShippingEditorConventionalAdapter(this, this)
+    private var shippingEditorOnDemandAdapter = ShippingEditorItemAdapter(this, this)
+    private var shippingEditorConventionalAdapter = ShippingEditorItemAdapter(this, this)
 
     override fun getScreenName(): String = ""
 
@@ -146,6 +145,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         tvDetailCourier = view?.findViewById(R.id.tv_detail_kurir)
         tickerOnDemand = view?.findViewById(R.id.ticker_dijemput_kurir)
         tickerHeader = view?.findViewById(R.id.ticker_header)
+        scrollView = view?.findViewById(R.id.sv_shipping_editor)
 
         renderTickerOnDemand()
         renderTextDetailCourier()
@@ -226,6 +226,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                     viewModel.getShipperTickerList(userSession.shopId.toLong())
                     updateData(it.data.shippers)
                     renderTicker(it.data.ticker)
+                    showOnBoarding()
                 }
 
                 is ShippingEditorState.Fail -> {
@@ -294,7 +295,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         viewModel.getShipperList(userSession.shopId.toLong())
     }
 
-    private fun updateData(data: ShippersModel) {
+    private fun updateData(data: ShipperGroupModel) {
         shippingEditorOnDemandAdapter.updateData(data.onDemand)
         shippingEditorConventionalAdapter.updateData(data.conventional)
     }
@@ -713,45 +714,83 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         globalErrorLayout?.visible()
     }
 
-    override fun onShipperTickerConventionalClicked(data: ConventionalModel) {
+    override fun onShipperTickerClicked(data: ShipperModel) {
         bottomSheetCourierInactiveState = BOTTOMSHEET_SHIPPER_WAREHOUSE_INACTIVE_STATE
         bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
         context?.let { openBottomSheetWarehouseInactive(it, data.warehouseModel, data.shipperName) }
     }
 
-    override fun onShipperTickerOnDemandClicked(data: OnDemandModel) {
-        bottomSheetCourierInactiveState = BOTTOMSHEET_SHIPPER_WAREHOUSE_INACTIVE_STATE
-        bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
-        context?.let { openBottomSheetWarehouseInactive(it, data.warehouseModel, data.shipperName) }
+    private fun getWhitelabelView(): View? {
+        val whitelabelServiceIndex = shippingEditorOnDemandAdapter.getWhitelabelServicePosition()
+        return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
+            shipperListOnDemand?.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
+        } else null
     }
 
-    override fun onClickInfoIcon() {
-        GocarInfoBottomSheet().show(parentFragmentManager)
+    private fun getNormalServiceView() : View? {
+        val normalServiceIndex = shippingEditorOnDemandAdapter.getFirstNormalServicePosition()
+        return if (normalServiceIndex != RecyclerView.NO_POSITION) {
+            shipperListOnDemand?.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
+        } else null
     }
 
-    override fun showCoachMarkOnInfoIcon(icon: IconUnify) {
-        val sharedPref = GocarInstanCoachMarkSharePref(requireContext())
-        if (sharedPref.getCoachMarkState() == true) {
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            val coachMark = CoachMark2(requireContext())
-            coachMarkItem.add(
-                CoachMark2Item(
-                    icon,
-                    getString(R.string.gocar_instan_title_coachmark),
-                    getString(R.string.gocar_instan_description_coachmark)
-                )
-            )
-            coachMark.showCoachMark(coachMarkItem, null)
-            sharedPref.setCoachMarkState(false)
+    private fun showOnBoarding() {
+        context?.let {
+            val sharedPref = WhitelabelInstanCoachMarkSharePref(it)
+            if (sharedPref.getCoachMarkState() == true) {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    val whitelabelView = getWhitelabelView()
+                    val normalServiceView = getNormalServiceView()
+                    if (whitelabelView != null || normalServiceView != null) {
+                        val coachMarkItems = ArrayList<CoachMark2Item>()
+                        val coachMark = CoachMark2(it)
+
+                        normalServiceView?.let { normalService ->
+                            coachMarkItems.add(
+                                CoachMark2Item(
+                                    normalService,
+                                    getString(R.string.whitelabel_onboarding_title_coachmark),
+                                    getString(R.string.whitelabel_onboarding_description_coachmark),
+                                    CoachMark2.POSITION_TOP
+                                )
+                            )
+                        }
+
+                        whitelabelView?.let { whitelabel ->
+                            coachMarkItems.add(
+                                CoachMark2Item(
+                                    whitelabel,
+                                    getString(R.string.whitelabel_instan_title_coachmark),
+                                    getString(R.string.whitelabel_instan_description_coachmark),
+                                    CoachMark2.POSITION_TOP
+                                )
+                            )
+                        }
+                        coachMark.setStepListener(object : CoachMark2.OnStepListener {
+                            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                                coachMark.hideCoachMark()
+                                coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { item ->
+                                    scrollView?.smoothScrollTo(0, item.bottom)
+                                }
+                                coachMark.showCoachMark(coachMarkItems, null, currentIndex)
+                            }
+                        })
+                        coachMark.onFinishListener = {
+                            sharedPref.setCoachMarkState(false)
+                        }
+
+                        // manual scroll to first item
+                        coachMarkItems.firstOrNull()?.anchorView?.let { rv ->
+                            scrollView?.smoothScrollTo(0, rv.bottom)
+                            coachMark.showCoachMark(coachMarkItems)
+                        }
+                    }
+                }, COACHMARK_ON_BOARDING_DELAY)
+            }
         }
     }
 
-    override fun onFeatureInfoOnDemandClicked(data: List<FeatureInfoModel>) {
-        bottomSheetFeatureInfoAdapter.setData(data)
-        openBottomSheetFeatureInfo()
-    }
-
-    override fun onFeatureInfoConventionalClicked(data: List<FeatureInfoModel>) {
+    override fun onFeatureInfoClicked(data: List<FeatureInfoModel>) {
         bottomSheetFeatureInfoAdapter.setData(data)
         openBottomSheetFeatureInfo()
     }
@@ -769,6 +808,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         private const val BOTTOMSHEET_AWB_OTOMATIS_INFO = 1
 
         private const val REQUEST_EDIT_SHIPPING = 1998
+        private const val COACHMARK_ON_BOARDING_DELAY = 1000L
 
         private const val STATE_AWB_VALIDATION = "awb_otomatis"
         private const val ERROR_CODE_NO_ACCESS = "555"

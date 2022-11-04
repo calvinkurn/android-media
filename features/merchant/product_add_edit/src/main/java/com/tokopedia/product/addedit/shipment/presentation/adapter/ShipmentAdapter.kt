@@ -3,10 +3,7 @@ package com.tokopedia.product.addedit.shipment.presentation.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.ShipperListCPLModel
 import com.tokopedia.product.addedit.R
 import com.tokopedia.unifyprinciples.Typography

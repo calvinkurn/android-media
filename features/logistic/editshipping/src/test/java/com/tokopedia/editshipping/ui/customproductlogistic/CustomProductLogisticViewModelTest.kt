@@ -79,50 +79,6 @@ class CustomProductLogisticViewModelTest {
     }
 
     @Test
-    fun `WHEN check shipper on demand and not empty THEN returns true `() {
-        val mockResponse = CPLDataProvider.provideCPLResponse()
-        loadMockCplData(mockResponse)
-
-        val result =
-            customProductLogisticViewModel.isShipperGroupAvailable(CustomProductLogisticConstant.CPL_ON_DEMAND_INDEX)
-
-        assertTrue(result)
-    }
-
-    @Test
-    fun `WHEN check shipper conventional and not empty THEN returns true `() {
-        val mockResponse = CPLDataProvider.provideCPLResponse()
-        loadMockCplData(mockResponse)
-
-        val result =
-            customProductLogisticViewModel.isShipperGroupAvailable(CustomProductLogisticConstant.CPL_CONVENTIONAL_INDEX)
-
-        assertTrue(result)
-    }
-
-    @Test
-    fun `WHEN check shipper but failed to get data THEN returns false `() {
-        loadMockCplData(null)
-
-        val result =
-            customProductLogisticViewModel.isShipperGroupAvailable(CustomProductLogisticConstant.CPL_CONVENTIONAL_INDEX)
-
-        assertFalse(result)
-    }
-
-    @Test
-    fun `WHEN check shipper but shipper group empty THEN returns false `() {
-        val mockResponse = CPLDataProvider.provideCPLResponse()
-        mockResponse.response.data.shipperList = listOf()
-        loadMockCplData(mockResponse)
-
-        val result =
-            customProductLogisticViewModel.isShipperGroupAvailable(CustomProductLogisticConstant.CPL_CONVENTIONAL_INDEX)
-
-        assertFalse(result)
-    }
-
-    @Test
     fun `WHEN check shipper checkbox THEN set shipper and shipper service selected to checkbox active state`() {
         val mockResponse = CPLDataProvider.provideCPLResponse()
         loadMockCplData(mockResponse)
