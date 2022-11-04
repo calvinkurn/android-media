@@ -26,6 +26,7 @@ object MacroIntent {
      * Target package for dynamic feature module is com.tokopedia.tkpd.df_${module_name}
      */
     const val TKPD_PACKAGE_NAME = "com.tokopedia.tkpd"
+    const val TKPD_PACKAGE_SELLER_APP = "com.tokopedia.sellerapp"
 
     /**
      * Please create intent with deeplink URI that DIRECTLY open your page
