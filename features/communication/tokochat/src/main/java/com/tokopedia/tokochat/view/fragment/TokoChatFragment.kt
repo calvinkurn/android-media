@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -17,6 +18,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -25,11 +27,12 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatErrorLogger
-import com.tokopedia.tokochat.util.TokoChatViewUtil.loadByteArrayImage
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.bottomsheet.TokoChatGeneralUnavailableBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
@@ -614,13 +617,33 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
         element: TokoChatImageBubbleUiModel,
         loader: LoaderUnify?
     ) {
-        viewModel.getImageWithId(element.imageId, channelId) { imageResult, responseBody ->
-            element.updateImageUrl(imageResult.data?.url?: "")
-            context?.let { ctx ->
-                loadByteArrayImage(ctx, imageView, responseBody.byteStream()) {
+        viewModel.getImageWithId(
+            imageId = element.imageId,
+            channelId = channelId,
+            onImageReady = { imageFile ->
+                activity?.runOnUiThread {
                     loader?.hide()
+                    imageFile?.let {
+                        imageView.loadImage(it.toUri())
+                        element.updateImageData(imagePath = it.absolutePath, status = true)
+                    }
+                }
+            },
+            onError = {
+                activity?.runOnUiThread {
+                    loader?.hide()
+                    imageView.loadImage(ERROR_RES_UNIFY)
                 }
             }
+        )
+    }
+
+    override fun onClickImage(element: TokoChatImageBubbleUiModel) {
+        context?.let {
+            val intent = ImageSecurePreviewActivity.getCallingIntent(
+                it, arrayListOf(element.imagePath)
+            )
+            startActivity(intent)
         }
     }
 

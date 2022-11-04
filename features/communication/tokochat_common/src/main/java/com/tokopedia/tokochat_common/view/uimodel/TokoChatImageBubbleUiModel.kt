@@ -12,28 +12,32 @@ open class TokoChatImageBubbleUiModel protected constructor(
 
     var imageId: String = builder.imageId
         private set
-    var imageUrl: String = builder.imageUrl
+    var imagePath: String = builder.imagePath
         private set
     var shouldRetry: Boolean = builder.shouldRetry
         private set
+    var isImageReady: Boolean = builder.isImageReady
+        private set
 
-    fun updateImageUrl(newUrl: String) {
-        imageUrl = newUrl
+    fun updateImageData(imagePath: String, status: Boolean) {
+        this.imagePath = imagePath
+        this.isImageReady = status
     }
 
     open class Builder : TokoChatSendableBaseUiModel.Builder<Builder, TokoChatImageBubbleUiModel>() {
 
         internal var imageId = ""
-        internal var imageUrl = ""
+        internal var imagePath = ""
         internal var shouldRetry = false
+        internal var isImageReady = false
 
         fun withImageId(imageId: String): Builder {
             this.imageId = imageId
             return self()
         }
 
-        fun withImageUrl(imageUrl: String): Builder {
-            this.imageUrl = imageUrl
+        fun withImageUrl(imagePath: String): Builder {
+            this.imagePath = imagePath
             return self()
         }
 

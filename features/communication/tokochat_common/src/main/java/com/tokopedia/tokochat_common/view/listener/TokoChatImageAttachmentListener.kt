@@ -6,4 +6,5 @@ import com.tokopedia.unifycomponents.LoaderUnify
 
 interface TokoChatImageAttachmentListener {
     fun loadImage(imageView: ImageView, element: TokoChatImageBubbleUiModel, loader: LoaderUnify?)
+    fun onClickImage(element: TokoChatImageBubbleUiModel)
 }
