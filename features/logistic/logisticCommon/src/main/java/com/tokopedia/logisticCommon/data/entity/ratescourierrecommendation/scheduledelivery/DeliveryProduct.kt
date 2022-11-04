@@ -62,8 +62,4 @@ class DeliveryProduct(
     val validationMetadata: String = "",
     @SerializedName("free_shipping_metadata")
     val freeShippingMetadata: String = "",
-    @SerializedName("validation_metadata")
-    val validationMetadata: String = "",
-    @SerializedName("insurance_price")
-    val insurancePrice: Double = 0.0,
 ) : Parcelable
