@@ -108,6 +108,9 @@ class BaseTokoFoodOrderTrackingFragment :
             DaggerTokoFoodOrderTrackingComponent
                 .builder()
                 .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .tokoChatConfigComponent(
+                    (it.applicationContext as? BaseMainApplication)?.tokoChatConnection?.tokoChatConfigComponent
+                )
                 .build()
                 .inject(this)
         }
