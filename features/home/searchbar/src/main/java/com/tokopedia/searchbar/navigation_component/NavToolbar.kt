@@ -648,6 +648,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         toolbarCustomViewContent?.let {
             val parentLayout = layoutCustomView
             it.id = generateViewId()
+            parentLayout.removeAllViews()
             parentLayout.addView(it)
         }
     }
