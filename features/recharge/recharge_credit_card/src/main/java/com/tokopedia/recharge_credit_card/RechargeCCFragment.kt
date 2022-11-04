@@ -421,9 +421,8 @@ class RechargeCCFragment :
                 rechargeSubmitCCViewModel.createMapParam(clientNumber, operatorId, productId,
                     userSession.userId)
             }
-            Toast.makeText(context, "mapParam: $mapParam", Toast.LENGTH_LONG).show()
 
-//            rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
+            rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
             hideLoading()
             navigateUserLogin()
