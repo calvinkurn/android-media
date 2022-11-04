@@ -32,7 +32,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     private var endlessRecyclerViewScrollListener: TokoChatEndlessScrollListener? = null
     private val shimmerUiModel = TokoChatLoadingUiModel()
-    protected var itemDecoration = VerticalSpaceItemDecoration(FOUR_DP.toPx())
+    private val itemDecoration = VerticalSpaceItemDecoration(FOUR_DP.toPx())
 
     override fun onCreateView(
         inflater: LayoutInflater,
