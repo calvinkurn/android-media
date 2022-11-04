@@ -7,55 +7,55 @@ import com.google.gson.annotations.SerializedName
 data class GetInsuranceDetailResponse(
     @SerializedName("data")
     @Expose
-    val `data`: Data?
+    val data: Data? = null
 ) {
     data class Data(
         @SerializedName("ppGetInsuranceDetail")
         @Expose
-        val ppGetInsuranceDetail: PpGetInsuranceDetail?
+        val ppGetInsuranceDetail: PpGetInsuranceDetail? = null
     ) {
         data class PpGetInsuranceDetail(
             @SerializedName("data")
             @Expose
-            val `data`: Data?
+            val data: Data? = null
         ) {
             data class Data(
                 @SerializedName("orderConfig")
                 @Expose
-                val orderConfig: OrderConfig?,
+                val orderConfig: OrderConfig? = null,
                 @SerializedName("protectionProduct")
                 @Expose
-                val protectionProduct: ProtectionProduct?
+                val protectionProduct: ProtectionProduct? = null
             ) {
                 data class OrderConfig(
                     @SerializedName("icon")
                     @Expose
-                    val icon: Icon?,
+                    val icon: Icon? = null,
                     @SerializedName("redirection")
                     @Expose
-                    val redirection: String?,
+                    val redirection: String? = null,
                     @SerializedName("wording")
                     @Expose
-                    val wording: Wording?
+                    val wording: Wording? = null
                 ) {
                     data class Icon(
                         @SerializedName("banner")
                         @Expose
-                        val banner: String?
+                        val banner: String? = null
                     )
 
                     data class Wording(
                         @SerializedName("id")
                         @Expose
-                        val id: Id?
+                        val id: Id? = null
                     ) {
                         data class Id(
                             @SerializedName("bannerSubtitle")
                             @Expose
-                            val bannerSubtitle: String?,
+                            val bannerSubtitle: String? = null,
                             @SerializedName("bannerTitle")
                             @Expose
-                            val bannerTitle: String?
+                            val bannerTitle: String? = null
                         )
                     }
                 }
@@ -63,45 +63,45 @@ data class GetInsuranceDetailResponse(
                 data class ProtectionProduct(
                     @SerializedName("protections")
                     @Expose
-                    val protections: List<Protection?>?
+                    val protections: List<Protection?>? = null
                 ) {
                     data class Protection(
                         @SerializedName("bundleID")
                         @Expose
-                        val bundleID: String?,
+                        val bundleID: String? = null,
                         @SerializedName("isBundle")
                         @Expose
-                        val isBundle: Boolean?,
+                        val isBundle: Boolean? = null,
                         @SerializedName("productID")
                         @Expose
-                        val productID: String?,
+                        val productID: String? = null,
                         @SerializedName("protectionConfig")
                         @Expose
-                        val protectionConfig: ProtectionConfig?
+                        val protectionConfig: ProtectionConfig? = null
                     ) {
                         data class ProtectionConfig(
                             @SerializedName("icon")
                             @Expose
-                            val icon: Icon?,
+                            val icon: Icon? = null,
                             @SerializedName("wording")
                             @Expose
-                            val wording: Wording?
+                            val wording: Wording? = null
                         ) {
                             data class Icon(
                                 @SerializedName("label")
                                 @Expose
-                                val label: String?
+                                val label: String? = null
                             )
 
                             data class Wording(
                                 @SerializedName("id")
                                 @Expose
-                                val id: Id?
+                                val id: Id? = null
                             ) {
                                 data class Id(
                                     @SerializedName("label")
                                     @Expose
-                                    val label: String?
+                                    val label: String? = null
                                 )
                             }
                         }
