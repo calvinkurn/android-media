@@ -14,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Event.CLICK_HOMEPAGE
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PRODUCT_CLICK
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PRODUCT_VIEW
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_CLICK
@@ -37,12 +38,8 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
     private val trackingQueue = TrackingQueue(context)
     
     companion object{
-        private const val AFFINITY_LABEL = "affinityLabel"
-        private const val CATEGORY_ID = "categoryId"
-        private const val SHOP_ID = "shopId"
         private const val CLICK = "click"
         private const val IMPRESSION = "impression"
-        private const val CLICK_HOMEPAGE = "clickHomepage"
         private const val CLICK_OS_MICROSITE = "clickOSMicrosite"
         private const val OS_MICROSITE = "os microsite - "
         private const val FIELD_PRODUCTS = "products"
@@ -526,65 +523,10 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         position: String,
         gridData: Grid,
         userId: String
-    ) {
-        val bundle = Bundle().apply {
-            putString(Event.KEY, SELECT_CONTENT)
-            putString(Category.KEY, OS_MICROSITE_SINGLE)
-            putString(Action.KEY, FORMAT_CLICK_PRODUCT.format(VALUE_DYNAMIC_CHANNEL_MIX))
-            putString(Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL_MIX, channelId, headerName, categoryName))
-            putString(UserId.KEY, userId)
-            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
-            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-            val items = arrayListOf(
-                Bundle().apply {
-                    putString(FIELD_DIMENSION_38, gridData.attribution)
-                    putString(Items.ITEM_NAME, gridData.name)
-                    putString(Items.ITEM_ID, gridData.id.toString())
-                    putString(Items.PRICE, formatPrice(gridData.price))
-                    putString(Items.ITEM_BRAND, Value.NONE_OTHER)
-                    putString(Items.ITEM_CATEGORY, Value.EMPTY)
-                    putString(Items.ITEM_VARIANT, Value.NONE_OTHER)
-                    putString(Items.INDEX, position)
-                }
-            )
-            putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_THEMATIC_PRODUCT)
-            putParcelableArrayList(Items.KEY, items)
-        }
-        getTracker().sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
-    }
+    ) { }
 
     // Row 15
-    fun dynamicChannelThematicImpression(categoryName: String, channelData: Channel) {
-        val headerName = channelData.header?.name ?: ""
-        val impressionBody = DataLayer.listOf()
-
-        channelData.grids.forEachIndexed { index, grid ->
-            grid.run {
-                impressionBody.add(DataLayer.mapOf(
-                    Items.ITEM_NAME, name,
-                    Items.ITEM_ID, id.toString(RADIX_10),
-                    Items.PRICE, price,
-                    Items.ITEM_BRAND, Value.NONE_OTHER,
-                    Items.ITEM_CATEGORY, Value.EMPTY,
-                    Items.ITEM_VARIANT, Value.NONE_OTHER,
-                    Items.INDEX, (index + 1).toString(RADIX_10),
-                    FIELD_DIMENSION_38, attribution
-                ))
-            }
-        }
-
-        trackingQueue.putEETracking(DataLayer.mapOf(
-            Event.KEY, PRODUCT_VIEW,
-            Category.KEY, OS_MICROSITE_SINGLE,
-            Action.KEY, FORMAT_IMPRESSION_PRODUCT.format(VALUE_DYNAMIC_CHANNEL_MIX),
-            Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL_MIX, channelData.id, headerName, categoryName),
-            Ecommerce.KEY, DataLayer.mapOf(
-                ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                ECOMMERCE_IMPRESSIONS, impressionBody
-            ),
-            TrackerId.KEY, VALUE_TRACKER_ID_IMPRESSION_THEMATIC_PRODUCT
-        ) as HashMap<String, Any>)
-    }
+    fun dynamicChannelThematicImpression(categoryName: String, channelData: Channel) { }
 
     // Row 16
     fun dynamicChannelMixBannerClick(
@@ -593,58 +535,10 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         bannerData: Banner,
         channelData: Channel,
         userId: String
-    ) {
-        val defaultPosition = "0"
-        val bundle = Bundle().apply {
-            putString(Event.KEY, SELECT_CONTENT)
-            putString(Category.KEY, OS_MICROSITE_SINGLE)
-            putString(Action.KEY, FORMAT_CLICK_BANNER.format(VALUE_DYNAMIC_CHANNEL_MIX))
-            putString(Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL_MIX, channelData.id, headerName, categoryName))
-            putString(UserId.KEY, userId)
-            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
-            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-            val promotions = arrayListOf(
-                Bundle().apply {
-                    putString(Promotion.CREATIVE_NAME, bannerData.attribution)
-                    putString(Promotion.CREATIVE_SLOT, defaultPosition)
-                    putString(Promotion.ITEM_ID, bannerData.id.toString(10))
-                    putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME.format(categoryName, VALUE_SLIDER_BANNER))
-                }
-            )
-            putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_THEMATIC_BANNER)
-            putParcelableArrayList(Promotion.KEY, promotions)
-        }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
-    }
+    ) { }
 
     // Row 17
-    fun dynamicChannelMixBannerImpression(categoryName: String, channelData: Channel) {
-        val headerName = channelData.header?.name ?: ""
-        val promotionBody: MutableList<Any> = DataLayer.listOf()
-        channelData.grids.forEachIndexed { index, grid ->
-            grid.run {
-                promotionBody.add(DataLayer.mapOf(
-                    Promotion.ITEM_ID, FORMAT_DASH_TWO_VALUES.format(channelData.banner?.id?:"", channelData.id),
-                    Promotion.ITEM_NAME, FORMAT_ITEM_NAME_FOUR_VALUES.format(categoryName, VALUE_DYNAMIC_CHANNEL_MIX, headerName, channelData.banner?.applink?:""),
-                    Promotion.CREATIVE_SLOT, (index + 1).toString(RADIX_10),
-                    Promotion.CREATIVE_NAME, attribution,
-                ))
-            }
-        }
-
-        trackingQueue.putEETracking(DataLayer.mapOf(
-            Event.KEY, PROMO_VIEW,
-            Category.KEY, OS_MICROSITE_SINGLE,
-            Action.KEY, FORMAT_IMPRESSION_BANNER.format(VALUE_DYNAMIC_CHANNEL_MIX),
-            Label.KEY, FORMAT_DASH_FOUR_VALUES.format(VALUE_DYNAMIC_CHANNEL_MIX, channelData.id, headerName, categoryName),
-            Ecommerce.KEY, DataLayer.mapOf(
-                PROMO_VIEW, DataLayer.mapOf(
-                    Promotion.KEY, promotionBody
-                )
-            ),
-            TrackerId.KEY, VALUE_TRACKER_ID_IMPRESSION_THEMATIC_BANNER
-        ) as HashMap<String, Any>)
-    }
+    fun dynamicChannelMixBannerImpression(categoryName: String, channelData: Channel) { }
 
     // Row 21 & Row 25
     fun carouselProductCardImpression(

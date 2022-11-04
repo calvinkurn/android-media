@@ -538,68 +538,6 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickMixActionText(applink: String): View.OnClickListener {
-        return View.OnClickListener {
-            RouteManager.route(context, applink)
-        }
-    }
-
-    override fun onClickMixImage(channelData: Channel, position: Int): View.OnClickListener {
-        return View.OnClickListener {
-            channelData.grids.getOrNull(position)?.let { gridData ->
-                val applink = gridData.applink
-                tracking?.dynamicChannelThematicCardClick(
-                        viewModel.currentSlug,
-                        channelData.id,
-                        channelData.header?.name ?: "",
-                        (position + POS_1).toString(POS_10),
-                        gridData,
-                        getUserId()
-                )
-
-                RouteManager.route(context, applink)
-            }
-
-        }
-    }
-
-    override fun onClickMixBanner(channelData: Channel): View.OnClickListener {
-        return View.OnClickListener {
-            val bannerData = channelData.banner
-            val applink = bannerData?.applink ?: ""
-
-            bannerData?.let {
-                tracking?.dynamicChannelMixBannerClick(
-                    viewModel.currentSlug,
-                    channelData.header?.name ?: "",
-                    it,
-                    channelData,
-                    getUserId()
-                )
-            }
-
-            RouteManager.route(context, applink)
-        }
-    }
-
-    override fun mixImageImpression(channelData: Channel) {
-        val impressionTag = "Images Impression"
-
-        if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
-            tracking?.dynamicChannelThematicImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id + impressionTag)
-        }
-    }
-
-    override fun mixBannerImpression(channelData: Channel) {
-        val impressionTag = "Banner Impression"
-
-        if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
-            tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id + impressionTag)
-        }
-    }
-
     override fun onClickMixTopBannerItem(applink: String) {
         RouteManager.route(context, applink)
     }

@@ -195,7 +195,6 @@
       "userId": ".*",
       "sessionIris": ".*"
     },
-
     {
       "eventAction": "impression product - dynamic channel top carousel|impression product - dynamic channel left carousel",
       "eventCategory": "os microsite",
@@ -314,8 +313,6 @@
       "currentSite" : "tokopediamarketplace",
       "trackerId": "19949"
     },
-
-
     {
       "eventCategory": ".*",
       "event": "select_content",
@@ -347,7 +344,6 @@
       }],
       "eventLabel": ".*"
     },
-
     {
       "eventCategory": ".*",
       "item_list": ".*",
@@ -386,6 +382,5 @@
       }],
       "eventLabel": ".*"
     }
-
   ]
 }

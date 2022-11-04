@@ -22,13 +22,6 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onClickFlashSaleImage(channelData: Channel, position: Int): View.OnClickListener
     fun flashSaleImpression(channelData: Channel)
 
-    // Thematic layout event handlers
-    fun onClickMixActionText(applink: String): View.OnClickListener
-    fun onClickMixBanner(channelData: Channel): View.OnClickListener
-    fun onClickMixImage(channelData: Channel, position: Int): View.OnClickListener
-    fun mixImageImpression(channelData: Channel)
-    fun mixBannerImpression(channelData: Channel)
-
     //mix top & mix left
     fun onClickMixTopBannerItem(applink: String)
     fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, headerName: String, channelBannerAttribution: String = "")

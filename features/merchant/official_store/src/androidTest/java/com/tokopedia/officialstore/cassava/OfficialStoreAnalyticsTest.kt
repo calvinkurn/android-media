@@ -31,7 +31,6 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewholder.Offi
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialFeaturedShopViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelSprintSaleViewHolder
-import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelThematicViewHolder
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.test.application.annotations.CassavaTest
@@ -238,13 +237,6 @@ class OfficialStoreAnalyticsTest {
             }
             is DynamicChannelSprintSaleViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_sprintsale_rv,0)
-            }
-            is DynamicChannelThematicViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(
-                    viewHolder.itemView,
-                    R.id.carouselProductCardRecyclerView,
-                    0
-                )
             }
             is FeaturedShopViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(
