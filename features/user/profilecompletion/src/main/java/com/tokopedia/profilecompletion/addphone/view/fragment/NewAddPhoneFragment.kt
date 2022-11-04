@@ -14,11 +14,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.common.getMessage
 import com.tokopedia.profilecompletion.addphone.data.analitycs.NewAddPhoneNumberTracker
@@ -89,13 +89,7 @@ class NewAddPhoneFragment : BaseDaggerFragment() {
         viewModel.userProfileValidate.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (it.data.isEmpty()) {
-                        goToVerification()
-                    } else {
-                        val message = it.data
-                        binding?.fieldInputPhone?.setMessageField(message)
-                        analytics.sendClickOnButtonTambahNomorHpEvent(NewAddPhoneNumberTracker.ACTION_FAILED, message)
-                    }
+                    goToVerification()
                 }
                 is Fail -> {
                     val message = it.throwable.getMessage(requireActivity())
@@ -200,32 +194,13 @@ class NewAddPhoneFragment : BaseDaggerFragment() {
     private fun handleGlobalError(throwable: Throwable) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                view?.let {
-                    showGlobalError(GlobalError.NO_CONNECTION)
-                }
+                showGlobalError(GlobalError.NO_CONNECTION)
             }
-            is RuntimeException -> {
-                when (throwable.localizedMessage?.toIntOrNull()) {
-                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> {
-                        showGlobalError(GlobalError.NO_CONNECTION)
-                    }
-                    ReponseStatus.NOT_FOUND -> {
-                        showGlobalError(GlobalError.PAGE_NOT_FOUND)
-                    }
-                    ReponseStatus.INTERNAL_SERVER_ERROR -> {
-                        showGlobalError(GlobalError.SERVER_ERROR)
-                    }
-                    else -> {
-                        view?.let {
-                            showGlobalError(GlobalError.SERVER_ERROR)
-                        }
-                    }
-                }
+            is MessageErrorException -> {
+                showGlobalError(GlobalError.PAGE_NOT_FOUND)
             }
             else -> {
-                view?.let {
-                    showGlobalError(GlobalError.SERVER_ERROR)
-                }
+                showGlobalError(GlobalError.SERVER_ERROR)
             }
         }
         showGlobalError()

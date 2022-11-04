@@ -35,8 +35,8 @@ class NewAddPhoneViewModel @Inject constructor(
     private val _userValidateLoading = MutableLiveData<Boolean>()
     val userValidateLoading: LiveData<Boolean> get() = _userValidateLoading
 
-    private val _userProfileValidate = SingleLiveEvent<Result<String>>()
-    val userProfileValidate: LiveData<Result<String>> get() = _userProfileValidate
+    private val _userProfileValidate = SingleLiveEvent<Result<Unit>>()
+    val userProfileValidate: LiveData<Result<Unit>> get() = _userProfileValidate
 
     private val _userUpdateLoading = MutableLiveData<Boolean>()
     val userUpdateLoading: LiveData<Boolean> get() = _userUpdateLoading
@@ -82,9 +82,9 @@ class NewAddPhoneViewModel @Inject constructor(
 
             _userValidateLoading.value = false
             _userProfileValidate.value = if (response.isValid) {
-                Success("")
+                Success(Unit)
             } else {
-                Success(response.message)
+                Fail(MessageErrorException(response.message))
             }
         }, {
             _userValidateLoading.value = false
