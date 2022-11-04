@@ -35,7 +35,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class NewAddPhoneFragment: BaseDaggerFragment() {
+class NewAddPhoneFragment : BaseDaggerFragment() {
 
     private val binding: FragmentNewAddPhoneBinding? by viewBinding()
 
