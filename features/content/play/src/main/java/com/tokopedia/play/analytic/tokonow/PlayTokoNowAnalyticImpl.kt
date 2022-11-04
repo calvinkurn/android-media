@@ -1,6 +1,7 @@
 package com.tokopedia.play.analytic.tokonow
 
 import com.tokopedia.play.analytic.*
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.PlayChannelType
@@ -204,21 +205,22 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     }
 
     override fun impressProductBottomSheetNow(
-        product: PlayProductUiModel.Product,
-        position: Int,
+        products: List<ProductSheetAdapter.Item.Product>
     ) {
         trackingQueue.putEETracking(
             event = EventModel(
                 "productView",
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "view - now product bottomsheet",
-                "$channelId - ${product.id} - ${channelType.value}"
+                "$channelId - ${products.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value}"
             ),
             enhanceECommerceMap = hashMapOf(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        add(convertProductToHashMapWithList(product, position, "bottom sheet"))
+                        products.map { it.product }.forEachIndexed { index: Int, product: PlayProductUiModel.Product ->
+                            add(convertProductToHashMapWithList(product, index, "bottom sheet"))
+                        }
                     }
                 )
             ),
