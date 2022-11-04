@@ -25,5 +25,5 @@ class CampaignListFrameTimingBenchmark: BaseFrameTimingBenchmark() {
 
     override fun getIntent() = MacroIntent.CampaignList.getCampaignListIntent()
 
-
+    override fun packageName() = MacroIntent.TKPD_PACKAGE_SELLER_APP
 }
