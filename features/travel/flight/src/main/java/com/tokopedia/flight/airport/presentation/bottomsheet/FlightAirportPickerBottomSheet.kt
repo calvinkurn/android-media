@@ -103,7 +103,7 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
                 bottomSheetWrapper.paddingTop,
                 0,
                 bottomSheetWrapper.paddingBottom)
-        bottomSheetWrapper.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        bottomSheetWrapper.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 
         initView()
     }
