@@ -320,6 +320,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         binding.bannerShorts.apply {
             title = getString(R.string.play_bro_banner_shorts_title)
             description = getString(R.string.play_bro_banner_shorts_description)
+            /** TODO: will change to IconUnify.SHORT_VIDEO later after upgrading iconUnifyVersion */
             bannerIcon = IconUnify.VIDEO
         }
 
