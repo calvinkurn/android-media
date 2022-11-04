@@ -28,6 +28,7 @@ import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
@@ -52,6 +53,8 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgument
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.DEFAULT_COMMENT_ARGUMENT_VALUE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.PARAM_AUTHOR_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.PARAM_POST_POSITION
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.PARAM_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.SHOULD_TRACK
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.SOURCE_TYPE
@@ -93,7 +96,10 @@ import com.tokopedia.wishlist_common.R as wishlistR
  * Created by shruti agarwal on 15/06/22
  */
 
-class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder.CDPListener, ProductItemInfoBottomSheet.Listener, ShareBottomsheetListener {
+@Suppress("LateinitUsage")
+class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.CDPListener,
+    ProductItemInfoBottomSheet.Listener, ShareBottomsheetListener,
+    FeedFollowersOnlyBottomSheet.Listener {
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
@@ -102,6 +108,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private lateinit var reportBottomSheet: ReportBottomSheet
     private lateinit var productTagBS: ProductItemInfoBottomSheet
+    private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
+
 
     private val adapter = ContentDetailAdapter(
         ContentDetailListener = this
@@ -130,10 +138,12 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     }
 
     companion object {
-
+        private const val DEFAULT_INVALID_POSITION_VALUE = -1
+        private const val AUTHOR_USER_TYPE_VALUE = 1
         const val REQUEST_LOGIN = 345
         private const val OPEN_KOL_COMMENT = 101
         const val OPEN_VIDEO_DETAIL = 1311
+        const val OPEN_FEED_DETAIL = 1313
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
 
 
@@ -286,7 +296,20 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     )
                 }
             }
-            else -> {
+            OPEN_FEED_DETAIL -> if (resultCode == Activity.RESULT_OK) {
+                if (data.getBooleanExtra(ContentDetailArgumentModel.IS_FOLLOWED, false)) {
+                    val rowNumber =
+                        data.getIntExtra(PARAM_POST_POSITION, DEFAULT_INVALID_POSITION_VALUE)
+                    if (rowNumber in 0 until adapter.getList().size) {
+                        onSuccessFollowShop(
+                            ShopFollowModel(
+                                rowNumber = rowNumber,
+                                action = ShopFollowAction.Follow,
+                                isFollowedFromRSRestrictionBottomSheet = true
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -728,7 +751,11 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     }
 
-    override fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition : Int) {
+    override fun onFollowUnfollowClicked(
+        feedXCard: FeedXCard,
+        postPosition: Int,
+        isFollowedFromRSRestrictionBottomSheet: Boolean
+    ) {
         if (!feedXCard.followers.isFollowed)
             analyticsTracker.sendClickFollowAsgcRecomEvent(
                 getContentDetailAnalyticsData(
@@ -748,7 +775,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         viewModel.followShop(
             shopId = feedXCard.author.id,
             action = ShopFollowAction.getFollowAction(feedXCard.followers.isFollowed),
-            rowNumber = postPosition
+            rowNumber = postPosition,
+            isFollowedFromRSRestrictionBottomSheet = isFollowedFromRSRestrictionBottomSheet
         )
     }
 
@@ -1164,8 +1192,9 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                         )
                     )
                 )
-
             }
+            if (shouldShowFollowerBottomSheet(feedXCard))
+                showFollowerBottomSheet(postPosition, feedXCard.campaign.status)
         }
     }
 
@@ -1222,6 +1251,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 )
             )
         )
+        val authorType = if (feedXCard.author.type == AUTHOR_USER_TYPE_VALUE) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+
         val intent = RouteManager.getIntent(context, feedXCard.appLinkProductList)
         intent.putExtra(
             ContentDetailArgumentModel.IS_FOLLOWED,
@@ -1231,11 +1262,18 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         intent.putExtra(ContentDetailArgumentModel.SHOP_NAME, feedXCard.author.name)
         intent.putExtra(ContentDetailArgumentModel.PARAM_ACTIVITY_ID, postId)
         intent.putExtra(ContentDetailArgumentModel.PARAM_POST_TYPE, feedXCard.typename)
+        intent.putExtra(PARAM_POST_POSITION, postPosition)
+        intent.putExtra(PARAM_AUTHOR_TYPE, authorType)
         intent.putExtra(ContentDetailArgumentModel.PARAM_SALE_TYPE, feedXCard.campaign.name)
         intent.putExtra(ContentDetailArgumentModel.PARAM_SALE_STATUS, feedXCard.campaign.status)
-        requireActivity().startActivity(intent)
+        if (shouldShowFollowerBottomSheet(feedXCard))
+            startActivityForResult(intent, OPEN_FEED_DETAIL)
+        else
+            startActivity(intent)
 
     }
+    private fun shouldShowFollowerBottomSheet(card: FeedXCard) =
+        card.campaign.isRilisanSpl && !card.followers.isFollowed && card.campaign.isRSFollowersRestrictionOn
 
     override fun onPostTagBubbleClicked(
         positionInFeed: Int,
@@ -1554,17 +1592,27 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
 
-        onTagSheetItemBuy(
-            finalID,
-            item.positionInFeed,
-            item.product,
-            item.shopId,
-            item.postType,
-            item.isFollowed,
-            item.playChannelId,
-            item.shopName,
-            item.mediaType
-        )
+        val list = adapter.getList()
+        val position = item.positionInFeed
+        var card: FeedXCard? = null
+        if (position in 0 until list.size) {
+            card = list[position]
+        }
+        if (card != null && shouldShowFollowerBottomSheet(card)) {
+            showFollowerBottomSheet(item.positionInFeed, card.campaign.status)
+        } else {
+            onTagSheetItemBuy(
+                finalID,
+                item.positionInFeed,
+                item.product,
+                item.shopId,
+                item.postType,
+                item.isFollowed,
+                item.playChannelId,
+                item.shopName,
+                item.mediaType
+            )
+        }
     }
 
     private fun onTagSheetItemBuy(
@@ -1695,6 +1743,16 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
+    private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
+        feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet.getOrCreate(childFragmentManager)
+        feedFollowersOnlyBottomSheet?.show(
+            childFragmentManager,
+            this,
+            positionInFeed,
+            status = campaignStatus
+        )
+    }
+
     private fun onSuccessFetchStatusCampaignReminderButton(
         data: FeedAsgcCampaignResponseModel,
         shouldShowToaster: Boolean = false
@@ -1760,10 +1818,19 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     private fun observeFollowShop() {
         viewModel.followShopObservable.observe(viewLifecycleOwner, Observer {
             when (it) {
-                ContentDetailResult.Loading -> {
-                    // todo: add loading state?
+                is ContentDetailResult.Success -> {
+                    if (it.data.isFollowedFromRSRestrictionBottomSheet && it.data.action.isFollowing) {
+                        if (::productTagBS.isInitialized) {
+                            productTagBS.showToasterOnBottomSheetOnSuccessFollow(
+                                getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                Toaster.TYPE_NORMAL,
+                                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
+                            )
+                            feedFollowersOnlyBottomSheet?.dismiss()
+                        }
+                    }
+                    onSuccessFollowShop(it.data)
                 }
-                is ContentDetailResult.Success -> onSuccessFollowShop(it.data)
                 is ContentDetailResult.Failure -> {
                     when (it.error) {
                         is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
@@ -2135,6 +2202,13 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 }
             }
         })
+    }
+
+    override fun onFollowClickedFromFollowBottomSheet(position: Int) {
+        if (position in 0 until adapter.getList().size) {
+            val card = adapter.getList()[position]
+            onFollowUnfollowClicked(card, position, isFollowedFromRSRestrictionBottomSheet = true)
+        }
     }
     //endregion
 }

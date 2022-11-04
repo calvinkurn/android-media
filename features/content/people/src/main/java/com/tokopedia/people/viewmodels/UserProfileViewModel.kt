@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.FOLLOW
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.UNFOLLOW
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.LOADING_FOLLOW
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.LOADING_UNFOLLOW
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -18,7 +18,7 @@ import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.views.uimodel.MutationUiModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*

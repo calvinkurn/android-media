@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic.producttag
 
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 
 /**

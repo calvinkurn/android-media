@@ -116,15 +116,15 @@ class LivenessFragment : BaseDaggerFragment(),
 
         if (!isValid) {
             alertDialogDeviceNotSupported()
+
+            LivenessDetectionLogTracker.sendLog(
+                LivenessDetectionLogTracker.LogType.LIBRARY,
+                this::class.simpleName.orEmpty(),
+                throwable = Throwable("[$errorCode] $message")
+            )
         } else {
             updateTipUIView(null)
         }
-
-        LivenessDetectionLogTracker.sendLog(
-            LivenessDetectionLogTracker.LogType.LIBRARY,
-            this::class.simpleName.orEmpty(),
-            throwable = Throwable("[$errorCode] $message")
-        )
     }
 
     override fun onDetectionSuccess() {
