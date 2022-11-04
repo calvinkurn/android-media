@@ -8,7 +8,7 @@
 
         <activity
             android:name="com.tokopedia.privacycenter.PrivacyCenterActivity"
-            android:theme="@style/TokopediaTransparentStatusBar"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>

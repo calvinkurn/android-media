@@ -77,6 +77,7 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
             val backIconWhite = getIconUnifyDrawable(requireActivity(), IconUnify.ARROW_BACK, ContextCompat.getColor(requireActivity(), android.R.color.white))
             binding?.unifyToolbar?.headerView?.setTextColor(textColor)
             binding?.unifyToolbar?.navigationIcon = backIconWhite
+            binding?.unifyToolbar?.setBackgroundColor(Color.TRANSPARENT)
             requireActivity().window.statusBarColor = Color.TRANSPARENT
 
             setTextStatusBar(true)
@@ -87,6 +88,8 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
             binding?.unifyToolbar?.navigationIcon = backIconWhite
             requireActivity().window.statusBarColor = MethodChecker.getColor(requireActivity(), com.tokopedia.unifyprinciples.R.color.Unify_Background)
 
+
+            binding?.unifyToolbar?.setBackgroundColor(MethodChecker.getColor(requireActivity(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setTextStatusBar(setToWhite = !viewModel.isUsingDarkMode)
         }
     }
