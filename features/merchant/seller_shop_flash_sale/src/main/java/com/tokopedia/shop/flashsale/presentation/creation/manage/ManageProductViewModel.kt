@@ -13,9 +13,9 @@ import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.EMPTY_BANNER
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.ERROR_BANNER
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.HIDE_BANNER
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.EMPTY_BANNER
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.NOT_ERROR
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
@@ -102,16 +102,17 @@ class ManageProductViewModel @Inject constructor(
             },
             onError = {}
         )
-
     }
 
     fun getBannerType(productList: SellerCampaignProductList) {
         var isProductContainingError = false
         productList.productList.forEach { product ->
             val errorType = product.errorType
-            if (product.isInfoComplete && errorType != NOT_ERROR) {
-                _bannerType.postValue(ERROR_BANNER)
-                isProductContainingError = true
+            if (product.isInfoComplete) {
+                if (errorType != NOT_ERROR) {
+                    _bannerType.postValue(ERROR_BANNER)
+                    isProductContainingError = true
+                }
             } else {
                 if (bannerType.value != ERROR_BANNER) {
                     _bannerType.postValue(EMPTY_BANNER)
