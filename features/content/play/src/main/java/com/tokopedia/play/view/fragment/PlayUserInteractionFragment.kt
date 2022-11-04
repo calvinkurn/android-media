@@ -1827,15 +1827,23 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
+    /**
+     * When game ended
+     */
     private fun handleGiveaway(game: GameUiModel.Giveaway) {
         when(game.status) {
-            is GameUiModel.Giveaway.Status.Upcoming ->
+            is GameUiModel.Giveaway.Status.Upcoming -> {
                 playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
+                playViewModel.submitAction(PlayViewerNewAction.AutoOpenInteractive)
+            }
             is GameUiModel.Giveaway.Status.Ongoing ->
                 playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
         }
     }
 
+    /**
+     * When game ended
+     */
     private fun handleQuiz(game: GameUiModel.Quiz) {
         when(game.status) {
             is GameUiModel.Quiz.Status.Ongoing ->
