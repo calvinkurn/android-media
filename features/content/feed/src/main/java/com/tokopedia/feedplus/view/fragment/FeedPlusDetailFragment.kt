@@ -757,15 +757,21 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 if (feedDetailProductModel.isUpcoming) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX
 
             )
+            goToProductDetail(feedDetailProductModel.id)
+        }
+    }
+
+    private fun goToProductDetail(productId: String) {
+        getProductIntent(productId).let { intent ->
             activity?.startActivityForResult(
-                getProductIntent(feedDetailProductModel.id),
+                intent,
                 REQUEST_OPEN_PDP
             )
         }
     }
 
     private fun getProductIntent(productId: String): Intent? {
-        return if (context != null) {
+        return if (context != null && productId.isNotBlank()) {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         } else {
             null
