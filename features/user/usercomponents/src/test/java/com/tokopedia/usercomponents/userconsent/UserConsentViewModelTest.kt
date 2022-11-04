@@ -5,9 +5,9 @@ import androidx.lifecycle.Observer
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionResponse
-import com.tokopedia.usercomponents.userconsent.domain.GetConsentCollectionUseCase
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionResponse
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
 import com.tokopedia.usercomponents.userconsent.ui.UserConsentViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify

@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.domain.GetConsentCollectionUseCase
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 

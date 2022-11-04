@@ -30,7 +30,7 @@ import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CON
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION_POLICY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentType.*
 import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAdapter
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import javax.inject.Inject
