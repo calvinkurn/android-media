@@ -22,7 +22,8 @@ data class OngoingItem(
     val discountedPrice: SubmittedProduct.DiscountedPrice,
     val submittedProductStockStatus: ProductStockStatus,
     val warehouses: List<SubmittedProduct.Warehouse>,
-    val countLocation: Int
+    val countLocation: Int,
+    val statusText: String
 ) : DelegateAdapterItem {
     override fun id() = productId
 }

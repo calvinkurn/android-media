@@ -230,7 +230,7 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
         minPriceCriteria: Long,
         maxPriceCriteria: Long
     ): Boolean {
-        return price in minPriceCriteria until maxPriceCriteria
+        return price in minPriceCriteria..maxPriceCriteria
     }
 
     fun isEligibleItem(

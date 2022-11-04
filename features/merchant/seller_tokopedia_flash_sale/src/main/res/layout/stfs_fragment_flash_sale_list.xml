@@ -38,6 +38,7 @@
         android:visibility="gone"
         tools:visibility="visible"
         android:layout_marginBottom="@dimen/unify_space_16"
+        android:contentDescription="@string/stfs_content_description_scroll_up"
         android:src="@drawable/ic_stfs_scroll_up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

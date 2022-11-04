@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
     tools:context="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment">
 
     <com.tokopedia.header.HeaderUnify
@@ -129,8 +130,8 @@
                 android:id="@+id/card_product_eligible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:layout_marginBottom="10dp"
                 android:visibility="gone"
                 app:card_background_color="@color/Unify_GN50"
@@ -201,7 +202,8 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:text="@string/label_register"
-                android:visibility="gone"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>

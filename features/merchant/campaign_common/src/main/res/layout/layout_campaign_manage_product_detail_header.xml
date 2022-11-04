@@ -89,39 +89,38 @@
             app:typographyType="body_3"
             tools:text="Total stok: 999" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/divider_product_header"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_header_total_stock"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_product_variant_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toTopOf="@id/widget_bulk_apply"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider_product_header"
-            app:typographyType="paragraph_2"
-            app:typographyWeight="bold"
-            tools:text="Varian: Merah L" />
-
-        <com.tokopedia.campaign.widget.WidgetCampaignLabelBulkApply
-            android:id="@+id/widget_bulk_apply"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_product_variant_name"
-            tools:visibility="visible" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_product_header"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_product_card_data"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_product_variant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@id/widget_bulk_apply"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_product_header"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="bold"
+        tools:text="Varian: Merah L" />
+
+    <com.tokopedia.campaign.widget.WidgetCampaignLabelBulkApply
+        android:id="@+id/widget_bulk_apply"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_product_variant_name"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

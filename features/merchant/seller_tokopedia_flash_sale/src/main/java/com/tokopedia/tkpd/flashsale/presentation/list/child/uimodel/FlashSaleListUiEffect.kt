@@ -9,5 +9,5 @@ sealed class FlashSaleListUiEffect {
     data class ShowSortBottomSheet(val selectedSortId: String) : FlashSaleListUiEffect()
     data class ShowCategoryBottomSheet(val selectedCategoryIds: List<Long>, val categories: List<FlashSaleCategory>) : FlashSaleListUiEffect()
     data class ShowStatusBottomSheet(val selectedStatusIds: List<String>) : FlashSaleListUiEffect()
-    data class LoadNextPageSuccess(val allItems: List<DelegateAdapterItem>, val currentPageItems: List<DelegateAdapterItem>) : FlashSaleListUiEffect()
+    data class LoadNextPageSuccess(val totalItems: Int, val allItems: List<DelegateAdapterItem>, val currentPageItems: List<DelegateAdapterItem>) : FlashSaleListUiEffect()
 }

@@ -63,7 +63,7 @@ import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleListPageTracker
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
@@ -289,7 +289,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
                 binding?.recyclerView.showToasterError(effect.throwable)
             }
             is FlashSaleListUiEffect.LoadNextPageSuccess -> {
-                notifyLoadResult(effect.currentPageItems.size == PAGE_SIZE)
+                notifyLoadResult(effect.allItems.size != effect.totalItems)
                 flashSaleAdapter.submit(effect.allItems)
             }
 
@@ -300,7 +300,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     private fun handleUiState(uiState: FlashSaleListUiState) {
         renderLoadingState(uiState.isLoading)
         renderSortFilter(uiState)
-        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.searchResultCount, uiState.totalFlashOnCurrentPage)
+        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.totalFlashSaleOnCurrentPage, uiState.totalFlashSale)
         refreshScrollState(uiState.allItems)
         renderScrollUpButton(uiState.allItems.size)
     }
@@ -329,27 +329,28 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     private fun renderEmptyState(
         isLoading: Boolean,
         isUsingFilter: Boolean,
-        searchResultCount: Int,
-        totalFlashOnCurrentPage: Int
+        totalFlashSaleOnCurrentPage: Int,
+        totalFlashSale: Int
     ) {
         if (isLoading) {
             binding?.emptyState?.gone()
         } else {
-            handleEmptyState(isUsingFilter, searchResultCount, totalFlashOnCurrentPage)
+            handleEmptyState(isUsingFilter, totalFlashSaleOnCurrentPage, totalFlashSale)
         }
     }
 
     private fun handleEmptyState(
         isUsingFilter: Boolean,
-        searchResultCount: Int,
-        totalFlashOnCurrentPage: Int
+        totalFlashSaleOnCurrentPage: Int,
+        totalFlashSale: Int
     ) {
+        val isSearchNotFound = isUsingFilter && totalFlashSaleOnCurrentPage.isZero()
+        val isNoAvailableFlashSale = totalFlashSaleOnCurrentPage.isZero() && totalFlashSale.isZero()
+
         when {
-            totalFlashOnCurrentPage.isZero() && searchResultCount.isZero() -> binding?.emptyState?.gone()
-            searchResultCount.isZero() -> displayEmptySearchResult()
-            searchResultCount.isMoreThanZero() -> binding?.emptyState?.gone()
-            isUsingFilter && searchResultCount == 0 -> displayEmptySearchResult()
-            !isUsingFilter && searchResultCount == 0 -> displayNoFlashSaleAvailable()
+            isNoAvailableFlashSale -> displayNoFlashSaleAvailable()
+            isSearchNotFound ->  displayEmptySearchResult()
+            else -> binding?.emptyState?.gone()
         }
     }
 

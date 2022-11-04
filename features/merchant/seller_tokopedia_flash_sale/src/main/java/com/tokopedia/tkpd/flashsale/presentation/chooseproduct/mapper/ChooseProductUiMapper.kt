@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper
 
 import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
@@ -72,13 +71,14 @@ object ChooseProductUiMapper {
         productCount: Int,
         maxProduct: Int,
         criteriaList: List<CriteriaSelection>,
-        selectedProductIds: List<Long>
+        submittedProductIds: List<Long>,
+        selectedProductList: List<ChooseProductItem>
     ): Boolean {
-        val productValidation = productCount < maxProduct && productCount.isMoreThanZero()
+        val productValidation = productCount <= maxProduct && selectedProductList.isNotEmpty()
         val criteriaValidation = criteriaList.validateMax()
-        val hasPartialSelected = selectedProductIds.isNotEmpty()
+        val hasPartialSelected = submittedProductIds.isNotEmpty()
         return if (!criteriaValidation && hasPartialSelected) {
-            true
+            selectedProductList.isNotEmpty()
         } else {
             productValidation && criteriaValidation
         }
@@ -98,17 +98,24 @@ object ChooseProductUiMapper {
         return productCount.orZero() >= MAX_PRODUCT_SELECTION
     }
 
-    fun isExceedMaxQuota(productCount: Int, maxProduct: Int): Boolean {
-        return productCount.orZero() >= maxProduct
+    fun isExceedMaxQuota(
+        productCount: Int, 
+        maxProduct: Int,
+        remainingQuota: Int,
+        selectedProductList: List<ChooseProductItem>): Boolean {
+        return productCount >= maxProduct || selectedProductList.size >= remainingQuota
     }
 
     fun getSelectionValidationResult(
         selectedProductCount: Int,
         criteriaList: List<CriteriaSelection>,
-        maxSelectedProduct: Int
+        maxSelectedProduct: Int,
+        remainingQuota: Int,
+        selectedProductList: List<ChooseProductItem>
     ): SelectionValidationResult {
         val isExceedMaxProduct = isExceedMaxProduct(selectedProductCount)
-        val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, maxSelectedProduct)
+        val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, maxSelectedProduct,
+            remainingQuota, selectedProductList)
         val disabledCriteriaIds = criteriaList.getDisabledCriteriaIds()
         return SelectionValidationResult(isExceedMaxProduct, isExceedMaxQuota, disabledCriteriaIds)
     }

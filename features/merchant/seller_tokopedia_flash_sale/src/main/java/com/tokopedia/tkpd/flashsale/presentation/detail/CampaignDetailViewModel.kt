@@ -421,7 +421,8 @@ class CampaignDetailViewModel @Inject constructor(
             discountedPrice,
             submittedProductStockStatus,
             warehouses,
-            countLocation
+            countLocation,
+            statusText
         )
     }
 
@@ -443,7 +444,8 @@ class CampaignDetailViewModel @Inject constructor(
             discountedPrice,
             submittedProductStockStatus,
             warehouses,
-            countLocation
+            countLocation,
+            statusText
         )
     }
 

@@ -198,24 +198,33 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     }
 
     private fun setupFilterCategory() {
-        filterCategory.refChipUnify.setChevronClickListener {
+        val action = {
             val categoryData = viewModel.categoryAllList.value.orEmpty()
             val selectedData = viewModel.filterCategory.map { it.toString() }
             categoryFilterBottomSheet = commonBottomSheetInitializer.initFilterCategoryBottomSheet(selectedData, categoryData)
             categoryFilterBottomSheet?.apply {
                 setOnApplyButtonClick {
                     viewModel.filterCategory = getAllSelectedItems().map { it.id.toLongOrZero() }
-                    filterCategory.selectedItem = ArrayList(getAllSelectedItems().map { it.name })
+                    filterCategory.selectedItem = if (getAllSelectedItems().isEmpty()) {
+                        arrayListOf(getString(R.string.stfs_all_category))
+                    } else {
+                        arrayListOf(getString(
+                            R.string.stfs_placeholder_selected_category_count,
+                            getAllSelectedItems().size)
+                        )
+                    }
                     filterCategory.refreshHighlight()
                     loadInitialData()
                 }
             }
             categoryFilterBottomSheet?.show(childFragmentManager, "")
         }
+        filterCategory.listener = { action() }
+        filterCategory.refChipUnify.setChevronClickListener { action() }
     }
 
     private fun setupFilterCriteria() {
-        filterCriteria.refChipUnify.setChevronClickListener {
+        val action = {
             criteriaFilterBottomSheet = commonBottomSheetInitializer.initCategoryFilterBottomSheet(viewModel.filterCriteria)
             criteriaFilterBottomSheet?.apply {
                 setOnApplyButtonClick {
@@ -227,6 +236,8 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
             }
             criteriaFilterBottomSheet?.show(childFragmentManager, "")
         }
+        filterCriteria.listener = { action() }
+        filterCriteria.refChipUnify.setChevronClickListener { action() }
     }
 
     private fun setupCategorySelection() {
@@ -302,7 +313,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
                 else chooseProductAdapter.enable()
 
                 chooseProductAdapter.disableByCriteria(it.disabledCriteriaIds, getString(R.string.chooseproduct_error_max_criteria_item))
-                chooseProductAdapter.forceEnableProduct(viewModel.selectedProductIds.map { id -> id.toString() })
+                chooseProductAdapter.forceEnableProduct(viewModel.submittedProductIds.map { id -> id.toString() })
             }
         }
     }
