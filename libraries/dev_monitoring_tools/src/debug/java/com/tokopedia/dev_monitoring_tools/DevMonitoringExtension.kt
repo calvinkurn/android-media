@@ -12,7 +12,7 @@ object DevMonitoringExtension {
 
     fun initLeakCanary(enable: Boolean = true, application:Application, gson: Gson) {
         LeakCanary.config = LeakCanary.config.copy(dumpHeap = enable)
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             TokoLeakPublisher.getInstance(application, gson, enable)
         }
     }
