@@ -1,6 +1,6 @@
 {
   "readme": "Official store page impression and click",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "eventAction": "click banner - category icon",
