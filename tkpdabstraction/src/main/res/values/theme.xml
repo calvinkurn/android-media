@@ -110,7 +110,7 @@
         <item name="tabMode">fixed</item>
     </style>
 
-    <style name="Theme.AppCompat.ChatbotOnboarding" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.AppCompat.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">@android:color/transparent</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
