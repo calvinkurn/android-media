@@ -10,15 +10,11 @@ class PrivacyCenterViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    var isUsingDarkMode = false
-        private set
-
     init {
-        isUsingDarkMode()
     }
 
-    private fun isUsingDarkMode() {
-        isUsingDarkMode = darkModeUseCase.isDarkModeActivated()
+    fun isUsingDarkMode(): Boolean {
+        return darkModeUseCase.isDarkModeActivated()
     }
 
 }

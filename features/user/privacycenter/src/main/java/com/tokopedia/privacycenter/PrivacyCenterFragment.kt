@@ -1,5 +1,6 @@
 package com.tokopedia.privacycenter
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -77,21 +78,21 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
             val backIconWhite = getIconUnifyDrawable(requireActivity(), IconUnify.ARROW_BACK, ContextCompat.getColor(requireActivity(), android.R.color.white))
             binding?.unifyToolbar?.headerView?.setTextColor(textColor)
             binding?.unifyToolbar?.navigationIcon = backIconWhite
-            binding?.unifyToolbar?.setBackgroundColor(Color.TRANSPARENT)
             requireActivity().window.statusBarColor = Color.TRANSPARENT
 
             setTextStatusBar(true)
         } else {
-            val textColor = getTextColor(getWhite = !viewModel.isUsingDarkMode)
-            val backIconWhite = getIconBackWithColor(getWhite = !viewModel.isUsingDarkMode)
+            val textColor = getTextColor(getWhite = isUsingDarkMode())
+            val backIconWhite = getIconBackWithColor(getWhite = isUsingDarkMode())
             binding?.unifyToolbar?.headerView?.setTextColor(textColor)
             binding?.unifyToolbar?.navigationIcon = backIconWhite
             requireActivity().window.statusBarColor = MethodChecker.getColor(requireActivity(), com.tokopedia.unifyprinciples.R.color.Unify_Background)
-
-
-            binding?.unifyToolbar?.setBackgroundColor(MethodChecker.getColor(requireActivity(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
-            setTextStatusBar(setToWhite = !viewModel.isUsingDarkMode)
+            setTextStatusBar(setToWhite = isUsingDarkMode())
         }
+    }
+
+    private fun isUsingDarkMode(): Boolean {
+        return requireActivity().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
     private fun setTextStatusBar(setToWhite: Boolean) {
