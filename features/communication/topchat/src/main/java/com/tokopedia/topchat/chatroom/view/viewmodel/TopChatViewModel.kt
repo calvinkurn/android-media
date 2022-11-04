@@ -272,7 +272,7 @@ open class TopChatViewModel @Inject constructor(
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
 
-    var isOnStop = false
+    private var isOnStop = false
     var isFromBubble = false
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
