@@ -573,7 +573,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         super.onResume()
         this.isFromBubble = activity?.isFromBubble() == true
         if (isFromBubble) {
-            viewModel.onResume(isFromBubble)
+            viewModel.retryConnectWebSocketFromBubble()
             TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
         }
     }
@@ -581,7 +581,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onStop() {
         super.onStop()
         if (isFromBubble) {
-            viewModel.onStop(isFromBubble)
+            viewModel.closeWebSocketFromBubble()
         }
     }
 

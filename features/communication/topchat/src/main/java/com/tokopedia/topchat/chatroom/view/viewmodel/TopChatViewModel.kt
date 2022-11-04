@@ -283,10 +283,8 @@ open class TopChatViewModel @Inject constructor(
     /**
      * If user hide bubble chat, close WebSocket
      */
-    fun onStop(isFromBubble: Boolean) {
-        if (isFromBubble) {
-            chatWebSocket.close()
-        }
+    fun closeWebSocketFromBubble() {
+        chatWebSocket.close()
     }
 
     /**
@@ -294,8 +292,8 @@ open class TopChatViewModel @Inject constructor(
      * user has connection before, then reconnect
      * If user does not have any connection before, skip
      */
-    fun onResume(isFromBubble: Boolean) {
-        if (isFromBubble && chatWebSocket.hasConnection()) {
+    fun retryConnectWebSocketFromBubble() {
+        if (chatWebSocket.hasConnection()) {
             retryConnectWebSocket()
         }
     }
