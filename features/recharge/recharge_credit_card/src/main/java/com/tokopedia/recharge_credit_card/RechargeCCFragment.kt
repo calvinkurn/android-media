@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -420,6 +421,7 @@ class RechargeCCFragment :
                 rechargeSubmitCCViewModel.createMapParam(clientNumber, operatorId, productId,
                     userSession.userId)
             }
+            Toast.makeText(context, "mapParam: $mapParam", Toast.LENGTH_LONG).show()
 
             rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
@@ -518,6 +520,8 @@ class RechargeCCFragment :
     override fun onClearInput() {
         operatorIdSelected = ""
         productIdSelected = ""
+
+        // TODO: [Misael] check this
     }
 
     override fun onClickNavigationIcon() {
@@ -657,6 +661,7 @@ class RechargeCCFragment :
                             orderClientNumber.operatorId,
                             orderClientNumber.inputNumberActionTypeIndex,
                         )
+                        token = orderClientNumber.token
                     } else {
                         handleCallbackAnySavedNumberCancel()
                     }
