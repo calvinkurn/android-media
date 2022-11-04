@@ -753,41 +753,23 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    if (result.data.status == OK) {
-                        if (result.data.errorMessage.isNotEmpty()) {
-                            if (result.data.errorMessage[0].isNotEmpty()) {
-                                showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
-                            } else {
-                                activity?.let { fragmentActivity ->
-                                    view?.let { view ->
-                                        WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
-                                            activity = fragmentActivity,
-                                            data = result.data.data,
-                                            paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
-                                            userId = userSession.userId,
-                                            view = view,
-                                            childFragmentManager = childFragmentManager,
-                                            fragment = this@WishlistCollectionDetailFragment)
-                                    }
-                                }
-                            }
-                        } else {
-                            activity?.let { fragmentActivity ->
-                                view?.let { view ->
-                                    WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
-                                        activity = fragmentActivity,
-                                        data = result.data.data,
-                                        paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
-                                        userId = userSession.userId,
-                                        view = view,
-                                        childFragmentManager = childFragmentManager,
-                                        fragment = this@WishlistCollectionDetailFragment)
-                                }
+                    if (result.data.status == OK && result.data.errorMessage.isEmpty()) {
+                        activity?.let { fragmentActivity ->
+                            view?.let { view ->
+                                WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
+                                    activity = fragmentActivity,
+                                    data = result.data.data,
+                                    paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
+                                    userId = userSession.userId,
+                                    view = view,
+                                    childFragmentManager = childFragmentManager,
+                                    fragment = this@WishlistCollectionDetailFragment)
                             }
                         }
                     } else {
-                        val errorMessage = getString(Rv2.string.wishlist_v2_common_error_msg)
-                        showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+                        if (result.data.errorMessage.isNotEmpty()) {
+                            showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
+                        }
                     }
                 }
                 is Fail -> {

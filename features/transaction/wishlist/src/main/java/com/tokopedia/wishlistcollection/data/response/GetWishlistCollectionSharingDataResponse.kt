@@ -13,7 +13,7 @@ data class GetWishlistCollectionSharingDataResponse(
         val errorMessage: List<String> = emptyList(),
 
         @SerializedName("data")
-        val data: Data,
+        val data: Data = Data(),
 
         @SerializedName("status")
         val status: String = ""
@@ -30,7 +30,7 @@ data class GetWishlistCollectionSharingDataResponse(
             val emptyWishlistImageUrl: String = "",
 
             @SerializedName("collection")
-            val collection: Collection,
+            val collection: Collection = Collection(),
 
             @SerializedName("items")
             val items: List<ItemsItem> = emptyList()

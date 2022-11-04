@@ -156,6 +156,22 @@ class WishlistCollectionDetailViewModelTest {
         UpdateWishlistCollectionResponse.UpdateWishlistCollection(status = "ERROR", errorMessage = arrayListOf("error"))
     )
 
+    private var getCollectionSharingData_StatusOk_ErrorEmpty = GetWishlistCollectionSharingDataResponse(
+        GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "OK", errorMessage = emptyList())
+    )
+
+    private var getCollectionSharingData_StatusOk_ErrorNotEmpty = GetWishlistCollectionSharingDataResponse(
+        GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "OK", errorMessage = arrayListOf("error"))
+    )
+
+    private var getCollectionSharingData_StatusNotOk_ErrorEmpty = GetWishlistCollectionSharingDataResponse(
+        GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "ERROR", errorMessage = emptyList())
+    )
+
+    private var getCollectionSharingData_StatusNotOk_ErrorNotEmpty = GetWishlistCollectionSharingDataResponse(
+        GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "ERROR", errorMessage = arrayListOf("error"))
+    )
+
     private val throwable = Fail(Throwable(message = "Error"))
 
     private val getWishlistCollectionItemsParams = GetWishlistCollectionItemsParams()
@@ -244,6 +260,7 @@ class WishlistCollectionDetailViewModelTest {
     private var addWishlistParam = AddWishlistCollectionsHostBottomSheetParams()
 
     private var updateWishlistAccessParam = UpdateWishlistCollectionParams()
+    private var collectionId = 1L
 
     private val timber = WishlistMockTimber()
 
@@ -1000,5 +1017,78 @@ class WishlistCollectionDetailViewModelTest {
 
         //then
         assert(wishlistCollectionDetailViewModel.updateWishlistCollectionResult.value is Fail)
+    }
+
+    // get collection sharing data
+    @Test
+    fun `Execute GetCollectionSharingData Success Status OK And Error is Empty`() {
+        //given
+        coEvery {
+            getWishlistCollectionSharingDataUseCase(collectionId)
+        } returns getCollectionSharingData_StatusOk_ErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.getWishlistCollectionSharingData(collectionId)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.value is Success)
+        assert((wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.value as Success).data.errorMessage.isEmpty())
+    }
+
+    @Test
+    fun `Execute GetCollectionSharingData Success Status OK And Error is not Empty`() {
+        //given
+        coEvery {
+            getWishlistCollectionSharingDataUseCase(collectionId)
+        } returns getCollectionSharingData_StatusOk_ErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.getWishlistCollectionSharingData(collectionId)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute GetCollectionSharingData Success Not OK And Error is Empty`() {
+        //given
+        coEvery {
+            getWishlistCollectionSharingDataUseCase(collectionId)
+        } returns getCollectionSharingData_StatusNotOk_ErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.getWishlistCollectionSharingData(collectionId)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute GetCollectionSharingData Status Not OK And Error is not Empty`() {
+        //given
+        coEvery {
+            getWishlistCollectionSharingDataUseCase(collectionId)
+        } returns getCollectionSharingData_StatusNotOk_ErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.getWishlistCollectionSharingData(collectionId)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute GetCollectionSharingData Failed`() {
+        //given
+        updateWishlistAccessParam = UpdateWishlistCollectionParams(id = 1L)
+        coEvery {
+            getWishlistCollectionSharingDataUseCase(collectionId)
+        } throws throwable.throwable
+
+        //when
+        wishlistCollectionDetailViewModel.getWishlistCollectionSharingData(collectionId)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.value is Fail)
     }
 }

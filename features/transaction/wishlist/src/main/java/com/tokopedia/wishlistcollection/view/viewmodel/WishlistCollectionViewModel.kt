@@ -165,7 +165,7 @@ class WishlistCollectionViewModel @Inject constructor(
     fun getWishlistCollectionSharingData(collectionId: Long) {
         launchCatchError(block = {
             val result = getWishlistCollectionSharingDataUseCase(collectionId)
-            if (result.getWishlistCollectionSharingData.status == WishlistV2CommonConsts.OK) {
+            if (result.getWishlistCollectionSharingData.status == OK && result.getWishlistCollectionSharingData.errorMessage.isEmpty()) {
                 _getWishlistCollectionSharingDataResult.value = Success(result.getWishlistCollectionSharingData)
             } else {
                 _getWishlistCollectionSharingDataResult.value = Fail(Throwable())
@@ -178,7 +178,7 @@ class WishlistCollectionViewModel @Inject constructor(
     fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
         launchCatchError(block = {
             val result = updateWishlistCollectionUseCase(updateWishlistCollectionParams)
-            if (result.updateWishlistCollection.status == WishlistV2CommonConsts.OK && result.updateWishlistCollection.data.success) {
+            if (result.updateWishlistCollection.status == OK && result.updateWishlistCollection.data.success) {
                 _updateWishlistCollectionResult.value = Success(result.updateWishlistCollection)
             } else {
                 _updateWishlistCollectionResult.value = Fail(Throwable())
