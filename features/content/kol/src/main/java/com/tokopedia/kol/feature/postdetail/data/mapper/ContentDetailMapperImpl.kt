@@ -21,9 +21,14 @@ class ContentDetailMapperImpl : ContentDetailMapper {
         action = action
     )
 
-    override fun mapShopFollow(rowNumber: Int, action: ShopFollowAction) = ShopFollowModel(
+    override fun mapShopFollow(
+        rowNumber: Int,
+        action: ShopFollowAction,
+        isFollowedFromRSRestrictionBottomSheet: Boolean
+    ): ShopFollowModel = ShopFollowModel(
         rowNumber = rowNumber,
-        action = action
+        action = action,
+        isFollowedFromRSRestrictionBottomSheet = isFollowedFromRSRestrictionBottomSheet
     )
 
     override fun mapDeleteContent(rowNumber: Int) = DeleteContentModel(rowNumber)
