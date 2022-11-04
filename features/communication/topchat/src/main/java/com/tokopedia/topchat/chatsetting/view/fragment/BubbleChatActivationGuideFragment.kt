@@ -19,6 +19,7 @@ import com.tokopedia.topchat.common.util.Utils.isBubbleChatEnabled
 import com.tokopedia.topchat.common.util.Utils.setTextMakeHyperlink
 import com.tokopedia.topchat.databinding.FragmentBubbleChatActivationGuideBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.webview.KEY_ALLOW_OVERRIDE
 import timber.log.Timber
 
 class BubbleChatActivationGuideFragment: Fragment() {
@@ -62,10 +63,9 @@ class BubbleChatActivationGuideFragment: Fragment() {
             setTextMakeHyperlink(
                 getString(R.string.topchat_bubble_activation_guide_seller_edu_label)
             ) {
-                RouteManager.route(context,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                val bubbleChatHelpPageUrl = String.format("%s?url=%s&${KEY_ALLOW_OVERRIDE}=true", ApplinkConst.WEBVIEW,
                     BubbleChat.Url.BUBBLE_CHAT_HELP_PAGE_URL)
-                )
+                RouteManager.route(context, bubbleChatHelpPageUrl)
             }
         }
     }
