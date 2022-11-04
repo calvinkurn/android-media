@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.domain.usecases
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
@@ -20,7 +21,8 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class GetBuyerOrderDetailDataUseCase @Inject constructor(
-    private val getP0DataUseCase: GetP0DataUseCase, private val getP1DataUseCase: GetP1DataUseCase
+    private val getP0DataUseCase: GetP0DataUseCase,
+    private val getP1DataUseCase: GetP1DataUseCase
 ) {
 
     suspend operator fun invoke(
@@ -44,7 +46,9 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
                 if (getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Complete.Success) {
                     val getP1DataParams = GetP1DataParams(
                         getBuyerOrderDetailRequestState.result.hasResoStatus.orFalse(),
+                        getBuyerOrderDetailRequestState.result.hasInsurance.orFalse(),
                         getBuyerOrderDetailRequestState.result.orderId.toLongOrZero(),
+                        getBuyerOrderDetailRequestState.result.invoice,
                         shouldCheckCache
                     )
                     emitAll(combineWithP1(getP1DataParams, p0DataRequestState))
@@ -52,7 +56,8 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
                     emit(
                         GetBuyerOrderDetailDataRequestState.Complete(
                             p0DataRequestState, GetP1DataRequestState.Complete(
-                                GetOrderResolutionRequestState.Complete.Error(null)
+                                GetOrderResolutionRequestState.Complete.Error(null),
+                                GetInsuranceDetailRequestState.Complete.Error(null),
                             )
                         )
                     )
@@ -98,7 +103,8 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
             GetBuyerOrderDetailDataRequestState.Complete(
                 GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)),
                 GetP1DataRequestState.Complete(
-                    GetOrderResolutionRequestState.Complete.Error(it)
+                    GetOrderResolutionRequestState.Complete.Error(it),
+                    GetInsuranceDetailRequestState.Complete.Error(it)
                 )
             )
         )
