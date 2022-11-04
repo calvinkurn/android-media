@@ -763,7 +763,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
-        Log.e("I am Url",url);
         Activity activity = getActivity();
         if (activity == null) {
             return false;
