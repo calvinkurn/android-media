@@ -93,6 +93,8 @@ class UserProfileViewModel @AssistedInject constructor(
 
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
 
+    var ugcOnboardingOpenFrom: Int = 0
+
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
@@ -325,6 +327,8 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     companion object {
+        const val UGC_ONBOARDING_OPEN_FROM_LIVE = 1
+        const val UGC_ONBOARDING_OPEN_FROM_POST = 2
         private const val FOLLOW_TYPE_SHOP = 2
         private const val FOLLOW_TYPE_BUYER = 3
     }
