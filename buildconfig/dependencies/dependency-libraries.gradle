@@ -94,6 +94,8 @@ ext {
             pageInfoPusher          : ":libraries:page_info_pusher",
             preReleaseInspector     : ":libraries:pre_release_inspector",
             preReleaseInspectorNoop : ":libraries:pre_release_inspector_no_op",
+            journeyDebugger         : ":libraries:journey_debugger",
+            journeyDebuggerNoop     : ":libraries:journey_debugger_no_op",
             diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",

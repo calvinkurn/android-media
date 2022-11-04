@@ -333,10 +333,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initFireBase()
         registerUploadImageReceiver()
         initSmoothScroller()
+        initBubbleChatFlag()
     }
 
     private fun initSmoothScroller() {
         smoothScroller = CenterSmoothScroller(context)
+    }
+
+    private fun initBubbleChatFlag() {
+        isFromBubble = activity?.isFromBubble() == true
+        if (isFromBubble) {
+            TopChatAnalyticsKt.eventClickBubbleChat(session.shopId, opponentId, messageId)
+        }
     }
 
     override fun onCreateView(
@@ -3177,6 +3185,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         if (isFromBubble) {
             TopChatAnalyticsKt.clickLongHoldMessageFromBubble(msg.replyId)
+        } else {
+            TopChatAnalyticsKt.eventTapAndHoldBubbleChat(msg.replyId)
         }
     }
 

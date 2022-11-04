@@ -418,7 +418,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun shouldShowBubbleTicker(): Boolean {
-        return sharedPref.getBoolean(getTickerPrefName(), true) &&
+        return sharedPref.getBoolean(BUBBLE_TICKER_PREF_NAME, true) &&
             (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) &&
             getRollenceIsBubbleChatEnabled()
     }

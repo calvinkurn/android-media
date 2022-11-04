@@ -497,6 +497,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun onDismissTicker(element: ChatListTickerUiModel) {
+        adapter?.removeElement(element)
         if (element.sharedPreferenceKey.isNotBlank()) {
             viewModel.saveTickerPref(ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME)
         }
