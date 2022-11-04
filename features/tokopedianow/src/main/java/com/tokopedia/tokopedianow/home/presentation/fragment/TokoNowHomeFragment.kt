@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -153,6 +154,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewMod
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -214,6 +216,8 @@ class TokoNowHomeFragment: Fragment(),
         const val KEY_IS_OPEN_MINICART_LIST = "isMiniCartOpen"
         const val KEY_SERVICE_TYPE = "service_type"
         const val URL_IMAGE_DIALOG_REFERRAL = "https://images.tokopedia.net/img/tokonow/referral/surprise gift.png"
+        private const val LOTTIE_REFERRAL = "https://assets.tokopedia.net/asts/lottie/android/tokonow/tokonow_animation_referral.json"
+        const val QUERY_REFERRAL_CODE = "referralcode"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -332,7 +336,7 @@ class TokoNowHomeFragment: Fragment(),
         updateCurrentPageLocalCacheModelData()
         switchServiceOrLoadLayout()
         initScreenShotDetector()
-        showDialogReceiverReferral()
+        getDialogReceiverReferral()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -1197,6 +1201,16 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.updateToolbarNotification) { update ->
             if(update) updateToolbarNotification()
         }
+
+        observe(viewModelTokoNow.referralEvaluate) {
+            when (it) {
+                is Success -> {
+                    showDialogReceiverReferral(it.data)
+                } else -> {
+                    showDialogReceiverReferral(HomeReceiverReferralDialogUiModel("asddasd"))
+                }
+            }
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -1810,6 +1824,8 @@ class TokoNowHomeFragment: Fragment(),
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 evaluateHomeComponentOnScroll(recyclerView, dy)
+                val position = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                val vh = recyclerView.findViewHolderForAdapterPosition(position)
             }
         }
     }
@@ -1925,17 +1941,47 @@ class TokoNowHomeFragment: Fragment(),
         return playWidgetCoordinator
     }
 
-    private fun showDialogReceiverReferral() {
+    private fun showDialogReceiverReferral(data: HomeReceiverReferralDialogUiModel) {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
-            dialog.setTitle("Kamu dapat kupon cashback 25rb dari temanmu")
-            dialog.setDescription("Segera pakai kupon di transaksi pertamamu, ya!(S&K berlaku")
-            dialog.setPrimaryCTAText("Mulai Belanja")
+//
+            dialog.setTitle(data.title)
+            dialog.setDescription(data.description)
+            dialog.setPrimaryCTAText(data.ctaText)
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
             }
+
+            val newView = LottieAnimationView(context)
+            newView.setAnimationFromUrl(LOTTIE_REFERRAL)
             dialog.setImageUrl(URL_IMAGE_DIALOG_REFERRAL)
+            dialog.setOnShowListener {
+                newView.repeatCount = 1
+                newView.playAnimation()
+            }
+            replaceImage(newView, dialog.dialogImage)
             dialog.show()
+        }
+    }
+
+    private fun replaceImage(newView: View, oldView: View) {
+        val parent = oldView.parent as ViewGroup? ?: return
+        val index = parent.indexOfChild(newView)
+        removeView(oldView)
+        removeView(newView)
+        parent.addView(newView, index)
+    }
+
+    private fun removeView(view: View) {
+        val parent = view.parent as ViewGroup?
+        parent?.removeView(view)
+    }
+
+    private fun getDialogReceiverReferral() {
+//        val referralCode = activity?.intent?.data?.getQueryParameter(QUERY_REFERRAL_CODE)
+        val referralCode = "01246015e809300149b0020"
+        if (!(referralCode.isNullOrEmpty())) {
+            viewModelTokoNow.getReceiverHomeDialog(referralCode)
         }
     }
 

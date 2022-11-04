@@ -37,6 +37,10 @@ internal object GetReferralSenderHome: GqlQueryInterface {
                 appLink
                 type
             }
+            header {
+                title
+                subtitle
+            }
           }
         }
         """.trimIndent()

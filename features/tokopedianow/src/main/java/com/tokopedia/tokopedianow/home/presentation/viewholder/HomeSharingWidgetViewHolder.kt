@@ -35,6 +35,7 @@ class HomeSharingWidgetViewHolder(
         private const val LOTTIE_REFERRAL = "https://assets.tokopedia.net/asts/lottie/android/tokonow/tokonow_animation_referral.json"
         private const val IMG_SHARING_REFERRAL_BG_BTM = "https://images.tokopedia.net/img/tokonow/tokonow/bg_referral_btm/Fill.png"
         private const val IMG_SHARING_REFERRAL_BG_TOP = "https://images.tokopedia.net/img/tokonow/tokonow_bg_referral_top/Line.png"
+        private const val ANIMATION_REPEAT_COUNT = 1
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_sharing_widget
@@ -45,6 +46,13 @@ class HomeSharingWidgetViewHolder(
     override fun bind(element: HomeSharingWidgetUiModel) {
         if (element.state == HomeLayoutItemState.LOADED) {
             checkUiModel(element)
+        }
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        binding?.apply {
+            lottieReferral.clearAnimation()
         }
     }
 
@@ -83,7 +91,8 @@ class HomeSharingWidgetViewHolder(
                 stringRes = R.string.tokopedianow_home_referral_widget_desc_sender,
                 referral = element
             )
-            btnSharing.text = element.textButton
+            btnSharing.text = getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
+            tpTitle.text = getString(R.string.tokopedianow_home_referral_widget_title, element.maxReward)
             containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
             iuSharing.hide()
             playAnimation()
@@ -120,7 +129,7 @@ class HomeSharingWidgetViewHolder(
         binding?.apply {
             lottieReferral.setAnimationFromUrl(LOTTIE_REFERRAL)
             lottieReferral.playAnimation()
-            lottieReferral.repeatCount = LottieDrawable.INFINITE
+            lottieReferral.repeatCount = ANIMATION_REPEAT_COUNT
         }
     }
 

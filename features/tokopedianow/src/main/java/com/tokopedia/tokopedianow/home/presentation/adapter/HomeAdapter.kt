@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowListAdapter
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
@@ -23,5 +24,9 @@ class HomeAdapter(
 
     fun findPosition(visitable: Visitable<*>): Int {
         return data.indexOf(visitable)
+    }
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
+        super.onBindViewHolder(holder, position)
     }
 }

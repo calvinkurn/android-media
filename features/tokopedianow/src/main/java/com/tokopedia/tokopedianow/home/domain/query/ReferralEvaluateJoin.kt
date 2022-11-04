@@ -26,6 +26,12 @@ object ReferralEvaluateJoin : GqlQueryInterface {
                       subtitle
                       description
                     }
+                    actionButton {
+                      text
+                      url
+                      appLink
+                      type
+                    }
                 }
             }
         """.trimIndent()

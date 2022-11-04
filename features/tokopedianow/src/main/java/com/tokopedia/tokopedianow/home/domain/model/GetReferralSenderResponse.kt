@@ -19,7 +19,10 @@ data class GetReferralSenderHomeResponse(
         val sharingMetaData: SharingMetadata,
         @Expose
         @SerializedName("actionButton")
-        val actionButton: ActionButton
+        val actionButton: ActionButton,
+        @Expose
+        @SerializedName("header")
+        val header: HeaderSenderWidget
     ) {
         data class ResultStatus(
             @Expose
@@ -54,18 +57,25 @@ data class GetReferralSenderHomeResponse(
             val sharingUrl: String
         )
         data class ActionButton(
-            @Expose
             @SerializedName("text")
             val text: String,
-            @Expose
+
             @SerializedName("url")
             val url: String,
-            @Expose
+
             @SerializedName("appLink")
             val appLink: String,
-            @Expose
+
             @SerializedName("type")
             val type: String
+        )
+
+        data class HeaderSenderWidget(
+            @SerializedName("title")
+            val title: String = "",
+
+            @SerializedName("subtitle")
+            val subtitle: String = "",
         )
     }
 }
