@@ -293,7 +293,7 @@ import javax.inject.Inject
  * Bottom separator : ProductVariantViewHolder, ProductNotifyMeViewHolder
  * Top separator : All of the view holder except above
  */
-
+@Suppress("LateinitUsage")
 open class DynamicProductDetailFragment :
     BaseProductDetailFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
     DynamicProductDetailListener,
@@ -2468,7 +2468,7 @@ open class DynamicProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false
+                    ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -2901,8 +2901,8 @@ open class DynamicProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getDynamicProductInfoP1?.parentProductId
-                                ?: ""
+                        viewModel.getDynamicProductInfoP1?.parentProductId
+                            ?: ""
                         }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
@@ -4045,8 +4045,10 @@ open class DynamicProductDetailFragment :
             val constraintSet = ConstraintSet()
             constraintSet.clone(containerDynamicProductDetail)
             constraintSet.connect(
-                swipeRefreshPdp.id, ConstraintSet.TOP,
-                containerDynamicProductDetail.id, ConstraintSet.TOP
+                swipeRefreshPdp.id,
+                ConstraintSet.TOP,
+                containerDynamicProductDetail.id,
+                ConstraintSet.TOP
             )
             constraintSet.applyTo(containerDynamicProductDetail)
         }
@@ -4061,8 +4063,10 @@ open class DynamicProductDetailFragment :
             val constraintSet = ConstraintSet()
             constraintSet.clone(containerDynamicProductDetail)
             constraintSet.connect(
-                swipeRefreshPdp.id, ConstraintSet.TOP,
-                pdpNavtoolbar.id, ConstraintSet.BOTTOM
+                swipeRefreshPdp.id,
+                ConstraintSet.TOP,
+                pdpNavtoolbar.id,
+                ConstraintSet.BOTTOM
             )
             constraintSet.applyTo(containerDynamicProductDetail)
         }
@@ -4712,7 +4716,7 @@ open class DynamicProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-                ?.restrictionShopFollowersType() == false
+            ?.restrictionShopFollowersType() == false
         ) {
             return
         }
@@ -5116,76 +5120,79 @@ open class DynamicProductDetailFragment :
         componentTrackDataModel: ComponentTrackDataModel?
     ) {
         val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
-        viewModel.addWishListV2(productId, object : WishlistV2ActionListener {
-            override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                try {
-                    val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(
-                        context,
-                        throwable
-                    )
-                    val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
-                    ProductDetailLogger.logMessage(
-                        errorMsg,
-                        WISHLIST_ERROR_TYPE,
-                        productId,
-                        viewModel.deviceId,
-                        extras
-                    )
-                    view?.let { v ->
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
-                    }
-                } catch (t: Throwable) {
-                    Timber.d(t)
-                }
-            }
-
-            override fun onSuccessAddWishlist(
-                result: AddToWishlistV2Response.Data.WishlistAddV2,
-                productId: String
-            ) {
-                context?.let { context ->
-                    if (result.success &&
-                        WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)
-                    ) {
-                        val applinkCollection =
-                            "$WISHLIST_COLLECTION_BOTTOMSHEET?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
-                        val intentBottomSheetWishlistCollection =
-                            RouteManager.getIntent(context, applinkCollection)
-                        val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()
-                            ?.toIntOrNull() == 0
-                        intentBottomSheetWishlistCollection.putExtra(
-                            WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
-                            !isOos
+        viewModel.addWishListV2(
+            productId,
+            object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    try {
+                        val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(
+                            context,
+                            throwable
                         )
-                        startActivityForResult(
-                            intentBottomSheetWishlistCollection,
-                            REQUEST_CODE_ADD_WISHLIST_COLLECTION
+                        val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
+                        ProductDetailLogger.logMessage(
+                            errorMsg,
+                            WISHLIST_ERROR_TYPE,
+                            productId,
+                            viewModel.deviceId,
+                            extras
                         )
-                    } else {
                         view?.let { v ->
-                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
-                                result,
-                                context,
-                                v
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                        }
+                    } catch (t: Throwable) {
+                        Timber.d(t)
+                    }
+                }
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    context?.let { context ->
+                        if (result.success &&
+                            WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)
+                        ) {
+                            val applinkCollection =
+                                "$WISHLIST_COLLECTION_BOTTOMSHEET?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
+                            val intentBottomSheetWishlistCollection =
+                                RouteManager.getIntent(context, applinkCollection)
+                            val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()
+                                ?.toIntOrNull() == 0
+                            intentBottomSheetWishlistCollection.putExtra(
+                                WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
+                                !isOos
                             )
+                            startActivityForResult(
+                                intentBottomSheetWishlistCollection,
+                                REQUEST_CODE_ADD_WISHLIST_COLLECTION
+                            )
+                        } else {
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                                    result,
+                                    context,
+                                    v
+                                )
+                            }
+                        }
+                    }
+                    if (result.success) {
+                        updateFabIcon(productId, true)
+                        if (componentTrackDataModel != null) {
+                            trackingEventSuccessAddToWishlist(componentTrackDataModel)
                         }
                     }
                 }
-                if (result.success) {
-                    updateFabIcon(productId, true)
-                    if (componentTrackDataModel != null) {
-                        trackingEventSuccessAddToWishlist(componentTrackDataModel)
-                    }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
                 }
             }
-
-            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-            override fun onSuccessRemoveWishlist(
-                result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                productId: String
-            ) {
-            }
-        })
+        )
     }
 
     private fun updateFabIcon(productId: String, isWishlisted: Boolean) {
@@ -5209,58 +5216,61 @@ open class DynamicProductDetailFragment :
         productId: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
-        viewModel.removeWishListV2(productId, object : WishlistV2ActionListener {
-            override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+        viewModel.removeWishListV2(
+            productId,
+            object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
 
-            override fun onSuccessAddWishlist(
-                result: AddToWishlistV2Response.Data.WishlistAddV2,
-                productId: String
-            ) {
-            }
-
-            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                try {
-                    val errorMsg =
-                        com.tokopedia.network.utils.ErrorHandler.getErrorMessage(
-                            context,
-                            throwable
-                        )
-                    val extras =
-                        mapOf(ProductDetailConstant.WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
-                    ProductDetailLogger.logMessage(
-                        errorMsg,
-                        WISHLIST_ERROR_TYPE,
-                        productId,
-                        viewModel.deviceId,
-                        extras
-                    )
-                    view?.let { v ->
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
-                    }
-                } catch (t: Throwable) {
-                    Timber.d(t)
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
                 }
-            }
 
-            override fun onSuccessRemoveWishlist(
-                result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                productId: String
-            ) {
-                context?.let { context ->
-                    view?.let { v ->
-                        AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
-                            result,
-                            context,
-                            v
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    try {
+                        val errorMsg =
+                            com.tokopedia.network.utils.ErrorHandler.getErrorMessage(
+                                context,
+                                throwable
+                            )
+                        val extras =
+                            mapOf(ProductDetailConstant.WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
+                        ProductDetailLogger.logMessage(
+                            errorMsg,
+                            WISHLIST_ERROR_TYPE,
+                            productId,
+                            viewModel.deviceId,
+                            extras
                         )
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                        }
+                    } catch (t: Throwable) {
+                        Timber.d(t)
                     }
                 }
-                if (result.success) {
-                    updateFabIcon(productId, false)
-                    trackingEventSuccessRemoveFromWishlist(componentTrackDataModel)
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    context?.let { context ->
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
+                                result,
+                                context,
+                                v
+                            )
+                        }
+                    }
+                    if (result.success) {
+                        updateFabIcon(productId, false)
+                        trackingEventSuccessRemoveFromWishlist(componentTrackDataModel)
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun isProductOos(): Boolean {
