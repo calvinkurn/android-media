@@ -7,6 +7,4 @@ interface TopchatWebSocket {
     fun close()
     fun destroy()
     fun sendPayload(wsPayload: String)
-    fun connect(isWebSocketConnected: Boolean)
-    fun hasConnection(): Boolean
 }

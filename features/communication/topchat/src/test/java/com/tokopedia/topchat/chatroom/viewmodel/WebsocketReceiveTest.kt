@@ -21,57 +21,27 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         verify {
-            chatWebSocket.connect(false)
             chatWebSocket.close()
             chatWebSocket.destroy()
         }
     }
 
     @Test
-    fun should_close_websocket_on_stop_when_from_bubble() {
+    fun should_isOnStop_true_stop_when_onStop() {
         // When
-        viewModel.closeWebSocketFromBubble()
+        viewModel.onStop()
 
         // Then
-        verify {
-            chatWebSocket.close()
-        }
+        assertEquals(viewModel.isOnStop, true)
     }
 
     @Test
-    fun should_close_websocket_on_resume_host_when_from_bubble() {
-
-        //given
-        every {
-            chatWebSocket.hasConnection()
-        } returns true
-
+    fun should_isOnStop_false_stop_when_onResume() {
         // When
-        viewModel.retryConnectWebSocketFromBubble()
+        viewModel.onResume()
 
         // Then
-        coVerify {
-            chatWebSocket.close()
-            webSocketStateHandler.scheduleForRetry(any())
-        }
-    }
-
-    @Test
-    fun should_close_websocket_on_resume_host_when_from_bubble_and_does_not_have_connection() {
-
-        //given
-        every {
-            chatWebSocket.hasConnection()
-        } returns false
-
-        // When
-        viewModel.retryConnectWebSocketFromBubble()
-
-        // Then
-        coVerify(exactly = 0) {
-            chatWebSocket.close()
-            webSocketStateHandler.scheduleForRetry(any())
-        }
+        assertEquals(viewModel.isOnStop, false)
     }
 
     @Test

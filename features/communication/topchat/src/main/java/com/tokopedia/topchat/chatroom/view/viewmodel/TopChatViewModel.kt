@@ -272,30 +272,24 @@ open class TopChatViewModel @Inject constructor(
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
 
+    var isOnStop = false
+    var isFromBubble = false
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        chatWebSocket.connect(false)
         chatWebSocket.close()
         chatWebSocket.destroy()
         cancel()
     }
 
-    /**
-     * If user hide bubble chat, close WebSocket
-     */
-    fun closeWebSocketFromBubble() {
-        chatWebSocket.close()
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        isOnStop = true
     }
 
-    /**
-     * If user re-open bubble chat &&
-     * user has connection before, then reconnect
-     * If user does not have any connection before, skip
-     */
-    fun retryConnectWebSocketFromBubble() {
-        if (chatWebSocket.hasConnection()) {
-            retryConnectWebSocket()
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        isOnStop = false
     }
 
     fun connectWebSocket() {
@@ -304,7 +298,6 @@ open class TopChatViewModel @Inject constructor(
                 Timber.d("$TAG - onOpen")
                 handleOnOpenWebSocket()
                 markAsRead()
-                chatWebSocket.connect(true) // flag connect
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -1028,6 +1021,7 @@ open class TopChatViewModel @Inject constructor(
     }
 
     fun markAsRead() {
+        if (isFromBubble && isOnStop) return
         val wsPayload = payloadGenerator.generateMarkAsReadPayload(roomMetaData)
         sendWsPayload(wsPayload)
     }
