@@ -79,7 +79,10 @@ data class GetBuyerOrderDetailResponse(
             val details: Details? = Details(),
             @SerializedName("has_reso_status")
             @Expose
-            val hasResoStatus: Boolean? = false
+            val hasResoStatus: Boolean? = false,
+            @SerializedName("has_ppp")
+            @Expose
+            val hasInsurance: Boolean? = false
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
@@ -423,10 +426,6 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("button")
                         @Expose
                         val button: Button? = null,
-
-                        @SerializedName("bundle_id")
-                        @Expose
-                        val bundleId: String = "0",
 
                         @SerializedName("category_id")
                         @Expose

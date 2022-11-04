@@ -391,7 +391,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopLastActive = if (context == null) "" else it.shopInfo.shopLastActive.getRelativeDate(context)
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
-                    isGoApotik = it.isGoApotik
+                    partnerLabel = it.shopInfo.partnerLabel
                     shopWarehouseCount = it.shopInfo.shopMultilocation.warehouseCount
                     shopWarehouseApplink = it.shopInfo.shopMultilocation.eduLink.applink
                     shopTierBadgeUrl = it.shopInfo.shopTierBadgeUrl

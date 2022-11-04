@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.search.initialstate.analytics
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -54,7 +55,7 @@ class TokoFoodInitSearchStateAnalytics @Inject constructor(
             eventName = TokoFoodAnalyticsConstants.VIEW_ITEM,
             eventAction = TokoFoodAnalyticsConstants.VIEW_TOP_KEYWORD_TOKOFOOD,
             eventCategory = TokoFoodAnalyticsConstants.TOKOFOOD_SEARCH_RECOMMENDATION,
-            eventLabel = keyword
+            eventLabel = String.EMPTY
         ).appendCustomDimensions(
             trackerId = TokoFoodAnalyticsConstants.TRACKER_ID_35769,
             userId = userSession.userId,

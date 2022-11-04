@@ -23,8 +23,8 @@ object InspirationListAtcTracking {
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchTrackingConstant.ECOMMERCE, DataLayer.mapOf(
-                    "add", DataLayer.mapOf(
-                        "products", products
+                    SearchEventTracking.ECommerce.ADD, DataLayer.mapOf(
+                        SearchEventTracking.ECommerce.PRODUCTS, products
                     )
                 )
             )

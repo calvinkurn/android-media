@@ -37,17 +37,17 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_NEED_REFRESH
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -189,6 +189,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.OneLinersTracking
 import com.tokopedia.product.detail.tracking.PageErrorTracker
 import com.tokopedia.product.detail.tracking.PageErrorTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
@@ -278,12 +279,12 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
+import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 
 /**
  * Separator Rule
@@ -2396,9 +2397,9 @@ open class DynamicProductDetailFragment :
                 viewModel.p2Data.value?.getTotalStockMiniCartByParentId(it.data.variant.parentID)
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
-                    cartTypeData?.availableButtons?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false &&
-                    (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
+                cartTypeData?.availableButtons?.firstOrNull()
+                    ?.isCartTypeDisabledOrRemindMe() == false &&
+                (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
                 TokoNowButtonData(
@@ -2419,7 +2420,8 @@ open class DynamicProductDetailFragment :
                 isShopOwner = viewModel.isShopOwner(),
                 hasTopAdsActive = hasTopAds(),
                 cartTypeData = cartTypeData,
-                tokonowButtonData = tokonowVariantButtonData
+                tokonowButtonData = tokonowVariantButtonData,
+                isShopModerate = viewModel.getShopInfo().statusInfo.isOnModerationMode()
             )
         }
         showOrHideButton()
@@ -3015,7 +3017,7 @@ open class DynamicProductDetailFragment :
             if (items.isEmpty()) navigation?.stop(recyclerView)
             else {
                 val offsetY = getNavTabBarOffset(isToolbarTransparent = data.isToolbarTransparent)
-                navigation?.start(recyclerView, items, this, offsetY =  offsetY)
+                navigation?.start(recyclerView, items, this, offsetY = offsetY)
             }
         }
     }
@@ -3814,7 +3816,8 @@ open class DynamicProductDetailFragment :
             )
         resultIntent.putExtra(ProductDetailConstant.WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
         resultIntent.putExtra("product_id", productId)
-        activity?.let { it.setResult(Activity.RESULT_CANCELED, resultIntent) }
+        resultIntent.putExtra(BOOLEAN_EXTRA_NEED_REFRESH, true)
+        activity?.let { it.setResult(Activity.RESULT_OK, resultIntent) }
     }
 
     private fun gotoEditProduct() {
@@ -3843,7 +3846,10 @@ open class DynamicProductDetailFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
 
-            setIconCustomColor(darkColor = getLightToolbarIconColor(), lightColor = getDarkToolbarIconColor())
+            setIconCustomColor(
+                darkColor = getLightToolbarIconColor(),
+                lightColor = getDarkToolbarIconColor()
+            )
 
             setIcon(
                 IconBuilder()
@@ -3861,7 +3867,10 @@ open class DynamicProductDetailFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
 
-            setIconCustomColor(darkColor = getLightToolbarIconColor(), lightColor = getDarkToolbarIconColor())
+            setIconCustomColor(
+                darkColor = getLightToolbarIconColor(),
+                lightColor = getDarkToolbarIconColor()
+            )
 
             setIcon(
                 IconBuilder()
@@ -4000,8 +4009,8 @@ open class DynamicProductDetailFragment :
     private fun getLocalSearchApplink(): String {
         val isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE +
-                if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
-                else ""
+            if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
+            else ""
         return applink
     }
 
@@ -4962,7 +4971,8 @@ open class DynamicProductDetailFragment :
     }
 
     private fun addWishlistV2(
-        componentTrackDataModel: ComponentTrackDataModel?) {
+        componentTrackDataModel: ComponentTrackDataModel?
+    ) {
         val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         viewModel.addWishListV2(productId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
@@ -4987,12 +4997,24 @@ open class DynamicProductDetailFragment :
                 productId: String
             ) {
                 context?.let { context ->
-                    if (result.success && WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)) {
-                        val applinkCollection = "${WISHLIST_COLLECTION_BOTTOMSHEET}?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
-                        val intentBottomSheetWishlistCollection = RouteManager.getIntent(context, applinkCollection)
-                        val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0
-                        intentBottomSheetWishlistCollection.putExtra(WishlistV2CommonConsts.IS_PRODUCT_ACTIVE, !isOos)
-                        startActivityForResult(intentBottomSheetWishlistCollection, REQUEST_CODE_ADD_WISHLIST_COLLECTION)
+                    if (result.success && WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(
+                            context
+                        )
+                    ) {
+                        val applinkCollection =
+                            "${WISHLIST_COLLECTION_BOTTOMSHEET}?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
+                        val intentBottomSheetWishlistCollection =
+                            RouteManager.getIntent(context, applinkCollection)
+                        val isOos =
+                            viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0
+                        intentBottomSheetWishlistCollection.putExtra(
+                            WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
+                            !isOos
+                        )
+                        startActivityForResult(
+                            intentBottomSheetWishlistCollection,
+                            REQUEST_CODE_ADD_WISHLIST_COLLECTION
+                        )
                     } else {
                         view?.let { v ->
                             AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
@@ -5205,6 +5227,20 @@ open class DynamicProductDetailFragment :
         startActivity(intent)
     }
 
+    override fun onClickActionButtonBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        val productInfoP1 = viewModel.getDynamicProductInfoP1
+        DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
+            bundleId,
+            bundleType,
+            productInfoP1,
+            componentTrackDataModel
+        )
+    }
+
     override fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
@@ -5359,15 +5395,28 @@ open class DynamicProductDetailFragment :
         componentTrackDataModel: ComponentTrackDataModel,
         label: String
     ) {
-        DynamicProductDetailTracking.Impression
-            .eventOneLinerImpression(
-                trackingQueue = trackingQueue,
-                componentTrackDataModel = componentTrackDataModel,
-                productInfo = viewModel.getDynamicProductInfoP1,
-                userId = viewModel.userId,
-                lcaWarehouseId = getLcaWarehouseId(),
-                label = label
-            )
+        OneLinersTracking.onImpression(
+            trackingQueue = trackingQueue,
+            componentTrackDataModel = componentTrackDataModel,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            userId = viewModel.userId,
+            lcaWarehouseId = getLcaWarehouseId(),
+            label = label
+        )
+    }
+
+    override fun onClickInformationIconAtStockAssurance(
+        componentTrackDataModel: ComponentTrackDataModel,
+        appLink: String,
+        label: String
+    ) {
+        goToEducational(url = appLink)
+
+        OneLinersTracking.clickInformationButton(
+            component = componentTrackDataModel,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            eventLabel = label
+        )
     }
 
     override fun onImpressPageNotFound() {
@@ -5392,5 +5441,6 @@ open class DynamicProductDetailFragment :
         verticalRecommendationTrackDataModel = componentTrackDataModel
     }
 
-    override fun getRecommendationVerticalTrackData(): ComponentTrackDataModel? = verticalRecommendationTrackDataModel
+    override fun getRecommendationVerticalTrackData(): ComponentTrackDataModel? =
+        verticalRecommendationTrackDataModel
 }

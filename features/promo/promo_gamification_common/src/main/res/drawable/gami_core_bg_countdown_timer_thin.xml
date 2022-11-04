@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#6a0cb2"/>
+    <solid android:color="@color/promo_gamification_common_dms_floating_background"/>
     <corners android:radius="28dp"/>
-    <stroke android:color="#ac58fc" android:width="2dp"/>
+    <stroke android:color="@color/promo_gamification_common_dms_floating_background_stroke" android:width="2dp"/>
 </shape>

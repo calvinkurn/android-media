@@ -24,6 +24,8 @@ class ProductBundlingViewModel(val application: Application, val components: Com
     private val bundledProductData: MutableLiveData<ArrayList<BundleUiModel>> = MutableLiveData()
     private val _emptyBundleData: MutableLiveData<Boolean> = MutableLiveData()
     private val _showErrorState = SingleLiveEvent<Boolean>()
+    var lastSentPosition: Int = 0
+    var hasScrolled = false
 
     @JvmField
     @Inject

@@ -4,8 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp">
+    android:paddingLeft="16dp"
+    android:paddingStart="16dp"
+    android:paddingRight="16dp"
+    android:paddingEnd="16dp"
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keyword_title"
@@ -13,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/topads_headline_keyword_page_title"
-        android:textColor="@color/topads_light_shadow"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
@@ -71,7 +74,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/topads_common_selected_list"
                 android:textAllCaps="true"
-                android:textColor="@color/topads_light_shadow"
+                android:textColor="@color/Unify_N700_68"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -97,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/topads_headline_keyword_recommended_keyword"
-                android:textColor="@color/topads_light_shadow"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rvSelectedKeywordList"
                 app:typographyType="body_3"

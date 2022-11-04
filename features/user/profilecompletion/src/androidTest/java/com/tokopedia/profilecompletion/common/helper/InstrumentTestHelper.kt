@@ -36,6 +36,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import java.lang.reflect.Type
 
@@ -94,6 +95,12 @@ fun isViewsExists(resIds: List<Int>) {
     }
 }
 
+fun isViewsNotExists(vararg resIds: Int) {
+    resIds.forEach { id ->
+        Espresso.onView(withId(id)).check(matches(not(isDisplayed())))
+    }
+}
+
 fun checkTextOnEditText(id: Int, text: String) {
     Espresso.onView(allOf(supportsInputMethods(), isDescendantOfA(withId(id)))).check(matches(withText(text)))
 }
@@ -108,6 +115,14 @@ fun clickSubmitButton(id: Int) {
     Espresso.onView(withId(id)).check(matches(isEnabled()))
     Espresso.onView(withId(id)).perform(click())
     Thread.sleep(3000)
+}
+
+fun clickOnView(id: Int) {
+    Espresso.onView(withId(id)).check(matches(isEnabled())).perform(click())
+}
+
+fun swipeUp(id: Int) {
+    Espresso.onView(withId(id)).perform(swipeUp())
 }
 
 fun checkMessageText(id:Int, expectedMessage: String) {

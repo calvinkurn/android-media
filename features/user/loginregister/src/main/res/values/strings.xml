@@ -201,6 +201,8 @@
     <string name="register_email_input_phone_skip">Lewati</string>
 
     <string name="goto_seamless_description_text">Akunmu udah kesambung ke Gojek. Kamu bisa masuk ke Tokopedia lebih cepat, deh!</string>
+    <string name="goto_seamless_description_text_2">Kamu bisa masuk ke Tokopedia lebih cepat, karena akunmu udah kesambung ke Gojek.</string>
+
     <string name="goto_seamless_primary_title">Sekali klik, langsung masuk!</string>
     <string name="goto_seamless_secondary_btn_text">Masuk ke Akun Lain</string>
 

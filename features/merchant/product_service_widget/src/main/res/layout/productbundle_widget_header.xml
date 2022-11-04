@@ -40,7 +40,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_2"
-        app:typographyWeight="bold"
         android:layout_marginStart="12dp" />
 
     <com.tokopedia.unifyprinciples.Typography

@@ -133,11 +133,13 @@ class RequestParamsGenerator @Inject constructor(
 
     fun createSameSessionRecommendationParam(
         item: ProductItemDataView,
+        chooseAddressParams: Map<String, String>?,
     ) : RequestParams {
         val requestParams = RequestParams.create().apply {
             putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
             putString(SearchApiConst.PRODUCT_ID, item.productID)
         }
+        putRequestParamsChooseAddress(requestParams, chooseAddressParams)
 
         return requestParams
     }
@@ -174,6 +176,12 @@ class RequestParamsGenerator @Inject constructor(
         requestParams.putString(SearchApiConst.Q, getSearchQuery(searchParameter).omitNewlineAndPlusSign())
         requestParams.putString(SearchApiConst.UNIQUE_ID, getUniqueId())
         requestParams.putString(SearchApiConst.USER_ID, userId)
+        requestParams.putString(SearchApiConst.SHOW_ADULT, getShowAdult(searchParameter))
+    }
+
+    private fun getShowAdult(searchParameter: Map<String, Any>): String {
+        val showAdult = searchParameter.getValueString(SearchApiConst.SHOW_ADULT)
+        return showAdult.ifEmpty { SearchApiConst.DEFAULT_VALUE_OF_SHOW_ADULT }
     }
 
     private fun getSearchRows() = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS
