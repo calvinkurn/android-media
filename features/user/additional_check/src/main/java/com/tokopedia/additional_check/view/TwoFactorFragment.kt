@@ -28,7 +28,6 @@ import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.media.loader.utils.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import javax.inject.Inject
 
