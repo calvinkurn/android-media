@@ -88,20 +88,12 @@ class WishlistCollectionEditViewModelTest {
 
     private val collectionId = "1"
 
-    private var getWishlistCollectionById_StatusOk_ErrorEmpty = GetWishlistCollectionByIdResponse(
+    private var getWishlistCollectionById_StatusOk = GetWishlistCollectionByIdResponse(
         GetWishlistCollectionByIdResponse.GetWishlistCollectionById(status = "OK", errorMessage = emptyList())
     )
 
-    private var getWishlistCollectionById_StatusOk_ErrorNotEmpty = GetWishlistCollectionByIdResponse(
-        GetWishlistCollectionByIdResponse.GetWishlistCollectionById(status = "OK", errorMessage = arrayListOf("error"))
-    )
-
-    private var getWishlistCollectionById_StatusNotOk_ErrorEmpty = GetWishlistCollectionByIdResponse(
+    private var getWishlistCollectionById_StatusNotOk = GetWishlistCollectionByIdResponse(
         GetWishlistCollectionByIdResponse.GetWishlistCollectionById(status = "ERROR", errorMessage = emptyList())
-    )
-
-    private var getWishlistCollectionById_StatusNotOk_ErrorNotEmpty = GetWishlistCollectionByIdResponse(
-        GetWishlistCollectionByIdResponse.GetWishlistCollectionById(status = "ERROR", errorMessage = arrayListOf("error"))
     )
 
     private val productId = "1"
@@ -308,7 +300,7 @@ class WishlistCollectionEditViewModelTest {
         //given
         coEvery {
             getWishlistCollectionByIdUseCase(collectionId)
-        } returns getWishlistCollectionById_StatusOk_ErrorEmpty
+        } returns getWishlistCollectionById_StatusOk
 
         //when
         wishlistCollectionEditViewModel.getWishlistCollectionById(collectionId)
@@ -319,39 +311,11 @@ class WishlistCollectionEditViewModelTest {
     }
 
     @Test
-    fun `Execute GetWishlistCollectionById Status OK And Error is not Empty`() {
+    fun `Execute GetWishlistCollectionById Status ERROR`() {
         //given
         coEvery {
             getWishlistCollectionByIdUseCase(collectionId)
-        } returns getWishlistCollectionById_StatusOk_ErrorNotEmpty
-
-        //when
-        wishlistCollectionEditViewModel.getWishlistCollectionById(collectionId)
-
-        //then
-        assert(wishlistCollectionEditViewModel.getWishlistCollectionByIdResult.value is Fail)
-    }
-
-    @Test
-    fun `Execute GetWishlistCollectionById Status ERROR And Error is Empty`() {
-        //given
-        coEvery {
-            getWishlistCollectionByIdUseCase(collectionId)
-        } returns getWishlistCollectionById_StatusNotOk_ErrorEmpty
-
-        //when
-        wishlistCollectionEditViewModel.getWishlistCollectionById(collectionId)
-
-        //then
-        assert(wishlistCollectionEditViewModel.getWishlistCollectionByIdResult.value is Fail)
-    }
-
-    @Test
-    fun `Execute GetWishlistCollectionById Status ERROR And Error is not Empty`() {
-        //given
-        coEvery {
-            getWishlistCollectionByIdUseCase(collectionId)
-        } returns getWishlistCollectionById_StatusNotOk_ErrorNotEmpty
+        } returns getWishlistCollectionById_StatusNotOk
 
         //when
         wishlistCollectionEditViewModel.getWishlistCollectionById(collectionId)
