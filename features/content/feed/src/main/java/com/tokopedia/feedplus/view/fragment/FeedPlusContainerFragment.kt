@@ -32,6 +32,7 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
@@ -393,7 +394,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (!isVisibleToUser) hideAllFab()
+        if (!isVisibleToUser) {
+            hideAllFab()
+            coachMarkManager?.dismissAllCoachMark()
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -487,6 +491,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         fabFeed.circleMainMenu.visibility = View.INVISIBLE
 
         feedFloatingButton.setOnClickListener {
+            coachMarkManager?.hasBeenShown(feedFloatingButton)
             fabFeed.menuOpen = !fabFeed.menuOpen
             if (fabFeed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }
@@ -613,7 +618,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (items.isNotEmpty() && userSession.isLoggedIn) {
             fabFeed.addItem(items)
             feedFloatingButton.show()
-            showCreatePostOnBoarding()
+
+            if(viewModel.isShowShortsButton)
+                showPlayShortsOnBoarding()
         } else {
             feedFloatingButton.hide()
         }
@@ -763,33 +770,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun showCreatePostOnBoarding() {
-        feedFloatingButton.addOneTimeGlobalLayoutListener {
-            val location = IntArray(2)
-            feedFloatingButton.getLocationOnScreen(location)
-
-            val x1 = location[0]
-            val y1 = location[1]
-            val x2 = x1 + feedFloatingButton.width
-            val y2 = y1 + feedFloatingButton.height
-
-            coachMarkItem = CoachMarkItem(
-                feedFloatingButton,
-                activity?.getString(R.string.feed_onboarding_create_post_title),
-                activity?.getString(R.string.feed_onboarding_create_post_detail) ?: ""
-            ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
-
-            showFabCoachMark()
-        }
-    }
-
-    private fun showFabCoachMark() {
-        if (::coachMarkItem.isInitialized
-            && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)
-            && feedFloatingButton.visibility == View.VISIBLE) {
-            coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
-            affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
-        }
+    private fun showPlayShortsOnBoarding() {
+        coachMarkManager?.showCoachMark(
+            config = ContentCoachMarkConfig(feedFloatingButton).apply {
+                title = getString(R.string.feed_play_shorts_entry_point_coachmark_title)
+                subtitle = getString(R.string.feed_play_shorts_entry_point_coachmark_description)
+                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+            }
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
