@@ -243,7 +243,7 @@ object ApplinkConstInternalUserPlatform {
      * NewAddPhoneActivity
      * @Applink : tokopedia-android-internal://user/new-add-phone
      **/
-    const val NEW_ADD_PHONE = "${NEW_INTERNAL_USER}/new-add-phone"
+    const val NEW_ADD_PHONE = "$NEW_INTERNAL_USER/new-add-phone"
 
     /**
      * AddPhoneActivity
