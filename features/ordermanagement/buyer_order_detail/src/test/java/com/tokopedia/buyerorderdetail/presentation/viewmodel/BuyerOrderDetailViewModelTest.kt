@@ -51,7 +51,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             )
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing) // showing without P1 data
+            assertTrue(uiStates[2] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
         }
 
     @Test
@@ -85,11 +86,12 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             )
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing) // showing without P1 data
+            assertTrue(uiStates[2] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
             for (i in 3 until uiStates.size.dec()) {
                 assertTrue(uiStates[i] is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
             }
-            assertTrue(uiStates.last() is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(uiStates[uiStates.size - 1] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
         }
 
     @Test
@@ -563,6 +565,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         runCollectingUiState {
             val productBundlingItem =
                 ProductListUiModel.ProductBundlingUiModel(
+                    bundleId = "123987456",
                     bundleName = "Bundle test",
                     bundleIconUrl = "www.icon.com",
                     totalPrice = 100.0,

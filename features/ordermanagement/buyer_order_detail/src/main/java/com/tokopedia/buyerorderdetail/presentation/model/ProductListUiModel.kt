@@ -50,7 +50,8 @@ data class ProductListUiModel(
         val totalPrice: String,
         val totalPriceText: String,
         val isProcessing: Boolean = false,
-        val addonsListUiModel: AddonsListUiModel? = null
+        val addonsListUiModel: AddonsListUiModel? = null,
+        val insurance: Insurance? = null
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -63,9 +64,15 @@ data class ProductListUiModel(
         override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
             return null
         }
+
+        data class Insurance(
+            val logoUrl: String,
+            val label: String
+        )
     }
 
     data class ProductBundlingUiModel(
+        val bundleId: String,
         val bundleName: String,
         val bundleIconUrl: String,
         val totalPrice: Double,

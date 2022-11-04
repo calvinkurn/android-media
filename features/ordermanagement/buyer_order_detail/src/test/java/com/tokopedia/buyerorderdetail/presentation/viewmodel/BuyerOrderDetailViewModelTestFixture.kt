@@ -11,6 +11,8 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
@@ -142,7 +144,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     fun createSuccessGetBuyerOrderDetailDataResult(
         getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true),
-        getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true)
+        getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true),
+        getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())
@@ -150,7 +153,10 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             emit(
                 GetBuyerOrderDetailDataRequestState.Requesting(
                     GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
-                    GetP1DataRequestState.Requesting(GetOrderResolutionRequestState.Requesting)
+                    GetP1DataRequestState.Requesting(
+                        GetOrderResolutionRequestState.Requesting,
+                        GetInsuranceDetailRequestState.Requesting
+                    )
                 )
             )
             emit(
@@ -159,7 +165,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
                     ),
                     GetP1DataRequestState.Complete(
-                        GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult)
+                        GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
+                        GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
                     )
                 )
             )
@@ -176,7 +183,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         GetBuyerOrderDetailRequestState.Requesting
                     ),
                     GetP1DataRequestState.Requesting(
-                        GetOrderResolutionRequestState.Requesting
+                        GetOrderResolutionRequestState.Requesting,
+                        GetInsuranceDetailRequestState.Requesting
                     )
                 )
             )
@@ -186,7 +194,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         GetBuyerOrderDetailRequestState.Complete.Error(throwable)
                     ),
                     GetP1DataRequestState.Complete(
-                        GetOrderResolutionRequestState.Complete.Error(throwable)
+                        GetOrderResolutionRequestState.Complete.Error(throwable),
+                        GetInsuranceDetailRequestState.Complete.Error(throwable)
                     )
                 )
             )
@@ -264,6 +273,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every {
                 ProductListUiStateMapper["mapOnDataReady"](
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(),
+                    any<GetInsuranceDetailRequestState>(),
                     any<Map<String, AddToCartSingleRequestState>>()
                 )
             } returns showingState

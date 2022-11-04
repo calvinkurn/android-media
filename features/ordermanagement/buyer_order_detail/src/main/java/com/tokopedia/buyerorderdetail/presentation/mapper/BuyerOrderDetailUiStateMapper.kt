@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.mapper
 
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidgetUiState
@@ -18,7 +19,8 @@ object BuyerOrderDetailUiStateMapper {
         productListUiState: ProductListUiState,
         shipmentInfoUiState: ShipmentInfoUiState,
         pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
-        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState
+        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
+        orderInsuranceUiState: OrderInsuranceUiState
     ): BuyerOrderDetailUiState {
         return if (
             actionButtonsUiState is ActionButtonsUiState.HasData &&
@@ -36,7 +38,8 @@ object BuyerOrderDetailUiStateMapper {
                 productListUiState is ProductListUiState.HasData.Reloading ||
                 shipmentInfoUiState is ShipmentInfoUiState.HasData.Reloading ||
                 pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.HasData.Reloading ||
-                orderResolutionTicketStatusUiState is OrderResolutionTicketStatusUiState.HasData.Reloading
+                orderResolutionTicketStatusUiState is OrderResolutionTicketStatusUiState.HasData.Reloading ||
+                orderInsuranceUiState is OrderInsuranceUiState.HasData.Reloading
             ) {
                 BuyerOrderDetailUiState.HasData.PullRefreshLoading(
                     actionButtonsUiState,
@@ -45,7 +48,8 @@ object BuyerOrderDetailUiStateMapper {
                     productListUiState,
                     shipmentInfoUiState,
                     pgRecommendationWidgetUiState,
-                    orderResolutionTicketStatusUiState
+                    orderResolutionTicketStatusUiState,
+                    orderInsuranceUiState
                 )
             } else {
                 BuyerOrderDetailUiState.HasData.Showing(
@@ -55,7 +59,8 @@ object BuyerOrderDetailUiStateMapper {
                     productListUiState,
                     shipmentInfoUiState,
                     pgRecommendationWidgetUiState,
-                    orderResolutionTicketStatusUiState
+                    orderResolutionTicketStatusUiState,
+                    orderInsuranceUiState
                 )
             }
         } else if (actionButtonsUiState is ActionButtonsUiState.Error) {
