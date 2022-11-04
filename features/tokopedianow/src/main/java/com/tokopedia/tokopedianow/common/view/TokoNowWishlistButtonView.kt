@@ -53,19 +53,29 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                 START_POSITION
             ).setDuration(ANIMATION_DURATION.toLong())
 
+            parentWishlist.setOnClickListener {
+                if(!hasBeenSelected){
+                    changeStateToRemoveWishlist()
+                    viewModel.addToWishlist(productID)
+                }
+                else{
+                    changeStateToAddWishlist()
+                    viewModel.removeFromWishlist(productID)
+                }
+            }
+
             root.setTransitionListener(object : MotionLayout.TransitionListener {
                     override fun onTransitionStarted(motionLayout: MotionLayout?, p1: Int, p2: Int) {
                         ringingAnimation.start()
-                        if(!hasBeenSelected){
-                            viewModel.addToWishlist(productID)
-                        }
-                        else{
-                            viewModel.removeFromWishlist(productID)
-                        }
                     }
 
                     override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-
+//                        if(!hasBeenSelected){
+//                            viewModel.addToWishlist(productID)
+//                        }
+//                        else{
+//                            viewModel.removeFromWishlist(productID)
+//                        }
                     }
 
                     override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) { /* nothing to do */ }
@@ -90,20 +100,19 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             when(it){
                 is Success ->{
                     if(it.data.wishlistAdd?.success == true){
-                        setValue(true)
                         Toaster.build(rootView, "Added to wishlist").show()
                     }
                     else{
-                        setValue(false)
+                        changeStateToAddWishlist()
                         it.data.wishlistAdd?.message?.let { it1 ->
-                            Toaster.build(binding.icon,
+                            Toaster.build(rootView,
                                 it1, Toaster.TYPE_ERROR
                             ).show()
                         }
                     }
                 }
                 is Fail ->{
-                    setValue(false)
+                    changeStateToAddWishlist()
                     it.throwable.message
                 }
             }
@@ -112,24 +121,33 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             when(it){
                 is Success ->{
                     if(it.data.wishlistRemove?.success == true){
-                        setValue(false)
                         Toaster.build(rootView, "Removed from wishlist").show()
                     }
                     else{
-                        setValue(true)
+                        changeStateToRemoveWishlist()
                         it.data.wishlistRemove?.message?.let { it1 ->
-                            Toaster.build(binding.icon,
+                            Toaster.build(rootView,
                                 it1, Toaster.TYPE_ERROR
                             ).show()
                         }
                     }
                 }
                 is Fail ->{
-                    setValue(true)
+                    changeStateToRemoveWishlist()
                     it.throwable.message
                 }
             }
         })
+    }
+
+    private fun changeStateToRemoveWishlist() {
+        binding.root.setTransition(R.id.start, R.id.end)
+        binding.root.transitionToEnd()
+    }
+
+    private fun changeStateToAddWishlist() {
+        binding.root.setTransition(R.id.end, R.id.start)
+        binding.root.transitionToEnd()
     }
 
     fun setProductId(productID: String){
