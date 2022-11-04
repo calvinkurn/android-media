@@ -51,7 +51,7 @@ data class SelectedShipperModel(
             insuranceUsedInfo = ""
             insuranceUsedDefault = 0
 
-            logPromoCode = scheduleDelivery.deliveryProduct?.promoCode
+            logPromoCode = scheduleDelivery.deliveryProduct?.promoStacking?.promoCode
             discountedRate = scheduleDelivery.deliveryProduct?.finalPrice?.toInt() ?: 0
             shippingRate = scheduleDelivery.deliveryProduct?.realPrice?.toInt() ?: 0
             benefitAmount = 0

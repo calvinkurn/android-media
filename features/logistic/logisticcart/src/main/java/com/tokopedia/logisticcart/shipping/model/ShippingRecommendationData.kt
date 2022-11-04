@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.ScheduleDeliveryData
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -15,5 +15,5 @@ class ShippingRecommendationData(
     var preOrderModel: PreOrderModel? = null,
     var errorMessage: String? = null,
     var errorId: String? = null,
-    var additionalDeliveryData: AdditionalDeliveryData? = null
+    var scheduleDeliveryData: ScheduleDeliveryData? = null
 ) : Parcelable
