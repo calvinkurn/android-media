@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class NewAddPhoneNumberTracker @Inject constructor() {
 
-    fun sendView2FaMluAddPhoneNumberPageEvent () {
+    fun sendView2FaMluAddPhoneNumberPageEvent() {
         Tracker.Builder()
             .setEvent("viewAuthIris")
             .setEventAction("view 2fa mlu add phone number page")
