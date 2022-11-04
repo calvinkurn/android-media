@@ -1834,7 +1834,6 @@ class PlayUserInteractionFragment @Inject constructor(
         when(game.status) {
             is GameUiModel.Giveaway.Status.Upcoming -> {
                 playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
-                playViewModel.submitAction(PlayViewerNewAction.AutoOpenInteractive)
             }
             is GameUiModel.Giveaway.Status.Ongoing ->
                 playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)

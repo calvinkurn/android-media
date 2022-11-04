@@ -1842,6 +1842,7 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(game = interactive)
             }
 
+            handleAutoOpen()
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
