@@ -134,7 +134,7 @@ class ProfileViewHolder(
             return
         }
 
-        if (isPhoneVerify) {
+        if (isPhoneVerify && profile.phone.isNotEmpty()) {
             renderPhoneVerifyButton(profile.phone)
             return
         }
@@ -145,6 +145,7 @@ class ProfileViewHolder(
     private fun renderAddPhoneButton() {
         binding?.homeAccountProfileSection?.apply {
             accountUserItemProfileLinkStatus.hide()
+            accountUserItemProfilePhone.hide()
             labelPhoneVerify.hide()
             linkAccountProfileBtn.apply {
                 text = ADD_PHONE
@@ -165,6 +166,10 @@ class ProfileViewHolder(
         binding?.homeAccountProfileSection?.apply {
             accountUserItemProfileLinkStatus.hide()
             labelPhoneVerify.show()
+            accountUserItemProfilePhone.apply {
+                text = Utils.formatPhoneNumber(phoneNumber)
+            }.show()
+
             linkAccountProfileBtn.apply {
                 text = VERIFY_PHONE
                 setDrawable(getIconUnifyDrawable(
