@@ -121,8 +121,8 @@ class ShippingScheduleWidget : ConstraintLayout {
         return ShippingScheduleWidgetModel(
             isEnable = available,
             title = getTitleOtherOption(),
-            description = if (available) deliveryProduct?.textEta else text,
-            label = deliveryProduct?.promoText,
+            description = if (available) deliveryProduct.textEta else text,
+            label = deliveryProduct.promoText,
             isSelected = isSelected,
             isShowCoachMark = scheduleDeliveryPreferences?.isDisplayedCoachmark?.not() ?: true,
             onSelectedWidgetListener = {
@@ -137,9 +137,7 @@ class ShippingScheduleWidget : ConstraintLayout {
         val text = StringBuilder().apply {
             appendHtmlBoldText(title)
             if (available) {
-                deliveryProduct?.let {
-                    product -> append(product.getFormattedPrice())
-                }
+                append(deliveryProduct.getFormattedPrice())
             }
         }.toString()
 
@@ -147,7 +145,6 @@ class ShippingScheduleWidget : ConstraintLayout {
     }
 
     private fun openScheduleDeliveryBottomSheet(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
-        // open schedule delivery bottom sheet
         scheduleDeliveryUiModel?.let {
             val bottomsheetUiModel = ScheduleDeliveryBottomSheetMapper.mapResponseToUiModel(
                 it.deliveryServices,
