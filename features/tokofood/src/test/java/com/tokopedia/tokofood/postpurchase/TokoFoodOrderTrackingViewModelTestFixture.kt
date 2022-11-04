@@ -4,9 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderDetailMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderStatusMapper
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,6 +39,11 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     protected lateinit var getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>
 
     @RelaxedMockK
+    protected lateinit var getTokoChatUnreadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>
+
+    protected lateinit var getTokoChatConfigMutationProfileUseCase: TokoChatConfigMutationProfileUseCase
+
+    @RelaxedMockK
     protected lateinit var userSession: UserSessionInterface
 
     protected lateinit var tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper
@@ -54,14 +57,16 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
         MockKAnnotations.init(this)
         tokoFoodOrderDetailMapper = TokoFoodOrderDetailMapper(mockk(relaxed = true), mockk(relaxed = true))
         tokoFoodOrderStatusMapper = TokoFoodOrderStatusMapper()
+        getTokoChatConfigMutationProfileUseCase = TokoChatConfigMutationProfileUseCase(mockk(relaxed = true), mockk(relaxed = true))
         viewModel = TokoFoodOrderTrackingViewModel(
             userSession,
             savedStateHandle,
             CoroutineTestDispatchersProvider,
             getTokoFoodOrderDetailUseCase,
             getTokoFoodOrderStatusUseCase,
-            getDriverPhoneNumberUseCase
-        )
+            getDriverPhoneNumberUseCase,
+            getTokoChatUnreadChatCountUseCase
+        ) { getTokoChatConfigMutationProfileUseCase }
     }
 
     @After

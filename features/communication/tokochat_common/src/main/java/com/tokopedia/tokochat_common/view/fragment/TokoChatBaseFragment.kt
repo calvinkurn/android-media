@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
@@ -110,11 +111,13 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         adapter.notifyItemInserted(adapter.itemCount)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     protected fun removeShimmering() {
         hideShimmeringHeader()
-        adapter.removeItem(shimmerUiModel)
-        adapter.notifyDataSetChanged()
+        val shimmerIndex = adapter.getItems().indexOf(shimmerUiModel)
+        if (shimmerIndex > RecyclerView.NO_POSITION) {
+            adapter.removeItem(shimmerUiModel)
+            adapter.notifyItemRemoved(shimmerIndex)
+        }
     }
 
     protected fun getTokoChatHeader(): HeaderUnify? {

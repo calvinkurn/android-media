@@ -31,6 +31,7 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.util.TokoChatViewUtil.downloadAndSaveByteArrayImage
 import com.tokopedia.tokochat.util.TokoChatViewUtil.getTokoChatPhotoPath
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -266,12 +267,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun loadChatRoomTicker() {
         launchCatchError(block = {
-//            TODO: Change after BE side ready
-//            val result = getTokoChatRoomTickerUseCase(GetTokoChatRoomTickerUseCase.PARAM_TOKOFOOD)
-            val result = TokochatRoomTickerResponse().apply {
-                this.tokochatRoomTicker.message = "Resto sudah terima pesananmu, jadi nggak bisa dibatalin. Driver hanya jemput & antar pesanan ke kamu."
-                this.tokochatRoomTicker.tickerType = 0
-            }
+            val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
             _chatRoomTicker.value = Success(result)
         }, onError = {
             _chatRoomTicker.value = Fail(it)
