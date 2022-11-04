@@ -146,7 +146,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val rvCarousel: RecyclerView = findViewById(R.id.rv_carousel)
     private val feedVODViewHolder: FeedVODViewHolder = findViewById(R.id.feed_vod_viewholder)
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
-    private val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
+    private val asgcCtaProductName = findViewById<Typography>(R.id.top_ads_product_name)
+    private val asgcProductCampaignCopywring = findViewById<Typography>(R.id.top_ads_campaign_copywriting)
     private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
     private val pageControl: PageControl = findViewById(R.id.page_indicator)
     private val likeButton: IconUnify = findViewById(R.id.like_button)
@@ -461,7 +462,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         bindFollow(feedXCard)
         bindItems(feedXCard)
         bindCaption(feedXCard)
-        bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
+        bindPublishedAt(feedXCard.publishedAt)
         bindTopAds(feedXCard)
         bindLike(feedXCard)
         bindComment(
@@ -534,13 +535,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
 
-    fun bindTopAds(feedXCard: FeedXCard) {
-        topAdsProductName.text = getCTAButtonText(feedXCard)
+    private fun bindTopAds(feedXCard: FeedXCard) {
+        asgcCtaProductName.text = getCTAButtonText(feedXCard)
+        val ctaSubtitle =
+            if (feedXCard.cta.subtitle.isNotEmpty()) feedXCard.cta.subtitle.firstOrNull()
+                ?: String.EMPTY else String.EMPTY
+        asgcProductCampaignCopywring.text = ctaSubtitle
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                     feedXCard.media.any { it.isImage }
         )
+        asgcProductCampaignCopywring.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle, feedXCard))
 
         topAdsCard.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
@@ -576,6 +582,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
     }
+
+    private fun shouldShowCtaSubtitile(subtitle: String, card: FeedXCard) =
+        subtitle.isNotEmpty() && card.campaign.isRilisanSpl && card.campaign.isRSFollowersRestrictionOn
 
     fun bindLike(feedXCard: FeedXCard) {
         val isLongVideo = feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO
@@ -935,10 +944,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             SpannableString(MethodChecker.fromHtml(txt)),
                             colorLinkHashtag
                         ) { hashtag -> onHashtagClicked(hashtag, caption) }
-                        spannableString.setSpan(
+                        spannableString.safeSetSpan(
                             cs,
                             0,
-
                             MethodChecker.fromHtml(caption.author.name).length - 1 ,
                             Spannable.SPAN_INCLUSIVE_INCLUSIVE
                         )
@@ -966,7 +974,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         colorLinkHashtag
                     ) { hashtag -> onHashtagClicked(hashtag, caption) }
             }
-            spannableString.setSpan(
+            spannableString.safeSetSpan(
                 cs,
                 0,
                 MethodChecker.fromHtml(caption.author.name).length - 1,
@@ -979,6 +987,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private val colorLinkHashtag: Int
         get() = MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G400)
+
+    fun SpannableString.safeSetSpan(what: Any, start: Int, end: Int, flags: Int) {
+        try {
+            setSpan(what, start, end, flags)
+        }
+        catch (throwable: Throwable) {
+        }
+    }
 
     private fun onHashtagClicked(hashtag: String, feed: FeedXCard) {
         listener?.onHashtagClickedFeed(hashtag, feed)
@@ -1583,19 +1599,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
 
-    private fun bindPublishedAt(publishedAt: String, subTitle: String) {
+    private fun bindPublishedAt(publishedAt: String) {
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
-        val spannableString: SpannableString =
-            if (subTitle.isNotEmpty()) {
+        val spannableString =
                 SpannableString(
                     String.format(
                         context.getString(R.string.feed_header_time_new),
                         avatarDate
                     )
                 )
-            } else {
-                SpannableString(avatarDate)
-            }
         timestampText.text = spannableString
             timestampText.show()
     }
@@ -1806,7 +1818,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             BackgroundColorTransition()
                 .addTarget(topAdsCard)
         )
-        topAdsProductName.setTextColor(secondaryColor)
+        asgcCtaProductName.setTextColor(secondaryColor)
+        asgcProductCampaignCopywring.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setBackgroundColor(primaryColor)
     }
@@ -1815,7 +1828,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         colorArray: ArrayList<String>,
         secondaryColor: Int,
     ) {
-        topAdsProductName.setTextColor(secondaryColor)
+        asgcCtaProductName.setTextColor(secondaryColor)
+        asgcProductCampaignCopywring.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setGradientBackground(colorArray)
     }

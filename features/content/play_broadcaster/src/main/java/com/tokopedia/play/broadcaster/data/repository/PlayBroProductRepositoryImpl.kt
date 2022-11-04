@@ -8,8 +8,8 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetPinnedProductUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductsInCampaignUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductTagSummarySectionUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductsInCampaignUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -54,27 +54,25 @@ class PlayBroProductRepositoryImpl @Inject constructor(
 
     override suspend fun getProductsInEtalase(
         etalaseId: String,
-        page: Int,
+        cursor: String,
         keyword: String,
         sort: SortUiModel,
     ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
         if (userSession.shopId.isBlank()) error("User does not has shop")
 
-        val response = getProductsInEtalaseUseCase.apply {
-            params = GetProductsInEtalaseUseCase.createParams(
-                shopId = userSession.shopId,
-                page = page,
-                pageSize = PRODUCTS_IN_ETALASE_PER_PAGE,
-                etalaseId = etalaseId,
-                keyword = keyword,
-                sort = sort,
-            )
-        }.executeOnBackground()
-
-        return@withContext productMapper.mapProductsInEtalase(
-            response,
-            PRODUCTS_IN_ETALASE_PER_PAGE
+        val param = GetProductsInEtalaseUseCase.Param(
+            authorId = userSession.shopId,
+            authorType = AUTHOR_TYPE_SELLER,
+            cursor = cursor,
+            limit = PRODUCTS_IN_ETALASE_PER_PAGE,
+            keyword = keyword,
+            sort = sort,
+            etalaseId = etalaseId,
         )
+
+        val response = getProductsInEtalaseUseCase.executeWithParam(param)
+
+        return@withContext productMapper.mapProductsInEtalase(response)
     }
 
     override suspend fun getProductsInCampaign(
@@ -150,5 +148,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         private const val PRODUCTS_IN_CAMPAIGN_PER_PAGE = 25
 
         private const val DELAY_MS = 5000L
+
+        private const val AUTHOR_TYPE_SELLER = 2
     }
 }
