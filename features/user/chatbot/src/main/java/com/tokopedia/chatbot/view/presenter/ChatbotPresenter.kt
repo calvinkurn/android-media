@@ -339,7 +339,7 @@ class ChatbotPresenter @Inject constructor(
     fun handleAttachmentTypes(webSocketResponse: ChatWebSocketResponse, messageId: String) {
         try {
             val pojo: ChatSocketPojo =
-                Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
+                Gson().fromJson("{asjkfasj", ChatSocketPojo::class.java)
             if (pojo.msgId != messageId) return
             chatResponse = pojo
 
