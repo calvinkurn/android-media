@@ -31,6 +31,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.screenRecorder)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     implementation projectOrAar(rootProject.ext.libraries.dataExplorer)
