@@ -27,14 +27,9 @@ import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
-import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
-import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.domain.AddWishlistCollectionItemsUseCase
-import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseCase
-import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
-import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
+import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.response.*
+import com.tokopedia.wishlistcollection.domain.*
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import io.mockk.MockKAnnotations
@@ -90,6 +85,12 @@ class WishlistCollectionDetailViewModelTest {
     @RelaxedMockK
     lateinit var addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase
 
+    @RelaxedMockK
+    lateinit var updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase
+
+    @RelaxedMockK
+    lateinit var getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase
+
     private var getWishlistCollectionItemsResponseDataStatusOk = GetWishlistCollectionItemsResponse(
         getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "")
     )
@@ -130,6 +131,30 @@ class WishlistCollectionDetailViewModelTest {
     private var addWishlistCollectionStatusNotOkErrorNotEmpty = AddWishlistCollectionItemsResponse(AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(
         status = "ERROR", errorMessage = arrayListOf("error")
     ))
+
+    private var updateWishlistCollectionAccess_SuccessTrue_StatusOk_ErrorEmpty = UpdateWishlistCollectionResponse(
+        UpdateWishlistCollectionResponse.UpdateWishlistCollection(status = "OK", errorMessage = emptyList(),
+        data = UpdateWishlistCollectionResponse.UpdateWishlistCollection.Data(success = true)
+        )
+    )
+
+    private var updateWishlistCollectionAccess_SuccessFalse_StatusOk_ErrorEmpty = UpdateWishlistCollectionResponse(
+        UpdateWishlistCollectionResponse.UpdateWishlistCollection(status = "OK", errorMessage = emptyList(),
+            data = UpdateWishlistCollectionResponse.UpdateWishlistCollection.Data(success = false)
+        )
+    )
+
+    private var updateWishlistCollectionAccessStatusOkErrorNotEmpty = UpdateWishlistCollectionResponse(
+        UpdateWishlistCollectionResponse.UpdateWishlistCollection(status = "OK", errorMessage = arrayListOf("error"))
+    )
+
+    private var updateWishlistCollectionAccessStatusNotOkErrorEmpty = UpdateWishlistCollectionResponse(
+        UpdateWishlistCollectionResponse.UpdateWishlistCollection(status = "ERROR", errorMessage = emptyList())
+    )
+
+    private var updateWishlistCollectionAccessStatusNotOkErrorNotEmpty = UpdateWishlistCollectionResponse(
+        UpdateWishlistCollectionResponse.UpdateWishlistCollection(status = "ERROR", errorMessage = arrayListOf("error"))
+    )
 
     private val throwable = Fail(Throwable(message = "Error"))
 
@@ -218,6 +243,8 @@ class WishlistCollectionDetailViewModelTest {
 
     private var addWishlistParam = AddWishlistCollectionsHostBottomSheetParams()
 
+    private var updateWishlistAccessParam = UpdateWishlistCollectionParams()
+
     private val timber = WishlistMockTimber()
 
     @Before
@@ -236,7 +263,9 @@ class WishlistCollectionDetailViewModelTest {
                 deleteWishlistCollectionUseCase,
                 deleteWishlistProgressUseCase,
                 atcUseCase,
-                addWishlistCollectionItemsUseCase
+                addWishlistCollectionItemsUseCase,
+                updateWishlistCollectionUseCase,
+                getWishlistCollectionSharingDataUseCase
             )
         )
         topAdsImageViewModel = TopAdsImageViewModel(bannerName = "testBanner")
@@ -879,5 +908,97 @@ class WishlistCollectionDetailViewModelTest {
             isAutomaticDelete = false)
 
         assert(wishlistCollectionDetailViewModel.collectionData.value is Success)
+    }
+
+    // update access wishlist collection
+    @Test
+    fun `Execute UpdateAccessWishlistCollection Success Status OK And Error is Empty`() {
+        //given
+        updateWishlistAccessParam = UpdateWishlistCollectionParams(id = 1L)
+        coEvery {
+            updateWishlistCollectionUseCase(updateWishlistAccessParam)
+        } returns updateWishlistCollectionAccess_SuccessTrue_StatusOk_ErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.updateAccessWishlistCollection(updateWishlistAccessParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.updateWishlistCollectionResult.value is Success)
+        assert((wishlistCollectionDetailViewModel.updateWishlistCollectionResult.value as Success).data.errorMessage.isEmpty())
+    }
+
+    @Test
+    fun `Execute UpdateAccessWishlistCollection Failed Status OK And Error is Empty`() {
+        //given
+        updateWishlistAccessParam = UpdateWishlistCollectionParams(id = 1L)
+        coEvery {
+            updateWishlistCollectionUseCase(updateWishlistAccessParam)
+        } returns updateWishlistCollectionAccess_SuccessFalse_StatusOk_ErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.updateAccessWishlistCollection(updateWishlistAccessParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.updateWishlistCollectionResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute UpdateAccessWishlistCollection Success Status OK And Error is not Empty`() {
+        //given
+        updateWishlistAccessParam = UpdateWishlistCollectionParams(id = 1L)
+        coEvery {
+            updateWishlistCollectionUseCase(updateWishlistAccessParam)
+        } returns updateWishlistCollectionAccessStatusOkErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.updateAccessWishlistCollection(updateWishlistAccessParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.updateWishlistCollectionResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute UpdateAccessWishlistCollection Success Status Error And Error is Empty`() {
+        //given
+        updateWishlistAccessParam = UpdateWishlistCollectionParams(id = 1L)
+        coEvery {
+            updateWishlistCollectionUseCase(updateWishlistAccessParam)
+        } returns updateWishlistCollectionAccessStatusNotOkErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.updateAccessWishlistCollection(updateWishlistAccessParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.updateWishlistCollectionResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute UpdateAccessWishlistCollection Success Status Error And Error is not Empty`() {
+        //given
+        updateWishlistAccessParam = UpdateWishlistCollectionParams(id = 1L)
+        coEvery {
+            updateWishlistCollectionUseCase(updateWishlistAccessParam)
+        } returns updateWishlistCollectionAccessStatusNotOkErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.updateAccessWishlistCollection(updateWishlistAccessParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.updateWishlistCollectionResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute UpdateAccessWishlistCollection Failed`() {
+        //given
+        updateWishlistAccessParam = UpdateWishlistCollectionParams(id = 1L)
+        coEvery {
+            updateWishlistCollectionUseCase(updateWishlistAccessParam)
+        } throws throwable.throwable
+
+        //when
+        wishlistCollectionDetailViewModel.updateAccessWishlistCollection(updateWishlistAccessParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.updateWishlistCollectionResult.value is Fail)
     }
 }

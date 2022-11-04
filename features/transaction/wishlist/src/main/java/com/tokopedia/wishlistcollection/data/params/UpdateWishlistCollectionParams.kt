@@ -10,5 +10,5 @@ data class UpdateWishlistCollectionParams(
     var name: String = "",
 
     @SerializedName("access")
-    var access: Long = 0L,
+    var access: Long = 0L
 )
