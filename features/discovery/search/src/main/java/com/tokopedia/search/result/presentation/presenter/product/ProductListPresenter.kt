@@ -1776,7 +1776,7 @@ class ProductListPresenter @Inject constructor(
         else view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
     }
 
-    override fun trackProductTopAdsClick(item: ProductItemDataView) {
+    private fun trackProductTopAdsClick(item: ProductItemDataView) {
         topAdsUrlHitter.hitClickUrl(
             view.className,
             item.topadsClickUrl,
