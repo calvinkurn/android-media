@@ -18,7 +18,7 @@ import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
 import com.tokopedia.logisticcart.scheduledelivery.view.bottomsheet.ScheduleSlotBottomSheet
-import com.tokopedia.logisticcart.scheduledelivery.mapper.ScheduleDeliveryMapper
+import com.tokopedia.logisticcart.scheduledelivery.mapper.ScheduleDeliveryBottomSheetMapper
 import com.tokopedia.logisticcart.scheduledelivery.preference.ScheduleDeliveryPreferences
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -149,7 +149,7 @@ class ShippingScheduleWidget : ConstraintLayout {
     private fun openScheduleDeliveryBottomSheet(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
         // open schedule delivery bottom sheet
         scheduleDeliveryUiModel?.let {
-            val bottomsheetUiModel = ScheduleDeliveryMapper.mapResponseToUiModel(
+            val bottomsheetUiModel = ScheduleDeliveryBottomSheetMapper.mapResponseToUiModel(
                 it.deliveryServices,
                 it.scheduleDate,
                 it.deliveryProduct,

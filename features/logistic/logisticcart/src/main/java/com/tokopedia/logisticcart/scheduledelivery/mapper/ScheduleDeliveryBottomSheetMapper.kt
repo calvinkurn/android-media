@@ -12,7 +12,7 @@ import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseDateUiMode
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ChooseTimeUiModel
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.TitleSectionUiModel
 
-object ScheduleDeliveryMapper {
+object ScheduleDeliveryBottomSheetMapper {
 
     fun mapResponseToUiModel(
         deliveryServices: List<DeliveryService>,
