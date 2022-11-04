@@ -5,7 +5,6 @@ import android.view.Gravity
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -14,12 +13,12 @@ import com.tokopedia.kyc_centralized.KycConstant.PADDING_0_5F
 import com.tokopedia.kyc_centralized.KycConstant.PADDING_16
 import com.tokopedia.kyc_centralized.KycConstant.PADDING_ZERO
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 
@@ -68,7 +67,7 @@ class UserIdentificationFormKtpFragment :
         viewBinding?.subtitle?.gravity = Gravity.LEFT
         viewBinding?.layoutInfoBullet?.let {
             context?.let { context ->
-                (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(
+                (activity as? UserIdentificationFormActivity)?.setTextViewWithBullet(
                     getString(R.string.ktp_body_1),
                     context,
                     it
@@ -77,7 +76,7 @@ class UserIdentificationFormKtpFragment :
         }
         viewBinding?.layoutInfoBullet?.let {
             context?.let { context ->
-                (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(
+                (activity as? UserIdentificationFormActivity)?.setTextViewWithBullet(
                     getString(R.string.ktp_body_2),
                     context,
                     it
@@ -86,7 +85,7 @@ class UserIdentificationFormKtpFragment :
         }
         viewBinding?.layoutInfoBullet?.let {
             context?.let { context ->
-                (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(
+                (activity as? UserIdentificationFormActivity)?.setTextViewWithBullet(
                     getString(R.string.ktp_body_3),
                     context,
                     it
