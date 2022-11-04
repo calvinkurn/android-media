@@ -62,9 +62,10 @@ class BubbleChatActivationGuideFragment: Fragment() {
             setTextMakeHyperlink(
                 getString(R.string.topchat_bubble_activation_guide_seller_edu_label)
             ) {
-                //todo redirect to bubble chat seller edu
-                val bubbleChatSellerEduLink = ""
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, bubbleChatSellerEduLink))
+                RouteManager.route(context,
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    BubbleChat.Url.BUBBLE_CHAT_HELP_PAGE_URL)
+                )
             }
         }
     }

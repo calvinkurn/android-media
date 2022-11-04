@@ -13,6 +13,7 @@ import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
@@ -440,6 +441,9 @@ open class TopChatViewStateImpl constructor(
             headerMenuListener: HeaderMenuListener
     ) {
         if (roomMenu.isAdded) return
+        if (isFromBubble) {
+            KeyboardHandler.DropKeyboard(view.context, view)
+        }
         roomMenu.apply {
             setItemMenuList(createRoomMenu(chatroomViewModel))
             setOnItemMenuClickListener { itemMenus, _ ->
