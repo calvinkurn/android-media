@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
@@ -18,26 +19,34 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
-    ConstraintLayout(context, attributeSet) {
+    ConstraintLayout(context, attributeSet), ChatbotSendButtonListener {
 
     private var replyBox: ConstraintLayout? = null
     private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
     private var commentContainer: LinearLayout? = null
     private var commentEditText: EditText? = null
     private var addAttachmentMenu: ImageView? = null
+    private var guideline: Guideline? = null
     private var sendButton: ImageView? = null
 
     private var textWatcher : TextWatcher? = null
-    var sendButtonListener : ChatbotSendButtonListener? = null
+    private var isSendButtonActivated: Boolean = false
 
     init {
         initViewBindings()
         textWatcher = getTextWatcherForMessage()
-    //    bindClickListeners()
     }
 
     fun getMessageView(): EditText? {
         return commentEditText
+    }
+
+    fun getGuidelineForReplyBubble() : Guideline? {
+        return guideline
+    }
+
+    fun getSmallReplyBoxSendButton(): ImageView? {
+        return sendButton
     }
 
     private fun initViewBindings() {
@@ -49,6 +58,7 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
             commentEditText = findViewById(R.id.new_comment)
             addAttachmentMenu = findViewById(R.id.iv_chat_menu)
             sendButton = findViewById(R.id.send_but)
+            guideline = findViewById(R.id.guideline_reply_bubble)
         }
     }
 
@@ -119,13 +129,13 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun disableSendButton() {
-        sendButtonListener?.disableSendButton()
+    override fun disableSendButton() {
+        isSendButtonActivated = false
         sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
     }
 
-    fun enableSendButton() {
-        sendButtonListener?.enableSendButton()
+    override fun enableSendButton() {
+        isSendButtonActivated = true
         sendButton?.setImageResource(R.drawable.ic_chatbot_send)
     }
 

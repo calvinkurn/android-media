@@ -10,8 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
@@ -245,7 +243,6 @@ class ChatbotFragment :
     private var hashMap: Map<String, String> = HashMap<String, String>()
     var isAttached: Boolean = false
     private var floatingInvoice : ChatbotFloatingInvoice? = null
-    private var sendButton : ImageView? = null
     private var isSendButtonActivated : Boolean = true
     private var isFloatingSendButton: Boolean = false
     private var isFloatingInvoiceCancelled : Boolean = false
@@ -267,7 +264,6 @@ class ChatbotFragment :
     private var chatbotViewStateImpl: ChatbotViewStateImpl? = null
     private var replyBoxBottomSheetPlaceHolder: String = ""
     private var replyBoxBottomSheetTitle: String = ""
-    private var addCommentArea: LinearLayout? = null
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
@@ -452,7 +448,7 @@ class ChatbotFragment :
             } else {
                 isSendButtonActivated = false
 
-                disableSendButton()
+                smallReplyBox?.disableSendButton()
                 isFloatingSendButton = true
                 val labelType = InvoiceStatusLabelHelper.getLabelType(hashMap[STATUS_COLOR])
 
@@ -561,11 +557,9 @@ class ChatbotFragment :
         dateIndicatorContainer = getBindingView().dateIndicatorContainer
         attachmentMenuRecyclerView = getBindingView().rvAttachmentMenu
 
-
-        //TODO fix guideline issue
- //       guideline = getBindingView().composeArea.guidelineReplyBubble
         smallReplyBox = getBindingView().smallReplyBox
         bigReplyBox = getBindingView().bigReplyBox
+        guideline = smallReplyBox?.getGuidelineForReplyBubble()
 
         smallReplyBox?.bindCommentTextBackground()
 
@@ -1235,7 +1229,7 @@ class ChatbotFragment :
     }
 
     override fun prepareListener() {
-        sendButton?.setOnClickListener {
+        smallReplyBox?.getSmallReplyBoxSendButton()?.setOnClickListener {
             if (isSendButtonActivated) {
                 if (isFloatingSendButton) {
                     onSendFloatingInvoiceClicked()
@@ -1618,7 +1612,7 @@ class ChatbotFragment :
     override fun transactionNotFoundClick() {
         val selected = presenter.getActionBubbleforNoTrasaction()
         presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
-        getViewState()?.handleReplyBox(true)
+        enableTyping()
     }
 
     override fun getUserName(): String {
@@ -1692,16 +1686,23 @@ class ChatbotFragment :
                     replyBubbleOnBoarding.dismiss()
                     senderNameForReply = messageUiModel.from
                     setGuidelineForReplyBubble(true)
-                    replyBubbleContainer?.composeReplyData(messageUiModel,"",true, getUserNameForReplyBubble.getUserName(messageUiModel))
+                    replyBubbleContainer?.composeReplyData(
+                        messageUiModel,
+                        "",
+                        true,
+                        getUserNameForReplyBubble.getUserName(messageUiModel)
+                    )
                     bottomSheetPage.dismiss()
                 }
             }
         }
     }
+
     private fun setGuidelineForReplyBubble(toSet: Boolean) {
         if (toSet) {
             val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
-            params.guideBegin = context?.dpToPx(GUIDELINE_VALUE_FOR_REPLY_BUBBLE)?.toInt() ?: DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
+            params.guideBegin = context?.dpToPx(GUIDELINE_VALUE_FOR_REPLY_BUBBLE)?.toInt()
+                ?: DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
             guideline?.layoutParams = params
         } else {
             val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
@@ -2013,12 +2014,12 @@ class ChatbotFragment :
 
     override fun disableSendButton() {
         isSendButtonActivated = false
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+        smallReplyBox?.disableSendButton()
     }
 
     override fun enableSendButton() {
         isSendButtonActivated = true
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send)
+        smallReplyBox?.enableSendButton()
     }
 
     override fun isInvoiceRemoved(isRemoved: Boolean) {
