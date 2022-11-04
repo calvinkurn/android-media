@@ -81,7 +81,7 @@ object ScheduleDeliveryMapper {
 
     private fun generateTimeUiModel(
         timeOptions: List<DeliveryProduct>,
-        dayId: String,
+        dateId: String,
         selectedTimeSlot: DeliveryProduct,
         isDateSelected: Boolean
     ): List<ChooseTimeUiModel> {
@@ -92,7 +92,7 @@ object ScheduleDeliveryMapper {
                 isEnabled = time.available,
                 isSelected = time.available && (isDateSelected && time.id == selectedTimeSlot.id),
                 timeId = time.id,
-                dateId = dayId
+                dateId = dateId
             )
         }
     }
