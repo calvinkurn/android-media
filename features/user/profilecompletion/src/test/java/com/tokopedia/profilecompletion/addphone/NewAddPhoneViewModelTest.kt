@@ -144,7 +144,7 @@ class NewAddPhoneViewModelTest {
                 message = ""
             )
         )
-        val expected = Success("")
+        val expected = Success(Unit)
 
         // When
         coEvery { userProfileValidateUseCase(phone) } returns response
@@ -169,7 +169,7 @@ class NewAddPhoneViewModelTest {
                 message = "Nomor anda sudah banyak digunakan di akun lain!"
             )
         )
-        val expected = Success(response.userProfileValidate.message)
+        val expected = Fail(MessageErrorException(response.userProfileValidate.message))
 
         // When
         coEvery { userProfileValidateUseCase(phone) } returns response
@@ -179,8 +179,8 @@ class NewAddPhoneViewModelTest {
         // Then
         val result = viewModel.userProfileValidate.getOrAwaitValue()
         val isLoading = viewModel.userValidateLoading.getOrAwaitValue()
-        assertTrue(result is Success)
-        assertEquals(expected, result)
+        assertTrue(result is Fail)
+        assertEquals(expected.throwable.message, result.throwable.message)
         assertFalse(isLoading)
     }
 
