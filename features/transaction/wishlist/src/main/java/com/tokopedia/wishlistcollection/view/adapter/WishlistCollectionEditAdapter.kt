@@ -1,5 +1,6 @@
 package com.tokopedia.wishlistcollection.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,7 @@ class WishlistCollectionEditAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
         return listAccessOption.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addList(list: List<GetWishlistCollectionByIdResponse.GetWishlistCollectionById.Data.AccessOptionsItem>) {
         listAccessOption.clear()
         listAccessOption.addAll(list)
@@ -59,6 +61,7 @@ class WishlistCollectionEditAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun selectOptionItem(position: Int) {
         _currAccess = listAccessOption[position].id
         _actionListener?.onOptionAccessItemClicked(listAccessOption[position].id)

@@ -15,7 +15,7 @@ data class GetWishlistCollectionByIdResponse(
         val errorMessage: List<String> = emptyList(),
 
         @SerializedName("data")
-        val data: Data,
+        val data: Data = Data(),
 
         @SerializedName("status")
         val status: String = ""
@@ -29,7 +29,7 @@ data class GetWishlistCollectionByIdResponse(
             val accessOptions: List<AccessOptionsItem> = emptyList(),
 
             @SerializedName("collection")
-            val collection: Collection
+            val collection: Collection = Collection()
         ) {
             data class Ticker(
 

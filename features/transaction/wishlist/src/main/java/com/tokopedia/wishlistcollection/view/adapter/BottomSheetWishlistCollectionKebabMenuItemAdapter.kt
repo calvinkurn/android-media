@@ -1,5 +1,6 @@
 package com.tokopedia.wishlistcollection.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +33,7 @@ class BottomSheetWishlistCollectionKebabMenuItemAdapter : RecyclerView.Adapter<R
         return listAction.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addList(list: List<BottomSheetKebabActionItemData>) {
         listAction.clear()
         listAction.addAll(list)
