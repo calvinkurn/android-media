@@ -24,7 +24,6 @@ class ProductItemViewHolder(
 
     override fun bind(element: ProductItemDataView?) {
         element ?: return
-
         binding?.productCard?.apply {
             setData(
                 model = element.productCardModel
@@ -41,7 +40,15 @@ class ProductItemViewHolder(
                 )
             }
             setOnClickQuantityEditorVariantListener {
-                listener.onProductChooseVariantClicked(element)
+                listener.onProductChooseVariantClicked(
+                    productItemDataView = element
+                )
+            }
+            setOnAnimationFinishedListener { quantity ->
+                listener.onProductNonVariantAnimationFinished(
+                    productItemDataView = element,
+                    quantity = quantity
+                )
             }
             addOnImpressionListener(element) {
                 listener.onProductImpressed(

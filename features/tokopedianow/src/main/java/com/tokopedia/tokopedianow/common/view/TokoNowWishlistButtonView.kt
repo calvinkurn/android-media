@@ -26,8 +26,8 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
 
     companion object {
         private const val START_POSITION = 0f
-        private const val LEFT_POSITION_ROTATION = 11.63f
-        private const val RIGHT_POSITION_ROTATION = -11.63f
+        private const val LEFT_POSITION_ROTATION = 17f
+        private const val RIGHT_POSITION_ROTATION = -17f
         private const val ANIMATION_DURATION = 500
     }
 
@@ -48,8 +48,8 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                 icon,
                 View.ROTATION,
                 START_POSITION,
-                RIGHT_POSITION_ROTATION,
                 LEFT_POSITION_ROTATION,
+                RIGHT_POSITION_ROTATION,
                 START_POSITION
             ).setDuration(ANIMATION_DURATION.toLong())
 
@@ -65,18 +65,9 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             }
 
             root.setTransitionListener(object : MotionLayout.TransitionListener {
-                    override fun onTransitionStarted(motionLayout: MotionLayout?, p1: Int, p2: Int) {
-                        ringingAnimation.start()
-                    }
+                    override fun onTransitionStarted(motionLayout: MotionLayout?, p1: Int, p2: Int) = onTransitionStarted(ringingAnimation)
 
-                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-//                        if(!hasBeenSelected){
-//                            viewModel.addToWishlist(productID)
-//                        }
-//                        else{
-//                            viewModel.removeFromWishlist(productID)
-//                        }
-                    }
+                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) = onTransitionCompleted()
 
                     override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) { /* nothing to do */ }
 
@@ -152,6 +143,12 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
 
     fun setProductId(productID: String){
         this.productID = productID
+    }
+
+    private fun onTransitionStarted(ringingAnimation: ObjectAnimator) = if (hasBeenSelected) ringingAnimation.start() else ringingAnimation.reverse()
+
+    private fun onTransitionCompleted() {
+        hasBeenSelected = !hasBeenSelected
     }
 
     fun setValue(isSelected: Boolean) {

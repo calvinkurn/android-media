@@ -44,6 +44,12 @@ class HomeLeftCarouselAtcProductCardViewHolder(
                     quantity = quantity
                 )
             }
+            setOnAnimationFinishedListener { quantity ->
+                listener?.onProductCardAnimationFinished(
+                    product = element,
+                    quantity = quantity
+                )
+            }
             addOnImpressionListener(element) {
                 listener?.onProductCardImpressed(
                     position = element.position,
@@ -55,6 +61,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     interface HomeLeftCarouselAtcProductCardListener {
         fun onProductCardAddVariantClicked(product: HomeLeftCarouselAtcProductCardUiModel)
+        fun onProductCardAnimationFinished(product: HomeLeftCarouselAtcProductCardUiModel, quantity: Int)
         fun onProductCardQuantityChanged(product: HomeLeftCarouselAtcProductCardUiModel, quantity: Int)
         fun onProductCardClicked(position: Int, product: HomeLeftCarouselAtcProductCardUiModel)
         fun onProductCardImpressed(position: Int, product: HomeLeftCarouselAtcProductCardUiModel)

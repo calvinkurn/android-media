@@ -86,30 +86,33 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 slashPrice = model.slashPrice,
             )
             initProductNameTypography(
-                model.name
+                productName = model.name
             )
             initRatingTypography(
                 rating = model.rating,
                 isFlashSale = model.isFlashSale(),
                 isNormal = model.isNormal()
             )
+            initWeight(
+                labelGroup = model.getWeightLabelGroup()
+            )
             initOosLabel(
                 labelGroup = model.getOosLabelGroup(),
-                isOos = model.isOos(),
-                hasBeenWishlist = model.hasBeenWishlist
+                isOos = model.isOos()
             )
             initWishlistButton(
                 isOos = model.isOos(),
+                isShown = model.isWishlistShown,
                 hasBeenWishlist = model.hasBeenWishlist,
                 productID = model.productID,
             )
             initSimilarProductTypography(
-                isOos = model.isOos()
+                isOos = model.isOos(),
+                isShown = model.isSimilarProductShown
             )
             initProgressBar(
                 isFlashSale = model.isFlashSale(),
                 progressBarLabel = model.progressBarLabel,
-                progressBarLabelColor = model.progressBarLabelColor,
                 progressBarPercentage = model.progressBarPercentage
             )
         }
@@ -216,9 +219,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowProductCardViewBinding.initSimilarProductTypography(
-        isOos: Boolean
+        isOos: Boolean,
+        isShown: Boolean
     ) {
-        similarProductTypography.showIfWithBlock(isOos) {
+        similarProductTypography.showIfWithBlock(isShown && isOos) {
             adjustChevronIcon(
                 drawable = getIconUnifyDrawable(
                     context = context,
@@ -232,12 +236,21 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
+    private fun LayoutTokopedianowProductCardViewBinding.initWeight(
+        labelGroup: LabelGroup?
+    ) {
+        categoryInfoTypography.showIfWithBlock(labelGroup != null) {
+            labelGroup?.let { labelGroup ->
+                text = labelGroup.title
+            }
+        }
+    }
+
     private fun LayoutTokopedianowProductCardViewBinding.initOosLabel(
         labelGroup: LabelGroup?,
-        isOos: Boolean,
-        hasBeenWishlist: Boolean
+        isOos: Boolean
     ) {
-        oosLabel.showIfWithBlock( labelGroup != null && isOos) {
+        oosLabel.showIfWithBlock(labelGroup != null && isOos) {
             labelGroup?.let { labelGroup ->
                 text = labelGroup.title
                 unlockFeature = true
@@ -250,10 +263,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initWishlistButton(
         isOos: Boolean,
+        isShown: Boolean,
         hasBeenWishlist: Boolean,
         productID: String
     ) {
-        wishlistButton.showIfWithBlock(isOos) {
+        wishlistButton.showIfWithBlock(isShown && isOos) {
             wishlistButton.setValue(hasBeenWishlist)
             wishlistButton.setProductId(productID)
         }
@@ -262,7 +276,6 @@ class TokoNowProductCardView @JvmOverloads constructor(
     private fun LayoutTokopedianowProductCardViewBinding.initProgressBar(
         isFlashSale: Boolean,
         progressBarLabel: String,
-        progressBarLabelColor: String,
         progressBarPercentage: Int
     ) {
         progressBar.showIfWithBlock(isFlashSale) {
@@ -486,5 +499,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
         onClickVariantListener: (Int) -> Unit
     ) {
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
+    }
+
+    fun setOnAnimationFinishedListener(
+        onAnimationFinished: (Int) -> Unit
+    ) {
+        binding.quantityEditor.onAnimationFinished = onAnimationFinished
     }
 }

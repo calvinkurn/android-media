@@ -780,7 +780,14 @@ abstract class BaseSearchCategoryFragment:
             productItemDataView: ProductItemDataView,
             quantity: Int,
     ) {
-        getViewModel().onViewATCProductNonVariant(productItemDataView, quantity)
+        getViewModel().onViewATCProductNonVariant(productItemDataView, quantity, false)
+    }
+
+    override fun onProductNonVariantAnimationFinished(
+        productItemDataView: ProductItemDataView,
+        quantity: Int
+    ) {
+        getViewModel().onViewATCProductNonVariantAnimationFinished(productItemDataView, quantity, true)
     }
 
     protected open fun showSuccessATCMessage(message: String?) {

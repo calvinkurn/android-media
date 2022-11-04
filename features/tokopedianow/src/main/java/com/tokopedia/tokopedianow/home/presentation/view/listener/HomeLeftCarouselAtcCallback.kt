@@ -38,6 +38,22 @@ class HomeLeftCarouselAtcCallback (
         )
     }
 
+    override fun onProductCardAnimationFinished(
+        product: HomeLeftCarouselAtcProductCardUiModel,
+        quantity: Int
+    ) {
+        if (userSession.isLoggedIn) {
+            viewModel.addProductToCart(
+                productId = product.id.orEmpty(),
+                quantity = quantity,
+                shopId = product.shopId,
+                type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED
+            )
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
     override fun onProductCardQuantityChanged(
         product: HomeLeftCarouselAtcProductCardUiModel,
         quantity: Int

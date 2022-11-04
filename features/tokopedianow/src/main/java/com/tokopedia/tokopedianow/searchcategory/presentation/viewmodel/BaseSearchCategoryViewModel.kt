@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -33,6 +34,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -142,6 +144,7 @@ abstract class BaseSearchCategoryViewModel(
     private var currentProductPosition: Int = 1
     private var recommendationPositionInVisitableList = -1
     private val recommendationList = mutableListOf<RecommendationWidget>()
+    private var hasProductAnimationFinished = true
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -1016,7 +1019,7 @@ abstract class BaseSearchCategoryViewModel(
         withContext(baseDispatcher.io) {
             cartService.updateMiniCartItems(miniCartSimplifiedData)
 
-            if (visitableList.isEmpty()) return@withContext
+            if (visitableList.isEmpty() || !hasProductAnimationFinished) return@withContext
 
             val updatedProductIndices = mutableListOf<Int>()
 
@@ -1078,10 +1081,15 @@ abstract class BaseSearchCategoryViewModel(
         } ?: false
     }
 
-    open fun onViewATCProductNonVariant(productItem: ProductItemDataView, quantity: Int) {
+    open fun onViewATCProductNonVariant(
+        productItem: ProductItemDataView,
+        quantity: Int,
+        hasAnimationFinished: Boolean
+    ) {
         val productId = productItem.id
         val shopId = productItem.shop.id
         val currentQuantity = productItem.productCardModel.orderQuantity
+        hasProductAnimationFinished = hasAnimationFinished
 
         cartService.handleCart(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
@@ -1108,6 +1116,39 @@ abstract class BaseSearchCategoryViewModel(
                 handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
             },
         )
+    }
+
+    open fun onViewATCProductNonVariantAnimationFinished(
+        productItem: ProductItemDataView,
+        quantity: Int,
+        hasAnimationFinished: Boolean
+    ) {
+        hasProductAnimationFinished = hasAnimationFinished
+
+        if (productItem.productCardModel.orderQuantity != quantity && quantity.isZero()) {
+            val productId = productItem.id
+            val shopId = productItem.shop.id
+            val currentQuantity = productItem.productCardModel.orderQuantity
+
+            cartService.handleCart(
+                cartProductItem = CartProductItem(productId, shopId, currentQuantity),
+                quantity = quantity,
+                onSuccessAddToCart = { /* nothing to do */ },
+                onSuccessUpdateCart = { /* nothing to do */ },
+                onSuccessDeleteCart = {
+                    sendDeleteCartTracking(productItem)
+                    onAddToCartSuccess(productItem, 0)
+                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    updateToolbarNotification()
+                },
+                onError = ::onAddToCartFailed,
+                handleCartEventNonLogin = {
+                    handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
+                },
+            )
+        } else {
+            refreshMiniCart()
+        }
     }
 
     private fun sendAddToCartTracking(quantity: Int, cartId: String, productItem: ProductItemDataView) {
