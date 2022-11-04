@@ -17,7 +17,7 @@ class NewAddPhoneNumberTracker @Inject constructor() {
             .send()
     }
 
-    fun sendClickOnButtonTambahNomorHpEvent (action: String, errorMessage: String = "") {
+    fun sendClickOnButtonTambahNomorHpEvent(action: String, errorMessage: String = "") {
         Tracker.Builder()
             .setEvent("clickAccount")
             .setEventAction("click on button tambah nomor hp")
