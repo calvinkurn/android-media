@@ -191,6 +191,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var isAturMode = false
     private var isCTAResetOfferFilterClicked = false
     private var bottomSheetCollectionSettings = BottomSheetWishlistCollectionSettings()
+    private var isToolbarHasDesc = false
+    private var toolbarDesc = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -572,6 +574,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             updateCustomToolbarSubTitle(collectionNameDestination)
                         } else {
                             if (collectionDetail.description.isNotEmpty()) {
+                                isToolbarHasDesc = true
+                                toolbarDesc = collectionDetail.description
                                 updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
                             } else {
                                 updateToolbarTitle(toolbarTitle)
@@ -2630,7 +2634,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun turnOffBulkDeleteMode() {
         isBulkDeleteShow = false
         turnOffBulkMode()
-        updateToolbarTitle(toolbarTitle)
+        if (isToolbarHasDesc) updateCustomToolbarTitleAndSubTitle(toolbarTitle, toolbarDesc)
+        else updateToolbarTitle(toolbarTitle)
     }
 
     override fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean, isBulkAdd: Boolean) {
@@ -2879,6 +2884,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun doRefresh() {
+        isToolbarHasDesc = false
         listSelectedProductIds.clear()
         onLoadMore = false
         isFetchRecommendation = false
