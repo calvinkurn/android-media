@@ -25,7 +25,7 @@ class NewAddPhoneViewModel @Inject constructor(
     private val userProfileUpdateUseCase: UserProfileUpdateUseCase,
     private val userSessionInterface: UserSessionInterface,
     dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
 
     private var phoneError = INITIAL_RESOURCE
 
