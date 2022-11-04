@@ -223,9 +223,9 @@ class BaseTokoFoodOrderTrackingFragment :
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
     private fun initializeChatProfile() {
-        val userId = viewModel.getUserId()
+        val userId = viewModel.getProfileUserId()
         if (userId.isEmpty() || userId.isBlank()) {
-            viewModel.initializeProfile()
+            viewModel.initializeConversationProfileProfile()
         }
     }
 

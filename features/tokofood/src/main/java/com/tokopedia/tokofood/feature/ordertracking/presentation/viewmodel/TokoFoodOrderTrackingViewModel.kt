@@ -157,11 +157,11 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         }
     }
 
-    fun initializeProfile() {
+    fun initializeConversationProfileProfile() {
         tokoChatConfigMutationProfileUseCase.get().initializeConversationProfile()
     }
 
-    fun getUserId(): String {
+    fun getProfileUserId(): String {
         return tokoChatConfigMutationProfileUseCase.get().getUserId()
     }
 
