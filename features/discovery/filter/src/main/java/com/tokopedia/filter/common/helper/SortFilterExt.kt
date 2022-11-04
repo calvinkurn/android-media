@@ -13,6 +13,7 @@ import android.os.Parcelable
 import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -61,7 +62,10 @@ internal fun BottomSheetUnify.configureBottomSheetHeight() {
     val screenHeight = getScreenHeight()
     val maxHeight = (screenHeight * 0.9f).toInt()
 
-    bottomSheetWrapper.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, maxHeight)
+    bottomSheetWrapper.layoutParams = FrameLayout.LayoutParams(
+        FrameLayout.LayoutParams.MATCH_PARENT,
+        maxHeight,
+    )
 }
 
 internal fun View.setMargin(marginLeft: Int = -1, marginTop: Int = -1, marginRight: Int = -1, marginBottom: Int = -1) {
