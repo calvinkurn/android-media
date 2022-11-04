@@ -483,7 +483,7 @@ class OfficialHomeFragment :
         val applink = gridData.applink
 
         gridData.let {
-            tracking?.legoClick(
+            tracking?.clickLego36Image(
                     viewModel.currentSlug,
                     channelModel.channelHeader.name,
                     (position + POS_1).toString(POS_10),
@@ -498,7 +498,7 @@ class OfficialHomeFragment :
 
     override fun legoImpression(channelModel: ChannelModel) {
         if (!sentDynamicChannelTrackers.contains(channelModel.id)) {
-            tracking?.legoImpression(viewModel.currentSlug, channelModel, getUserId())
+            tracking?.impressionLego36Image(viewModel.currentSlug, channelModel, getUserId())
             sentDynamicChannelTrackers.add(channelModel.id)
         }
     }

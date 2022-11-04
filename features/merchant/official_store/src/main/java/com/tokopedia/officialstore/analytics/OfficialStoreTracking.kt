@@ -459,7 +459,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
     }
 
     // Row 12
-    fun legoClick(categoryName: String, headerName: String, position: String, channelGrid: ChannelGrid, channelModel: ChannelModel, userId: String) {
+    fun clickLego36Image(categoryName: String, headerName: String, position: String, channelGrid: ChannelGrid, channelModel: ChannelModel, userId: String) {
         val bundle = Bundle().apply {
             putString(Event.KEY, SELECT_CONTENT)
             putString(Category.KEY, OS_MICROSITE_SINGLE)
@@ -485,7 +485,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
     }
 
     // Row 13
-    fun legoImpression(categoryName: String, channelModel: ChannelModel, userId: String) {
+    fun impressionLego36Image(categoryName: String, channelModel: ChannelModel, userId: String) {
         val headerName = channelModel.channelHeader.name
         val promotionBody = channelModel.channelGrids.mapIndexed { index, grid ->
             DataLayer.mapOf(
