@@ -93,6 +93,7 @@ ext {
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
     playIntegrityVersion = '1.0.1'
+    leakPublisherVersion = '866fb8ad'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
@@ -366,7 +367,8 @@ ext {
             chuckNoop       : "com.github.ChuckerTeam.Chucker:library-no-op:$chuckerVersion",
             timber          : "com.jakewharton.timber:timber:4.7.1",
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
-            leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+            leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion",
+            leakPublisher : "com.gojek.android.local:library-leak-publisher:$leakPublisherVersion"
     ]
 
     tkpdLibDependencies = [
