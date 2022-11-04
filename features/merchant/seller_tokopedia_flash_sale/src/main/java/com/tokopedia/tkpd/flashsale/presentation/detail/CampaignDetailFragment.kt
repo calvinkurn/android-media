@@ -33,6 +33,7 @@ import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.*
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.ProductCheckBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
@@ -180,6 +181,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         loadCampaignDetailData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        getFlashSaleSubmissionProgress(flashSaleId)
+    }
+
     private fun observeCampaignDetail() {
         viewModel.campaign.observe(viewLifecycleOwner) { flashSale ->
             hideLoading()
@@ -318,7 +324,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             CampaignDetailViewModel.UiEffect.ShowIneligibleAccessWarning -> {
                 navigateToIneligibleAccessPage()
             }
+            is CampaignDetailViewModel.UiEffect.OnSseOpen -> {
+                onSseOpen(effect.flashSaleSubmissionProgress)
+            }
         }
+    }
+
+    private fun onSseOpen(flashSaleSubmissionProgress: FlashSaleProductSubmissionProgress) {
+        viewModel.listenToOpenedSse(flashSaleId)
     }
 
     private fun setupHeader(flashSale: FlashSale) {
@@ -353,6 +366,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 setupFinished(flashSale)
             }
         }
+    }
+
+    private fun getFlashSaleSubmissionProgress(flashSaleId: Long) {
+        viewModel.getFlashSaleSubmissionProgress(flashSaleId)
     }
 
     /**

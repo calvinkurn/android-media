@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.flashsale.presentation.manageproductlist
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.lifecycle.ViewModelProvider
@@ -22,9 +23,13 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsDialogProductSubmissionSseBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult.Status.COMPLETE
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
@@ -104,6 +109,8 @@ class FlashSaleManageProductListFragment :
         }
     }
     private var currentOffset: Int = 0
+    private var loaderDialogProductSubmitSse: LoaderDialog? = null
+    private var dialogProductSubmissionSseBinding: StfsDialogProductSubmissionSseBinding? = null
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
             .add(FlashSaleManageProductListItemDelegate(this))
@@ -115,12 +122,32 @@ class FlashSaleManageProductListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         configHeaderUnify()
         configRecyclerView()
         getCampaignDetailBottomSheetData()
         getReservedProductList()
         observeUiState()
         observeUiEffect()
+    }
+
+    private fun init() {
+        context?.let {
+            loaderDialogProductSubmitSse = LoaderDialog(it).apply {
+                dialogProductSubmissionSseBinding =
+                    StfsDialogProductSubmissionSseBinding.inflate(LayoutInflater.from(it))
+                customView = dialogProductSubmissionSseBinding?.root
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getFlashSaleSubmissionProgress(campaignId)
+    }
+
+    private fun getFlashSaleSubmissionProgress(campaignId: String) {
+        viewModel.getFlashSaleSubmissionProgress(campaignId.toLongOrZero())
     }
 
     private fun configRecyclerView() {
@@ -224,9 +251,64 @@ class FlashSaleManageProductListFragment :
                     is FlashSaleManageProductListUiEffect.ClearProductList -> {
                         clearProductList()
                     }
+                    is FlashSaleManageProductListUiEffect.OnProductSseSubmission -> {
+                        showDialogProductSseSubmission(it.flashSaleProductSubmissionSseResult)
+                    }
+                    is FlashSaleManageProductListUiEffect.OnSuccessAcknowledgeProductSubmissionSse -> {
+                        redirectToCampaignDetailPage(it.totalSubmittedProduct.toLong())
+                    }
+                    is FlashSaleManageProductListUiEffect.OnSseOpen -> {
+                        listenToExistingSse()
+                    }
                 }
             }
         }
+    }
+
+    private fun listenToExistingSse() {
+        viewModel.listenToExistingSse(campaignId)
+    }
+
+    private fun showDialogProductSseSubmission(
+        flashSaleProductSubmissionSseResult: FlashSaleProductSubmissionSseResult
+    ) {
+        val currentProcessedProduct = flashSaleProductSubmissionSseResult.countProcessedProduct
+        val totalProduct = flashSaleProductSubmissionSseResult.countAllProduct
+        updateProductSubmissionProgressDialog(currentProcessedProduct, totalProduct)
+        showProductSubmissionSseProgressDialog()
+        when (flashSaleProductSubmissionSseResult.status) {
+            COMPLETE -> {
+                acknowledgeProductSubmissionSse(
+                    flashSaleProductSubmissionSseResult.campaignId,
+                    flashSaleProductSubmissionSseResult.countProcessedProduct
+                )
+            }
+            else -> {}
+        }
+    }
+
+    private fun showProductSubmissionSseProgressDialog() {
+        val isDialogShown = loaderDialogProductSubmitSse?.dialog?.isShowing
+        if (isDialogShown == false) {
+            loaderDialogProductSubmitSse?.dialog?.setCancelable(false)
+            loaderDialogProductSubmitSse?.show()
+        }
+    }
+
+    private fun updateProductSubmissionProgressDialog(
+        currentProcessedProduct: Int,
+        totalProduct: Int
+    ) {
+        dialogProductSubmissionSseBinding?.typographyDescription?.text = String.format(
+            dialogProductSubmissionSseBinding?.typographyDescription?.text.toString(),
+            currentProcessedProduct,
+            totalProduct
+        )
+        loaderDialogProductSubmitSse?.setLoadingText("")
+    }
+
+    private fun acknowledgeProductSubmissionSse(campaignId: String, totalSubmittedProduct: Int) {
+        viewModel.acknowledgeProductSubmissionSse(campaignId, totalSubmittedProduct)
     }
 
     private fun clearProductList() {
@@ -556,14 +638,18 @@ class FlashSaleManageProductListFragment :
         }
     }
 
-    private fun redirectToManageProductNonVariantPage(productData: ReservedProduct.Product, campaignId: String) {
+    private fun redirectToManageProductNonVariantPage(
+        productData: ReservedProduct.Product,
+        campaignId: String
+    ) {
         context?.let {
-            ManageProductNonVariantActivity.createIntent(it, productData, campaignId.toLongOrZero()).apply {
-                startActivityForResult(
-                    this,
-                    REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
-                )
-            }
+            ManageProductNonVariantActivity.createIntent(it, productData, campaignId.toLongOrZero())
+                .apply {
+                    startActivityForResult(
+                        this,
+                        REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
+                    )
+                }
         }
     }
 

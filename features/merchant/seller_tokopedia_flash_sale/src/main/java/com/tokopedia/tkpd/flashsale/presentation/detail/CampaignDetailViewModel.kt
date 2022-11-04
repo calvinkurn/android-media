@@ -47,6 +47,8 @@ class CampaignDetailViewModel @Inject constructor(
     private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
     private val doFlashSaleSellerRegistrationUseCase: DoFlashSaleSellerRegistrationUseCase,
+    private val getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase,
+    private val flashSaleTkpdProductSubmissionMonitoringSse: FlashSaleTkpdProductSubmissionMonitoringSse,
     private val userSession: UserSessionInterface,
     private val sharedPreferences: SharedPreferences,
     private val tracker: CampaignDetailPageTracker
@@ -93,6 +95,7 @@ class CampaignDetailViewModel @Inject constructor(
     sealed class UiEffect {
         object ShowGlobalError : UiEffect()
         object ShowIneligibleAccessWarning : UiEffect()
+        data class OnSseOpen(val flashSaleSubmissionProgress: FlashSaleProductSubmissionProgress) : UiEffect()
     }
     private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
     val uiEffect = this._uiEffect.asSharedFlow()
@@ -562,6 +565,39 @@ class CampaignDetailViewModel @Inject constructor(
             !isRbacRuleActive -> true
             else -> false
         }
+    }
+
+    fun getFlashSaleSubmissionProgress(flashSaleId: Long) {
+        launchCatchError(dispatchers.io,
+        block = {
+            val flashSaleSubmissionProgress = getFlashSaleProductSubmissionProgressResponse(
+                flashSaleId
+            )
+            if(flashSaleSubmissionProgress.isOpenSse) {
+                _uiEffect.emit(UiEffect.OnSseOpen(flashSaleSubmissionProgress))
+            }
+        }){ }
+    }
+
+    private suspend fun getFlashSaleProductSubmissionProgressResponse(campaignId: Long): FlashSaleProductSubmissionProgress {
+        return getFlashSaleProductSubmissionProgressUseCase.execute(GetFlashSaleProductSubmissionProgressUseCase.Param(
+            campaignId,
+            1
+        ))
+    }
+
+    fun listenToOpenedSse(campaignId: Long) {
+//        launchCatchError(dispatchers.io,
+//            block = {
+//                flashSaleTkpdProductSubmissionMonitoringSse.connect(
+//                    campaignId.toString(),
+//                    {
+//
+//                    },
+//                    {
+//
+//                    })
+//            }) { }
     }
 
 }

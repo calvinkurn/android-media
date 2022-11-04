@@ -270,6 +270,9 @@
     <string name="stfs_product_item_total_stock_non_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]></string>
     <string name="stfs_product_item_manage_button_text">Atur Diskon</string>
     <string name="stfs_product_item_edit_button_text">Ubah</string>
+    <string name="stfs_product_submission_dialog_title">Tunggu sebentar, ya...</string>
+    <string name="stfs_product_submission_dialog_description">%1d dari %2d varian produk sedang diajukan. Jangan tutup halaman ini, ya.</string>
+
 
 
     <string name="stfs_stfs_manage_location_title">Atur Lokasi</string>

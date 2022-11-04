@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel
 
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
 
@@ -40,5 +42,20 @@ sealed class FlashSaleManageProductListUiEffect {
     object ShowSubmitButton : FlashSaleManageProductListUiEffect()
 
     object ClearProductList : FlashSaleManageProductListUiEffect()
+
+    data class OnProductSseSubmission(
+        val flashSaleProductSubmissionSseResult: FlashSaleProductSubmissionSseResult
+    ) : FlashSaleManageProductListUiEffect()
+
+    data class OnSuccessAcknowledgeProductSubmissionSse(
+        val totalSubmittedProduct: Int
+    ) : FlashSaleManageProductListUiEffect()
+
+    data class OnErrorAcknowledgeProductSubmissionSse(
+        val error: Throwable
+    ) : FlashSaleManageProductListUiEffect()
+
+    data class OnSseOpen(val flashSaleSubmissionProgress: FlashSaleProductSubmissionProgress) :
+        FlashSaleManageProductListUiEffect()
 
 }

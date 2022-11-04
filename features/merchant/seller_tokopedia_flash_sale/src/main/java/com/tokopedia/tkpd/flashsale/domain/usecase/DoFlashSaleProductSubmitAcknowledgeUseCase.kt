@@ -7,18 +7,15 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tkpd.flashsale.data.mapper.DoFlashSaleProductSubmissionMapper
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
-import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductSubmissionRequest
-import com.tokopedia.tkpd.flashsale.data.response.DoFlashSaleProductSubmissionResponse
-import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
+import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductSubmitAcknowledgeRequest
+import com.tokopedia.tkpd.flashsale.data.response.DoFlashSaleProductSubmitAcknowledgeResponse
 import javax.inject.Inject
 
 
-class DoFlashSaleProductSubmissionUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
-    private val mapper: DoFlashSaleProductSubmissionMapper
-) : GraphqlUseCase<ProductSubmissionResult>(repository) {
+class DoFlashSaleProductSubmitAcknowledgeUseCase @Inject constructor(
+    private val repository: GraphqlRepository
+) : GraphqlUseCase<Boolean>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -29,9 +26,9 @@ class DoFlashSaleProductSubmissionUseCase @Inject constructor(
     }
 
     private val mutation = object : GqlQueryInterface {
-        private val OPERATION_NAME = "doFlashSaleProductSubmission"
+        private val OPERATION_NAME = "doFlashSaleProductSubmitAcknowledge"
         private val MUTATION = """
-        mutation $OPERATION_NAME(${'$'}params: DoFlashSaleProductSubmissionRequest!) {
+        mutation $OPERATION_NAME(${'$'}params: DoFlashSaleProductSubmitAcknowledgeRequest!) {
              $OPERATION_NAME(params: ${'$'}params) {
                 response_header {
                     status
@@ -41,18 +38,7 @@ class DoFlashSaleProductSubmissionUseCase @Inject constructor(
                     error_code
                   
                 }
-                product_status {
-                    product_id
-                    is_success
-                    message
-                    warehouses {
-                        warehouse_id
-                        is_success
-                        message
-                    }
-                }
-                sse_key
-                use_sse
+                is_success
              }
        }
     """.trimIndent()
@@ -62,34 +48,28 @@ class DoFlashSaleProductSubmissionUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): ProductSubmissionResult {
+    suspend fun execute(param: Param): Boolean {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
-        val data = response.getSuccessData<DoFlashSaleProductSubmissionResponse>()
-        return mapper.map(data, param.productData.size.toLong())
+        val data = response.getSuccessData<DoFlashSaleProductSubmitAcknowledgeResponse>()
+        return data.doFlashSaleProductSubmitAcknowledge.isSuccess
     }
 
     private fun buildRequest(param: Param): GraphqlRequest {
         val requestHeader = CampaignParticipationRequestHeader(usecase = "manage_product")
-        val payload = DoFlashSaleProductSubmissionRequest(
+        val payload = DoFlashSaleProductSubmitAcknowledgeRequest(
             requestHeader,
-            param.campaignId,
-            param.productData,
-            param.reservationId
+            param.campaignId
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
 
         return GraphqlRequest(
             mutation,
-            DoFlashSaleProductSubmissionResponse::class.java,
+            DoFlashSaleProductSubmitAcknowledgeResponse::class.java,
             params
         )
     }
 
-    data class Param(
-        val campaignId: Long,
-        val productData: List<DoFlashSaleProductSubmissionRequest.ProductData>,
-        val reservationId: String
-    )
+    data class Param(val campaignId: Long)
 
 }
