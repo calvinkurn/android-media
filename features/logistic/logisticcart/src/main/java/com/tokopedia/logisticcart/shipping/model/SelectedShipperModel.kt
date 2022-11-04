@@ -43,13 +43,13 @@ data class SelectedShipperModel(
             shipperId = scheduleDelivery.deliveryProduct?.shipperId?.toInt() ?: 0
             shipperProductId = scheduleDelivery.deliveryProduct?.shipperProductId?.toInt() ?: 0
             shipperPrice = scheduleDelivery.deliveryProduct?.finalPrice?.toInt() ?: 0
-            serviceId = 0
+            serviceId = scheduleDelivery.deliveryProduct?.serviceId?.toInt() ?: 0
 
-            insurancePrice = scheduleDelivery.deliveryProduct?.insurancePrice?.toInt() ?: 0
-            insuranceType = 0
-            insuranceUsedType = 0
-            insuranceUsedInfo = ""
-            insuranceUsedDefault = 0
+            insurancePrice = scheduleDelivery.deliveryProduct?.insurance?.insurancePrice ?: 0
+            insuranceType = scheduleDelivery.deliveryProduct?.insurance?.insuranceType ?: 0
+            insuranceUsedType = scheduleDelivery.deliveryProduct?.insurance?.insuranceUsedType ?: 0
+            insuranceUsedInfo = scheduleDelivery.deliveryProduct?.insurance?.insuranceUsedInfo
+            insuranceUsedDefault = scheduleDelivery.deliveryProduct?.insurance?.insuranceUsedDefault ?: 0
 
             logPromoCode = scheduleDelivery.deliveryProduct?.promoStacking?.promoCode
             discountedRate = scheduleDelivery.deliveryProduct?.finalPrice?.toInt() ?: 0
@@ -57,17 +57,26 @@ data class SelectedShipperModel(
             benefitAmount = 0
             promoTitle = ""
             isHideShipperName = true
-            checksum = ""
-            ut = ""
-            ontimeDelivery = null
-            codProductData = null
+            checksum = scheduleDelivery.deliveryProduct?.checksum
+            ut = scheduleDelivery.deliveryProduct?.ut
+            val onTimeDeliveryData = scheduleDelivery.deliveryProduct?.features?.onTimeDeliveryGuarantee
+            ontimeDelivery = onTimeDeliveryData?.let {
+                OntimeDelivery(
+                    it.available,
+                    it.textLabel,
+                    it.textDetail,
+                    it.urlDetail,
+                    it.value,
+                    it.iconUrl
+                )
+            }
             etaText = scheduleDelivery.deliveryProduct?.textEta
             etaErrorCode = 0
             shipperName = ""
             freeShippingChosenCourierTitle = ""
             freeShippingMetadata = scheduleDelivery.deliveryProduct?.freeShippingMetadata ?: ""
-            benefitClass = ""
-            shippingSubsidy = 0
+            benefitClass = scheduleDelivery.deliveryProduct?.promoStacking?.benefitClass ?: ""
+            shippingSubsidy = scheduleDelivery.deliveryProduct?.promoStacking?.shippingSubsidy ?: 0
             boCampaignId = 0
         }
     }

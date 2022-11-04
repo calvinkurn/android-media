@@ -15,5 +15,5 @@ class PromoStacking(
     @SerializedName("is_bebas_ongkir_extra")
     val isBebasOngkirExtra: Boolean = false,
     @SerializedName("shipping_subsidy")
-    val shippingSubsidy: Int = 0,
+    val shippingSubsidy: Long = 0,
 ) : Parcelable
