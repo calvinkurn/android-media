@@ -273,4 +273,8 @@
     <string name="consent_withdrawal_section_title">Penggunaan Data</string>
     <string name="consent_withdrawal_section_description"><![CDATA[Atur penggunaan datamu di fitur & produk Tokopedia.]]></string>
 
+    <!-- ADD/VERIFY PHONE -->
+    <string name="add_phone_success_message">Yay! Nomor HP berhasil ditambah.</string>
+    <string name="verify_phone_success_message">Yay! Nomor HP berhasil diverifikasi.</string>
+
 </resources>

@@ -559,6 +559,18 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                     }
                 }
             }
+            REQUEST_CODE_ADD_PHONE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    getData()
+                    view?.let { Toaster.build(it, getString(R.string.add_phone_success_message)).show() }
+                }
+            }
+            REQUEST_CODE_VERIFY_PHONE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    getData()
+                    view?.let { Toaster.build(it, getString(R.string.verify_phone_success_message)).show() }
+                }
+            }
         }
 
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
