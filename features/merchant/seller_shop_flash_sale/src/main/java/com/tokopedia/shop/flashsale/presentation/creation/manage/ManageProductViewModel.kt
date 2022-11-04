@@ -13,8 +13,10 @@ import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.*
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.ERROR_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.HIDE_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.EMPTY_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.NOT_ERROR
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
@@ -63,7 +65,7 @@ class ManageProductViewModel @Inject constructor(
     }
 
     private var isCoachMarkShown = false
-    
+
     var campaignName = ""
     var autoShowEditProduct = true
     private var autoNavigateWhenProductIsEmpty = true
@@ -107,11 +109,9 @@ class ManageProductViewModel @Inject constructor(
         var isProductContainingError = false
         productList.productList.forEach { product ->
             val errorType = product.errorType
-            if (product.isInfoComplete) {
-                if (errorType != NOT_ERROR) {
-                    _bannerType.postValue(ERROR_BANNER)
-                    isProductContainingError = true
-                }
+            if (product.isInfoComplete && errorType != NOT_ERROR) {
+                _bannerType.postValue(ERROR_BANNER)
+                isProductContainingError = true
             } else {
                 if (bannerType.value != ERROR_BANNER) {
                     _bannerType.postValue(EMPTY_BANNER)
