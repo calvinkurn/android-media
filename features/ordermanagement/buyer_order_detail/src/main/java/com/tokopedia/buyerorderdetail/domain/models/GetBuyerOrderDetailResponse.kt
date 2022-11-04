@@ -355,30 +355,30 @@ data class GetBuyerOrderDetailResponse(
             data class LogisticSectionInfo(
                 @Expose
                 @SerializedName("index")
-                val index: Long,
+                val index: Long = 0L,
                 @Expose
                 @SerializedName("id")
-                val id: String,
+                val id: String = "",
                 @Expose
                 @SerializedName("image_link")
-                val imageUrl: String,
+                val imageUrl: String = "",
                 @Expose
                 @SerializedName("title")
-                val title: String,
+                val title: String = "",
                 @Expose
                 @SerializedName("subtitle")
-                val subtitle: String,
+                val subtitle: String = "",
                 @Expose
                 @SerializedName("action")
-                val action: Action
+                val action: Action = Action()
             ) {
                 data class Action(
                     @Expose
                     @SerializedName("name")
-                    val name: String,
+                    val name: String = "",
                     @Expose
                     @SerializedName("link")
-                    val link: String
+                    val link: String = ""
                 )
             }
 

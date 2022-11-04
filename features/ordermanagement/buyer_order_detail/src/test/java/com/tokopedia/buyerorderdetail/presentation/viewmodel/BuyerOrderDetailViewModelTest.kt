@@ -15,9 +15,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 
 class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
@@ -41,7 +39,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `UI state should equals to Showing when getP0DataRequestState is Success`() =
         runCollectingUiState { uiStates ->
-            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessGetBuyerOrderDetailDataResult(
+                getBuyerOrderDetailResult = mockk(relaxed = true) {
+                    every { getPodInfo() } returns null
+                }
+            )
 
             viewModel.getBuyerOrderDetailData(
                 orderId = orderId,
@@ -69,7 +71,11 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `UI state should equals to PullRefreshLoading when reloading P0 data`() =
         runCollectingUiState { uiStates ->
-            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessGetBuyerOrderDetailDataResult(
+                getBuyerOrderDetailResult = mockk(relaxed = true) {
+                    every { getPodInfo() } returns null
+                }
+            )
 
             viewModel.getBuyerOrderDetailData(
                 orderId = orderId,
