@@ -24,7 +24,8 @@ import com.tokopedia.common_compose.ui.NestTheme
 fun NestHeader(
     modifier: Modifier = Modifier,
     title: String,
-    onToolbarBackIconPressed: () -> Unit
+    showBackNav: Boolean = true,
+    onToolbarBackIconPressed: () -> Unit = {}
 ) {
     Surface(
         color = NestTheme.colors.NN0,
@@ -40,18 +41,20 @@ fun NestHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.width(16.dp))
-            IconButton(
-                modifier = Modifier
-                    .height(16.dp)
-                    .width(18.dp),
-                onClick = onToolbarBackIconPressed
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Back"
-                )
+            if (showBackNav) {
+                IconButton(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .width(18.dp),
+                    onClick = onToolbarBackIconPressed
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
             }
-            Spacer(modifier = Modifier.width(16.dp))
             NestTypography(
                 text = title,
                 textStyle = NestTheme.typography.display1.copy(
@@ -69,7 +72,7 @@ fun NestHeader(
 @Composable
 fun NestHeaderPreview() {
     NestTheme(darkTheme = false) {
-        NestHeader(title = "Tokopedia", onToolbarBackIconPressed = {})
+        NestHeader(title = "Tokopedia", showBackNav = false)
     }
 }
 
@@ -77,7 +80,7 @@ fun NestHeaderPreview() {
 @Composable
 fun NestHeaderDarkPreview() {
     NestTheme(darkTheme = true) {
-        NestHeader(title = "Tokopedia", onToolbarBackIconPressed = {})
+        NestHeader(title = "Tokopedia")
     }
 }
 
