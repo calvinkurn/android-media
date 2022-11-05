@@ -12,17 +12,17 @@ import androidx.compose.ui.unit.dp
 
 
 private val NestThemeLight = lightColors(
-    primary = NestNN0,
-    onPrimary = NestNN700,
-    primaryVariant = NestNN0,
-    secondary = NestNN0,
+    primary = NestGN500,
+    onPrimary = NestNN0,
+    primaryVariant = NestGN400,
+    secondary = NestBN200,
     surface = NestNN0,
 )
 
 private val NestThemeDark = darkColors(
-    primary = NestNN0Dark,
-    onPrimary = NestNN700Dark,
-    secondary = NestNN0Dark,
+    primary = NestGN500Dark,
+    onPrimary = NestNN0Dark,
+    secondary = NestBN200Dark,
     surface = NestNN0Dark
 )
 
