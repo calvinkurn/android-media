@@ -1,9 +1,9 @@
 package com.tokopedia.tkpd
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -11,10 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Checkbox
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,10 +19,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
 class MainActivity : AppCompatActivity() {
@@ -34,13 +36,28 @@ class MainActivity : AppCompatActivity() {
     val REQUEST_CODE_LOGOUT = 456
     lateinit var userSession: UserSessionInterface
 
+    private val applink = mutableStateOf(getDefaultAppLink())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        userSession = UserSession(this)
         setContent {
-            TestAppHome()
+            NestTheme {
+                val applinkStr by remember { applink }
+                TestAppHome(
+                    Model(applinkStr, getLiveStatus(), false),
+                    { },
+                    { this.applink.value = it },
+                    {
+                        when (it) {
+                            HomeDestination.LOGIN -> handleNavigationLogin()
+                            HomeDestination.LOGOUT -> handleNavigationLogout()
+                            HomeDestination.DEVELOPER_OPTION -> TODO()
+                            HomeDestination.APPLINK -> goTo()
+                        }
+                    })
+            }
         }
-//        userSession = UserSession(this)
-//
 //        if (TokopediaUrl.getInstance().GQL.contains("staging")) {
 //            testapp_environment?.text = "STAGING URL"
 //            testapp_environment?.setBackgroundColor(Color.parseColor("#e67e22"))
@@ -54,32 +71,41 @@ class MainActivity : AppCompatActivity() {
 //            AppCompatDelegate.setDefaultNightMode(if (state) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 //        }
 //
-//        loginButton.setOnClickListener {
-//            if (!userSession.isLoggedIn) {
-//                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-//            } else {
-//                Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
-//                goTo()
-//            }
-//        }
-//
-//        /* use mainapp login use case */
-//        logoutButton.setOnClickListener {
-//            val logoutIntent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.LOGOUT).apply {
-//                putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, false)
-//            }
-//            startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
-//        }
-//
 //        testGqlButton.setOnClickListener { TestGqlUseCase().execute() }
 //
 //        devOptButton.setOnClickListener {
 //            RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
 //        }
-//
-//        etAppLink.setText(getDefaultAppLink())
-//
-//        goToButton.setOnClickListener { goTo() }
+    }
+
+    private fun getLiveStatus(): String {
+        return if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+            "STAGING URL"
+//            testapp_environment?.setBackgroundColor(Color.parseColor("#e67e22"))
+        } else {
+            "LIVE URL"
+//            testapp_environment?.setBackgroundColor(Color.parseColor("#27ae60"))
+        }
+    }
+
+    private fun handleNavigationLogin() {
+        if (!userSession.isLoggedIn) {
+            startActivityForResult(
+                RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
+        } else {
+            Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
+            goTo()
+        }
+    }
+
+    private fun handleNavigationLogout() {
+        val logoutIntent =
+            RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.LOGOUT).apply {
+                putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, false)
+            }
+        startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -132,9 +158,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        val appLink = findViewById<EditText>(R.id.etAppLink).text.toString()
-        if (appLink.isNotBlank())
-            RouteManager.route(this, appLink)
+        if (applink.value.isNotBlank()) RouteManager.route(this, applink.value)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
@@ -144,22 +168,42 @@ class MainActivity : AppCompatActivity() {
          */
         return ""
     }
+
+    data class Model(
+        val applink: String = "",
+        val urlState: String = "live",
+        val isDarkModeChecked: Boolean = false
+    )
 }
 
-@Composable
-fun TestAppHome() {
+sealed interface HomeDestination {
+    object LOGIN : HomeDestination
+    object LOGOUT : HomeDestination
+    object DEVELOPER_OPTION : HomeDestination
+    object APPLINK : HomeDestination
+}
 
-    var applink by remember { mutableStateOf("") }
-    var isDarkMode by remember { mutableStateOf(false) }
+@SuppressLint("UnsupportedDarkModeColor")
+@Composable
+fun TestAppHome(
+    model: MainActivity.Model = MainActivity.Model(),
+    onDarkModeChanged: () -> Unit = {},
+    onApplinkChanged: (String) -> Unit = {},
+    onNavigateTo: (HomeDestination) -> Unit = {}
+) {
     Surface {
         Column {
             NestHeader(title = "Tokopedia Test App", showBackNav = false)
+            val urlBgColor = (if (model.urlState.contains("live", true)) "#27ae60" else "#e67e22").toColorInt()
             Text(
-                text = "live",
+                text = model.urlState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Cyan),
+                    .padding(vertical = 4.dp)
+                    .background(Color(urlBgColor)),
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                style = NestTheme.typography.heading5
             )
             Column(
                 modifier = Modifier
@@ -170,30 +214,29 @@ fun TestAppHome() {
             ) {
                 NestButton(
                     text = "Login",
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                }
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onNavigateTo(HomeDestination.LOGIN) }
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 NestButton(
                     text = "Logout",
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-
-                }
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onNavigateTo(HomeDestination.LOGOUT) }
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 NestButton(
                     text = "Developer Option",
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-
-                }
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onNavigateTo(HomeDestination.DEVELOPER_OPTION) }
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
-                    value = applink,
+                    value = model.applink,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
-                    onValueChange = { applink = it },
+                    onValueChange = onApplinkChanged,
+                    textStyle = NestTheme.typography.body3,
                     label = {
                         Text(text = "applink")
                     }
@@ -201,18 +244,17 @@ fun TestAppHome() {
                 Spacer(modifier = Modifier.height(16.dp))
                 NestButton(
                     text = "Open",
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-
-                }
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onNavigateTo(HomeDestination.APPLINK) }
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clickable { isDarkMode = isDarkMode.not() }
+                        .clickable { onDarkModeChanged() }
                         .padding(8.dp)
                 ) {
-                    Checkbox(checked = isDarkMode, onCheckedChange = null)
+                    Checkbox(checked = model.isDarkModeChecked, onCheckedChange = null)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(text = "Force Dark Mode")
                 }
