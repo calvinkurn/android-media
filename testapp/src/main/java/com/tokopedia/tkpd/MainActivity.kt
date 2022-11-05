@@ -58,13 +58,6 @@ class MainActivity : AppCompatActivity() {
                     })
             }
         }
-//        if (TokopediaUrl.getInstance().GQL.contains("staging")) {
-//            testapp_environment?.text = "STAGING URL"
-//            testapp_environment?.setBackgroundColor(Color.parseColor("#e67e22"))
-//        } else {
-//            testapp_environment?.text = "LIVE URL"
-//            testapp_environment?.setBackgroundColor(Color.parseColor("#27ae60"))
-//        }
 //
 //        toggle_dark_mode.isChecked = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 //        toggle_dark_mode.setOnCheckedChangeListener { _: CompoundButton?, state: Boolean ->
@@ -81,10 +74,8 @@ class MainActivity : AppCompatActivity() {
     private fun getLiveStatus(): String {
         return if (TokopediaUrl.getInstance().GQL.contains("staging")) {
             "STAGING URL"
-//            testapp_environment?.setBackgroundColor(Color.parseColor("#e67e22"))
         } else {
             "LIVE URL"
-//            testapp_environment?.setBackgroundColor(Color.parseColor("#27ae60"))
         }
     }
 
