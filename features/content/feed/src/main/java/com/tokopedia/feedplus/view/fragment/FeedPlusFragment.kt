@@ -453,7 +453,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 }
 
                             } else {
-                                if (!data.isFollow) {
+                                if (data.isFollow) {
+                                    showToast(
+                                        getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
+                                        Toaster.TYPE_NORMAL
+                                    )
+                                } else {
                                     showToast(
                                         getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
                                         Toaster.TYPE_NORMAL
@@ -3120,6 +3125,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 if (!feedXCardData.followers.isFollowed && data.isUnfollowFromShopsMenu) {
                     showToast(
                         getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
+                        Toaster.TYPE_NORMAL
+                    )
+                } else if (feedXCardData.followers.isFollowed) {
+                    showToast(
+                        getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
                 }
