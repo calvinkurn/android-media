@@ -32,6 +32,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
@@ -192,6 +195,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var bottomSheetCollectionSettings = BottomSheetWishlistCollectionSettings()
     private var isToolbarHasDesc = false
     private var toolbarDesc = ""
+    private val coachMarkItemSharingIcon = ArrayList<CoachMark2Item>()
+    private var coachMarkSharingIcon: CoachMark2? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -275,6 +280,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val TYPE_COLLECTION_PUBLIC_SELF = 3
         private const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
         private const val EDIT_WISHLIST_COLLECTION_REQUEST_CODE = 1888
+        private const val COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE = "coachmark-wishlist-sharing-icon-detail-page"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -934,9 +940,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         collectionIdDestination = arguments?.getString(EXTRA_COLLECTION_ID_DESTINATION) ?: ""
         collectionNameDestination = arguments?.getString(EXTRA_COLLECTION_NAME_DESTINATION) ?: ""
         paramGetCollectionItems.collectionId = collectionId
+
         var titleToolbar = ""
         if (newCollectionDetailTitle.isNotEmpty()) titleToolbar = newCollectionDetailTitle
         updateToolbarTitle(titleToolbar)
+
         setSwipeRefreshLayout()
         collectionItemsAdapter = WishlistV2Adapter().apply {
             setActionListener(this@WishlistCollectionDetailFragment)
@@ -1005,6 +1013,31 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
+    private fun showCoachMarkOnSharingIcon(view: View) {
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE)) {
+            if (coachMarkItemSharingIcon.isEmpty()) {
+                coachMarkItemSharingIcon.add(
+                    CoachMark2Item(
+                        view,
+                        "",
+                        getString(com.tokopedia.wishlist.R.string.collection_coachmark_wishlist_detail),
+                        CoachMark2.POSITION_BOTTOM
+                    )
+                )
+            }
+            if (coachMarkSharingIcon == null)
+                coachMarkSharingIcon = CoachMark2(requireContext())
+
+            coachMarkSharingIcon?.let {
+                if (!it.isShowing) {
+                    it.showCoachMark(coachMarkItemSharingIcon, null, 1)
+                }
+                CoachMarkPreference.setShown(requireContext(),
+                    COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE, true)
+            }
+        }
+    }
+
     private fun setupIconToolbar() {
         val pageSource: String
         val icons: IconBuilder
@@ -1036,6 +1069,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             wishlistCollectionDetailNavtoolbar.setIcon(icons)
+            wishlistCollectionDetailNavtoolbar.getShareIconView()?.let { showCoachMarkOnSharingIcon(it) }
         }
     }
 
