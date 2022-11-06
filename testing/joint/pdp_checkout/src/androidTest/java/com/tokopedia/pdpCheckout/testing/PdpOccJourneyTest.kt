@@ -7,8 +7,8 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.pdpCheckout.testing.atc_common.interceptor.AtcInterceptor

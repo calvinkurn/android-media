@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 

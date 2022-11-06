@@ -30,8 +30,8 @@ import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFrag
 import com.tokopedia.buyerorderdetail.stub.common.graphql.coroutines.domain.repository.GraphqlRepositoryStub
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.activity.BuyerOrderDetailActivityStub
 import com.tokopedia.cachemanager.gson.GsonSingleton
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue

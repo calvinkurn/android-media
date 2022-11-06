@@ -17,8 +17,8 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.banner.BannerViewPagerAdapter
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder

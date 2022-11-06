@@ -3,7 +3,7 @@ package com.tokopedia.pdpCheckout.testing
 import android.content.Context
 import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.pdpCheckout.testing.atc_common.interceptor.AtcInterceptor
 import com.tokopedia.pdpCheckout.testing.cart.robot.CartPageMocks

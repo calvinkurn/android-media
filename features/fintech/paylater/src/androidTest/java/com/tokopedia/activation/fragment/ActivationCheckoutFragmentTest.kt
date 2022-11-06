@@ -9,7 +9,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.activation.ActivationCheckoutMockResponseConfig
 import com.tokopedia.activation.analytics.actionTest
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.pdpsimulation.TkpdIdlingResource
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.activity.OptimizedCheckoutActivity

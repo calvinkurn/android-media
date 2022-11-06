@@ -2,8 +2,8 @@ package com.tokopedia.updateinactivephone.features.inputoldphonenumber.cassava
 
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.BaseInputOldPhoneNumberTest
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberAction

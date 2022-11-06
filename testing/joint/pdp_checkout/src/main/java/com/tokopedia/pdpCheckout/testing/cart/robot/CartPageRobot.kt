@@ -23,8 +23,8 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.pdpCheckout.testing.R
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder

@@ -5,8 +5,8 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.promocheckoutmarketplace.interceptor.PromoCheckoutMarketplaceInterceptor
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutActivity

@@ -25,8 +25,8 @@ import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearc
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchTitleViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewViewHolder
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat

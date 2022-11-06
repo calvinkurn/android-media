@@ -16,8 +16,8 @@ import com.tokopedia.autocompletecomponent.AutocompleteIdlingResource
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselViewHolder
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineViewHolder
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert
