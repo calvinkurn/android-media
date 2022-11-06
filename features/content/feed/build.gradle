@@ -158,7 +158,7 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.dagger
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassava
 
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
