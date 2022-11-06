@@ -43,6 +43,8 @@
     <string name="tokopedianow_feedback_bottomsheet_btn_text">Kirim</string>
     <string name="tokopedianow_feedback_bottomsheet_title">Sarankan produk untuk NOW!</string>
     <string name="tokopedianow_feedback_bottomsheet_input_message">Gunakan koma (,) jika produk lebih dari 1</string>
+    <string name="tokopedianow_add_feedback_success_text">Saran produk kamu berhasil dikirim. Terima kasih untuk sarannya!</string>
+    <string name="tokopedianow_add_feedback_failure_text">Maaf, saran gagal dikirim karena terjadi kendala. Coba kirim ulang, ya.</string>
 
 
     <string name="tokopedianow_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>

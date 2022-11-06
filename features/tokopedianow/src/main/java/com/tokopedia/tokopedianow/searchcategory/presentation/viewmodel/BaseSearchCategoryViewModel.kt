@@ -79,21 +79,7 @@ import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductMo
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.*
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.REPURCHASE_WIDGET_POSITION
@@ -146,6 +132,7 @@ abstract class BaseSearchCategoryViewModel(
     private var currentProductPosition: Int = 1
     private var recommendationPositionInVisitableList = -1
     private val recommendationList = mutableListOf<RecommendationWidget>()
+    protected var feedbackFieldToggle = false
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -416,11 +403,13 @@ abstract class BaseSearchCategoryViewModel(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,
             searchProduct: SearchProduct,
+            feedbackFieldIsActive:Boolean = false
     ) {
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
         autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
         currentProductPosition = 1
+        feedbackFieldToggle = feedbackFieldIsActive
 
         val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
 
@@ -471,7 +460,7 @@ abstract class BaseSearchCategoryViewModel(
                 miniCartSource = miniCartSource
             )
         )
-        visitableList.add(TokoNowFeedbackWidgetUiModel())
+        if(feedbackFieldToggle) visitableList.add(TokoNowFeedbackWidgetUiModel())
     }
 
     private fun createVisitableListWithProduct(
@@ -480,7 +469,7 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         visitableList.addAll(createHeaderVisitableList(headerDataView))
         visitableList.addAll(createContentVisitableList(contentDataView))
-        if(contentDataView.aceSearchProductData.productList.size<=6)
+        if(feedbackFieldToggle && contentDataView.aceSearchProductData.productList.size<=6)
             visitableList.add(TokoNowFeedbackWidgetUiModel(true))
         visitableList.addFooter()
     }

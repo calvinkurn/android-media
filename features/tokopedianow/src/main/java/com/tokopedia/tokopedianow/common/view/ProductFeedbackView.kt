@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowFeedbackWidgetViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -30,7 +30,7 @@ class ProductFeedbackView @JvmOverloads constructor(
         field = value
     }
 
-    private var feedbackCtaListener:TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener?=null
+    private var feedbackCtaListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener?=null
 
     private var cta:UnifyButton?=null
 
@@ -59,7 +59,7 @@ class ProductFeedbackView @JvmOverloads constructor(
     }
 
 
-    fun setupFeedbackListener(listener:TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener?){
+    fun setupFeedbackListener(listener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener?){
         feedbackCtaListener = listener
     }
 

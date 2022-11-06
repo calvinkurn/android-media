@@ -7,9 +7,11 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.CategoryDetail
+import com.tokopedia.tokopedianow.searchcategory.data.*
 import com.tokopedia.tokopedianow.searchcategory.data.createAceSearchProductRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createCategoryFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createDynamicChannelRequest
+import com.tokopedia.tokopedianow.searchcategory.data.createFeedbackFieldToggleRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createQuickFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createRepurchaseWidgetRequest
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
@@ -29,6 +31,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 class GetCategoryFirstPageUseCase(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
 ): UseCase<CategoryModel>() {
+    private var feedbackFieldToggle = false
 
     override suspend fun executeOnBackground(): CategoryModel {
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
@@ -42,8 +45,11 @@ class GetCategoryFirstPageUseCase(
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
         graphqlUseCase.addRequest(createDynamicChannelRequest(TOKONOW_CATEGORY))
         graphqlUseCase.addRequest(createRepurchaseWidgetRequest(useCaseRequestParams.parameters))
+        if(!feedbackFieldToggle)
+            graphqlUseCase.addRequest(createFeedbackFieldToggleRequest())
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
+        if(!feedbackFieldToggle) feedbackFieldToggle = true
 
         return CategoryModel(
                 categoryDetail = getCategoryDetail(graphqlResponse),
@@ -52,6 +58,7 @@ class GetCategoryFirstPageUseCase(
                 quickFilter = getQuickFilter(graphqlResponse),
                 bannerChannel = getBanner(graphqlResponse),
                 tokonowRepurchaseWidget = getRepurchaseWidget(graphqlResponse),
+                feedbackFieldToggle = getFeedbackFieldToggleData(graphqlResponse)
         )
     }
 

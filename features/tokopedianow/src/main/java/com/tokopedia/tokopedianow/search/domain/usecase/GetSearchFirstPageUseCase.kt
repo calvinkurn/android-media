@@ -9,9 +9,11 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
+import com.tokopedia.tokopedianow.searchcategory.data.*
 import com.tokopedia.tokopedianow.searchcategory.data.createAceSearchProductRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createCategoryFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createDynamicChannelRequest
+import com.tokopedia.tokopedianow.searchcategory.data.createFeedbackFieldToggleRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createQuickFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getBanner
@@ -27,6 +29,8 @@ class GetSearchFirstPageUseCase(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
 ): UseCase<SearchModel>() {
 
+    private var feedbackFieldToggle = false
+
     override suspend fun executeOnBackground(): SearchModel {
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
         val categoryFilterParams = createCategoryFilterParams(queryParams)
@@ -38,15 +42,18 @@ class GetSearchFirstPageUseCase(
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
         graphqlUseCase.addRequest(createDynamicChannelRequest(TOKONOW_SEARCH))
         graphqlUseCase.addRequest(createCategoryJumperRequest(queryParams))
+        if(!feedbackFieldToggle)
+            graphqlUseCase.addRequest(createFeedbackFieldToggleRequest())
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
-
+        if(!feedbackFieldToggle) feedbackFieldToggle = true
         return SearchModel(
                 searchProduct = getSearchProduct(graphqlResponse),
                 categoryFilter = getCategoryFilter(graphqlResponse),
                 quickFilter = getQuickFilter(graphqlResponse),
                 bannerChannel = getBanner(graphqlResponse),
                 searchCategoryJumper = getSearchCategoryJumper(graphqlResponse),
+                feedbackFieldToggle = getFeedbackFieldToggleData(graphqlResponse)
         )
     }
 

@@ -1,13 +1,13 @@
-package com.tokopedia.tokopedianow.common.viewholder
+package com.tokopedia.tokopedianow.searchcategory.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.model.TokoNowFeedbackWidgetUiModel
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import com.tokopedia.tokopedianow.common.view.ProductFeedbackView
 
-class TokoNowFeedbackWidgetViewHolder(private val itemView:View,private var listener:FeedbackWidgetListener?) : AbstractViewHolder<TokoNowFeedbackWidgetUiModel>(itemView){
+class TokoNowFeedbackWidgetViewHolder(private val itemView:View,private var listener: FeedbackWidgetListener?) : AbstractViewHolder<TokoNowFeedbackWidgetUiModel>(itemView){
     private var feedbackView:ProductFeedbackView?=null
     private var divider:View?=null
     init {
