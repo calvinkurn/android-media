@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleProductSubmissionProgressMapper
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleProductSubmissionProgressRequest
@@ -26,6 +27,7 @@ class GetFlashSaleProductSubmissionProgressUseCase @Inject constructor(
 
     companion object {
         private const val REQUEST_PARAM_KEY = "params"
+        private const val MAX_PRODUCT_PER_PAGE = 10
     }
 
     private val mutation = object : GqlQueryInterface {
@@ -78,10 +80,10 @@ class GetFlashSaleProductSubmissionProgressUseCase @Inject constructor(
         val requestHeader = CampaignParticipationRequestHeader(usecase = "manage_product")
         val payload = GetFlashSaleProductSubmissionProgressRequest(
             requestHeader,
-            param.campaignId,
-            param.rows,
-            Int.ZERO,
-            true
+            param.campaignId.toLongOrZero(),
+            MAX_PRODUCT_PER_PAGE,
+            param.offset,
+            param.checkProgress
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
 
@@ -92,6 +94,6 @@ class GetFlashSaleProductSubmissionProgressUseCase @Inject constructor(
         )
     }
 
-    data class Param(val campaignId: Long, val rows: Int)
+    data class Param(val campaignId: String, val offset: Int = 0, val checkProgress: Boolean)
 
 }

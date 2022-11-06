@@ -10,5 +10,7 @@ data class FlashSaleProductSubmissionSseResult(
     object Status{
         const val IN_PROGRESS = "in-progress"
         const val COMPLETE = "complete"
+        const val PARTIAL_SUCCESS = "partial-success"
+        const val FAIL = "fail"
     }
 }

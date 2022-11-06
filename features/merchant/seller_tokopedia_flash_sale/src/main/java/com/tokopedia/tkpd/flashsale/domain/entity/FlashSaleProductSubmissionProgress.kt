@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
+
 data class FlashSaleProductSubmissionProgress(
     val listCampaign: List<Campaign> = listOf(),
     val listCampaignProductError: List<CampaignProductError> = listOf(),
@@ -21,6 +23,8 @@ data class FlashSaleProductSubmissionProgress(
         val productPicture: String = "",
         val message: String = "",
         val errorType: String = ""
-    )
+    ): DelegateAdapterItem {
+        override fun id() = productId
+    }
 
 }

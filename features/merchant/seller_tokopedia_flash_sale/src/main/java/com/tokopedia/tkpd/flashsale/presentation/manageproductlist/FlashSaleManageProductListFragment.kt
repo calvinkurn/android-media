@@ -23,13 +23,17 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsDialogProductSubmissionSseBinding
+import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
+import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionDialog
+import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionProgressDialog
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult.Status.COMPLETE
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult.Status.FAIL
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult.Status.IN_PROGRESS
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult.Status.PARTIAL_SUCCESS
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
@@ -99,18 +103,18 @@ class FlashSaleManageProductListFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
     @Inject
     lateinit var tracker: FlashSaleManageProductListPageTracker
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(FlashSaleManageProductListListViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(FlashSaleManageProductListViewModel::class.java) }
     private val coachMark by lazy {
         context?.let {
             CoachMark2(it)
         }
     }
     private var currentOffset: Int = 0
-    private var loaderDialogProductSubmitSse: LoaderDialog? = null
-    private var dialogProductSubmissionSseBinding: StfsDialogProductSubmissionSseBinding? = null
+    private var sseProgressDialog: FlashSaleProductSseSubmissionProgressDialog? = null
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
             .add(FlashSaleManageProductListItemDelegate(this))
@@ -130,25 +134,17 @@ class FlashSaleManageProductListFragment :
         getReservedProductList()
         observeUiState()
         observeUiEffect()
+        getFlashSaleSubmissionProgress(campaignId)
     }
 
     private fun init() {
         context?.let {
-            loaderDialogProductSubmitSse = LoaderDialog(it).apply {
-                dialogProductSubmissionSseBinding =
-                    StfsDialogProductSubmissionSseBinding.inflate(LayoutInflater.from(it))
-                customView = dialogProductSubmissionSseBinding?.root
-            }
+            sseProgressDialog = FlashSaleProductSseSubmissionProgressDialog(it)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        getFlashSaleSubmissionProgress(campaignId)
-    }
-
     private fun getFlashSaleSubmissionProgress(campaignId: String) {
-        viewModel.getFlashSaleSubmissionProgress(campaignId.toLongOrZero())
+        viewModel.getFlashSaleSubmissionProgress(campaignId)
     }
 
     private fun configRecyclerView() {
@@ -252,8 +248,9 @@ class FlashSaleManageProductListFragment :
                     is FlashSaleManageProductListUiEffect.ClearProductList -> {
                         clearProductList()
                     }
-                    is FlashSaleManageProductListUiEffect.OnProductSseSubmission -> {
-                        showDialogProductSseSubmission(it.flashSaleProductSubmissionSseResult)
+                    is FlashSaleManageProductListUiEffect.OnProductSseSubmissionProgress -> {
+                        buttonSubmit?.isLoading = false
+                        checkProductSubmissionProgressStatus(it.flashSaleProductSubmissionSseResult)
                     }
                     is FlashSaleManageProductListUiEffect.OnSuccessAcknowledgeProductSubmissionSse -> {
                         redirectToCampaignDetailPage(it.totalSubmittedProduct.toLong())
@@ -270,15 +267,25 @@ class FlashSaleManageProductListFragment :
         viewModel.listenToExistingSse(campaignId)
     }
 
-    private fun showDialogProductSseSubmission(
+    private fun checkProductSubmissionProgressStatus(
         flashSaleProductSubmissionSseResult: FlashSaleProductSubmissionSseResult
     ) {
         val currentProcessedProduct = flashSaleProductSubmissionSseResult.countProcessedProduct
         val totalProduct = flashSaleProductSubmissionSseResult.countAllProduct
-        updateProductSubmissionProgressDialog(currentProcessedProduct, totalProduct)
-        showProductSubmissionSseProgressDialog()
         when (flashSaleProductSubmissionSseResult.status) {
+            IN_PROGRESS -> {
+                showProductSubmissionSseProgressDialog()
+            }
+            PARTIAL_SUCCESS -> {
+                redirectToCampaignDetailPage(0)
+                hideProductSubmissionSseProgressDialog()
+            }
+            FAIL -> {
+                showDialogProductSubmissionSseFullError()
+                hideProductSubmissionSseProgressDialog()
+            }
             COMPLETE -> {
+                hideProductSubmissionSseProgressDialog()
                 acknowledgeProductSubmissionSse(
                     flashSaleProductSubmissionSseResult.campaignId,
                     flashSaleProductSubmissionSseResult.countProcessedProduct
@@ -286,26 +293,36 @@ class FlashSaleManageProductListFragment :
             }
             else -> {}
         }
+        updateProductSubmissionProgressDialog(currentProcessedProduct, totalProduct)
+    }
+
+    private fun showDialogProductSubmissionSseFullError() {
+        context?.let {
+            val productSseSubmissionErrorDialog = FlashSaleProductSseSubmissionDialog(it)
+            productSseSubmissionErrorDialog.show(getString(R.string.stfs_dialog_error_product_submission_sse_title_full_error)) {
+                openFlashSaleProductListSseSubmissionErrorBottomSheet()
+            }
+        }
+    }
+
+    private fun openFlashSaleProductListSseSubmissionErrorBottomSheet() {
+        val bottomSheet = FlashSaleProductListSseSubmissionErrorBottomSheet()
+        bottomSheet.show(campaignId, childFragmentManager, bottomSheet.tag)
     }
 
     private fun showProductSubmissionSseProgressDialog() {
-        val isDialogShown = loaderDialogProductSubmitSse?.dialog?.isShowing
-        if (isDialogShown == false) {
-            loaderDialogProductSubmitSse?.dialog?.setCancelable(false)
-            loaderDialogProductSubmitSse?.show()
-        }
+        sseProgressDialog?.show()
+    }
+
+    private fun hideProductSubmissionSseProgressDialog() {
+        sseProgressDialog?.hide()
     }
 
     private fun updateProductSubmissionProgressDialog(
         currentProcessedProduct: Int,
         totalProduct: Int
     ) {
-        dialogProductSubmissionSseBinding?.typographyDescription?.text = String.format(
-            dialogProductSubmissionSseBinding?.typographyDescription?.text.toString(),
-            currentProcessedProduct,
-            totalProduct
-        )
-        loaderDialogProductSubmitSse?.setLoadingText("")
+        sseProgressDialog?.updateData(currentProcessedProduct, totalProduct)
     }
 
     private fun acknowledgeProductSubmissionSse(campaignId: String, totalSubmittedProduct: Int) {
@@ -555,7 +572,8 @@ class FlashSaleManageProductListFragment :
     }
 
     override fun onBackArrowClicked() {
-        showClickBackDialog()
+        if (sseProgressDialog?.isShowing() == false)
+            showClickBackDialog()
     }
 
     override fun onFragmentBackPressed(): Boolean {

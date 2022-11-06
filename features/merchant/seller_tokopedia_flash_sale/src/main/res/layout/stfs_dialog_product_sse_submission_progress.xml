@@ -9,7 +9,7 @@
         android:id="@+id/typography_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/stfs_product_submission_dialog_title"
+        android:text="@string/product_sse_submission_progress_dialog_title"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintLeft_toLeftOf="parent"
 
@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="@string/stfs_product_submission_dialog_description"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/typography_title"

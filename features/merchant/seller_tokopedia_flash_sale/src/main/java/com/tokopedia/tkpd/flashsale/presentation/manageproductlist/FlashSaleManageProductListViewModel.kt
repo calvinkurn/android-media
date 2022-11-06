@@ -15,6 +15,7 @@ import com.tokopedia.tkpd.flashsale.data.mapper.FlashSaleMonitorSubmitProductSse
 import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductSubmissionRequest
 import com.tokopedia.tkpd.flashsale.data.response.SSEStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.*
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult.Status.IN_PROGRESS
 import com.tokopedia.tkpd.flashsale.domain.usecase.*
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant.ONE_SECOND_DELAY
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant.SHARED_PREF_MANAGE_PRODUCT_LIST_COACH_MARK
@@ -32,7 +33,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class FlashSaleManageProductListListViewModel @Inject constructor(
+class FlashSaleManageProductListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleReservedProductListUseCase: GetFlashSaleReservedProductListUseCase,
     private val getFlashSaleDetailForSellerUseCase: GetFlashSaleDetailForSellerUseCase,
@@ -147,8 +148,13 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
                             flashSaleMonitorSubmitProductSseMapper.map(sseMsg)
                         flashSaleProductSubmissionSseResult?.let { sseResult ->
                             _uiEffect.emit(
-                                FlashSaleManageProductListUiEffect.OnProductSseSubmission(sseResult)
+                                FlashSaleManageProductListUiEffect.OnProductSseSubmissionProgress(
+                                    sseResult
+                                )
                             )
+                            if (sseResult.status != IN_PROGRESS) {
+                                closeSse()
+                            }
                         }
                     }
                     is SSEStatus.Close -> {
@@ -157,15 +163,14 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     override fun onCleared() {
         super.onCleared()
-        stopSse()
+        closeSse()
     }
 
-    private fun stopSse() {
+    private fun closeSse() {
         flashSaleTkpdProductSubmissionMonitoringSse.closeSSE()
     }
 
@@ -468,8 +473,6 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
 
     fun acknowledgeProductSubmissionSse(campaignId: String, totalSubmittedProduct: Int) {
         launchCatchError(dispatchers.io, {
-            delay(1000)
-            stopSse()
             if (doAcknowledgeProductSubmission(campaignId)) {
                 _uiEffect.tryEmit(
                     FlashSaleManageProductListUiEffect.OnSuccessAcknowledgeProductSubmissionSse(
@@ -477,14 +480,7 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
                     )
                 )
             }
-
-        }) { error ->
-            _uiEffect.tryEmit(
-                FlashSaleManageProductListUiEffect.OnErrorAcknowledgeProductSubmissionSse(
-                    error
-                )
-            )
-        }
+        }) { }
     }
 
     private suspend fun doAcknowledgeProductSubmission(campaignId: String): Boolean {
@@ -492,22 +488,24 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
         return doFlashSaleProductSubmitAcknowledgeUseCase.execute(param)
     }
 
-    fun getFlashSaleSubmissionProgress(flashSaleId: Long) {
+    fun getFlashSaleSubmissionProgress(flashSaleId: String) {
         launchCatchError(dispatchers.io,
             block = {
                 val flashSaleSubmissionProgress = getFlashSaleProductSubmissionProgressResponse(
                     flashSaleId
                 )
-                if(flashSaleSubmissionProgress.isOpenSse) {
-                    _uiEffect.emit(FlashSaleManageProductListUiEffect.OnSseOpen(flashSaleSubmissionProgress))
+                if (flashSaleSubmissionProgress.isOpenSse) {
+                    _uiEffect.emit(FlashSaleManageProductListUiEffect.OnSseOpen)
                 }
-            }){ }
+            }) { }
     }
 
-    private suspend fun getFlashSaleProductSubmissionProgressResponse(campaignId: Long): FlashSaleProductSubmissionProgress {
-        return getFlashSaleProductSubmissionProgressUseCase.execute(GetFlashSaleProductSubmissionProgressUseCase.Param(
-            campaignId,
-            1
-        ))
+    private suspend fun getFlashSaleProductSubmissionProgressResponse(campaignId: String): FlashSaleProductSubmissionProgress {
+        return getFlashSaleProductSubmissionProgressUseCase.execute(
+            GetFlashSaleProductSubmissionProgressUseCase.Param(
+                campaignId,
+                checkProgress = true
+            )
+        )
     }
 }

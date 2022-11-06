@@ -43,7 +43,7 @@ sealed class FlashSaleManageProductListUiEffect {
 
     object ClearProductList : FlashSaleManageProductListUiEffect()
 
-    data class OnProductSseSubmission(
+    data class OnProductSseSubmissionProgress(
         val flashSaleProductSubmissionSseResult: FlashSaleProductSubmissionSseResult
     ) : FlashSaleManageProductListUiEffect()
 
@@ -51,11 +51,6 @@ sealed class FlashSaleManageProductListUiEffect {
         val totalSubmittedProduct: Int
     ) : FlashSaleManageProductListUiEffect()
 
-    data class OnErrorAcknowledgeProductSubmissionSse(
-        val error: Throwable
-    ) : FlashSaleManageProductListUiEffect()
-
-    data class OnSseOpen(val flashSaleSubmissionProgress: FlashSaleProductSubmissionProgress) :
-        FlashSaleManageProductListUiEffect()
+    object OnSseOpen : FlashSaleManageProductListUiEffect()
 
 }
