@@ -108,9 +108,10 @@ class CampaignDetailViewModel @Inject constructor(
         data class OnProductSseSubmissionProgress(
             val flashSaleProductSubmissionSseResult: FlashSaleProductSubmissionSseResult
         ) : UiEffect()
+
         data class OnSuccessAcknowledgeProductSubmissionSse(
-        val totalSubmittedProduct: Int
-    ) : UiEffect()
+            val totalSubmittedProduct: Int
+        ) : UiEffect()
     }
     private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
     val uiEffect = this._uiEffect.asSharedFlow()

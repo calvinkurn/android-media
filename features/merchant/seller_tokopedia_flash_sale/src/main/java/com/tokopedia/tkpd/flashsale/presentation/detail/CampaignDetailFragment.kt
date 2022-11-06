@@ -350,6 +350,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 checkProductSubmissionProgressStatus(effect.flashSaleProductSubmissionSseResult)
             }
             is CampaignDetailViewModel.UiEffect.OnSuccessAcknowledgeProductSubmissionSse -> {
+                totalSubmittedProduct = effect.totalSubmittedProduct.toLong()
                 showProductSubmissionResultToaster(flashSaleName)
             }
         }

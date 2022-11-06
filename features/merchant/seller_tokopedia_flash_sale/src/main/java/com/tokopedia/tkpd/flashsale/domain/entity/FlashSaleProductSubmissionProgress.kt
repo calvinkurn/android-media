@@ -14,7 +14,9 @@ data class FlashSaleProductSubmissionProgress(
         val productProcessed: Int = 0,
         val productSubmitted: Int = 0,
         val campaignPicture: String = ""
-    )
+    ): DelegateAdapterItem {
+        override fun id() = true
+    }
 
     data class CampaignProductError(
         val productId: String = "",

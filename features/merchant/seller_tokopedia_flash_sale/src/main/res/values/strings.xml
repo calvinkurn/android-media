@@ -306,5 +306,8 @@
     <string name="stfs_dialog_error_product_submission_sse_error_description">Periksa dan perbaiki dulu produk-produkmu ya.</string>
     <string name="stfs_dialog_error_product_submission_sse_error_cta">Lihat Produk</string>
 
+    <string name="stfs_widget_campaign_product_submission_item_variant_format">(%1d/%2d varian)</string>
+    <string name="stfs_widget_campaign_product_submission_title_format">Sedang mengajukan produk di %1d campaign.</string>
+
 
 </resources>

@@ -94,6 +94,6 @@ class GetFlashSaleProductSubmissionProgressUseCase @Inject constructor(
         )
     }
 
-    data class Param(val campaignId: String, val offset: Int = 0, val checkProgress: Boolean)
+    data class Param(val campaignId: String = "", val offset: Int = 0, val checkProgress: Boolean)
 
 }
