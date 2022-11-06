@@ -46,7 +46,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoIdlingResource
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassava
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
 }
 

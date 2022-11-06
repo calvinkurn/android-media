@@ -80,7 +80,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
         exclude group: 'com.google.android.gms'
     }
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassava
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 }
 
 project.ext {

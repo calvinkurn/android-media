@@ -111,7 +111,7 @@ dependencies {
         exclude group: "com.google.android.gms", module: "play-services-places"
     }
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassava
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }

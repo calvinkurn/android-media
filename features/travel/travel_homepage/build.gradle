@@ -82,7 +82,7 @@ dependencies {
 
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassava
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
 }
 

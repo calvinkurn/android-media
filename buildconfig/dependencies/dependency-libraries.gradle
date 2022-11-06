@@ -27,7 +27,8 @@ ext {
             larixBroadcaster        : "com.wmspanel.libstream:libstream:1.0@aar",
             logger                  : "com.tokopedia.library:logger:0.0.2",
             cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.2.1",
-            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.2.1"
+            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.2.1",
+            cassavaTest             : "com.tokopedia.analyticsdebugger:cassavatest:1.2.1"
     ]
 
     // Sort and categorize alphabetically by folder name

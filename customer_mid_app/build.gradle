@@ -245,6 +245,7 @@ dependencies {
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
         implementation rootProject.ext.tkpdInternalLibDependencies.cassava
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
         implementation rootProject.ext.tkpdInternalLibDependencies.cassavaNoOp

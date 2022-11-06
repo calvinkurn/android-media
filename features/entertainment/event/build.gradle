@@ -114,7 +114,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassava
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestUtil rootProject.ext.testDependencies.orchestrator
 
     //jetpack navigation
