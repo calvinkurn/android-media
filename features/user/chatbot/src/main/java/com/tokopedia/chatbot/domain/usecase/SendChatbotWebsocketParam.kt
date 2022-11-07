@@ -41,6 +41,7 @@ object SendChatbotWebsocketParam {
         )
         val payload = GsonBuilder().create().toJsonTree(invoiceLinkPojo, InvoiceLinkPojo::class.java)
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         json.add("data", data)
         return json
     }
@@ -86,6 +87,7 @@ object SendChatbotWebsocketParam {
 
         payload.add("attributes", attributeSelected)
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
 
         json.add("data", data)
         return json
@@ -128,6 +130,7 @@ object SendChatbotWebsocketParam {
         payload.add("selected_option", selectedOption)
 
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
 
         json.add("data", data)
         return json
@@ -174,6 +177,7 @@ object SendChatbotWebsocketParam {
         payload.add("selected_option", selectedOption)
 
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
 
         json.add("data", data)
         return json
@@ -216,6 +220,7 @@ object SendChatbotWebsocketParam {
         payload.add("selected_option", selectedOption)
 
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
 
         json.add("data", data)
         return json
@@ -245,6 +250,7 @@ object SendChatbotWebsocketParam {
         data.addProperty("message", sendMessage)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         json.add("data", data)
         return json
     }

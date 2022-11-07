@@ -1,5 +1,6 @@
 package com.tokopedia.linker.validation
 
+import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import com.tokopedia.linker.LinkerConstants
@@ -8,12 +9,14 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.PaymentData
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import timber.log.Timber
-import kotlin.math.log
 
 class BranchHelperValidation {
     val VALUE_IDR = "IDR"
@@ -276,5 +279,40 @@ class BranchHelperValidation {
 
     private fun logging(messageMap: Map<String, String>){
         ServerLogger.log(Priority.P2, "BRANCH_VALIDATION", messageMap)
+    }
+
+    fun sendBranchErrorDataLogs(errorCode: Int?, errorMsg: String?, branchUrl: String?) {
+        val messageMap: MutableMap<String, String> = HashMap()
+        messageMap[BRANCH_LOG_TYPE] = BRANCH_FLOW_ON_CLICK_LINK
+        messageMap[BRANCH_ERROR_DATA_MESSAGE] = errorMsg ?: "Empty error response"
+        messageMap[BRANCH_ERROR_DATA_CODE] = errorCode.toString()
+        messageMap[BRANCH_URL] = branchUrl.toString()
+        logging(messageMap)
+    }
+
+    fun sendBranchSuccessDataLogs(context: Context, referringParams: JSONObject?, branchUrl: String) {
+        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SEND_SUCCESS_LOG_BRANCH, true)) {
+            return
+        }
+
+        val messageMap = HashMap<String, String>()
+        messageMap[BRANCH_URL] = branchUrl
+        messageMap[BRANCH_LOG_TYPE] = BRANCH_FLOW_ON_CLICK_LINK
+        if (referringParams != null) {
+            messageMap[BRANCH_SUCCESS_DATA] = referringParams.toString();
+        } else {
+            messageMap[BRANCH_SUCCESS_DATA] = "Empty Success Response";
+        }
+        logging(messageMap);
+    }
+
+    companion object {
+        private val BRANCH_SUCCESS_DATA = "branch_success_data"
+        private val BRANCH_ERROR_DATA_MESSAGE = "branch_error_message"
+        private val BRANCH_ERROR_DATA_CODE = "branch_error_code"
+        private val BRANCH_URL = "branch_url"
+        private val BRANCH_FLOW_ON_CLICK_LINK = "on_click_link"
+        private val BRANCH_LOG_TYPE = "branch_log_type"
     }
 }

@@ -173,6 +173,14 @@ interface DynamicProductDetailListener {
     )
 
     /**
+     * [ProductShopAdditionalViewHolder]
+     */
+    fun onLearnButtonShopAdditionalClicked(
+        componentTrackDataModel: ComponentTrackDataModel,
+        eventLabel: String
+    )
+
+    /**
      * ProductRecommendationAnnotationChipViewHolder
      */
     fun onChipFilterClicked(
@@ -289,9 +297,12 @@ interface DynamicProductDetailListener {
      * ProductTickerViewHolder
      */
     fun onTickerShopClicked(
-        tickerTitle: String, tickerType: Int,
+        tickerTitle: String,
+        tickerType: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
-        tickerDescription: String, applink: String, actionType: String,
+        tickerDescription: String,
+        applink: String,
+        actionType: String,
         tickerActionBs: TickerActionBs?
     )
 
@@ -381,6 +392,12 @@ interface DynamicProductDetailListener {
     )
 
     fun onClickCheckBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onClickActionButtonBundling(
         bundleId: String,
         bundleType: String,
         componentTrackDataModel: ComponentTrackDataModel

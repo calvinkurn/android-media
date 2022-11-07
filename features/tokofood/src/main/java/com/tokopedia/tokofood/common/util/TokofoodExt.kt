@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Parcel
 import android.os.Parcelable
+import android.os.SystemClock
 import android.text.InputFilter
 import android.view.View
 import android.view.ViewTreeObserver
@@ -208,4 +209,20 @@ object TokofoodExt {
         val timeZone = TimeZone.getDefault()
         return timeZone.id
     }
+
+    // TODO: move this to View.ext in release branch
+    fun View.clickWithDebounce(debounceTime: Long = CLICK_DEBOUNCE_TIME, action: () -> Unit) {
+        this.setOnClickListener(object : View.OnClickListener {
+            private var lastClickTime: Long = 0
+
+            override fun onClick(v: View) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < debounceTime) return
+                else action()
+
+                lastClickTime = SystemClock.elapsedRealtime()
+            }
+        })
+    }
+
+    private const val CLICK_DEBOUNCE_TIME = 600L
 }

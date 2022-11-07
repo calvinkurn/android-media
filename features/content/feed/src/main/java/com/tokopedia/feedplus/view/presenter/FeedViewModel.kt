@@ -358,10 +358,10 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doFollowKol(id: Int, rowNumber: Int) {
+    fun doFollowKol(id: Int, rowNumber: Int, isFollowedFromFollowRestrictionBottomSheet: Boolean = false) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                followKol(id, rowNumber)
+                followKol(id, rowNumber, isFollowedFromFollowRestrictionBottomSheet)
             }
             followKolResp.value = Success(results)
         }) {
@@ -461,11 +461,12 @@ class FeedViewModel @Inject constructor(
         adapterPosition: Int,
         shopId: String,
         follow: Boolean = true,
-        isUnfollowFromBottomSheetMenu: Boolean = false
+        isUnfollowFromBottomSheetMenu: Boolean = false,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean = false
     ) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                toggleFavoriteShop(rowNumber, adapterPosition, shopId, isUnfollowFromBottomSheetMenu)
+                toggleFavoriteShop(rowNumber, adapterPosition, shopId, isUnfollowFromBottomSheetMenu, isFollowedFromFollowRestrictionBottomSheet)
             }
             toggleFavoriteShopResp.value = Success(results)
         }) {
@@ -473,7 +474,6 @@ class FeedViewModel @Inject constructor(
                 toggleFavoriteShopResp.value = Fail(CustomUiMessageThrowable(R.string.feed_unfollow_error_message))
             else
                 toggleFavoriteShopResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
-
         }
     }
 
@@ -579,12 +579,17 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun followKol(id: Int, rowNumber: Int): FollowKolViewModel {
+    private fun followKol(
+        id: Int,
+        rowNumber: Int,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean = false
+    ): FollowKolViewModel {
         try {
             val data = FollowKolViewModel()
             data.id = id
             data.rowNumber = rowNumber
             data.status = FollowKolPostGqlUseCase.PARAM_FOLLOW
+            data.isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet
             followKolPostGqlUseCase.clearRequest()
             val params = FollowKolPostGqlUseCase.getParam(id, FollowKolPostGqlUseCase.PARAM_FOLLOW)
             val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
@@ -759,14 +764,17 @@ class FeedViewModel @Inject constructor(
         rowNumber: Int,
         adapterPosition: Int,
         shopId: String,
-        isUnfollowClickedFromBottomSheetMenu: Boolean = false
+        isUnfollowClickedFromBottomSheetMenu: Boolean = false,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean = false
     ): FavoriteShopViewModel {
         try {
-            val data = FavoriteShopViewModel()
-            data.rowNumber = rowNumber
-            data.adapterPosition = adapterPosition
-            data.shopId = shopId
-            data.isUnfollowFromShopsMenu = isUnfollowClickedFromBottomSheetMenu
+            val data = FavoriteShopViewModel(
+                rowNumber = rowNumber,
+                adapterPosition = adapterPosition,
+                shopId = shopId,
+                isUnfollowFromShopsMenu = isUnfollowClickedFromBottomSheetMenu,
+                isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet
+            )
             val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
             val isSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
@@ -825,7 +833,7 @@ class FeedViewModel @Inject constructor(
      * Shop Recommendation Widget
      */
     fun getShopRecomWidget() {
-        launchCatchError(block = {
+        launchCatchError(baseDispatcher.io, block = {
             val request = requestShopRecomWidget(shopRecomNextCursor)
             if (request.shopRecomUiModel.isShown) {
                 shopRecomNextCursor = request.shopRecomUiModel.nextCursor

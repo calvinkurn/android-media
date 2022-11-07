@@ -72,7 +72,7 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
         playWidgetTools = playWidgetTools,
         trackVisitChannelBroadcasterUseCase = feedBroadcastTrackerUseCase,
         getDynamicFeedNewUseCase = getDynamicFeedNewUseCase,
-        getWhitelistNewUseCase = getWhitelistNewUseCase,
+        getWhiteListNewUseCase = getWhitelistNewUseCase,
         addToWishlistV2UseCase = addToWishlistV2UseCase,
         feedXTrackViewerUseCase = feedXTrackViewerUseCase,
         sendTopAdsUseCase = sendTopAdsUseCase,

@@ -316,12 +316,13 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         cta {
           text
+          subtitle
           color
           colorGradient {
           color
           position
           }
-          __typename
+        __typename
         }
         ribbonImageURL
         campaign {
@@ -331,6 +332,11 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
             shortName
             startTime
             endTime
+            restrictions {
+            label
+            isActive
+            __typename
+          }
           }
         title
         subTitle

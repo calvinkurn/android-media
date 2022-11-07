@@ -14,23 +14,28 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
 
     private lateinit var detailId: String
     private lateinit var shopId: String
+    private lateinit var authorType: String
     private lateinit var activityId: String
     private lateinit var shopName: String
     private lateinit var saleType: String
     private lateinit var saleStatus: String
+    private var postPosition: Int = DEFAULT_INVALID_POSITION
     private lateinit var postType: String
     private var isFollowed: Boolean = false
 
     companion object {
         const val EXTRA_DETAIL_ID = "extra_detail_id"
         const val EXTRA_ANALYTICS_PAGE_ROW_NUMBER = "EXTRA_ANALYTICS_PAGE_ROW_NUMBER"
-        const val PARAM_SHOP_ID = "shop_id"
+        const val PARAM_AUTHOR_ID = "shop_id"
+        const val PARAM_AUTHOR_TYPE = "author_type"
         const val PARAM_ACTIVITY_ID = "activity_id"
         const val PARAM_IS_FOLLOWED = "is_followed"
         const val PARAM_POST_TYPE = "post_type"
         const val PARAM_SHOP_NAME = "shop_name"
         const val PARAM_SALE_TYPE = "sale_type"
         const val PARAM_SALE_STATUS = "sale_status"
+        const val PARAM_POST_POSITION = "position"
+        private const val DEFAULT_INVALID_POSITION = -1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,21 +54,25 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
             val uri = it.pathSegments
             detailId = uri[uri.lastIndex]
         }
-        shopId = intent.getStringExtra(PARAM_SHOP_ID).orEmpty()
+        shopId = intent.getStringExtra(PARAM_AUTHOR_ID).orEmpty()
+        authorType = intent.getStringExtra(PARAM_AUTHOR_TYPE).orEmpty()
         postType = intent.getStringExtra(PARAM_POST_TYPE).orEmpty()
         isFollowed = intent.getBooleanExtra(PARAM_IS_FOLLOWED, false)
         activityId = intent.getStringExtra(PARAM_ACTIVITY_ID).orEmpty()
         shopName = intent.getStringExtra(PARAM_SHOP_NAME).orEmpty()
         saleType = intent.getStringExtra(PARAM_SALE_TYPE).orEmpty()
         saleStatus = intent.getStringExtra(PARAM_SALE_STATUS).orEmpty()
+        postPosition = intent.getIntExtra(PARAM_POST_POSITION, DEFAULT_INVALID_POSITION)
     }
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         bundle.putString(EXTRA_DETAIL_ID, detailId)
-        bundle.putString(PARAM_SHOP_ID, shopId)
+        bundle.putString(PARAM_AUTHOR_ID, shopId)
+        bundle.putString(PARAM_AUTHOR_TYPE, authorType)
         bundle.putString(PARAM_ACTIVITY_ID, activityId)
         bundle.putString(PARAM_POST_TYPE, postType)
+        bundle.putInt(PARAM_POST_POSITION, postPosition)
         bundle.putString(PARAM_SHOP_NAME, shopName)
         bundle.putString(PARAM_SALE_STATUS, saleStatus)
         bundle.putString(PARAM_SALE_TYPE, saleType)
@@ -86,6 +95,4 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     fun getShopInfoLayout(): View? {
         return findViewById(R.id.shop_info_card)
     }
-
-
 }

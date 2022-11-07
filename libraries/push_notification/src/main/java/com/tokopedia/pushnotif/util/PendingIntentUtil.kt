@@ -32,7 +32,7 @@ object PendingIntentUtil {
         bundle.putInt(Constant.EXTRA_NOTIFICATION_TYPE, notificationType)
         bundle.putInt(Constant.EXTRA_NOTIFICATION_ID, notificationId)
         intent.putExtras(bundle)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             resultPendingIntent = PendingIntent.getActivity(
                     context,
                     0,
@@ -44,7 +44,7 @@ object PendingIntentUtil {
                     context,
                     notificationId,
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         }
 
