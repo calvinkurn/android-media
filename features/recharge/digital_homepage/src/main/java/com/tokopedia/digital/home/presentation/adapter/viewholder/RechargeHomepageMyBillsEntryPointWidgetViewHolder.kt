@@ -3,7 +3,7 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointWidget
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
 import com.tokopedia.digital.home.R
 
 /**
@@ -12,14 +12,14 @@ import com.tokopedia.digital.home.R
 
 class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
     itemView: View
-): AbstractViewHolder<RechargeHomepageMyBillsEntryPointWidget>(itemView) {
+): AbstractViewHolder<RechargeHomepageMyBillsEntryPointModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_my_bills_entrypoint
     }
 
-    override fun bind(element: RechargeHomepageMyBillsEntryPointWidget?) {
+    override fun bind(element: RechargeHomepageMyBillsEntryPointModel?) {
 
     }
 }

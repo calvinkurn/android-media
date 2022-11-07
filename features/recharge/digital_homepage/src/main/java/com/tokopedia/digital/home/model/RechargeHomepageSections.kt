@@ -673,13 +673,13 @@ class RechargeHomepageMyBillsWidgetModel(val section: RechargeHomepageSections.S
     }
 }
 
-class RechargeHomepageMyBillsEntryPointWidget(val section: RechargeHomepageSections.Section)
+class RechargeHomepageMyBillsEntryPointModel(val section: RechargeHomepageSections.Section)
     : RechargeHomepageSectionModel {
 
     override fun visitableId(): String = section.id
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is RechargeHomepageMyBillsEntryPointWidget) {
+        return if (b is RechargeHomepageMyBillsEntryPointModel) {
             section == b.section
         } else false
     }

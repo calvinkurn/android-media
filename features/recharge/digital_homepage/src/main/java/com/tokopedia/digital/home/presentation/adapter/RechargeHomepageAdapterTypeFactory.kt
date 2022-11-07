@@ -16,7 +16,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
-import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointWidget
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
@@ -160,7 +160,7 @@ class RechargeHomepageAdapterTypeFactory(
     fun type(myBillsWidget: RechargeHomepageMyBillsWidgetModel): Int =
         RechargeHomepageMyBillsWidgetViewHolder.LAYOUT
 
-    fun type(myBillsEntryPointWidget: RechargeHomepageMyBillsEntryPointWidget): Int =
+    fun type(myBillsEntryPointWidget: RechargeHomepageMyBillsEntryPointModel): Int =
         RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
