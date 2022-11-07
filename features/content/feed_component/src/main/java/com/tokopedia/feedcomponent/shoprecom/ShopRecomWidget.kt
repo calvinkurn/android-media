@@ -65,12 +65,12 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
     fun setData(
         headerTitle: String,
         shopRecomItem: List<ShopRecomUiModelItem>,
-        isLoading: Boolean = false
+        loadNextPage: Boolean = false
     ) = with(binding) {
         txtHeaderShopRecom.text = headerTitle
         val model = buildList {
             addAll(shopRecomItem.map { ShopRecomAdapter.Model.ShopRecomWidget(it) })
-            if (isLoading) add(ShopRecomAdapter.Model.Loading)
+            if (loadNextPage) add(ShopRecomAdapter.Model.Loading)
         }
         if (rvShopRecom.isComputingLayout.not()) mAdapterShopRecom.setItemsAndAnimateChanges(model)
     }
