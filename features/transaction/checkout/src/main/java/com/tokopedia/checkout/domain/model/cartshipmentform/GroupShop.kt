@@ -39,4 +39,5 @@ data class GroupShop(
         var boMetadata: BoMetadata = BoMetadata(),
         var courierSelectionErrorData: CourierSelectionErrorData = CourierSelectionErrorData(),
         var scheduleDelivery: ScheduleDeliveryData = ScheduleDeliveryData(),
+        var ratesValidationFlow: Boolean = false,
 ) : Parcelable

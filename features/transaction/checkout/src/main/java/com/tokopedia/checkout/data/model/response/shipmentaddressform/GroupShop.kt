@@ -58,5 +58,7 @@ data class GroupShop(
         @SerializedName("courier_selection_error")
         val courierSelectionError: CourierSelectionError = CourierSelectionError(),
         @SerializedName("scheduled_delivery")
-        val scheduledDelivery: ScheduleDelivery = ScheduleDelivery()
+        val scheduledDelivery: ScheduleDelivery = ScheduleDelivery(),
+        @SerializedName("rates_validation_flow")
+        val ratesValidationFlow: Boolean = false,
 )

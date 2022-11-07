@@ -80,7 +80,6 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase;
-import com.tokopedia.logisticcart.scheduledelivery.model.ScheduleDeliveryParam;
 import com.tokopedia.logisticcart.scheduledelivery.usecase.GetRatesWithScheduleUseCase;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
@@ -299,6 +298,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         if (ratesApiUseCase != null) {
             ratesApiUseCase.unsubscribe();
+        }
+        if (ratesWithScheduleUseCase != null) {
+            ratesWithScheduleUseCase.unsubscribe();
         }
     }
 
@@ -2242,7 +2244,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         Observable<ShippingRecommendationData> observable;
         if (isTradeInDropOff) {
             observable = ratesApiUseCase.execute(param);
-        } else if (shipmentCartItemModel.isTokoNow()) {
+        } else if (shipmentCartItemModel.getRatesValidationFlow()) {
             observable = ratesWithScheduleUseCase.execute(param, String.valueOf(shipmentCartItemModel.getFulfillmentId()));
         } else {
             observable = ratesUseCase.execute(param);
@@ -2253,7 +2255,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 shippingCourierConverter, shipmentCartItemModel,
                 isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
         );
-        if (shipmentCartItemModel.isTokoNow()) {
+        if (shipmentCartItemModel.getRatesValidationFlow()) {
             subscriber = new GetScheduleDeliveryCourierRecommendationSubscriber(
                     getView(), this, shipperId, spId, itemPosition,
                     shippingCourierConverter, shipmentCartItemModel,

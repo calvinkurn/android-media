@@ -59,7 +59,5 @@ class DeliveryProduct(
     @SerializedName("promo_stacking")
     val promoStacking: PromoStacking = PromoStacking(),
     @SerializedName("validation_metadata")
-    val validationMetadata: String = "",
-    @SerializedName("free_shipping_metadata")
-    val freeShippingMetadata: String = "",
+    val validationMetadata: String = ""
 ) : Parcelable

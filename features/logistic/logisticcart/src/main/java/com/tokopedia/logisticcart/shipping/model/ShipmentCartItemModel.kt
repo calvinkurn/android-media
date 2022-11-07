@@ -120,6 +120,7 @@ class ShipmentCartItemModel(
         var scheduleDate: String = "",
         var timeslotId: Long = 0L,
         var validationMetadata: String = "",
+        var ratesValidationFlow: Boolean = false,
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean

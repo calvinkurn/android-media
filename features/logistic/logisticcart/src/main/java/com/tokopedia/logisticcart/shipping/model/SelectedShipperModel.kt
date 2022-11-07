@@ -74,10 +74,10 @@ data class SelectedShipperModel(
             etaErrorCode = 0
             shipperName = ""
             freeShippingChosenCourierTitle = ""
-            freeShippingMetadata = scheduleDelivery.deliveryProduct?.freeShippingMetadata ?: ""
+            freeShippingMetadata = scheduleDelivery.deliveryProduct?.promoStacking?.freeShippingMetadata ?: ""
             benefitClass = scheduleDelivery.deliveryProduct?.promoStacking?.benefitClass ?: ""
             shippingSubsidy = scheduleDelivery.deliveryProduct?.promoStacking?.shippingSubsidy ?: 0
-            boCampaignId = 0
+            boCampaignId = scheduleDelivery.deliveryProduct?.promoStacking?.boCampaignId ?: 0
         }
     }
 }

@@ -116,6 +116,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                     schedule_date
                     validation_metadata
                   }
+                  rates_validation_flow
                   bo_code
                   is_insurance
                   is_fulfillment_service

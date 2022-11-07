@@ -218,6 +218,7 @@ class ShipmentMapper @Inject constructor() {
                         boMetadata = it.boMetadata
                         courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
                         scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
+                        ratesValidationFlow = it.ratesValidationFlow
                     }
             )
         }

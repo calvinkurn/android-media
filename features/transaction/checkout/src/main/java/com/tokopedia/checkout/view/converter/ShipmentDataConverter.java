@@ -299,6 +299,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setTimeslotId(groupShop.getScheduleDelivery().getTimeslotId());
         shipmentCartItemModel.setScheduleDate(groupShop.getScheduleDelivery().getScheduleDate());
         shipmentCartItemModel.setValidationMetadata(groupShop.getScheduleDelivery().getValidationMetadata());
+        shipmentCartItemModel.setRatesValidationFlow(groupShop.getRatesValidationFlow());
 
         String receiverName = "";
         if (userAddress.getStatus() == ACTIVE_ADDRESS) {
