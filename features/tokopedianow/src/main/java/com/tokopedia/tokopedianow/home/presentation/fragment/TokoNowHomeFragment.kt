@@ -1206,8 +1206,6 @@ class TokoNowHomeFragment: Fragment(),
             when (it) {
                 is Success -> {
                     showDialogReceiverReferral(it.data)
-                } else -> {
-                    showDialogReceiverReferral(HomeReceiverReferralDialogUiModel("asddasd"))
                 }
             }
         }
@@ -1944,7 +1942,6 @@ class TokoNowHomeFragment: Fragment(),
     private fun showDialogReceiverReferral(data: HomeReceiverReferralDialogUiModel) {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
-//
             dialog.setTitle(data.title)
             dialog.setDescription(data.description)
             dialog.setPrimaryCTAText(data.ctaText)

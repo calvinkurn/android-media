@@ -15,6 +15,7 @@
         app:typographyWeight="bold"
         android:layout_marginTop="20dp"
         android:layout_marginHorizontal="15dp"
+        android:visibility="gone"
         tools:text="Mau cashback 25rb?"/>
 
     <androidx.cardview.widget.CardView android:id="@+id/cv_sharing_education"

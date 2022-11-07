@@ -26,7 +26,8 @@ sealed class HomeSharingWidgetUiModel (
         val type: String = "",
         val applink: String = "",
         val url: String = "",
-        val textButton: String = ""
+        val textButton: String = "",
+        val titleSection: String = ""
     ): HomeSharingWidgetUiModel(
         id,
         state

@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
+import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -11,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.SHARING_WIDGET_RESOURCE_ID
@@ -62,7 +64,6 @@ class HomeSharingWidgetViewHolder(
             when(element) {
                 is HomeSharingReferralWidgetUiModel -> {
                     setReferralData(element)
-                    setReferralListener(element)
                 }
                 is HomeSharingEducationWidgetUiModel -> {
                     setEducationalInfoData(element)
@@ -86,18 +87,26 @@ class HomeSharingWidgetViewHolder(
 
     private fun setSenderData(element: HomeSharingReferralWidgetUiModel) {
         binding?.apply {
-            convertStringToLink(
-                typography = tpSharing,
-                stringRes = R.string.tokopedianow_home_referral_widget_desc_sender,
-                referral = element
-            )
+            val context = itemView.context
+            val greenColor = ContextCompat.getColor(
+                context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
+            tpSharing.text = MethodChecker.fromHtml(context.getString(R.string.tokopedianow_home_referral_widget_desc_sender, greenColor))
             btnSharing.text = getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
-            tpTitle.text = getString(R.string.tokopedianow_home_referral_widget_title, element.maxReward)
+            if (element.titleSection.isNotEmpty()) {
+                tpTitle.visible()
+                tpTitle.text = element.titleSection
+            }
+
             containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
             iuSharing.hide()
             playAnimation()
             ivBgImageBtm.loadImage(IMG_SHARING_REFERRAL_BG_BTM)
             ivBgImageTopRight.loadImage(IMG_SHARING_REFERRAL_BG_TOP)
+
+            itemView.setOnClickListener {
+                val url = REFERRAL_PAGE_URL + element.slug
+                listener?.onMoreReferralClicked(element, url)
+            }
         }
     }
 
@@ -107,6 +116,7 @@ class HomeSharingWidgetViewHolder(
                 R.string.tokopedianow_home_referral_widget_desc_receiver, element.ogDescription))
             btnSharing.hide()
             containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+            tpTitle.text = element.titleSection
             iuSharing.hide()
             playAnimation()
             ivBgImageBtm.loadImage(IMG_SHARING_REFERRAL_BG_BTM)
@@ -177,25 +187,6 @@ class HomeSharingWidgetViewHolder(
 
             iuCloseSharing.setOnClickListener {
                 listener?.onCloseBtnSharingEducationalInfoClicked(element.id)
-            }
-        }
-    }
-
-    private fun convertStringToLink(
-        typography: Typography,
-        stringRes: Int,
-        referral: HomeSharingReferralWidgetUiModel
-    ) {
-        val context = itemView.context
-        val urlParam = REFERRAL_PAGE_URL + referral.slug
-        val greenColor = ContextCompat.getColor(
-            context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
-        val linkHelper = HtmlLinkHelper(context, context.getString(stringRes, greenColor, urlParam, referral.maxReward))
-        typography.text = linkHelper.spannedString
-        typography.movementMethod = LinkMovementMethod.getInstance()
-        linkHelper.urlList[0].let { link ->
-            link.onClick = {
-                listener?.onMoreReferralClicked(referral, link.linkUrl)
             }
         }
     }
