@@ -15,7 +15,7 @@ internal class ShopRecomAdapterDelegate private constructor() {
         TypedAdapterDelegate<
             ShopRecomAdapter.Model.ShopRecomWidget,
             ShopRecomAdapter.Model,
-            ShopRecomViewHolder>(R.layout.item_shop_recommendation_loading) {
+            ShopRecomViewHolder>(R.layout.item_shop_recommendation) {
 
         override fun onBindViewHolder(
             item: ShopRecomAdapter.Model.ShopRecomWidget,
