@@ -62,10 +62,11 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun setData(headerTitle: String, shopRecomItem: List<ShopRecomUiModelItem>) = with(binding) {
+    fun setData(headerTitle: String, shopRecomItem: List<ShopRecomUiModelItem>, isLoading: Boolean = false) = with(binding) {
         txtHeaderShopRecom.text = headerTitle
         val model = buildList {
             addAll(shopRecomItem.map { ShopRecomAdapter.Model.ShopRecomWidget(it) })
+            if (isLoading) add(ShopRecomAdapter.Model.Loading)
         }
         mAdapterShopRecom.setItemsAndAnimateChanges(model)
     }
