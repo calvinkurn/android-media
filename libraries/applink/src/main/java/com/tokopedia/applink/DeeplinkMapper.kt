@@ -627,6 +627,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.BROWSER -> ApplinkConstInternalGlobal.BROWSER
             ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
             ApplinkConst.SellerApp.SHOP_DISCOUNT -> ApplinkConstInternalSellerapp.SHOP_DISCOUNT
+            ApplinkConst.SellerApp.SELLER_MERCHANT_VOUCHER_CREATION -> ApplinkConstInternalSellerapp.MERCHANT_VOUCHER_CREATION
             ApplinkConst.SellerApp.TOPADS_CREDIT_HISTORY -> ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREDIT -> ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREATE_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE

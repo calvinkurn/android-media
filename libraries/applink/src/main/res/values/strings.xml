@@ -171,6 +171,9 @@
     <!-- Shop Flash Sale -->
     <string name="title_shop_flash_sale">Flash Sale Toko</string>
 
+    <!--Merchant Voucher Creation-->
+    <string name="title_merchant_voucher_creation">Kupon Diskon</string>
+
 <!--    Tokomember seller dashboard-->
     <string name="title_tokomember" translatable="false">Tokomember</string>
 

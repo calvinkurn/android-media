@@ -1,0 +1,14 @@
+<resources>
+    <!--Add product page-->
+    <string name="smvc_add_product">Tambah Produk</string>
+    <string name="smvc_add_product_subtitle">Pilih produk untuk dipasang kupon.</string>
+    <string name="smvc_search_product">Cari nama produk</string>
+    <string name="smvc_select_all">Piih Semua</string>
+
+    <string name="smvc_placeholder_max_selected_product">Maks. %d Produk</string>
+    <string name="smvc_placeholder_selected_product_count">%d/%d Produk</string>
+    <string name="smvc_placeholder_product_sku">SKU %s</string>
+    <string name="smvc_placeholder_product_sold_count">Terjual: %d</string>
+    <string name="smvc_placeholder_variant_product_count">%d Varian Produk</string>
+    <string name="smvc_placeholder_product_price">%s - %s</string>
+</resources>

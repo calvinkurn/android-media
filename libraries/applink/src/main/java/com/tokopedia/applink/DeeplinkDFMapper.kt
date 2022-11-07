@@ -144,6 +144,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.MERCHANT_VOUCHER_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MENU
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SHOP_FLASH_SALE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.TOKOMEMBER
@@ -706,6 +707,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(WELCOME) }, DF_BASE_SELLER_APP, R.string.title_seller_onboarding))
             add(DFP({ it.startsWith(SELLER_SEARCH) || it.startsWith(ApplinkConstInternalSellerapp.SELLER_SEARCH) }, DF_BASE_SELLER_APP, R.string.title_global_search_seller))
             add(DFP({ it.startsWith(SELLER_SHOP_FLASH_SALE) }, DF_BASE_SELLER_APP, R.string.title_shop_flash_sale))
+            add(DFP({ it.startsWith(MERCHANT_VOUCHER_CREATION) }, DF_BASE_SELLER_APP, R.string.title_merchant_voucher_creation))
 
             // Content
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_comment))
