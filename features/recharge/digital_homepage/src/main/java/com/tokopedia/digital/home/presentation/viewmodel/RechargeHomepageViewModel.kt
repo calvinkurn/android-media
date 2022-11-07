@@ -235,6 +235,7 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_PRODUCT_CARD_CUSTOM_LAST_ITEM = "PRODUCT_CARD_CUSTOM_LAST_ITEM"
         const val SECTION_OFFERING_WIDGET = "OFFERING_WIDGET"
         const val SECTION_MY_BILLS_WIDGET = "BILL_WIDGET"
+        const val SECTION_MY_BILLS_ENTRYPOINT_WIDGET = "BILL_WIDGET_ENTRYPOINT"
 
         const val ALL_CATEGORY_PLATFORM_ID = 52
     }
