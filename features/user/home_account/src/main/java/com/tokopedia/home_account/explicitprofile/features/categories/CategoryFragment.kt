@@ -144,11 +144,7 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
             .show(childFragmentManager)
     }
 
-    override fun onQuestionSelected(
-        questionDataModel: QuestionDataModel,
-        isSelected: Boolean,
-        message: String
-    ) {
+    override fun onQuestionSelected(questionDataModel: QuestionDataModel, isSelected: Boolean) {
         tracker.clickOnAnswers(questionDataModel.property.name)
 
         templeDataModel = templeDataModel?.apply {
@@ -161,10 +157,6 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
 
         templeDataModel?.let {
             viewModelShared.onAnswerChange(it)
-        }
-
-        if (message.isNotEmpty()) {
-            view?.let { Toaster.build(it, message).show() }
         }
     }
 

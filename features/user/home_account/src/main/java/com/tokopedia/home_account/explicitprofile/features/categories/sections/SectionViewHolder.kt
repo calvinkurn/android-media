@@ -11,6 +11,7 @@ import com.tokopedia.home_account.explicitprofile.data.SectionsDataModel
 import com.tokopedia.home_account.explicitprofile.features.categories.sections.chips.ChipsAdapter
 import com.tokopedia.home_account.explicitprofile.features.categories.sections.chips.ChipsViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
@@ -36,6 +37,23 @@ class SectionViewHolder(
 
         itemViewBinding?.apply {
             sectionTitle.text = sectionsDataModel.property.title
+
+                sectionInfoSubtitle.apply {
+                    if (maxAnswersSelection > 0) {
+                        text = String.format(
+                            Locale.getDefault(),
+                            itemView.context.resources.getString(R.string.explicit_profile_max_selection_answer_limit),
+                            maxAnswersSelection
+                        )
+                    } else if (maxAnswersSelection == 0) {
+                        text = String.format(
+                            Locale.getDefault(),
+                            itemView.context.resources.getString(R.string.explicit_profile_max_selection_answer_no_limit),
+                            maxAnswersSelection
+                        )
+                    }
+                }.show()
+
             sectionQuestionList.apply {
                 layoutManager = flexboxLayoutManager
                 adapter = chipsAdapter
@@ -58,7 +76,6 @@ class SectionViewHolder(
         updateChipsSelection: (Boolean) -> Unit
     ) {
         var isActive = false
-        var message = ""
 
         if (isChipSelected) {
             selectedAnswers.remove(questionDataModel)
@@ -69,21 +86,15 @@ class SectionViewHolder(
                 selectedAnswers.add(questionDataModel)
                 updateChipsSelection.invoke(!isChipSelected)
                 isActive = !isChipSelected
-            } else {
-                message = String.format(
-                    Locale.getDefault(),
-                    itemView.context.resources.getString(R.string.explicit_profile_max_selection_answer),
-                    maxAnswersSelection
-                )
             }
         }
 
-        sectionListener.onQuestionSelected(questionDataModel, isActive, message)
+        sectionListener.onQuestionSelected(questionDataModel, isActive)
     }
 
     interface SectionListener {
         fun onClickInfo(sectionsDataModel: SectionsDataModel)
-        fun onQuestionSelected(questionDataModel: QuestionDataModel, isSelected: Boolean, message: String = "")
+        fun onQuestionSelected(questionDataModel: QuestionDataModel, isSelected: Boolean)
     }
 
     companion object {
