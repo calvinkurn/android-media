@@ -44,6 +44,7 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
         fun bindData(data: ShipperProductCPLModel) {
             val lastItem = cplShipperItem.last()
             binding.shipperProductName.text = data.shipperProductName
+            binding.shipperProductCb.setOnCheckedChangeListener(null)
             binding.shipperProductCb.isChecked = data.isActive
 
             if (data == lastItem) {

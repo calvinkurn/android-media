@@ -249,14 +249,17 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 if (data.isEmpty()) {
                     binding.shippingEditorLayoutOndemand.gone()
                 } else {
+                    binding.shippingEditorLayoutOndemand.visible()
                     cplItemOnDemandAdapter.addData(data)
                 }
             }
             SHIPPER_CONVENTIONAL -> {
                 if (data.isEmpty()) {
                     binding.shippingEditorLayoutConventional.gone()
+                } else {
+                    binding.shippingEditorLayoutConventional.visible()
+                    cplItemConventionalAdapter.addData(data)
                 }
-                cplItemConventionalAdapter.addData(data)
             }
         }
     }

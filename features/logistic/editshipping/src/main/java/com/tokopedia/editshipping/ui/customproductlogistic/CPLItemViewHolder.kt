@@ -18,32 +18,37 @@ class CPLItemViewHolder(
 
     fun bindData(data: ShipperCPLModel) {
         hideUnusedLayout()
+        bindShipperData(data)
+        bindCheckbox(data)
+    }
+
+    private fun bindShipperData(data: ShipperCPLModel) {
         binding.shipmentName.text = data.shipperName
         binding.shipmentCategory.text = data.description
-        if (data.isWhitelabel) {
-            bindWhitelabelShipment(data)
-        } else {
-            bindNormalShipment(data)
-        }
-    }
-
-    private fun bindNormalShipment(data: ShipperCPLModel) {
-        if (data.logo.isNotEmpty()) {
-            binding.imgShipmentItem.loadImage(data.logo)
-        } else {
-            binding.imgShipmentItem.gone()
-        }
+        bindLogo(data)
         setAdapterData(data)
-        setItemChecked(data)
+        setShipperProductLayout(data)
     }
 
-    private fun bindWhitelabelShipment(data: ShipperCPLModel) {
-        binding.shipmentItemList.gone()
-        binding.imgShipmentItem.gone()
-        binding.dividerShipment.gone()
+    private fun bindCheckbox(data: ShipperCPLModel) {
+        binding.cbShipmentItem.setOnCheckedChangeListener(null)
+        binding.cbShipmentItem.isChecked = data.isActive
         binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
-            listener.onWhitelabelServiceCheckboxClicked(data.shipperProduct.map { it.shipperProductId }, isChecked)
+            if (data.isWhitelabel) {
+                listener.onWhitelabelServiceCheckboxClicked(data.shipperProduct.map { it.shipperProductId }, isChecked)
+            } else {
+                listener.onShipperCheckboxClicked(data.shipperId, isChecked)
+            }
         }
+    }
+
+    private fun bindLogo(data: ShipperCPLModel) {
+        if (data.isWhitelabel || data.logo.isEmpty()) {
+            binding.imgShipmentItem.gone()
+        } else {
+            binding.imgShipmentItem.loadImage(data.logo)
+        }
+
     }
 
     private fun hideUnusedLayout() {
@@ -54,31 +59,30 @@ class CPLItemViewHolder(
     }
 
     private fun setAdapterData(data: ShipperCPLModel) {
-        binding.shipmentItemList.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = cplShipperItemAdapter
-        }
-
-        cplShipperItemAdapter.addData(data.shipperProduct)
-        cplShipperItemAdapter.setupListener(object :
-            CPLShipperItemAdapter.CPLShipperItemAdapterListener {
-            override fun onCheckboxProductClicked(shipperProductId: Long, checked: Boolean) {
-                listener.onShipperProductCheckboxClicked(shipperProductId, checked)
+        if (data.isWhitelabel) {
+            binding.shipmentItemList.gone()
+            binding.dividerShipment.gone()
+        } else {
+            binding.shipmentItemList.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = cplShipperItemAdapter
             }
-        })
+
+            cplShipperItemAdapter.addData(data.shipperProduct)
+            cplShipperItemAdapter.setupListener(object :
+                CPLShipperItemAdapter.CPLShipperItemAdapterListener {
+                override fun onCheckboxProductClicked(shipperProductId: Long, checked: Boolean) {
+                    listener.onShipperProductCheckboxClicked(shipperProductId, checked)
+                }
+            })
+        }
     }
 
-    private fun setItemChecked(data: ShipperCPLModel) {
-        binding.cbShipmentItem.isChecked = data.isActive
-
-        if (data.isActive) {
-            binding.itemChildLayout.visible()
-        } else {
+    private fun setShipperProductLayout(data: ShipperCPLModel) {
+        if (data.isWhitelabel || !data.isActive) {
             binding.itemChildLayout.gone()
-        }
-
-        binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
-            listener.onShipperCheckboxClicked(data.shipperId, isChecked)
+        } else {
+            binding.itemChildLayout.visible()
         }
     }
 

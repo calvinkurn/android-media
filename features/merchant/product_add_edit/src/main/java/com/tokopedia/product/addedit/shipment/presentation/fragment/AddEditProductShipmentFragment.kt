@@ -192,7 +192,6 @@ class AddEditProductShipmentFragment:
         setupOnBackPressed()
 
         if (GlobalConfig.isSellerApp()) {
-            setupShipment()
             initShipmentData()
         } else {
             hideShipment()
@@ -387,6 +386,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun setupShipment() {
+        shipmentInputLayout?.visible()
         setupShipmentRadios()
     }
 
@@ -613,6 +613,7 @@ class AddEditProductShipmentFragment:
     private fun applyShipmentValue(data: CustomProductLogisticModel) {
         val activatedSpIds = data.getActivatedSpIds()
         val isCplActivated = activatedSpIds.isNotEmpty()
+        setupShipment()
         setSelectedShipperService(activatedSpIds)
         setCplRadioButtonState(isCplActivated)
         setShipmentLayout(!isCplActivated, data)
