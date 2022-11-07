@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.mapper
 
+import android.net.Uri
 import androidx.annotation.StringRes
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
@@ -11,13 +12,21 @@ import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.DEFAULT_OS_TYPE
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.IMAGE_SMALL_SIZE
+import com.tokopedia.user.session.UserSessionInterface
 
 object ShipmentInfoUiStateMapper {
+
+    private const val QUERY_PARAM_POD_IMAGE_ID = "image_id"
 
     fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         currentState: ShipmentInfoUiState,
-        resourceProvider: ResourceProvider
+        resourceProvider: ResourceProvider,
+        userSession: UserSessionInterface
     ): ShipmentInfoUiState {
         val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
             .getP0DataRequestState
@@ -32,7 +41,8 @@ object ShipmentInfoUiStateMapper {
             is GetBuyerOrderDetailRequestState.Complete.Success -> {
                 mapOnGetBuyerOrderDetailSuccess(
                     getBuyerOrderDetailRequestState.result,
-                    resourceProvider
+                    resourceProvider,
+                    userSession
                 )
             }
         }
@@ -50,9 +60,10 @@ object ShipmentInfoUiStateMapper {
 
     private fun mapOnGetBuyerOrderDetailSuccess(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
-        resourceProvider: ResourceProvider
+        resourceProvider: ResourceProvider,
+        userSession: UserSessionInterface
     ): ShipmentInfoUiState {
-        return mapOnDataReady(buyerOrderDetailData, resourceProvider)
+        return mapOnDataReady(buyerOrderDetailData, resourceProvider, userSession)
     }
 
     private fun mapOnGetBuyerOrderDetailError(
@@ -73,7 +84,8 @@ object ShipmentInfoUiStateMapper {
 
     private fun mapOnDataReady(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
-        resourceProvider: ResourceProvider
+        resourceProvider: ResourceProvider,
+        userSession: UserSessionInterface
     ): ShipmentInfoUiState {
         return ShipmentInfoUiState.HasData.Showing(
             mapShipmentInfoUiModel(
@@ -83,7 +95,9 @@ object ShipmentInfoUiStateMapper {
                 buyerOrderDetailData.orderStatus.id,
                 buyerOrderDetailData.dropship,
                 buyerOrderDetailData.getDriverTippingInfo(),
-                resourceProvider
+                buyerOrderDetailData.getPodInfo(),
+                resourceProvider,
+                userSession
             )
         )
     }
@@ -101,7 +115,9 @@ object ShipmentInfoUiStateMapper {
         orderStatusId: String,
         dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship,
         driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?,
-        resourceProvider: ResourceProvider
+        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?,
+        resourceProvider: ResourceProvider,
+        userSession: UserSessionInterface
     ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
             awbInfoUiModel = mapAwbInfoUiModel(
@@ -111,7 +127,7 @@ object ShipmentInfoUiStateMapper {
             driverTippingInfoUiModel = mapDriverTippingInfoUiModel(
                 driverTippingInfo, resourceProvider
             ),
-            courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
+            courierInfoUiModel = mapCourierInfoUiModel(shipment, meta, podInfo, userSession, orderId),
             dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship, resourceProvider),
             headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
             receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(
@@ -163,7 +179,10 @@ object ShipmentInfoUiStateMapper {
 
     private fun mapCourierInfoUiModel(
         shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment,
-        meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta
+        meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta,
+        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?,
+        userSession: UserSessionInterface,
+        orderId: String
     ): ShipmentInfoUiModel.CourierInfoUiModel {
         return ShipmentInfoUiModel.CourierInfoUiModel(
             arrivalEstimation = composeETA(shipment.eta),
@@ -171,8 +190,41 @@ object ShipmentInfoUiStateMapper {
             isFreeShipping = meta.isBebasOngkir,
             boBadgeUrl = meta.boImageUrl,
             etaChanged = shipment.etaIsUpdated,
-            etaUserInfo = shipment.userUpdatedInfo
+            etaUserInfo = shipment.userUpdatedInfo,
+            pod = mapPod(podInfo, orderId, userSession)
         )
+    }
+
+    private fun mapPod(
+        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?,
+        orderId: String,
+        userSession: UserSessionInterface
+    ): ShipmentInfoUiModel.CourierInfoUiModel.Pod? {
+        return podInfo?.let {
+            Uri.parse(it.imageUrl).getQueryParameter(QUERY_PARAM_POD_IMAGE_ID)?.let { imageId ->
+                val completeImageUrl = LogisticImageDeliveryHelper.getDeliveryImage(
+                    imageId,
+                    orderId.toLongOrZero(),
+                    IMAGE_SMALL_SIZE,
+                    userSession.userId,
+                    DEFAULT_OS_TYPE,
+                    userSession.deviceId
+                )
+                ShipmentInfoUiModel.CourierInfoUiModel.Pod(
+                    podPictureUrl = completeImageUrl,
+                    podLabel = it.title,
+                    podCtaText = it.action.name,
+                    podCtaUrl = it.action.link,
+                    accessToken = userSession.accessToken
+                )
+            }
+        }?.takeIf {
+            it.podPictureUrl.isNotBlank() &&
+                it.podLabel.isNotBlank() &&
+                it.podCtaText.isNotBlank() &&
+                it.podCtaUrl.isNotBlank() &&
+                it.accessToken.isNotBlank()
+        }
     }
 
     private fun mapDropShipperInfoUiModel(

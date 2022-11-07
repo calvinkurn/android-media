@@ -344,7 +344,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         return ShipmentInfoUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
             shipmentInfoUiState.value,
-            resourceProvider.get()
+            resourceProvider.get(),
+            userSession.get()
         )
     }
 

@@ -329,8 +329,12 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
+                val attachmentType = chatResponse.attachment?.type
+                if (attachmentType == SESSION_CHANGE || attachmentType == UPDATE_TOOLBAR)
+                    return
                 view.onReceiveMessageEvent(mapToVisitable(pojo))
                 sendReadEventWebSocket(messageId)
+
             }
         }
     }
