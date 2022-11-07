@@ -109,7 +109,8 @@ class DtHomeViewModel @Inject constructor(
             )
             _homeLayoutList.postValue(Success(data))
 
-            _menuList.postValue(homeLayoutItemList.mapMenuList())
+
+            _menuList.postValue(dataMenuList().mapMenuList(homeLayoutResponse))
         }) {
             _homeLayoutList.postValue(Fail(it))
         }.let {
@@ -117,6 +118,20 @@ class DtHomeViewModel @Inject constructor(
         }
     }
 
+
+    /**
+     * still dummy, need to change
+     */
+    private fun dataMenuList(): MutableList<AnchorTabUiModel> {
+        val anchorTabList = mutableListOf<AnchorTabUiModel>()
+        anchorTabList.add(AnchorTabUiModel(0, "title 1", "", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "361"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 3", "", "362"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 4", "", "363"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 5", "", ""))
+
+        return anchorTabList
+    }
 
     /***
      *

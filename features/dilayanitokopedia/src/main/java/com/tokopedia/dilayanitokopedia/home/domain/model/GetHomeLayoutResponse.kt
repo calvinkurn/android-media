@@ -25,7 +25,7 @@ data class HomeLayoutResponse(
     @SerializedName("pageName")
     val pageName: String = "",
     @Expose
-    @SerializedName("groupId")
+    @SerializedName("groupID")
     val groupId: String = "",
     @Expose
     @SerializedName("galaxyAttribution")
@@ -34,7 +34,7 @@ data class HomeLayoutResponse(
     @SerializedName("persona")
     val persona: String = "",
     @Expose
-    @SerializedName("brandId")
+    @SerializedName("brandID")
     val brandId: String = "",
     @Expose
     @SerializedName("categoryPersona")
