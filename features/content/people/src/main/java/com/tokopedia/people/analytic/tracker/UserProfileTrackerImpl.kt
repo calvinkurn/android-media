@@ -78,7 +78,7 @@ import javax.inject.Inject
 
 class UserProfileTrackerImpl @Inject constructor(
     private val trackingQueue: TrackingQueue,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : UserProfileTracker {
 
     override fun openUserProfile(userId: String, live: Boolean) {
@@ -710,7 +710,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun impressionProfileRecommendation(
         userId: String,
         shops: ShopRecomUiModelItem,
-        postPosition: Int,
+        postPosition: Int
     ) {
         trackingQueue.putEETracking(
             EventModel(
@@ -723,11 +723,11 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to convertToPromotion(
-                                shops.id.toString(),
-                                shops.logoImageURL,
-                                postPosition,
-                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
-                            )
+                            shops.id.toString(),
+                            shops.logoImageURL,
+                            postPosition,
+                            FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
+                        )
                     )
                 )
             ),
@@ -896,7 +896,7 @@ class UserProfileTrackerImpl @Inject constructor(
     }
 
     override fun sendAll() {
-        //no longer need to call trackingQueue.sendAll() manually
+        trackingQueue.sendAll()
     }
 
     private fun convertToPromotion(
@@ -909,8 +909,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ID to shopID,
             CREATIVE to imageUrl,
             POSITION to position,
-            NAME to name,
+            NAME to name
         )
     }
-
 }
