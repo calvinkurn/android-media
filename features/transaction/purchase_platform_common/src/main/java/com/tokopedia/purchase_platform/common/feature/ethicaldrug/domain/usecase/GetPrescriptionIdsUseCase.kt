@@ -29,13 +29,18 @@ class GetPrescriptionIdsUseCase @Inject constructor(private val gql: GraphqlUseC
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    private fun getRequestParams(checkoutId: String): MutableMap<String, Any?> {
+    private fun getRequestParams(
+        checkoutId: String,
+        source: String? = "checkout"
+    ): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[PARAM_CHECKOUT_ID] = checkoutId
+        requestMap[PARAM_SOURCE] = source
         return requestMap
     }
 
     companion object {
         const val PARAM_CHECKOUT_ID = "checkout_id"
+        const val PARAM_SOURCE = "source"
     }
 }

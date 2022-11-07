@@ -101,7 +101,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         val result = withContext(executorDispatchers.io) {
             try {
                 val prescriptionIds =
-                    getPrescriptionIdsUseCase.setParams(checkoutId).executeOnBackground()
+                    getPrescriptionIdsUseCase.setParams(checkoutId, "occ").executeOnBackground()
                 return@withContext PrescriptionMapper.mapPrescriptionResponse(prescriptionIds)
             } catch (t: Throwable) {
                 Timber.d(t)
