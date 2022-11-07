@@ -1,5 +1,7 @@
 package com.tokopedia.tokochat.view.viewmodel
 
+import android.content.Context
+import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -328,24 +330,31 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getImageWithId(
+        context: Context,
         imageId: String,
         channelId: String,
         onImageReady: (File?) -> Unit,
-        onError: () -> Unit
+        onError: () -> Unit,
+        onDirectLoad: () -> Unit,
+        imageView: ImageView? = null,
+        isFromRetry: Boolean = false
     ) {
         launchCatchError(context = dispatcher.io, block = {
-            val imageUrlResponse = getImageUrlUseCase(
-                TokoChatGetImageUseCase.Param(imageId, channelId)
-            )
             val cachedImage = getTokoChatPhotoPath(generateImageName(imageId, channelId))
             // If image has never been downloaded, then download
-            if (!cachedImage.exists()) {
+            if (!cachedImage.exists() || isFromRetry) {
+                val imageUrlResponse = getImageUrlUseCase(
+                    TokoChatGetImageUseCase.Param(imageId, channelId)
+                )
                 imageUrlResponse.data?.url?.let {
                     downloadAndSaveByteArrayImage(
+                        context,
                         generateImageName(imageId, channelId),
                         getImageUrlUseCase.getImage(it).byteStream(),
                         onImageReady,
-                        onError
+                        onError,
+                        onDirectLoad,
+                        imageView
                     )
                 }
             } else { // Else use the downloaded image

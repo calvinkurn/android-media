@@ -48,7 +48,6 @@ import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatErrorBottomSheet
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
@@ -66,6 +65,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
+import java.io.File
 import javax.inject.Inject
 
 class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
@@ -653,29 +653,59 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
         imageView: ImageView,
         element: TokoChatImageBubbleUiModel,
         loader: LoaderUnify?,
+        retryIcon: ImageUnify?,
+        isFromRetry: Boolean
+    ) {
+        context?.let {
+            viewModel.getImageWithId(
+                it,
+                imageId = element.imageId,
+                channelId = channelId,
+                onImageReady = { imageFile ->
+                    onImageReadyToLoad(imageView, element, loader, retryIcon, imageFile)
+                },
+                onError = {
+                    activity?.runOnUiThread {
+                        loader?.hide()
+                        retryIcon?.show()
+                        element.updateShouldRetry(true)
+                    }
+                },
+                onDirectLoad = {
+                    onDirectLoadImage(element, loader, retryIcon)
+                },
+                imageView = imageView,
+                isFromRetry = isFromRetry
+            )
+        }
+    }
+
+    private fun onImageReadyToLoad(
+        imageView: ImageView,
+        element: TokoChatImageBubbleUiModel,
+        loader: LoaderUnify?,
+        retryIcon: ImageUnify?,
+        imageFile: File?
+    ) {
+        activity?.runOnUiThread {
+            loader?.hide()
+            retryIcon?.hide()
+            imageFile?.let { file ->
+                imageView.loadImage(file.toUri())
+                element.updateImageData(imagePath = file.absolutePath, status = true)
+            }
+            element.updateShouldRetry(false)
+        }
+    }
+
+    private fun onDirectLoadImage(
+        element: TokoChatImageBubbleUiModel,
+        loader: LoaderUnify?,
         retryIcon: ImageUnify?
     ) {
-        viewModel.getImageWithId(
-            imageId = element.imageId,
-            channelId = channelId,
-            onImageReady = { imageFile ->
-                activity?.runOnUiThread {
-                    loader?.hide()
-                    imageFile?.let {
-                        imageView.loadImage(it.toUri())
-                        element.updateImageData(imagePath = it.absolutePath, status = true)
-                    }
-                    element.updateShouldRetry(false)
-                }
-            },
-            onError = {
-                activity?.runOnUiThread {
-                    loader?.hide()
-                    retryIcon?.show()
-                    element.updateShouldRetry(true)
-                }
-            }
-        )
+        loader?.hide()
+        retryIcon?.hide()
+        element.updateShouldRetry(false)
     }
 
     override fun onClickImage(element: TokoChatImageBubbleUiModel) {

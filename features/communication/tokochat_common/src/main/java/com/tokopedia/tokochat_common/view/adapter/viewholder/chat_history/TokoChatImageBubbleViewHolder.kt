@@ -34,14 +34,15 @@ class TokoChatImageBubbleViewHolder(
         bindOnClick(element)
     }
 
-    private fun bindImage(element: TokoChatImageBubbleUiModel) {
+    private fun bindImage(element: TokoChatImageBubbleUiModel, isFromRetry: Boolean = false) {
         binding?.tokochatIconImageBubbleError?.hide()
         binding?.tokochatImageBubble?.let {
             tokoChatImageAttachmentListener.loadImage(
                 it,
                 element,
                 binding?.tokochatLoaderImageBubble,
-                binding?.tokochatIconImageBubbleError
+                binding?.tokochatIconImageBubbleError,
+                isFromRetry
             )
         }
     }
@@ -83,7 +84,7 @@ class TokoChatImageBubbleViewHolder(
             }
         }
         binding?.tokochatIconImageBubbleError?.setOnClickListener {
-            bindImage(element)
+            bindImage(element, isFromRetry = true)
         }
     }
 

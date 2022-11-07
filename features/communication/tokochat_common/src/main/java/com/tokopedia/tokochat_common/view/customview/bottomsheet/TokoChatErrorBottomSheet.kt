@@ -56,7 +56,9 @@ class TokoChatErrorBottomSheet: BottomSheetUnify() {
     }
 
     fun dismissBottomSheet() {
-        this.dismissAllowingStateLoss()
+        view?.post {
+            this.dismiss()
+        }
     }
 
     fun setButtonAction(buttonAction: () -> Unit) {
