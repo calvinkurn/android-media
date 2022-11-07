@@ -66,10 +66,10 @@ object ChatbotNewRelicLogger {
             Math.min(message.length, MAX_LENGTH_FOR_NR_EXCEPTION)
         )).toString()
 
-        map["type"] = "socket"
+        map["type"] = KEY_CHATBOT_SOCKET_EXCEPTION
         map["success"] = "false"
         map["exception"] = messageContent
-        ServerLogger.log(Priority.P2, KEY_CHATBOT_SOCKET_EXCEPTION, map)
+        ServerLogger.log(Priority.P2, ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR, map)
     }
 
 
