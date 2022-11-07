@@ -29,6 +29,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -66,6 +67,8 @@ class PlayPinnedProductAnalyticTest {
 
     private val mockUserSession = mockk<UserSessionInterface>(relaxed = true)
 
+    private val socket: PlayWebSocket = mockk(relaxed = true)
+
     init {
         coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
             channelData = listOf(
@@ -101,7 +104,7 @@ class PlayPinnedProductAnalyticTest {
                     )
                 )
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
         )
     }

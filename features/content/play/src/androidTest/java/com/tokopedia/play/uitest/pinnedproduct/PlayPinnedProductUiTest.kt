@@ -20,6 +20,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.test.application.annotations.UiTest
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -44,6 +45,8 @@ class PlayPinnedProductUiTest {
     private val uiModelBuilder = UiModelBuilder.get()
 
     private val channelId = "12669"
+
+    private val socket: PlayWebSocket = mockk(relaxed = true)
 
     init {
         coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
@@ -70,7 +73,7 @@ class PlayPinnedProductUiTest {
             DaggerPlayTestComponent.builder()
                 .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
         )
     }

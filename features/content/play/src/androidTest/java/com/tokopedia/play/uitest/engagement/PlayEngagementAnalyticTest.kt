@@ -125,7 +125,7 @@ class PlayEngagementAnalyticTest {
             DaggerPlayTestComponent.builder()
                 .playTestModule(PlayTestModule(targetContext, userSession = {mockUserSession}, remoteConfig = mockRemoteConfig))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
         )
     }

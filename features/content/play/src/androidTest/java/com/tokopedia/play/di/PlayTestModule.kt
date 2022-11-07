@@ -152,17 +152,6 @@ class PlayTestModule(
     }
 
     @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
-        return PlayWebSocketImpl(
-            OkHttpClient.Builder(),
-            userSession,
-            dispatchers,
-            mContext,
-            localCacheHandler,
-        )
-    }
-
-    @Provides
     @Nullable
     fun provideCastContext(@ApplicationContext context: Context): CastContext? = PlayCastHelper.getCastContext(context)
 
