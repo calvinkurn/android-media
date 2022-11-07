@@ -149,10 +149,6 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
 
     private fun onTransitionStarted(ringingAnimation: ObjectAnimator) = if (hasBeenSelected) ringingAnimation.start() else ringingAnimation.reverse()
 
-    private fun onTransitionCompleted() {
-        hasBeenSelected = !hasBeenSelected
-    }
-
     fun setValue(isSelected: Boolean) {
         hasBeenSelected = isSelected
         if (hasBeenSelected) {
