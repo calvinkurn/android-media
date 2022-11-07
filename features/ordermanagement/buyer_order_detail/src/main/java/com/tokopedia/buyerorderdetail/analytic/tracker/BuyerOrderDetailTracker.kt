@@ -312,12 +312,13 @@ object BuyerOrderDetailTracker {
 
     fun sendClickOnResolutionWidgetEvent(orderStatusCode: String, orderId: String) {
         val eventLabel = "$orderStatusCode - $orderId"
+        val trackerId = "38355"
         Tracker.Builder()
             .setEvent(BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG)
             .setEventAction(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_RESOLUTION_WIDGET)
             .setEventCategory(BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP)
             .setEventLabel(eventLabel)
-            .setCustomProperty(BuyerOrderDetailTrackerConstant.EVENT_KEY_TRACKER_ID, "38355")
+            .setCustomProperty(BuyerOrderDetailTrackerConstant.EVENT_KEY_TRACKER_ID, trackerId)
             .setBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
             .setCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .build()
