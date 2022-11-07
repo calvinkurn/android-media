@@ -122,6 +122,7 @@ data class ComponentData(
     val catalogBottomSheet: ProductDetailInfoSeeMoreData? = null,
     @SerializedName("bottomsheet")
     val bottomSheet: ProductDetailInfoSeeMoreData = ProductDetailInfoSeeMoreData(),
+    // endregion
 
     /**
      * Additional Value for
