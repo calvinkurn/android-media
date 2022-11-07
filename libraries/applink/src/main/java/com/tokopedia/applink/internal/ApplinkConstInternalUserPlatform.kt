@@ -240,6 +240,12 @@ object ApplinkConstInternalUserPlatform {
     const val ADD_PHONE = "${NEW_INTERNAL_USER}/add-phone"
 
     /**
+     * NewAddPhoneActivity
+     * @Applink : tokopedia-android-internal://user/new-add-phone
+     **/
+    const val NEW_ADD_PHONE = "$NEW_INTERNAL_USER/new-add-phone"
+
+    /**
      * AddPhoneActivity
      * @Applink : tokopedia-android-internal://user/add-phone?phone={phone-number}
      **/
@@ -327,5 +333,25 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val REDEFINE_REGISTER_EMAIL = "$NEW_INTERNAL_USER/redefine-register-email"
     const val PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE = "register_required_input_phone"
+
+    /**
+     * ConsentWithdrawalActivity
+     * @Applink : tokopedia-android-internal://user/consent/withdrawal?groupId={groupId}
+     * @param : [GROUP_ID] data type Int
+     * */
+    const val GROUP_ID = "groupId"
+    const val CONSENT_WITHDRAWAL = "$NEW_INTERNAL_USER/consent/withdrawal?$GROUP_ID={groupId}"
+
+    /**
+     * com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
+     * @Applink : tokopedia-android-internal://user/push-notification-troubleshooter
+     **/
+    const val PUSH_NOTIFICATION_TROUBLESHOOTER = "$NEW_INTERNAL_USER/push-notification-troubleshooter"
+
+    /**
+     * com.tokopedia.telephony_masking.view.TelephonyActivity
+     * @Applink : tokopedia-android-internal://user/telephony-masking
+     **/
+    const val TELEPHONY_MASKING = "$NEW_INTERNAL_USER/telephony-masking"
 
 }

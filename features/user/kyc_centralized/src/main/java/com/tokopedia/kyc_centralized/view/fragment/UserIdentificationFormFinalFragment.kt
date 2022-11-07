@@ -57,6 +57,7 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationFinalBinding
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -192,33 +193,34 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun sendErrorTimberLog(throwable: Throwable) {
         Timber.w(throwable, "$LIVENESS_TAG: LIVENESS_UPLOAD_RESULT")
         if (!isKycSelfie) {
-            ServerLogger.log(Priority.P2, "LIVENESS_UPLOAD_RESULT", mapOf("type" to "ErrorUpload",
-                    "ktpPath" to stepperModel?.ktpFile.orEmpty(),
-                    "facePath" to stepperModel?.faceFile.orEmpty(),
-                    "tkpdProjectId" to projectId.toString(),
-                    "stack_trace" to throwable.toString()
-            ))
+            KycServerLogger.livenessUploadResult(
+                "ErrorUpload",
+                stepperModel?.ktpFile.orEmpty(),
+                stepperModel?.faceFile.orEmpty(),
+                projectId.toString(),
+                throwable
+            )
         } else {
-            ServerLogger.log(Priority.P2, "SELFIE_UPLOAD_RESULT",
-                    mapOf("type" to "ErrorUpload",
-                            "ktpPath" to stepperModel?.ktpFile.orEmpty(),
-                            "facePath" to stepperModel?.faceFile.orEmpty(),
-                            "tkpdProjectId" to projectId.toString(),
-                            "stack_trace" to throwable.toString()
-                    ))
+            KycServerLogger.selfieUploadResult(
+                "ErrorUpload",
+                stepperModel?.ktpFile.orEmpty(),
+                stepperModel?.faceFile.orEmpty(),
+                projectId.toString(),
+                throwable
+            )
             analytics?.eventClickUploadPhotosTradeIn("failed")
         }
     }
 
     private fun sendSuccessTimberLog() {
         analytics?.eventClickUploadPhotosTradeIn("success")
-        ServerLogger.log(Priority.P2, "KYC_UPLOAD_RESULT",
-                mapOf(
-                        "type" to "SuccessUpload",
-                        "method" to if (isKycSelfie) "selfie" else "liveness",
-                        "ktpPath" to stepperModel?.ktpFile.orEmpty(),
-                        "facePath" to stepperModel?.faceFile.orEmpty(),
-                        "tkpdProjectId" to projectId.toString())
+
+        KycServerLogger.kyUploadResult(
+            "SuccessUpload",
+            stepperModel?.ktpFile.orEmpty(),
+            stepperModel?.faceFile.orEmpty(),
+            projectId.toString(),
+            isKycSelfie
         )
     }
 

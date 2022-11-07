@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.quickedit.variant.presentation.viewmodel
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.data.createGetVariantResponse
@@ -46,7 +47,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
             createProductVariant(name = "Hijau | S", combination = listOf(1, 0))
         )
-        val expectedResult = GetVariantResult(productName, productVariants, selections, emptyList())
+        val expectedResult = GetVariantResult(productName, Int.ZERO, productVariants, selections, emptyList())
 
         viewModel.getProductVariantsResult
             .verifyValueEquals(expectedResult)
