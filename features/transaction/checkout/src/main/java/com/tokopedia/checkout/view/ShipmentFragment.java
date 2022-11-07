@@ -3664,17 +3664,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
-//        if (!uploadPrescriptionUiModel.getConsultationFlow()) {
-//            if (uploadPrescriptionUiModel.getCheckoutId() != null) {
-//                ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.getCheckoutId());
-//                Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
-//                uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
-//                startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
-//            }
-//        } else {
+        if (!uploadPrescriptionUiModel.getConsultationFlow()) {
+            if (uploadPrescriptionUiModel.getCheckoutId() != null) {
+                ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.getCheckoutId());
+                Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
+                uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
+                startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
+            }
+        } else {
             Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
             startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION);
-//        }
+        }
     }
 
     private void onUploadPrescriptionResult(Intent data, boolean isApi) {
@@ -3695,48 +3695,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onMiniConsultationResult(Intent data) {
         ArrayList<EPharmacyMiniConsultationResult> results = new ArrayList<>();
-//        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product p = new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
-//                false, 0.0, "", 2150389388L,
-//                "",
-//                "",
-//                1
-//        );
-//        ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product> ap = new ArrayList<>();
-//        ap.add(p);
-//        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo s = new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
-//                "",
-//                ap,
-//                "6554231",
-//                "",
-//                "",
-//                "",
-//                ""
-//                );
-//        ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo> as = new ArrayList<>();
-//        as.add(s);
-//        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription p1 = new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription(
-//                "",
-//                "",
-//                ""
-//        );
-//        EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription p2 = new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription(
-//                "",
-//                "",
-//                ""
-//        );
-//        ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription> app = new ArrayList<>();
-//        app.add(p1);
-//        app.add(p2);
-//        results.add(new EPharmacyMiniConsultationResult(
-//                "123",
-//                as,
-//                2,
-//                "{\"toko_consultation_id\":\"123\",\"partner_consultation_id\":\"456\"}",
-//                app,
-//                "456",
-//                "123",
-//                null
-//        ));
         shipmentPresenter.setMiniConsultationResult(results);
     }
 

@@ -10,8 +10,10 @@ import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
@@ -238,10 +240,10 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 GroupData.EpharmacyGroup(
                                     epharmacyGroupId = "123",
                                     shopInfo = listOf(
-                                        GroupData.EpharmacyGroup.ProductsInfo(
+                                        ProductsInfo(
                                             shopId = "6554231",
                                             products = listOf(
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389388,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -249,7 +251,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -257,7 +258,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                             shopLogoUrl = "",
                                             shopName = "",
                                             shopType = "",
-                                            orderName = null
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -275,7 +275,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    cta = null
                                 )
                             ),
                             attachmentPageTickerText = null
@@ -326,10 +325,10 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 GroupData.EpharmacyGroup(
                                     epharmacyGroupId = "123",
                                     shopInfo = listOf(
-                                        GroupData.EpharmacyGroup.ProductsInfo(
+                                        ProductsInfo(
                                             shopId = "6554231",
                                             products = listOf(
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389388,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -337,9 +336,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 ),
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389389,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -347,7 +345,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -355,7 +352,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                             shopLogoUrl = "",
                                             shopName = "",
                                             shopType = "",
-                                            orderName = null
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -384,7 +380,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    cta = null
                                 )
                             ),
                             attachmentPageTickerText = null
@@ -472,10 +467,10 @@ class ShipmentPresenterPrescriptionIdsTest {
                                 GroupData.EpharmacyGroup(
                                     epharmacyGroupId = "123",
                                     shopInfo = listOf(
-                                        GroupData.EpharmacyGroup.ProductsInfo(
+                                        ProductsInfo(
                                             shopId = "6554231",
                                             products = listOf(
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389389,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -483,9 +478,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 ),
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389388,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -493,7 +487,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -501,12 +494,11 @@ class ShipmentPresenterPrescriptionIdsTest {
                                             shopLogoUrl = "",
                                             shopName = "",
                                             shopType = "",
-                                            orderName = null
                                         ),
-                                        GroupData.EpharmacyGroup.ProductsInfo(
+                                        ProductsInfo(
                                             shopId = "6554234",
                                             products = listOf(
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389382,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -514,7 +506,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -522,7 +513,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                             shopLogoUrl = "",
                                             shopName = "",
                                             shopType = "",
-                                            orderName = null
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -551,15 +541,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    cta = null
                                 ),
                                 GroupData.EpharmacyGroup(
                                     epharmacyGroupId = "124",
                                     shopInfo = listOf(
-                                        GroupData.EpharmacyGroup.ProductsInfo(
+                                        ProductsInfo(
                                             shopId = "6554231",
                                             products = listOf(
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389387,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -567,9 +556,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 ),
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389386,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -577,7 +565,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -585,7 +572,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                             shopLogoUrl = "",
                                             shopName = "",
                                             shopType = "",
-                                            orderName = null
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -616,15 +602,14 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    cta = null
                                 ),
                                 GroupData.EpharmacyGroup(
                                     epharmacyGroupId = "125",
                                     shopInfo = listOf(
-                                        GroupData.EpharmacyGroup.ProductsInfo(
+                                        ProductsInfo(
                                             shopId = "6554232",
                                             products = listOf(
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389384,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -632,9 +617,8 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 ),
-                                                GroupData.EpharmacyGroup.ProductsInfo.Product(
+                                                ProductsInfo.Product(
                                                     productId = 2150389385,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
@@ -642,7 +626,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
                                                     quantity = 1,
-                                                    quantityString = "1"
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -650,7 +633,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                             shopLogoUrl = "",
                                             shopName = "",
                                             shopType = "",
-                                            orderName = null
                                         )
                                     ),
                                     numberPrescriptionImages = 0,
@@ -668,7 +650,6 @@ class ShipmentPresenterPrescriptionIdsTest {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    cta = null
                                 )
                             ),
                             attachmentPageTickerText = null
@@ -737,6 +718,444 @@ class ShipmentPresenterPrescriptionIdsTest {
 
         // When
         presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                hasInvalidPrescription = true,
+                uploadedImageCount = 4
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+        assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
+        assertEquals("qwerty", presenter.shipmentCartItemModelList[0].consultationDataString)
+        assertEquals("123", presenter.shipmentCartItemModelList[0].tokoConsultationId)
+        assertEquals("321", presenter.shipmentCartItemModelList[0].partnerConsultationId)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[0].prescriptionIds)
+
+        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
+        assertEquals("", presenter.shipmentCartItemModelList[1].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList[1].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList[1].partnerConsultationId)
+        assertEquals(listOf("1", "2"), presenter.shipmentCartItemModelList[1].prescriptionIds)
+
+        assertEquals(true, presenter.shipmentCartItemModelList[2].isError)
+        assertEquals("", presenter.shipmentCartItemModelList[2].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList[2].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList[2].partnerConsultationId)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[2].prescriptionIds)
+
+        assertEquals(false, presenter.shipmentCartItemModelList[3].isError)
+        assertEquals("", presenter.shipmentCartItemModelList[3].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList[3].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList[3].partnerConsultationId)
+        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[3].prescriptionIds)
+    }
+
+    @Test
+    fun `GIVEN approved consultation WHEN set mini consultation result THEN should set correct data`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        val results = arrayListOf(
+            EPharmacyMiniConsultationResult(
+                "123",
+                arrayListOf(
+                    ProductsInfo(
+                        "",
+                        arrayListOf(
+                            ProductsInfo.Product(
+                                false,
+                                0.0,
+                                "",
+                                2150389388,
+                                "",
+                                "",
+                                1
+                            )
+                        ),
+                        "6554231",
+                        "",
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                2,
+                "qwerty",
+                arrayListOf(
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
+                        "",
+                        ""
+                    ),
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                "321",
+                "123",
+                null
+            )
+        )
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389388
+                    ),
+                    CartItemModel(
+                        productId = 2150389389
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389387
+                    ),
+                    CartItemModel(
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389385
+                    ),
+                    CartItemModel(
+                        productId = 2150389384
+                    )
+                )
+            )
+        )
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+
+        // When
+        presenter.setMiniConsultationResult(results)
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                hasInvalidPrescription = false,
+                uploadedImageCount = 2
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+        assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
+        assertEquals("qwerty", presenter.shipmentCartItemModelList[0].consultationDataString)
+        assertEquals("123", presenter.shipmentCartItemModelList[0].tokoConsultationId)
+        assertEquals("321", presenter.shipmentCartItemModelList[0].partnerConsultationId)
+
+        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
+        assertEquals("", presenter.shipmentCartItemModelList[1].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList[1].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList[1].partnerConsultationId)
+
+        assertEquals(false, presenter.shipmentCartItemModelList[2].isError)
+        assertEquals("", presenter.shipmentCartItemModelList[2].consultationDataString)
+        assertEquals("", presenter.shipmentCartItemModelList[2].tokoConsultationId)
+        assertEquals("", presenter.shipmentCartItemModelList[2].partnerConsultationId)
+    }
+
+    @Test
+    fun `GIVEN rejected consultation WHEN set mini consultation result THEN should set error`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        val result = arrayListOf(
+            EPharmacyMiniConsultationResult(
+                epharmacyGroupId = "123",
+                shopInfo = listOf(
+                    ProductsInfo(
+                        shopId = "6554231",
+                        products = listOf(
+                            ProductsInfo.Product(
+                                productId = 2150389388,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            )
+                        ),
+                        partnerLogoUrl = "",
+                        shopLocation = "",
+                        shopLogoUrl = "",
+                        shopName = "",
+                        shopType = "",
+                    )
+                ),
+                prescriptionImages = listOf(),
+                consultationStatus = 4,
+                consultationString = "",
+                tokoConsultationId = "123",
+                partnerConsultationId = "321",
+                prescription = listOf(),
+            )
+        )
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389388
+                    )
+                ),
+                hasEthicalProducts = true
+            )
+        )
+        val rejectedWording = "rejectedWording"
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
+
+        // When
+        presenter.setMiniConsultationResult(result)
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                hasInvalidPrescription = true,
+                rejectedWording = rejectedWording
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+        assertEquals(true, presenter.shipmentCartItemModelList[0].isError)
+        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[0].errorTitle)
+    }
+
+    @Test
+    fun `GIVEN mixed epharmacy data WHEN set mini consultation result THEN should set epharmacy data correctly`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        val result = arrayListOf(
+            EPharmacyMiniConsultationResult(
+                epharmacyGroupId = "123",
+                shopInfo = listOf(
+                    ProductsInfo(
+                        shopId = "6554231",
+                        products = listOf(
+                            ProductsInfo.Product(
+                                productId = 2150389389,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            ),
+                            ProductsInfo.Product(
+                                productId = 2150389388,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            )
+                        ),
+                        partnerLogoUrl = "",
+                        shopLocation = "",
+                        shopLogoUrl = "",
+                        shopName = "",
+                        shopType = "",
+                    ),
+                    ProductsInfo(
+                        shopId = "6554234",
+                        products = listOf(
+                            ProductsInfo.Product(
+                                productId = 2150389382,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            )
+                        ),
+                        partnerLogoUrl = "",
+                        shopLocation = "",
+                        shopLogoUrl = "",
+                        shopName = "",
+                        shopType = "",
+                    )
+                ),
+                prescriptionImages = listOf(),
+                consultationString = "qwerty",
+                tokoConsultationId = "123",
+                partnerConsultationId = "321",
+                consultationStatus = 2,
+                prescription = listOf(
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        documentUrl = null,
+                        id = null,
+                        type = null
+                    ),
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        documentUrl = null,
+                        id = null,
+                        type = null
+                    )
+                ),
+            ),
+            EPharmacyMiniConsultationResult(
+                epharmacyGroupId = "124",
+                shopInfo = listOf(
+                    ProductsInfo(
+                        shopId = "6554231",
+                        products = listOf(
+                            ProductsInfo.Product(
+                                productId = 2150389387,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            ),
+                            ProductsInfo.Product(
+                                productId = 2150389386,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            )
+                        ),
+                        partnerLogoUrl = "",
+                        shopLocation = "",
+                        shopLogoUrl = "",
+                        shopName = "",
+                        shopType = "",
+                    )
+                ),
+                prescriptionImages = listOf(
+                    GroupData.EpharmacyGroup.PrescriptionImage(
+                        expiredAt = null,
+                        prescriptionId = "1",
+                        rejectReason = null,
+                        status = null
+                    ),
+                    GroupData.EpharmacyGroup.PrescriptionImage(
+                        expiredAt = null,
+                        prescriptionId = "2",
+                        rejectReason = null,
+                        status = null
+                    )
+                ),
+                consultationString = "",
+                tokoConsultationId = "",
+                partnerConsultationId = "",
+                consultationStatus = 0,
+                prescription = listOf(),
+            ),
+            EPharmacyMiniConsultationResult(
+                epharmacyGroupId = "125",
+                shopInfo = listOf(
+                    ProductsInfo(
+                        shopId = "6554232",
+                        products = listOf(
+                            ProductsInfo.Product(
+                                productId = 2150389384,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            ),
+                            ProductsInfo.Product(
+                                productId = 2150389385,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            )
+                        ),
+                        partnerLogoUrl = "",
+                        shopLocation = "",
+                        shopLogoUrl = "",
+                        shopName = "",
+                        shopType = "",
+                    )
+                ),
+                prescriptionImages = listOf(),
+                consultationString = "qwerty",
+                tokoConsultationId = "125",
+                partnerConsultationId = "521",
+                consultationStatus = 4,
+                prescription = listOf(),
+            ),
+        )
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389388
+                    ),
+                    CartItemModel(
+                        productId = 2150389389
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389387
+                    ),
+                    CartItemModel(
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389385
+                    ),
+                    CartItemModel(
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554233,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389383
+                    )
+                ),
+                hasEthicalProducts = false
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554234,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389382
+                    )
+                ),
+                hasEthicalProducts = false
+            )
+        )
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+
+        // When
+        presenter.setMiniConsultationResult(result)
 
         // Then
         assertEquals(
