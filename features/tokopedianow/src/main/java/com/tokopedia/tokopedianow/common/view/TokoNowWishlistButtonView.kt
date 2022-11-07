@@ -95,20 +95,16 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                     }
                     else{
                         changeStateToAddWishlist()
-                        try {
-                            it.data.wishlistAdd?.message?.let { it1 ->
-                                Toaster.build(rootView,
-                                    it1, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
-                                ).show()
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                        it.data.wishlistAdd?.message?.let { it1 ->
+                            Toaster.build(
+                                rootView,
+                                it1, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                            ).show()
                         }
                     }
                 }
                 is Fail ->{
                     changeStateToAddWishlist()
-                    it.throwable.message
                 }
             }
         })
@@ -129,7 +125,6 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                 }
                 is Fail ->{
                     changeStateToRemoveWishlist()
-                    it.throwable.message
                 }
             }
         })
@@ -147,11 +142,11 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         binding.root.transitionToEnd()
     }
 
+    private fun onTransitionStarted(ringingAnimation: ObjectAnimator) = if (hasBeenSelected) ringingAnimation.start() else ringingAnimation.reverse()
+
     fun setProductId(productId: String){
         this.productId = productId
     }
-
-    private fun onTransitionStarted(ringingAnimation: ObjectAnimator) = if (hasBeenSelected) ringingAnimation.start() else ringingAnimation.reverse()
 
     fun setValue(isSelected: Boolean) {
         hasBeenSelected = isSelected
