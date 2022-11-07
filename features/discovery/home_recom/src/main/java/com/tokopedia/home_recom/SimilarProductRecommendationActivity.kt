@@ -34,13 +34,15 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
     override fun getNewFragment(): Fragment? {
         return when {
             intent.hasExtra(EXTRA_REF) -> SimilarProductRecommendationFragment.newInstance(
-                    intent.getStringExtra(EXTRA_PRODUCT_ID) ?: "",
-                    intent.getStringExtra(EXTRA_REF) ?: "")
+                intent.getStringExtra(EXTRA_PRODUCT_ID) ?: "",
+                intent.getStringExtra(EXTRA_REF) ?: ""
+            )
             intent.data != null ->
                 SimilarProductRecommendationFragment.newInstance(
-                        productId = getProductIdFromData(),
-                        ref = getRefFromData(),
-                        internalRef = getInternalRefFromData())
+                    productId = getProductIdFromData(),
+                    ref = getRefFromData(),
+                    internalRef = getInternalRefFromData()
+                )
             else -> SimilarProductRecommendationFragment.newInstance("")
         }
     }
@@ -50,8 +52,12 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
     private fun getRefFromData() = intent.data?.getQueryParameter("ref") ?: ""
 
     private fun getProductIdFromData() =
-            if (isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0)
-                    ?: "" else ""
+        if (isNumber(intent.data?.pathSegments?.get(0) ?: "")) {
+            intent.data?.pathSegments?.get(0)
+                ?: ""
+        } else {
+            ""
+        }
 
     /**
      * Function [isNumber]
@@ -59,7 +65,7 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
      * @param text is string variable for checking this is number or not
      * @return boolean
      */
-    private fun isNumber(text: String): Boolean{
+    private fun isNumber(text: String): Boolean {
         return text.all { it in '0'..'9' }
     }
 
@@ -69,6 +75,7 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
      */
     override fun onPause() {
         super.onPause()
+        TrackingQueue(this).sendAll()
     }
 
     /**
@@ -77,7 +84,7 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
      * for a whole fragment it will show at this activity
      */
     override fun getComponent(): HomeRecommendationComponent = DaggerHomeRecommendationComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+        .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     /**
      * [onBackPressed] is override from [BaseSimpleActivity]

@@ -682,6 +682,7 @@ open class DynamicProductDetailFragment :
         super.onPause()
         trackVideoState()
         if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
             if (alreadyHitSwipeTracker != null) {
                 alreadyHitSwipeTracker = DynamicProductDetailAlreadyHit
             }
