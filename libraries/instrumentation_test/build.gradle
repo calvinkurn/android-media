@@ -87,6 +87,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
+    implementation projectOrAar(rootProject.ext.libraries.keys)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.constraintLayout

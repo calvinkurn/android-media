@@ -100,7 +100,21 @@ public class MyApplication extends BaseMainApplication
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
-            new Cassava.Builder(this).initialize();
+            new Cassava.Builder(this)
+                    .setRemoteValidator(new RemoteSpec() {
+                        @NonNull
+                        @Override
+                        public String getUrl() {
+                            return TokopediaUrl.getInstance().getAPI();
+                        }
+
+                        @NonNull
+                        @Override
+                        public String getToken() {
+                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                        }
+                    })
+                    .initialize();
         }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
