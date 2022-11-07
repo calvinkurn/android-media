@@ -8,8 +8,8 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemShopCouponBinding
-import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter.getDayDiffFromToday
 import com.tokopedia.play_common.util.extension.buildSpannedString
@@ -60,6 +60,10 @@ class MerchantVoucherNewViewHolder(
             if(item.isPrivate) listener.onCopyItemVoucherClicked(item)
             else listener.onVoucherItemClicked(item)
         }
+
+        binding.root.addImpressionListener(item.impressHolder) {
+            listener.onVouchersImpressed(item.id)
+        }
     }
 
     private fun countDays(expiredDate: String): Long {
@@ -77,5 +81,6 @@ class MerchantVoucherNewViewHolder(
     interface Listener {
         fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.Merchant)
         fun onVoucherItemClicked(voucher: PlayVoucherUiModel.Merchant)
+        fun onVouchersImpressed(voucherId: String)
     }
 }
