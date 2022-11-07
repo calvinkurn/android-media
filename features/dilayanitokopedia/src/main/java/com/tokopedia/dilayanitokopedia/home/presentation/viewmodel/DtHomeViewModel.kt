@@ -125,8 +125,8 @@ class DtHomeViewModel @Inject constructor(
     private fun dataMenuList(): MutableList<AnchorTabUiModel> {
         val anchorTabList = mutableListOf<AnchorTabUiModel>()
         anchorTabList.add(AnchorTabUiModel(0, "title 1", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "361"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 3", "", "362"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 3", "", "360"))
         anchorTabList.add(AnchorTabUiModel(0, "title 4", "", "363"))
         anchorTabList.add(AnchorTabUiModel(0, "title 5", "", ""))
 

@@ -1,96 +1,78 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dilayanitokopedia.databinding.DtItemAnchorTabsBinding
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
+import com.tokopedia.unifycomponents.CardUnify
 
 
-class DtAnchorTabAdapter(private val listener: ManageAddressItemAdapterListener) :
-    RecyclerView.Adapter<DtAnchorTabAdapter.ManageAddressViewHolder>() {
+class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
+    RecyclerView.Adapter<DtAnchorTabAdapter.DtAnchorTabViewHolder>() {
 
-    var addressList = mutableListOf<AnchorTabUiModel>()
+    var listMenu = mutableListOf<AnchorTabUiModel>()
 
-    //    private var selectedPos = RecyclerView.NO_POSITION
+    private var selectedMenu = 0
+
+    private var selectedPos = RecyclerView.NO_POSITION
     private var isItemClicked = false
 
-    interface ManageAddressItemAdapterListener {
-        fun onManageAddressEditClicked(peopleAddress: AnchorTabUiModel)
-
+    interface AnchorTabListener {
+        fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DtAnchorTabViewHolder {
         val binding = DtItemAnchorTabsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ManageAddressViewHolder(binding, listener)
+        return DtAnchorTabViewHolder(binding, listener)
     }
 
     override fun getItemCount(): Int {
-        return addressList.size
+        return listMenu.size
     }
 
-    override fun onBindViewHolder(holder: ManageAddressViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DtAnchorTabViewHolder, position: Int) {
         holder.itemView.isClickable = true
-        holder.bindData(addressList[position])
+        if (position == selectedMenu) {
+            holder.bindData(listMenu[position], true)
+        } else {
+            holder.bindData(listMenu[position], false)
+        }
+
     }
 
     fun updateList(data: List<AnchorTabUiModel>) {
-        addressList.addAll(data)
+        listMenu.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun selectMenu(selectedMenu: AnchorTabUiModel) {
+        this.selectedMenu = listMenu.indexOf(selectedMenu)
         notifyDataSetChanged()
     }
 
     fun clearData() {
 //        selectedPos = RecyclerView.NO_POSITION
-        addressList.clear()
+        listMenu.clear()
         notifyDataSetChanged()
     }
 
-    inner class ManageAddressViewHolder(
+    inner class DtAnchorTabViewHolder(
         private val binding: DtItemAnchorTabsBinding,
-        private val listener: ManageAddressItemAdapterListener
+        private val listener: AnchorTabListener
     ) : RecyclerView.ViewHolder(binding.root) {
 //        val assetMoreBtn = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_more_horiz)
 
-        fun bindData(data: AnchorTabUiModel) {
+        fun bindData(data: AnchorTabUiModel, isSelected: Boolean) {
 
 
             binding.anchorText.text = data.title
-//                val addressStreet = data.street
-//                val tokopediaNoteCondition = context.getString(R.string.tokopedia_note_delimeter)
-//                setVisibility(data)
-//                setPrimary(data)
-//                binding.addressName.text = data.addressName
-//                binding.receiverName.text = data.recipientName
-//                binding.receiverPhone.text = data.recipientPhoneNumber
-//                if (addressStreet.contains(tokopediaNoteCondition)) {
-//                    val tokopediaNote = tokopediaNoteCondition + addressStreet.substringAfterLast(tokopediaNoteCondition)
-//                    val newAddress = addressStreet.replace(tokopediaNote, "")
-//                    binding.tokopediaNote.visible()
-//                    binding.tokopediaNote.text = tokopediaNote
-//                    binding.addressDetail.text = newAddress
-//                } else {
-//                    binding.tokopediaNote.gone()
-//                    binding.addressDetail.text = data.street
-//                }
-//                val bitmap = assetMoreBtn?.toBitmap()
-//                val d: Drawable =
-//                    BitmapDrawable(resources, bitmap?.let { Bitmap.createScaledBitmap(it, 80.toDp(), 80.toDp(), true) })
-//                binding.btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
-//
-//                val cardSelected: Boolean
-//                if (data.isStateChosenAddress && !isItemClicked) {
-//                    cardSelected = true
-//                    selectedPos = layoutPosition
-//                } else {
-//                    cardSelected = selectedPos == layoutPosition
-//                }
-//                binding.cardAddress.hasCheckIcon = cardSelected
-//                if (cardSelected) {
-//                    binding.cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
-//                } else {
-//                    binding.cardAddress.cardType = CardUnify.TYPE_BORDER
-//                }
-//                setListener(itemView, data)
+
+
+
+            cardSelection(isSelected)
+            setListener(data)
         }
 
 //        private fun setPrimary(peopleAddress: AnchorTabUiModel) {
@@ -103,7 +85,7 @@ class DtAnchorTabAdapter(private val listener: ManageAddressItemAdapterListener)
 //            }
 //        }
 
-//        private fun setVisibility(peopleAddress: AnchorTabUiModel) {
+        //        private fun setVisibility(peopleAddress: AnchorTabUiModel) {
 //            if (peopleAddress.latitude.isNullOrEmpty() || peopleAddress.longitude.isNullOrEmpty() ||
 //                peopleAddress.latitude == "0.0" || peopleAddress.longitude == "0.0"
 //            ) {
@@ -117,20 +99,18 @@ class DtAnchorTabAdapter(private val listener: ManageAddressItemAdapterListener)
 //            }
 //        }
 //
-//        private fun setListener(itemView: View, peopleAddress: AnchorTabUiModel) {
-//            binding.btnPrimary.setOnClickListener {
-//                listener.onManageAddressEditClicked(peopleAddress)
-//            }
-//            binding.btnSecondary.setOnClickListener {
-//                listener.onManageAddressLainnyaClicked(peopleAddress)
-//            }
-//            binding.cardAddress.setOnClickListener {
-//                isItemClicked = true
-//                notifyItemChanged(selectedPos)
-//                selectedPos = layoutPosition
-//                notifyItemChanged(layoutPosition)
-//                listener.onAddressItemSelected(peopleAddress)
-//            }
-//        }
+        private fun setListener( anchorTabUiModel: AnchorTabUiModel) {
+            binding.root.setOnClickListener {
+                listener.onMenuSelected(anchorTabUiModel)
+            }
+        }
+
+        private fun cardSelection(isSelected: Boolean) {
+            if (isSelected) {
+                binding.anchorCard.cardType = CardUnify.TYPE_BORDER_ACTIVE
+            } else {
+                binding.anchorCard.cardType = CardUnify.TYPE_SHADOW
+            }
+        }
     }
 }

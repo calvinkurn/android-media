@@ -185,9 +185,12 @@ class DtHomeFragment : Fragment() {
         binding?.headerCompHolder?.adapter = anchorTabAdapter
     }
 
-    private fun anchorTabListener(): DtAnchorTabAdapter.ManageAddressItemAdapterListener {
-        return object : DtAnchorTabAdapter.ManageAddressItemAdapterListener {
-            override fun onManageAddressEditClicked(peopleAddress: AnchorTabUiModel) {
+    private fun anchorTabListener(): DtAnchorTabAdapter.AnchorTabListener {
+        return object : DtAnchorTabAdapter.AnchorTabListener {
+
+            override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel) {
+                anchorTabAdapter?.selectMenu(anchorTabUiModel)
+               val a = ""
             }
         }
 
