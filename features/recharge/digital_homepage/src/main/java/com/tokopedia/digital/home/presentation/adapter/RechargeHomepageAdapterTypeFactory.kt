@@ -16,6 +16,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointWidget
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
@@ -40,6 +41,7 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageFavoriteViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLegoBannerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLoadingViewholder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageMyBillsEntryPointWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageMyBillsWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageOfferingWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductBannerViewHolder
@@ -157,6 +159,9 @@ class RechargeHomepageAdapterTypeFactory(
 
     fun type(myBillsWidget: RechargeHomepageMyBillsWidgetModel): Int =
         RechargeHomepageMyBillsWidgetViewHolder.LAYOUT
+
+    fun type(myBillsEntryPointWidget: RechargeHomepageMyBillsEntryPointWidget): Int =
+        RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return RechargeHomepageLegoBannerViewHolder.LAYOUT
@@ -326,6 +331,7 @@ class RechargeHomepageAdapterTypeFactory(
                 listener
             )
             RechargeHomepageMyBillsWidgetViewHolder.LAYOUT -> RechargeHomepageMyBillsWidgetViewHolder(parent)
+            RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT -> RechargeHomepageMyBillsEntryPointWidgetViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

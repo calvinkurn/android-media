@@ -672,3 +672,20 @@ class RechargeHomepageMyBillsWidgetModel(val section: RechargeHomepageSections.S
         }
     }
 }
+
+class RechargeHomepageMyBillsEntryPointWidget(val section: RechargeHomepageSections.Section)
+    : RechargeHomepageSectionModel {
+
+    override fun visitableId(): String = section.id
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageMyBillsEntryPointWidget) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}
