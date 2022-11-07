@@ -160,18 +160,6 @@ object HomeLayoutMapper {
     }
 
 
-    /**
-     * Mapping layout list to list menu
-     */
-    fun MutableList<HomeLayoutItemUiModel>.mapMenuList(): List<AnchorTabUiModel> {
-        val listMenu = this.mapIndexed { index, homeLayoutItemUiModel ->
 
-            AnchorTabUiModel(index, "title ${homeLayoutItemUiModel.layout}", "")
-        }
-
-
-        return listMenu
-
-    }
 
 }

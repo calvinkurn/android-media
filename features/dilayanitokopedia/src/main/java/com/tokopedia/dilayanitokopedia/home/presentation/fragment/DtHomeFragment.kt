@@ -451,9 +451,7 @@ class DtHomeFragment : Fragment() {
     }
 
     private fun updateAnchorTab(data: List<AnchorTabUiModel>) {
-
         anchorTabAdapter?.updateList(data)
-
     }
 
     private fun observeLiveData() {

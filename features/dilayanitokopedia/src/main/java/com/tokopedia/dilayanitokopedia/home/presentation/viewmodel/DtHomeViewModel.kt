@@ -9,9 +9,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.common.util.PageInfo
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.AnchorTabMapper.mapMenuList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapMenuList
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetHomeLayoutDataUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
