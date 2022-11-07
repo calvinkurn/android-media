@@ -8,7 +8,8 @@ import com.tokopedia.home_component.model.TrackingAttributionModel.Companion.CAM
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.ATTRIBUTION
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_ON_BANNER
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_VIEW_ALL_CARD_ON
-import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_VIEW_ALL_ON
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_VIEW_ALL_CARD_ON_BANNER
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_VIEW_ALL_ON_BANNER
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_DASH_FOUR_VALUES
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_DASH_THREE_VALUES
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_IMPRESSION_ON_BANNER
@@ -132,7 +133,7 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
         trackerBuilder.constructBasicGeneralClick(
             event = CLICK_HOMEPAGE,
             eventCategory = OS_MICROSITE_SINGLE,
-            eventAction = FORMAT_CLICK_VIEW_ALL_ON.format(VALUE_FEATURE_CAMPAIGN),
+            eventAction = FORMAT_CLICK_VIEW_ALL_ON_BANNER.format(VALUE_FEATURE_CAMPAIGN),
             eventLabel = FORMAT_DASH_FOUR_VALUES.format(
                 VALUE_FEATURE_CAMPAIGN, channelModel.id, channelModel.channelHeader.name, categoryName
             ))
@@ -148,7 +149,7 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
         trackerBuilder.constructBasicGeneralClick(
             event = CLICK_HOMEPAGE,
             eventCategory = OS_MICROSITE_SINGLE,
-            eventAction = FORMAT_CLICK_VIEW_ALL_CARD_ON.format(VALUE_FEATURE_CAMPAIGN),
+            eventAction = FORMAT_CLICK_VIEW_ALL_CARD_ON_BANNER.format(VALUE_FEATURE_CAMPAIGN),
             eventLabel = FORMAT_DASH_FOUR_VALUES.format(
                 VALUE_FEATURE_CAMPAIGN, channelModel.id, channelModel.channelHeader.name, categoryName
             ))

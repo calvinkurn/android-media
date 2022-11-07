@@ -77,8 +77,9 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         const val FORMAT_CLICK_PRODUCT = "click product - %s"
         const val FORMAT_CLICK_VIEW_ALL = "click view all - %s"
         const val FORMAT_CLICK_VIEW_ALL_ON = "click view all on %s"
-        const val FORMAT_CLICK_VIEW_ALL_CARD_ON_BANNER = "click view all card on banner %s"
+        const val FORMAT_CLICK_VIEW_ALL_ON_BANNER = "click view all on banner %s"
         const val FORMAT_CLICK_VIEW_ALL_CARD_ON = "click view all card on %s"
+        const val FORMAT_CLICK_VIEW_ALL_CARD_ON_BANNER = "click view all card on banner %s"
         const val FORMAT_CLICK_BUTTON_ON = "click button on %s"
 
         private const val VALUE_TRACKER_ID_CLICK_CATEGORY = "4660"
@@ -768,7 +769,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             else -> ""
         }
         val eventLabel = FORMAT_DASH_FOUR_VALUES.format(valueDynamicMix, channel.id, channel.channelHeader.name, categoryName)
-        val eventActionValue = FORMAT_CLICK_VIEW_ALL_CARD_ON_BANNER.format(valueDynamicMix)
+        val eventActionValue = FORMAT_CLICK_VIEW_ALL_CARD_ON.format(valueDynamicMix)
         getTracker().sendGeneralEvent(DataLayer.mapOf(
             Event.KEY, CLICK_HOMEPAGE,
             Category.KEY, OS_MICROSITE_SINGLE,

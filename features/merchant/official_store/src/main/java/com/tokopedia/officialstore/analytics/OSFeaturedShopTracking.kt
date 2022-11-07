@@ -5,9 +5,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_CLICK_BANNER
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_DASH_FIVE_VALUES
-import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_DASH_THREE_VALUES
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_IMPRESSION_BANNER
-import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_ITEM_NAME
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_ITEM_NAME_FOUR_VALUES
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.FORMAT_UNDERSCORE_THREE_VALUES
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking.Companion.OS_MICROSITE_SINGLE
@@ -63,7 +61,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
                 eventAction = FORMAT_IMPRESSION_BANNER.format(VALUE_FEATURED_SHOP),
                 eventCategory = OS_MICROSITE_SINGLE,
                 eventLabel = FORMAT_DASH_FIVE_VALUES.format(
-                    VALUE_FEATURED_SHOP, channel.id, channel.channelHeader.id,
+                    VALUE_FEATURED_SHOP, channel.id, channel.channelHeader.name,
                     grid.shop.id, categoryName),
                 promotions = listOf(
                     Promotion(
