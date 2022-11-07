@@ -6,5 +6,5 @@ class EpharmacyConsultationInfoResponse(
     @SerializedName("ticker_text")
     val tickerText: String = "",
     @SerializedName("icon_url")
-    val iconUrl: String = "",
+    val iconUrl: String = ""
 )

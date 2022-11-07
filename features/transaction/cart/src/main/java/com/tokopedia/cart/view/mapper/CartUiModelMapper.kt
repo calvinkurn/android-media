@@ -141,7 +141,11 @@ object CartUiModelMapper {
                 shopName = availableGroup.shop.shopName
                 isFulfillment = availableGroup.isFulfillment
                 fulfillmentName =
-                    if (availableGroup.isFulfillment) cartData.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
+                    if (availableGroup.isFulfillment) {
+                        cartData.tokoCabangInfo.message
+                    } else {
+                        availableGroup.shipmentInformation.shopLocation
+                    }
                 fulfillmentBadgeUrl = cartData.tokoCabangInfo.badgeUrl
                 estimatedTimeArrival = availableGroup.shipmentInformation.estimation
                 isShowPin = availableGroup.pinned.isPinned
@@ -183,7 +187,8 @@ object CartUiModelMapper {
                 warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero()
                 isPo = availableGroup.shipmentInformation.preorder.isPreorder
                 poDuration =
-                    availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
+                    availableGroup.cartDetails.getOrNull(0)
+                        ?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
                         ?: "0"
                 boCode =
                     cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
@@ -216,7 +221,8 @@ object CartUiModelMapper {
         }
     }
 
-    private fun mapShopShipment(shopShipments: List<ShopShipment>): List<com.tokopedia.logisticcart.shipping.model.ShopShipment> {
+    private fun mapShopShipment(shopShipments: List<ShopShipment>):
+        List<com.tokopedia.logisticcart.shipping.model.ShopShipment> {
         return shopShipments.map { shipment ->
             com.tokopedia.logisticcart.shipping.model.ShopShipment(
                 shipId = shipment.shipId,
@@ -277,7 +283,9 @@ object CartUiModelMapper {
                             break@loop
                         } else {
                             innerLoop@ for (cartDetail in unavailableGroup.cartDetails) {
-                                if ((cartDetail.bundleDetail.bundleId.isBlank() || cartDetail.bundleDetail.bundleId == "0") && cartDetail.products.size > 1) {
+                                if ((cartDetail.bundleDetail.bundleId.isBlank() || cartDetail.bundleDetail.bundleId == "0") &&
+                                    cartDetail.products.size > 1
+                                ) {
                                     showAccordion = true
                                     break@loop
                                 }
@@ -307,7 +315,11 @@ object CartUiModelMapper {
                     shopName = unavailableGroup.shop.shopName
                     isFulfillment = unavailableGroup.isFulfillment
                     fulfillmentName =
-                        if (unavailableGroup.isFulfillment) cartData.tokoCabangInfo.message else unavailableGroup.shipmentInformation.shopLocation
+                        if (unavailableGroup.isFulfillment) {
+                            cartData.tokoCabangInfo.message
+                        } else {
+                            unavailableGroup.shipmentInformation.shopLocation
+                        }
                     fulfillmentBadgeUrl = cartData.tokoCabangInfo.badgeUrl
                     estimatedTimeArrival = unavailableGroup.shipmentInformation.estimation
                     isShowPin = false
@@ -326,14 +338,15 @@ object CartUiModelMapper {
                     shopTypeInfo = unavailableGroup.shop.shopTypeInfo
                     isAllSelected = false
                     isPartialSelected = false
-                    isCollapsible =
-                        isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
+                    isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 &&
+                        productUiModelList.size > 1
                     isCollapsed = isCollapsible
                     isError = true
                     warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()
                     isPo = unavailableGroup.shipmentInformation.preorder.isPreorder
                     poDuration =
-                        unavailableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
+                        unavailableGroup.cartDetails.getOrNull(0)
+                            ?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString()
                             ?: "0"
                 }
                 unavailableSectionList.add(shopUiModel)
@@ -440,9 +453,13 @@ object CartUiModelMapper {
             productSlashPriceLabel = product.slashPriceLabel
             productQtyLeft = product.productWarningMessage
             variant =
-                if (product.variantDescriptionDetail.variantNames.isNotEmpty()) product.variantDescriptionDetail.variantNames.joinToString(
-                    ", "
-                ) else ""
+                if (product.variantDescriptionDetail.variantNames.isNotEmpty()) {
+                    product.variantDescriptionDetail.variantNames.joinToString(
+                        ", "
+                    )
+                } else {
+                    ""
+                }
             wholesalePriceData = product.wholesalePrice.asReversed()
             isPreOrder = product.isPreorder == 1
             isWishlisted = product.isWishlisted
@@ -457,7 +474,11 @@ object CartUiModelMapper {
             isBundlingItem = cartDetail.bundleDetail.bundleId.isNotBlankOrZero()
             if (isBundlingItem) {
                 parentId =
-                    if (product.parentId.isBlank() || product.parentId == "0") product.productId + cartDetail.bundleDetail.bundleId else product.parentId
+                    if (product.parentId.isBlank() || product.parentId == "0") {
+                        product.productId + cartDetail.bundleDetail.bundleId
+                    } else {
+                        product.parentId
+                    }
                 isMultipleBundleProduct = cartDetail.products.size > 1
                 minOrder = cartDetail.bundleDetail.bundleMinOrder
                 maxOrder = if (cartDetail.bundleDetail.bundleQuota > BUNDLE_NO_VARIANT_CONST) {
@@ -531,10 +552,10 @@ object CartUiModelMapper {
     private fun getBundleProductQuantity(cartDetail: CartDetail, product: Product): Int {
         if (cartDetail.bundleDetail.bundleQty > 0) {
             val tmpQty = product.productQuantity / cartDetail.bundleDetail.bundleQty
-            if (tmpQty > 0) {
-                return tmpQty
+            return if (tmpQty > 0) {
+                tmpQty
             } else {
-                return 1
+                1
             }
         } else {
             return 1
@@ -595,7 +616,8 @@ object CartUiModelMapper {
         return summariesItemUiModelList
     }
 
-    private fun mapListVoucherOrders(listVoucherOrdersItem: List<VoucherOrders>): List<LastApplyVoucherOrdersItemUiModel> {
+    private fun mapListVoucherOrders(listVoucherOrdersItem: List<VoucherOrders>):
+        List<LastApplyVoucherOrdersItemUiModel> {
         val listVoucherOrders: ArrayList<LastApplyVoucherOrdersItemUiModel> = arrayListOf()
         listVoucherOrdersItem.forEach {
             listVoucherOrders.add(mapVoucherOrders(it))

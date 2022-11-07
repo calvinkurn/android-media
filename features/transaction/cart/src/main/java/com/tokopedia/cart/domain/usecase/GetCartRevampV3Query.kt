@@ -121,7 +121,11 @@ const val CART_REVAMP_V3_QUERY =
                     ticker_text
                     icon_url
                     add_on_ids
-                 }
+                  }
+                  epharmacy_consultation {
+                    ticker_text
+                    icon_url
+                  }
                   user_address_id
                   shipment_information {
                     shop_location
