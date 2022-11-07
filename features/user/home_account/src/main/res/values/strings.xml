@@ -276,5 +276,7 @@
     <!-- ADD/VERIFY PHONE -->
     <string name="add_phone_success_message">Yay! Nomor HP berhasil ditambah.</string>
     <string name="verify_phone_success_message">Yay! Nomor HP berhasil diverifikasi.</string>
+    <string name="text_add_phone">Tambah Nomor HP</string>
+    <string name="text_verify_phone">Verifikasi Nomor HP</string>
 
 </resources>

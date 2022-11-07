@@ -148,7 +148,7 @@ class ProfileViewHolder(
             accountUserItemProfilePhone.hide()
             labelPhoneVerify.hide()
             linkAccountProfileBtn.apply {
-                text = ADD_PHONE
+                text = context.resources.getString(R.string.text_add_phone)
                 setDrawable(getIconUnifyDrawable(
                     context,
                     IconUnify.PROTECTION,
@@ -171,7 +171,7 @@ class ProfileViewHolder(
             }.show()
 
             linkAccountProfileBtn.apply {
-                text = VERIFY_PHONE
+                text = context.resources.getString(R.string.text_verify_phone)
                 setDrawable(getIconUnifyDrawable(
                     context,
                     IconUnify.PROTECTION,
@@ -373,7 +373,7 @@ class ProfileViewHolder(
         const val TOP_PAD = 8
         val LAYOUT = R.layout.home_account_item_profile
         private const val DEFAULT_NAME = "toppers-"
-        private const val ADD_PHONE = "Tambah Nomor HP"
-        private const val VERIFY_PHONE = "Verifikasi Nomor HP"
+//        private const val ADD_PHONE = "Tambah Nomor HP"
+//        private const val VERIFY_PHONE = "Verifikasi Nomor HP"
     }
 }
