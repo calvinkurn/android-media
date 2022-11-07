@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
  * @author by astidhiyaa on 29/08/22
  */
 data class FeedTotalData(
-    @SerializedName("total_data") @Expose
+    @SerializedName("total_data")
+    @Expose
     val totalData: Int = 0
 )

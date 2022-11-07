@@ -830,7 +830,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         swipeToRefresh.setOnRefreshListener(this)
-        infoBottomSheet = TopAdsInfoBottomSheet.newInstance(requireContext())
+        context?.let {
+            infoBottomSheet = TopAdsInfoBottomSheet.newInstance(it)
+        }
         newFeed.setOnClickListener {
             scrollToTop()
             sendNewFeedClickEvent()

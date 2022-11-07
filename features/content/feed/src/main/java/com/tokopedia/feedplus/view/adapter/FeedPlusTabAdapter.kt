@@ -40,7 +40,7 @@ class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>,
         }
     }
 
-    override fun getItemPosition(`object`: Any): Int {
+    override fun getItemPosition(position: Any): Int {
         return POSITION_NONE
     }
 

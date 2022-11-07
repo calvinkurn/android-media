@@ -8,50 +8,66 @@ import com.google.gson.annotations.SerializedName
  */
 data class FeedKolType(
     @SerializedName("id")
-    @Expose val id: String = "",
+    @Expose
+    val id: String = "",
 
     @SerializedName("headerTitle")
-    @Expose val headerTitle: String = "",
+    @Expose
+    val headerTitle: String = "",
 
     @SerializedName("description")
-    @Expose val description: String = "",
+    @Expose
+    val description: String = "",
 
     @SerializedName("commentCount")
-    @Expose val commentCount: Int = 0,
+    @Expose
+    val commentCount: Int = 0,
 
     @SerializedName("likeCount")
-    @Expose val likeCount: Int = 0,
+    @Expose
+    val likeCount: Int = 0,
 
     @SerializedName("showComment")
-    @Expose val showComment: Boolean = false,
+    @Expose
+    val showComment: Boolean = false,
 
     @SerializedName("showLike")
-    @Expose val showLike: Boolean = false,
+    @Expose
+    val showLike: Boolean = false,
 
     @SerializedName("isLiked")
-    @Expose val isLiked: Boolean = false,
+    @Expose
+    val isLiked: Boolean = false,
+
     @SerializedName("isFollowed")
-    @Expose val isFollowed: Boolean = false,
+    @Expose
+    val isFollowed: Boolean = false,
 
     @SerializedName("userName")
-    @Expose val userName: String = "",
+    @Expose
+    val userName: String = "",
 
     @SerializedName("userPhoto")
-    @Expose val userPhoto: String = "",
+    @Expose
+    val userPhoto: String = "",
 
     @SerializedName("userId")
     @Expose
-    private val userId: String? = null,
+    val userId: String? = null,
 
     @SerializedName("userInfo")
-    @Expose val userInfo: String = "",
+    @Expose
+    val userInfo: String = "",
 
     @SerializedName("userUrl")
-    @Expose val userUrl: String = "",
+    @Expose
+    val userUrl: String = "",
 
     @SerializedName("createTime")
-    @Expose val createTime: String = "",
+    @Expose
+    val createTime: String = "",
 
     @SerializedName("content")
-    @Expose val content: List<ContentFeedKol> = emptyList()
+    @Expose
+    val content: List<ContentFeedKol> = emptyList()
 )

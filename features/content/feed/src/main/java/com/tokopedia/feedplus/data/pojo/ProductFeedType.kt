@@ -9,57 +9,74 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
  */
 data class ProductFeedType(
     @SerializedName("id")
-    @Expose val id: String = "",
+    @Expose
+    val id: String = "",
 
     @SerializedName("name")
-    @Expose val name: String = "",
+    @Expose
+    val name: String = "",
 
     @SerializedName("price")
-    @Expose val price: String = "",
+    @Expose
+    val price: String = "",
 
     @SerializedName("price_int")
-    @Expose val priceInt: String = "",
+    @Expose
+    val priceInt: String = "",
 
     @SerializedName("price_original")
-    @Expose val priceOriginal: String = "",
+    @Expose
+    val priceOriginal: String = "",
 
     @SerializedName("price_original_int")
-    @Expose val priceOriginalInt: String = "",
+    @Expose
+    val priceOriginalInt: String = "",
 
     @SerializedName("image")
-    @Expose val image: String = "",
+    @Expose
+    val image: String = "",
 
     @SerializedName("image_single")
-    @Expose val imageSingle: String = "",
+    @Expose
+    val imageSingle: String = "",
 
     @SerializedName("wholesale")
-    @Expose val wholesale: List<Wholesale> = emptyList(),
+    @Expose
+    val wholesale: List<Wholesale> = emptyList(),
 
     @SerializedName("freereturns")
     @Expose
-    private val freereturns: Boolean? = null,
+    val freereturns: Boolean? = null,
 
     @SerializedName("preorder")
-    @Expose val preorder: Boolean = false,
+    @Expose
+    val preorder: Boolean = false,
 
     @SerializedName("cashback")
-    @Expose val cashback: String = "",
+    @Expose
+    val cashback: String = "",
 
     @SerializedName("url")
-    @Expose val url: String = "",
+    @Expose
+    val url: String = "",
 
     @SerializedName("productLink")
-    @Expose val productLink: String = "",
+    @Expose
+    val productLink: String = "",
 
     @SerializedName("wishlist")
-    @Expose val wishlist: Boolean = false,
+    @Expose
+    val wishlist: Boolean = false,
 
     @SerializedName("rating")
-    @Expose val rating: Float = 0f,
+    @Expose
+    val rating: Float = 0f,
 
     @SerializedName("countReview")
-    @Expose val countReview: String = "",
+    @Expose
+    val countReview: String = "",
 
     @SerializedName("tags")
-    @Expose val tags: List<TagsItem> = emptyList()
+    @Expose
+    val tags: List<TagsItem> = emptyList()
 )

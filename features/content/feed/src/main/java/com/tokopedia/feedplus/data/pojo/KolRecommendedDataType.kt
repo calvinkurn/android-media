@@ -8,17 +8,22 @@ import com.google.gson.annotations.SerializedName
  */
 data class KolRecommendedDataType(
     @SerializedName("index")
-    @Expose val index: Int = 0,
+    @Expose
+    val index: Int = 0,
 
     @com.google.gson.annotations.SerializedName("kols")
-    @Expose val kols: List<FeedKolRecommendedType> = emptyList(),
+    @Expose
+    val kols: List<FeedKolRecommendedType> = emptyList(),
 
     @SerializedName("headerTitle")
-    @Expose val headerTitle: String = "",
+    @Expose
+    val headerTitle: String = "",
 
     @SerializedName("exploreLink")
-    @Expose val exploreLink: String = "",
+    @Expose
+    val exploreLink: String = "",
 
     @SerializedName("exploreText")
-    @Expose val exploreText: String = ""
+    @Expose
+    val exploreText: String = ""
 )
