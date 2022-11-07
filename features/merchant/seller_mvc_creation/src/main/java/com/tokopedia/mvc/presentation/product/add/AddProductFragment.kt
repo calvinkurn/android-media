@@ -65,6 +65,7 @@ class AddProductFragment : BaseDaggerFragment() {
         observeValidationResult()
 
         viewModel.getShopWarehouseLocations()
+        viewModel.getShopShowcases()
         //viewModel.getCurrentMonthRemainingQuota()
     }
 

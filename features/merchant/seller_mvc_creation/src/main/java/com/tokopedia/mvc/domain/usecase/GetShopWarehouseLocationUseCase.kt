@@ -32,7 +32,7 @@ class GetShopWarehouseLocationUseCase @Inject constructor(
 
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "ShopLocGetWarehouseByShopIDs"
-        private val MUTATION = """
+        private val QUERY = """
         query $OPERATION_NAME(${'$'}input: ShopLocParamWarehouseByShopIDs!) {
              $OPERATION_NAME(input: ${'$'}input) {
                 warehouses {
@@ -45,7 +45,7 @@ class GetShopWarehouseLocationUseCase @Inject constructor(
     """.trimIndent()
 
         override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
-        override fun getQuery(): String = MUTATION
+        override fun getQuery(): String = QUERY
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
