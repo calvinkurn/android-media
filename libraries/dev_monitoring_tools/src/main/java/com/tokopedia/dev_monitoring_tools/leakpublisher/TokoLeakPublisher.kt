@@ -18,7 +18,7 @@ class TokoLeakPublisher (application: Application, gson: Gson, isEnable: Boolean
             app = application,
             gson = gson,
             metadata = metadata,
-            isStrictModeEnabled = true,
+            isStrictModeEnabled = false,
             isLeakCanaryEnabled = isEnable,
             isObfuscated = false,
             targetPackage = "tkpd",
