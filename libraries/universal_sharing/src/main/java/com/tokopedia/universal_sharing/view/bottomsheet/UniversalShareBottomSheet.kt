@@ -1207,7 +1207,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun setBroadcastChannel(type: BroadcastChannelType, id: String) {
         isShowTickerList = true
-        tickerListAdapter.addItem(BroadcastChannelModel(id = id, type = type, title = "Lewat Broadcast", description = "Sebar promo langsung ke tepat sasaran", imageResDrawable= com.tokopedia.universal_sharing.R.drawable.ic_loading))
+        tickerListAdapter.addItem(BroadcastChannelModel(id = id, type = type, title = "Lewat Broadcast", description = "Sebar promo langsung ke tepat sasaran", imageResDrawable= com.tokopedia.universal_sharing.R.drawable.ic_broadcast))
     }
 
 
@@ -1248,6 +1248,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun openBroadcastPage(id: String, type: Int) {
         RouteManager.route(context,
-            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://seller.tokopedia.com/broadcast/create?id=$id&type=$type"))
+            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://tokopedia.com/broadcast-chat/create?id=$id&type=$type"))
     }
 }

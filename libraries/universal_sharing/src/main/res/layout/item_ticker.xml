@@ -28,7 +28,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="@dimen/unify_space_48"
                 android:layout_height="@dimen/unify_space_48"
-                android:contentDescription="@string/content_description_icon_affiliate" />
+                android:src="@drawable/ic_broadcast" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title_ticker"
@@ -51,15 +51,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="center"
                 app:typographyType="small"
-                android:textColor="@color/Unify_Static_White"
+                android:textColor="@color/Unify_GN500"
                 android:paddingHorizontal="@dimen/unify_space_4"
                 android:paddingVertical="@dimen/unify_space_2"
-                android:background="@drawable/background_ticker_new"
+                android:background="@drawable/background_ticker_free"
                 app:layout_constraintHorizontal_bias="0"
                 android:layout_marginStart="@dimen/unify_space_8"
                 app:layout_constraintBottom_toBottomOf="@id/tv_title_ticker"
                 app:layout_constraintTop_toTopOf="@id/tv_title_ticker"
-                android:text="@string/ticker_new"/>
+                android:text="@string/ticker_free"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_description_ticker"
@@ -69,6 +69,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_title_ticker"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginTop="@dimen/unify_space_4"
+                android:textColor="@color/Neutral_N600"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:layout_marginStart="@dimen/unify_space_8"
                 app:typographyType="body_2"

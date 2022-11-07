@@ -47,4 +47,8 @@ class TickerListAdapter(private val onClick: (data: TickerShareModel) -> Unit) :
     override fun getItemCount(): Int {
         return tickerList.size
     }
+
+    companion object {
+        private const val IC_BROADCAST = "https://images.tokopedia.net/img/share/icons/ic_broadcast.png"
+    }
 }
