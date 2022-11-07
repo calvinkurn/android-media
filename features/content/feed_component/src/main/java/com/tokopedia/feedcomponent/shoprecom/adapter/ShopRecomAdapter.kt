@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.shoprecom.adapter
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
@@ -8,8 +9,9 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
  * created by fachrizalmrsln on 13/07/22
  **/
 class ShopRecomAdapter(
-    private val listener: ShopRecomWidgetCallback
-) : BaseDiffUtilAdapter<ShopRecomAdapter.Model>(), ShopRecomWidgetCallback {
+    private val listener: ShopRecomWidgetCallback,
+    private val onLoading: () -> Unit,
+) : BaseDiffUtilAdapter<ShopRecomAdapter.Model>() {
 
     init {
         delegatesManager
@@ -17,25 +19,13 @@ class ShopRecomAdapter(
             .addDelegate(ShopRecomAdapterDelegate.ShopRecomWidget(listener))
     }
 
-    override fun onShopRecomCloseClicked(itemID: Long) {
-        listener.onShopRecomCloseClicked(itemID)
-    }
-
-    override fun onShopRecomFollowClicked(itemID: Long) {
-        listener.onShopRecomFollowClicked(itemID)
-    }
-
-    override fun onShopRecomItemClicked(
-        itemID: Long,
-        appLink: String,
-        imageUrl: String,
-        postPosition: Int
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: List<Any>
     ) {
-        listener.onShopRecomItemClicked(itemID, appLink, imageUrl, postPosition)
-    }
-
-    override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
-        listener.onShopRecomItemImpress(item, postPosition)
+        super.onBindViewHolder(holder, position, payloads)
+        if(position == (itemCount - 1)) onLoading()
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
