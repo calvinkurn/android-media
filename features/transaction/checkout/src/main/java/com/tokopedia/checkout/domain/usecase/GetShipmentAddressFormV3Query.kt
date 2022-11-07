@@ -25,6 +25,8 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 right_icon_url
                 checkout_id
                 front_end_validation
+                consultation_flow
+                rejected_wording
               }
               open_prerequisite_site
               eligible_new_shipping_experience
