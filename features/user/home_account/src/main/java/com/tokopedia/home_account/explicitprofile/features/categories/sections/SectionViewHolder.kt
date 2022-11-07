@@ -37,22 +37,21 @@ class SectionViewHolder(
 
         itemViewBinding?.apply {
             sectionTitle.text = sectionsDataModel.property.title
-
-                sectionInfoSubtitle.apply {
-                    if (maxAnswersSelection > 0) {
-                        text = String.format(
-                            Locale.getDefault(),
-                            itemView.context.resources.getString(R.string.explicit_profile_max_selection_answer_limit),
-                            maxAnswersSelection
-                        )
-                    } else if (maxAnswersSelection == 0) {
-                        text = String.format(
-                            Locale.getDefault(),
-                            itemView.context.resources.getString(R.string.explicit_profile_max_selection_answer_no_limit),
-                            maxAnswersSelection
-                        )
-                    }
-                }.show()
+            sectionInfoSubtitle.apply {
+                if (maxAnswersSelection > 0) {
+                    text = String.format(
+                        Locale.getDefault(),
+                        itemView.context.resources.getString(R.string.explicit_profile_max_selection_answer_limit),
+                        maxAnswersSelection
+                    )
+                } else if (maxAnswersSelection == 0) {
+                    text = String.format(
+                        Locale.getDefault(),
+                        itemView.context.resources.getString(R.string.explicit_profile_max_selection_answer_no_limit),
+                        maxAnswersSelection
+                    )
+                }
+            }.show()
 
             sectionQuestionList.apply {
                 layoutManager = flexboxLayoutManager
