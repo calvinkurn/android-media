@@ -272,6 +272,9 @@ open class TopChatViewModel @Inject constructor(
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()
 
+    /*
+    * these flags use to handle messages in order to unread when from the bubble and on stop
+     */
     private var isOnStop = false
     var isFromBubble = false
 

@@ -580,7 +580,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onResume() {
         super.onResume()
         this.isFromBubble = activity?.isFromBubble() == true
-        viewModel.isFromBubble = isFromBubble
+        if (isFromBubble) {
+            viewModel.isFromBubble = isFromBubble
+        }
     }
 
     private fun setupLifecycleObserver() {
