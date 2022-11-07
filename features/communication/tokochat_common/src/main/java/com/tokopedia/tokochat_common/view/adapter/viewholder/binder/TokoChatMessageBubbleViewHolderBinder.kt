@@ -128,9 +128,9 @@ object TokoChatMessageBubbleViewHolderBinder {
         if (element.isSender) {
             checkMark.show()
             val imageResource = when {
-                element.isDummy -> R.drawable.tokochat_ic_check_rounded_grey
-                !element.isRead() -> R.drawable.tokochat_ic_check_sent_rounded_grey
-                else -> R.drawable.tokochat_ic_check_read_rounded_green
+                element.isRead() -> R.drawable.tokochat_ic_check_read_rounded_green
+                element.isSent() -> R.drawable.tokochat_ic_check_sent_rounded_grey
+                else -> R.drawable.tokochat_ic_check_rounded_grey
             }
             val drawable = MethodChecker.getDrawable(checkMark.context, imageResource)
             checkMark.setImageDrawable(drawable)

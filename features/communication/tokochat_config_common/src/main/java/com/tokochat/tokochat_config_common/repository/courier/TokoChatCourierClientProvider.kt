@@ -30,9 +30,9 @@ class TokoChatCourierClientProvider @Inject constructor(
         val params = CourierComponent.Params(
             context = context,
             gson = gson,
-            applicationId = "com.gojek.app.staging",
+            applicationId = context.packageName,
             retrofit = retrofit,
-            authenticationApiUrl = "courier/v1/token",
+            authenticationApiUrl = "v1/token",
             usernameProvider = getUsernameProvider(),
             eventTracker = getEventTracker(),
             mqttInterceptors = getMqttInterceptors(),
@@ -47,8 +47,7 @@ class TokoChatCourierClientProvider @Inject constructor(
     private fun getUsernameProvider(): UsernameProvider {
         return object : UsernameProvider {
             override fun get(): String {
-                // TODO: Change this to userSession.userId
-                return "3306058"
+                return userSession.userId
             }
         }
     }
