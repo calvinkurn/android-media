@@ -50,7 +50,7 @@ class MerchantVoucherNewViewHolder(
                     ),
                     fgColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                 )
-                if (item.voucherStock <= 20) {
+                if (item.voucherStock <= VOUCHER_THRESHOLD) {
                     append(
                         " " + getString(R.string.play_product_pinned_info_separator) + " ",
                         baseColor,
@@ -81,6 +81,10 @@ class MerchantVoucherNewViewHolder(
             pattern = DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z
         )?.time?.getDayDiffFromToday() ?: 0
         return if (diff > 0) diff else 1
+    }
+
+    companion object {
+        private const val VOUCHER_THRESHOLD = 20
     }
 
     interface Listener {

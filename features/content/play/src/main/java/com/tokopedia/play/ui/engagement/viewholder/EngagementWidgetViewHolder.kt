@@ -31,7 +31,7 @@ class EngagementWidgetViewHolder(
 
     private fun getPromoDescription(item: EngagementUiModel.Promo): String {
         return when {
-            item.info.voucherStock <= 20 -> {
+            item.info.voucherStock <= VOUCHER_THRESHOLD -> {
                 getString(playR.string.play_voucher_widget_low_quantity, item.info.voucherStock,"!")
             }
             item.size == 0 -> {
@@ -97,6 +97,10 @@ class EngagementWidgetViewHolder(
                 id = item.game.id,
             )
         }
+    }
+
+    companion object {
+        private const val VOUCHER_THRESHOLD = 20
     }
 
     interface Listener {
