@@ -138,12 +138,8 @@ class WishlistCollectionViewModelTest {
 
     private var updateWishlistAccessParam = UpdateWishlistCollectionParams()
 
-    private var getCollectionSharingData_StatusOk_ErrorEmpty = GetWishlistCollectionSharingDataResponse(
-        GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "OK", errorMessage = emptyList())
-    )
-
-    private var getCollectionSharingData_StatusOk_ErrorNotEmpty = GetWishlistCollectionSharingDataResponse(
-        GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "OK", errorMessage = arrayListOf("error"))
+    private var getCollectionSharingData_StatusOk = GetWishlistCollectionSharingDataResponse(
+        GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "OK")
     )
 
     private var getCollectionSharingData_StatusNotOk_ErrorEmpty = GetWishlistCollectionSharingDataResponse(
@@ -535,11 +531,11 @@ class WishlistCollectionViewModelTest {
 
     // get collection sharing data
     @Test
-    fun `Execute GetCollectionSharingData Success Status OK And Error is Empty`() {
+    fun `Execute GetCollectionSharingData Success Status OK`() {
         //given
         coEvery {
             getWishlistCollectionSharingDataUseCase(collectionId)
-        } returns getCollectionSharingData_StatusOk_ErrorEmpty
+        } returns getCollectionSharingData_StatusOk
 
         //when
         wishlistCollectionViewModel.getWishlistCollectionSharingData(collectionId)
@@ -547,20 +543,6 @@ class WishlistCollectionViewModelTest {
         //then
         assert(wishlistCollectionViewModel.getWishlistCollectionSharingDataResult.value is Success)
         assert((wishlistCollectionViewModel.getWishlistCollectionSharingDataResult.value as Success).data.errorMessage.isEmpty())
-    }
-
-    @Test
-    fun `Execute GetCollectionSharingData Success Status OK And Error is not Empty`() {
-        //given
-        coEvery {
-            getWishlistCollectionSharingDataUseCase(collectionId)
-        } returns getCollectionSharingData_StatusOk_ErrorNotEmpty
-
-        //when
-        wishlistCollectionViewModel.getWishlistCollectionSharingData(collectionId)
-
-        //then
-        assert(wishlistCollectionViewModel.getWishlistCollectionSharingDataResult.value is Fail)
     }
 
     @Test

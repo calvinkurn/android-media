@@ -165,7 +165,7 @@ class WishlistCollectionViewModel @Inject constructor(
     fun getWishlistCollectionSharingData(collectionId: Long) {
         launchCatchError(block = {
             val result = getWishlistCollectionSharingDataUseCase(collectionId)
-            if (result.getWishlistCollectionSharingData.status == OK && result.getWishlistCollectionSharingData.errorMessage.isEmpty()) {
+            if (result.getWishlistCollectionSharingData.status == OK) {
                 _getWishlistCollectionSharingDataResult.value = Success(result.getWishlistCollectionSharingData)
             } else {
                 _getWishlistCollectionSharingDataResult.value = Fail(Throwable())

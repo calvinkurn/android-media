@@ -761,7 +761,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    if (result.data.status == OK && result.data.errorMessage.isEmpty()) {
+                    if (result.data.status == OK) {
                         activity?.let { fragmentActivity ->
                             view?.let { view ->
                                 WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
@@ -775,9 +775,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             }
                         }
                     } else {
-                        if (result.data.errorMessage.isNotEmpty()) {
-                            showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg
+                            )
                         }
+                        errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
                     }
                 }
                 is Fail -> {

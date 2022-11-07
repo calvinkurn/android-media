@@ -553,40 +553,25 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             when (result) {
                 is Success -> {
                     if (result.data.status == OK) {
-                        if (result.data.errorMessage.isNotEmpty()) {
-                            if (result.data.errorMessage[0].isNotEmpty()) {
-                                showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
-                            } else {
-                                activity?.let { fragmentActivity ->
-                                    view?.let { view ->
-                                        WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
-                                            activity = fragmentActivity,
-                                            data = result.data.data,
-                                            paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
-                                            userId = userSession.userId,
-                                            view = view,
-                                            childFragmentManager = childFragmentManager,
-                                            fragment = this@WishlistCollectionFragment)
-                                    }
-                                }
-                            }
-                        } else {
-                            activity?.let { fragmentActivity ->
-                                view?.let { view ->
-                                    WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
-                                        activity = fragmentActivity,
-                                        data = result.data.data,
-                                        paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
-                                        userId = userSession.userId,
-                                        view = view,
-                                        childFragmentManager = childFragmentManager,
-                                        fragment = this@WishlistCollectionFragment)
-                                }
+                        activity?.let { fragmentActivity ->
+                            view?.let { view ->
+                                WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
+                                    activity = fragmentActivity,
+                                    data = result.data.data,
+                                    paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
+                                    userId = userSession.userId,
+                                    view = view,
+                                    childFragmentManager = childFragmentManager,
+                                    fragment = this@WishlistCollectionFragment)
                             }
                         }
                     } else {
-                        val errorMessage = getString(R.string.wishlist_v2_common_error_msg)
-                        showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg
+                            )
+                        }
+                        errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
                     }
                 }
                 is Fail -> {
