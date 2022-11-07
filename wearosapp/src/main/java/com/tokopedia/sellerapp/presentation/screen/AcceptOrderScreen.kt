@@ -12,7 +12,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.CircularProgressIndicator
-import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.tokopedia.sellerapp.navigation.ScreenNavigation
@@ -58,11 +57,7 @@ fun AcceptOrderScreen(
                                 vertical = NEST_LAYOUT_LVL1,
                             ),
                     )
-                    LaunchedEffect(Unit) {
-                        val successOrderDelayTime = 2000L
-                        delay(successOrderDelayTime)
-                        screenNavigation.popBackStack()
-                    }
+                    FinishScreenAfterDelay(screenNavigation)
                 }
             }
             is UiState.Loading -> {
@@ -92,5 +87,14 @@ fun AcceptOrderScreen(
             }
             else -> {}
         }
+    }
+}
+
+@Composable
+fun FinishScreenAfterDelay(screenNavigation: ScreenNavigation) {
+    LaunchedEffect(Unit) {
+        val successOrderDelayTime = 2000L
+        delay(successOrderDelayTime)
+        screenNavigation.popBackStack()
     }
 }
