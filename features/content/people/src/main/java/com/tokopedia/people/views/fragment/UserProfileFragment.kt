@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -544,7 +543,7 @@ class UserProfileFragment @Inject constructor(
 
         val shopRecom = value.shopRecom
 
-        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items, shopRecom.isLoading)
+        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items, shopRecom.loadNexPage)
 
         if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
         else mainBinding.shopRecommendation.showContentShopRecom()
@@ -780,7 +779,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onLoadingNextPage() {
-        Toast.makeText(requireContext(), "Loading", Toast.LENGTH_SHORT).show()
+        viewModel.submitAction(UserProfileAction.LoadNextPageShopRecom)
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {

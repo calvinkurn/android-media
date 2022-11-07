@@ -114,7 +114,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             cursor = cursor,
         )
 
-        return@withContext shopRecomMapper.mapShopRecom(result)
+        return@withContext shopRecomMapper.mapShopRecom(result, VAL_LIMIT)
     }
 
     override suspend fun shopFollowUnfollow(

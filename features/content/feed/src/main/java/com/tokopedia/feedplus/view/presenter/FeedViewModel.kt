@@ -157,6 +157,7 @@ class FeedViewModel @Inject constructor(
         get() = _feedWidgetLatestData
 
     private var currentCursor = ""
+    private var shopRecomNextCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
 
     fun sendReport(
@@ -833,10 +834,13 @@ class FeedViewModel @Inject constructor(
         })
     }
 
-    fun getShopRecomWidgetNextPage(cursor: String) {
+    fun getShopRecomWidgetNextPage() {
         launchCatchError(block = {
-            val request = requestShopRecomWidget(cursor)
-            _shopRecom.update { request }
+            val request = requestShopRecomWidget(shopRecomNextCursor)
+            if (request.shopRecomUiModel.isShown) {
+                shopRecomNextCursor = request.shopRecomUiModel.nextCursor
+                _shopRecom.update { request }
+            }
         }, onError = {
             _shopRecom.update { ShopRecomWidgetModel() }
         })
@@ -852,7 +856,7 @@ class FeedViewModel @Inject constructor(
             limit = VAL_LIMIT,
             cursor = cursor
         )
-        val uiModel = shopRecomMapper.mapShopRecom(response)
+        val uiModel = shopRecomMapper.mapShopRecom(response, VAL_LIMIT)
         return ShopRecomWidgetModel(uiModel)
     }
 

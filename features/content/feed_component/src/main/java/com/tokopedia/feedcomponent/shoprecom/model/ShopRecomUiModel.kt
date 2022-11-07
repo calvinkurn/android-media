@@ -8,7 +8,7 @@ data class ShopRecomUiModel(
     val items: List<ShopRecomUiModelItem> = emptyList(),
     val nextCursor: String = "",
     val title: String = "",
-    val isLoading: Boolean = false,
+    val loadNexPage: Boolean = false,
 )
 
 data class ShopRecomUiModelItem(
