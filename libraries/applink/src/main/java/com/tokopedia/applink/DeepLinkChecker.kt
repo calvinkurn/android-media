@@ -64,6 +64,7 @@ object DeepLinkChecker {
     const val SNAPSHOT = 42
     const val TOKOFOOD = 43
     const val TOP_ADS_CLICK_LINK = 44
+    const val NOW_RECIPE = 45
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 

@@ -37,7 +37,9 @@ class DeveloperOptionAdapter(
         const val KEYWORD_ENABLE_TOPADS_LOG_ON_NOTIFICATION = "Enable TopAds Log on Notification"
         const val KEYWORD_VIEW_TOPADS_LOG = "View TopAds Log"
         const val KEYWORD_ENABLE_APPLINK_LOG_ON_NOTIFICATION = "Enable Applink Log on Notification"
+        const val KEYWORD_ENABLE_JOURNEY_LOG_ON_NOTIFICATION = "Enable Journey Log on Notification"
         const val KEYWORD_VIEW_APPLINK_LOG = "View Applink Log"
+        const val KEYWORD_VIEW_JOURNEY_LOG = "View Journey Log"
         const val KEYWORD_ENABLE_FPM_LOG_ON_FILE = "Enable FPM Log on File (Download/fpm-auto-log.txt)"
         const val KEYWORD_ENABLE_FPM_LOG_ON_NOTIFICATION = "Enable FPM Log on Notification"
         const val KEYWORD_VIEW_FPM_LOG = "View FPM Log"
@@ -86,6 +88,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
         const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
+        const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
     }
 
     /**
@@ -117,6 +120,8 @@ class DeveloperOptionAdapter(
         ViewTopAdsLogUiModel(listOf(KEYWORD_VIEW_TOPADS_LOG)),
         ApplinkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_APPLINK_LOG_ON_NOTIFICATION)),
         ViewApplinkLogUiModel(listOf(KEYWORD_VIEW_APPLINK_LOG)),
+        JourneyLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_JOURNEY_LOG_ON_NOTIFICATION)),
+        ViewJourneyLogUiModel(listOf(KEYWORD_VIEW_JOURNEY_LOG)),
         FpmLogOnFileUiModel(listOf(KEYWORD_ENABLE_FPM_LOG_ON_FILE)),
         FpmLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_FPM_LOG_ON_NOTIFICATION)),
         ViewFpmLogUiModel(listOf(KEYWORD_VIEW_FPM_LOG)),
@@ -176,7 +181,8 @@ class DeveloperOptionAdapter(
         )),
         ConvertResourceIdUiModel(
             listOf(KEYWORD_CONVERT_RESOURCE_ID)
-        )
+        ),
+        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST))
     )
 
     init {

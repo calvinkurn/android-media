@@ -160,6 +160,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _homeSwitchServiceTracker
     val invalidatePlayImpression: LiveData<Boolean>
         get() = _invalidatePlayImpression
+    val updateToolbarNotification: LiveData<Boolean>
+        get() = _updateToolbarNotification
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -176,6 +178,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _getReferralResult = MutableLiveData<Result<HomeReferralDataModel>>()
     private val _homeSwitchServiceTracker = MutableLiveData<HomeSwitchServiceTracker>()
     private val _invalidatePlayImpression = MutableLiveData<Boolean>()
+    private val _updateToolbarNotification = MutableLiveData<Boolean>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -393,6 +396,10 @@ class TokoNowHomeViewModel @Inject constructor(
             )
             _atcQuantity.postValue(Success(data))
         }) {}
+    }
+
+    fun updateToolbarNotification() {
+        _updateToolbarNotification.postValue(true)
     }
 
     fun removeTickerWidget(id: String) {
@@ -777,6 +784,7 @@ class TokoNowHomeViewModel @Inject constructor(
         addToCartUseCase.execute({
             trackProductAddToCart(productId, quantity, type, it.data.cartId)
             updateAddToCartQuantity(productId, quantity, type)
+            updateToolbarNotification()
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -819,6 +827,7 @@ class TokoNowHomeViewModel @Inject constructor(
         updateCartUseCase.execute({
             trackProductUpdateCart(productId, quantity, type, cartId)
             updateAddToCartQuantity(productId, quantity, type)
+            updateToolbarNotification()
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
@@ -834,6 +843,7 @@ class TokoNowHomeViewModel @Inject constructor(
             val data = Pair(productId, it.data.message.joinToString(separator = ", "))
             trackProductRemoveCart(productId, type, miniCartItem.cartId)
             updateAddToCartQuantity(productId, DEFAULT_QUANTITY, type)
+            updateToolbarNotification()
             _miniCartRemove.postValue(Success(data))
         }, {
             _miniCartRemove.postValue(Fail(it))

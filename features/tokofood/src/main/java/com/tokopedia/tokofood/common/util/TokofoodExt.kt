@@ -3,12 +3,15 @@ package com.tokopedia.tokofood.common.util
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Parcel
 import android.os.Parcelable
+import android.os.SystemClock
 import android.text.InputFilter
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
@@ -16,6 +19,9 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getBitmap
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
@@ -116,6 +122,41 @@ object TokofoodExt {
         }
     }
 
+    fun View.addAndReturnImpressionListener(holder: ImpressHolder,
+                                            onView: () -> Unit
+    ): ViewTreeObserver.OnScrollChangedListener {
+        val scrollChangedListener = object : ViewTreeObserver.OnScrollChangedListener {
+            override fun onScrollChanged() {
+                if (!holder.isInvoke && viewIsVisible(this@addAndReturnImpressionListener)) {
+                    onView()
+                    holder.invoke()
+                    this@addAndReturnImpressionListener.viewTreeObserver?.removeOnScrollChangedListener(
+                        this
+                    )
+                }
+            }
+        }
+        viewTreeObserver?.addOnScrollChangedListener(scrollChangedListener)
+        return scrollChangedListener
+    }
+
+    private fun viewIsVisible(view: View?): Boolean {
+        if (view == null) {
+            return false
+        }
+        if (!view.isShown) {
+            return false
+        }
+        val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
+        val offset = 100
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val X = location[0] + offset
+        val Y = location[1] + offset
+        return screen.top <= Y && screen.bottom >= Y &&
+            screen.left <= X && screen.right >= X
+    }
+
     fun QuantityEditorUnify.setupEditText() {
         val maxLength = InputFilter.LengthFilter(MAXIMUM_QUANTITY_LENGTH)
         editText.filters = arrayOf(maxLength)
@@ -168,4 +209,20 @@ object TokofoodExt {
         val timeZone = TimeZone.getDefault()
         return timeZone.id
     }
+
+    // TODO: move this to View.ext in release branch
+    fun View.clickWithDebounce(debounceTime: Long = CLICK_DEBOUNCE_TIME, action: () -> Unit) {
+        this.setOnClickListener(object : View.OnClickListener {
+            private var lastClickTime: Long = 0
+
+            override fun onClick(v: View) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < debounceTime) return
+                else action()
+
+                lastClickTime = SystemClock.elapsedRealtime()
+            }
+        })
+    }
+
+    private const val CLICK_DEBOUNCE_TIME = 600L
 }

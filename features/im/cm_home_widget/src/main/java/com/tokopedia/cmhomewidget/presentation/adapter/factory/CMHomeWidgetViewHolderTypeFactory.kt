@@ -3,10 +3,7 @@ package com.tokopedia.cmhomewidget.presentation.adapter.factory
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetViewAllCardData
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardData
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardShimmerData
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetViewAllCardShimmerData
+import com.tokopedia.cmhomewidget.domain.data.*
 
 interface CMHomeWidgetViewHolderTypeFactory : AdapterTypeFactory {
 
@@ -22,4 +19,6 @@ interface CMHomeWidgetViewHolderTypeFactory : AdapterTypeFactory {
         parent: ViewGroup,
         viewType: Int
     ): AbstractViewHolder<*>
+
+    fun type(cmHomeWidgetPaymentData: CMHomeWidgetPaymentData): Int
 }

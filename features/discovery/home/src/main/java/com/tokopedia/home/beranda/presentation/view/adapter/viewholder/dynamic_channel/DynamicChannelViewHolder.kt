@@ -45,13 +45,11 @@ abstract class DynamicChannelViewHolder(itemView: View,
     companion object {
         const val TYPE_SPRINT_SALE = 0
         const val TYPE_SPRINT_LEGO = 1
-        const val TYPE_ORGANIC = 2
         const val TYPE_SIX_GRID_LEGO = 3
         const val TYPE_THREE_GRID_LEGO = 4
         const val TYPE_CURATED = 5
         const val TYPE_BANNER = 6
         const val TYPE_BANNER_CAROUSEL = 7
-        const val TYPE_GIF_BANNER = 8
         const val TYPE_FOUR_GRID_LEGO = 9
         const val TYPE_MIX_TOP = 10
         const val TYPE_MIX_LEFT = 20
@@ -70,10 +68,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> return TYPE_2_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
-                DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> return TYPE_BANNER_CAROUSEL
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> return TYPE_GIF_BANNER
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> return TYPE_MIX_TOP
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> return TYPE_PRODUCT_HIGHLIGHT
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT

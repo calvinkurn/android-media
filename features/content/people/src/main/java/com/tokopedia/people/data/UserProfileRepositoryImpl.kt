@@ -1,18 +1,25 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_CURSOR
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_USER_PROFILE
+import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.views.uimodel.MutationUiModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -26,13 +33,15 @@ import javax.inject.Inject
 class UserProfileRepositoryImpl @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val mapper: UserProfileUiMapper,
+    private val shopRecomMapper: ShopRecomUiMapper,
+    private val profileMutationMapper: ProfileMutationMapper,
     private val userDetailsUseCase: UserDetailsUseCase,
     private val playVodUseCase: PlayPostContentUseCase,
     private val doFollowUseCase: ProfileFollowUseCase,
     private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
-    private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
+    private val getWhitelistNewUseCase: GetWhiteListNewUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val shopFollowUseCase: ShopFollowUseCase,
     private val getFollowerListUseCase: GetFollowerListUseCase,
@@ -67,7 +76,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         return withContext(dispatcher.io) {
             val result = doFollowUseCase.executeOnBackground(encryptedUserId)
 
-            mapper.mapFollow(result)
+            profileMutationMapper.mapFollow(result)
         }
     }
 
@@ -75,7 +84,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         return withContext(dispatcher.io) {
             val result = doUnfollowUseCase.executeOnBackground(encryptedUserId)
 
-            mapper.mapUnfollow(result)
+            profileMutationMapper.mapUnfollow(result)
         }
     }
 
@@ -100,12 +109,12 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
         val result = shopRecomUseCase.executeOnBackground(
-            screenName = VAL_SCREEN_NAME,
+            screenName = VAL_SCREEN_NAME_USER_PROFILE,
             limit = VAL_LIMIT,
             cursor = VAL_CURSOR,
         )
 
-        return@withContext mapper.mapShopRecom(result)
+        return@withContext shopRecomMapper.mapShopRecom(result)
     }
 
     override suspend fun shopFollowUnfollow(
@@ -117,7 +126,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             action = action,
         )
 
-        return@withContext mapper.mapShopFollow(result)
+        return@withContext shopRecomMapper.mapShopFollow(result)
     }
 
     override suspend fun getFollowerList(
@@ -147,9 +156,5 @@ class UserProfileRepositoryImpl @Inject constructor(
     companion object {
         private const val VAL_FEEDS_PROFILE = "feeds-profile"
         private const val VAL_SOURCE_BUYER = "buyer"
-
-        private const val VAL_SCREEN_NAME = "user_profile"
-        private const val VAL_LIMIT = 10
-        private const val VAL_CURSOR = ""
     }
 }

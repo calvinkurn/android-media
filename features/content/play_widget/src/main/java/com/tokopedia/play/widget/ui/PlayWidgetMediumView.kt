@@ -9,7 +9,6 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -30,10 +29,8 @@ import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumAdapte
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
-import com.tokopedia.play_common.util.extension.changeConstraint
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.setGradientBackground
-import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 
 
@@ -53,7 +50,6 @@ class PlayWidgetMediumView : FrameLayout, IPlayWidgetView {
 
     private val root: ConstraintLayout = findViewById(R.id.cl_root)
 
-    private val itemContainer: FrameLayout = findViewById(R.id.play_widget_container)
     private val overlayBackground: AppCompatImageView = findViewById(R.id.play_widget_overlay_bg)
     private val overlayImage: AppCompatImageView = findViewById(R.id.play_widget_overlay_image)
     private var topContainer: View = findViewById(R.id.view_play_widget_header)

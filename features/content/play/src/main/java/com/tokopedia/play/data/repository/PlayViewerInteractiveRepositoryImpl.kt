@@ -10,7 +10,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetViewerLeaderboardUseCase
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
         } catch (e: MessageErrorException) { false }
     }
 
-    override suspend fun getInteractiveLeaderboard(channelId: String): PlayLeaderboardInfoUiModel = withContext(dispatchers.io) {
+    override suspend fun getInteractiveLeaderboard(channelId: String): List<LeaderboardGameUiModel> = withContext(dispatchers.io) {
         val response = getInteractiveViewerLeaderboardUseCase.apply {
             setRequestParams(getInteractiveViewerLeaderboardUseCase.createParams(channelId))
         }.executeOnBackground()
