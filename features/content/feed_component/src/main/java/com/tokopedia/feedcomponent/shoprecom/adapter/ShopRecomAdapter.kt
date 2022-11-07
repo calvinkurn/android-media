@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
  * created by fachrizalmrsln on 13/07/22
  **/
 class ShopRecomAdapter(
-    private val listener: ShopRecomWidgetCallback,
+    listener: ShopRecomWidgetCallback,
     private val onLoading: () -> Unit,
 ) : BaseDiffUtilAdapter<ShopRecomAdapter.Model>() {
 

@@ -131,7 +131,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
             is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
-            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.cursor)
+            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCursor)
         }
     }
 
