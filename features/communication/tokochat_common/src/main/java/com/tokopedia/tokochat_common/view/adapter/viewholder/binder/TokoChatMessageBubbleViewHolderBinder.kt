@@ -14,7 +14,8 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWENTY_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWO_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ZERO_DP
 import com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
+import com.tokopedia.tokochat_common.view.uimodel.base.TokoChatSendableBaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 
 object TokoChatMessageBubbleViewHolderBinder {
@@ -90,7 +91,7 @@ object TokoChatMessageBubbleViewHolderBinder {
     }
 
     fun bindChatMessage(
-        chat: TokoChatMessageBubbleBaseUiModel,
+        chat: TokoChatMessageBubbleUiModel,
         tokoChatMessageChatLayout: TokoChatMessageChatLayout?
     ) {
         val htmlMessage = MethodChecker.fromHtml(chat.messageText)
@@ -99,7 +100,7 @@ object TokoChatMessageBubbleViewHolderBinder {
     }
 
     fun bindHour(
-        uiModel: TokoChatMessageBubbleBaseUiModel,
+        uiModel: TokoChatMessageBubbleUiModel,
         tokoChatMessageChatLayout: TokoChatMessageChatLayout?
     ) {
         val hourTime = getHourTime(uiModel.messageTime)
@@ -115,7 +116,7 @@ object TokoChatMessageBubbleViewHolderBinder {
     }
 
     fun bindChatReadStatus(
-        element: TokoChatMessageBubbleBaseUiModel,
+        element: TokoChatMessageBubbleUiModel,
         tokoChatMessageChatLayout: TokoChatMessageChatLayout?
     ) {
         tokoChatMessageChatLayout?.checkMark?.let {
@@ -123,13 +124,13 @@ object TokoChatMessageBubbleViewHolderBinder {
         }
     }
 
-    private fun bindChatReadStatus(element: TokoChatMessageBubbleBaseUiModel, checkMark: ImageUnify) {
+    fun bindChatReadStatus(element: TokoChatSendableBaseUiModel, checkMark: ImageUnify) {
         if (element.isSender) {
             checkMark.show()
             val imageResource = when {
-                element.isDummy -> R.drawable.tokochat_ic_check_rounded_grey
-                !element.isRead() -> R.drawable.tokochat_ic_check_sent_rounded_grey
-                else -> R.drawable.tokochat_ic_check_read_rounded_green
+                element.isRead() -> R.drawable.tokochat_ic_check_read_rounded_green
+                element.isSent() -> R.drawable.tokochat_ic_check_sent_rounded_grey
+                else -> R.drawable.tokochat_ic_check_rounded_grey
             }
             val drawable = MethodChecker.getDrawable(checkMark.context, imageResource)
             checkMark.setImageDrawable(drawable)

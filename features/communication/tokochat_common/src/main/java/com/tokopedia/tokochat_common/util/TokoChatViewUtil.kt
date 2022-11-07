@@ -37,6 +37,9 @@ object TokoChatViewUtil {
     const val ZERO_DP = 1
     const val ONE_DP = 1
     const val TWO_DP = 2
+    const val THREE_DP = 3
+    const val FOUR_DP = 4
+    const val EIGHT_DP = 8
     const val TEN_DP = 10
     const val ELEVEN_DP = 11
     const val TWENTY_DP = 20

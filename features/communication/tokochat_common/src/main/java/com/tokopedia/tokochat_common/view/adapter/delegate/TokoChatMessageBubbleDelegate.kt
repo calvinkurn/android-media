@@ -4,14 +4,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.tokochat_common.view.adapter.viewholder.chat_history.TokoChatMessageBubbleViewHolder
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
 
 class TokoChatMessageBubbleDelegate(
 
-): TypedAdapterDelegate<TokoChatMessageBubbleBaseUiModel, Any, TokoChatMessageBubbleViewHolder>(
+): TypedAdapterDelegate<TokoChatMessageBubbleUiModel, Any, TokoChatMessageBubbleViewHolder>(
     TokoChatMessageBubbleViewHolder.LAYOUT
 ) {
-    override fun onBindViewHolder(item: TokoChatMessageBubbleBaseUiModel, holder: TokoChatMessageBubbleViewHolder) {
+    override fun onBindViewHolder(item: TokoChatMessageBubbleUiModel, holder: TokoChatMessageBubbleViewHolder) {
         holder.bind(item)
     }
 

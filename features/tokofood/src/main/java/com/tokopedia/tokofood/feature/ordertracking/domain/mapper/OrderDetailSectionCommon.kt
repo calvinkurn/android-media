@@ -64,8 +64,6 @@ abstract class OrderDetailSectionCommon {
                 isCallable = isCallable,
                 isEnableChat = orderStatus.isEnableChatButton,
                 goFoodOrderNumber = invoice.gofoodOrderNumber.orEmpty(),
-                //todo for temporary, will update later
-                badgeCounter = 5,
             )
         } else {
             null

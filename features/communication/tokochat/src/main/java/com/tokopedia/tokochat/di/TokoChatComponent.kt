@@ -3,8 +3,6 @@ package com.tokopedia.tokochat.di
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.tokochat.view.fragment.TokoChatFragment
-import com.tokopedia.tokochat.view.fragment.experiment.TokoChatFragmentExp
-import com.tokopedia.tokochat.view.fragment.experiment.TokoChatListFragmentExp
 import dagger.Component
 
 @TokoChatScope
@@ -13,14 +11,11 @@ import dagger.Component
         TokoChatModule::class,
         TokoChatUseCaseModule::class,
         TokoChatContextModule::class,
-        TokoChatViewModelModule::class
+        TokoChatViewModelModule::class,
+        TokoChatImageAttachmentNetworkModule::class
     ],
     dependencies = [BaseAppComponent::class, TokoChatConfigComponent::class]
 )
 interface TokoChatComponent {
     fun inject(fragment: TokoChatFragment)
-
-    //TODO: Remove this after experiment
-    fun inject(fragment: TokoChatFragmentExp)
-    fun inject(fragment: TokoChatListFragmentExp)
 }

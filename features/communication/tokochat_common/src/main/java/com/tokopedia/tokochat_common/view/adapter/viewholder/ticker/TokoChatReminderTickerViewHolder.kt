@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemReminderTickerBinding
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
-import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -19,19 +19,19 @@ class TokoChatReminderTickerViewHolder(
 
     private val binding: TokochatItemReminderTickerBinding? by viewBinding()
 
-    fun bind(element: TokochatReminderTickerUiModel) {
+    fun bind(element: TokoChatReminderTickerUiModel) {
         bindImpression(element)
         bindDescAndClose(element)
         bindTickerType(element)
     }
 
-    private fun bindImpression(element: TokochatReminderTickerUiModel) {
+    private fun bindImpression(element: TokoChatReminderTickerUiModel) {
         binding?.tokochatTkPrompt?.addOnImpressionListener(element.impressHolder) {
             listener?.trackSeenTicker(element)
         }
     }
 
-    private fun bindDescAndClose(element: TokochatReminderTickerUiModel) {
+    private fun bindDescAndClose(element: TokoChatReminderTickerUiModel) {
         binding?.tokochatTkPrompt?.setHtmlDescription(element.message)
         binding?.tokochatTkPrompt?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -41,9 +41,15 @@ class TokoChatReminderTickerViewHolder(
                 listener?.onCloseReminderTicker(element, bindingAdapterPosition)
             }
         })
+
+        if (element.showCloseButton) {
+            binding?.tokochatTkPrompt?.closeButtonVisibility = View.VISIBLE
+        } else {
+            binding?.tokochatTkPrompt?.closeButtonVisibility = View.GONE
+        }
     }
 
-    private fun bindTickerType(element: TokochatReminderTickerUiModel) {
+    private fun bindTickerType(element: TokoChatReminderTickerUiModel) {
         binding?.tokochatTkPrompt?.tickerType = element.tickerType
         binding?.tokochatTkPrompt?.show()
     }

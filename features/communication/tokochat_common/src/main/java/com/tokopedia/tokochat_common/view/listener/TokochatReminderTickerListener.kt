@@ -1,9 +1,9 @@
 package com.tokopedia.tokochat_common.view.listener
 
-import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 
 interface TokochatReminderTickerListener {
-    fun trackSeenTicker(element: TokochatReminderTickerUiModel)
-    fun onClickLinkReminderTicker(element: TokochatReminderTickerUiModel, linkUrl: String)
-    fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int)
+    fun trackSeenTicker(element: TokoChatReminderTickerUiModel)
+    fun onClickLinkReminderTicker(element: TokoChatReminderTickerUiModel, linkUrl: String)
+    fun onCloseReminderTicker(element: TokoChatReminderTickerUiModel, position: Int)
 }

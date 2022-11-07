@@ -16,10 +16,10 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.getOppositeMargin
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder.generateLeftBg
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder.generateRightBg
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) {
+open class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) {
 
     private val binding: TokochatItemMessageBubbleBinding? by viewBinding()
     private val messageBubbleBinding: TokochatPartialMessageBubbleBinding? by viewBinding()
@@ -32,7 +32,7 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
     private val bgLeft = generateLeftBg(messageBubbleBinding?.tokochatLayoutMessageChat)
     private val bgRight = generateRightBg(messageBubbleBinding?.tokochatLayoutMessageChat)
 
-    fun bind(msg: TokoChatMessageBubbleBaseUiModel) {
+    fun bind(msg: TokoChatMessageBubbleUiModel) {
         TokoChatMessageBubbleViewHolderBinder.bindChatMessage(
             msg, messageBubbleBinding?.tokochatLayoutMessageChat)
         TokoChatMessageBubbleViewHolderBinder.bindHour(
@@ -51,7 +51,7 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
     /**
      * Right side message
      */
-    private fun setSenderMessageLayout(msg: TokoChatMessageBubbleBaseUiModel) {
+    private fun setSenderMessageLayout(msg: TokoChatMessageBubbleUiModel) {
         bindMsgGravity(Gravity.END)
         paddingRightMsg()
         bindBackground(bgRight)
@@ -69,7 +69,7 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
         messageBubbleBinding?.tokochatLayoutMessageChat?.checkMark?.hide()
     }
 
-    private fun bindTextColor(msg: TokoChatMessageBubbleBaseUiModel) {
+    private fun bindTextColor(msg: TokoChatMessageBubbleUiModel) {
         messageBubbleBinding?.tokochatLayoutMessageChat?.bindTextColor(msg)
     }
 
@@ -96,11 +96,11 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
         }
     }
 
-    private fun bindMessageInfo(msg: TokoChatMessageBubbleBaseUiModel) {
+    private fun bindMessageInfo(msg: TokoChatMessageBubbleUiModel) {
         messageBubbleBinding?.tokochatLayoutMessageChat?.bindInfo(msg)
     }
 
-    private fun bindMargin(message: TokoChatMessageBubbleBaseUiModel) {
+    private fun bindMargin(message: TokoChatMessageBubbleUiModel) {
         if (message.isSender) {
             binding?.tokochatLayoutBubbleContainer?.setMargin(0, topMarginOpposite.toInt(), 0, 0)
         } else {

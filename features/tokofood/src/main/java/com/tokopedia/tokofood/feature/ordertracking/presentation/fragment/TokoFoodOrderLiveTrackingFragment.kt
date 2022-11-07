@@ -3,12 +3,15 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderStatusLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,6 +32,7 @@ class TokoFoodOrderLiveTrackingFragment(
     private fun onResumeListener(owner: LifecycleOwner) {
         this.lifecycleOwner = owner
         observeOrderLiveTracking()
+        observeUnreadChatCount()
     }
 
     fun setSwipeRefreshDisabled() {
@@ -52,6 +56,30 @@ class TokoFoodOrderLiveTrackingFragment(
         }
     }
 
+    private fun observeUnreadChatCount() {
+        lifecycleOwner?.let { lifecycleOwner ->
+            viewModel.getUnReadChatCount().observe(lifecycleOwner) {
+                when (it) {
+                    is Success -> {
+                        updateUnreadChatCounter(it.data)
+                    }
+                    is Fail -> {
+                        logExceptionReadCounterToServerLogger(it.throwable)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateUnreadChatCounter(unReadCounter: Int) {
+        val newDriverSection = orderTrackingAdapter
+            .list
+            .filterIsInstance<DriverSectionUiModel>()
+            .firstOrNull()
+            ?.copy(badgeCounter = unReadCounter)
+        orderTrackingAdapter.updateLiveTrackingItem(newDriverSection)
+    }
+
     private fun updateAllOrderLiveTracking(orderStatusLiveTrackingUiModel: OrderStatusLiveTrackingUiModel) {
         with(orderStatusLiveTrackingUiModel) {
             toolbarHandler?.updateToolbarPoolBased(toolbarLiveTrackingUiModel)
@@ -60,7 +88,6 @@ class TokoFoodOrderLiveTrackingFragment(
             orderTrackingAdapter.updateEtaLiveTracking(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(invoiceOrderNumberUiModel)
-            orderTrackingAdapter.updateLiveTrackingItem(driverSectionUiModel)
         }
     }
 
@@ -73,6 +100,18 @@ class TokoFoodOrderLiveTrackingFragment(
             TokofoodErrorLogger.ErrorType.ERROR_POOL_POST_PURCHASE,
             viewModel.userSession.deviceId.orEmpty(),
             TokofoodErrorLogger.ErrorDescription.POOL_BASED_ERROR
+        )
+    }
+
+    private fun logExceptionReadCounterToServerLogger(
+        throwable: Throwable
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.POST_PURCHASE,
+            throwable,
+            TokofoodErrorLogger.ErrorType.ERROR_UNREAD_CHAT_COUNT_POST_PURCHASE,
+            viewModel.userSession.deviceId.orEmpty(),
+            TokofoodErrorLogger.ErrorDescription.UNREAD_CHAT_COUNT_ERROR
         )
     }
 }

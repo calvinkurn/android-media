@@ -7,15 +7,12 @@ import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
-import com.gojek.conversations.channel.GetChannelRequest
 import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
-import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatGetAllChannelsUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
@@ -25,11 +22,16 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
+import com.tokopedia.tokochat.domain.response.extension.TokoChatImageResult
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
+import com.tokopedia.tokochat.util.TokoChatViewUtil.downloadAndSaveByteArrayImage
+import com.tokopedia.tokochat.util.TokoChatViewUtil.getTokoChatPhotoPath
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,11 +50,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
     private val chatChannelUseCase: TokoChatChannelUseCase,
-    private val getAllChannelsUseCase: TokoChatGetAllChannelsUseCase,
     private val getChatHistoryUseCase: TokoChatGetChatHistoryUseCase,
     private val markAsReadUseCase: TokoChatMarkAsReadUseCase,
     private val registrationChannelUseCase: TokoChatRegistrationChannelUseCase,
@@ -62,6 +64,7 @@ class TokoChatViewModel @Inject constructor(
     private val getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase,
     private val profileUseCase: TokoChatMutationProfileUseCase,
     private val getTokoChatOrderProgressUseCase: TokoChatOrderProgressUseCase,
+    private val getImageUrlUseCase: TokoChatGetImageUseCase,
     private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -150,7 +153,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun getGroupBookingChannel(channelId: String) {
         try {
-            chatChannelUseCase.getGroupBookingChannel(channelId, onSuccess = {
+            chatChannelUseCase.getRemoteGroupBookingChannel(channelId, onSuccess = {
                 _channelDetail.postValue(Success(it))
             }, onError = {
                 _channelDetail.postValue(Fail(it))
@@ -198,30 +201,6 @@ class TokoChatViewModel @Inject constructor(
             registrationChannelUseCase.deRegisterActiveChannel(channelId)
         } catch (throwable: Throwable) {
             _error.value = throwable
-        }
-    }
-
-    fun getAllChannels(
-        getChannelRequest: GetChannelRequest,
-        onSuccess: (List<ConversationsChannel>) -> Unit,
-        onError: (ConversationsNetworkError?) -> Unit
-    ) {
-        try {
-            getAllChannelsUseCase(getChannelRequest,
-                onSuccess = onSuccess,
-                onError = onError
-            )
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-        }
-    }
-
-    fun getAllChannels(): LiveData<List<ConversationsChannel>> {
-        return try {
-            getAllChannelsUseCase()
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-            MutableLiveData()
         }
     }
 
@@ -288,12 +267,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun loadChatRoomTicker() {
         launchCatchError(block = {
-//            TODO: Change after BE side ready
-//            val result = getTokoChatRoomTickerUseCase(GetTokoChatRoomTickerUseCase.PARAM_TOKOFOOD)
-            val result = TokochatRoomTickerResponse().apply {
-                this.tokochatRoomTicker.message = "Resto sudah terima pesananmu, jadi nggak bisa dibatalin. Driver hanya jemput & antar pesanan ke kamu."
-                this.tokochatRoomTicker.tickerType = 0
-            }
+            val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
             _chatRoomTicker.value = Success(result)
         }, onError = {
             _chatRoomTicker.value = Fail(it)
@@ -352,6 +326,49 @@ class TokoChatViewModel @Inject constructor(
             val result = getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(orderId, serviceType))
             emit(Success(result))
         }
+    }
+
+    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
+        return try {
+            chatChannelUseCase.getLiveChannel(channelId)
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+            MutableLiveData()
+        }
+    }
+
+    fun getImageWithId(
+        imageId: String,
+        channelId: String,
+        onImageReady: (File?) -> Unit,
+        onError: () -> Unit
+    ) {
+        launchCatchError(context = dispatcher.io, block = {
+            val imageUrlResponse = getImageUrlUseCase(
+                TokoChatGetImageUseCase.Param(imageId, channelId)
+            )
+            val cachedImage = getTokoChatPhotoPath(generateImageName(imageId, channelId))
+            // If image has never been downloaded, then download
+            if (!cachedImage.exists()) {
+                imageUrlResponse.data?.url?.let {
+                    downloadAndSaveByteArrayImage(
+                        generateImageName(imageId, channelId),
+                        getImageUrlUseCase.getImage(it).byteStream(),
+                        onImageReady,
+                        onError
+                    )
+                }
+            } else { // Else use the downloaded image
+                onImageReady(cachedImage)
+            }
+        }, onError = {
+            _error.value = it
+            onError()
+        })
+    }
+
+    private fun generateImageName(imageId: String, channelId: String): String {
+        return "${imageId}_${channelId}"
     }
 
     companion object {

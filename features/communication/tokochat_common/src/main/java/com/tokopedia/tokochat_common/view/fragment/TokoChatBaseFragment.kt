@@ -6,15 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.databinding.TokochatBaseFragmentBinding
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.FOUR_DP
 import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat_common.view.adapter.viewholder.decoration.VerticalSpaceItemDecoration
 import com.tokopedia.tokochat_common.view.listener.TokoChatEndlessScrollListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatLoadingUiModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
@@ -29,6 +33,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     private var endlessRecyclerViewScrollListener: TokoChatEndlessScrollListener? = null
     private val shimmerUiModel = TokoChatLoadingUiModel()
+    private val itemDecoration = VerticalSpaceItemDecoration(FOUR_DP.toPx())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,6 +74,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         (baseBinding?.tokochatChatroomRv?.layoutManager as LinearLayoutManager).stackFromEnd = false
         (baseBinding?.tokochatChatroomRv?.layoutManager as LinearLayoutManager).reverseLayout = true
         baseBinding?.tokochatChatroomRv?.adapter = adapter
+        baseBinding?.tokochatChatroomRv?.addItemDecoration(itemDecoration)
     }
 
     private fun setupRecyclerViewLoadMore() {
@@ -105,11 +111,13 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         adapter.notifyItemInserted(adapter.itemCount)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     protected fun removeShimmering() {
         hideShimmeringHeader()
-        adapter.removeItem(shimmerUiModel)
-        adapter.notifyDataSetChanged()
+        val shimmerIndex = adapter.getItems().indexOf(shimmerUiModel)
+        if (shimmerIndex > RecyclerView.NO_POSITION) {
+            adapter.removeItem(shimmerUiModel)
+            adapter.notifyItemRemoved(shimmerIndex)
+        }
     }
 
     protected fun getTokoChatHeader(): HeaderUnify? {

@@ -23,7 +23,7 @@
     <com.tokopedia.tokochat_common.view.customview.TokoChatBgImageView
         android:id="@+id/tokochat_iv_bg_chat"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:adjustViewBounds="true"
         app:layout_constraintTop_toBottomOf="@id/tokochat_transaction_order"
         app:layout_constraintStart_toStartOf="parent"

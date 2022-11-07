@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
@@ -120,7 +120,7 @@ class TokoChatMessageChatLayout : ViewGroup {
         message?.text = text
     }
 
-    fun setMessageTypeFace(msg: TokoChatMessageBubbleBaseUiModel) {
+    fun setMessageTypeFace(msg: TokoChatMessageBubbleUiModel) {
         val typeface = if (msg.isNotSupported) {
             Typeface.ITALIC
         } else {
@@ -141,7 +141,7 @@ class TokoChatMessageChatLayout : ViewGroup {
         checkMark?.hide()
     }
 
-    fun bindInfo(msg: TokoChatMessageBubbleBaseUiModel) {
+    fun bindInfo(msg: TokoChatMessageBubbleUiModel) {
         if (msg.label.isNotEmpty()) {
             bindInfoText(msg)
         } else {
@@ -149,12 +149,12 @@ class TokoChatMessageChatLayout : ViewGroup {
         }
     }
 
-    private fun bindInfoText(msg: TokoChatMessageBubbleBaseUiModel) {
+    private fun bindInfoText(msg: TokoChatMessageBubbleUiModel) {
         info?.text = msg.label
         info?.show()
     }
 
-    fun bindTextColor(msg: TokoChatMessageBubbleBaseUiModel) {
+    fun bindTextColor(msg: TokoChatMessageBubbleUiModel) {
         val textColor = if (msg.isNotSupported) {
             com.tokopedia.unifyprinciples.R.color.Unify_NN600
         } else {
