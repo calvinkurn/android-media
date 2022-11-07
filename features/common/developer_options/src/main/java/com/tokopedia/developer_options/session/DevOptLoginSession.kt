@@ -14,7 +14,7 @@ class DevOptLoginSession(private val context: Context) {
         private const val KEY_PASSWORD = "password_hash"
         private const val KEY_LAST_UPDATED = "last_updated"
 
-        private const val SESSION_EXPIRED_DAYS = 14 // 2 weeks
+        private const val SESSION_EXPIRED_DAYS = 7 // 1 week
         private const val DEV_OPT_IV = "developeropt1234"
     }
 
