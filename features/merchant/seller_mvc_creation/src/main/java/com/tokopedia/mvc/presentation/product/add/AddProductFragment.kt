@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -63,6 +64,7 @@ class AddProductFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeValidationResult()
 
+        viewModel.getShopWarehouseLocations()
         //viewModel.getCurrentMonthRemainingQuota()
     }
 
