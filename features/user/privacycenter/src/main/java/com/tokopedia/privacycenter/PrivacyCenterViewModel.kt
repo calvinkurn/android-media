@@ -2,19 +2,16 @@ package com.tokopedia.privacycenter
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.privacycenter.domain.DarkModeUseCase
+import com.tokopedia.privacycenter.domain.UserUseCase
 import javax.inject.Inject
 
 class PrivacyCenterViewModel @Inject constructor(
-    private val darkModeUseCase: DarkModeUseCase,
+    private val userUseCase: UserUseCase,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    init {
-    }
-
-    fun isUsingDarkMode(): Boolean {
-        return darkModeUseCase.isDarkModeActivated()
+    fun getUserName(): String {
+        return userUseCase.getUserName()
     }
 
 }

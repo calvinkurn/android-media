@@ -1,9 +1,6 @@
 package com.tokopedia.privacycenter
 
-import android.graphics.Color
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -17,11 +14,6 @@ class PrivacyCenterActivity : BaseSimpleActivity(), HasComponent<PrivacyCenterCo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbar.hide()
-
-        //make full transparent statusBar
-        window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        window.statusBarColor = Color.TRANSPARENT
     }
 
     override fun getNewFragment(): Fragment =

@@ -1,21 +1,21 @@
 package com.tokopedia.privacycenter
 
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.privacyacenter.databinding.FragmentPrivacyCenterBinding
+import com.tokopedia.privacycenter.common.getDynamicColorStatusBar
+import com.tokopedia.privacycenter.common.getIconBackWithColor
+import com.tokopedia.privacycenter.common.getIdColor
+import com.tokopedia.privacycenter.common.setFitToWindows
+import com.tokopedia.privacycenter.common.setTextStatusBar
+import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.di.PrivacyCenterComponent
+import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -43,16 +43,26 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
+    }
+
+    override fun onStart() {
+        super.onStart()
         binding?.appbar?.addOnOffsetChangedListener(this)
     }
 
     private fun initToolbar() {
-        binding?.unifyToolbar?.apply {
-            title = "Pengaturan Privasi"
-            setNavigationOnClickListener {
-                requireActivity().onBackPressed()
+        requireActivity().apply {
+            setFitToWindows(false)
+            window.statusBarColor = Color.TRANSPARENT
+            binding?.unifyToolbar?.apply {
+                title = resources.getString(R.string.title_privacy_center)
+                setBackgroundColor(Color.TRANSPARENT)
+                setNavigationOnClickListener {
+                    onBackPressed()
+                }
             }
         }
+        binding?.textName?.text = viewModel.getUserName()
     }
 
     override fun onStop() {
@@ -73,61 +83,32 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-        if (verticalOffset == 0) {
-            val textColor = ContextCompat.getColor(requireActivity(), android.R.color.white)
-            val backIconWhite = getIconUnifyDrawable(requireActivity(), IconUnify.ARROW_BACK, ContextCompat.getColor(requireActivity(), android.R.color.white))
-            binding?.unifyToolbar?.headerView?.setTextColor(textColor)
-            binding?.unifyToolbar?.navigationIcon = backIconWhite
-            requireActivity().window.statusBarColor = Color.TRANSPARENT
+        setUpCollapseToolbar(verticalOffset < -136)
+    }
 
-            setTextStatusBar(true)
+    private fun setUpCollapseToolbar(isCollapsed: Boolean) {
+        val getWhiteColor = if (isCollapsed) {
+            isUsingNightModeResources()
         } else {
-            val textColor = getTextColor(getWhite = isUsingDarkMode())
-            val backIconWhite = getIconBackWithColor(getWhite = isUsingDarkMode())
-            binding?.unifyToolbar?.headerView?.setTextColor(textColor)
-            binding?.unifyToolbar?.navigationIcon = backIconWhite
-            requireActivity().window.statusBarColor = MethodChecker.getColor(requireActivity(), com.tokopedia.unifyprinciples.R.color.Unify_Background)
-            setTextStatusBar(setToWhite = isUsingDarkMode())
+            true
         }
-    }
 
-    private fun isUsingDarkMode(): Boolean {
-        return requireActivity().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-    }
+        requireActivity().apply {
+            val textColor = getIdColor(getWhite = getWhiteColor)
+            val backIcon = getIconBackWithColor(getWhite = getWhiteColor)
 
-    private fun setTextStatusBar(setToWhite: Boolean) {
-        requireActivity().window.decorView.systemUiVisibility =
-            if (setToWhite)
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            else
-                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-    }
+            window.statusBarColor = if (getWhiteColor) {
+                Color.TRANSPARENT
+            } else {
+                getDynamicColorStatusBar()
+            }
+            setTextStatusBar(setToWhite = getWhiteColor)
 
-    //true for white, false for black
-    private fun getIconBackWithColor(getWhite: Boolean): Drawable? {
-        return getIconUnifyDrawable(
-            requireActivity(),
-            IconUnify.ARROW_BACK,
-            ContextCompat.getColor(
-                requireActivity(),
-                getColor(getWhite)
-            )
-        )
-    }
+            binding?.unifyToolbar?.apply {
+                headerView?.setTextColor(textColor)
+                navigationIcon = backIcon
+            }
+        }
 
-    //true for white, false for black
-    private fun getTextColor(getWhite: Boolean): Int {
-        return ContextCompat.getColor(
-            requireActivity(),
-            getColor(getWhite)
-        )
-    }
-
-    //true for white, false for black
-    private fun getColor(getWhite: Boolean): Int {
-        return if (getWhite)
-            android.R.color.white
-        else
-            android.R.color.black
     }
 }
