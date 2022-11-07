@@ -13,7 +13,6 @@ import com.tokopedia.home_account.explicitprofile.features.categories.sections.c
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
-import java.util.*
 
 class SectionViewHolder(
     itemView: View,
@@ -39,15 +38,12 @@ class SectionViewHolder(
             sectionTitle.text = sectionsDataModel.property.title
             sectionInfoSubtitle.apply {
                 if (maxAnswersSelection > 0) {
-                    text = String.format(
-                        Locale.getDefault(),
-                        itemView.context.resources.getString(R.string.explicit_profile_max_selection_answer_limit),
-                        maxAnswersSelection
+                    text = getString(
+                        R.string.explicit_profile_max_selection_answer_limit,
+                        maxAnswersSelection.toString()
                     )
                 } else if (maxAnswersSelection == 0) {
-                    text = itemView.context.resources.getString(
-                        R.string.explicit_profile_max_selection_answer_no_limit
-                    )
+                    text = getString(R.string.explicit_profile_max_selection_answer_no_limit)
                 }
             }.show()
 
