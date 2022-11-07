@@ -33,9 +33,6 @@ data class Shop(
     @SerializedName("city_name")
     val cityName: String = "",
     @SerializedName("shop_type_info")
-
-    // Temporary field to determine value of shop type to be sent as dimension81
-    // Need to remove in the future when implementing tracking for PM Pro
     val shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
     @SerializedName("is_gold")
     val isGold: Int = 0,
