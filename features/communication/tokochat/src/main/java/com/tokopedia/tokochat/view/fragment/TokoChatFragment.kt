@@ -141,6 +141,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
         removeObservers(viewModel.isChatConnected)
         removeObservers(viewModel.channelDetail)
         removeObservers(viewModel.error)
+        viewModel.connectionCheckJob?.cancel()
         super.onDestroy()
     }
 
@@ -444,7 +445,9 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
 
     private fun observeChatConnection() {
         observe(viewModel.isChatConnected) { connect ->
-            if (!connect && channelId.isNotBlank() && viewModel.getUserId().isNotBlank()) {
+            if ((!connect || !isConnectedToNetwork()) &&
+                channelId.isNotBlank() && viewModel.getUserId().isNotBlank()
+            ) {
                 errorBottomSheet.setErrorType(getErrorType())
                 errorBottomSheet.setButtonAction {
                     initGroupBooking(null)
