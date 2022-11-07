@@ -15,6 +15,7 @@ import com.tokopedia.dilayanitokopedia.home.domain.mapper.LegoBannerMapper.mapLe
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.TopCarouselMapper.mapTopCarouselModel
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
+import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import timber.log.Timber
@@ -136,7 +137,7 @@ object HomeLayoutMapper {
             //TODO - need to recheck what wrong at banner carousel
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
 
-                MIX_TOP_CAROUSEL -> mapTopCarouselModel(response, loadedState)
+            MIX_TOP_CAROUSEL -> mapTopCarouselModel(response, loadedState)
 //                EDUCATIONAL_INFORMATION  -> mapEducationalInformationUiModel(response, loadedState, serviceType)
 //                MIX_LEFT_CAROUSEL_ATC -> mapToLeftCarouselAtc(response, loadedState, miniCartData)
 //                // endregion
@@ -157,4 +158,20 @@ object HomeLayoutMapper {
             else -> null
         }
     }
+
+
+    /**
+     * Mapping layout list to list menu
+     */
+    fun MutableList<HomeLayoutItemUiModel>.mapMenuList(): List<AnchorTabUiModel> {
+        val listMenu = this.mapIndexed { index, homeLayoutItemUiModel ->
+
+            AnchorTabUiModel(index, "title ${homeLayoutItemUiModel.layout}", "")
+        }
+
+
+        return listMenu
+
+    }
+
 }

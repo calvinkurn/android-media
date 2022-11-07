@@ -11,7 +11,9 @@ import com.tokopedia.dilayanitokopedia.common.util.PageInfo
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapMenuList
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetHomeLayoutDataUseCase
+import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -51,10 +53,14 @@ class DtHomeViewModel @Inject constructor(
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
 
 
+    val menuList: LiveData<List<AnchorTabUiModel>>
+        get() = _menuList
+    private val _menuList = MutableLiveData<List<AnchorTabUiModel>>()
+
+
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
-
 
 
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
@@ -102,16 +108,14 @@ class DtHomeViewModel @Inject constructor(
                 state = DtLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
+
+            _menuList.postValue(homeLayoutItemList.mapMenuList())
         }) {
             _homeLayoutList.postValue(Fail(it))
         }.let {
 //            getHomeLayoutJob = it
         }
     }
-
-
-
-
 
 
     /***
@@ -140,17 +144,17 @@ class DtHomeViewModel @Inject constructor(
     }
 
 
-    fun getChooseAddress(source: String){
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
+    fun getChooseAddress(source: String) {
+        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
             _chooseAddress.postValue(Success(it))
-        },{
+        }, {
             _chooseAddress.postValue(Fail(it))
         }, source)
     }
 
-    fun getShareUTM(data: PageInfo) : String{
-        var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
-        if(data.campaignCode != null && data.campaignCode.length > 11){
+    fun getShareUTM(data: PageInfo): String {
+        var campaignCode = if (data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
+        if (data.campaignCode != null && data.campaignCode.length > 11) {
             campaignCode = data.campaignCode.substring(0, 11)
         }
         return "${data.identifier}-${campaignCode}"

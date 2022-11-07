@@ -34,7 +34,7 @@ class DtAnchorTabAdapter(private val listener: ManageAddressItemAdapterListener)
         holder.bindData(addressList[position])
     }
 
-    fun addList(data: List<AnchorTabUiModel>) {
+    fun updateList(data: List<AnchorTabUiModel>) {
         addressList.addAll(data)
         notifyDataSetChanged()
     }

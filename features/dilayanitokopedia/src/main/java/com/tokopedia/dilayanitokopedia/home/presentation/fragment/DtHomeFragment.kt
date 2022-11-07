@@ -1,6 +1,5 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
-import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -35,7 +34,6 @@ import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtAnchorTabAdap
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapterTypeFactory
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewHolder
-import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewModel
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtDynamicLegoBannerCallback
@@ -137,6 +135,7 @@ class DtHomeFragment : Fragment() {
         )
     }
 
+    private var anchorTabAdapter: DtAnchorTabAdapter? = null
 
     override fun onAttach(context: Context) {
         initInjector()
@@ -180,17 +179,9 @@ class DtHomeFragment : Fragment() {
     private fun initAnchorTabMenu() {
         //data anchor tab
 
-        val dataDummyAnchorTab = mutableListOf<AnchorTabUiModel>()
-        for (number in 1..10) {
-            dataDummyAnchorTab.add(AnchorTabUiModel(number, "title$number", ""))
-        }
 
-
-        //init adapter
-        // update data adapter
-        val anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
-        anchorTabAdapter.addList(dataDummyAnchorTab)
-        binding?.headerCompHolder?.layoutManager =  LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
+        binding?.headerCompHolder?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding?.headerCompHolder?.adapter = anchorTabAdapter
     }
 
@@ -198,7 +189,6 @@ class DtHomeFragment : Fragment() {
         return object : DtAnchorTabAdapter.ManageAddressItemAdapterListener {
             override fun onManageAddressEditClicked(peopleAddress: AnchorTabUiModel) {
             }
-
         }
 
     }
@@ -457,8 +447,13 @@ class DtHomeFragment : Fragment() {
 //        getLayoutComponentData()
 //        stopRenderPerformanceMonitoring()
 
-        //additional in DT
-        setupAnchorTabComponent(data)
+
+    }
+
+    private fun updateAnchorTab(data: List<AnchorTabUiModel>) {
+
+        anchorTabAdapter?.updateList(data)
+
     }
 
     private fun observeLiveData() {
@@ -487,6 +482,14 @@ class DtHomeFragment : Fragment() {
 //                    logChooseAddressError(it.throwable)
                 }
             }
+        }
+
+        observeMenuList()
+    }
+
+    private fun observeMenuList() {
+        observe(viewModelDtHome.menuList) {
+            updateAnchorTab(it)
         }
     }
 
@@ -694,38 +697,6 @@ class DtHomeFragment : Fragment() {
 //            viewModelTokoNow.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
         showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
 //        }
-    }
-
-
-    private fun setupAnchorTabComponent(homeLayoutListUiModel: HomeLayoutListUiModel) {
-        if (anchorViewHolder == null) {
-            val view = layoutInflater.inflate(R.layout.dt_anchor_tabs, null, false)
-            anchorViewHolder = AnchorTabsViewHolder(view, this)
-            val viewModel = AnchorTabsViewModel(
-                context?.applicationContext as Application,
-//                homeLayoutListUiModel,
-                0,
-            )
-            anchorViewHolder?.bindView(viewModel)
-//            viewModel.onAttachToViewHolder()
-//            anchorViewHolder?.onViewAttachedToWindow()
-        }
-        setupObserveAndShowAnchor()
-    }
-
-    private fun setupObserveAndShowAnchor() {
-////        if (!stickyHeaderShowing)
-        anchorViewHolder?.let {
-//                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers())
-            anchorViewHolder?.setUpObservers(viewLifecycleOwner)
-//                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
-//                    mAnchorHeaderView.removeAllViews()
-//                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
-//                        anchorViewHolder?.itemView
-//                    )
-//                    mAnchorHeaderView.addView(it.itemView)
-//                }
-        }
     }
 
     private fun createTopComponentCallback(): HomeComponentListener? {
