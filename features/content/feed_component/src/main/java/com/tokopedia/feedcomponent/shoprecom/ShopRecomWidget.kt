@@ -43,7 +43,7 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
     }
 
     private val mAdapterShopRecom: ShopRecomAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ShopRecomAdapter(this)
+        ShopRecomAdapter(this) { mListener?.onLoadingNextPage() }
     }
 
     init {
@@ -62,7 +62,11 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun setData(headerTitle: String, shopRecomItem: List<ShopRecomUiModelItem>, isLoading: Boolean = false) = with(binding) {
+    fun setData(
+        headerTitle: String,
+        shopRecomItem: List<ShopRecomUiModelItem>,
+        isLoading: Boolean = false
+    ) = with(binding) {
         txtHeaderShopRecom.text = headerTitle
         val model = buildList {
             addAll(shopRecomItem.map { ShopRecomAdapter.Model.ShopRecomWidget(it) })
@@ -97,12 +101,21 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
         mListener?.onShopRecomFollowClicked(itemID)
     }
 
-    override fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int) {
+    override fun onShopRecomItemClicked(
+        itemID: Long,
+        appLink: String,
+        imageUrl: String,
+        postPosition: Int
+    ) {
         mListener?.onShopRecomItemClicked(itemID, appLink, imageUrl, postPosition)
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
         mListener?.onShopRecomItemImpress(item, postPosition)
+    }
+
+    override fun onLoadingNextPage() {
+        mListener?.onLoadingNextPage()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

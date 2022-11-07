@@ -3807,4 +3807,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onLoadingNextPage() {
+        Toast.makeText(requireContext(), "Loading", Toast.LENGTH_SHORT).show()
+    }
+
 }

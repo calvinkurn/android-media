@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -776,6 +777,10 @@ class UserProfileFragment @Inject constructor(
                 postPosition
             )
         }
+    }
+
+    override fun onLoadingNextPage() {
+        Toast.makeText(requireContext(), "Loading", Toast.LENGTH_SHORT).show()
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
