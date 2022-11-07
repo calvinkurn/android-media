@@ -36,7 +36,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 1
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": true,
+            "notifyMeOOSCount": 10,
+            "notifyMeOOSWording": "<b>1.223</b> calon pembeli memasang pengingat jika <b>1</b> varian di produk ini kembali tersedia. Yuk, atur stokmu.\n"
           },
           {
             "id": "2826866866",
@@ -45,7 +51,7 @@
               "min": 600001,
               "max": 600001
             },
-            "stock": 0,
+            "stock": 15,
             "stockReserved": 0,
             "hasStockReserved": false,
             "isCampaign": false,
@@ -62,8 +68,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 2
-
+            "suspendLevel": 0,
+            "hasStockAlert": true,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2825233295",
@@ -89,7 +100,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2825136863",
@@ -115,7 +132,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2819244404",
@@ -141,7 +164,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2807459209",
@@ -167,7 +196,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2805716578",
@@ -193,7 +228,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2805557909",
@@ -219,7 +260,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2802764925",
@@ -245,7 +292,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2785974152",
@@ -271,7 +324,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2783198385",
@@ -297,7 +356,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2783191191",
@@ -323,7 +388,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2783188833",
@@ -349,7 +420,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2780475332",
@@ -375,7 +452,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2780462214",
@@ -401,7 +484,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2754798731",
@@ -427,7 +516,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2684140798",
@@ -453,7 +548,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2666231584",
@@ -479,7 +580,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2654051240",
@@ -505,7 +612,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           },
           {
             "id": "2496684532",
@@ -531,7 +644,13 @@
             ],
             "topads": null,
             "campaignType": [],
-            "suspendLevel": 0
+            "suspendLevel": 0,
+            "hasStockAlert": false,
+            "stockAlertActive": false,
+            "stockAlertCount": 14,
+            "haveNotifyMeOOS": false,
+            "notifyMeOOSCount": 0,
+            "notifyMeOOSWording": ""
           }
         ]
       }

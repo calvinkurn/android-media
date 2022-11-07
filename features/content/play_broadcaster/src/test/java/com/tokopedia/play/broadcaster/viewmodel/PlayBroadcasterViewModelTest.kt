@@ -990,4 +990,101 @@ class PlayBroadcasterViewModelTest {
         }
     }
 
+    @Test
+    fun `when entry point from user profile then selected account should be non-seller`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration(TYPE_USER)
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
+    fun `when entry point from user profile but non-seller not eligible then selected account should be seller`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration(TYPE_USER)
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+        }
+    }
+
+
+    @Test
+    fun `when entry point from whatever that require open as seller then selected account should be seller`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration(TYPE_SHOP)
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+        }
+    }
+
+    @Test
+    fun `when entry point from whatever that require open as seller but seller not eligible then selected account should be non-seller`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration(TYPE_SHOP)
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
 }

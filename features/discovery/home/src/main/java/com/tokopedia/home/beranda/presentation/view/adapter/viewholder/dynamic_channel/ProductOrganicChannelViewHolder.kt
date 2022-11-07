@@ -44,8 +44,6 @@ class ProductOrganicChannelViewHolder(sprintView: View,
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         when(getLayoutType(channel)) {
-            TYPE_SPRINT_LEGO -> HomePageTracking.eventClickSeeAllLegoProduct(channel.header.name, channel.id)
-            TYPE_ORGANIC -> HomePageTracking.eventClickSeeAllLegoProduct(channel.header.name, channel.id)
             else -> HomePageTracking.eventClickSeeAllDynamicChannel(
                     DynamicLinkHelper.getActionLink(channel.header),
                     channel.id)
@@ -116,14 +114,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
                     var attr = ""
                     when(sprintType){
                         TYPE_SPRINT_LEGO -> {
-                            HomePageTracking.eventEnhancedClickSprintSaleProduct(
-                                    channels.getEnhanceClickSprintSaleLegoHomePage(position))
-                            attr = channels.getHomeAttribution(position + 1, channels.grids[position].id)
-                        }
-                        TYPE_ORGANIC -> {
-                            HomePageTracking.eventEnhancedClickSprintSaleProduct(
-                                    channels.getEnhanceClickSprintSaleLegoHomePage(position))
-                            attr = channels.getHomeAttribution(position + 1, channels.grids[position].id)
+
                         }
                         TYPE_CURATED -> {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
