@@ -8,12 +8,13 @@
     android:paddingEnd="0dp"
     android:paddingTop="16dp">
 
-    <com.tokopedia.product_bundle.common.customview.RoundedCornerImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/riv_product_image"
         android:layout_width="64dp"
         android:layout_height="64dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="8"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.product_bundle.common.customview.ErrorLabelView
