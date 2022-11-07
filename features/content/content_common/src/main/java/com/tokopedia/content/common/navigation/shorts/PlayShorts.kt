@@ -11,7 +11,10 @@ object PlayShorts {
         param: PlayShortsParam.() -> Unit = {}
     ): String {
         val baseApplink = ApplinkConst.PLAY_SHORTS
+        val appLinkParam = PlayShortsParam().apply(param).buildParam()
 
-        return ""
+        if(appLinkParam.isEmpty()) return baseApplink
+
+        return "$baseApplink?$appLinkParam"
     }
 }

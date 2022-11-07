@@ -18,6 +18,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.shorts.PlayShorts
+import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
@@ -63,6 +65,7 @@ import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_LIVE
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_POST
+import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_SHORTS
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
@@ -231,6 +234,7 @@ class UserProfileFragment @Inject constructor(
                         when (viewModel.ugcOnboardingOpenFrom) {
                             UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
                             UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
+                            UGC_ONBOARDING_OPEN_FROM_SHORTS -> goToCreateShortsPage()
                             else -> {}
                         }
                     }
@@ -525,6 +529,8 @@ class UserProfileFragment @Inject constructor(
             val items = arrayListOf<FloatingButtonItem>()
             items.add(createLiveFab())
             items.add(createPostFab())
+            items.add(createShortsFab())
+
             mainBinding.fabUp.addItem(items)
             mainBinding.fabUserProfile.show()
             fabCreated = true
@@ -561,6 +567,28 @@ class UserProfileFragment @Inject constructor(
                     openUGCOnboardingBottomSheet()
                 }
                 else goToCreatePostPage()
+            }
+        )
+    }
+
+    private fun createShortsFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            /** TODO: will change IconUnify to SHORT_VIDEO later on */
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            title = getString(feedComponentR.string.feed_fab_create_shorts),
+            listener = {
+                mainBinding.fabUp.menuOpen = false
+
+                /** TODO: attach tracker here if any */
+
+                /** TODO: uncomment this if you need onboarding */
+//                if (viewModel.needOnboarding) {
+//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_SHORTS
+//                    openUGCOnboardingBottomSheet()
+//                }
+//                else goToCreateShortsPage()
+
+                goToCreateShortsPage()
             }
         )
     }
@@ -769,6 +797,14 @@ class UserProfileFragment @Inject constructor(
         intent.putExtra(KEY_IS_CREATE_POST_AS_BUYER, true)
         intent.putExtra(KEY_IS_OPEN_FROM, VALUE_IS_OPEN_FROM_USER_PROFILE)
         startActivity(intent)
+    }
+
+    private fun goToCreateShortsPage() {
+        val appLink = PlayShorts.generateApplink {
+            setAuthorType(PlayShortsParam.AuthorType.User)
+        }
+
+        RouteManager.route(requireContext(), appLink)
     }
 
     private fun openUGCOnboardingBottomSheet() {

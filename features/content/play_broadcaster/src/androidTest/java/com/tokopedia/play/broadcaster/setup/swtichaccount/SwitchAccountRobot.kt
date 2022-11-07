@@ -168,7 +168,9 @@ class SwitchAccountRobot(
                     parentViewModelFactoryCreator = parentViewModelFactoryCreator,
                     viewModelFactory = viewModelFactory,
                     analytic = playAnalytic,
-                    analyticManager = mockk(relaxed = true)
+                    analyticManager = mockk(relaxed = true),
+                    userSession = mockk(relaxed = true),
+                    coachMarkManager = mockk(relaxed = true),
                 )
             },
             UserCompleteOnboardingBottomSheet::class.java to {

@@ -217,6 +217,7 @@
     <string name="feed_fab_create_live">Buat Live</string>
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
+    <string name="feed_fab_create_shorts">Buat Video</string>
 
     <string name="feed_webview_template">%s?url=%s</string>
     <string name="feed_post_sebagai">Post sebagai</string>
