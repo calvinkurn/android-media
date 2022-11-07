@@ -47,8 +47,16 @@ class ShopCouponSheetViewComponent(
             }
         })
 
-    private val layoutManagerVoucher =
-        LinearLayoutManager(rvVoucherList.context, RecyclerView.VERTICAL, false)
+    private val layoutManagerVoucher = object : LinearLayoutManager(rvVoucherList.context, RecyclerView.VERTICAL, false) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            val index = findFirstCompletelyVisibleItemPosition()
+            listener.onVouchersImpressed(
+                this@ShopCouponSheetViewComponent,
+                voucherList.getOrNull(index)?.id ?: "0"
+            )
+        }
+    }
 
     private var voucherList = emptyList<PlayVoucherUiModel.Merchant>()
 
