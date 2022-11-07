@@ -167,7 +167,6 @@ abstract class BaseSearchCategoryFragment:
     protected var loaderUnify: LoaderUnify? = null
     protected val carouselScrollPosition = SparseIntArray()
     protected val recycledViewPool = RecyclerView.RecycledViewPool()
-    private var tokoNowProductFeedbackBottomSheet: TokoNowProductFeedbackBottomSheet?=null
 
     private var movingPosition = 0
 
@@ -1204,7 +1203,8 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onFeedbackCtaClicked(view: View) {
-        tokoNowProductFeedbackBottomSheet = TokoNowProductFeedbackBottomSheet()
-        tokoNowProductFeedbackBottomSheet?.showBottomSheet(activity?.supportFragmentManager,view)
+        TokoNowProductFeedbackBottomSheet().apply {
+            showBottomSheet(activity?.supportFragmentManager,view)
+        }
     }
 }

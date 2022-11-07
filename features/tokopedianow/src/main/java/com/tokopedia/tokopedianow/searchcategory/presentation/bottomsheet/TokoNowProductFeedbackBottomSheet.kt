@@ -6,27 +6,29 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowProductFeedbackBinding
 import com.tokopedia.tokopedianow.searchcategory.di.DaggerSearchCategoryComponent
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.AddFeedbackViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
 
-    private var inputArea:TextAreaUnify2?=null
-    private var feedbackCta:UnifyButton?=null
+    companion object{
+        private const val INPUT_LIMIT = 144
+        private const val MIN_TEXT_LEN = 4
+    }
+
+    private var binding:BottomsheetTokopedianowProductFeedbackBinding? = null
 
     private var callingParentView:View?=null
 
@@ -35,8 +37,6 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
     private val viewModel by lazy {
         ViewModelProvider(this,viewModelFactory).get(AddFeedbackViewModel::class.java)
     }
-
-    private var coordinatorLayout:CoordinatorLayout?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isKeyboardOverlap = false
@@ -60,19 +60,16 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView(inflater: LayoutInflater,container: ViewGroup?){
-        val view = inflater.inflate(R.layout.bottomsheet_tokopedianow_product_feedback,container)
-        coordinatorLayout = view.findViewById(R.id.feedback_bottomsheet_cl)
-        inputArea = view.findViewById(R.id.feedback_bm_textfield)
-        feedbackCta = view.findViewById(R.id.feedback_bm_cta)
+        binding = BottomsheetTokopedianowProductFeedbackBinding.inflate(inflater,container,false)
         setupInputArea()
         setupCta()
         val title = context?.resources?.getString(R.string.tokopedianow_feedback_bottomsheet_title).orEmpty()
         setTitle(title)
-        setChild(view)
+        setChild(binding?.root)
     }
 
     private fun setupInputArea(){
-        inputArea?.apply {
+        binding?.feedbackBmTextfield?.apply {
             setMessage(context?.resources?.getString(R.string.tokopedianow_feedback_bottomsheet_input_message).orEmpty())
             minLine = 3
             setCounter(INPUT_LIMIT)
@@ -80,11 +77,11 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if(feedbackCta?.isEnabled.orTrue()){
-                        if(text==null || text.length<=4)
+                    if(binding?.feedbackBmCta?.isEnabled.orTrue()){
+                        if(text==null || text.length<= MIN_TEXT_LEN)
                             disableCta()
                     }
-                    else if(text!=null && text.length>4)
+                    else if(text!=null && text.length> MIN_TEXT_LEN)
                         enableCta()
                 }
 
@@ -111,21 +108,21 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
 
     private fun setupCta(){
         disableCta()
-        feedbackCta?.setOnClickListener {
-            val feedback = inputArea?.editText?.text
+        binding?.feedbackBmCta?.setOnClickListener {
+            val feedback = binding?.feedbackBmTextfield?.editText?.text
             feedback?.let { it1 ->
-                feedbackCta?.isLoading = true
+                binding?.feedbackBmCta?.isLoading = true
                 viewModel.addProductFeedback(it1.toString())
             }
         }
     }
 
     private fun disableCta(){
-        feedbackCta?.isEnabled = false
+        binding?.feedbackBmCta?.isEnabled = false
     }
 
     private fun enableCta(){
-        feedbackCta?.isEnabled = true
+        binding?.feedbackBmCta?.isEnabled = true
     }
 
     fun showBottomSheet(manager: FragmentManager?,view:View?){
@@ -134,7 +131,7 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
     }
 
     private fun setSuccessToast(){
-        feedbackCta?.isLoading = false
+        binding?.feedbackBmCta?.isLoading = false
         callingParentView?.let {
             val successText = context?.resources?.getString(R.string.tokopedianow_add_feedback_success_text).orEmpty()
             val actionText = context?.resources?.getString(R.string.tokopedianow_on_boarding_step_button_text_last_child).orEmpty()
@@ -148,8 +145,8 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
     }
 
     private fun setErrorToast(){
-        feedbackCta?.isLoading = false
-        coordinatorLayout?.let {
+        binding?.feedbackBmCta?.isLoading = false
+        binding?.root?.let {
             val successText = context?.resources?.getString(R.string.tokopedianow_add_feedback_failure_text).orEmpty()
             val actionText = context?.resources?.getString(R.string.tokopedianow_on_boarding_step_button_text_last_child).orEmpty()
             Toaster.build(
@@ -160,9 +157,5 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
                 type = Toaster.TYPE_ERROR
             ).show()
         }
-    }
-
-    companion object{
-        private const val INPUT_LIMIT = 144
     }
 }

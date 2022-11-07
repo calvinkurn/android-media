@@ -8,7 +8,11 @@ import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.query.GetRepurchaseWidget
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase.Companion.PARAM_CAT_ID
-import com.tokopedia.tokopedianow.searchcategory.domain.model.*
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.CategoryFilterModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.DynamicChannelModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.QuickFilterModel
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokopedianow.searchcategory.utils.TYPE

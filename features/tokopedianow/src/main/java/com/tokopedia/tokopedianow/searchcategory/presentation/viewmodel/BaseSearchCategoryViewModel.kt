@@ -60,7 +60,11 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
@@ -79,7 +83,22 @@ import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductMo
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.*
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.REPURCHASE_WIDGET_POSITION
@@ -117,6 +136,7 @@ abstract class BaseSearchCategoryViewModel(
     companion object {
         private const val LABEL_GROUP_TYPE_TRANSPARENTBLACK = "transparentBlack"
         private const val LABEL_GROUP_POSITION_STATUS = "status"
+        private const val MIN_PRODUCT_COUNT = 6
     }
 
     protected var chooseAddressDataView = ChooseAddressDataView()
@@ -325,10 +345,12 @@ abstract class BaseSearchCategoryViewModel(
     private fun createVisitableListWithOutOfCoverageView() {
         visitableList.clear()
         visitableList.add(chooseAddressDataView)
-        visitableList.add(TokoNowEmptyStateOocUiModel(
+        visitableList.add(
+            TokoNowEmptyStateOocUiModel(
             hostSource = DEFAULT_VALUE_SOURCE_SEARCH,
             serviceType = chooseAddressData?.service_type.orEmpty()
-        ))
+        )
+        )
         visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW, miniCartSource = miniCartSource))
     }
 
@@ -469,7 +491,7 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         visitableList.addAll(createHeaderVisitableList(headerDataView))
         visitableList.addAll(createContentVisitableList(contentDataView))
-        if(feedbackFieldToggle && contentDataView.aceSearchProductData.productList.size<=6)
+        if(feedbackFieldToggle && contentDataView.aceSearchProductData.productList.size<= MIN_PRODUCT_COUNT)
             visitableList.add(TokoNowFeedbackWidgetUiModel(true))
         visitableList.addFooter()
     }
