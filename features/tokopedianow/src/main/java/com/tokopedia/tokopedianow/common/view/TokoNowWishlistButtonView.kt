@@ -67,7 +67,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             root.setTransitionListener(object : MotionLayout.TransitionListener {
                     override fun onTransitionStarted(motionLayout: MotionLayout?, p1: Int, p2: Int) = onTransitionStarted(ringingAnimation)
 
-                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) = onTransitionCompleted()
+                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int){ /* nothing to do*/ }
 
                     override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) { /* nothing to do */ }
 
@@ -132,11 +132,13 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
     }
 
     private fun changeStateToRemoveWishlist() {
+        hasBeenSelected = !hasBeenSelected
         binding.root.setTransition(R.id.start, R.id.end)
         binding.root.transitionToEnd()
     }
 
     private fun changeStateToAddWishlist() {
+        hasBeenSelected = !hasBeenSelected
         binding.root.setTransition(R.id.end, R.id.start)
         binding.root.transitionToEnd()
     }
