@@ -62,10 +62,11 @@ class BubbleChatActivationGuideFragment: Fragment() {
             setTextMakeHyperlink(
                 getString(R.string.topchat_bubble_activation_guide_seller_edu_label)
             ) {
-                RouteManager.route(context,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                    BubbleChat.Url.BUBBLE_CHAT_HELP_PAGE_URL)
+                val bubbleChatHelpPageUrl = String.format("%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    BubbleChat.Url.BUBBLE_CHAT_HELP_PAGE_URL
                 )
+                RouteManager.route(context, bubbleChatHelpPageUrl)
             }
         }
     }

@@ -58,12 +58,6 @@ class FakeTopchatWebSocket @Inject constructor(
         startTimeQueue.add(wsPayload)
     }
 
-    override fun connect(isWebSocketConnected: Boolean) {
-        //no op
-    }
-
-    override fun hasConnection(): Boolean = true
-
     fun simulateResponseFromRequestQueue(room: GetExistingChatPojo) {
         while (startTimeQueue.peek() != null) {
             val requestMsg = startTimeQueue.remove()

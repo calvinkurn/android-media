@@ -5,9 +5,7 @@ import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.topchat.chatroom.responses.WebsocketResponses
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.lang.IllegalStateException
@@ -21,56 +19,8 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         verify {
-            chatWebSocket.connect(false)
             chatWebSocket.close()
             chatWebSocket.destroy()
-        }
-    }
-
-    @Test
-    fun should_close_websocket_on_stop_when_from_bubble() {
-        // When
-        viewModel.closeWebSocketFromBubble()
-
-        // Then
-        verify {
-            chatWebSocket.close()
-        }
-    }
-
-    @Test
-    fun should_close_websocket_on_resume_host_when_from_bubble() {
-
-        //given
-        every {
-            chatWebSocket.hasConnection()
-        } returns true
-
-        // When
-        viewModel.retryConnectWebSocketFromBubble()
-
-        // Then
-        coVerify {
-            chatWebSocket.close()
-            webSocketStateHandler.scheduleForRetry(any())
-        }
-    }
-
-    @Test
-    fun should_close_websocket_on_resume_host_when_from_bubble_and_does_not_have_connection() {
-
-        //given
-        every {
-            chatWebSocket.hasConnection()
-        } returns false
-
-        // When
-        viewModel.retryConnectWebSocketFromBubble()
-
-        // Then
-        coVerify(exactly = 0) {
-            chatWebSocket.close()
-            webSocketStateHandler.scheduleForRetry(any())
         }
     }
 
@@ -90,6 +40,77 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             webSocketStateHandler.retrySucceed()
         }
         verifySendMarkAsRead()
+    }
+
+    @Test
+    fun should_does_not_send_mark_as_read() {
+        // Given
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onStop()
+        viewModel.markAsRead()
+
+        // Then
+        assertEquals(viewModel.isFromBubble, true)
+        verify(exactly = 0) {
+            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+            chatWebSocket.sendPayload(payload)
+        }
+    }
+
+    @Test
+    fun should_send_mark_as_read_when_not_from_bubble() {
+        // Given
+        val isFromBubble = false
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.markAsRead()
+
+        // Then
+        assertEquals(viewModel.isFromBubble, false)
+        verify {
+            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+            chatWebSocket.sendPayload(payload)
+        }
+    }
+
+    @Test
+    fun should_send_mark_as_read_when_not_from_bubble_and_onstop() {
+        // Given
+        val isFromBubble = false
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onStop()
+        viewModel.markAsRead()
+
+        // Then
+        assertEquals(viewModel.isFromBubble, false)
+        verify {
+            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+            chatWebSocket.sendPayload(payload)
+        }
+    }
+
+    @Test
+    fun should_send_mark_as_read_when_from_bubble_and_onresume() {
+        // Given
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onResume()
+        viewModel.markAsRead()
+
+        // Then
+        assertEquals(viewModel.isFromBubble, true)
+        verify {
+            val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+            chatWebSocket.sendPayload(payload)
+        }
     }
 
     @Test
