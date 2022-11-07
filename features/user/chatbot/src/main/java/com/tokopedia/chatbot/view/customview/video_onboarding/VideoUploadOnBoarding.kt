@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.view.customview.reply
+package com.tokopedia.chatbot.view.customview.video_onboarding
 
 import android.content.Context
 import android.view.View
@@ -6,11 +6,10 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
 import com.tokopedia.chatbot.view.util.OnboardingDismissListener
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2.Companion.POSITION_TOP
 import com.tokopedia.coachmark.CoachMark2Item
 import javax.inject.Inject
 
-class ReplyBubbleOnBoarding @Inject constructor(
+class VideoUploadOnBoarding @Inject constructor(
     private val cacheManager: ChatbotCacheManager
 ) {
 
@@ -19,13 +18,12 @@ class ReplyBubbleOnBoarding @Inject constructor(
     private var coachMark: CoachMark2? = null
     var onboardingDismissListener: OnboardingDismissListener? = null
 
-
-    fun showReplyBubbleOnBoarding(
+    fun showVideoBubbleOnBoarding(
         anchor: View?,
         context: Context? = null
     ) {
         initializeFields(anchor, context)
-        showReplyBubbleOnBoarding()
+        showVideoBubbleOnBoarding()
     }
 
     private fun initializeFields(
@@ -37,33 +35,33 @@ class ReplyBubbleOnBoarding @Inject constructor(
     }
 
 
-    private fun showReplyBubbleOnBoarding() {
+    private fun showVideoBubbleOnBoarding() {
         context?.let {
             if (anchor == null) return
-            val title = it.getString(R.string.chatbot_reply_bubble_onboarding_title)
-            val description = it.getString(R.string.chatbot_reply_bubble_onboarding_description)
+            val title = it.getString(R.string.chatbot_video_upload_onboarding_title)
+            val description = it.getString(R.string.chatbot_video_upload_onboarding_description)
             val coachMarkItem = ArrayList<CoachMark2Item>()
             coachMark = CoachMark2(it)
             coachMarkItem.add(
                 CoachMark2Item(
-                    anchor!!, title, description, POSITION_TOP
+                    anchor!!, title, description, CoachMark2.POSITION_TOP
                 )
             )
-            coachMark?.showCoachMark(coachMarkItem, null)
+            coachMark?.showCoachMark(coachMarkItem)
             coachMark?.setOnDismissListener {
                 markAsShowed()
-                onboardingDismissListener?.dismissReplyBubbleOnBoarding()
+                onboardingDismissListener?.dismissVideoUploadOnBoarding()
             }
         }
 
     }
 
     private fun markAsShowed() {
-        cacheManager.saveState(CHATBOT_REPLY_BUBBLE_ONBOARDING, true)
+        cacheManager.saveState(CHATBOT_VIDEO_UPLOAD_ONBOARDING, true)
     }
 
     fun hasBeenShown(): Boolean {
-        return cacheManager.loadPreviousState(CHATBOT_REPLY_BUBBLE_ONBOARDING)
+        return cacheManager.loadPreviousState(CHATBOT_VIDEO_UPLOAD_ONBOARDING)
     }
 
     fun flush() {
@@ -76,6 +74,6 @@ class ReplyBubbleOnBoarding @Inject constructor(
     }
 
     companion object {
-        const val CHATBOT_REPLY_BUBBLE_ONBOARDING = "CHATBOT_REPLY_BUBBLE_ONBOARDING"
+        const val CHATBOT_VIDEO_UPLOAD_ONBOARDING = "CHATBOT_VIDEO_UPLOAD_ONBOARDING"
     }
 }
