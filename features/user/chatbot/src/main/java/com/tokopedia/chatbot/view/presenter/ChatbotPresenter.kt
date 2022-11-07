@@ -386,7 +386,6 @@ class ChatbotPresenter @Inject constructor(
         )
         val model = ChatSepratorUiModel(
             sepratorMessage = liveChatDividerAttribute?.divider?.label,
-            //TODO recheck this
             dividerTiemstamp = chatResponse?.message?.timeStampUnixNano ?: ""
         )
         view.onReceiveChatSepratorEvent(model, getLiveChatQuickReply())

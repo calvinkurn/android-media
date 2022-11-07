@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.util
 
 import com.tokopedia.chatbot.ChatbotConstant
-import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SOCKET_EXCEPTION
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 
@@ -66,9 +65,10 @@ object ChatbotNewRelicLogger {
             Math.min(message.length, MAX_LENGTH_FOR_NR_EXCEPTION)
         )).toString()
 
-        map["type"] = KEY_CHATBOT_SOCKET_EXCEPTION
+        map["type"] = "request"
         map["success"] = "false"
         map["exception"] = messageContent
+        map["socket_error"] = "true"
         ServerLogger.log(Priority.P2, ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR, map)
     }
 
