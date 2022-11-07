@@ -2,7 +2,6 @@ package com.tokopedia.manageaddress.domain.response.shareaddress
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.logisticCommon.domain.response.ErrorDefaultAddress
 
 data class ValidateShareAddressAsReceiverResponse(
     @SerializedName("KeroAddrValidateShareAddressRequestAsReceiver")
@@ -15,6 +14,6 @@ data class ValidateShareAddressAsReceiverResponse(
         @SerializedName("receiver_user_name")
         val receiverUserName: String? = null,
         @SerializedName("kero_addr_error")
-        val error: ErrorDefaultAddress? = null
+        val error: KeroAddressError? = null
     )
 }

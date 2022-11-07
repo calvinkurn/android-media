@@ -3,7 +3,7 @@ package com.tokopedia.manageaddress.ui.shareaddress.bottomsheets
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressBottomSheetState
-import com.tokopedia.logisticCommon.domain.response.ErrorDefaultAddress
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddressError
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddrSendShareAddressData
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrRequestResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrToUserResponse
@@ -73,7 +73,7 @@ class ShareAddressViewModelTest {
                 keroAddrSendShareAddressRequest = spyk(
                     KeroAddrSendShareAddressData(
                         numberOfRequest = 0,
-                        error = spyk(ErrorDefaultAddress(detail = errorMessage))
+                        error = spyk(KeroAddressError(message = errorMessage))
                     )
                 )
             }
@@ -110,7 +110,7 @@ class ShareAddressViewModelTest {
                 keroAddrSendShareAddressToUser = spyk(
                     KeroAddrSendShareAddressData(
                         numberOfRequest = 1,
-                        error = ErrorDefaultAddress(code = 0)
+                        error = KeroAddressError(code = 0)
                     )
                 )
             }
@@ -135,7 +135,7 @@ class ShareAddressViewModelTest {
                 keroAddrSendShareAddressToUser = spyk(
                     KeroAddrSendShareAddressData(
                         numberOfRequest = 0,
-                        error = spyk(ErrorDefaultAddress(detail = errorMessage, code = 1))
+                        error = spyk(KeroAddressError(message = errorMessage, code = 1))
                     )
                 )
             }

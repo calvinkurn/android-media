@@ -13,7 +13,7 @@ data class KeroShareAddrToUserResponse(
         get() = keroAddrSendShareAddressToUser?.error?.code == ZERO_VALUE
 
     val errorMessage: String
-        get() = keroAddrSendShareAddressToUser?.errorMessage ?: ""
+        get() = keroAddrSendShareAddressToUser?.error?.message.orEmpty()
 
     companion object {
         private const val ZERO_VALUE = 0

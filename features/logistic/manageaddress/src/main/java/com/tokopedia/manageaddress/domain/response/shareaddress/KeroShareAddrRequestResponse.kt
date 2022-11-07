@@ -10,7 +10,7 @@ data class KeroShareAddrRequestResponse(
         get() = (keroAddrSendShareAddressRequest?.numberOfRequest ?: 0) > ZERO_VALUE
 
     val errorMessage: String
-        get() = keroAddrSendShareAddressRequest?.errorMessage ?: ""
+        get() = keroAddrSendShareAddressRequest?.error?.message.orEmpty()
 
     companion object {
         private const val ZERO_VALUE = 0

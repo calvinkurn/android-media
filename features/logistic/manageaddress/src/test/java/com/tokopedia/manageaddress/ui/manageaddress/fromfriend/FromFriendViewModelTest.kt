@@ -3,7 +3,7 @@ package com.tokopedia.manageaddress.ui.manageaddress.fromfriend
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.domain.response.ErrorDefaultAddress
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddressError
 import com.tokopedia.manageaddress.domain.mapper.SharedAddressMapper
 import com.tokopedia.manageaddress.domain.response.shareaddress.DeleteShareAddressResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.GetSharedAddressListResponse
@@ -136,8 +136,8 @@ class FromFriendViewModelTest {
                     SaveShareAddressResponse.KeroAddrSaveSharedAddress(
                         isSuccess = false,
                         error = spyk(
-                            ErrorDefaultAddress(
-                                detail = fakeErrorMessage
+                            KeroAddressError(
+                                message = fakeErrorMessage
                             )
                         )
                     )
@@ -218,7 +218,7 @@ class FromFriendViewModelTest {
                     DeleteShareAddressResponse.KeroAddrDeleteSharedAddress(
                         isSuccess = false,
                         error = spyk(
-                            ErrorDefaultAddress(
+                            KeroAddressError(
                                 detail = fakeErrorMessage
                             )
                         )

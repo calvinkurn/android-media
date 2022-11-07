@@ -1,7 +1,6 @@
 package com.tokopedia.manageaddress.domain.response.shareaddress
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.logisticCommon.domain.response.ErrorDefaultAddress
 
 data class DeleteShareAddressResponse(
     @SerializedName("KeroAddrDeleteSharedAddress")
@@ -15,12 +14,12 @@ data class DeleteShareAddressResponse(
         @SerializedName("number_address_deleted")
         val numberAddressSaved: Int? = null,
         @SerializedName("kero_addr_error")
-        val error: ErrorDefaultAddress? = null
+        val error: KeroAddressError? = null
     )
 
     val isSuccess: Boolean
         get() = data?.isSuccess == true
 
     val errorMessage: String
-        get() = data?.error?.detail.orEmpty()
+        get() = data?.error?.message.orEmpty()
 }

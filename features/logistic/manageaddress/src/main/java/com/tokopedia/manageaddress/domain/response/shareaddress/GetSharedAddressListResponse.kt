@@ -16,8 +16,8 @@ data class KeroAddrGetSharedAddressList(
         var numberOfDisplayed: Int? = null,
         @SerializedName("message")
         var message: String? = null,
-        @SerializedName("status")
-        var status: String? = null
+        @SerializedName("kero_addr_error")
+        val error: KeroAddressError? = null
 )
 
 data class SharedAddressData(

@@ -366,6 +366,8 @@ object KeroLogisticQuery {
                 kero_addr_error {
                     code
                     detail
+                    category
+                    message
                 }
             }
         }
@@ -378,6 +380,8 @@ object KeroLogisticQuery {
                 kero_addr_error {
                     code
                     detail
+                    category
+                    message
                 }
             }
         }
@@ -391,6 +395,8 @@ object KeroLogisticQuery {
                 kero_addr_error {
                     code
                     detail
+                    category
+                    message
                 }
             }
         }
@@ -404,6 +410,8 @@ object KeroLogisticQuery {
                 kero_addr_error {
                     code
                     detail
+                    category
+                    message
                 }
             }
         }
@@ -418,6 +426,8 @@ object KeroLogisticQuery {
                 kero_addr_error {
                     code
                     detail
+                    category
+                    message
                 }
             }
         }
@@ -432,6 +442,8 @@ object KeroLogisticQuery {
                 kero_addr_error {
                     code
                     detail
+                    category
+                    message
                 }
             }
         }
@@ -446,6 +458,8 @@ object KeroLogisticQuery {
                 kero_addr_error {
                     code
                     detail
+                    category
+                    message
                 }
             }
         }
@@ -470,6 +484,8 @@ object KeroLogisticQuery {
                 kero_addr_error {
                     code
                     detail
+                    category
+                    message
                 }
             }
         }
