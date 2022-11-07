@@ -18,6 +18,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
@@ -55,6 +57,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -103,12 +106,13 @@ class DtHomeFragment : Fragment() {
 
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
 
+    private var chooseAddressWidget: ChooseAddressWidget? = null
+
 
     private val adapter by lazy {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
                 dtView = createDtView(),
-                dtChooseAddressWidgetListener = null,
                 featuredShopListener = createFeatureShopCallback(),
 
 //                homeTickerListener = this,
@@ -162,6 +166,8 @@ class DtHomeFragment : Fragment() {
         initNavToolbar()
         initRecyclerView()
         initAnchorTabMenu()
+
+        setupChooseAddressWidget()
         setupStatusBar()
         updateCurrentPageLocalCacheModelData()
 
@@ -174,6 +180,12 @@ class DtHomeFragment : Fragment() {
          */
         showLayout()
 
+    }
+
+    private fun setupChooseAddressWidget() {
+        chooseAddressWidget = binding?.chooseAddressWidget
+        bindChooseAddressWidget()
+        showCoachMark()
     }
 
     private fun initAnchorTabMenu() {
@@ -894,6 +906,72 @@ class DtHomeFragment : Fragment() {
                     fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
                 )
             }
+        }
+    }
+
+
+    private fun bindChooseAddressWidget() {
+
+
+        chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
+            override fun onLocalizingAddressUpdatedFromWidget() {
+                onRefreshLayout()
+            }
+
+            override fun onLocalizingAddressServerDown() {
+            }
+
+            override fun onClickChooseAddressTokoNowTracker() {
+            }
+
+            override fun needToTrackTokoNow(): Boolean = true
+
+            override fun getLocalizingAddressHostFragment(): Fragment = this@DtHomeFragment
+
+            override fun getLocalizingAddressHostSourceData(): String = SOURCE
+
+            override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
+
+            override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */
+            }
+
+            override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */
+            }
+
+            override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */
+            }
+        })
+
+    }
+
+    private var coachMark: CoachMark2? = null
+
+
+    private fun showCoachMark() {
+        val coachMarkList = arrayListOf<CoachMark2Item>().apply {
+            getChooseAddressWidgetCoachMarkItem()?.let {
+                add(it)
+            }
+        }
+        if (!coachMarkList.isNullOrEmpty()) {
+            coachMark = CoachMark2(requireContext())
+            coachMark?.isOutsideTouchable = true
+            coachMark?.showCoachMark(coachMarkList)
+        }
+    }
+
+    private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
+        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(requireContext())
+        return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
+            chooseAddressWidget?.let {
+                CoachMark2Item(
+                    it,
+                    requireContext().getString(R.string.dt_home_choose_address_widget_coachmark_title).orEmpty(),
+                    requireContext().getString(R.string.dt_home_choose_address_widget_coachmark_description).orEmpty()
+                )
+            }
+        } else {
+            return null
         }
     }
 

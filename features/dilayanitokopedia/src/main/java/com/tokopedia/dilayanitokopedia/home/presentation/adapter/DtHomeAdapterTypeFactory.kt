@@ -4,10 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.dilayanitokopedia.common.adapter.typefactory.DtChooseAddressWidgetTypeFactory
-import com.tokopedia.dilayanitokopedia.common.model.DtChooseAddressWidgetUiModel
 import com.tokopedia.dilayanitokopedia.common.view.DtView
-import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.DtChooseAddressWidgetViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
@@ -52,7 +49,6 @@ import timber.log.Timber
 class DtHomeAdapterTypeFactory(
     private val dtView: DtView? = null,
 //    private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
-    private val dtChooseAddressWidgetListener: DtChooseAddressWidgetViewHolder.DtChooseAddressWidgetListener? = null,
     private val featuredShopListener: FeaturedShopListener,
 //    private val tokoNowCategoryGridListener: TokoNowCategoryGridListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
@@ -72,10 +68,9 @@ class DtHomeAdapterTypeFactory(
 //    private val playWidgetCoordinator: PlayWidgetCoordinator? = null
 ) : BaseAdapterTypeFactory(),
 //    HomeTypeFactory,
-    HomeComponentTypeFactory,
+    HomeComponentTypeFactory
 //    TokoNowCategoryGridTypeFactory,
 //    TokoNowRepurchaseTypeFactory,
-    DtChooseAddressWidgetTypeFactory
 //    TokoNowEmptyStateOocTypeFactory,
 //    TokoNowServerErrorTypeFactory
 {
@@ -86,7 +81,6 @@ class DtHomeAdapterTypeFactory(
 
     //    // region Common TokoNow Component
 //    override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
-    override fun type(uiModel: DtChooseAddressWidgetUiModel): Int = DtChooseAddressWidgetViewHolder.LAYOUT
 //    override fun type(uiModel: TokoNowRepurchaseUiModel): Int = TokoNowRepurchaseViewHolder.LAYOUT
 //    override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
 //    override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
@@ -173,8 +167,6 @@ class DtHomeAdapterTypeFactory(
                 BannerComponentViewHolder(view, bannerComponentListener, null)
             }
 
-            //LCA
-            DtChooseAddressWidgetViewHolder.LAYOUT -> DtChooseAddressWidgetViewHolder(view, dtView, dtChooseAddressWidgetListener)
 
             DynamicLegoBannerViewHolder.LAYOUT -> {
                 DynamicLegoBannerViewHolder(view, dynamicLegoBannerCallback, null)

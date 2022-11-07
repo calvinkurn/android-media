@@ -5,7 +5,6 @@ import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.FE
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MIX_TOP_CAROUSEL
-import com.tokopedia.dilayanitokopedia.common.model.DtChooseAddressWidgetUiModel
 import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
@@ -50,8 +49,6 @@ object HomeLayoutMapper {
         @HomeStaticLayoutId id: String,
         serviceType: String
     ) {
-        val chooseAddressUiModel = DtChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
-        add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
 //        when (id) {
 //            EMPTY_STATE_OUT_OF_COVERAGE -> {
 //                val layout = TokoNowEmptyStateOocUiModel(id, SOURCE, serviceType)
@@ -74,8 +71,6 @@ object HomeLayoutMapper {
         localCacheModel: LocalCacheModel,
 //        isLoggedIn: Boolean
     ) {
-        val chooseAddressUiModel = DtChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
-        add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
 
 //        if (!hasTickerBeenRemoved) {
 //            val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
