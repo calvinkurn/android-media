@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.SerializedCMInAppData
@@ -18,20 +19,9 @@ object CmInAppBundleConvertor {
 
     const val HOURS_24_IN_MILLIS = 24 * 60 * 60 * 1000L
 
-    fun getCmInApp(remoteMessage: RemoteMessage): CMInApp? {
-        return try {
-            val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-            val map = remoteMessage.data
-            getCmInAppModel(gson, map)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
     fun getCmInApp(serializedCMInAppData: SerializedCMInAppData): CMInApp? {
         return try {
             val cmInApp = CMInApp()
-            cmInApp.isAmplification = true
 
             if(serializedCMInAppData.id == null || serializedCMInAppData.id == 0L){
                 return null
@@ -99,7 +89,7 @@ object CmInAppBundleConvertor {
         }
     }
 
-    private fun getCmInAppModel(gson: Gson, map: Map<String, String>): CMInApp? {
+    fun getCmInAppModel(gson: Gson, map: Map<String, String>): CMInApp? {
 
         val cmInApp = CMInApp()
         if (!map.containsKey(Payload.NOTIFICATION_ID)) return null
@@ -193,7 +183,7 @@ object CmInAppBundleConvertor {
 
     private fun getIntFromStr(strInt: String?): Int {
         return try {
-            strInt?.toInt() ?: 0
+            strInt?.toIntOrZero() ?: 0
         } catch (e: Exception) {
             0
         }

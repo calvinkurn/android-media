@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.analytic.tracker
 
 import android.os.Bundle
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
+import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.track.TrackApp
@@ -51,6 +52,13 @@ object BuyerOrderDetailTracker {
 
     private fun MutableMap<String, Any>.appendCurrentSite(currentSite: String): MutableMap<String, Any> {
         put(BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE, currentSite)
+        return this
+    }
+
+    private fun MutableMap<String, Any>.appendTrackerId(trackerId: String): MutableMap<String, Any> {
+        if (trackerId.isNotBlank()) {
+            put(BuyerOrderDetailTrackerConstant.EVENT_KEY_TRACKER_ID, trackerId)
+        }
         return this
     }
 
@@ -120,7 +128,8 @@ object BuyerOrderDetailTracker {
         eventAction: String,
         orderStatusCode: String,
         orderId: String,
-        businessUnit: String = BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_MARKETPLACE
+        businessUnit: String = BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_MARKETPLACE,
+        trackerId: String = ""
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             eventName = eventName,
@@ -129,6 +138,7 @@ object BuyerOrderDetailTracker {
             eventLabel = "$orderStatusCode${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}$orderId"
         ).appendBusinessUnit(businessUnit)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(trackerId)
             .sendGeneralEvent()
     }
 
@@ -214,14 +224,14 @@ object BuyerOrderDetailTracker {
         eventGeneralBuyerOrderDetail(eventAction = eventAction, orderStatusCode = orderStatusCode, orderId = orderId)
     }
 
-    fun eventClickActionButtonPG(isPrimaryButton: Boolean, buttonName: String, orderStatusCode: String, orderId: String) {
+    fun eventClickActionButtonPG(isPrimaryButton: Boolean, buttonName: String, trackerId: String, orderStatusCode: String, orderId: String) {
         val eventAction = StringBuilder().apply {
             if (isPrimaryButton) append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON)
             else append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON)
             append(BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP)
             append(buttonName)
         }.toString()
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG, eventAction, orderStatusCode, orderId, BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG, eventAction, orderStatusCode, orderId, BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS, trackerId)
     }
 
     fun eventClickActionButtonFromReceiveConfirmation(buttonName: String, orderStatusCode: String, orderId: String) {
@@ -278,5 +288,19 @@ object BuyerOrderDetailTracker {
             .appendProductIds(products)
             .appendUserId(userId)
             .sendEnhancedEcommerce(BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART)
+    }
+
+    fun eventClickInsuranceWidget(
+        trackerData: OrderInsuranceUiModel.TrackerData
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_INSURANCE_WIDGET,
+            eventLabel = "${trackerData.orderStatusCode}${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}${trackerData.orderId}"
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_CLICK_INSURANCE_WIDGET)
+            .sendGeneralEvent()
     }
 }

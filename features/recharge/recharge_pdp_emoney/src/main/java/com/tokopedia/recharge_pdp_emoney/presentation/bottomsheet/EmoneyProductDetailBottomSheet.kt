@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.NonNull
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyProductDetailBottomSheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -41,7 +40,8 @@ class EmoneyProductDetailBottomSheet(val product: CatalogProduct) : BottomSheetU
         with(view) {
             emoneyBottomSheetProductTitle.text = product.attributes.desc
             emoneyBottomSheetProductDescription.text = MethodChecker.fromHtml(product.attributes.detail)
-            emoneyBottomSheetProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntOrZero())
+            emoneyBottomSheetProductPrice.text = CurrencyFormatUtil
+                .convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntSafely())
         }
     }
 }

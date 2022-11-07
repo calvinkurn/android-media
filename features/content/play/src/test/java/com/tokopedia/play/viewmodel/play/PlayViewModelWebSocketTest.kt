@@ -3,8 +3,11 @@ package com.tokopedia.play.viewmodel.play
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.R
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.fake.FakePlayWebSocket
+import com.tokopedia.play.fake.chat.FakeChatManager
+import com.tokopedia.play.fake.chat.FakeChatStreams
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
@@ -12,11 +15,10 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.*
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.util.chat.ChatStreams
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
@@ -121,15 +123,27 @@ class PlayViewModelWebSocketTest {
         val message1 = "Message 1"
         val message2 = "Message 2"
 
+        val mockChatStreams = FakeChatStreams(
+            CoroutineScope(testDispatcher.main),
+            dispatchers = testDispatcher
+        )
+        val mockChatManager = FakeChatManager(mockChatStreams)
+
         val chatStreamsFactory = object : ChatStreams.Factory {
             override fun create(scope: CoroutineScope): ChatStreams {
-                return ChatStreams(scope, testDispatcher)
+                return mockChatStreams
+            }
+        }
+        val chatManagerFactory = object : ChatManager.Factory {
+            override fun create(chatStreams: ChatStreams): ChatManager {
+                return mockChatManager
             }
         }
 
         val robot = createPlayViewModelRobot(
             playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
+            chatManagerFactory = chatManagerFactory,
             chatStreamsFactory = chatStreamsFactory,
         )
 
@@ -500,7 +514,7 @@ class PlayViewModelWebSocketTest {
             event.last().isEqualTo(
                 ShowCoachMarkWinnerEvent(
                     PlayUserWinnerStatusSocketResponse.loserTitle,
-                    PlayUserWinnerStatusSocketResponse.loserText
+                    UiString.Text(PlayUserWinnerStatusSocketResponse.loserText),
                 )
             )
         }
@@ -641,7 +655,7 @@ class PlayViewModelWebSocketTest {
     }
 
     @Test
-    fun `when quiz is ongoing, user join the game that has a reward, user the winner`() {
+    fun `when quiz is ongoing, user join the game whether they a winner or not show coachmark`() {
         val model = uiModelBuilder.buildQuiz(
             id = "1", listOfChoices =
             listOf(
@@ -661,7 +675,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
@@ -700,7 +713,7 @@ class PlayViewModelWebSocketTest {
                 fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
             }
 
-            event.last().assertInstanceOf<ShowWinningDialogEvent>()
+            event.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
         }
     }
 
@@ -725,7 +738,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
@@ -766,8 +778,8 @@ class PlayViewModelWebSocketTest {
 
             event.last().assertEqualTo(
                 ShowCoachMarkWinnerEvent(
-                    PlayUserWinnerStatusSocketResponse.loserTitle,
-                    PlayUserWinnerStatusSocketResponse.loserText
+                    "",
+                    UiString.Resource(R.string.play_quiz_finished),
                 )
             )
         }
@@ -794,7 +806,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
@@ -858,7 +869,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu"
         )
 
         val err = MessageErrorException("Error gk bs jawab y")
@@ -919,7 +929,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
@@ -955,6 +964,44 @@ class PlayViewModelWebSocketTest {
                 )
             }
             eventAndState.second.last().assertInstanceOf<QuizAnsweredEvent>()
+        }
+    }
+
+    @Test
+    fun `given giveaway is upcoming when it ends, will change to ongoing`() {
+        val durationTap = 5000L.millisFromNow()
+
+        coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
+            id = "1",
+            status = InteractiveUiModel.Giveaway.Status.Upcoming(endTime = durationTap, startTime = 100L.millisFromNow())
+        )
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = fakePlayWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
+            val state = robot.recordState {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
+            }
+
+            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Giveaway>()
+            it.viewModel.interactiveData.assertInstanceOf<InteractiveUiModel.Giveaway>()
+            state.interactive.interactive.assertType<InteractiveUiModel.Giveaway> { ga ->
+                ga.status.assertEqualTo(InteractiveUiModel.Giveaway.Status.Ongoing(endTime = durationTap))
+            }
+            it.viewModel.interactiveData.assertType<InteractiveUiModel.Giveaway> { ga ->
+                ga.status.assertEqualTo(InteractiveUiModel.Giveaway.Status.Ongoing(endTime = durationTap))
+            }
         }
     }
 }

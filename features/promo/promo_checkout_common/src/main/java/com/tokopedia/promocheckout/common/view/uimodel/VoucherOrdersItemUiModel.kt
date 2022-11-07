@@ -10,8 +10,8 @@ data class VoucherOrdersItemUiModel(
 		var uniqueId: String = "",
 		var cartId: String = "-1",
 		var type: String = "",
-		var cashbackWalletAmount: Int = -1,
-		var discountAmount: Int = -1,
+		var cashbackWalletAmount: Long = -1L,
+		var discountAmount: Long = -1L,
 		var invoiceDescription: String = "",
 		var titleDescription: String = "",
 		var message: MessageUiModel = MessageUiModel()

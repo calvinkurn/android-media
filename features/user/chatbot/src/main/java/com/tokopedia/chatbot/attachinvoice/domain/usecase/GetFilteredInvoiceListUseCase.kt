@@ -27,6 +27,7 @@ const val GET_FILTERED_INVOICE_QUERY = """query get_invoice_list(${'$'}msgId: St
       ID
       PaymentID
       Code
+      Color
       Title
       Description
       CreateTime

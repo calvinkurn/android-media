@@ -22,9 +22,11 @@ import javax.inject.Inject
 private const val INVOICE_ERROR_URL = "https://images.tokopedia.net/img/android/res/singleDpi/transaction_invoice_error.png"
 private const val INVOICE_EMPTY_URL = "https://images.tokopedia.net/img/android/res/singleDpi/transaction_invoice_empty.png"
 
-class TransactionInvoiceListViewModel @Inject constructor(private val userSession: UserSessionInterface,
-                                                          private val getFilteredInvoiceListUseCase: GetFilteredInvoiceListUseCase)
-    : ViewModel() {
+class TransactionInvoiceListViewModel @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val getFilteredInvoiceListUseCase: GetFilteredInvoiceListUseCase
+) :
+    ViewModel() {
 
     private val filteredInvoiceLiveData: MutableLiveData<Result<List<Visitable<*>>>> = MutableLiveData()
 
@@ -32,33 +34,44 @@ class TransactionInvoiceListViewModel @Inject constructor(private val userSessio
 
     fun getFilteredInvoice(filteredEvent: String, page: Int, messageId: Long) {
         viewModelScope.launchCatchError(
-                block = {
-                    getFilteredInvoiceListUseCase.setParams(filteredEvent, page, messageId.toString())
-                    val response = getFilteredInvoiceListUseCase.executeOnBackground()
-                    if (response.getInvoiceList.isNullOrEmpty()) {
-                        filteredInvoiceLiveData.value = Success(mapEmptyResponse(filteredEvent))
-                    } else {
-                        filteredInvoiceLiveData.value = Success(mapResponse(response))
-                    }
-
-                },
-                onError = {
-                    it.printStackTrace()
-                    filteredInvoiceLiveData.value = Success(mapErrorResponse())
-                })
+            block = {
+                getFilteredInvoiceListUseCase.setParams(filteredEvent, page, messageId.toString())
+                val response = getFilteredInvoiceListUseCase.executeOnBackground()
+                if (response.getInvoiceList.isEmpty()) {
+                    filteredInvoiceLiveData.value = Success(mapEmptyResponse(filteredEvent))
+                } else {
+                    filteredInvoiceLiveData.value = Success(mapResponse(response))
+                }
+            },
+            onError = {
+                it.printStackTrace()
+                filteredInvoiceLiveData.value = Success(mapErrorResponse())
+            }
+        )
     }
 
     private fun mapErrorResponse(): List<EmptyTransactionInvoiceUiModel> {
         val result = ArrayList<EmptyTransactionInvoiceUiModel>()
-        result.add(EmptyTransactionInvoiceUiModel(R.string.chatbot_error_title, getDescriptionRes(""),
-                INVOICE_ERROR_URL, true))
+        result.add(
+            EmptyTransactionInvoiceUiModel(
+                R.string.chatbot_error_title,
+                getDescriptionRes(""),
+                INVOICE_ERROR_URL,
+                true
+            )
+        )
         return result
     }
 
     private fun mapEmptyResponse(filteredEvent: String): ArrayList<EmptyTransactionInvoiceUiModel> {
         val result = ArrayList<EmptyTransactionInvoiceUiModel>()
-        result.add(EmptyTransactionInvoiceUiModel(R.string.chatbot_empty_title, getDescriptionRes(filteredEvent),
-                INVOICE_EMPTY_URL))
+        result.add(
+            EmptyTransactionInvoiceUiModel(
+                R.string.chatbot_empty_title,
+                getDescriptionRes(filteredEvent),
+                INVOICE_EMPTY_URL
+            )
+        )
         return result
     }
 
@@ -80,11 +93,13 @@ class TransactionInvoiceListViewModel @Inject constructor(private val userSessio
     private fun mapResponse(response: GetInvoiceListPojo): ArrayList<TransactionInvoiceUiModel> {
         val result = ArrayList<TransactionInvoiceUiModel>()
         response.getInvoiceList.map {
-            result.add(TransactionInvoiceUiModel(it.attributes.id, it.attributes.title,
+            result.add(
+                TransactionInvoiceUiModel(
+                    it.attributes.id, it.attributes.title,
                     it.attributes.description, it.attributes.createTime, it.attributes.statusId,
                     it.attributes.status, it.attributes.totalAmount, it.attributes.invoiceUrl,
                     it.attributes.imageUrl, userSession.userId, userSession.name, it.attributes.code,
-                    it.typeId, it.type))
+                    it.typeId, it.type, it.attributes.color))
         }
         return result
     }

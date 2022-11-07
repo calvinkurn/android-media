@@ -7,7 +7,8 @@ import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ProductInfoDataModel(
-        val productDetailData: ProductDetailData? = null
+        val productDetailData: ProductDetailData? = null,
+        var isGetTopAds: Boolean = false
 ) : HomeRecommendationDataModel, ImpressHolder() {
 
     companion object {

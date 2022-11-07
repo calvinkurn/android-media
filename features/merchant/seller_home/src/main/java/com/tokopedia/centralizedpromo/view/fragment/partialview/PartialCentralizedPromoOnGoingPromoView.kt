@@ -1,5 +1,6 @@
 package com.tokopedia.centralizedpromo.view.fragment.partialview
 
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralizedpromo.view.LoadingType
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
@@ -104,8 +105,9 @@ class PartialCentralizedPromoOnGoingPromoView(
 
     private fun setupOnGoingPromo() = with(ongoingPromoBinding) {
         rvCentralizedPromoOnGoingPromo.apply {
+            layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             adapter =
-                this@PartialCentralizedPromoOnGoingPromoView.adapter.apply { setHasStableIds(true) }
+                this@PartialCentralizedPromoOnGoingPromoView.adapter
             addItemDecoration(
                 OnGoingPromoViewHolder.ItemDecoration(
                     resources.getDimension(R.dimen.sah_dimen_10dp).toInt()

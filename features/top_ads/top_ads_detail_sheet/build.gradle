@@ -24,6 +24,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.track)
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.supportLibDependencies.constraintLayout

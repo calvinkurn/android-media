@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchas
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -34,7 +35,6 @@ data class ProductInfoP2UiData(
     var shopRating: Float = 0F,
     var productView: String = "",
     var wishlistCount: String = "",
-    var isGoApotik: Boolean = false,
     var shopBadge: String = "",
     var shopCommitment: ShopCommitment = ShopCommitment(),
     var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
@@ -59,6 +59,8 @@ data class ProductInfoP2UiData(
     var ticker: ProductTicker = ProductTicker(),
     var navBar: NavBar = NavBar(),
     var shopFinishRate: String = "",
+    var isToolbarTransparent: Boolean = false,
+    var shopAdditional: ProductShopAdditional = ProductShopAdditional()
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
@@ -75,9 +77,7 @@ data class ProductInfoP2UiData(
         } ?: 0
     }
 
-    fun getBebasOngkirCampaignIDsByProductId(productId: String): String {
-        return bebasOngkir.boProduct.firstOrNull {
-            it.productId == productId
-        }?.boCampaignIDs ?: ""
+    fun getRatesEstimateBoMetadata(productId: String): String {
+        return ratesEstimate.firstOrNull { productId in it.listfProductId }?.boMetadata ?: ""
     }
 }

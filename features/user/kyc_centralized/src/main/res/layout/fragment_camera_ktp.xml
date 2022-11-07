@@ -118,7 +118,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginBottom="@dimen/layout_lvl9"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/kyc_dms_toolbar_text_color"
         android:paddingStart="@dimen/layout_lvl3"
         android:paddingEnd="@dimen/layout_lvl3"
         app:typographyType="body_1"

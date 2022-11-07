@@ -12,6 +12,7 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
       shortDescription
       url
       mobileUrl
+      productSortingStatus
       catalogImage {
         imageUrl
         isPrimary
@@ -114,6 +115,34 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
             row {
               key
               value
+            }
+          }
+        }
+        ... on CatalogModularComparisonNew {
+          spec_list {
+            title
+            sub_card {
+              sub_title
+              left_data
+              right_data
+            }
+          }
+          compared_data {
+            id
+            name
+            brand
+            url
+            catalogImage {
+              imageUrl
+              isPrimary
+            }
+            marketPrice {
+              min
+              max
+              minFmt
+              maxFmt
+              date
+              name
             }
           }
         }

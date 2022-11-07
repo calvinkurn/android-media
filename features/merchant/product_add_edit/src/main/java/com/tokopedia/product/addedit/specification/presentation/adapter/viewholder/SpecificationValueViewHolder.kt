@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.product.addedit.R
@@ -34,7 +35,7 @@ class SpecificationValueViewHolder(
             onSpecificationClickListener.onSpecificationValueTextClicked(adapterPosition)
         }
         tfSpecification?.textAreaInput?.doOnTextChanged { text, _, count, _ ->
-            if (count > 0 && text?.isBlank() == true)
+            if (count > Int.ZERO && text?.isBlank() == true)
                 onSpecificationClickListener.onSpecificationValueTextCleared(adapterPosition)
         }
         tooltipRequired?.setOnClickListener {

@@ -23,6 +23,7 @@
     <color name="kyc_dms_recapture_button_color">#ffffff</color>
     <color name="kyc_dms_border_camera">#ffffff</color>
     <color name="kyc_dms_border_button">#ADFFFFFF</color>
+    <color name="kyc_dms_overlay">#ae000000</color>
 
     <color name="kyc_dms_background_camera">#CC000000</color>
 </resources>

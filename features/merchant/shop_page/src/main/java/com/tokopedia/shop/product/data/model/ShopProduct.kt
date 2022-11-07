@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.data.model
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
@@ -23,6 +24,7 @@ data class ShopProduct(
         @Expose
         val name: String = "",
 
+        @SuppressLint("Invalid Data Type") // cannot use string or double since the response is an object
         @SerializedName("price")
         @Expose
         val price: Price = Price(),
@@ -73,7 +75,11 @@ data class ShopProduct(
 
         @SerializedName("parent_id")
         @Expose
-        val parentId: String = ""
+        val parentId: String = "",
+
+        @SerializedName("app_link")
+        @Expose
+        val appLink: String = ""
 ){
         data class Response(
                 @SerializedName("GetShopProduct")

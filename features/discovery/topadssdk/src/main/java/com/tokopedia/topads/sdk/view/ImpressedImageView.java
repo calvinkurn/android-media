@@ -14,9 +14,9 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.CpmImage;
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
@@ -26,11 +26,9 @@ import android.view.ViewTreeObserver;
 /**
  * @author by errysuprayogi on 3/27/17.
  */
-
+//need to delete once feed remove dependency
 public class ImpressedImageView extends AppCompatImageView {
 
-    private static final String TAG = ImpressedImageView.class.getSimpleName();
-    public static final float DEF_VALUE = 8.0f;
     private ImpressHolder holder;
     private ViewHintListener hintListener;
     private int offset;

@@ -24,6 +24,7 @@ class DigitalAtcMapper @Inject constructor() {
             categoryId = atc.categoryId,
             priceProduct = atc.priceText,
             channelId = atc.channelId,
+            errorAtc = atc.atcError,
         )
     }
 }

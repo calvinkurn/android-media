@@ -13,10 +13,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadline
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
-import com.tokopedia.feedplus.view.viewmodel.RetryModel
 
 /**
  * @author by nisie on 5/15/17.
@@ -30,9 +30,10 @@ class FeedPlusAdapter(
     private var list: MutableList<Visitable<*>> = mutableListOf()
     private val emptyModel: EmptyModel = EmptyModel()
     private val loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
-    private val retryModel: RetryModel = RetryModel()
     private var unsetListener: Boolean = false
     private var recyclerView: RecyclerView? = null
+
+    @Suppress("MagicNumber")
     var itemTreshold = 5
 
     // used to determine dynamicPostViewHolder.setVideo
@@ -170,14 +171,6 @@ class FeedPlusAdapter(
         remove(emptyModel)
     }
 
-    fun showRetry() {
-        add(retryModel)
-    }
-
-    fun removeRetry() {
-        remove(retryModel)
-    }
-
     fun showLoading() {
         val removePosition = this.list.indexOf(loadingMoreModel)
         if (removePosition != -1) remove(loadingMoreModel)
@@ -229,6 +222,12 @@ class FeedPlusAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    private fun updateListAndNotify(newList: List<Visitable<*>>, position: Int) {
+        list.clear()
+        list.addAll(newList)
+        notifyItemChanged(position)
+    }
+
     fun removePlayWidget() {
         val playCarousel = list.firstOrNull { it is CarouselPlayCardViewModel }
         if (playCarousel != null) remove(playCarousel)
@@ -240,6 +239,23 @@ class FeedPlusAdapter(
             else it
         }
         updateList(newList)
+    }
+
+    fun removeShopRecomWidget() {
+        val shopRecomWidget = list.firstOrNull { it is ShopRecomWidgetModel }
+        if (shopRecomWidget != null) remove(shopRecomWidget)
+    }
+
+    fun updateShopRecomWidget(newModel: ShopRecomWidgetModel) {
+        var position = 0
+        val newList = list.mapIndexed { index, visitable ->
+            if (visitable is ShopRecomWidgetModel) {
+                position = index
+                newModel
+            }
+            else visitable
+        }
+        updateListAndNotify(newList, position)
     }
 
     fun showShimmer() {

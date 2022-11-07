@@ -13,6 +13,10 @@ import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
+import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class PulsaDataFactory {
@@ -151,6 +155,35 @@ class PulsaDataFactory {
         )
     }
 
+    fun getErrorAtcFromGql(): DigitalAtcResult{
+        return DigitalAtcResult(
+            errorAtc = getErrorAtc()
+        )
+    }
+
+    fun getErrorAtc(): ErrorAtc{
+        return ErrorAtc(
+            status = 400,
+            title = "this is an error",
+            atcErrorPage = AtcErrorPage(
+                isShowErrorPage = true,
+                title = "Waduh Ada Error",
+                subTitle = "Hayolo Ada Error",
+                imageUrl = "https://images.tokopedia.net/img/verify_account.png",
+                buttons = listOf(
+                    AtcErrorButton(
+                        label = "Tambah Nomor HP",
+                        url = "https://tokopedia.com",
+                        appLinkUrl = "tokopedia://home",
+                        type = "primary"
+                    )
+                )
+            )
+        )
+    }
+
+    val errorAtcResponse = gson.JsonToString(ERROR_UNVERIFIED_PHONE_NUMBER)
+
     companion object {
         const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
         const val GET_RECOMMENDATION = "common_telco/get_recommendation_mock.json"
@@ -159,6 +192,7 @@ class PulsaDataFactory {
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
         const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
         const val GET_MENU_DETAIL = "pulsa/get_menu_detail_mock.json"
+        const val ERROR_UNVERIFIED_PHONE_NUMBER = "common_telco/unverified_phone_number_error_mock.json"
 
         const val CATEGORY_ID = "1"
         const val OPERATOR_ID = "5"

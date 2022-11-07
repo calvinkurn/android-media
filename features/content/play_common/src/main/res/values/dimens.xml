@@ -2,10 +2,13 @@
 <resources>
     <dimen name="dp_3">3dp</dimen>
     <dimen name="dp_1">1dp</dimen>
+    <dimen name="play_dp_1">1dp</dimen>
     <dimen name="play_dp_6">6dp</dimen>
     <dimen name="play_dp_10">10dp</dimen>
     <dimen name="play_dp_12">12dp</dimen>
     <dimen name="play_dp_14">14dp</dimen>
+    <dimen name="play_dp_18">18dp</dimen>
+    <dimen name="play_dp_20">20dp</dimen>
 
     <dimen name="play_spacing_size">1dp</dimen>
 
@@ -40,7 +43,9 @@
     <dimen name="play_circle_separator_height">4dp</dimen>
 
     <!-- Product Tag -->
-    <dimen name="play_product_tag_width">120dp</dimen>
+    <dimen name="play_product_tag_width">80dp</dimen>
+    <dimen name="play_product_pinned_width">280dp</dimen>
+    <dimen name="play_product_tag_height">118dp</dimen>
     <dimen name="play_product_tag_image_height">120dp</dimen>
     <dimen name="play_product_tag_radius">12dp</dimen>
     <dimen name="play_product_tag_stock_radius">4dp</dimen>

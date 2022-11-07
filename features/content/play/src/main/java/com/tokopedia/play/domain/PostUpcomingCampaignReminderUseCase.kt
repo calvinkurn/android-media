@@ -46,10 +46,13 @@ class PostUpcomingCampaignReminderUseCase@Inject constructor(
             }
         """
 
-        fun createParam(campaignId: Long, reminderType: PlayUpcomingBellStatus): RequestParams {
+        fun createParam(
+            campaignId: Long,
+            shouldRemind: Boolean,
+        ): RequestParams {
             val params = mapOf(
                 CAMPAIGN_ID to campaignId,
-                ACTION_PARAM to if(reminderType is PlayUpcomingBellStatus.On) ACTION_UNREGISTER_PARAM_VALUE else ACTION_REGISTER_PARAM_VALUE,
+                ACTION_PARAM to if (shouldRemind) ACTION_REGISTER_PARAM_VALUE else ACTION_UNREGISTER_PARAM_VALUE,
                 SOURCE_PARAM to SOURCE_PARAM_VALUE,
                 REQUEST_TYPE_PARAM to REQUEST_TYPE_PARAM_VALUE
             )

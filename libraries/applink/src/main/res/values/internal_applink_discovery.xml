@@ -11,5 +11,6 @@
     <string name="path_similar_search_result" translatable="false">/similar-search-result/.*\\/</string>
     <string name="path_autocomplete" translatable="false">/autocomplete</string>
     <string name="path_product_card_options">/product-card-options</string>
+    <string name="path_universal" translatable="false">/universal</string>
 
 </resources>

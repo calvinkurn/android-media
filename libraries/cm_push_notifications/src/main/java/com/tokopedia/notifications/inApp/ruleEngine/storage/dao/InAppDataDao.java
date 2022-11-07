@@ -71,8 +71,9 @@ public interface InAppDataDao {
     @Query("UPDATE inapp_data SET freq = 0, is_interacted = 1 where id = :id and perst_on = 0")
     void updateFreqWithPerst(long id);
 
-    /*if et(end time is 0 then inApp only expired when freq == 0)*/
-    @Query("Select * from inapp_data where et < :currentUnixTimeStamp and shown == 0")
-    List<CMInApp> getAllExpiredInApp(long currentUnixTimeStamp);
+    /*if et(end time is 0 then inApp only expired when freq == 0) weekInMilliSec is added to store
+     InAPP for a week in DB(so that payload from amplification don't re-render it) */
+    @Query("Select * from inapp_data where et + :weekInMilliSec < :currentUnixTimeStamp and shown == 0")
+    List<CMInApp> getAllExpiredInApp(long currentUnixTimeStamp, long weekInMilliSec);
 
 }

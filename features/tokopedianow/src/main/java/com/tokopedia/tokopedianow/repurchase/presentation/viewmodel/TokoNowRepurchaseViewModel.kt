@@ -118,6 +118,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         get() = _openScreenTracker
     val setUserPreference: LiveData<Result<SetUserPreferenceData>>
         get() = _setUserPreference
+    val updateToolbarNotification: LiveData<Boolean>
+        get() = _updateToolbarNotification
 
     private val _getLayout = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _loadMore = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
@@ -130,6 +132,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private val _repurchaseAddToCartTracker = MutableLiveData<RepurchaseAddToCartTracker>()
     private val _openScreenTracker = MutableLiveData<String>()
     private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
+    private val _updateToolbarNotification = MutableLiveData<Boolean>()
 
     private var localCacheModel: LocalCacheModel? = null
     private var productListMeta: RepurchaseProductListMeta? = null
@@ -260,6 +263,10 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             quantity.isZero() -> removeItemFromCart(miniCartItem)
             else -> updateItemCart(miniCartItem, quantity)
         }
+    }
+
+    fun updateToolbarNotification() {
+        _updateToolbarNotification.postValue(true)
     }
 
     fun applyCategoryFilter(selectedFilter: SelectedSortFilter?) {
@@ -514,6 +521,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            updateToolbarNotification()
             trackProductAddToCart(productId, quantity, type, it.data.cartId)
             _miniCartAdd.postValue(Success(it))
         }, {
@@ -549,6 +557,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         deleteCartUseCase.execute({
             val productId = miniCartItem.productId
             val data = Pair(productId, it.data.message.joinToString(separator = ", "))
+            updateToolbarNotification()
             _miniCartRemove.postValue(Success(data))
         }, {
             _miniCartRemove.postValue(Fail(it))
@@ -567,6 +576,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
+            updateToolbarNotification()
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))

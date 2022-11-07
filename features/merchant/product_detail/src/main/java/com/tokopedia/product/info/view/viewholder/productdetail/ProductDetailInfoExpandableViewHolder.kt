@@ -10,27 +10,32 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.thumbnailUrl
 import com.tokopedia.product.detail.databinding.BsItemProductDetailExpandableBinding
 import com.tokopedia.product.detail.databinding.BsItemProductDetailYoutubeImgBinding
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil.Companion.DIFFUTIL_PAYLOAD_TOGGLE
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.widget.ExpandableAnimation
 import com.tokopedia.product.share.ekstensions.layoutInflater
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import java.util.regex.Pattern
 
 
 /**
  * Created by Yehezkiel on 13/10/20
  */
-class ProductDetailInfoExpandableViewHolder(private val view: View, private val listener: ProductDetailInfoListener) : AbstractViewHolder<ProductDetailInfoExpandableDataModel>(view){
+class ProductDetailInfoExpandableViewHolder(
+    private val view: View,
+    private val listener: ProductDetailInfoListener
+) : AbstractViewHolder<ProductDetailInfoExpandableDataModel>(view) {
 
     companion object {
+
         val LAYOUT = R.layout.bs_item_product_detail_expandable
-        private const val TOKOPEDIA_LINK_REGEX = "((https?)://)?(www.)?(tokopedia.com|tkp.me|tokopedia.link)([-a-zA-Z0-9+&@#/%?=~_|!:,;]*[-a-zA-Z0-9+&@#/%=~_|])?"
+        private const val TOKOPEDIA_LINK_REGEX =
+            "((https?)://)?(www.)?(tokopedia.com|tkp.me|tokopedia.link)([-a-zA-Z0-9+&@#/%?=~_|!:,;]*[-a-zA-Z0-9+&@#/%=~_|])?"
         private const val HTTPS_SCHEME = "https://"
     }
 
@@ -42,19 +47,23 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
         setupVideoItem(element.youtubeVideo, element.isShowable)
     }
 
-    private fun setupVideoItem(youtubeVideo: List<YoutubeVideo>, isShowable: Boolean) = with(binding) {
-        horizontalScrollContainer.showWithCondition(isShowable && youtubeVideo.isNotEmpty())
-        horizontalViewContainer.removeAllViews()
-        youtubeVideo.forEachIndexed { index, it ->
-            val layout = view.context.layoutInflater.inflate(R.layout.bs_item_product_detail_youtube_img, null)
-            val youtubeImgBinding = BsItemProductDetailYoutubeImgBinding.bind(layout)
-            youtubeImgBinding.imgYoutubeItem.loadImage(it.thumbnailUrl)
-            layout.setOnClickListener {
-                listener.goToVideoPlayer(youtubeVideo.map { it.url }, index)
+    private fun setupVideoItem(youtubeVideo: List<YoutubeVideo>, isShowable: Boolean) =
+        with(binding) {
+            horizontalScrollContainer.showWithCondition(isShowable && youtubeVideo.isNotEmpty())
+            horizontalViewContainer.removeAllViews()
+            youtubeVideo.forEachIndexed { index, it ->
+                val layout = view.context.layoutInflater.inflate(
+                    R.layout.bs_item_product_detail_youtube_img,
+                    null
+                )
+                val youtubeImgBinding = BsItemProductDetailYoutubeImgBinding.bind(layout)
+                youtubeImgBinding.imgYoutubeItem.loadImage(it.thumbnailUrl)
+                layout.setOnClickListener {
+                    listener.goToVideoPlayer(youtubeVideo.map { it.url }, index)
+                }
+                horizontalViewContainer.addView(layout)
             }
-            horizontalViewContainer.addView(layout)
         }
-    }
 
     private fun setupExpandableItem(element: ProductDetailInfoExpandableDataModel) = with(binding) {
         productDetailValue.showWithCondition(element.isShowable)
@@ -62,11 +71,9 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
 
         expandableTitleChevron.setOnClickListener {
             expandableTitleChevron.isExpand = expandableTitleChevron.isExpand != true
-            listener.closeAllExpand(element.uniqueIdentifier(), expandableTitleChevron.isExpand
-                    ?: false)
+            listener.closeAllExpand(element.uniqueIdentifier(), expandableTitleChevron.isExpand)
         }
-        binding.productDetailValue.text = HtmlLinkHelper(view.context,
-                element.textValue.replace("(\r\n|\n)".toRegex(), "<br />")).spannedString
+        binding.productDetailValue.text = element.textValue.parseAsHtmlLink(root.context)
         setSelectableText()
         setSelectClickableTextView()
     }
@@ -84,7 +91,8 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
 
         productDetailValue.autoLinkMask = 0
         Linkify.addLinks(productDetailValue, pattern, HTTPS_SCHEME)
-        productDetailValue.movementMethod = ProductCustomMovementMethod(listener::onBranchLinkClicked)
+        productDetailValue.movementMethod =
+            ProductCustomMovementMethod(listener::onBranchLinkClicked)
     }
 
     override fun bind(element: ProductDetailInfoExpandableDataModel, payloads: MutableList<Any>) {
@@ -95,7 +103,10 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
                 val toggle = bundle.getBoolean(DIFFUTIL_PAYLOAD_TOGGLE)
                 if (toggle) {
                     binding.productDetailValue.setTextIsSelectable(true)
-                    ExpandableAnimation.expand(binding.productDetailValue, customParentWidth = view.width) {
+                    ExpandableAnimation.expand(
+                        binding.productDetailValue,
+                        customParentWidth = view.width
+                    ) {
                         binding.horizontalScrollContainer.showWithCondition(toggle)
                     }
                 } else {

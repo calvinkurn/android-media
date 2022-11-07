@@ -1,0 +1,148 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringFragment">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title="@string/ssfs_title_your_shop_flash_sale_quota" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifycomponents.CardUnify2
+                android:id="@+id/card_quota_monitoring"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tp_remaining_quota"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textColor="@color/black"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="paragraph_2"
+                        app:typographyWeight="bold"
+                        tools:text="@string/ssfs_remaining_quota_value_placeholder" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tg_quota_resource_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@string/ssfs_title_quota_resource_label"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/tp_remaining_quota"
+                        app:layout_constraintTop_toBottomOf="@+id/tp_remaining_quota"
+                        app:typographyType="paragraph_2"
+                        app:typographyWeight="reguler" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tg_resource_and_remaining_quota_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/ssfs_label_resource_and_remaining_quota"
+                        android:textColor="@color/gr_700"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tg_quota_resource_label"
+                        app:typographyType="small"
+                        app:typographyWeight="bold" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tg_expired_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="32dp"
+                        android:text="@string/ssfs_expire_label"
+                        android:textColor="@color/gr_700"
+                        app:layout_constraintBottom_toBottomOf="@+id/tg_resource_and_remaining_quota_label"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/tg_resource_and_remaining_quota_label"
+                        app:typographyType="small"
+                        app:typographyWeight="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_quota"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        tools:listitem="@layout/ssfs_item_quota_monitoring"
+                        tools:itemCount="5"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tg_resource_and_remaining_quota_label" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.tokopedia.unifycomponents.CardUnify2>
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_quota_monitoring"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="@string/ssfs_quota_monitoring_ticker_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_quota_monitoring"
+                app:tickerType="announcement" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_learn_quota"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/ssfs_label_learn_quota"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ticker_quota_monitoring"
+                app:unifyButtonVariant="ghost" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

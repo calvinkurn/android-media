@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
@@ -22,6 +21,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetErrorBindi
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetLoadingBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetSuccessBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
@@ -60,12 +60,23 @@ class UnificationViewHolder(
     }
 
     override fun bind(element: UnificationWidgetUiModel) {
-        setTitle(element.title)
+        setTitle(element)
         observeState(element)
     }
 
-    private fun setTitle(title: String) {
-        binding.tvShcUnificationTitle.text = title.parseAsHtml()
+    private fun setTitle(element: UnificationWidgetUiModel) {
+        binding.tvShcUnificationTitle.run {
+            setText(element.title)
+
+            val tooltip = element.tooltip
+            val shouldShowTooltip = (tooltip?.shouldShow == true)
+                    && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+
+            showTooltipIcon(shouldShowTooltip) {
+                listener.onTooltipClicked(tooltip ?: return@showTooltipIcon)
+            }
+            showTag(element.tag)
+        }
     }
 
     private fun observeState(element: UnificationWidgetUiModel) {
@@ -88,21 +99,16 @@ class UnificationViewHolder(
         binding.shcNotifTagTab.gone()
 
         successStateBinding.containerShcUnificationSuccess.gone()
-        errorStateBinding.containerShcUnificationError.gone()
+        errorStateBinding.shcUnificationCommonErrorView.gone()
         loadingStateBinding.containerShcUnificationLoading.visible()
     }
 
     private fun showErrorState(element: UnificationWidgetUiModel) {
         loadingStateBinding.containerShcUnificationLoading.gone()
         successStateBinding.containerShcUnificationSuccess.gone()
-        errorStateBinding.containerShcUnificationError.visible()
-
-        with(errorStateBinding) {
-            shcUnificationCommonErrorView.imgWidgetOnError
-                .loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
-            btnShcUnificationRetry.setOnClickListener {
-                listener.onReloadWidget(element)
-            }
+        errorStateBinding.shcUnificationCommonErrorView.visible()
+        errorStateBinding.shcUnificationCommonErrorView.setOnReloadClicked {
+            listener.onReloadWidget(element)
         }
 
         if (element.data?.tabs.isNullOrEmpty()) {
@@ -145,7 +151,7 @@ class UnificationViewHolder(
             }
 
             setupDropDownView(element)
-            setupLastUpdate(element, tab)
+            setupLastUpdate(element)
 
             listener.showUnificationWidgetCoachMark(binding.tvShcUnificationTitle)
         }
@@ -218,9 +224,9 @@ class UnificationViewHolder(
             tableShcUnification.setOnSwipeListener { position, _, _ ->
                 shcTableViewPageControl.setCurrentIndicator(position)
             }
-            tableShcUnification.addOnHtmlClickListener { url, _ ->
+            tableShcUnification.addOnHtmlClickListener { url, text, meta, isEmpty ->
                 openAppLink(url)
-                listener.sendUnificationTableItemClickEvent(element)
+                listener.sendUnificationTableItemClickEvent(element, text, meta, isEmpty)
             }
             tableShcUnification.addOnImpressionListener(tab.impressHolder) {
                 listener.sendUnificationTabImpressionEvent(element)
@@ -228,7 +234,7 @@ class UnificationViewHolder(
         }
     }
 
-    private fun setupLastUpdate(element: UnificationWidgetUiModel, tab: UnificationTabUiModel) {
+    private fun setupLastUpdate(element: UnificationWidgetUiModel) {
         with(successStateBinding.luvShcUnification) {
             element.data?.lastUpdated?.let { lastUpdated ->
                 isVisible = lastUpdated.isEnabled
@@ -325,7 +331,12 @@ class UnificationViewHolder(
 
         fun sendUnificationEmptyStateCtaClickEvent(element: UnificationWidgetUiModel) {}
 
-        fun sendUnificationTableItemClickEvent(element: UnificationWidgetUiModel) {}
+        fun sendUnificationTableItemClickEvent(
+            element: UnificationWidgetUiModel,
+            text: String,
+            meta: TableRowsUiModel.Meta,
+            isEmpty: Boolean
+        ) {}
 
         fun showUnificationWidgetCoachMark(anchor: View) {}
     }

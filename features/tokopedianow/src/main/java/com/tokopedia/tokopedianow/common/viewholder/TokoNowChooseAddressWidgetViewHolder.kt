@@ -66,6 +66,10 @@ class TokoNowChooseAddressWidgetViewHolder(
                 override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
 
                 override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */ }
+
+                override fun isFromTokonowPage(): Boolean {
+                    return true
+                }
             })
         }
     }

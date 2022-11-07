@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.user_identification_common.R
+import com.tokopedia.kyc_centralized.R
 
 class NotFoundFragment : Fragment() {
 

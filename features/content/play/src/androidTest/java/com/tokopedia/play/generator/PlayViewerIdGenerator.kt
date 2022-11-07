@@ -18,10 +18,11 @@ import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
-import com.tokopedia.play.test.espresso.delay
-import com.tokopedia.play.test.factory.TestFragmentFactory
-import com.tokopedia.play.test.factory.TestViewModelFactory
-import com.tokopedia.play.test.util.isSiblingWith
+import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.content.test.factory.TestFragmentFactory
+import com.tokopedia.content.test.factory.TestViewModelFactory
+import com.tokopedia.content.test.util.isSiblingWith
+import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -44,6 +45,7 @@ import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
@@ -61,6 +63,7 @@ import java.util.*
  * Created by kenny.hadisaputra on 17/03/22
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@UiTest
 class PlayViewerIdGenerator {
 
     @get:Rule
@@ -122,6 +125,7 @@ class PlayViewerIdGenerator {
                 castPlayerHelper = mockk(relaxed = true),
                 playShareExperience = mockk(relaxed = true),
                 playLog = mockk(relaxed = true),
+                chatManagerFactory = mockk(relaxed = true),
                 chatStreamsFactory = mockk(relaxed = true),
                 liveRoomMetricsCommon = mockk(relaxed = true),
             )
@@ -237,34 +241,37 @@ class PlayViewerIdGenerator {
             resultState = ResultState.Success,
         )
 
-        val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
-        every { mockChannelStorage.getChannelList() } returns listOf("12669")
-        every { mockChannelStorage.getData(any()) } returns uiModelBuilder.buildChannelData(
-            id = "12669",
-            partnerInfo = PlayPartnerInfo(name = "test"),
-            channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
-            pinnedInfo = PlayPinnedInfoUiModel(
-                PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
+        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
+            channelData = listOf(
+                uiModelBuilder.buildChannelData(
+                    id = "12669",
+                    partnerInfo = PlayPartnerInfo(name = "test"),
+                    channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
+                    pinnedInfo = PlayPinnedInfoUiModel(
+                        PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
+                    ),
+                    videoMetaInfo = PlayVideoMetaInfoUiModel(
+                        videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
+                            params = PlayGeneralVideoPlayerParams(
+                                videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
+                                buffer = PlayBufferControl(),
+                                lastMillis = null,
+                            )
+                        ),
+                        videoStream = PlayVideoStreamUiModel(
+                            "", VideoOrientation.Vertical, "Video Keren"
+                        ),
+                    ),
+                    tagItems = tagItem,
+                )
             ),
-            videoMetaInfo = PlayVideoMetaInfoUiModel(
-                videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
-                    params = PlayGeneralVideoPlayerParams(
-                        videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
-                        buffer = PlayBufferControl(),
-                        lastMillis = null,
-                    )
-                ),
-                videoStream = PlayVideoStreamUiModel(
-                    "", VideoOrientation.Vertical, "Video Keren"
-                ),
-            ),
-            tagItems = tagItem,
+            cursor = "",
         )
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext, mockChannelStorage))
+                .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
                 .playTestRepositoryModule(PlayTestRepositoryModule(repo))
                 .build()
@@ -277,7 +284,7 @@ class PlayViewerIdGenerator {
         val scenario = ActivityScenario.launch<PlayActivity>(intent)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        delay(1000)
+        delay(5000)
 
         scenario.onActivity {
             val parent = parentViewPrinter.printAsCSV(
@@ -316,33 +323,36 @@ class PlayViewerIdGenerator {
 
     @Test
     fun youTubePlayer() {
-        val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-        every { mockChannelStorage.getChannelList() } returns listOf("12669")
-        every { mockChannelStorage.getData(any()) } returns PlayChannelData(
-            id = "12669",
-            channelDetail = PlayChannelDetailUiModel(),
-            partnerInfo = PlayPartnerInfo(name = "test"),
-            likeInfo = PlayLikeInfoUiModel(),
-            channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
-            pinnedInfo = PlayPinnedInfoUiModel(
-                PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
-            ),
-            quickReplyInfo = PlayQuickReplyInfoUiModel(emptyList()),
-            videoMetaInfo = PlayVideoMetaInfoUiModel(
-                videoPlayer = PlayVideoPlayerUiModel.YouTube("E4qo_PkR7WE"),
-                videoStream = PlayVideoStreamUiModel(
-                    "", VideoOrientation.Horizontal(16, 9), "Video Keren"
+        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
+            channelData = listOf(
+                PlayChannelData(
+                    id = "12680",
+                    channelDetail = PlayChannelDetailUiModel(),
+                    partnerInfo = PlayPartnerInfo(name = "test"),
+                    likeInfo = PlayLikeInfoUiModel(),
+                    channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
+                    pinnedInfo = PlayPinnedInfoUiModel(
+                        PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
+                    ),
+                    quickReplyInfo = PlayQuickReplyInfoUiModel(emptyList()),
+                    videoMetaInfo = PlayVideoMetaInfoUiModel(
+                        videoPlayer = PlayVideoPlayerUiModel.YouTube("E4qo_PkR7WE"),
+                        videoStream = PlayVideoStreamUiModel(
+                            "", VideoOrientation.Horizontal(16, 9), "Video Keren"
+                        ),
+                    ),
+                    upcomingInfo = PlayUpcomingUiModel(),
+                    tagItems = TagItemUiModel.Empty,
+                    status = PlayStatusUiModel.Empty,
+                    leaderboard = LeaderboardUiModel.Empty
                 ),
             ),
-            upcomingInfo = PlayUpcomingUiModel(),
-            tagItems = TagItemUiModel.Empty,
-            status = PlayStatusUiModel.Empty,
-            leaderboard = LeaderboardUiModel.Empty
+            cursor = "",
         )
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext, mockChannelStorage))
+                .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
                 .playTestRepositoryModule(PlayTestRepositoryModule(repo))
                 .build()
@@ -350,12 +360,12 @@ class PlayViewerIdGenerator {
 
         val intent = RouteManager.getIntent(
             targetContext,
-            "tokopedia://play/12669"
+            "tokopedia://play/12680"
         )
         val scenario = ActivityScenario.launch<PlayActivity>(intent)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        delay(1000)
+        delay(5000)
 
         scenario.onActivity {
             val youTubeFragment = viewPrinter.printAsCSV(

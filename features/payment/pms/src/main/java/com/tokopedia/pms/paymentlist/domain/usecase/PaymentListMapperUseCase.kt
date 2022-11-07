@@ -189,7 +189,7 @@ class PaymentListMapperUseCase @Inject constructor(
                 label ?: "", transactionId ?: "", merchantCode ?: "",
                 transactionExpireUnix ?: 0, transactionDate ?: "",
                 paymentAmount ?: 0, isShowCancelButton ?: false,
-                productName ?: ""
+                productName ?: "",  continuePurchaseUrl
             )
         }
     }

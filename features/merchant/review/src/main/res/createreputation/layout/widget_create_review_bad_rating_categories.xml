@@ -13,5 +13,5 @@
         android:nestedScrollingEnabled="false"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="2"
-        tools:listitem="@layout/item_review_bad_rating_category" />
+        tools:listitem="@layout/item_create_review_bad_rating_category" />
 </androidx.constraintlayout.widget.ConstraintLayout>

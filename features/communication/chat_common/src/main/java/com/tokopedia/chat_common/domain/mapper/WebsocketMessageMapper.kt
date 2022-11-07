@@ -13,6 +13,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -92,8 +93,8 @@ open class WebsocketMessageMapper @Inject constructor() {
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
         val ROLE_USER = "User"
 
-        return (!isOpposite && role.toLowerCase() == ROLE_USER.toLowerCase())
-                || (isOpposite && role.toLowerCase() != ROLE_USER.toLowerCase())
+        return (!isOpposite && role.lowercase(Locale.getDefault()) == ROLE_USER.lowercase(Locale.getDefault()))
+                || (isOpposite && role.lowercase(Locale.getDefault()) != ROLE_USER.lowercase(Locale.getDefault()))
     }
 
     open fun convertToFallBackModel(pojo: ChatSocketPojo): Visitable<*> {

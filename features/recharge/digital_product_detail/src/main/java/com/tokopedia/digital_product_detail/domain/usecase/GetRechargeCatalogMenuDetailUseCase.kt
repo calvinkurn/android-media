@@ -37,10 +37,13 @@ class GetRechargeCatalogMenuDetailUseCase @Inject constructor(
     fun setMenuDetailParams(menuId: Int) {
         params = RequestParams.create().apply {
             putInt(KEY_MENU_ID, menuId)
+            putInt(PARAM_PLATFORM_ID, PLATFORM_ID)
         }
     }
 
     companion object {
         private const val KEY_MENU_ID = "menuID"
+        private const val PARAM_PLATFORM_ID = "platformID"
+        private const val PLATFORM_ID = 5
     }
 }

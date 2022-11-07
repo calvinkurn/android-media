@@ -34,6 +34,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    implementation projectOrAar(rootProject.ext.libraries.journeyDebugger)
     implementation projectOrAar(rootProject.ext.libraries.dataExplorer)
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation projectOrAar(rootProject.ext.libraries.utils)
@@ -47,6 +48,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.cassava
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

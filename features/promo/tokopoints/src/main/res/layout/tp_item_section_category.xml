@@ -11,8 +11,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_bg"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:adjustViewBounds="true"
         android:background="@drawable/ic_squircle_new"
         android:padding="12dp"

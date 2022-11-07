@@ -4,10 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="16dp"
-    android:paddingTop="12dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="12dp">
+    android:padding="16dp" >
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_title"
@@ -42,7 +39,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_shipment_icon"
         android:layout_width="wrap_content"
-        android:layout_height="16dp"
+        android:layout_height="20dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toRightOf="parent"

@@ -13,12 +13,12 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -46,9 +46,6 @@ abstract class BaseAtcVariantViewModelTest {
     lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
 
     @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
-
-    @RelaxedMockK
     lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @RelaxedMockK
@@ -65,8 +62,7 @@ abstract class BaseAtcVariantViewModelTest {
 
     val viewModel by lazy {
         AtcVariantViewModel(CoroutineTestDispatchersProvider, aggregatorMiniCartUseCase,
-                addToCartUseCase, addToCartOcsUseCase,
-                addToCartOccUseCase, addWishListUseCase,
+                addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase,
                 addToWishlistV2UseCase, updateCartUseCase,
                 deleteCartUseCase, toggleFavoriteUseCase)
     }
@@ -194,7 +190,7 @@ abstract class BaseAtcVariantViewModelTest {
                 is VariantHeaderDataModel -> {
                     Assert.assertEquals(it.productId, expectedSelectedProductId)
                     Assert.assertEquals(it.headerData.productMainPrice, expectedSelectedMainPrice)
-                    Assert.assertEquals(it.headerData.productDiscountedPercentage, 0)
+                    Assert.assertEquals(it.headerData.productDiscountedPercentage, Float.ZERO)
                     Assert.assertEquals(it.headerData.productStockFmt, expectedSelectedStockFmt)
                     Assert.assertTrue(it.listOfVariantTitle.containsAll(expectedVariantName))
                     Assert.assertEquals(it.cashBackPercentage, cashBackPercentage)

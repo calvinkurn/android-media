@@ -13,6 +13,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.DriverCallBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 
 class DriverCallBottomSheet : BottomSheetUnify() {
 
@@ -73,11 +74,15 @@ class DriverCallBottomSheet : BottomSheetUnify() {
     }
 
     private fun driverCallToIntent(driverPhoneNumber: String) {
-        val intent = Intent(Intent.ACTION_DIAL).apply {
-            data = Uri.fromParts(TEL_PREFIX, driverPhoneNumber, null)
+        try {
+            val intent = Intent(Intent.ACTION_DIAL).apply {
+                data = Uri.parse("$TELEPHONY_URI$driverPhoneNumber")
+            }
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        } catch (e: Exception) {
+            Timber.e(e)
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
     }
 
     fun show(fragmentManager: FragmentManager?) {
@@ -104,7 +109,7 @@ class DriverCallBottomSheet : BottomSheetUnify() {
 
         private const val DRIVER_PHONE_NUMBER_KEY = "driverPhoneNumber"
         private const val IS_CALLABLE_KEY = "isCallable"
-        private const val TEL_PREFIX = "tel"
+        private const val TELEPHONY_URI = "tel:"
 
         val TAG: String = DriverCallBottomSheet::class.java.simpleName
     }

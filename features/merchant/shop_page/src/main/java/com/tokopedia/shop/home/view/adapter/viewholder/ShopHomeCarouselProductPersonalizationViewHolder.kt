@@ -8,6 +8,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
@@ -17,6 +18,7 @@ import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
+import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
@@ -39,6 +41,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
     }
     private val viewBinding: ItemShopHomeProductRecommendationCarouselBinding? by viewBinding()
     private var tvCarouselTitle : TextView? = null
+    private var tvCarouselSubTitle : TextView? = null
     private var recyclerView : CarouselProductCardView? = null
 
     init {
@@ -46,8 +49,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
     }
 
     override fun bind(element: ShopHomeCarousellProductUiModel) {
-        tvCarouselTitle?.text = element.header.title
-
+        setHeaderSection(element)
         // product list
         val carouselProductList = element.productList.map {
             ShopPageHomeMapper.mapToProductCardPersonalizationModel(
@@ -159,20 +161,31 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
             override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
-                if (element.name == REMINDER) {
-                    shopHomeCarouselProductListener.onPersonalizationReminderCarouselProductItemClicked(
+                when (element.name) {
+                    REMINDER -> {
+                        shopHomeCarouselProductListener.onPersonalizationReminderCarouselProductItemClicked(
                             adapterPosition,
                             carouselProductCardPosition,
                             element,
                             productItem
-                    )
-                } else {
-                    shopHomeCarouselProductListener.onPersonalizationCarouselProductItemClicked(
+                        )
+                    }
+                    TRENDING -> {
+                        shopHomeCarouselProductListener.onPersonalizationTrendingCarouselProductItemClicked(
                             adapterPosition,
                             carouselProductCardPosition,
                             element,
                             productItem
-                    )
+                        )
+                    }
+                    else -> {
+                        shopHomeCarouselProductListener.onPersonalizationCarouselProductItemClicked(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                        )
+                    }
                 }
             }
         }
@@ -181,20 +194,29 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
             override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
-                if (element.name == REMINDER) {
-                    shopHomeCarouselProductListener.onCarouselProductPersonalizationReminderItemImpression(
+                when (element.name) {
+                    REMINDER -> {
+                        shopHomeCarouselProductListener.onCarouselProductPersonalizationReminderItemImpression(
                             adapterPosition,
                             carouselProductCardPosition,
                             element,
                             productItem
-                    )
-                } else {
-                    shopHomeCarouselProductListener.onCarouselProductPersonalizationItemImpression(
+                        )
+                    }
+                    TRENDING -> {
+                        shopHomeCarouselProductListener.onCarouselProductPersonalizationTrendingItemImpression(
+                            adapterPosition,
+                            productItem
+                        )
+                    }
+                    else -> {
+                        shopHomeCarouselProductListener.onCarouselProductPersonalizationItemImpression(
                             adapterPosition,
                             carouselProductCardPosition,
                             element,
                             productItem
-                    )
+                        )
+                    }
                 }
                 if (element.name == RECENT_ACTIVITY || element.name == REMINDER) {
                     if (productCardModel.isButtonAtcShown()) {
@@ -224,7 +246,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 )
             }
 
-            RECENT_ACTIVITY -> {
+            RECENT_ACTIVITY, TRENDING -> {
                 recyclerView?.bindCarouselProductCardViewGrid(
                     scrollToPosition = getScrollPosition(),
                     productCardModelList = carouselProductList,
@@ -260,14 +282,29 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         setWidgetImpressionListener(element)
     }
 
+    private fun setHeaderSection(element: ShopHomeCarousellProductUiModel) {
+        tvCarouselTitle?.text = element.header.title
+        tvCarouselSubTitle?.shouldShowWithAction(element.header.subtitle.isNotEmpty()){
+            tvCarouselSubTitle?.text = element.header.subtitle
+        }
+    }
+
     private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
         itemView.addOnImpressionListener(model.impressHolder) {
-            shopHomeCarouselProductListener.onCarouselProductWidgetImpression(adapterPosition, model)
+            if(model.name == TRENDING){
+                shopHomeCarouselProductListener.onCarouselProductPersonalizationTrendingWidgetImpression()
+            }else {
+                shopHomeCarouselProductListener.onCarouselProductWidgetImpression(
+                    adapterPosition,
+                    model
+                )
+            }
         }
     }
 
     private fun initView() {
         tvCarouselTitle = viewBinding?.etalaseHeaderContainer?.tvTitle
+        tvCarouselSubTitle = viewBinding?.etalaseHeaderContainer?.textSubTitle
         recyclerView = viewBinding?.rvCarouselRecommendation
     }
 

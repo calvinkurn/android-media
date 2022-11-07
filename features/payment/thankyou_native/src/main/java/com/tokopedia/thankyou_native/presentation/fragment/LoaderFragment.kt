@@ -54,7 +54,11 @@ class LoaderFragment : BaseDaggerFragment() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.thank_fragment_loader, container, false)
     }
 
@@ -78,8 +82,10 @@ class LoaderFragment : BaseDaggerFragment() {
         globalError.gone()
         arguments?.let {
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
-                thanksPageDataViewModel.getThanksPageData(it.getString(ARG_PAYMENT_ID, ""),
-                        it.getString(ARG_MERCHANT, ""))
+                thanksPageDataViewModel.getThanksPageData(
+                    it.getString(ARG_PAYMENT_ID, ""),
+                    it.getString(ARG_MERCHANT, "")
+                )
             }
         }
     }
@@ -158,16 +164,27 @@ class LoaderFragment : BaseDaggerFragment() {
         try {
             val vibrationService = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrationService.vibrate(VibrationEffect.createOneShot(VIBRATION_MILLIS, VibrationEffect.DEFAULT_AMPLITUDE))
+                vibrationService.vibrate(
+                    VibrationEffect.createOneShot(
+                        VIBRATION_MILLIS,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
             } else {
                 vibrationService.vibrate(VIBRATION_MILLIS)
             }
-        } catch(ignore: Exception) { }
+        } catch (ignore: Exception) {
+        }
     }
 
     private fun prepareLoaderLottieTask(): LottieTask<LottieComposition>? {
-        val lottieFileZipStream = ZipInputStream(context!!.assets.open(LOADER_JSON_ZIP_FILE))
-        return LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+        return try {
+            val lottieFileZipStream =
+                ZipInputStream(requireContext().assets.open(LOADER_JSON_ZIP_FILE))
+            LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+        } catch (ignore: IllegalStateException) {
+            null
+        }
     }
 
     private fun addLottieAnimationToView() {

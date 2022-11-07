@@ -5,6 +5,7 @@ import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -39,6 +40,10 @@ private fun isCurrentOptionSortedWithNextOption(currentOption: OptionViewModel, 
 
 internal fun List<Visitable<*>>.findFilterViewModel(filter: Filter): FilterViewModel? {
     return find { it is FilterViewModel && it.filter == filter } as? FilterViewModel
+}
+
+internal fun List<Visitable<*>>.findPriceRangeFilterCheckboxDataView(filter: Filter): PriceRangeFilterCheckboxDataView? {
+    return find { it is PriceRangeFilterCheckboxDataView && it.filter == filter } as? PriceRangeFilterCheckboxDataView
 }
 
 internal fun FilterViewModel.getAnyUnselectedFilter(): OptionViewModel {

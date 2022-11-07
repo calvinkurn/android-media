@@ -1,6 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber
 
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationResponseWrapper
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation
 
 /**
@@ -16,14 +16,14 @@ class RefreshInboxReputationSubscriber constructor(
         viewListener.onErrorRefresh(e)
     }
 
-    override fun onNext(inboxReputationDomain: InboxReputationDomain) {
+    override fun onNext(inboxReputationResponse: InboxReputationResponseWrapper.Data.Response) {
         viewListener.finishRefresh()
-        if (inboxReputationDomain.inboxReputation.isNullOrEmpty() && isUsingFilter) {
+        if (inboxReputationResponse.reputationList.isEmpty() && isUsingFilter) {
             viewListener.onShowEmptyFilteredInboxReputation()
-        } else if (inboxReputationDomain.inboxReputation.isNullOrEmpty() && !isUsingFilter) {
+        } else if (inboxReputationResponse.reputationList.isEmpty()) {
             viewListener.onShowEmpty()
         } else {
-            viewListener.onSuccessRefresh(mappingToViewModel(inboxReputationDomain))
+            viewListener.onSuccessRefresh(mappingToViewModel(inboxReputationResponse))
         }
     }
 }

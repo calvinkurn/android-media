@@ -63,7 +63,7 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
                         request.shopTier,
                         generateUniqueId(request),
                         request.orderValue,
-                        request.boCampaignIDs),
+                        request.boMetadata),
                 request.forceRefresh)
     }
 

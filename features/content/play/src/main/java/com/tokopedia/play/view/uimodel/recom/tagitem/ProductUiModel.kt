@@ -8,6 +8,8 @@ import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.utils.date.DateUtil
+import java.util.*
 
 data class ProductUiModel(
     val productSectionList: List<ProductSectionUiModel>,
@@ -55,29 +57,37 @@ sealed class ProductSectionUiModel {
         val productList: List<PlayProductUiModel.Product>,
         val config: ConfigUiModel,
         val id: String,
-        @TrackingField val impressHolder: ImpressHolder = ImpressHolder(),
     ) : ProductSectionUiModel() {
+
+        @TrackingField
+        val impressHolder: ImpressHolder = ImpressHolder()
 
         data class ConfigUiModel(
             val type: ProductSectionType,
             val title: String,
-            val serverTime: String, // RFC3339
-            val startTime: String, // RFC3339
-            val endTime: String, // RFC3339
+            val controlTime: Date,
+            val serverTime: Date?, // RFC3339
+            val startTime: Date?, // RFC3339
+            val endTime: Date?, // RFC3339
             val timerInfo: String,
             val background: BackgroundUiModel,
             val reminder: PlayUpcomingBellStatus
         ){
             companion object{
-                val Empty: Section
-                    get() = Section(
-                        productList = emptyList(),
-                        config = ConfigUiModel(
-                            type = ProductSectionType.Unknown, title = "", startTime = "", timerInfo = "", serverTime = "", background = BackgroundUiModel(
-                                gradients = emptyList(), imageUrl = ""
-                            ), endTime = "", reminder = PlayUpcomingBellStatus.Unknown
+                val Empty: ConfigUiModel
+                    get() = ConfigUiModel(
+                        type = ProductSectionType.Unknown,
+                        title = "",
+                        controlTime = DateUtil.getCurrentDate(),
+                        startTime = null,
+                        serverTime = null,
+                        endTime = null,
+                        timerInfo = "",
+                        background = BackgroundUiModel(
+                            gradients = emptyList(),
+                            imageUrl = ""
                         ),
-                        id = ""
+                        reminder = PlayUpcomingBellStatus.Unknown,
                     )
             }
         }
@@ -91,19 +101,7 @@ sealed class ProductSectionUiModel {
             val Empty: Section
                 get() = Section(
                     productList = emptyList(),
-                    config = ConfigUiModel(
-                        type = ProductSectionType.Unknown,
-                        title = "",
-                        serverTime = "",
-                        startTime = "",
-                        endTime = "",
-                        timerInfo = "",
-                        background = BackgroundUiModel(
-                            emptyList(),
-                            ""
-                        ),
-                        reminder = PlayUpcomingBellStatus.Unknown
-                    ),
+                    config = ConfigUiModel.Empty,
                     id = "",
                 )
         }

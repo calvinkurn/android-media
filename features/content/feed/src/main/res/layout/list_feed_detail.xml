@@ -26,15 +26,16 @@
 
         <FrameLayout
             android:id="@+id/productLayout"
-            android:layout_width="@dimen/dp_96"
-            android:layout_height="@dimen/dp_96"
-            android:padding="@dimen/dp_2"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:padding="2dp"
             android:background="@drawable/bg_frame_rounded"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/productNameSection">
+            app:layout_constraintTop_toTopOf="@id/productNameSection"
+            app:layout_constraintBottom_toBottomOf="@id/productNameSection">
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/productImage"
+                android:id="@+id/product_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
@@ -53,10 +54,11 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/productLayout"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            >
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/productName"
+                android:id="@+id/product_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -71,7 +73,7 @@
                 android:orientation="horizontal">
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/productPrice"
+                    android:id="@+id/product_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
@@ -91,7 +93,7 @@
                 android:orientation="horizontal">
 
                 <com.tokopedia.unifycomponents.Label
-                    android:id="@+id/discountLabel"
+                    android:id="@+id/discount_label"
                     android:layout_width="wrap_content"
                     android:visibility="gone"
                     android:layout_height="wrap_content"
@@ -100,7 +102,7 @@
                     tools:visibility="visible"/>
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/productTag"
+                    android:id="@+id/product_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
@@ -119,8 +121,8 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/star"
-                    android:layout_width="@dimen/dp_13"
-                    android:layout_height="@dimen/dp_13"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
@@ -140,7 +142,7 @@
 
                 <View
                     android:id="@+id/divider"
-                    android:layout_width="@dimen/dp_1"
+                    android:layout_width="1dp"
                     android:layout_height="10dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="4dp"
@@ -158,13 +160,31 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/freeShipping"
+                android:id="@+id/free_shipping"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:adjustViewBounds="false"
                 android:contentDescription="@string/content_desc_free_shipping"
                 android:scaleType="fitStart" />
+
+            <include
+                android:id="@+id/product_stock_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:visibility="gone"
+                layout="@layout/item_stock_progress_product_detail_view"
+                android:scaleType="fitStart"
+                tools:visibility="visible"
+                />
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="productLayout,productNameSection" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/menu"
@@ -172,9 +192,24 @@
             android:layout_height="16dp"
             android:layout_marginEnd="6dp"
             android:layout_marginBottom="6dp"
+            android:visibility="gone"
             app:icon_name="MENU_KEBAB_HORIZONTAL"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <include
+            android:id="@+id/product_atc_wishlist_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            layout="@layout/item_sale_atc_wishlist_feed_detail_layout"
+            app:layout_constraintStart_toStartOf="@id/productLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_layout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

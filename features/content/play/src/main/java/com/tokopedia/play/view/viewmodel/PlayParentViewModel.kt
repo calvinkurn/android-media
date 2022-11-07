@@ -16,6 +16,7 @@ import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -25,33 +26,30 @@ import javax.inject.Inject
  * Created by jegul on 19/01/21
  */
 class PlayParentViewModel constructor(
-        private val handle: SavedStateHandle,
-        private val playChannelStateStorage: PlayChannelStateStorage,
-        private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
-        private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
-        private val dispatchers: CoroutineDispatchers,
-        private val userSession: UserSessionInterface,
-        pageMonitoring: PlayPltPerformanceCallback,
+    private val handle: SavedStateHandle,
+    private val playChannelStateStorage: PlayChannelStateStorage,
+    private val dispatchers: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val repo: PlayViewerRepository,
+    pageMonitoring: PlayPltPerformanceCallback,
 ) : ViewModel() {
 
     class Factory @Inject constructor(
-            private val playChannelStateStorage: PlayChannelStateStorage,
-            private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
-            private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
-            private val dispatchers: CoroutineDispatchers,
-            private val userSession: UserSessionInterface,
-            private val pageMonitoring: PlayPltPerformanceCallback,
+        private val playChannelStateStorage: PlayChannelStateStorage,
+        private val dispatchers: CoroutineDispatchers,
+        private val userSession: UserSessionInterface,
+        private val pageMonitoring: PlayPltPerformanceCallback,
+        private val repo: PlayViewerRepository,
     ) {
 
         fun create(handle: SavedStateHandle): PlayParentViewModel {
             return PlayParentViewModel(
-                    handle,
-                    playChannelStateStorage,
-                    getChannelDetailsWithRecomUseCase,
-                    playChannelMapper,
-                    dispatchers,
-                    userSession,
-                    pageMonitoring,
+                handle,
+                playChannelStateStorage,
+                dispatchers,
+                userSession,
+                repo,
+                pageMonitoring,
             )
         }
     }
@@ -70,13 +68,10 @@ class PlayParentViewModel constructor(
         get() = _observableFirstChannelEvent
     private val _observableFirstChannelEvent = MutableLiveData<Event<Unit>>()
 
-    val sourceType: String
-        get() = handle[PLAY_KEY_SOURCE_TYPE] ?: ""
-    
     val source: PlaySource
-        get() = PlaySource.getBySource(
-                sourceType = sourceType,
-                sourceId = handle[PLAY_KEY_SOURCE_ID]
+        get() = PlaySource(
+                type = handle[PLAY_KEY_SOURCE_TYPE] ?: "",
+                id = handle[PLAY_KEY_SOURCE_ID] ?: ""
         )
 
     val startingChannelId: String?
@@ -117,6 +112,11 @@ class PlayParentViewModel constructor(
 
     fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel with ID $channelId not found")
 
+    fun getNextChannel(currentChannelId: String) : String {
+        val index = playChannelStateStorage.getChannelList().indexOf(currentChannelId)
+        return playChannelStateStorage.getChannelList()[index + 1]
+    }
+
     fun setLatestChannelStorageData(
             channelId: String,
             data: PlayChannelData
@@ -141,19 +141,19 @@ class PlayParentViewModel constructor(
 
         viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
-                val response = getChannelDetailsWithRecomUseCase.apply {
-                    setRequestParams(GetChannelDetailsWithRecomUseCase.createParams(nextKey))
-                }.executeOnBackground()
-
-                mNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor(response.channelDetails.meta.cursor)
-
-                playChannelMapper.map(response, PlayChannelDetailsWithRecomMapper.ExtraParams(
+                val response = repo.getChannelList(
+                    nextKey,
+                    PlayChannelDetailsWithRecomMapper.ExtraParams(
                         channelId = startingChannelId,
                         videoStartMillis = mVideoStartMillis?.toLong() ?: 0,
                         shouldTrack = shouldTrack?.toBoolean() ?: true,
-                        sourceType = source.key
+                        sourceType = source.type
                     )
-                ).forEach {
+                )
+
+                mNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor(response.cursor)
+
+                response.channelData.forEach {
                     playChannelStateStorage.setData(it.id, it)
                 }
             }

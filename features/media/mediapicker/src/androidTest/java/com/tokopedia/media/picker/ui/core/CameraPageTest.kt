@@ -41,7 +41,7 @@ abstract class CameraPageTest : PickerTest() {
 
         fun clickLanjutButton() {
             onView(
-                withId(R.id.btn_done)
+                withId(R.id.action_text_done)
             ).perform(click())
         }
 

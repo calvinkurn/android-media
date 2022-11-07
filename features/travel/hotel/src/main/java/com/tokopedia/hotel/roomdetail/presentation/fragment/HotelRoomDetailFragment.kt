@@ -22,6 +22,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
@@ -420,11 +421,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     }
 
     private fun navigateToAddPhonePage() {
-        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
+        RouteManager.route(requireContext(), ApplinkConstInternalUserPlatform.ADD_PHONE)
     }
 
     private fun navigateToAddEmailPage() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+        RouteManager.route(context, ApplinkConstInternalUserPlatform.ADD_EMAIL)
     }
 
     private fun showFailedGetRoomErrorDialog(message: String) {

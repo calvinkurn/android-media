@@ -91,6 +91,11 @@ object DataProvider {
         return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
+    fun provideGetMiniCartSimplifiedBundleSuccessAvailableAndUnavailable(): MiniCartSimplifiedData {
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_simplified_bundle_success_available_and_unavailable"), MiniCartGqlResponse::class.java)
+        return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
+    }
+
     fun provideGetMiniCartSimplifiedSuccessEmptyData(): MiniCartSimplifiedData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_simplified_success_empty"), MiniCartGqlResponse::class.java)
         return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
@@ -138,6 +143,11 @@ object DataProvider {
 
     fun provideMiniCartSimplifiedDataAvailableAndUnavailable(): MiniCartSimplifiedData {
         val miniCartSimplifiedData = provideGetMiniCartSimplifiedSuccessAvailableAndUnavailable()
+        return miniCartSimplifiedData
+    }
+
+    fun provideMiniCartSimplifiedDataBundleAvailableAndUnavailable(): MiniCartSimplifiedData {
+        val miniCartSimplifiedData = provideGetMiniCartSimplifiedBundleSuccessAvailableAndUnavailable()
         return miniCartSimplifiedData
     }
 

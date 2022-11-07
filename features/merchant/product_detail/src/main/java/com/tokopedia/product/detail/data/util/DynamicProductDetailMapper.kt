@@ -1,16 +1,20 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirType
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
@@ -24,23 +28,18 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieRequest
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateLinkDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateProductDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestHeader
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateShopDetail
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -52,17 +51,25 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulRevie
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.share.ProductData
@@ -74,15 +81,14 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.track.TrackApp
+import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
+import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
 object DynamicProductDetailMapper {
-
-    private const val PDP_SOURCE_AFFILIATE = "pdp"
-
     /**
      * Map network data into UI data by type, just assign type and name here. The data will be assigned in fragment
      * except info type
@@ -99,7 +105,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_DETAIL -> {
-                    listOfComponent.add(ProductDetailInfoDataModel(type = component.type, name = component.componentName, dataContent = mapToProductDetailInfoContent(component.componentData.firstOrNull())))
+                    listOfComponent.add(mapToProductDetailInfo(component = component))
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
@@ -131,6 +137,15 @@ object DynamicProductDetailMapper {
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
+                }
+                ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
+                    listOfComponent.add(
+                        ProductRecommendationVerticalPlaceholderDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
+                    listOfComponent.add(LoadingDataModel())
                 }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
@@ -196,8 +211,26 @@ object DynamicProductDetailMapper {
                                         categoryList = carouselData.categoryCarouselList))
                     }
                 }
-                ProductDetailConstant.PRODUCT_BUNDLING -> {
-                    listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                PRODUCT_BUNDLING -> {
+                    if (component.componentName == GLOBAL_BUNDLING) {
+                        val bundlingData = component.componentData.firstOrNull()
+                        if (bundlingData != null) {
+                            listOfComponent.add(
+                                GlobalBundlingDataModel(
+                                    type = component.type,
+                                    name = component.componentName,
+                                    data = generateGlobalBundlingData(bundlingData)
+                                )
+                            )
+                        }
+                    } else if (component.componentName == PRODUCT_BUNDLING) {
+                        listOfComponent.add(
+                            ProductBundlingDataModel(
+                                type = component.type,
+                                name = component.componentName
+                            )
+                        )
+                    }
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
@@ -207,7 +240,6 @@ object DynamicProductDetailMapper {
                         )
                     )
                 }
-
                 ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
                     listOfComponent.add(
                         FintechWidgetDataModel(
@@ -215,6 +247,13 @@ object DynamicProductDetailMapper {
                             name = component.componentName
                         )
                     )
+                }
+                ProductDetailConstant.PRODUCT_SHOP_ADDITIONAL -> {
+                    val shopAdditional = ProductShopAdditionalDataModel(
+                        name = component.componentName,
+                        type = component.type
+                    )
+                    listOfComponent.add(shopAdditional)
                 }
             }
         }
@@ -263,8 +302,12 @@ object DynamicProductDetailMapper {
         val bestSellerComponent = mapToOneLinersComponent(ProductDetailConstant.BEST_SELLER, data)
         val stockAssuranceComponent = mapToOneLinersComponent(ProductDetailConstant.STOCK_ASSURANCE, data)
 
-        val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
-                ?: ComponentData()
+        val newDataWithMedia = contentData?.copy(
+            media = mediaData.media,
+            youtubeVideos = mediaData.youtubeVideos,
+            containerType = mediaData.containerType
+        ) ?: ComponentData()
+
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
@@ -285,14 +328,15 @@ object DynamicProductDetailMapper {
             it.componentName == componentName
         }?.componentData?.map {
             OneLinersContent(
-                    productID = it.productId,
-                    content = it.oneLinerContent,
-                    linkText = it.linkText,
-                    color = it.color,
-                    applink = it.applink,
-                    separator = it.separator,
-                    icon = it.icon,
-                    isVisible = it.isVisible
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible,
+                eduLink = it.eduLink
             )
         }?.associateBy { it.productID }
     }
@@ -355,6 +399,22 @@ object DynamicProductDetailMapper {
         }
     }
 
+    private fun mapToProductDetailInfo(component: Component): ProductDetailInfoDataModel {
+        val data = component.componentData.firstOrNull()
+        val contents = mapToProductDetailInfoContent(data = data)
+        val catalog = data?.catalogBottomSheet?.asUiData()
+        val bottomSheet = data?.bottomSheet?.asUiData() ?: ProductDetailInfoSeeMore()
+
+        return ProductDetailInfoDataModel(
+            type = component.type,
+            name = component.componentName,
+            title = data?.title.orEmpty(),
+            catalogBottomSheet = catalog,
+            bottomSheet = bottomSheet,
+            dataContent = contents
+        )
+    }
+
     private fun mapToProductDetailInfoContent(data: ComponentData?): List<ProductDetailInfoContent> {
         if (data == null) return listOf()
         return data.content.map {
@@ -365,7 +425,8 @@ object DynamicProductDetailMapper {
                 applink = it.applink,
                 showAtFront = it.showAtFront,
                 isAnnotation = it.isAnnotation,
-                infoLink = it.infoLink
+                infoLink = it.infoLink,
+                showAtBottomSheet = it.showAtBottomSheet
             )
         }
     }
@@ -541,7 +602,7 @@ object DynamicProductDetailMapper {
     fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?,
                                    variantData: ProductVariant?): AffiliatePDPInput {
         return AffiliatePDPInput(
-                pageType= "pdp",
+                pageType= PageType.PDP.value,
                 product = Product(
                         productID = productInfo.basic.productID,
                         catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
@@ -560,37 +621,25 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generateAffiliateCookieRequest(productInfo: DynamicProductInfoP1,
-                                       affiliateUuid: String,
-                                       deviceId: String,
-                                       uuid: String,
-                                       affiliateChannel: String): AffiliateCookieRequest {
-        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
-        return AffiliateCookieRequest(
-                header = AffiliateRequestHeader(
-                        uuid = uuid,
-                        deviceId = deviceId,
-                        irisSessionId = TrackApp.getInstance().gtm.irisSessionId
-                ),
-                affiliateDetail = AffiliateRequestDetail(
-                        affiliateUniqueId = affiliateUuid
-                ),
-                affiliateProductDetail = AffiliateProductDetail(
-                        productId = productInfo.basic.productID,
-                        categoryId = categoryId,
-                        isVariant = productInfo.isProductVariant(),
-                        stockQty = productInfo.getFinalStock().toDoubleOrZero()
-                ),
-                affiliateLinkDetail = AffiliateLinkDetail(
-                        affiliateLink = "",
-                        channel = affiliateChannel,
-                        linkType = PDP_SOURCE_AFFILIATE,
-                        linkIdentifier = "0"
-                ),
-                affiliateShopDetail = AffiliateShopDetail(
-                        shopId = productInfo.basic.shopID
-                )
+    fun generateImageGeneratorData(product: DynamicProductInfoP1, bebasOngkir: BebasOngkirImage): PdpParamModel {
+        return PdpParamModel(
+            isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
+            bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
+            productImageUrl = product.data.getProductImageUrl() ?: "",
+            productPrice = product.data.price.value.toLong(),
+            productRating = product.basic.stats.rating,
+            productTitle = MethodChecker.fromHtml(product.getProductName).toString()
         )
+    }
+
+    private fun isBebasOngkir(type: Int) = type == BebasOngkirType.NON_BO.value
+
+    private fun mapBebasOngkirType(type: Int): String {
+        return when (type) {
+            BebasOngkirType.BO_REGULER.value -> BoTypeImageGeneratorParam.BEBAS_ONGKIR.value
+            BebasOngkirType.BO_EXTRA.value -> BoTypeImageGeneratorParam.BEBAS_ONGKIR_EXTRA.value
+            else -> BoTypeImageGeneratorParam.NONE.value
+        }
     }
 
     fun removeUnusedComponent(
@@ -632,5 +681,29 @@ object DynamicProductDetailMapper {
         } else {
             productInfo.finalPrice
         }
+    }
+
+    fun getAffiliatePageDetail(productInfo: DynamicProductInfoP1): AffiliatePageDetail {
+        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
+        return AffiliatePageDetail(
+            pageId = productInfo.basic.productID,
+            source = AffiliateSdkPageSource.PDP(
+                shopId = productInfo.basic.shopID,
+                productInfo = AffiliateSdkProductInfo(
+                    categoryID = categoryId,
+                    isVariant = productInfo.isProductVariant(),
+                    stockQty = productInfo.getFinalStock().toIntOrZero()
+                )
+            )
+        )
+    }
+
+    private fun generateGlobalBundlingData(bundlingData: ComponentData): GlobalBundling {
+        return GlobalBundling(
+            title = bundlingData.title,
+            widgetType = bundlingData.widgetType,
+            productId = bundlingData.productId,
+            whId = bundlingData.whId
+        )
     }
 }

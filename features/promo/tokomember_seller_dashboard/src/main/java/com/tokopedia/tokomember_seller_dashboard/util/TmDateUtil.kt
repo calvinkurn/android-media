@@ -11,6 +11,7 @@ const val DATE_FORMAT = "yyyy-MM-dd"
 const val HOUR_MIN_FORMAT = "HH:mm"
 const val DD_FORMAT = "dd"
 const val SIMPLE_DATE_FORMAT_Z = "yyyy-MM-dd HH:mm:ss Z"
+const val ISO_8601_UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 const val SIMPLE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
 const val UTC = "UTC"
 val locale = Locale("in", "ID")
@@ -197,4 +198,47 @@ object TmDateUtil {
             "0"
         }
     }
+
+
+    fun setDateFromDetails(time: String): String {
+        // 2022-09-11T19:00:00Z00 >> Input
+        // Min, 11 Sep 2022 >> Output
+        var time = time.replace("T", " ")
+        time = time.replaceAfter("Z", "")
+        val day = getDayFromTimeWindow(time.substringBefore(" "))
+        return "$day, ${setDatePreview(time)}"
+    }
+
+    fun setTimeFromDetails(time: String): String {
+        // 2022-09-11T19:00:00Z00 >> Input
+        // 19:00 WIB >> Output
+        var time = time.replace("T", " ")
+        time = time.replaceAfter("Z", "")
+        return setTime(time)
+    }
+
+    fun getCalendarFromDetailsTime(time: String): Calendar{
+        // 2022-09-11T19:00:00Z00 >> Input
+        // Calendar >> Output
+
+        var time = time.replace("T", " ")
+        time = time.replaceAfter("Z", "")
+
+        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT , locale)
+        parseTime.timeZone = TimeZone.getTimeZone(UTC)
+        val date = parseTime.parse(time)
+        val calendar = Calendar.getInstance(locale)
+        date?.let {
+            calendar.time = it
+        }
+        return calendar
+    }
+
+
+    fun getDateFromISO(time:String?) : Date?{
+        if(time.isNullOrEmpty() || !time.contains("T")) return null
+        val sdf = SimpleDateFormat(ISO_8601_UTC_DATE_FORMAT, locale)
+        return sdf.parse(time)
+    }
+
 }

@@ -9,6 +9,9 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.common_entertainment.data.Brand
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
+import com.tokopedia.common_entertainment.data.Media
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase
 import com.tokopedia.digital_deals.domain.getusecase.GetEventContentUseCase
@@ -16,11 +19,8 @@ import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase
 import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase
 import com.tokopedia.digital_deals.domain.postusecase.PostNsqTravelDataUseCase
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract
-import com.tokopedia.digital_deals.view.model.Brand
 import com.tokopedia.digital_deals.view.model.Location
-import com.tokopedia.digital_deals.view.model.Media
 import com.tokopedia.digital_deals.view.model.Page
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.model.response.GetLikesResponse
 import com.tokopedia.digital_deals.view.model.response.SearchResponse
 import com.tokopedia.digital_deals.view.utils.Utils

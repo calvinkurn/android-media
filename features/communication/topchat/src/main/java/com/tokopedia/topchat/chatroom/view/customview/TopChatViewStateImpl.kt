@@ -32,6 +32,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.Attachment
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayout
+import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
@@ -56,22 +57,24 @@ import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import java.util.Locale
 
 /**
  * @author : Steven 29/11/18
  */
 
 open class TopChatViewStateImpl constructor(
-        @NonNull override val view: View,
-        private val typingListener: TypingListener,
-        protected val sendListener: SendButtonListener,
-        private val templateListener: ChatTemplateListener,
-        private val imagePickerListener: ImagePickerListener,
-        private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
-        private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
-        private val headerMenuListener: HeaderMenuListener,
-        toolbar: Toolbar,
-        val analytics: TopChatAnalytics
+    @NonNull override val view: View,
+    private val typingListener: TypingListener,
+    protected val sendListener: SendButtonListener,
+    private val templateListener: ChatTemplateListener,
+    private val imagePickerListener: ImagePickerListener,
+    private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
+    private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
+    private val headerMenuListener: HeaderMenuListener,
+    private val chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
+    toolbar: Toolbar,
+    val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener),
         TopChatViewState,
         AttachmentPreviewAdapter.AttachmentPreviewListener {
@@ -165,6 +168,7 @@ open class TopChatViewStateImpl constructor(
         setupChatStickerMenu()
 
         chatTextAreaTabLayout = view.findViewById(R.id.layout_chat_text_area)
+        chatTextAreaTabLayout?.setupListener(chatTextAreaTabLayoutListener)
         chatTextAreaShimmer = view.findViewById(R.id.chat_area_shimmer)
     }
 
@@ -614,14 +618,17 @@ open class TopChatViewStateImpl constructor(
     ) {
 
         val isBlocked = when {
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL)
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL)
             -> {
                 blockedStatus.isPromoBlocked
             }
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) -> {
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) -> {
                 blockedStatus.isBlocked
             }
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) -> {
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) -> {
                 blockedStatus.isBlocked
             }
             else -> {
@@ -664,10 +671,13 @@ open class TopChatViewStateImpl constructor(
 
         val blockText = chatBlockLayout.findViewById<TextView>(R.id.blocked_text)
         val category = when {
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) ->
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) ->
                 CHAT_BOTH
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) ->
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) ->
                 CHAT_PERSONAL
             else -> {
                 ""

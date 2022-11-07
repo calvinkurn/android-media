@@ -30,6 +30,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.playIntegrityApi
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
     implementation projectOrAar(rootProject.ext.libraries.logger)

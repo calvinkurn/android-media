@@ -34,7 +34,6 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactM
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
-import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
@@ -43,6 +42,8 @@ import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
+import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
+import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
@@ -78,6 +79,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
@@ -87,7 +89,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
-    ClientNumberSortFilterListener {
+    ClientNumberSortFilterListener,
+    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl()
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -98,8 +102,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
-
-    private val keyboardWatcher = DigitalKeyboardWatcher()
 
     private var binding by autoClearedNullable<FragmentDigitalPdpTagihanBinding>()
 
@@ -149,15 +151,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     private fun setupKeyboardWatcher() {
         binding?.root?.let {
-            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
-                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                    // do nothing
-                }
-
-                override fun onKeyboardHidden() {
-                    // do nothing
-                }
-            })
+            registerLifecycleOwner(viewLifecycleOwner)
+            registerKeyboard(WeakReference(it))
         }
     }
 
@@ -773,9 +768,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         startActivityForResult(intent, DigitalPDPConstant.RESULT_CODE_QR_SCAN)
     }
 
-    override fun isKeyboardShown(): Boolean {
-        return keyboardWatcher.isKeyboardOpened
-    }
+    override fun isKeyboardShown(): Boolean = isSoftKeyboardShown()
 
     //endregion
 
@@ -901,6 +894,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         FavoriteNumberType.LIST
                     )
                 )
+                binding?.rechargePdpTagihanListrikClientNumberWidget?.clearFocusAutoComplete()
             } else if (requestCode == DigitalPDPConstant.REQUEST_CODE_LOGIN) {
                 addToCart()
             } else if (requestCode == DigitalPDPConstant.RESULT_CODE_QR_SCAN) {
@@ -930,14 +924,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         } else {
             binding?.rechargePdpTagihanListrikClientNumberWidget?.startShakeAnimation()
         }
-    }
-
-
-    override fun onDestroyView() {
-        binding?.root?.let {
-            keyboardWatcher.unlisten(it)
-        }
-        super.onDestroyView()
     }
 
     companion object {

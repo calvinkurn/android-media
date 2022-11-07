@@ -74,7 +74,7 @@
                     android:layout_alignBottom="@id/et_email_wrapper"
                     android:layout_alignTop="@id/et_email_wrapper"
                     android:layout_marginTop="20dp"
-                    android:textSize="@dimen/sp_16"
+                    android:textSize="16sp"
                     android:text="@string/tokopedia_email"
                     app:typographyType="body_3"/>
 
@@ -325,7 +325,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="Submit"
-            android:textSize="@dimen/sp_16"
+            android:textSize="16sp"
             android:textStyle="bold" />
     </FrameLayout>
 

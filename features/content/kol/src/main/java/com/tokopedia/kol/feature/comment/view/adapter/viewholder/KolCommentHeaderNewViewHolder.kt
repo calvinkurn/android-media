@@ -25,8 +25,8 @@ class KolCommentHeaderNewViewHolder(itemView: View, private val viewListener: Ko
             override fun onMenuClicked(id: String?, canDeleteComment: Boolean) {
             }
 
-            override fun onHashtagClicked(hashtag: String, id: String) {
-                viewListener.onHashTagClicked(hashtag, id)
+            override fun onHashtagClicked(hashtag: String) {
+                viewListener.onHashTagClicked(hashtag)
 
             }
 

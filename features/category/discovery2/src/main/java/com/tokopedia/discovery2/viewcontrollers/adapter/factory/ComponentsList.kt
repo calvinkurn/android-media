@@ -125,6 +125,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     BannerInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.BannerInfinite.componentName),
     BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item,ComponentNames.BannerInfiniteItem.componentName),
     ShopCardInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.ShopCardInfinite.componentName),
+    ProductBundling(R.layout.disco_product_bundling_layout,ComponentNames.ProductBundling.componentName),
     ExplicitWidget(R.layout.explicit_widget_layout,ComponentNames.ExplicitWidget.componentName)
 
 }

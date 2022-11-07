@@ -16,7 +16,7 @@
         android:paddingTop="10dp"
         android:paddingEnd="10dp"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         android:textStyle="bold"
         tools:text="139.021 telah memilih" />
 

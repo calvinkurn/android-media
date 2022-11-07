@@ -11,7 +11,8 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyType="heading_4"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
         android:text="@string/title_level_score_projection"
         app:layout_constraintStart_toStartOf="parent"

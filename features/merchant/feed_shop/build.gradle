@@ -47,6 +47,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
@@ -57,6 +58,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.createpostCommon)
+
+    implementation project(rootProject.ext.features.contentCommon)
 
     implementation rootProject.ext.playServicesDependencies.core
 

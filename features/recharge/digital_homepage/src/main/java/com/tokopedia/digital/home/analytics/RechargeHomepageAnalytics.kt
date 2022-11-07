@@ -34,7 +34,7 @@ import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameCon
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingLabelConstant.ORDER_LIST
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingLabelConstant.TOPUP_BILLS
 import com.tokopedia.digital.home.model.Tracking
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -48,77 +48,108 @@ class RechargeHomepageAnalytics {
         val linkerData = LinkerData().apply {
             this.userId = userId
         }
-        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(
+        LinkerManager.getInstance().sendEvent(
+            LinkerUtils.createGenericRequest(
                 LinkerConstants.EVENT_DIGITAL_HOMEPAGE, linkerData
-        ))
+            )
+        )
     }
 
     fun eventClickOrderList() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, ORDER_LIST)
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            CLICK_TOPUP_BILLS,
+            DIGITAL_HOMEPAGE_CATEGORY,
+            DYNAMIC_ICON_CLICK,
+            ORDER_LIST
+        )
     }
 
     fun eventClickBackButton() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, BACK_BUTTON_CLICK, "")
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            CLICK_TOPUP_BILLS,
+            DIGITAL_HOMEPAGE_CATEGORY,
+            BACK_BUTTON_CLICK,
+            ""
+        )
     }
 
     fun eventClickSearchBox(userId: String, screenName: String) {
         val data = mutableMapOf<String, Any>(
-                TrackAppUtils.EVENT to CLICK_TOPUP_BILLS,
-                TrackAppUtils.EVENT_CATEGORY to DIGITAL_HOMEPAGE_CATEGORY,
-                TrackAppUtils.EVENT_ACTION to SEARCH_BOX_CLICK,
-                TrackAppUtils.EVENT_LABEL to TOPUP_BILLS
+            TrackAppUtils.EVENT to CLICK_TOPUP_BILLS,
+            TrackAppUtils.EVENT_CATEGORY to DIGITAL_HOMEPAGE_CATEGORY,
+            TrackAppUtils.EVENT_ACTION to SEARCH_BOX_CLICK,
+            TrackAppUtils.EVENT_LABEL to TOPUP_BILLS
         )
         data.putAll(getDefaultFields(userId, screenName))
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_TOPUP_BILLS, convertToBundle(data))
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            CLICK_TOPUP_BILLS,
+            convertToBundle(data)
+        )
     }
 
     fun eventClickSearch(searchQuery: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, SEARCH_CLICK, searchQuery)
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            CLICK_TOPUP_BILLS,
+            DIGITAL_HOMEPAGE_CATEGORY,
+            SEARCH_CLICK,
+            searchQuery
+        )
     }
 
     fun eventClickAllBanners() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, ALL_BANNERS_CLICK, "")
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            CLICK_TOPUP_BILLS,
+            DIGITAL_HOMEPAGE_CATEGORY,
+            ALL_BANNERS_CLICK,
+            ""
+        )
     }
 
-    fun eventSearchResultPageImpression(items: List<DigitalHomePageSearchCategoryModel>,
-                                        userId: String,
-                                        screenName: String) {
+    fun eventSearchResultPageImpression(
+        items: List<DigitalHomePageSearchCategoryModel>,
+        userId: String,
+        screenName: String
+    ) {
         val promotions = items.mapIndexed { index, item ->
             mapOf(
-                    ITEM_ID to item.id,
-                    ITEM_NAME to item.label,
-                    CREATIVE_NAME to item.icon,
-                    CREATIVE_SLOT to index.toString()
+                ITEM_ID to item.id,
+                ITEM_NAME to item.label,
+                CREATIVE_NAME to item.icon,
+                CREATIVE_SLOT to index.toString()
             )
         }
 
         val data = mutableMapOf(
-                TrackAppUtils.EVENT to VIEW_ITEM,
-                TrackAppUtils.EVENT_CATEGORY to DIGITAL_HOMEPAGE_CATEGORY,
-                TrackAppUtils.EVENT_ACTION to SEARCH_RESULT_PAGE_ICON_IMPRESSION,
-                TrackAppUtils.EVENT_LABEL to "",
-                PROMOTIONS to promotions
+            TrackAppUtils.EVENT to VIEW_ITEM,
+            TrackAppUtils.EVENT_CATEGORY to DIGITAL_HOMEPAGE_CATEGORY,
+            TrackAppUtils.EVENT_ACTION to SEARCH_RESULT_PAGE_ICON_IMPRESSION,
+            TrackAppUtils.EVENT_LABEL to "",
+            PROMOTIONS to promotions
         )
         data.putAll(getDefaultFields(userId, screenName))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, convertToBundle(data))
     }
 
-    fun eventSearchResultPageClick(item: DigitalHomePageSearchCategoryModel, position: Int,
-                                   userId: String, screenName: String) {
-        val promotions = listOf(mapOf(
+    fun eventSearchResultPageClick(
+        item: DigitalHomePageSearchCategoryModel, position: Int,
+        userId: String, screenName: String
+    ) {
+        val promotions = listOf(
+            mapOf(
                 ITEM_ID to item.id,
                 ITEM_NAME to item.label,
                 CREATIVE_NAME to item.icon,
                 CREATIVE_SLOT to position.toString()
-        ))
+            )
+        )
 
         val data = mutableMapOf(
-                TrackAppUtils.EVENT to SELECT_CONTENT,
-                TrackAppUtils.EVENT_CATEGORY to DIGITAL_HOMEPAGE_CATEGORY,
-                TrackAppUtils.EVENT_ACTION to SEARCH_RESULT_PAGE_ICON_CLICK,
-                TrackAppUtils.EVENT_LABEL to "${item.label} - $position",
-                PROMOTIONS to promotions
+            TrackAppUtils.EVENT to SELECT_CONTENT,
+            TrackAppUtils.EVENT_CATEGORY to DIGITAL_HOMEPAGE_CATEGORY,
+            TrackAppUtils.EVENT_ACTION to SEARCH_RESULT_PAGE_ICON_CLICK,
+            TrackAppUtils.EVENT_LABEL to "${item.label} - $position",
+            PROMOTIONS to promotions
         )
         data.putAll(getDefaultFields(userId, screenName))
 
@@ -126,7 +157,10 @@ class RechargeHomepageAnalytics {
     }
 
     fun rechargeEnhanceEcommerceEvent(trackingDataString: String) {
-        val trackingData = Gson().fromJson<Map<String, Any>>(trackingDataString, object : TypeToken<HashMap<String, Any>>() {}.type)
+        val trackingData = Gson().fromJson<Map<String, Any>>(
+            trackingDataString,
+            object : TypeToken<HashMap<String, Any>>() {}.type
+        )
         val event = (trackingData[TrackAppUtils.EVENT] as? String) ?: ""
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(event, convertToBundle(trackingData))
     }
@@ -142,12 +176,12 @@ class RechargeHomepageAnalytics {
                 is Double -> bundle.putDouble(entry.key, value)
                 is List<*> -> {
                     val list = ArrayList<Bundle>(
-                            value.map {
-                                (it as? Map<String, Any>)?.let { map ->
-                                    return@map convertToBundle(map)
-                                }
-                                null
-                            }.filterNotNull()
+                        value.map {
+                            (it as? Map<String, Any>)?.let { map ->
+                                return@map convertToBundle(map)
+                            }
+                            null
+                        }.filterNotNull()
                     )
                     bundle.putParcelableArrayList(entry.key, list)
                 }
@@ -156,17 +190,21 @@ class RechargeHomepageAnalytics {
         return bundle
     }
 
-    private fun getDefaultFields(userId: String, screenName: String = SCREEN_NAME_TOPUP_BILLS): Map<String, Any> {
+    private fun getDefaultFields(
+        userId: String,
+        screenName: String = SCREEN_NAME_TOPUP_BILLS
+    ): Map<String, Any> {
         return mapOf(
-                CURRENT_SITE to CURRENT_SITE_RECHARGE,
-                BUSINESS_UNIT to BUSINESS_UNIT_RECHARGE,
-                SCREEN_NAME to screenName,
-                USER_ID to userId
+            CURRENT_SITE to CURRENT_SITE_RECHARGE,
+            BUSINESS_UNIT to BUSINESS_UNIT_RECHARGE,
+            SCREEN_NAME to screenName,
+            USER_ID to userId
         )
     }
 
     fun sliceOpenApp(userId: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
                 TrackAppUtils.EVENT, "clickGAMain",
                 TrackAppUtils.EVENT_CATEGORY, "ga main app",
                 TrackAppUtils.EVENT_ACTION, "click open app button",
@@ -174,70 +212,121 @@ class RechargeHomepageAnalytics {
                 BUSINESS_UNIT, "recharge",
                 CURRENT_SITE, "tokopediadigital",
                 USER_ID, userId
-        ))
+            )
+        )
     }
 
     fun onOpenPageFromSlice() {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                RechargeAnalytics.EVENT_KEY, "openScreen",
-                RechargeAnalytics.EVENT_SCREEN_NAME, "recharge homepage - from voice search - mainapp"
-        ))
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                RechargeAnalytics.EVENT_KEY,
+                "openScreen",
+                RechargeAnalytics.EVENT_SCREEN_NAME,
+                "recharge homepage - from voice search - mainapp"
+            )
+        )
     }
 
-    fun impressionSearchAutoComplete(tracker: Tracking, userId: String){
+    fun impressionSearchAutoComplete(tracker: Tracking, userId: String) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "impression search result")
-            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", tracker.userType, tracker.keyword))
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                String.format("%s - %s", tracker.userType, tracker.keyword)
+            )
         }
 
         eventDataLayer.addGeneralViewDigitalIris(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
     }
 
-    fun clickCateoryAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
+    fun clickCateoryAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "click category autocomplete")
-            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", trackerUser.userType, trackerUser.keyword, trackerItem.categoryName))
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                String.format(
+                    "%s - %s - %s",
+                    trackerUser.userType,
+                    trackerUser.keyword,
+                    trackerItem.categoryName
+                )
+            )
         }
 
         eventDataLayer.addGeneralClickDigitalEvent(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_DIGITAL_EVENT, eventDataLayer)
     }
 
-    fun clickOperatorAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
+    fun clickOperatorAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "click operator autocomplete")
-            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", trackerUser.userType, trackerUser.keyword, trackerItem.categoryName))
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                String.format(
+                    "%s - %s - %s",
+                    trackerUser.userType,
+                    trackerUser.keyword,
+                    trackerItem.categoryName
+                )
+            )
         }
 
         eventDataLayer.addGeneralClickDigitalEvent(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_DIGITAL_EVENT, eventDataLayer)
     }
 
-    fun impressNoResult(tracker: Tracking, userId: String){
+    fun impressNoResult(tracker: Tracking, userId: String) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "impression no results")
-            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", tracker.userType, tracker.keyword))
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                String.format("%s - %s", tracker.userType, tracker.keyword)
+            )
         }
 
         eventDataLayer.addGeneralViewDigitalIris(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
     }
 
-    fun impressionCategoryAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
+    fun impressionCategoryAutoComplete(
+        trackerUser: Tracking,
+        trackerItem: Tracking,
+        userId: String
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "impression category autocomplete")
-            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", trackerUser.userType, trackerUser.keyword, trackerItem.categoryName))
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                String.format(
+                    "%s - %s - %s",
+                    trackerUser.userType,
+                    trackerUser.keyword,
+                    trackerItem.categoryName
+                )
+            )
         }
 
         eventDataLayer.addGeneralViewDigitalIris(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
     }
 
-    fun impressionOperatorAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
+    fun impressionOperatorAutoComplete(
+        trackerUser: Tracking,
+        trackerItem: Tracking,
+        userId: String
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "impression operator autocomplete")
-            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", trackerUser.userType, trackerUser.keyword, trackerItem.categoryName))
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                String.format(
+                    "%s - %s - %s",
+                    trackerUser.userType,
+                    trackerUser.keyword,
+                    trackerItem.categoryName
+                )
+            )
         }
 
         eventDataLayer.addGeneralViewDigitalIris(userId)

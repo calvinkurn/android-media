@@ -6,10 +6,9 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
+import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
-import java.lang.StringBuilder
 
 object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
 
@@ -18,7 +17,7 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
         val merchantAddress = if (merchant.addressLocality.isNotEmpty()) merchant.addressLocality else EMPTY_DATA
         val listPromotions = arrayListOf(
             Promotion(
-                creative = "",
+                creative = "${merchant.additionalData.topTextBanner} - ${merchant.promo}",
                 position = (horizontalPosition + Int.ONE).toString(),
                 id = "${merchant.id} - ${merchant.name}",
                 name = "$merchantAddress - ${merchant.etaFmt} - ${merchant.distanceFmt} - ${merchant.ratingFmt}"
@@ -34,6 +33,10 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
             .appendCurrentSite(TokoFoodAnalytics.TOKOPEDIA_MARKETPLACE)
             .appendUserId(userId ?: EMPTY_DATA)
             .appendCustomKeyValue(TokoFoodAnalyticsConstants.DESTINATION_ID, destinationId ?: EMPTY_DATA)
+            .appendCustomKeyValue(
+                TokoFoodAnalyticsConstants.TRACKER_ID,
+                if (isHome) TokoFoodAnalyticsConstants.TRACKER_ID_31289 else TokoFoodAnalyticsConstants.TRACKER_ID_32007
+            )
             .build()
     }
 

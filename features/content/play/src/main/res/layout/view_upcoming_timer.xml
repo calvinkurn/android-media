@@ -12,25 +12,22 @@
         android:layout_height="wrap_content"
         android:text="@string/play_will_start_on"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyType="display_3"/>
 
-    <com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
         android:id="@+id/timer_upcoming"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_timer_label"
-        app:timer_unify_highlight_remainingDays="0"
-        app:timer_unify_highlight_remainingHours="0"
-        app:timer_unify_highlight_remainingMinutes="0"
-        app:timer_unify_highlight_remainingSeconds="1"
-        app:timer_unify_highlight_size="small"
-        app:timer_unify_highlight_variant="alternate" />
+        app:timer_unify_single_remainingDays="0"
+        app:timer_unify_single_remainingHours="0"
+        app:timer_unify_single_remainingMinutes="0"
+        app:timer_unify_single_remainingSeconds="1"
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_variant="general"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

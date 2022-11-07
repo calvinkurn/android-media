@@ -38,7 +38,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_payment_status"
             android:textColor="@color/Unify_Y400"
-            android:textSize="@dimen/sp_10"
+            android:textSize="10sp"
             android:textStyle="bold"
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"

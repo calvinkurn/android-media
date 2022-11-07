@@ -2,7 +2,6 @@ package com.tokopedia.play.viewmodel.upcoming
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.ChannelStatusResponse
 import com.tokopedia.play.data.PlayReminder
 import com.tokopedia.play.domain.GetChannelStatusUseCase
@@ -29,10 +28,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -67,13 +64,10 @@ class PlayUpcomingTest {
     )
 
     private val channelId = mockChannelData.id
-    private val channelType = mockChannelData.channelDetail.channelInfo.channelType.value
     private val channelInfo = mockChannelData.channelDetail.channelInfo
     private val shareInfo = mockChannelData.channelDetail.shareInfo
-    private val partnerId = mockPartnerInfo.id
 
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
-    private val mockPlayNewAnalytic: PlayNewAnalytic = mockk(relaxed = true)
     private val mockGetChannelStatus: GetChannelStatusUseCase = mockk(relaxed = true)
     private val mockPlayUiModelMapper: PlayUiModelMapper = mockk(relaxed = true)
     private val mockRepo: PlayViewerRepository = mockk(relaxed = true)
@@ -81,6 +75,7 @@ class PlayUpcomingTest {
 
     private val fakePlayChannelSSE = FakePlayChannelSSE(testDispatcher)
     private val fakePlayShareExperience = FakePlayShareExperience()
+    private val mockChannelDataReminded = mockChannelData.copy(upcomingInfo = mockUpcomingInfo.copy(isReminderSet = true))
 
     @Before
     fun setUp() {
@@ -91,33 +86,6 @@ class PlayUpcomingTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
-
-    /**
-     * Impress Page
-     */
-    @Test
-    fun `given a upcoming channel, user is open the upcoming page, then app should send impression analytic`() {
-        /** Mock */
-        every { mockPlayNewAnalytic.impressUpcomingPage(mockChannelData.id) } returns Unit
-
-        /** Verify */
-        val robot = createPlayUpcomingViewModelRobot(
-            playAnalytic = mockPlayNewAnalytic
-        ) {
-            viewModel.initPage(mockChannelData.id, mockChannelData)
-        }
-
-        robot.use {
-            /** Test */
-            runBlockingTest {
-                robot.submitAction(ImpressUpcomingChannel)
-            }
-
-            /** Verify */
-            verify { mockPlayNewAnalytic.impressUpcomingPage(mockChannelData.id) }
-        }
-    }
-
 
     /**
      * Remind Me
@@ -139,7 +107,6 @@ class PlayUpcomingTest {
         )
 
         coEvery { mockPlayChannelReminderUseCase.executeOnBackground() } returns mockResponse
-        every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
         every { mockUserSession.isLoggedIn } returns true
 
         /** Prepare */
@@ -147,7 +114,6 @@ class PlayUpcomingTest {
             playChannelReminderUseCase = mockPlayChannelReminderUseCase,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
         }
@@ -158,10 +124,7 @@ class PlayUpcomingTest {
                 robot.submitAction(ClickUpcomingButton)
             }
 
-            /** Verify */
-            verify { mockPlayNewAnalytic.clickRemindMe(any()) }
-
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Reminded)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertTrue()}
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -183,7 +146,6 @@ class PlayUpcomingTest {
         )
 
         coEvery { mockPlayChannelReminderUseCase.executeOnBackground() } returns mockResponse
-        every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
         every { mockUserSession.isLoggedIn } returns true
 
         /** Prepare */
@@ -191,7 +153,6 @@ class PlayUpcomingTest {
             playChannelReminderUseCase = mockPlayChannelReminderUseCase,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
         }
@@ -202,10 +163,7 @@ class PlayUpcomingTest {
                 robot.submitAction(ClickUpcomingButton)
             }
 
-            /** Verify */
-            verify { mockPlayNewAnalytic.clickRemindMe(any()) }
-
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertFalse()}
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -224,7 +182,6 @@ class PlayUpcomingTest {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
         }
@@ -241,19 +198,92 @@ class PlayUpcomingTest {
         }
     }
 
+
+    @Test
+    fun `given a upcoming channel, when logged in user already set reminder click cancel remind me button, then upcoming state should be updated to remind me`() {
+        /** Mock */
+        val mockPlayChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true)
+        val mockResponse = PlayReminder(
+            PlayReminder.ToggleChannelReminder(
+                header = PlayReminder.Header(
+                    status = 200
+                )
+            )
+        )
+        val mockEvent = PlayUpcomingUiEvent.RemindMeEvent(
+            message = UiString.Resource(1),
+            isSuccess = true
+        )
+
+        coEvery { mockPlayChannelReminderUseCase.executeOnBackground() } returns mockResponse
+        every { mockUserSession.isLoggedIn } returns true
+
+        val robot = createPlayUpcomingViewModelRobot(
+            playChannelReminderUseCase = mockPlayChannelReminderUseCase,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelDataReminded)
+            print(mockChannelDataReminded.upcomingInfo)
+        }
+
+        robot.use {
+            val (state, events) = robot.recordStateAndEvent {
+                robot.submitAction(ClickUpcomingButton)
+            }
+
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertFalse()}
+            events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when logged in user already set reminder click cancel click remind me button and error occur, then upcoming state is still the same`() {
+        /** Mock */
+        val mockPlayChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true)
+        val mockResponse = PlayReminder(
+            PlayReminder.ToggleChannelReminder(
+                header = PlayReminder.Header(
+                    status = 403
+                )
+            )
+        )
+        val mockEvent = PlayUpcomingUiEvent.RemindMeEvent(
+            message = UiString.Resource(1),
+            isSuccess = false
+        )
+
+        coEvery { mockPlayChannelReminderUseCase.executeOnBackground() } returns mockResponse
+        every { mockUserSession.isLoggedIn } returns true
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            playChannelReminderUseCase = mockPlayChannelReminderUseCase,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelDataReminded)
+        }
+
+        robot.use {
+            val (state, events) = robot.recordStateAndEvent {
+                robot.submitAction(ClickUpcomingButton)
+            }
+
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertTrue()}
+            events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
+        }
+    }
+
     /**
      * Watch Now
      */
     @Test
     fun `given a upcoming channel, when channel already live and user click button, then app should send analytic and close SSE`() {
-        /** Mock */
-        every { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) } returns Unit
-
         /** Prepare */
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -269,8 +299,6 @@ class PlayUpcomingTest {
 
             /** Verify **/
             fakePlayChannelSSE.isConnectionOpen().assertFalse()
-
-            verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
 
             events.assertNotEmpty()
             events.last().assertEqualTo(PlayUpcomingUiEvent.RefreshChannelEvent)
@@ -288,13 +316,10 @@ class PlayUpcomingTest {
             mockApplink
         )
 
-        coEvery { mockPlayNewAnalytic.clickShop(any(), any(), any()) } returns Unit
-
         /** Prepare */
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -305,9 +330,6 @@ class PlayUpcomingTest {
             val events = robot.recordEvent {
                 robot.submitAction(ClickPartnerNameUpcomingAction(appLink = mockApplink))
             }
-
-            /** Verify **/
-            verify { mockPlayNewAnalytic.clickShop(any(), any(), any()) }
 
             events.assertNotEmpty()
             events.last().assertEqualTo(mockEvent)
@@ -326,7 +348,6 @@ class PlayUpcomingTest {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelDataWithBuyerPartner.id, mockChannelDataWithBuyerPartner)
@@ -361,7 +382,6 @@ class PlayUpcomingTest {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE,
             repo = mockRepo
         ) {
@@ -391,7 +411,6 @@ class PlayUpcomingTest {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE,
             repo = mockRepo
         ) {
@@ -415,7 +434,6 @@ class PlayUpcomingTest {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE,
             repo = mockRepo
         )
@@ -458,7 +476,6 @@ class PlayUpcomingTest {
             getChannelStatusUseCase = mockGetChannelStatus,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -502,7 +519,6 @@ class PlayUpcomingTest {
             playUiModelMapper = mockPlayUiModelMapper,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -532,7 +548,6 @@ class PlayUpcomingTest {
             getChannelStatusUseCase = mockGetChannelStatus,
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -566,7 +581,6 @@ class PlayUpcomingTest {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -591,7 +605,6 @@ class PlayUpcomingTest {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -616,7 +629,6 @@ class PlayUpcomingTest {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -630,7 +642,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertFalse()}
             fakePlayChannelSSE.isConnectionOpen().assertTrue()
         }
     }
@@ -641,7 +653,6 @@ class PlayUpcomingTest {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
-            playAnalytic = mockPlayNewAnalytic,
             playChannelSSE = fakePlayChannelSSE
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -655,7 +666,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertFalse()}
             fakePlayChannelSSE.isConnectionOpen().assertTrue()
         }
     }
@@ -666,14 +677,12 @@ class PlayUpcomingTest {
     @Test
     fun `when user click share action, it should emit event to save temporary sharing image`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickShareButton(any(), any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
 
         val mockEvent = PlayUpcomingUiEvent.SaveTemporarySharingImage(imageUrl = channelInfo.coverUrl)
 
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
             playShareExperience = mockPlayShareExperience,
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -684,9 +693,6 @@ class PlayUpcomingTest {
             val event = it.recordEvent {
                 submitAction(ClickShareUpcomingAction)
             }
-
-            /** Verify */
-            verify { mockPlayNewAnalytic.clickShareButton(channelId, partnerId, channelType) }
 
             event.last().assertEqualTo(mockEvent)
         }
@@ -706,7 +712,6 @@ class PlayUpcomingTest {
 
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
             playShareExperience = mockPlayShareExperience,
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -726,7 +731,6 @@ class PlayUpcomingTest {
     @Test
     fun `when user wants to open sharing experience & custom sharing is allowed, it should emit event to open universal sharing bottom sheet`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.impressShareBottomSheet(any(), any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
 
         val mockEvent = PlayUpcomingUiEvent.OpenSharingOptionEvent(
@@ -738,7 +742,6 @@ class PlayUpcomingTest {
 
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
             playShareExperience = mockPlayShareExperience,
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -749,9 +752,6 @@ class PlayUpcomingTest {
             val event = it.recordEvent {
                 submitAction(ShowShareExperienceUpcomingAction)
             }
-
-            /** Verify */
-            verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
             event.last().assertEqualTo(mockEvent)
         }
@@ -771,7 +771,6 @@ class PlayUpcomingTest {
 
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
             playShareExperience = mockPlayShareExperience,
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -792,32 +791,19 @@ class PlayUpcomingTest {
     @Test
     fun `when user close sharing bottom sheet, it should send analytics close bottom sheet`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.closeShareBottomSheet(any(), any(), any(), any()) } returns Unit
         every { mockPlayShareExperience.isScreenshotBottomSheet() } returns false
 
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
             playShareExperience = mockPlayShareExperience,
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
-        }
-
-        robot.use {
-            /** Test */
-            it.recordEvent {
-                submitAction(CloseSharingOptionUpcomingAction)
-            }
-
-            /** Verify */
-            verify { mockPlayNewAnalytic.closeShareBottomSheet(channelId, partnerId, channelType, false) }
         }
     }
 
     @Test
     fun `when user take screenshot & custom share is allowed, it should emit event to open bottom sheet`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.takeScreenshotForSharing(any(), any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
 
         val mockEvent = PlayUpcomingUiEvent.OpenSharingOptionEvent(
@@ -829,7 +815,6 @@ class PlayUpcomingTest {
 
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
             playShareExperience = mockPlayShareExperience,
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -841,9 +826,6 @@ class PlayUpcomingTest {
                 submitAction(ScreenshotTakenUpcomingAction)
             }
 
-            /** Verify */
-            verify { mockPlayNewAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType) }
-
             event.last().assertEqualTo(mockEvent)
         }
     }
@@ -851,7 +833,6 @@ class PlayUpcomingTest {
     @Test
     fun `when user click share option, it should emit event to redirect to selected media`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(), any(),any()) } returns Unit
         fakePlayShareExperience.setScreenshotBottomSheet(false)
 
         val shareModel = ShareModel.Whatsapp()
@@ -866,7 +847,6 @@ class PlayUpcomingTest {
 
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
             playShareExperience = fakePlayShareExperience,
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -878,9 +858,6 @@ class PlayUpcomingTest {
                 submitAction(ClickSharingOptionUpcomingAction(shareModel))
             }
 
-            /** Verify */
-            verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
-
             event[0].assertEqualTo(mockCloseBottomSheet)
             event[1].assertEqualTo(mockEvent)
         }
@@ -889,7 +866,6 @@ class PlayUpcomingTest {
     @Test
     fun `when user click share option and error occur, it should emit event to copy link`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(), any(),any()) } returns Unit
         fakePlayShareExperience.setScreenshotBottomSheet(false)
         fakePlayShareExperience.setThrowException(true)
 
@@ -901,7 +877,6 @@ class PlayUpcomingTest {
 
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
             playShareExperience = fakePlayShareExperience,
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
@@ -913,36 +888,90 @@ class PlayUpcomingTest {
                 submitAction(ClickSharingOptionUpcomingAction(shareModel))
             }
 
-            /** Verify */
-            verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
-
             event[0].assertEqualTo(mockCloseBottomSheet)
             event[1].assertEqualTo(mockErrorGenerateLink)
         }
     }
 
+    /**
+     * Expanded
+     */
     @Test
-    fun `when user choose permission regarding universal bottom sheet, it should send analytics choose permission`() {
-        /** Prepare */
-        every { mockPlayNewAnalytic.clickSharePermission(any(), any(), any(), any()) } returns Unit
-
-        val label = "allow"
-
+    fun `given initial value of desc isExpand is false, when user click Lihat Semua it will set true`() {
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
         }
 
         robot.use {
-            /** Test */
-            it.recordEvent {
-                submitAction(SharePermissionUpcomingAction(label))
+            val state = robot.recordState {
+                robot.submitAction(ExpandDescriptionUpcomingAction)
             }
 
-            /** Verify */
-            verify { mockPlayNewAnalytic.clickSharePermission(channelId, partnerId, channelType, label) }
+            state.description.isExpand.assertTrue()
+            state.description.isShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given initial value of desc isExpand is false, when user click Lihat Semua it will set true then user click Tampilkan Sedikit it would go back as initial value`() {
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            //1 click to expand
+            val state1 = robot.recordState {
+                robot.submitAction(ExpandDescriptionUpcomingAction)
+            }
+
+            //2 click to dismiss
+            val state2 = robot.recordState {
+                robot.submitAction(ExpandDescriptionUpcomingAction)
+            }
+
+            state1.description.isExpand.assertTrue()
+            state2.description.isExpand.assertFalse()
+            state2.description.isShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given initial value of desc isExpand is false, when user tap cover the isShown must be false`() {
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(TapCover)
+            }
+
+            state.description.isShown.assertFalse()
+            state.description.isExpand.assertFalse()
+        }
+    }
+
+    @Test
+    fun `expand description isexpanded tap cover, isExpand value must be false, and isShown is true`() {
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ExpandDescriptionUpcomingAction)
+                robot.submitAction(TapCover)
+            }
+            state.description.isShown.assertTrue()
+            state.description.isExpand.assertFalse()
         }
     }
 }

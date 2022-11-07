@@ -10,14 +10,14 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
-import kotlinx.android.synthetic.main.item_post_image.view.*
+import kotlinx.android.synthetic.main.item_fc_post_image.view.*
 
 /**
  * @author by milhamj on 04/12/18.
  */
 class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostViewHolder<ImagePostViewModel>() {
 
-    override var layoutRes = R.layout.item_post_image
+    override var layoutRes = R.layout.item_fc_post_image
 
     override fun bind(element: ImagePostViewModel) {
         itemView.image.setOnClickListener {
@@ -66,6 +66,7 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
             activityId: String,
             postType: String,
             shopId: String,
+            isFollowed: Boolean = false,
             productList: List<FeedXProduct>)
 
 

@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.FOLLOW
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.UNFOLLOW
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.LOADING_FOLLOW
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.LOADING_UNFOLLOW
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -18,7 +18,7 @@ import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.views.uimodel.MutationUiModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
@@ -46,21 +46,15 @@ class UserProfileViewModel @AssistedInject constructor(
         fun create(username: String): UserProfileViewModel
     }
 
+    private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
+    val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
+
     /**
      * play video will be moved to dedicated fragment when
      * developing another tab user profile eventually. so gonna leave as is for now
      * */
-    private val userPost = MutableLiveData<Boolean>()
-    val userPostLiveData : LiveData<Boolean> get() = userPost
-
-    private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
-    val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
-
     private val userPostError = MutableLiveData<Throwable>()
     val userPostErrorLiveData : LiveData<Throwable> get() = userPostError
-
-
-
 
 
     /** Public Getter */
@@ -98,6 +92,8 @@ class UserProfileViewModel @AssistedInject constructor(
         get() = _profileWhitelist.value.hasAcceptTnc.not()
 
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
+
+    var ugcOnboardingOpenFrom: Int = 0
 
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
@@ -297,28 +293,19 @@ class UserProfileViewModel @AssistedInject constructor(
 
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
-        val deferredProfileInfo = viewModelScope.asyncCatchError(block = {
-            repo.getProfile(username)
-        }) {
-            _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
-            ProfileUiModel.Empty
-        }
 
-        val deferredFollowInfo = viewModelScope.asyncCatchError(block = {
-            repo.getFollowInfo(listOf(username))
-        }) {
-            FollowInfoUiModel.Empty
-        }
+        val profileInfo = repo.getProfile(username)
 
-        val profileInfo = deferredProfileInfo.await() ?: ProfileUiModel.Empty
-        val followInfo = deferredFollowInfo.await() ?: FollowInfoUiModel.Empty
         val profileType = if(userSession.isLoggedIn) {
-            if(userSession.userId == followInfo.userID)
+            if(userSession.userId == profileInfo.userID)
                 ProfileType.Self
             else ProfileType.OtherUser
         }
         else ProfileType.NotLoggedIn
 
+        val followInfo = if(userSession.isLoggedIn)
+            repo.getFollowInfo(listOf(profileInfo.userID))
+        else FollowInfoUiModel.Empty
 
         _profileInfo.update { profileInfo }
         _followInfo.update { followInfo }
@@ -329,11 +316,8 @@ class UserProfileViewModel @AssistedInject constructor(
             loadShopRecom()
         }
 
-        /**
-         * play video will be moved to dedicated fragment when
-         * developing another tab user profile eventually. so gonna leave as is for now
-         * */
-        userPost.value = isRefresh
+        if(isRefresh)
+            _uiEvent.emit(UserProfileUiEvent.LoadPlayVideo)
     }
 
     private suspend fun loadShopRecom() {
@@ -343,6 +327,8 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     companion object {
+        const val UGC_ONBOARDING_OPEN_FROM_LIVE = 1
+        const val UGC_ONBOARDING_OPEN_FROM_POST = 2
         private const val FOLLOW_TYPE_SHOP = 2
         private const val FOLLOW_TYPE_BUYER = 3
     }
