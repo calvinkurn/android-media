@@ -72,7 +72,7 @@ class SectionViewHolder(
     override fun onItemClick(
         questionDataModel: QuestionDataModel,
         isChipSelected: Boolean,
-        updateChipsSelection: (Boolean) -> Unit
+        updateChipsSelection: (isSelected: Boolean) -> Unit
     ) {
         var isActive = isChipSelected
 

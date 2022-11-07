@@ -64,7 +64,7 @@ class ChipsViewHolder(
     }
 
     interface QuestionChipsListener {
-        fun onItemClick(questionDataModel: QuestionDataModel, isChipSelected: Boolean, updateChipsSelection: (Boolean) -> Unit)
+        fun onItemClick(questionDataModel: QuestionDataModel, isChipSelected: Boolean, updateChipsSelection: (isSelected: Boolean) -> Unit)
     }
 
     companion object {
