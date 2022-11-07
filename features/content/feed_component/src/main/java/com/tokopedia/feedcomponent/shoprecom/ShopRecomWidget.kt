@@ -72,7 +72,7 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
             addAll(shopRecomItem.map { ShopRecomAdapter.Model.ShopRecomWidget(it) })
             if (isLoading) add(ShopRecomAdapter.Model.Loading)
         }
-        mAdapterShopRecom.setItemsAndAnimateChanges(model)
+        if (rvShopRecom.isComputingLayout.not()) mAdapterShopRecom.setItemsAndAnimateChanges(model)
     }
 
     fun showLoadingShopRecom() = with(binding) {
