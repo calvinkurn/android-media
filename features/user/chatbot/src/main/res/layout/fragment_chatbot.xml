@@ -91,6 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:enableAutoSlide="true"
         app:tickerShapeType="full" />
 
     <androidx.cardview.widget.CardView

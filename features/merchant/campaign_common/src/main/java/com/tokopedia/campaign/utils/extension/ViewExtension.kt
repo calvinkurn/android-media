@@ -94,7 +94,6 @@ private fun View?.showToasterError(errorMessage: String) {
         Toaster.LENGTH_SHORT,
         Toaster.TYPE_ERROR
     ).apply {
-        anchorView = this@showToasterError
         show()
     }
 }
@@ -107,7 +106,6 @@ private fun View?.showToasterErrorWithCta(errorMessage: String, ctaText: String)
         Toaster.TYPE_ERROR,
         ctaText
     ).apply {
-        anchorView = this@showToasterErrorWithCta
         show()
     }
 }
