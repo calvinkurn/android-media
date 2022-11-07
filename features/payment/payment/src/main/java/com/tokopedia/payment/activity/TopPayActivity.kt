@@ -531,6 +531,14 @@ class TopPayActivity :
         hideProgressDialog()
     }
 
+    private fun showCreditCardLoader()= activity_topay_container.post {
+            loaderCreditCardUnify.visibility = View.VISIBLE
+        }
+
+    private fun hideCreditCardLoader()= activity_topay_container.post {
+            loaderCreditCardUnify.visibility = View.GONE
+        }
+
     private fun routeToHomeCredit(appLink: String, overlayUrl: String?, headerText: String?) {
         val intent = RouteManager.getIntent(this@TopPayActivity, appLink)
         if (!overlayUrl.isNullOrEmpty()) intent.putExtra(CUST_OVERLAY_URL, overlayUrl)
@@ -673,12 +681,11 @@ class TopPayActivity :
             return super.shouldOverrideUrlLoading(view, url)
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
             val uri = request?.url
             if (uri != null) {
                 val uriString = uri.toString()
-                Log.e("All Url", uriString)
+                hideCreditCardLoader()
                 if ((uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) || uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS)) &&
                     isInterceptOtp && uri.getQueryParameter(PaymentFingerprintConstant.ENABLE_FINGERPRINT).equals("true", true) &&
                     getEnableFingerprintPayment()
@@ -698,15 +705,11 @@ class TopPayActivity :
 
                 // cc loading
                 if (uriString.equals(CC_LOADING_URL)) {
-                    activity_topay_container.post {
-                        showFullLoading()
-                    }
+                    showCreditCardLoader()
                 }
 
                 if (uriString.equals(CC_LOADING_COMPLETE)) {
-                    activity_topay_container.post {
-                        hideFullLoading()
-                    }
+                    showCreditCardLoader()
                 }
             }
 
@@ -931,8 +934,8 @@ class TopPayActivity :
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
-        private const val CC_LOADING_COMPLETE = "https://centinelapi.cardinalcommerce.com/V1/Cruise/CollectRedirect"
-        private const val CC_LOADING_URL = "https://centinelapi.cardinalcommerce.com/V1/Cruise/Collect"
+        private const val CC_LOADING_COMPLETE = "https://centinelapistag.cardinalcommerce.com/V1/Cruise/CollectRedirect"
+        private const val CC_LOADING_URL = "https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
         private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
