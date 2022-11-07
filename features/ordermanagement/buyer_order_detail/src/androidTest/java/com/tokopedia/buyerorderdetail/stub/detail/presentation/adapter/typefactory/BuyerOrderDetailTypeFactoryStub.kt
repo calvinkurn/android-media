@@ -26,7 +26,8 @@ class BuyerOrderDetailTypeFactoryStub(
     courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     productViewListener: PartialProductItemViewHolder.ProductViewListener,
     navigator: BuyerOrderDetailNavigator,
-    buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
+    buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
+    orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener
 ) : BuyerOrderDetailTypeFactory(
     productBundlingViewListener,
     tickerViewHolderListener,
@@ -35,7 +36,8 @@ class BuyerOrderDetailTypeFactoryStub(
     courierInfoViewHolderListener,
     productViewListener,
     navigator,
-    buyerOrderDetailBindRecomWidgetListener
+    buyerOrderDetailBindRecomWidgetListener,
+    orderResolutionListener
 ) {
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {

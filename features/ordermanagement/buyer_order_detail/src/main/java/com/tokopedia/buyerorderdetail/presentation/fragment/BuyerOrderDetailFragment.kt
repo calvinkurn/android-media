@@ -81,13 +81,15 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-open class BuyerOrderDetailFragment : BaseDaggerFragment(),
+open class BuyerOrderDetailFragment :
+    BaseDaggerFragment(),
     PartialProductItemViewHolder.ProductViewListener,
     ProductBundlingViewHolder.Listener,
     TickerViewHolder.TickerViewHolderListener,
     DigitalRecommendationViewHolder.ActionListener,
     CourierInfoViewHolder.CourierInfoViewHolderListener,
-    PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
+    PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
+    OrderResolutionViewHolder.OrderResolutionListener {
 
     companion object {
         @JvmStatic
@@ -139,6 +141,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             this,
             this,
             navigator,
+            this,
             this
         )
     }
@@ -190,11 +193,13 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
 
     private fun createToolbarMenuIcons(context: Context): BuyerOrderDetailToolbarMenu? {
-        return (View.inflate(
-            context,
-            R.layout.partial_buyer_order_detail_toolbar_menu,
-            null
-        ) as? BuyerOrderDetailToolbarMenu)?.apply {
+        return (
+            View.inflate(
+                context,
+                R.layout.partial_buyer_order_detail_toolbar_menu,
+                null
+            ) as? BuyerOrderDetailToolbarMenu
+            )?.apply {
             setViewModel(viewModel)
             setNavigator(navigator)
         }
@@ -275,6 +280,13 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         rvBuyerOrderDetail?.post {
             adapter.removeDigitalRecommendation()
         }
+    }
+
+    override fun onResolutionWidgetClicked() {
+        BuyerOrderDetailTracker.sendClickOnResolutionWidgetEvent(
+            viewModel.getOrderStatusId(),
+            viewModel.getOrderId()
+        )
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
@@ -459,7 +471,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     private fun containsAskSellerButton(actionButtonsUiModel: ActionButtonsUiModel): Boolean {
         return actionButtonsUiModel.primaryActionButton.key == BuyerOrderDetailActionButtonKey.ASK_SELLER ||
-                actionButtonsUiModel.secondaryActionButtons.any { it.key == BuyerOrderDetailActionButtonKey.ASK_SELLER }
+            actionButtonsUiModel.secondaryActionButtons.any { it.key == BuyerOrderDetailActionButtonKey.ASK_SELLER }
     }
 
     private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
