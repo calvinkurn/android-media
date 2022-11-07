@@ -25,6 +25,7 @@ import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapt
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.viewholder.*
+import com.tokopedia.developer_options.session.DevOptLoginSession
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.translator.manager.TranslatorManager
@@ -80,6 +81,7 @@ class DeveloperOptionActivity : BaseActivity() {
     private var rvDeveloperOption: RecyclerView? = null
     private var sbDeveloperOption: SearchBarUnify? = null
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(this) }
+    private val loginSession by lazy { DevOptLoginSession(this) }
 
     private val adapter by lazy {
         DeveloperOptionAdapter(
@@ -158,6 +160,12 @@ class DeveloperOptionActivity : BaseActivity() {
             layoutManager = LinearLayoutManager(context)
             setItemViewCacheSize(RV_CACHE_SIZE)
         }
+
+        val loggedIn = loginSession.isLoggedIn()
+        clearSessionIfNotLoggedIn(loggedIn)
+
+        adapter.setValueIsAuthorized(loggedIn)
+        adapter.initializeList()
         adapter.setDefaultItem()
     }
 
@@ -254,13 +262,12 @@ class DeveloperOptionActivity : BaseActivity() {
         }
     }
 
-
-
     private fun checkAuthorize(): DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
         return object : DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
             override fun onSubmitDevOptsPassword(password: String) {
                 var serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
                 if (password == serverPassword){
+                    loginSession.setPassword(password)
                     adapter.setValueIsAuthorized(true)
                     adapter.initializeList()
                     adapter.setDefaultItem()
@@ -270,6 +277,10 @@ class DeveloperOptionActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    private fun clearSessionIfNotLoggedIn(loggedIn: Boolean) {
+        if (!loggedIn) loginSession.clear()
     }
 
     private fun showToaster(message: String) {

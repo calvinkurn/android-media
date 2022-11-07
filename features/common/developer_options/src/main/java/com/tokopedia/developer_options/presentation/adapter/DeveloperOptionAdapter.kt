@@ -213,7 +213,6 @@ class DeveloperOptionAdapter(
         }
     }
 
-
     fun searchItem(keyword: String) {
         val newItems = mutableListOf<OptionItemUiModel>()
         defaultItems.forEach { model ->
