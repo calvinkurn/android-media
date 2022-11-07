@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.content.common.producttag.util.extension.setValue
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_INTEREST
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
@@ -21,7 +22,6 @@ import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Fo
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
-import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_CURSOR
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_FEED_UPDATE
 import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
@@ -309,7 +309,7 @@ class FeedViewModel @Inject constructor(
                 }
             }
 
-            getShopRecomWidget(results.dynamicFeedDomainModel)
+            if (shouldGetShopRecomWidget(results.dynamicFeedDomainModel)) getShopRecomWidget()
 
         }) {
             getFeedFirstPageResp.value = Fail(it)
@@ -339,7 +339,7 @@ class FeedViewModel @Inject constructor(
                 }
             }
 
-            getShopRecomWidget(results)
+            if (shouldGetShopRecomWidget(results)) getShopRecomWidget()
 
         }) {
             getFeedNextPageResp.value = Fail(it)
@@ -824,25 +824,25 @@ class FeedViewModel @Inject constructor(
     /**
      * Shop Recommendation Widget
      */
-    private fun getShopRecomWidget(model: DynamicFeedDomainModel) {
-        if (!shouldGetShopRecomWidget(model)) return
-        launchCatchError(block = {
-            val request = requestShopRecomWidget("")
-            _shopRecom.value = request
-        }, onError = {
-            _shopRecom.value = ShopRecomWidgetModel()
-        })
-    }
-
-    fun getShopRecomWidgetNextPage() {
+    fun getShopRecomWidget() {
         launchCatchError(block = {
             val request = requestShopRecomWidget(shopRecomNextCursor)
             if (request.shopRecomUiModel.isShown) {
                 shopRecomNextCursor = request.shopRecomUiModel.nextCursor
-                _shopRecom.update { request }
-            }
+                _shopRecom.setValue {
+                    copy(
+                        shopRecomUiModel = shopRecomUiModel.copy(
+                            isShown = request.shopRecomUiModel.isShown,
+                            nextCursor = request.shopRecomUiModel.nextCursor,
+                            title = request.shopRecomUiModel.title,
+                            loadNexPage = request.shopRecomUiModel.loadNexPage,
+                            items = shopRecomUiModel.items + request.shopRecomUiModel.items
+                        )
+                    )
+                }
+            } else _shopRecom.emit(ShopRecomWidgetModel())
         }, onError = {
-            _shopRecom.update { ShopRecomWidgetModel() }
+            _shopRecom.value = ShopRecomWidgetModel()
         })
     }
 

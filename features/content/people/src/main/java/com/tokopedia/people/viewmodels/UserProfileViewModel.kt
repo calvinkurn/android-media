@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.content.common.producttag.util.extension.setValue
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.FOLLOW
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
@@ -12,7 +13,6 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
@@ -332,7 +332,15 @@ class UserProfileViewModel @AssistedInject constructor(
         val result = repo.getShopRecom(cursor)
         if (result.isShown) {
             shopRecomNextCursor = result.nextCursor
-            _shopRecom.emit(result)
+            _shopRecom.setValue {
+                copy(
+                    isShown = result.isShown,
+                    nextCursor = result.nextCursor,
+                    title = result.title,
+                    loadNexPage = result.loadNexPage,
+                    items = items + result.items
+                )
+            }
         } else _shopRecom.emit(ShopRecomUiModel())
     }
 
