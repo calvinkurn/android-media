@@ -25,7 +25,7 @@ class ShopRecomAdapter(
         payloads: List<Any>
     ) {
         super.onBindViewHolder(holder, position, payloads)
-        if(position == (itemCount - 1)) onLoading()
+        if (position == (itemCount - 1) && holder is ShopRecomLoadingViewHolder) onLoading()
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
