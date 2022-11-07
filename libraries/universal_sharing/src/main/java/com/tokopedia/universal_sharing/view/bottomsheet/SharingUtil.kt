@@ -214,9 +214,6 @@ class SharingUtil {
                    }
                    is ShareModel.Line -> {
                        activity?.startActivity(shareModel.appIntent?.apply {
-                           if(shareImageFileUri != null) {
-                               putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
-                           }
                            if(shareModel.shareOnlyLink){
                                if(shareImageFileUri != null) {
                                    putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
