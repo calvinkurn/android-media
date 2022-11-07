@@ -329,7 +329,7 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                val attachmentType = chatResponse.attachment?.type
+                val attachmentType = chatResponse?.attachment?.type
                 if (attachmentType == SESSION_CHANGE || attachmentType == UPDATE_TOOLBAR)
                     return
                 view.onReceiveMessageEvent(mapToVisitable(pojo))
@@ -402,9 +402,9 @@ class ChatbotPresenter @Inject constructor(
 
     private fun handleSessionChange(agentMode: ReplyBubbleAttributes) {
         if (agentMode.sessionChange.mode == MODE_AGENT) {
-            view.replyBubbleStateHandler(true)
+            view.sessionChangeStateHandler(true)
         } else if (agentMode.sessionChange.mode == MODE_BOT) {
-            view.replyBubbleStateHandler(false)
+            view.sessionChangeStateHandler(false)
         }
     }
 
