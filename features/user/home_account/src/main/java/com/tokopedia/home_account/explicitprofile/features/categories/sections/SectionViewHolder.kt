@@ -12,6 +12,7 @@ import com.tokopedia.home_account.explicitprofile.features.categories.sections.c
 import com.tokopedia.home_account.explicitprofile.features.categories.sections.chips.ChipsViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.utils.view.binding.viewBinding
+import java.util.*
 
 class SectionViewHolder(
     itemView: View,
@@ -22,7 +23,12 @@ class SectionViewHolder(
     private val chipsAdapter = ChipsAdapter(this)
     private val flexboxLayoutManager = FlexboxLayoutManager(itemView.context)
 
+    private var maxAnswersSelection = 0
+    private var selectedAnswers: MutableList<QuestionDataModel> = mutableListOf()
+
     fun onBind(sectionsDataModel: SectionsDataModel) {
+        maxAnswersSelection = sectionsDataModel.maxAnswer
+
         flexboxLayoutManager.flexWrap = FlexWrap.WRAP
         flexboxLayoutManager.flexDirection = FlexDirection.ROW
         flexboxLayoutManager.alignItems = AlignItems.FLEX_START
@@ -46,13 +52,38 @@ class SectionViewHolder(
         }
     }
 
-    override fun onItemClick(questionDataModel: QuestionDataModel, isActive: Boolean) {
-        sectionListener.onQuestionSelected(questionDataModel, isActive)
+    override fun onItemClick(
+        questionDataModel: QuestionDataModel,
+        isChipSelected: Boolean,
+        updateChipsSelection: (Boolean) -> Unit
+    ) {
+        var isActive = false
+        var message = ""
+
+        if (isChipSelected) {
+            selectedAnswers.remove(questionDataModel)
+            updateChipsSelection.invoke(!isChipSelected)
+            isActive = !isChipSelected
+        } else {
+            if (selectedAnswers.size < maxAnswersSelection || maxAnswersSelection == 0) {
+                selectedAnswers.add(questionDataModel)
+                updateChipsSelection.invoke(!isChipSelected)
+                isActive = !isChipSelected
+            } else {
+                message = String.format(
+                    Locale.getDefault(),
+                    itemView.context.resources.getString(R.string.explicit_profile_max_selection_answer),
+                    maxAnswersSelection
+                )
+            }
+        }
+
+        sectionListener.onQuestionSelected(questionDataModel, isActive, message)
     }
 
     interface SectionListener {
         fun onClickInfo(sectionsDataModel: SectionsDataModel)
-        fun onQuestionSelected(questionDataModel: QuestionDataModel, isSelected: Boolean)
+        fun onQuestionSelected(questionDataModel: QuestionDataModel, isSelected: Boolean, message: String = "")
     }
 
     companion object {
