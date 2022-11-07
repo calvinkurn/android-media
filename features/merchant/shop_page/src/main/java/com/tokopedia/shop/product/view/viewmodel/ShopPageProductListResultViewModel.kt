@@ -750,11 +750,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             affiliateCookieHelper.initCookie(
                 "",
                 affiliateChannel,
-                AffiliatePageDetail(productId, AffiliateSdkPageSource.PDP(shopId, AffiliateSdkProductInfo(
-                    "",
-                    isVariant,
-                    stockQty
-                ))),
+                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId)),
                 isATC = true
             )
         }) {

@@ -649,11 +649,7 @@ class NewShopPageViewModel @Inject constructor(
             affiliateCookieHelper.initCookie(
                 "",
                 affiliateChannel,
-                AffiliatePageDetail(productId, AffiliateSdkPageSource.PDP(shopId, AffiliateSdkProductInfo(
-                    "",
-                    isVariant,
-                    stockQty
-                ))),
+                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId)),
                 isATC = true
             )
         }) {
