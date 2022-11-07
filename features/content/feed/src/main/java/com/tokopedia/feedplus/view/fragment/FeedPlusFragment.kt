@@ -3908,7 +3908,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onLoadingNextPage() {
+    override fun onShopRecomLoadingNextPage() {
         feedViewModel.getShopRecomWidget()
     }
 

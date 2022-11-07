@@ -850,7 +850,7 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onLoadingNextPage() {
+    override fun onShopRecomLoadingNextPage() {
         viewModel.submitAction(UserProfileAction.LoadNextPageShopRecom)
     }
 

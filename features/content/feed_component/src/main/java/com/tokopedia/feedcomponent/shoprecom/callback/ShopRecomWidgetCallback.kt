@@ -12,5 +12,5 @@ interface ShopRecomWidgetCallback {
 
     fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int)
 
-    fun onLoadingNextPage()
+    fun onShopRecomLoadingNextPage()
 }

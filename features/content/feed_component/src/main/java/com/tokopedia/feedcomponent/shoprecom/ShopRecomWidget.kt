@@ -43,7 +43,7 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
     }
 
     private val mAdapterShopRecom: ShopRecomAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ShopRecomAdapter(this) { mListener?.onLoadingNextPage() }
+        ShopRecomAdapter(this) { mListener?.onShopRecomLoadingNextPage() }
     }
 
     init {
@@ -114,8 +114,8 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
         mListener?.onShopRecomItemImpress(item, postPosition)
     }
 
-    override fun onLoadingNextPage() {
-        mListener?.onLoadingNextPage()
+    override fun onShopRecomLoadingNextPage() {
+        mListener?.onShopRecomLoadingNextPage()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
