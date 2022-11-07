@@ -13,27 +13,30 @@ import javax.inject.Inject
  */
 class FeedProductTagAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val trackingQueue: TrackingQueue,
+    private val trackingQueue: TrackingQueue
 ) : ContentProductTagAnalytic {
 
     override fun trackGlobalSearchProduct(
         header: SearchHeaderUiModel,
-        param: SearchParamUiModel,
+        param: SearchParamUiModel
     ) {
         hitGlobalSearchTracker(VAL_FEED_PRODUCT, header, param)
     }
 
     override fun trackGlobalSearchShop(
         header: SearchHeaderUiModel,
-        param: SearchParamUiModel,
+        param: SearchParamUiModel
     ) {
         hitGlobalSearchTracker(VAL_FEED_SHOP, header, param)
     }
 
     override fun clickBreadcrumb(isOnShop: Boolean) {
         sendClickEvent(
-            if(isOnShop) "click - product tagging source list on toko"
-            else "click - product tagging source list"
+            if (isOnShop) {
+                "click - product tagging source list on toko"
+            } else {
+                "click - product tagging source list"
+            }
         )
     }
 
@@ -50,7 +53,7 @@ class FeedProductTagAnalyticImpl @Inject constructor(
             EventModel(
                 event = EVENT_PRODUCT_VIEW,
                 category = VAL_EVENT_CATEGORY,
-                action = if(isEntryPoint) "impression - entry point product card" else "impression - product card",
+                action = if (isEntryPoint) "impression - entry point product card" else "impression - product card",
                 label = "${source.labelAnalytic} - ${userSession.shopId} - ${products.firstOrNull()?.first?.id ?: 0}"
             ),
             hashMapOf(
@@ -80,13 +83,13 @@ class FeedProductTagAnalyticImpl @Inject constructor(
             EventModel(
                 event = EVENT_PRODUCT_CLICK,
                 category = VAL_EVENT_CATEGORY,
-                action = if(isEntryPoint) "click - entry point product card" else "click - product card",
+                action = if (isEntryPoint) "click - entry point product card" else "click - product card",
                 label = "${source.labelAnalytic} - ${userSession.shopId} - ${product.id}"
             ),
             hashMapOf(
                 KEY_ECOMMERCE to hashMapOf(
                     KEY_CLICK to hashMapOf(
-                        KEY_ACTION_FIELD to hashMapOf( "list" to "/feed - creation tagging page"),
+                        KEY_ACTION_FIELD to hashMapOf("list" to "/feed - creation tagging page"),
                         KEY_PRODUCTS to listOf(convertProductToHashMapWithList(product, position))
                     )
                 )
@@ -109,15 +112,16 @@ class FeedProductTagAnalyticImpl @Inject constructor(
     }
 
     override fun clickBackButton(source: ProductTagSource) {
-        if(source == ProductTagSource.Shop)
+        if (source == ProductTagSource.Shop) {
             sendClickEvent("click - back button on toko")
-        else
+        } else {
             sendClickEvent("click - back on product tagging", source.labelAnalytic)
+        }
     }
 
     override fun impressShopCard(
         source: ProductTagSource,
-        shops: List<Pair<ShopUiModel, Int>>,
+        shops: List<Pair<ShopUiModel, Int>>
     ) {
         trackingQueue.putEETracking(
             EventModel(
@@ -146,7 +150,7 @@ class FeedProductTagAnalyticImpl @Inject constructor(
 
     override fun clickShopCard(
         shop: ShopUiModel,
-        position: Int,
+        position: Int
     ) {
         trackingQueue.putEETracking(
             EventModel(
@@ -216,7 +220,7 @@ class FeedProductTagAnalyticImpl @Inject constructor(
             hashMapOf(
                 KEY_ECOMMERCE to hashMapOf(
                     KEY_CLICK to hashMapOf(
-                        KEY_ACTION_FIELD to hashMapOf( "list" to "/feed - creation tagging page"),
+                        KEY_ACTION_FIELD to hashMapOf("list" to "/feed - creation tagging page"),
                         KEY_PRODUCTS to listOf(convertProductToHashMapWithList(product, position))
                     )
                 )
@@ -243,7 +247,7 @@ class FeedProductTagAnalyticImpl @Inject constructor(
     }
 
     override fun sendAll() {
-        //no longer need to call trackingQueue.sendAll() manually
+        trackingQueue.sendAll()
     }
 
     private fun sendClickEvent(action: String, label: String = "") {
@@ -256,7 +260,7 @@ class FeedProductTagAnalyticImpl @Inject constructor(
                 KEY_BUSINESS_UNIT to VAL_CONTENT,
                 KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSession.userId
             )
         )
     }
@@ -264,16 +268,16 @@ class FeedProductTagAnalyticImpl @Inject constructor(
     private fun hitGlobalSearchTracker(
         type: String,
         header: SearchHeaderUiModel,
-        param: SearchParamUiModel,
+        param: SearchParamUiModel
     ) {
-        val action = when(type) {
+        val action = when (type) {
             VAL_FEED_PRODUCT -> "general search"
             VAL_FEED_SHOP -> "general search shop"
             else -> ""
         }
-        val prevKeyword = if(param.prevQuery.isNotEmpty()) param.prevQuery else "none"
+        val prevKeyword = if (param.prevQuery.isNotEmpty()) param.prevQuery else "none"
 
-        val srpPageTitle = when(type) {
+        val srpPageTitle = when (type) {
             VAL_FEED_PRODUCT -> 0
             VAL_FEED_SHOP -> userSession.shopId
             else -> 0
@@ -293,7 +297,7 @@ class FeedProductTagAnalyticImpl @Inject constructor(
                 KEY_SRP_RELATED_KEYWORD to "$prevKeyword - none",
                 KEY_SRP_SEARCH_FILTER to param.toTrackerString(),
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userSession.userId,
+                KEY_USER_ID to userSession.userId
             )
         )
     }
@@ -307,7 +311,7 @@ class FeedProductTagAnalyticImpl @Inject constructor(
             KEY_PRODUCT_CATEGORY to "",
             KEY_PRODUCT_VARIANT to "",
             KEY_PRODUCT_POSITION to position,
-            KEY_PRODUCT_LIST to VAL_PRODUCT_LIST,
+            KEY_PRODUCT_LIST to VAL_PRODUCT_LIST
         )
     }
 
@@ -316,7 +320,7 @@ class FeedProductTagAnalyticImpl @Inject constructor(
             KEY_CREATIVE to shop.shopImage,
             KEY_CREATIVE_POSITION to position,
             KEY_CREATIVE_ID to shop.shopId,
-            KEY_CREATIVE_NAME to VAL_CREATIVE_NAME,
+            KEY_CREATIVE_NAME to VAL_CREATIVE_NAME
         )
     }
 }
