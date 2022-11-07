@@ -10,16 +10,19 @@ import com.tokopedia.media.editor.analytics.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_CENTER
 import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_DIAGONAL
 import com.tokopedia.media.editor.data.repository.WatermarkType
-import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
 private const val MEDIA_EDITOR_CACHE_DIR = "Editor-Cache"
+
+@Suppress("SpellCheckingInspection")
+fun getTokopediaCacheDir(): String {
+    return FileUtil.getTokopediaInternalDirectory(ImageProcessingUtil.DEFAULT_DIRECTORY).absolutePath
+}
 
 fun getEditorSaveFolderPath(): String {
     return ImageProcessingUtil.DEFAULT_DIRECTORY + MEDIA_EDITOR_CACHE_DIR
@@ -83,7 +86,10 @@ fun getToolEditorText(editorToolType: Int): Int {
     }
 }
 
-fun cropCenterImage(sourceBitmap: Bitmap?, autoCropRatio: Float): Pair<Bitmap, EditorCropRotateUiModel>? {
+fun cropCenterImage(
+    sourceBitmap: Bitmap?,
+    autoCropRatio: Float
+): Pair<Bitmap, EditorCropRotateUiModel>? {
     sourceBitmap?.let { bitmap ->
         val bitmapWidth = bitmap.width
         val bitmapHeight = bitmap.height

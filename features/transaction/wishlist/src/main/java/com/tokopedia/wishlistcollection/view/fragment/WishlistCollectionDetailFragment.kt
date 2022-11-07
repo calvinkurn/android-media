@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,11 +26,11 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.config.GlobalConfig
@@ -116,7 +117,6 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_NAME_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_BULK_ADD
-import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.PARAM_INSIDE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
@@ -1926,10 +1926,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         )
 
         activity?.let {
-            val intent = if (wishlistItem.url.isNotEmpty()) {
-                RouteManager.getIntent(it, wishlistItem.url)
+            val intent: Intent
+            if (wishlistItem.url.isNotEmpty()) {
+                intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+                intent.data = Uri.parse(wishlistItem.url)
             } else {
-                RouteManager.getIntent(
+                intent = RouteManager.getIntent(
                     it,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     wishlistItem.id
@@ -2658,22 +2660,31 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
-        } else if (requestCode == REQUEST_CODE_GO_TO_PDP || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST && data != null) {
+        } else if (requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST && data != null) {
             doRefresh()
-            val isSuccess = data?.getBooleanExtra(
-                ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
-                false
-            )
-            val messageToaster =
-                data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
-
-            if (isSuccess == true) {
-                messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
-            } else {
-                messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
-            }
+            showToasterFromIntent(data)
         } else if (requestCode == REQUEST_CODE_GO_TO_COLLECTION_DETAIL) {
             doRefresh()
+        } else if (requestCode == REQUEST_CODE_GO_TO_PDP) {
+            if (resultCode == Activity.RESULT_OK && data?.getBooleanExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_NEED_REFRESH, false) == true) {
+                doRefresh()
+            }
+            showToasterFromIntent(data)
+        }
+    }
+
+    private fun showToasterFromIntent(data: Intent?) {
+        val isSuccess = data?.getBooleanExtra(
+            ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+            false
+        )
+        val messageToaster =
+            data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
+
+        if (isSuccess == true) {
+            messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
+        } else {
+            messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
         }
     }
 

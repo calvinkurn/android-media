@@ -167,8 +167,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * @author by nisie on 23/11/18.
@@ -603,6 +601,7 @@ class ChatbotFragment :
         dateIndicatorContainer = getBindingView().dateIndicatorContainer
         sendButton = getBindingView().composeArea.sendBut
         guideline = getBindingView().composeArea.guidelineReplyBubble
+        attachmentMenuRecyclerView = getBindingView().rvAttachmentMenu
 
         setUpFloatingInvoiceListeners()
 

@@ -71,6 +71,7 @@ class GetPostDataUseCase(
                     stateText
                     pinned
                     postItemID
+                    countdownDate
                   }
                   cta{
                     text

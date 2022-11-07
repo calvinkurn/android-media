@@ -101,6 +101,18 @@ fun ViewGroup.inflateLayout(layoutId: Int, isAttached: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutId, this, isAttached)
 }
 
+fun ViewGroup?.setViewGroupEnabled(enable: Boolean) {
+    if (this != null) {
+        repeat (childCount) {
+            val child = getChildAt(it)
+            child.isEnabled = enable
+            if (child is ViewGroup) {
+                child.setViewGroupEnabled(enable)
+            }
+        }
+    }
+}
+
 fun Activity.createDefaultProgressDialog(loadingMessage: String?,
                                          cancelable: Boolean = true,
                                          onCancelClicked: (() -> Unit)?): ProgressDialog {

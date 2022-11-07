@@ -61,6 +61,7 @@ object ChatbotSendableWebSocketParam {
         selectedOption.add("button_actions", buttonActions)
         payload.add("selected_option", selectedOption)
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         json.add("data", data)
         return json
     }
@@ -78,6 +79,7 @@ object ChatbotSendableWebSocketParam {
             addProperty("message", sendMessage)
             addProperty("start_time", startTime)
             addProperty("to_uid", toUid)
+            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         }
         json.add("data", data)
         return json
@@ -100,6 +102,7 @@ object ChatbotSendableWebSocketParam {
                 ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE.toIntOrZero()
             )
             addProperty("start_time", startTime)
+            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         }
         if (referredMsgObj != null) {
             data.add("parent_reply", referredMsgObj)
@@ -145,10 +148,10 @@ object ChatbotSendableWebSocketParam {
             )
         }
 
-        // TODO review this - need to check for exception
         val payload =
             GsonBuilder().create().toJsonTree(invoiceLinkPojo, InvoiceLinkPojo::class.java)
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         json.add("data", data)
         return json
     }
@@ -190,6 +193,8 @@ object ChatbotSendableWebSocketParam {
         data.addProperty("start_time", startTime)
         payload.add("attributes", attributeSelected)
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
+
         json.add("data", data)
         return json
     }
@@ -229,6 +234,9 @@ object ChatbotSendableWebSocketParam {
         selectedOption.add("quick_replies", quickReplies)
         payload.add("selected_option", selectedOption)
         data.add("payload", payload)
+
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
+
         json.add("data", data)
         return json
     }
@@ -269,6 +277,9 @@ object ChatbotSendableWebSocketParam {
         }
 
         payload.add("selected_option", selectedOption)
+
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
+
         data.add("payload", payload)
         json.add("data", data)
         return json
@@ -293,6 +304,7 @@ object ChatbotSendableWebSocketParam {
                 "attachment_type",
                 ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD.toIntOrZero()
             )
+            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         }
         json.add("data", data)
         return json
@@ -315,6 +327,7 @@ object ChatbotSendableWebSocketParam {
             addProperty("file_path", path)
             addProperty("image_obj", imageObj)
             addProperty("attachment_type", AttachmentType.Companion.TYPE_IMAGE_UPLOAD.toIntOrZero())
+            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         }
         json.add("data", data)
         return json
@@ -350,6 +363,7 @@ object ChatbotSendableWebSocketParam {
         )
         data.addProperty("file_path", filePath)
         data.addProperty("start_time", startTime)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
 
         json.add("data", data)
         return json

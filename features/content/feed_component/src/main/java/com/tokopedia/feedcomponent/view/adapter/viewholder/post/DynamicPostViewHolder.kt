@@ -612,7 +612,8 @@ open class DynamicPostViewHolder(v: View,
             isFollow: Boolean,
             postType: String = "",
             isVideo: Boolean,
-            isBottomSheetMenuOnFeed: Boolean = false
+            isBottomSheetMenuOnFeed: Boolean = false,
+            isFollowedFromFollowRestrictionBottomSheet: Boolean = false
         )
 
         fun onMenuClick(
