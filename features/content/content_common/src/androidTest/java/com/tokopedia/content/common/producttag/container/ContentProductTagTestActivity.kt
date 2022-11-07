@@ -43,7 +43,7 @@ class ContentProductTagTestActivity : AppCompatActivity() {
                     classLoader,
                     getArgumentBuilder()
                 ),
-                ProductTagParentFragment.TAG,
+                ProductTagParentFragment.TAG
             )
             .commit()
     }
@@ -51,7 +51,7 @@ class ContentProductTagTestActivity : AppCompatActivity() {
     override fun onAttachFragment(fragment: Fragment) {
         super.onAttachFragment(fragment)
 
-        when(fragment) {
+        when (fragment) {
             is ProductTagParentFragment -> {
                 fragment.setListener(object : ProductTagParentFragment.Listener {
                     override fun onCloseProductTag() {
@@ -63,7 +63,6 @@ class ContentProductTagTestActivity : AppCompatActivity() {
                     }
 
                     override fun onMaxSelectedProductReached() {
-
                     }
                 })
 
@@ -98,12 +97,14 @@ class ContentProductTagTestActivity : AppCompatActivity() {
     private fun closeProductTag() {
         supportFragmentManager
             .beginTransaction()
-            .remove(ProductTagParentFragment.getFragment(
-                supportFragmentManager,
-                classLoader,
-                getArgumentBuilder()
-            ))
-            .commitNow()
+            .remove(
+                ProductTagParentFragment.getFragment(
+                    supportFragmentManager,
+                    classLoader,
+                    getArgumentBuilder()
+                )
+            )
+            .commit()
     }
 
     companion object {
