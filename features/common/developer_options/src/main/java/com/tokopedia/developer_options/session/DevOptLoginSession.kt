@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.user.session.util.EncoderDecoder
 import java.util.concurrent.TimeUnit
 
 class DevOptLoginSession(private val context: Context) {
@@ -14,6 +15,7 @@ class DevOptLoginSession(private val context: Context) {
         private const val KEY_LAST_UPDATED = "last_updated"
 
         private const val SESSION_EXPIRED_DAYS = 14 // 2 weeks
+        private const val DEV_OPT_IV = "developeropt1234"
     }
 
     private val sharedPref by lazy { createSharedPreference() }
@@ -24,7 +26,7 @@ class DevOptLoginSession(private val context: Context) {
     }
 
     fun setPassword(password: String) {
-        sharedPref.edit().putString(KEY_PASSWORD, password).apply()
+        sharedPref.edit().putString(KEY_PASSWORD, EncoderDecoder.Encrypt(password, DEV_OPT_IV)).apply()
         sharedPref.edit().putLong(KEY_LAST_UPDATED, System.currentTimeMillis()).apply()
     }
 
@@ -33,7 +35,7 @@ class DevOptLoginSession(private val context: Context) {
     }
 
     private fun getPassword(): String? {
-        return sharedPref.getString(KEY_PASSWORD, "")
+        return EncoderDecoder.Decrypt(sharedPref.getString(KEY_PASSWORD, ""), DEV_OPT_IV)
     }
 
     private fun getLastUpdated(): Long {
