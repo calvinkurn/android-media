@@ -90,12 +90,12 @@ class TrackingRepository(
 
     private fun setRelicLog(queryName: String, queryParam: String) {
         if(getRemoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING)?:false) {
-            Log.e("Hii", "Inside Embrace")
-            val embraceMap = mapOf(
+            Log.e("Hii", "Inside Relic")
+            val relicMap = mapOf(
                 "queryName" to queryName,
                 "detail" to queryParam
             )
-            ServerLogger.log(Priority.P2, NEW_RELIC_CUSTOMER_TAG, embraceMap)
+            ServerLogger.log(Priority.P2, NEW_RELIC_CUSTOMER_TAG, relicMap)
         }
     }
 
