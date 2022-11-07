@@ -31,7 +31,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         private const val ANIMATION_DURATION = 500
     }
 
-    private var productID: String = ""
+    private var productId: String = ""
     private var binding: LayoutTokopedianowWishlistButtonViewBinding
     private var hasBeenSelected: Boolean = false
 
@@ -56,11 +56,11 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             parentWishlist.setOnClickListener {
                 if(!hasBeenSelected){
                     changeStateToRemoveWishlist()
-                    viewModel.addToWishlist(productID)
+                    viewModel.addToWishlist(productId)
                 }
                 else{
                     changeStateToAddWishlist()
-                    viewModel.removeFromWishlist(productID)
+                    viewModel.removeFromWishlist(productId)
                 }
             }
 
@@ -95,10 +95,14 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                     }
                     else{
                         changeStateToAddWishlist()
-                        it.data.wishlistAdd?.message?.let { it1 ->
-                            Toaster.build(rootView,
-                                it1, Toaster.TYPE_ERROR
-                            ).show()
+                        try {
+                            it.data.wishlistAdd?.message?.let { it1 ->
+                                Toaster.build(rootView,
+                                    it1, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                                ).show()
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
                     }
                 }
@@ -118,7 +122,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                         changeStateToRemoveWishlist()
                         it.data.wishlistRemove?.message?.let { it1 ->
                             Toaster.build(rootView,
-                                it1, Toaster.TYPE_ERROR
+                                it1, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
                             ).show()
                         }
                     }
@@ -143,8 +147,8 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         binding.root.transitionToEnd()
     }
 
-    fun setProductId(productID: String){
-        this.productID = productID
+    fun setProductId(productId: String){
+        this.productId = productId
     }
 
     private fun onTransitionStarted(ringingAnimation: ObjectAnimator) = if (hasBeenSelected) ringingAnimation.start() else ringingAnimation.reverse()

@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.common.model
 
 data class TokoNowProductCardViewUiModel(
-    val productID: String = "",
+    val productId: String = "",
     val imageUrl: String = "",
     val minOrder: Int = 0,
     val maxOrder: Int = 0,

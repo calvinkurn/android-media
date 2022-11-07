@@ -30,23 +30,23 @@ class TokoNowWishlistViewModel @Inject constructor(
         get() = _removeFromWishlistLiveData
     private val _removeFromWishlistLiveData = MutableLiveData<Result<RemoveFromWishListResponse>>()
 
-    fun addToWishlist(productID: String){
+    fun addToWishlist(productId: String){
         launchCatchError(coroutineContext, block = {
             _addToWishlistLiveData.postValue(Success(
-                addToWishlistUseCase.execute(productID, userSession.userId, 12))
+                addToWishlistUseCase.execute(productId, userSession.userId, 12))
             )
         }, onError = {
-            Fail(it)
+            _addToWishlistLiveData.postValue(Fail(it))
         })
     }
 
-    fun removeFromWishlist(productID: String){
+    fun removeFromWishlist(productId: String){
         launchCatchError(coroutineContext, block = {
             _removeFromWishlistLiveData.postValue(Success(
-                removeFromWishlistUseCase.execute(productID, userSession.userId, 12))
+                removeFromWishlistUseCase.execute(productId, userSession.userId, 12))
             )
         }, onError = {
-            Fail(it)
+            _removeFromWishlistLiveData.postValue(Fail(it))
         })
     }
 

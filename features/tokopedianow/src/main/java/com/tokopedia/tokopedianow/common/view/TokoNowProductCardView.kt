@@ -104,7 +104,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 isOos = model.isOos(),
                 isShown = model.isWishlistShown,
                 hasBeenWishlist = model.hasBeenWishlist,
-                productID = model.productID,
+                productId = model.productId,
             )
             initSimilarProductTypography(
                 isOos = model.isOos(),
@@ -265,11 +265,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
         isOos: Boolean,
         isShown: Boolean,
         hasBeenWishlist: Boolean,
-        productID: String
+        productId: String
     ) {
-        wishlistButton.showIfWithBlock(isShown && isOos) {
+        wishlistButton.showIfWithBlock(true) {
             wishlistButton.setValue(hasBeenWishlist)
-            wishlistButton.setProductId(productID)
+            wishlistButton.setProductId(productId)
         }
     }
 

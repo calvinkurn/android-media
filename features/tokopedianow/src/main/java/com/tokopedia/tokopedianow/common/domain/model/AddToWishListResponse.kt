@@ -40,9 +40,3 @@ data class AddToWishListResponse(
 	@SerializedName("wishlist_add_v2")
 	val wishlistAdd: WishlistData? = null
 )
-
-data class RemoveFromWishListResponse(
-
-	@SerializedName("wishlist_remove_v2")
-	val wishlistRemove: WishlistData? = null
-)

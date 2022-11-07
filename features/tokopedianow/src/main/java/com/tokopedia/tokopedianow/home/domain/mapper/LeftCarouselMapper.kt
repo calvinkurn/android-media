@@ -92,7 +92,7 @@ object LeftCarouselMapper {
         channelGrid: ChannelGrid,
         miniCartData: MiniCartSimplifiedData? = null
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
-        productID = channelGrid.id,
+        productId = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
         minOrder = channelGrid.minOrder,
         maxOrder = channelGrid.maxOrder,
