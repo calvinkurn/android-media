@@ -343,6 +343,7 @@ class TokoChatViewModel @Inject constructor(
             val cachedImage = getTokoChatPhotoPath(generateImageName(imageId, channelId))
             // If image has never been downloaded, then download
             if (!cachedImage.exists() || isFromRetry) {
+                delay(DELAY_FETCH_IMAGE)
                 val imageUrlResponse = getImageUrlUseCase(
                     TokoChatGetImageUseCase.Param(imageId, channelId)
                 )
@@ -372,5 +373,6 @@ class TokoChatViewModel @Inject constructor(
 
     companion object {
         const val DELAY_UPDATE_ORDER_STATE = 5000L
+        private const val DELAY_FETCH_IMAGE = 500L
     }
 }

@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemImageBubbleBinding
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatImageBubbleViewHolderBinder.generateLeftBg
@@ -55,6 +56,7 @@ class TokoChatImageBubbleViewHolder(
             bindLayoutGravity(Gravity.START)
             binding?.tokochatLayoutImageBubbleContainer?.background = bgLeft
         }
+        binding?.tokochatImageBubble?.loadImage(R.drawable.tokochat_bg_image_bubble)
     }
 
     private fun bindLayoutGravity(gravity: Int) {

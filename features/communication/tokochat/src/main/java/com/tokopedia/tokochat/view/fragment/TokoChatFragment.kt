@@ -444,7 +444,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
 
     private fun observeChatConnection() {
         observe(viewModel.isChatConnected) { connect ->
-            if (!connect) {
+            if (!connect && channelId.isNotBlank() && viewModel.getUserId().isNotBlank()) {
                 errorBottomSheet.setErrorType(getErrorType())
                 errorBottomSheet.setButtonAction {
                     initGroupBooking(null)
@@ -691,7 +691,13 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             loader?.hide()
             retryIcon?.hide()
             imageFile?.let { file ->
-                imageView.loadImage(file.toUri())
+                imageView.loadImage(file.absolutePath, properties = {
+                    this.setPlaceHolder(
+                        com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble)
+                    this.setErrorDrawable(
+                        com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble
+                    )
+                })
                 element.updateImageData(imagePath = file.absolutePath, status = true)
             }
             element.updateShouldRetry(false)
