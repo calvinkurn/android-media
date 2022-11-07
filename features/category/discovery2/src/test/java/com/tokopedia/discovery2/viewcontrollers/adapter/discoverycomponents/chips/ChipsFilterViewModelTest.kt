@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chi
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.usecase.ChipSelectionUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
@@ -28,6 +29,7 @@ class ChipsFilterViewModelTest {
     private val viewModel: ChipsFilterViewModel by lazy {
         spyk(ChipsFilterViewModel(application, componentsItem, 99))
     }
+    private val useCase:ChipSelectionUseCase = mockk()
 
     @Before
     @Throws(Exception::class)
@@ -71,7 +73,8 @@ class ChipsFilterViewModelTest {
             every { componentsItem.getComponentsItem() } returns list
             every { componentsItem.id } returns "s"
             every { componentsItem.pageEndPoint } returns "s"
-            every { viewModel.chipSelectionUseCase.onChipSelection(any(),any(),any()) } returns true
+            viewModel.chipSelectionUseCase = useCase
+            every { useCase.onChipSelection(any(),any(),any()) } returns true
 
             viewModel.onChipSelected(id)
 
@@ -91,7 +94,8 @@ class ChipsFilterViewModelTest {
             every { componentsItem.getComponentsItem() } returns list
             every { componentsItem.id } returns "s"
             every { componentsItem.pageEndPoint } returns "s"
-            every { viewModel.chipSelectionUseCase.onChipUnSelection(any(),any()) } returns true
+            viewModel.chipSelectionUseCase = useCase
+            every { useCase.onChipUnSelection(any(),any()) } returns true
 
             viewModel.onChipUnSelected(id)
 

@@ -12,9 +12,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.play.R
 import com.tokopedia.content.test.espresso.clickOnViewChild
 import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.content.test.espresso.waitUntilViewIsDisplayed
+import com.tokopedia.play.R
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
@@ -28,6 +29,7 @@ import org.hamcrest.CoreMatchers.not
 class PlayActivityRobot(
     channelId: String,
     initialDelay: Long = 1000,
+    isYouTube: Boolean = false,
 ) {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -41,6 +43,12 @@ class PlayActivityRobot(
     init {
         scenario.moveToState(Lifecycle.State.RESUMED)
 
+        waitUntilViewIsDisplayed(
+            withId(
+                if (!isYouTube) R.id.view_video
+                else R.id.fl_youtube_player
+            )
+        )
         delay(initialDelay)
     }
 

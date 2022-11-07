@@ -29,7 +29,7 @@ class CropToolUiComponent constructor(
 
     fun setupView(editorParam: EditorParam?, detailUiModel: EditorDetailUiModel) {
         (container() as LinearLayout).apply {
-            editorParam?.autoCropRatio?.let {
+            editorParam?.autoCropRatio()?.let {
                 addView(
                     generateCropButton(
                         it,
@@ -37,7 +37,7 @@ class CropToolUiComponent constructor(
                     )
                 )
             } ?: run {
-                editorParam?.ratioList?.let {
+                editorParam?.ratioList()?.let {
                     availableRatio = it
                     it.forEachIndexed { index, ratio ->
                         val isSelected = if (detailUiModel.cropRotateValue.getRatio() != null) {

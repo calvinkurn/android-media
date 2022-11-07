@@ -83,6 +83,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private var listener: ContentDetailPostViewHolder.CDPListener? = null
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
     private val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
+    private val topAdsProductCampaignCopywritingText = findViewById<Typography>(R.id.top_ads_campaign_copywriting)
     private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
 
     private var mData = FeedXCard()
@@ -297,7 +298,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         bindItems(feedXCard)
         bindCaption(feedXCard)
         bindTopAds(feedXCard)
-        bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
+        bindPublishedAt(feedXCard.publishedAt)
         bindLike(feedXCard)
         bindComment(
             feedXCard.comments,
@@ -336,19 +337,14 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         }
     }
 
-    private fun bindPublishedAt(publishedAt: String, subTitle: String) {
+    private fun bindPublishedAt(publishedAt: String) {
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
-        val spannableString: SpannableString =
-            if (subTitle.isNotEmpty()) {
-                SpannableString(
-                    String.format(
-                        context.getString(feedComponentR.string.feed_header_time_new),
-                        avatarDate
-                    )
+        val spannableString = SpannableString(
+                String.format(
+                    context.getString(feedComponentR.string.feed_header_time_new),
+                    avatarDate
                 )
-            } else {
-                SpannableString(avatarDate)
-            }
+            )
         timestampText.text = spannableString
         timestampText.show()
     }
@@ -451,10 +447,20 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun bindTopAds(feedXCard: FeedXCard) {
         topAdsProductName.text = getCTAButtonText(feedXCard)
+        val ctaSubtitle =
+            if (feedXCard.cta.subtitle.isNotEmpty()) feedXCard.cta.subtitle.firstOrNull()
+                ?: String.EMPTY else String.EMPTY
+        topAdsProductCampaignCopywritingText.text = ctaSubtitle
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                     feedXCard.media.any { it.isImage }
+        )
+        topAdsProductCampaignCopywritingText.showWithCondition(
+            shouldShowCtaSubtitile(
+                ctaSubtitle,
+                feedXCard
+            )
         )
 
         topAdsCard.setOnClickListener {
@@ -468,6 +474,9 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
         }
     }
+    private fun shouldShowCtaSubtitile(subtitle: String, card: FeedXCard) =
+        subtitle.isNotEmpty() && card.campaign.isRilisanSpl && card.campaign.isRSFollowersRestrictionOn
+
 
     private fun bindViews(feedXCard: FeedXCard){
 
@@ -1000,6 +1009,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 .addTarget(topAdsCard)
         )
         topAdsProductName.setTextColor(secondaryColor)
+        topAdsProductCampaignCopywritingText.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setBackgroundColor(primaryColor)
     }
@@ -1032,6 +1042,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         secondaryColor: Int,
     ) {
         topAdsProductName.setTextColor(secondaryColor)
+        topAdsProductCampaignCopywritingText.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setGradientBackground(colorArray)
     }
