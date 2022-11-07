@@ -53,6 +53,8 @@
             android:gravity="center"
             android:lines="1"
             android:textColor="@color/Unify_N700_44"
+            android:layout_marginStart="@dimen/unify_space_4"
+            app:layout_goneMarginStart="@dimen/unify_space_0"
             app:typographyType="small"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintVertical_bias="1"

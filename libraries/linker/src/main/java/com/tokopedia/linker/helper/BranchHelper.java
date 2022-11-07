@@ -6,17 +6,15 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.linker.LinkerConstants;
-import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.PaymentData;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.validation.BranchHelperValidation;
 import com.tokopedia.track.TrackApp;
-
 
 import org.json.JSONArray;
 
@@ -295,7 +293,7 @@ public class BranchHelper {
         }
         try {
             HashMap<String, Object> map = gson.fromJson(gson.toJson(branchEvent), type);
-            GtmLogger.getInstance(LinkerManager.getInstance().getContext()).save(map, null, AnalyticsSource.BRANCH_IO);
+            Cassava.save(map, null, AnalyticsSource.BRANCH_IO);
         } catch (Throwable throwable) {
             Timber.d(throwable);
         }

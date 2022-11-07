@@ -281,21 +281,18 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                     }else {
                         RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, productCardOptionsModel.screenName, ref)
                     }
-                    if (wishlistResult.isUsingWishlistV2) showMessageSuccessAddWishlistV2(wishlistResult)
-                    else showMessageSuccessAddWishlist()
+                    showMessageSuccessAddWishlistV2(wishlistResult)
                 } else {
                     if(productId.isNotBlank() || productId.isNotEmpty()){
                         RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, ref)
                     }else {
                         RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, productCardOptionsModel.screenName, ref)
                     }
-                    if (wishlistResult.isUsingWishlistV2) showMessageSuccessRemoveWishlistV2(wishlistResult)
-                    else showMessageSuccessRemoveWishlist()
+                    showMessageSuccessRemoveWishlistV2(wishlistResult)
                 }
                 updateWishlist(wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
             } else {
-                if (wishlistResult.isUsingWishlistV2) showMessageFailedWishlistV2Action(wishlistResult)
-                else showMessageFailedWishlistAction()
+                showMessageFailedWishlistV2Action(wishlistResult)
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -318,31 +315,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         }
     }
 
-    private fun showMessageSuccessAddWishlist() {
-        showToastSuccessWithAction(getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg), getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)) {
-            goToWishlist()
-        }
-    }
-
-    private fun goToWishlist() {
-        if (activity == null) return
-        RouteManager.route(activity, ApplinkConst.NEW_WISHLIST)
-    }
-
-    private fun showMessageSuccessRemoveWishlist() {
-        showToastSuccess(getString(R.string.recom_msg_success_remove_wishlist))
-    }
-
     private fun showMessageSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         context?.let { context ->
             view?.let { v ->
                 AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
             }
         }
-    }
-
-    private fun showMessageFailedWishlistAction() {
-        showToastError()
     }
 
     private fun showMessageFailedWishlistV2Action(wishlistResult: ProductCardOptionsModel.WishlistResult) {
@@ -511,20 +489,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      * @param isAddWishlist the wishlist is selected or not
      * @param callback the callback for notify when success or not, there are have 2 params [Boolean] and [Throwable]
      */
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-        if(recommendationViewModel.isLoggedIn()){
-            SimilarProductRecommendationTracking.eventClickWishlist(isAddWishlist)
-            if(isAddWishlist){
-                recommendationViewModel.addWishlist(item, callback)
-            } else {
-                recommendationViewModel.removeWishlist(item, callback)
-            }
-        }else{
-            SimilarProductRecommendationTracking.eventClickWishlistNonLogin()
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if(recommendationViewModel.isLoggedIn()){
             SimilarProductRecommendationTracking.eventClickWishlist(isAddWishlist)

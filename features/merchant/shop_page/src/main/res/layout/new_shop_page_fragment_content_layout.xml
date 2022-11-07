@@ -42,7 +42,7 @@
             <View
                 android:id="@+id/view_one_tab_separator"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
+                android:layout_height="1dp"
                 android:layout_marginTop="4dp"
                 app:layout_scrollFlags="scroll"
                 android:background="@color/Unify_N75"

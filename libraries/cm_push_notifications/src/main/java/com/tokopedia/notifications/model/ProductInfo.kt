@@ -78,6 +78,7 @@ data class ProductInfo(
         var reviewNumber: String? = "",
 
         @SerializedName("customButtons")
+        @Expose
         var productButtons: ArrayList<ActionButton> = ArrayList()
 
 ) : Parcelable {

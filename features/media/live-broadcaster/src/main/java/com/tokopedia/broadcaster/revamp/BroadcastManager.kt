@@ -50,6 +50,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     private var mAudioCaptureState: Streamer.CAPTURE_STATE? = Streamer.CAPTURE_STATE.FAILED
 
     private var mCameraManager: BroadcasterCameraManager? = null
+    private var mSelectedCamera: BroadcasterCamera? = null
 
     private var mAdaptiveBitrate: BroadcasterAdaptiveBitrate? = null
 
@@ -139,14 +140,14 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
         val videoConfig = BroadcasterUtil.getVideoConfig()
 
-        // get default camera id
-        val activeCamera = cameraList.firstOrNull {
-            it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT
-        } ?: cameraManager.getCameraList().first()
+        // get camera id
+        val activeCamera = mSelectedCamera ?: findPreferredCamera(cameraList).also {
+            mSelectedCamera = it
+        }
 
         // video resolution for stream and mp4 recording,
         // larix uses same resolution for camera preview and stream to simplify setup
-        val videoSize = BroadcasterUtil.getVideoSize(activeCamera)
+        val videoSize = BroadcasterUtil.getVideoSize(activeCamera.recordSizes, TARGET_ASPECT_RATIO)
 
         // Stream resolution is not tied to camera preview sizes
         // For example, you need gorgeous FullHD preview and smaller stream to save traffic
@@ -172,7 +173,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
         // This is useful option for camera flip, for example if back camera can do 1280x720 HD
         // and front camera can only produce 640x480
-
         videoConfig.videoSize = getAndroidVideoSize(videoSize)
 
         // verify video resolution support by encoder
@@ -194,7 +194,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         // larix wraps preview surface with AspectFrameLayout to maintain a specific aspect ratio
 
         builder.setSurface(holder.surface)
-        // builder.setSurfaceSize(Streamer.Size(binding.surfaceView.getWidth(), binding.surfaceView.getHeight()))
         builder.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
 
         // orientation will be later changed to actual device orientation when user press "Broadcast" button
@@ -241,7 +240,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                 builder.addCamera(
                     CameraConfig().apply {
                         this.cameraId = it.cameraId
-                        this.videoSize = BroadcasterUtil.findFlipSize(it, videoSize)
+                        this.videoSize = BroadcasterUtil.findFlipSize(it.recordSizes, videoSize)
                     }
                 )
             }
@@ -316,10 +315,18 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         if (success) broadcastStateChanged(BroadcastState.Started)
     }
 
+    private fun isStreamerReady(): Boolean {
+        return isAudioCaptureStarted() && isVideoCaptureStarted()
+    }
+
+    private fun isInternetAvailable(context: Context): Boolean {
+        return DeviceConnectionInfo.isConnectWifi(context) ||
+                DeviceConnectionInfo.isConnectCellular(context)
+    }
+
     private fun createConnection(connectionConfig: ConnectionConfig): Boolean {
         val context = mContext ?: return false
-        val isStreamerReady = isAudioCaptureStarted() && isVideoCaptureStarted()
-        if (!isStreamerReady) {
+        if (!isStreamerReady()) {
             broadcastStateChanged(
                 BroadcastState.Error(
                     BroadcasterException(BroadcasterErrorType.ServiceNotReady)
@@ -328,10 +335,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             return false
         }
 
-        if (!DeviceConnectionInfo.isInternetAvailable(context,
-                checkWifi = true,
-                checkCellular = true,
-                checkEthernet = true)) {
+        if (!isInternetAvailable(context)) {
             broadcastStateChanged(
                 BroadcastState.Error(
                     BroadcasterException(BroadcasterErrorType.InternetUnavailable)
@@ -408,6 +412,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     override fun destroy() {
         mContext = null
         mHandler = null
+        mSelectedCamera = null
     }
 
     override fun flip() {
@@ -418,7 +423,14 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         mAdaptiveBitrate?.pause()
         mStreamerGL?.flip()
 
-        updateFpsRanges()
+        // Re-select camera
+        val cameraManager = mCameraManager ?: return
+        val cameraList = cameraManager.getCameraList()
+        if (cameraList.isNullOrEmpty()) return
+        mSelectedCamera = findPreferredCamera(cameraList)
+
+        updateFpsRanges(mSelectedCamera)
+
         if (mBroadcastOn) mAdaptiveBitrate?.resume()
     }
 
@@ -583,6 +595,21 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         mStreamer?.changeFpsRange(fpsRange)
     }
 
+    private fun findPreferredCamera(cameraList: List<BroadcasterCamera>): BroadcasterCamera {
+        val activeCamId = mStreamerGL?.activeCameraId
+        if (activeCamId != null) {
+            val activeCamera = cameraList.firstOrNull { it.cameraId == activeCamId }
+            if (activeCamera != null)
+                return activeCamera
+        }
+
+        val frontFacingCamera = cameraList.firstOrNull { it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT }
+        if (frontFacingCamera != null)
+            return frontFacingCamera
+
+        return cameraList.first()
+    }
+
     private fun startAudioCapture() {
         // Pass Streamer.AudioCallback instance to access raw pcm audio and calculate audio level
         mStreamer?.startAudioCapture(mAudioCallback)
@@ -600,14 +627,11 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         return mVideoCaptureState == Streamer.CAPTURE_STATE.STARTED
     }
 
-    private fun updateFpsRanges() {
+    private fun updateFpsRanges(activeCamera: BroadcasterCamera?) {
+        if (activeCamera == null) return
         if (mAdaptiveBitrate == null) return
 
-        val camId = mStreamerGL?.activeCameraId
-        val activeCamera = mCameraManager?.getCameraList()?.firstOrNull { it.cameraId == camId }
-        activeCamera?.let {
-            if (it.fpsRanges != null) mAdaptiveBitrate?.setFpsRanges(it.fpsRanges)
-        }
+        if (activeCamera.fpsRanges != null) mAdaptiveBitrate?.setFpsRanges(activeCamera.fpsRanges)
     }
 
     private fun startTracking(connectionId: Int) {
@@ -657,5 +681,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     companion object {
         private const val STATISTIC_TIMER_DELAY = 1000L
         private const val STATISTIC_DEFAULT_INTERVAL = 3000L
+
+        private const val TARGET_ASPECT_RATIO = 16.0 / 9.0
     }
 }

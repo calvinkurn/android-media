@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -10,7 +12,6 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
-import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -113,11 +114,19 @@ internal class PlayBroadcastViewModelRobot(
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
 
-    fun getConfig() = viewModel.getConfiguration()
+    fun getAccountConfiguration(authorType: String = TYPE_UNKNOWN) = viewModel.submitAction(PlayBroadcastAction.GetAccountList(authorType))
 
-    fun startLive() = viewModel.submitAction(BroadcastStateChanged(PlayBroadcasterState.Started))
+    fun startLive() = viewModel.submitAction(
+        PlayBroadcastAction.BroadcastStateChanged(
+            PlayBroadcasterState.Started
+        )
+    )
 
-    fun stopLive() = viewModel.submitAction(BroadcastStateChanged(PlayBroadcasterState.Stopped))
+    fun stopLive() = viewModel.submitAction(
+        PlayBroadcastAction.BroadcastStateChanged(
+            PlayBroadcasterState.Stopped
+        )
+    )
 
     suspend fun setPinned(message: String) = act {
         viewModel.submitAction(PlayBroadcastAction.SetPinnedMessage(message))
@@ -129,6 +138,10 @@ internal class PlayBroadcastViewModelRobot(
 
     suspend fun cancelEditPinned() = act {
         viewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
+    }
+
+    suspend fun inputQuizOption(order: Int, text: String) = act {
+        viewModel.submitAction(PlayBroadcastAction.InputQuizOption(order, text))
     }
 
     private suspend fun act(fn: () -> Unit) {

@@ -15,16 +15,17 @@ import com.tokopedia.linker.requests.LinkerShareRequest
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import java.util.*
 
 object TokoNowUniversalShareUtil {
-    private fun linkerDataMapper(shareHomeTokonow: ShareTokonow?): LinkerShareData {
+    private fun linkerDataMapper(shareTokoNowData: ShareTokonow?): LinkerShareData {
         val linkerData = LinkerData()
-        linkerData.id = shareHomeTokonow?.id.orEmpty()
-        linkerData.name = shareHomeTokonow?.specificPageName.orEmpty()
-        linkerData.uri = shareHomeTokonow?.sharingUrl.orEmpty()
-        linkerData.description = shareHomeTokonow?.specificPageDescription.orEmpty()
+        linkerData.id = shareTokoNowData?.id.orEmpty()
+        linkerData.name = shareTokoNowData?.specificPageName.orEmpty()
+        linkerData.uri = shareTokoNowData?.sharingUrl.orEmpty()
+        linkerData.description = shareTokoNowData?.specificPageDescription.orEmpty()
         linkerData.isThrowOnError = true
-        linkerData.type = shareHomeTokonow?.linkerType.orEmpty()
+        linkerData.type = shareTokoNowData?.linkerType.orEmpty()
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
@@ -43,7 +44,7 @@ object TokoNowUniversalShareUtil {
                 if (linkerShareData.url != null) {
                     shareData(
                         context = context,
-                        shareTxt = String.format("%s %s", shareHomeTokonow?.sharingText, linkerShareData.shareUri),
+                        shareTxt = String.format(Locale.getDefault(), "%s %s", shareHomeTokonow?.sharingText, linkerShareData.shareUri),
                         pageUri = linkerShareData.url
                     )
                 }
@@ -59,8 +60,15 @@ object TokoNowUniversalShareUtil {
         })
     }
 
-    fun shareOptionRequest(shareModel: ShareModel, shareHomeTokonow: ShareTokonow?, activity: Activity?, view: View?, onSuccess: () -> Unit = {}, onError: () -> Unit = {}) {
-        val linkerShareData = linkerDataMapper(shareHomeTokonow)
+    fun shareOptionRequest(
+        shareModel: ShareModel,
+        shareTokoNowData: ShareTokonow?,
+        activity: Activity?,
+        view: View?,
+        onSuccess: () -> Unit = {},
+        onError: () -> Unit = {}
+    ) {
+        val linkerShareData = linkerDataMapper(shareTokoNowData)
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel
@@ -73,7 +81,7 @@ object TokoNowUniversalShareUtil {
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString = String.format("%s %s", shareHomeTokonow?.sharingText, linkerShareData?.shareUri)
+                    val shareString = String.format(Locale.getDefault(), "%s %s", shareTokoNowData?.sharingText, linkerShareData?.shareUri)
                     SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                     onSuccess.invoke()
                 }

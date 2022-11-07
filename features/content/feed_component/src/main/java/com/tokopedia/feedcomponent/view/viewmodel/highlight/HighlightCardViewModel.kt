@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
  * @author by yoasfs on 2019-08-06
  */
 data class HighlightCardViewModel (
-        var postId: Int = 0,
+        var postId: String = "",
         var positionInFeed: Int = 0,
         val thumbnail: String = "",
         val applink: String = "",

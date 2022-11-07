@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.kotlin.extensions.view.isNumeric
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
@@ -36,6 +37,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopComponent?>, OnShopProductListFragmentListener, ShopPageProductListResultFragmentListener {
     private var component: ShopComponent? = null
     private var shopId: String? = null
+    private var shopDomain: String = ""
     private var shopRef: String? = ""
     private var sourceRedirection = ""
 
@@ -65,7 +67,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         if (null != data) {
             data = RouteManager.getIntent(this, intent.data.toString()).data
             val pathSegments = data?.pathSegments.orEmpty()
-            getShopIdFromUri(data, pathSegments)
+            getShopIdOrDomainFromUri(data, pathSegments)
             getEtalaseIdFromUri(data, pathSegments)
             shopRef = if (data?.getQueryParameter(QUERY_SHOP_REF) == null) "" else data.getQueryParameter(QUERY_SHOP_REF)
             sort = if (data?.getQueryParameter(QUERY_SORT) == null) "" else data.getQueryParameter(QUERY_SORT)
@@ -104,11 +106,19 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         }.orEmpty()
     }
 
-    private fun getShopIdFromUri(data: Uri?, pathSegments: List<String>) {
-        shopId = if (pathSegments.size >= 2) {
-            data?.pathSegments?.getOrNull(1).orEmpty()
+    private fun getShopIdOrDomainFromUri(data: Uri?, pathSegments: List<String>) {
+        if (pathSegments.size >= 2) {
+            val segmentData = data?.pathSegments?.getOrNull(SHOP_ID_OR_DOMAIN_PATH_SEGMENT).orEmpty()
+            if (segmentData.isNumeric()) {
+                // take segment data as shop id if it's a numeric data
+                shopId = segmentData
+            } else {
+                // take segment data as shop domain if it's non numeric data
+                shopDomain = segmentData
+                shopId = "0"
+            }
         } else {
-            "0"
+            shopId = "0"
         }
     }
 
@@ -141,7 +151,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     override fun getNewFragment(): Fragment? {
-        return createInstance(shopId.orEmpty(), shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData, sourceRedirection)
+        return createInstance(shopId.orEmpty(), shopDomain, shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData, sourceRedirection)
     }
 
     override fun getComponent(): ShopComponent? {
@@ -205,6 +215,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         private const val QUERY_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_SEARCH = "search"
         private const val SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS = 4
+        private const val SHOP_ID_OR_DOMAIN_PATH_SEGMENT = 1
         private const val SHOWCASE_ID_POSITION_ON_APP_LINK = 3
         private const val KEY_QUERY_PARAM_EXTRA = "QUERY_PARAM"
         fun createIntent(context: Context?, shopId: String?, keyword: String?,

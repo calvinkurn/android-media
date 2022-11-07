@@ -19,71 +19,15 @@
             layout="@layout/layout_item_shimmer_balance_widget"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/home_container_balance"
+            app:layout_constraintBottom_toBottomOf="@id/home_container_balance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <include
             android:id="@+id/home_container_balance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingVertical="8dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp">
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/home_iv_logo_balance"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/home_header_title_balance"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:lines="1"
-                android:singleLine="true"
-                android:textColor="@color/Unify_NN600"
-                app:layout_constraintBottom_toBottomOf="@id/home_iv_logo_balance"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/home_iv_logo_balance"
-                app:layout_constraintTop_toTopOf="@id/home_iv_logo_balance"
-                app:typographyType="small" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/home_tv_balance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:lines="1"
-                android:singleLine="true"
-                android:textColor="@color/Unify_NN950"
-                app:layout_constraintStart_toStartOf="@id/home_iv_logo_balance"
-                app:layout_constraintTop_toBottomOf="@id/home_iv_logo_balance"
-                app:typographyType="display_3"
-                app:typographyWeight="bold"
-                tools:text="GoPay" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/home_tv_reserve_balance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:lines="1"
-                android:singleLine="true"
-                android:textColor="@color/Unify_NN600"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@id/home_iv_logo_balance"
-                app:layout_constraintTop_toBottomOf="@id/home_tv_balance"
-                app:typographyType="small"
-                tools:text="180.000 Coins" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            layout="@layout/layout_balance_widget_success"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify2>

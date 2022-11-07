@@ -451,9 +451,10 @@ class OrderSummaryPageRobot {
             override fun getDescription(): String = "click pay"
 
             override fun perform(uiController: UiController?, view: View) {
-                click().perform(uiController, view.findViewById(R.id.btn_pay))
+                view.findViewById<View>(R.id.btn_pay).performClick()
             }
         }))
+        Thread.sleep(1000)
         OrderSummaryPageResultRobot().apply(func)
     }
 

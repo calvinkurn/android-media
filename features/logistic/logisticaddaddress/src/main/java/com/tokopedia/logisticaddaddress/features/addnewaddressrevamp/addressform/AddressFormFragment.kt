@@ -1180,6 +1180,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         binding?.run {
             saveDataModel?.receiverName = formAccount.etNamaPenerima.textFieldInput.text.toString()
             saveDataModel?.phone = formAccount.etNomorHp.textFieldInput.text.toString()
+            saveDataModel?.isTokonowRequest = viewModel.isTokonow
             if (isPositiveFlow) {
                 if (formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
                     saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text} (${formAddress.etCourierNote.textFieldInput.text})"

@@ -40,6 +40,9 @@ abstract class OtherMenuViewModelTestFixture {
     lateinit var getShopBadgeUseCase: GetShopBadgeUseCase
 
     @RelaxedMockK
+    lateinit var getTotalTokoMemberUseCase: GetTotalTokoMemberUseCase
+
+    @RelaxedMockK
     lateinit var getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
 
     @RelaxedMockK
@@ -90,6 +93,7 @@ abstract class OtherMenuViewModelTestFixture {
                 balanceInfoUseCase,
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,
+                getTotalTokoMemberUseCase,
                 getUserShopInfoUseCase,
                 topAdsAutoTopupUseCase,
                 topAdsDashboardDepositUseCase,

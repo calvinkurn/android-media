@@ -19,9 +19,15 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.KycCleanupStorageWorker
@@ -32,9 +38,6 @@ import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormKtpFrag
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
-import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
-import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 
@@ -55,13 +58,13 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         intent?.data?.let {
-            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toIntOrNull() ?: KYCConstant.STATUS_DEFAULT
-            kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+            projectId = it.getQueryParameter(PARAM_PROJECT_ID)?.toIntOrZero() ?: KycStatus.DEFAULT.code
+            kycType = it.getQueryParameter(PARAM_KYC_TYPE).orEmpty()
+            intent.putExtra(PARAM_PROJECT_ID, projectId)
         }
 
         if (kycType.isEmpty()) {
-            kycType = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            kycType = intent?.extras?.getString(PARAM_KYC_TYPE).orEmpty()
         }
 
         analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
@@ -90,10 +93,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     }
 
     override fun getListFragment(): List<Fragment> {
-        return if (projectId == KYCConstant.STATUS_DEFAULT) {
-            val notFoundList = ArrayList<Fragment>()
-            notFoundList.add(NotFoundFragment.createInstance())
-            notFoundList
+        return if (projectId == KycStatus.DEFAULT.code) {
+           listOf(NotFoundFragment.createInstance())
         } else {
             if (fragmentList.isEmpty()) {
                 fragmentList.add(UserIdentificationFormKtpFragment.createInstance(kycType))
@@ -128,7 +129,10 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
                 }
             }
 
-            fragmentList[actualPosition] = fragment
+            if (fragmentList.isNotEmpty()) {
+                fragmentList[actualPosition] = fragment
+            }
+
             val stepperBundle = Bundle().apply {
                 putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
             }
@@ -199,7 +203,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
                 if (snackbar?.isShown == true) {
                     snackbar?.hideRetrySnackbar()
                 }
-                super.onOptionsItemSelected(item)
+                onBackEvent()
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }

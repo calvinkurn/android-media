@@ -17,7 +17,9 @@ class SmartBillsActivity : BaseSimpleActivity(), HasComponent<SmartBillsComponen
     override fun getNewFragment(): Fragment? {
         val bundle = intent.extras
         val sourceType = bundle?.getString(PARAM_SOURCE_TYPE) ?: ""
-        return SmartBillsFragment.newInstance(sourceType)
+        val message = bundle?.getString(EXTRA_ADD_BILLS_MESSAGE) ?: ""
+        val category = bundle?.getString(EXTRA_ADD_BILLS_CATEGORY) ?: ""
+        return SmartBillsFragment.newInstance(sourceType, message, category)
     }
 
     override fun getComponent(): SmartBillsComponent {
@@ -48,6 +50,8 @@ class SmartBillsActivity : BaseSimpleActivity(), HasComponent<SmartBillsComponen
 
     companion object {
         const val PARAM_SOURCE_TYPE = "source"
+        const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
+        const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
     }
 
     interface SbmActivityListener {

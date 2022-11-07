@@ -13,16 +13,16 @@ sealed class ProductPrice : Parcelable
 data class OriginalPrice(
     val price: String,
     val priceNumber: Double,
-): ProductPrice()
+) : ProductPrice()
 
 @Parcelize
 data class DiscountedPrice(
     val originalPrice: String,
     val originalPriceNumber: Double,
-    val discountPercent: Int,
+    val discountPercent: Long,
     val discountedPrice: String,
     val discountedPriceNumber: Double
 ) : ProductPrice()
 
 @Parcelize
-object PriceUnknown: ProductPrice()
+object PriceUnknown : ProductPrice()

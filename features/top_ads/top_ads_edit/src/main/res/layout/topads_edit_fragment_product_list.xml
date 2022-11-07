@@ -5,7 +5,8 @@
     android:id="@+id/linearLayout10"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchInputView"
@@ -40,7 +41,7 @@
         android:id="@+id/view3"
         android:layout_width="1dp"
         android:layout_height="50dp"
-        android:background="@color/topads_common_line_color"
+        android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="@+id/btn_sort"
         app:layout_constraintEnd_toStartOf="@+id/btn_filter"
         app:layout_constraintHorizontal_bias="0.5"

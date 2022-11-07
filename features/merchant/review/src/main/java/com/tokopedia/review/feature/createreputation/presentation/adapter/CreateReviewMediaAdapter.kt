@@ -23,7 +23,7 @@ class CreateReviewMediaAdapter(
     }
 
     interface Listener {
-        fun onAddMediaClicked()
+        fun onAddMediaClicked(enabled: Boolean)
         fun onRemoveMediaClicked(media: CreateReviewMediaUiModel)
     }
 }

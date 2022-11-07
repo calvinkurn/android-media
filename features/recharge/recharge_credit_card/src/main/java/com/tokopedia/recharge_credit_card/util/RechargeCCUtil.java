@@ -1,5 +1,6 @@
 package com.tokopedia.recharge_credit_card.util;
 
+import android.annotation.SuppressLint;
 import android.text.Editable;
 
 import java.security.MessageDigest;
@@ -52,6 +53,7 @@ public class RechargeCCUtil {
     }
 
     //validation using check luhn algorithm
+    @SuppressLint("Method Call Prohibited")
     public static boolean isCreditCardValid(String str) {
         int[] luhnArr = new int[]{0, 2, 4, 6, 8, 1, 3, 5, 7, 9};
         int counter = 0;

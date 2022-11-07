@@ -16,7 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.fragment.CameraFragment
 import com.tokopedia.imagepicker_insta.fragment.NoPermissionFragment
-import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
@@ -36,13 +36,13 @@ class CameraActivity : PermissionActivity() {
     var videoMaxDuration:Long = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
     var selectedFeedAccountId: String = ""
     val uriOfClickedMedias = arrayListOf<Uri>()
-    var isOpenFrom: Int = 0
+    var isOpenFrom: String = ""
 
     companion object {
         private const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val CREATE_POST_REQUEST_CODE = 101
 
-        fun getIntent(context: Context, applinkToNavigateAfterMediaCapture: String?, videoMaxDuration:Long, selectedFeedAccountId: String, isOpenFrom: Int): Intent {
+        fun getIntent(context: Context, applinkToNavigateAfterMediaCapture: String?, videoMaxDuration:Long, selectedFeedAccountId: String, isOpenFrom: String): Intent {
             val intent = Intent(context, CameraActivity::class.java)
             intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, applinkToNavigateAfterMediaCapture)
             intent.putExtra(BundleData.VIDEO_MAX_SECONDS, videoMaxDuration)
@@ -114,7 +114,7 @@ class CameraActivity : PermissionActivity() {
             videoMaxDuration = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
         }
         selectedFeedAccountId = intent.getStringExtra(BundleData.SELECTED_FEED_ACCOUNT_ID) ?: ""
-        isOpenFrom = intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0
+        isOpenFrom = intent.extras?.getString(BundleData.KEY_IS_OPEN_FROM, "") ?: ""
     }
 
     private fun setToolbar() {
@@ -178,7 +178,7 @@ class CameraActivity : PermissionActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == CREATE_POST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
-            isOpenFrom = data?.getIntExtra(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0
+            isOpenFrom = data?.getStringExtra(BundleData.KEY_IS_OPEN_FROM) ?: ""
         }
     }
 

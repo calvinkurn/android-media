@@ -209,7 +209,7 @@ object HomeLayoutMapper {
     ) {
         updateItemById(item.id) {
             if (!response.isNullOrEmpty()) {
-                val categoryList = mapToCategoryList(response, warehouseId)
+                val categoryList = mapToCategoryList(response, warehouseId, item.title)
                 val layout = item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {
@@ -513,13 +513,13 @@ object HomeLayoutMapper {
             val index = layoutUiModel.productList.indexOf(productUiModel)
 
             (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.productCardModel?.run {
-                if (hasVariant()) {
-                    copy(variant = variant?.copy(quantity = quantity))
-                } else {
-                    copy(
+                when {
+                    hasVariant() -> copy(variant = variant?.copy(quantity = quantity))
+                    nonVariant != null -> copy(
                         hasAddToCartButton = quantity == DEFAULT_QUANTITY,
                         nonVariant = nonVariant?.copy(quantity = quantity)
                     )
+                    else -> return
                 }
             }?.let {
                 updateItemById(layout.getVisitableId()) {

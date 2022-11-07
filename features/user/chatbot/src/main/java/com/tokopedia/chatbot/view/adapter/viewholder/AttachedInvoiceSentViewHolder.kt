@@ -9,11 +9,11 @@ import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.util.ViewUtil
+import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,7 +39,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            R.color.chatbot_dms_left_message_bg,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -48,7 +48,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
             R.dimen.dp_chatbot_2,
             R.dimen.dp_chatbot_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            R.color.chatbot_dms_stroke,
             getStrokeWidthSenderDimenRes()
     )
 
@@ -70,13 +70,17 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     }
 
     private fun setStatus(invoice: AttachInvoiceSentUiModel) {
-        if (invoice.status?.isNotEmpty() == true) {
-            val labelType = getLabelType(invoice.statusId)
+        if (invoice.status.isNotEmpty()) {
+            val labelType: Int = if (invoice.color.isEmpty())
+                InvoiceStatusLabelHelper.getLabelTypeWithStatusId(invoice.statusId)
+            else
+                InvoiceStatusLabelHelper.getLabelType(invoice.color)
             status?.text = invoice.status
             status?.setLabelType(labelType)
-        }else{
+        } else {
             status?.invisible()
         }
+
     }
 
     private fun setPrice(totalAmount: String?) {
@@ -87,15 +91,6 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
             pricePrefix?.show()
             price?.text = totalAmount
             price?.show()
-        }
-    }
-
-    private fun getLabelType(statusId: Int?): Int {
-        if (statusId == null) return Label.GENERAL_DARK_GREY
-        return when (OrderStatusCode.MAP[statusId]) {
-            OrderStatusCode.COLOR_RED -> Label.GENERAL_LIGHT_RED
-            OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
-            else -> Label.GENERAL_DARK_GREY
         }
     }
 

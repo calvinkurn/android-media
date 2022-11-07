@@ -6,4 +6,5 @@
     <color name="shadow_dms_color_5">#25CCCCCC</color>
 
     <color name="searchbar_dms_state_light_icon">#525A67</color>
+    <color name="searchbar_dms_statusbar_darkmode">#99AAAAAA</color>
 </resources>

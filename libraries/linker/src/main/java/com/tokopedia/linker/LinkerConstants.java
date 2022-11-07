@@ -22,6 +22,7 @@ public interface LinkerConstants {
     String USER_PROFILE_SOCIAL = "tokopedia://people/{USER_PAGE_ID}";
     String PLAY = "tokopedia://play/{channel_id}";
     String NOW = "tokopedia://now/{content}";
+    String NOW_RECIPE = "tokopedia://now/recipe/detail/{id}";
     String WEBVIEW = "tokopedia://webview?{content}";
     String APPLINKS = "tokopedia";
     String WEB_DOMAIN = "https://www.tokopedia.com/";

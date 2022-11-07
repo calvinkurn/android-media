@@ -2,14 +2,9 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationItemDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationBadgeDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationDataDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeCustomerDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeSellerDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ImageAttachmentDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationDetailDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationResponseWrapper
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewItemDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewResponseDomain
@@ -20,7 +15,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputati
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDataUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
-import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReputationBadgeUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReviewResponseUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeCustomerUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeSellerUiModel
@@ -55,17 +49,10 @@ open class GetInboxReputationDetailSubscriber constructor(
     override fun onNext(inboxReputationDetailDomain: InboxReputationDetailDomain) {
         viewListener.finishLoading()
         viewListener.onSuccessGetInboxDetail(
-            convertToReputationViewModel(inboxReputationDetailDomain.inboxReputationDomain).list.getOrNull(
+            convertToReputationViewModel(inboxReputationDetailDomain.inboxReputationResponse).list.getOrNull(
                 0
             ) ?: InboxReputationItemUiModel(),
             mappingToListItemViewModel(inboxReputationDetailDomain.reviewDomain)
-        )
-    }
-
-    private fun convertToReputationBadgeViewModel(reputationBadge: ReputationBadgeDomain): ReputationBadgeUiModel {
-        return ReputationBadgeUiModel(
-            reputationBadge.level,
-            reputationBadge.set
         )
     }
 
@@ -171,46 +158,45 @@ open class GetInboxReputationDetailSubscriber constructor(
         )
     }
 
-    protected fun convertToReputationViewModel(inboxReputationDomain: InboxReputationDomain): InboxReputationUiModel {
+    protected fun convertToReputationViewModel(inboxReputationResponse: InboxReputationResponseWrapper.Data.Response): InboxReputationUiModel {
         return InboxReputationUiModel(
-            convertToInboxReputationList(inboxReputationDomain.inboxReputation),
-            inboxReputationDomain.paging.isHasNext
+            convertToInboxReputationList(inboxReputationResponse.reputationList),
+            inboxReputationResponse.hasNext
         )
     }
 
-    private fun convertToInboxReputationList(inboxReputationDomain: List<InboxReputationItemDomain>): List<InboxReputationItemUiModel> {
-        return inboxReputationDomain.map {
+    private fun convertToInboxReputationList(reputationList: List<InboxReputationResponseWrapper.Data.Response.Reputation>): List<InboxReputationItemUiModel> {
+        return reputationList.map {
             InboxReputationItemUiModel(
-                it.reputationId,
-                it.revieweeData.revieweeName,
+                it.reputationIdStr,
+                it.revieweeData.name,
                 it.orderData.createTimeFmt,
-                it.revieweeData.revieweePicture,
+                it.revieweeData.picture,
                 it.reputationData.lockingDeadlineDays.toString(),
                 it.orderData.invoiceRefNum,
                 convertToReputationViewModel(it.reputationData),
-                it.revieweeData.revieweeRoleId,
-                convertToBuyerReputationViewModel(it.revieweeData.revieweeBadgeCustomer),
-                convertToSellerReputationViewModel(it.revieweeData.revieweeBadgeSeller),
-                it.shopId,
-                it.userId
+                it.revieweeData.roleId,
+                convertToBuyerReputationViewModel(it.revieweeData.buyerBadge),
+                convertToSellerReputationViewModel(it.revieweeData.shopBadge),
+                it.shopIdStr,
+                it.userIdStr
             )
         }
     }
 
-    private fun convertToSellerReputationViewModel(revieweeBadgeSeller: RevieweeBadgeSellerDomain): RevieweeBadgeSellerUiModel {
+    private fun convertToSellerReputationViewModel(revieweeBadgeSeller: InboxReputationResponseWrapper.Data.Response.Reputation.RevieweeData.ShopBadge): RevieweeBadgeSellerUiModel {
         return RevieweeBadgeSellerUiModel(
             revieweeBadgeSeller.tooltip,
             revieweeBadgeSeller.reputationScore,
             revieweeBadgeSeller.score,
             revieweeBadgeSeller.minBadgeScore,
             revieweeBadgeSeller.reputationBadgeUrl,
-            convertToReputationBadgeViewModel(revieweeBadgeSeller.reputationBadge),
             revieweeBadgeSeller.isFavorited
         )
     }
 
     private fun convertToBuyerReputationViewModel(
-        revieweeBadgeCustomer: RevieweeBadgeCustomerDomain
+        revieweeBadgeCustomer: InboxReputationResponseWrapper.Data.Response.Reputation.RevieweeData.BuyerBadge
     ): RevieweeBadgeCustomerUiModel {
         return RevieweeBadgeCustomerUiModel(
             revieweeBadgeCustomer.positive,
@@ -221,11 +207,11 @@ open class GetInboxReputationDetailSubscriber constructor(
         )
     }
 
-    private fun convertToReputationViewModel(reputationData: ReputationDataDomain): ReputationDataUiModel {
+    private fun convertToReputationViewModel(reputationData: InboxReputationResponseWrapper.Data.Response.Reputation.ReputationData): ReputationDataUiModel {
         return ReputationDataUiModel(
             reputationData.revieweeScore,
             reputationData.revieweeScoreStatus,
-            reputationData.isShowRevieweeScore,
+            reputationData.showRevieweeScore,
             reputationData.reviewerScore,
             reputationData.reviewerScoreStatus,
             reputationData.isEditable,
@@ -233,9 +219,9 @@ open class GetInboxReputationDetailSubscriber constructor(
             reputationData.isLocked,
             reputationData.isAutoScored,
             reputationData.isCompleted,
-            reputationData.isShowLockingDeadline,
+            reputationData.showLockingDeadline,
             reputationData.lockingDeadlineDays,
-            reputationData.isShowBookmark,
+            reputationData.showBookmark,
             reputationData.actionMessage
         )
     }

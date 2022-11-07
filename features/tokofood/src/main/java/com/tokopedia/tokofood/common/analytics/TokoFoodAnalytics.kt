@@ -4,6 +4,7 @@ object TokoFoodAnalytics {
 
     const val KEY_DIMENSION_45 = "dimension45"
     const val KEY_DIMENSION_49 = "dimension49"
+    const val KEY_DIMENSION_61 = "dimension61"
     const val KEY_DIMENSION_79 = "dimension79"
     const val KEY_CHECKOUT_OPTION = "checkout_option"
     const val KEY_CHECKOUT_STEP = "checkout_step"
@@ -19,6 +20,8 @@ object TokoFoodAnalytics {
     const val EVENT_CHECKOUT_PROGRESS = "checkout_progress"
     const val EVENT_BEGIN_CHECKOUT = "begin_checkout"
     const val EVENT_VIEW_PG_IRIS = "viewPGIris"
+    const val EVENT_VIEW_ITEM = "view_item"
+    const val EVENT_SELECT_CONTENT = "select_content"
 
     // Event Action
     const val EVENT_ACTION_VIEW_CHECKOUT = "view tokofood checkout"

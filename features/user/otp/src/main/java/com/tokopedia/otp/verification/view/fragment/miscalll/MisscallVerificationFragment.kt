@@ -1,38 +1,25 @@
 package com.tokopedia.otp.verification.view.fragment.miscalll
 
 import android.content.Context
-import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextPaint
-import android.text.style.ClickableSpan
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
-import com.tokopedia.otp.verification.data.OtpConstant
-import com.tokopedia.otp.verification.data.ROLLANCE_KEY_MISCALL_OTP
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
-import com.tokopedia.otp.verification.domain.data.OtpValidateData
-import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import java.util.*
 import javax.inject.Inject
-import kotlin.concurrent.schedule
-import com.tokopedia.unifyprinciples.R as RUnify
 
 open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastReceiver.OnCallStateChange {
 
@@ -59,16 +46,10 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
 
     override fun initView() {
         modeListData.otpListImgUrl = ""
-
         super.initView()
 
         setNewTextTitleAndDescription()
-
-        if (isOtpMiscallNew()) {
-            renderNewUi()
-        } else {
-            setIcon()
-        }
+        setIcon()
     }
 
     private fun setIcon() {
@@ -90,13 +71,8 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     }
 
     private fun setNewTextTitleAndDescription() {
-        if (isOtpMiscallNew()) {
-            viewBound.pin?.pinTitle = getString(R.string.cotp_miscall_v2_verification_title)
-            viewBound.pin?.pinDescription = getString(R.string.cotp_miscall_v2_verification_desc)
-        } else {
-            viewBound.pin?.pinTitle = getString(R.string.cotp_miscall_verification_title)
-            viewBound.pin?.pinDescription = getString(R.string.cotp_miscall_verification_desc)
-        }
+        viewBound.pin?.pinTitle = getString(R.string.cotp_miscall_verification_title)
+        viewBound.pin?.pinDescription = getString(R.string.cotp_miscall_verification_desc)
     }
 
     override fun setFooterText(spannable: Spannable?) {
@@ -116,98 +92,17 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
         }
     }
 
-    override fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
-        if (isOtpMiscallNew()) {
-            val otpMsg = getString(R.string.cotp_miscall_resend)
-            val start = message.indexOf(otpMsg)
-            val end = start + otpMsg.length
-
-            if (start < 0 || end < 0) {
-                return
-            }
-
-            spannable.setSpan(
-                    object : ClickableSpan() {
-                        override fun onClick(view: View) {
-                            when (otpData.otpType) {
-                                OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                                    analytics.trackClickResendRegisterPhoneOtpButton()
-                                }
-                                OtpConstant.OtpType.REGISTER_EMAIL -> {
-                                    analytics.trackClickResendRegisterEmailOtpButton()
-                                }
-                            }
-
-                            sendOtp()
-                            viewBound.pin?.value = ""
-                            analytics.trackClickResendOtp(otpData, modeListData)
-                        }
-
-                        override fun updateDrawState(ds: TextPaint) {
-                            ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
-                            ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                        }
-                    },
-                    start,
-                    end,
-                    0
-            )
-        } else {
-            super.setResendOtpFooterSpan(message, spannable)
-        }
-    }
-
-    override fun setOtherMethodFooterSpan(message: String, spannable: Spannable) {
-        if (isOtpMiscallNew()) {
-            spannable.setSpan(
-                    object : ClickableSpan() {
-                        override fun onClick(view: View) {
-                            viewModel.done = true
-                            analytics.trackClickUseOtherMethod(otpData, modeListData)
-                            (activity as VerificationActivity).goToVerificationMethodPage()
-                        }
-
-                        override fun updateDrawState(ds: TextPaint) {
-                            ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
-                            ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                        }
-                    },
-                    message.indexOf(getString(R.string.cotp_miscall_use_other_method)),
-                    message.indexOf(getString(R.string.cotp_miscall_use_other_method)) + getString(R.string.cotp_miscall_use_other_method).length,
-                    0
-            )
-        } else {
-            super.setOtherMethodFooterSpan(message, spannable)
-        }
-    }
-
     override fun setRunningCountdownText(countdown: Int) {
         val text = String.format(getString(R.string.cotp_miscall_coundown_text), countdown)
         viewBound.pin?.pinMessage = MethodChecker.fromHtml(text)
     }
 
     private fun getFooterTextResendWithOtherMethod(): String {
-        var footerText = ""
-        context?.let {
-            footerText = if (isOtpMiscallNew()) {
-                it.getString(R.string.cotp_miscall_resend_with_other_method)
-            } else {
-                it.getString(R.string.validation_resend_or_with_other_method)
-            }
-        }
-        return footerText
+        return context?.getString(R.string.validation_resend_or_with_other_method).orEmpty()
     }
 
     private fun getFooterTextResend(): String {
-        var footerText = ""
-        context?.let {
-            footerText = if (isOtpMiscallNew()) {
-                it.getString(R.string.cotp_miscall_resend)
-            } else {
-                it.getString(R.string.validation_resend)
-            }
-        }
-        return footerText
+        return context?.getString(R.string.validation_resend).orEmpty()
     }
 
     override fun onResume() {
@@ -216,10 +111,6 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 registerIncomingPhoneCall(it)
             }
-        }
-
-        if (isOtpMiscallNew()) {
-            hideKeyboard()
         }
     }
 
@@ -314,66 +205,7 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
         return result.replace(symbolRegex, "")
     }
 
-    private fun isOtpMiscallNew(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLANCE_KEY_MISCALL_OTP).contains(ROLLANCE_KEY_MISCALL_OTP)
-    }
-
-    // new ui
-    private fun renderNewUi() {
-        viewBound.methodIcon?.hide()
-        viewBound.pin?.apply {
-            pinFrameView.hide()
-        }
-
-        setAnimation()
-    }
-
-    private fun setAnimation() {
-        viewBound.lottieMiscallAnimation?.apply {
-            setAnimationFromUrl(LOTTIE_MISCALL_ANIMATION_RAW)
-            show()
-        }
-    }
-
-    private fun hideKeyboard() {
-        activity?.let {
-            KeyboardHandler.DropKeyboard(it, viewBound.pin)
-
-            viewBound.pin?.pinTextField?.apply {
-                isFocusable = false
-                clearFocus()
-            }
-        }
-    }
-
-    override fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
-        if (isOtpMiscallNew()) {
-            setSuccessImage()
-
-            // show icon success 1s
-            Timer().schedule(DELAY_1_SECOND) {
-                super.onSuccessOtpValidate(otpValidateData)
-            }
-        } else {
-            super.onSuccessOtpValidate(otpValidateData)
-        }
-    }
-
-    private fun setSuccessImage() {
-        viewBound.lottieMiscallAnimation?.hide()
-        viewBound.methodIcon?.apply {
-            layoutParams.apply {
-                this?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                this?.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            }
-            setImageResource(android.R.color.transparent)
-            setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_success))
-            show()
-        }
-    }
-
     companion object {
-        private const val DELAY_1_SECOND = 1000L
         private const val FLOAT_270 = 270f
 
         private const val REMOTE_CONFIG_KEY_DISABLE_AUTOREAD_MISSCALL = "android_disable_autoread_misscall"
@@ -382,7 +214,6 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
         private const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
 
         private const val URL_IMG_VERIFICATION_MISCALL_NEW = "https://images.tokopedia.net/img/android/user/miscall/ic_miscall_verification.png"
-        private const val LOTTIE_MISCALL_ANIMATION_RAW = "https://assets.tokopedia.net/asts/android/user/otp/otp_miscall_new_ui.json"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = MisscallVerificationFragment()

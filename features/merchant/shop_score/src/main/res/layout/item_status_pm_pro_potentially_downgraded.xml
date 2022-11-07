@@ -63,7 +63,8 @@
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toEndOf="@id/ic_pm_badge_current_status"
                 app:layout_constraintTop_toBottomOf="@id/tv_pm_reputation_score_label"
-                app:typographyType="heading_4" />
+                app:typographyType="display_1"
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/ssPmSectionActiveStatus"
@@ -109,7 +110,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2" />
+                app:typographyType="display_2" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/separatorDividerPmProSection"
@@ -130,7 +131,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/tvSsPmProSection"
                 app:layout_constraintStart_toStartOf="@+id/tvSsPmProSection"
                 app:layout_constraintTop_toBottomOf="@+id/separatorDividerPmProSection"
-                app:typographyType="heading_5" />
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvSsPmSectionBenefits"

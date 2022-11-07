@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class CheckPushStatusUseCase @Inject constructor(val pushStatusRepository: PushStatusRepository) {
 
-    suspend fun checkPushStatus(campaignId: Int): PushStatusResponse {
+    suspend fun checkPushStatus(campaignId: Long): PushStatusResponse {
         return pushStatusRepository.checkPushStatus(campaignId)
     }
 }

@@ -4,6 +4,7 @@
     <dimen name="deals_dp_minus_4">-4dp</dimen>
     <dimen name="deals_dp_0">0dp</dimen>
     <dimen name="deals_dp_1">1dp</dimen>
+    <dimen name="deals_dp_5">5dp</dimen>
     <dimen name="deals_dp_6">6dp</dimen>
     <dimen name="deals_dp_10">10dp</dimen>
     <dimen name="deals_dp_12">12dp</dimen>

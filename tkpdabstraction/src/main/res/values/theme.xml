@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="Theme.AppCompat.DayNight.Translucent" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:background">@android:color/transparent</item> <!-- Or any transparency or color you need -->
@@ -108,5 +108,16 @@
         <item name="tabGravity">fill</item>
         <item name="tabIndicatorHeight">3dp</item>
         <item name="tabMode">fixed</item>
+    </style>
+
+    <style name="Theme.AppCompat.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 </resources>

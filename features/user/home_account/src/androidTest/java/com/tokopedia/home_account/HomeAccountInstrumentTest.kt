@@ -18,7 +18,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
         runTest {
             fragment.onProfileClicked()
         }.validate(
-                QueryUtils.queryProfile()
+            QueryUtils.queryProfile()
         )
     }
 
@@ -40,22 +40,29 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
 
 
     //4.Cassava Test ID - 798
-    // This test is disabled for a while, because it's failed on the cassava nightly build, will release the patch ASAP.
-    /*
-    @Test
-    fun click_more_account_settings() {
-        runTest {
-            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-            onView(withId(R.id.home_account_member_layout_member_forward)).check(matches(isDisplayed())).perform(click())
-        }.validate(QueryUtils.queryMoreSettings("Member"))
-    }
-    */
+    // This tests is disabled for now, because it keep failing at firebase testlab with unknown cause.
+    // We will fix it ASAP.
+//    @Test
+//    fun click_more_account_settings() {
+//        runTest {
+//            Intents.intending(IntentMatchers.anyIntent()).respondWith(
+//                Instrumentation.ActivityResult(
+//                    Activity.RESULT_OK, null
+//                )
+//            )
+//            ViewActionUtils.waitOnView(withId(R.id.home_account_member_layout_member_forward))
+//                .check(matches(isDisplayed())).perform(click())
+//        }.validate(QueryUtils.queryMoreSettings("Member"))
+//    }
 
     //5.Cassava Test ID - 802
     @Test
     fun click_list_address() {
         runTest {
-            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS)
+            ViewUtils.clickSettingView(
+                "Pengaturan Akun",
+                AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS
+            )
         }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS))
     }
 
@@ -64,7 +71,10 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     fun click_bank_account() {
         runTest {
             onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
-            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT)
+            ViewUtils.clickSettingView(
+                "Pengaturan Akun",
+                AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT
+            )
         }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT))
     }
 
@@ -73,7 +83,10 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     fun click_instant_payment() {
         runTest {
             onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
-            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT)
+            ViewUtils.clickSettingView(
+                "Pengaturan Akun",
+                AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT
+            )
         }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT))
     }
 
@@ -82,7 +95,10 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     fun click_account_security() {
         runTest {
             onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
-            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY)
+            ViewUtils.clickSettingView(
+                "Pengaturan Akun",
+                AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY
+            )
         }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY))
     }
 
@@ -91,7 +107,10 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     fun click_notification() {
         runTest {
             onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
-            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_NOTIFICATION)
+            ViewUtils.clickSettingView(
+                "Pengaturan Akun",
+                AccountConstants.Analytics.Label.LABEL_NOTIFICATION
+            )
         }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_NOTIFICATION))
     }
 
@@ -110,6 +129,11 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
             ViewUtils.clickSettingMoreView("Pengaturan Aplikasi")
 
             ViewUtils.clickSwitchOnApplicationSetting("Shake Shake")
-        }.validate(listOf(QueryUtils.queryShakeCampaign(false), QueryUtils.queryShakeCampaign(true)))
+        }.validate(
+            listOf(
+                QueryUtils.queryShakeCampaign(false),
+                QueryUtils.queryShakeCampaign(true)
+            )
+        )
     }
 }

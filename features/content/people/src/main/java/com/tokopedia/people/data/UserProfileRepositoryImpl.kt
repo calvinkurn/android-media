@@ -1,22 +1,25 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
-import com.tokopedia.people.domains.UserDetailsUseCase
-import com.tokopedia.people.domains.PlayPostContentUseCase
-import com.tokopedia.people.domains.ProfileFollowUseCase
-import com.tokopedia.people.domains.ProfileUnfollowedUseCase
-import com.tokopedia.people.domains.ProfileTheyFollowedUseCase
-import com.tokopedia.people.domains.VideoPostReminderUseCase
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_CURSOR
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_USER_PROFILE
+import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
+import com.tokopedia.people.domains.*
 import com.tokopedia.people.domains.repository.UserProfileRepository
-import com.tokopedia.people.model.ProfileHeaderBase
+import com.tokopedia.people.model.ProfileFollowerListBase
+import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.views.uimodel.MutationUiModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -30,28 +33,32 @@ import javax.inject.Inject
 class UserProfileRepositoryImpl @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val mapper: UserProfileUiMapper,
+    private val shopRecomMapper: ShopRecomUiMapper,
+    private val profileMutationMapper: ProfileMutationMapper,
     private val userDetailsUseCase: UserDetailsUseCase,
     private val playVodUseCase: PlayPostContentUseCase,
-    private val useCaseDoFollow: ProfileFollowUseCase,
-    private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
+    private val doFollowUseCase: ProfileFollowUseCase,
+    private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
-    private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
+    private val getWhitelistNewUseCase: GetWhiteListNewUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val shopFollowUseCase: ShopFollowUseCase,
+    private val getFollowerListUseCase: GetFollowerListUseCase,
+    private val getFollowingListUseCase: GetFollowingListUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
         return withContext(dispatcher.io) {
-            val result = userDetailsUseCase.getUserProfileDetail(username)
+            val result = userDetailsUseCase.executeOnBackground(username)
 
-            mapper.mapUserProfile(result.getData(ProfileHeaderBase::class.java))
+            mapper.mapUserProfile(result)
         }
     }
 
     override suspend fun getFollowInfo(profileIdList: List<String>): FollowInfoUiModel {
         return withContext(dispatcher.io) {
-            val result = profileIsFollowing.profileIsFollowing(profileIdList)
+            val result = profileIsFollowing.executeOnBackground(profileIdList)
 
             mapper.mapFollowInfo(result)
         }
@@ -67,23 +74,23 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun followProfile(encryptedUserId: String): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = useCaseDoFollow.doFollow(encryptedUserId)
+            val result = doFollowUseCase.executeOnBackground(encryptedUserId)
 
-            mapper.mapFollow(result)
+            profileMutationMapper.mapFollow(result)
         }
     }
 
     override suspend fun unFollowProfile(encryptedUserId: String): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = useCaseDoUnFollow.doUnfollow(encryptedUserId)
+            val result = doUnfollowUseCase.executeOnBackground(encryptedUserId)
 
-            mapper.mapUnfollow(result)
+            profileMutationMapper.mapUnfollow(result)
         }
     }
 
     override suspend fun updateReminder(channelId: String, isActive: Boolean): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = videoPostReminderUseCase.updateReminder(channelId, isActive)
+            val result = videoPostReminderUseCase.executeOnBackground(channelId, isActive)
 
             mapper.mapUpdateReminder(result)
         }
@@ -91,27 +98,59 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getPlayVideo(username: String, cursor: String): UserPostModel {
         return withContext(dispatcher.io) {
-            val data = playVodUseCase.getPlayPost(VAL_FEEDS_PROFILE, cursor, VAL_SOURCE_BUYER, username)
-
-            data
+            return@withContext playVodUseCase.executeOnBackground(
+                group = VAL_FEEDS_PROFILE,
+                cursor = cursor,
+                sourceType = VAL_SOURCE_BUYER,
+                sourceId = username,
+            )
         }
     }
 
     override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
-        val result = shopRecomUseCase.apply {
-            setRequestParams(ShopRecomUseCase.createParam())
-        }.executeOnBackground()
-        return@withContext mapper.mapShopRecom(result)
+        val result = shopRecomUseCase.executeOnBackground(
+            screenName = VAL_SCREEN_NAME_USER_PROFILE,
+            limit = VAL_LIMIT,
+            cursor = VAL_CURSOR,
+        )
+
+        return@withContext shopRecomMapper.mapShopRecom(result)
     }
 
     override suspend fun shopFollowUnfollow(
         shopId: String,
         action: ShopFollowAction
     ): MutationUiModel = withContext(dispatcher.io) {
-        val result = shopFollowUseCase.apply {
-            setRequestParams(ShopFollowUseCase.createParam(shopId, action))
-        }.executeOnBackground()
-        return@withContext mapper.mapShopFollow(result)
+        val result = shopFollowUseCase.executeOnBackground(
+            shopId = shopId,
+            action = action,
+        )
+
+        return@withContext shopRecomMapper.mapShopFollow(result)
+    }
+
+    override suspend fun getFollowerList(
+        username: String,
+        cursor: String,
+        limit: Int
+    ): ProfileFollowerListBase = withContext(dispatcher.io) {
+        return@withContext getFollowerListUseCase.executeOnBackground(
+            username = username,
+            cursor = cursor,
+            limit = limit,
+        )
+    }
+
+    override suspend fun getFollowingList(
+        username: String,
+        cursor: String,
+        limit: Int
+    ): ProfileFollowingListBase = withContext(dispatcher.io) {
+        return@withContext getFollowingListUseCase.executeOnBackground(
+            username = username,
+            cursor = cursor,
+            limit = limit,
+        )
     }
 
     companion object {

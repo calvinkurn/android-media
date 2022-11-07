@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.list.domain.model
 
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
@@ -82,7 +81,7 @@ data class SomListOrderListResponse(
                 @SerializedName("buyer_name")
                 @Expose
                 val buyerName: String = "",
-                @SerializedName("ticker_info")
+                @SerializedName("ticker")
                 @Expose
                 val tickerInfo: TickerInfo = TickerInfo(),
                 @SerializedName("button")

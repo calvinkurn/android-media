@@ -9,6 +9,8 @@ import com.tokopedia.review.databinding.WidgetCreateReviewTickerBinding
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTickerUiState
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewTicker @JvmOverloads constructor(
     context: Context,
@@ -22,7 +24,7 @@ class CreateReviewTicker @JvmOverloads constructor(
     override val binding = WidgetCreateReviewTickerBinding.inflate(LayoutInflater.from(context), this, true)
 
     private fun WidgetCreateReviewTickerBinding.showTicker(uiState: CreateReviewTickerUiState.Showing) {
-        with(root) {
+        with(tickerCreateReview) {
             setHtmlDescription(uiState.ticker.subtitle)
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -37,14 +39,18 @@ class CreateReviewTicker @JvmOverloads constructor(
         trackingHandler.trackViewTicker(uiState)
     }
 
-    fun updateUi(uiState: CreateReviewTickerUiState) {
+    fun updateUi(uiState: CreateReviewTickerUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewTickerUiState.Showing -> {
                 binding.showTicker(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             else -> {
-                animateHide()
+                animateHide(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }

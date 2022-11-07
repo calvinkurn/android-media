@@ -33,6 +33,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.product_bundle.common.data.mapper.ProductBundleAtcTrackerMapper
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
@@ -40,6 +41,7 @@ import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailBundleTracker
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
@@ -206,7 +208,17 @@ class SingleProductBundleFragment(
     private fun observeAddToCartResult() {
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             hideLoadingDialog()
+            val productDetails = ProductBundleAtcTrackerMapper.mapSingleBundlingDataToProductTracker(
+                    bundleInfo, selectedBundleId, it.responseResult.data[0].cartId
+            )
+
             if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
+                sendSingleBundleAtcTrackerClickEvent(
+                        selectedProductIds = parentProductID,
+                        shopId = it.requestParams.shopId,
+                        productDetails = productDetails
+                )
+
                 val intent = Intent()
                 intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
                 intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
@@ -215,9 +227,46 @@ class SingleProductBundleFragment(
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             } else {
+                sendSingleBundleAtcTrackerClickEvent(
+                        selectedProductIds = parentProductID,
+                        shopId = it.requestParams.shopId,
+                        productDetails = productDetails
+                )
                 RouteManager.route(context, ApplinkConst.CART)
             }
         })
+    }
+
+    private fun sendTrackerBundleAtcClickEvent(
+            selectedProductIds: String,
+            shopId: String,
+            productDetails: List<ProductDetailBundleTracker>
+    ) {
+        val _userId = viewModel.getUserId()
+        SingleProductBundleTracking.trackSingleBuyClick(
+                userId = _userId,
+                source = pageSource,
+                parentProductId = selectedProductIds,
+                bundleId = adapter.getSelectedBundleId(),
+                selectedProductId = adapter.getSelectedProductId(),
+                shopId = shopId,
+                productIds = selectedProductIds,
+                productDetails = productDetails
+        )
+    }
+
+    private fun sendSingleBundleAtcTrackerClickEvent(
+            selectedProductIds: String,
+            shopId: String,
+            productDetails: List<ProductDetailBundleTracker>
+    ) {
+        if (productDetails.isNotEmpty() && productDetails[0].productId != "0") {    // Check if the data is valid
+            sendTrackerBundleAtcClickEvent(
+                    selectedProductIds = selectedProductIds,
+                    shopId = shopId,
+                    productDetails = productDetails
+            )
+        }
     }
 
     private fun observeToasterError() {
@@ -315,11 +364,6 @@ class SingleProductBundleFragment(
                 priceGap = defaultPrice
             )
             amountCtaView.setOnClickListener {
-                SingleProductBundleTracking.trackSingleBuyClick(
-                    adapter.getSelectedBundleId(),
-                    parentProductID,
-                    adapter.getSelectedProductId()
-                )
                 atcProductBundle()
             }
         }

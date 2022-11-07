@@ -26,6 +26,7 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
@@ -36,10 +37,11 @@ import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
-import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
@@ -52,6 +54,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN_ALT
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_VERIFY_PHONE_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.TELCO_PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
@@ -60,6 +63,8 @@ import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
+import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
+import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
@@ -67,7 +72,13 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetM
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.pxToDp
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
@@ -100,6 +111,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 /**
@@ -115,7 +127,9 @@ class DigitalPDPDataPlanFragment :
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
     FilterPDPBottomsheet.FilterBottomSheetListener,
-    DigitalHistoryIconListener {
+    DigitalHistoryIconListener,
+    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl()
+{
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
@@ -128,8 +142,6 @@ class DigitalPDPDataPlanFragment :
 
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
-
-    private val keyboardWatcher = DigitalKeyboardWatcher()
 
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
@@ -194,15 +206,8 @@ class DigitalPDPDataPlanFragment :
 
     private fun setupKeyboardWatcher() {
         binding?.root?.let {
-            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
-                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                    // do nothing
-                }
-
-                override fun onKeyboardHidden() {
-                    // do nothing
-                }
-            })
+            registerLifecycleOwner(viewLifecycleOwner)
+            registerKeyboard(WeakReference(it))
         }
     }
 
@@ -449,6 +454,15 @@ class DigitalPDPDataPlanFragment :
                 }
             }
         })
+
+        viewModel.errorAtc.observe(viewLifecycleOwner){
+            hideLoadingDialog()
+            if (it.atcErrorPage.isShowErrorPage){
+                redirectToCart(viewModel.digitalCheckoutPassData.categoryId ?: "")
+            } else{
+                showErrorUnverifiedPhoneNumber(it)
+            }
+        }
 
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpPaketDataClientNumberWidget?.run {
@@ -1003,6 +1017,17 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    // this function used to redirect to cart if getting error from atc Response
+    private fun redirectToCart(categoryId: String){
+        context?.let {
+            RouteManager.route(it, CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
+                viewModel.digitalCheckoutPassData.productId ?: "",
+                viewModel.digitalCheckoutPassData.clientNumber ?: "",
+                categoryId
+            ))
+        }
+    }
+
     private fun navigateToContact(
         clientNumber: String,
         dgCategoryIds: ArrayList<String>,
@@ -1060,7 +1085,8 @@ class DigitalPDPDataPlanFragment :
                 arrayListOf(),
                 categoryName,
                 isSwitchChecked,
-                loyaltyStatus
+                loyaltyStatus,
+                FavoriteNumberPageConfig.TELCO,
             )
 
             val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -1083,6 +1109,40 @@ class DigitalPDPDataPlanFragment :
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
             ).show()
+        }
+    }
+
+    private fun showErrorUnverifiedPhoneNumber(error: ErrorAtc){
+        view?.let {
+
+            fun redirectError(error: ErrorAtc){
+                if (error.atcErrorPage.buttons.first().actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
+                    RouteManager.getIntent(context, error.appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
+                    }
+                } else {
+                    RouteManager.route(context, error.appLinkUrl)
+                }
+            }
+
+            if (error.appLinkUrl.isNotEmpty()){
+                Toaster.build(
+                    it,
+                    error.title,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                ) {
+                    redirectError(error)
+                }.show()
+            }else{
+                Toaster.build(
+                    it,
+                    error.title,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                ).show()
+            }
         }
     }
 
@@ -1168,9 +1228,7 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    override fun isKeyboardShown(): Boolean {
-        return keyboardWatcher.isKeyboardOpened
-    }
+    override fun isKeyboardShown(): Boolean = isSoftKeyboardShown()
     //endregion
 
     //region ClientNumberFilterChipListener
@@ -1510,7 +1568,8 @@ class DigitalPDPDataPlanFragment :
                         FavoriteNumberType.LIST
                     )
                 )
-            } else if (requestCode == REQUEST_CODE_LOGIN) {
+                binding?.rechargePdpPaketDataClientNumberWidget?.clearFocusAutoComplete()
+            } else if (requestCode == REQUEST_CODE_LOGIN || requestCode == REQUEST_CODE_VERIFY_PHONE_NUMBER) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
                 addToCartFromUrl()

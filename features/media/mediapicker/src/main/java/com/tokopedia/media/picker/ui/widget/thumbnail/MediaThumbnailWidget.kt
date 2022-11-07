@@ -12,6 +12,7 @@ import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
+import com.tokopedia.media.picker.utils.loadPickerImage
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.media.R as mediaResources
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
@@ -45,15 +46,7 @@ class MediaThumbnailWidget @JvmOverloads constructor(
         val file = element.file?: return
 
         binding.container.show()
-
-        binding.imgPreview.loadImage(file.path) {
-            isAnimate(true)
-            setPlaceHolder(-1)
-            centerCrop()
-            listener(onSuccess = { _, _ ->
-                onLoaded()
-            })
-        }
+        binding.imgPreview.loadPickerImage(file.path, onLoaded)
 
         onVideoShow(file)
     }

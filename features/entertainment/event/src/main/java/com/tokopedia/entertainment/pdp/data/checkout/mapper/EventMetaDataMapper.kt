@@ -16,7 +16,7 @@ import com.tokopedia.entertainment.pdp.data.pdp.ItemMapResponse
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.data.pdp.PassengerForm
 import com.tokopedia.entertainment.pdp.data.pdp.PassengerInformation
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 object EventMetaDataMapper {
 
@@ -97,7 +97,7 @@ object EventMetaDataMapper {
                     totalPrice = totalPrice,
                     itemIds = convertStringListtoIntList(itemIds),
                     productNames = productNames,
-                    providerIds = listOf(productDetailData.providerId.toIntOrZero()),
+                    providerIds = listOf(productDetailData.providerId.toIntSafely()),
                     productIds = convertStringListtoIntList(productIds),
                     itemMap = mapToItemMapCheckout(itemMap,productDetailData,packageV3)
             )
@@ -107,7 +107,7 @@ object EventMetaDataMapper {
     private fun mapToItemMapCheckout(itemMapResponses: List<ItemMapResponse>, productDetailData: ProductDetailData, packageV3: PackageV3): List<ItemMapCheckout> {
         return itemMapResponses.map {
             ItemMapCheckout(
-                    basePrice = it.basePrice.toInt(),
+                    basePrice = it.basePrice.toIntSafely().toLong(),
                     categoryId = it.categoryId.toLong(),
                     childCategoryIds = it.childCategoryIds,
                     commission = it.commission,
@@ -140,7 +140,7 @@ object EventMetaDataMapper {
                     providerScheduleId = it.providerScheduleId,
                     providerTicketId = it.providerTicketId,
                     quantity = it.quantity,
-                    scheduleTimestamp = it.scheduleTimestamp.toInt(),
+                    scheduleTimestamp = it.scheduleTimestamp.toIntSafely(),
                     startTime = it.startTime,
                     totalPrice = it.totalPrice,
                     productWebUrl = it.productWebUrl,
@@ -152,7 +152,7 @@ object EventMetaDataMapper {
 
     private fun convertStringListtoIntList(listString: List<String>): List<Int> {
         return listString.map {
-            it.toInt()
+            it.toIntSafely()
         }
     }
 }

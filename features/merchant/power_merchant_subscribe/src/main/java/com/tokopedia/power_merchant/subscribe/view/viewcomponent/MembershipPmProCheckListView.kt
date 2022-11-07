@@ -85,13 +85,13 @@ class MembershipPmProCheckListView : LinearLayout {
         val totalOrderStr = data.getTotalOrderValue().toString()
         val orderFmt = if (data.isEligibleOrder()) {
             context.getString(
-                R.string.pm_number_of_order,
+                R.string.pm_pro_number_of_order,
                 eligibleColor,
                 totalOrderStr
             )
         } else {
             context.getString(
-                R.string.pm_number_of_order,
+                R.string.pm_pro_number_of_order,
                 notEligibleColor,
                 totalOrderStr
             )

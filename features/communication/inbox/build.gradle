@@ -26,11 +26,11 @@ android {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_11
     }
 }
 
@@ -88,7 +88,6 @@ dependencies {
 
     androidTestImplementation projectOrAar(rootProject.ext.features.topAdsSdk)
     androidTestImplementation projectOrAar(rootProject.ext.features.atc_common)
-    androidTestImplementation projectOrAar(rootProject.ext.features.wishlistCommon)
     androidTestImplementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     androidTestImplementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 

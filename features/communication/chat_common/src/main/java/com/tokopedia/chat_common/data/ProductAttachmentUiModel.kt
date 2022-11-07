@@ -468,7 +468,7 @@ open class ProductAttachmentUiModel protected constructor(
         }
 
         fun withVariants(variants: List<AttachmentVariant>?): Builder {
-            this.variants = variants?: emptyList()
+            this.variants = variants ?: emptyList()
             return self()
         }
 
@@ -532,7 +532,7 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
-        fun withIOSUrl(iosUrl: String) : Builder {
+        fun withIOSUrl(iosUrl: String): Builder {
             this.iosUrl = iosUrl
             return self()
         }

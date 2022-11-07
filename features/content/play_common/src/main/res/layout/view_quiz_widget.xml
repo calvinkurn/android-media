@@ -16,7 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0"
-        app:layout_constraintWidth_percent="0.6"
         tools:layout_constraintWidth_percent="0.6" />
 
     <com.tokopedia.play_common.view.RoundedLinearLayout
@@ -28,7 +27,6 @@
         app:layout_constraintEnd_toEndOf="@+id/quiz_header"
         app:layout_constraintStart_toStartOf="@+id/quiz_header"
         app:layout_constraintTop_toBottomOf="@+id/quiz_header"
-        app:layout_constraintWidth_percent="0.6"
         app:rll_bottomLeftRadius="@dimen/play_dp_12"
         app:rll_bottomRightRadius="@dimen/play_dp_12">
 
@@ -52,20 +50,4 @@
             tools:listitem="@layout/item_quiz_option" />
 
     </com.tokopedia.play_common.view.RoundedLinearLayout>
-
-    <include
-        android:id="@+id/view_quiz_reward"
-        layout="@layout/view_quiz_reward"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/play_dp_12"
-        android:layout_marginTop="@dimen/play_dp_12"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:visibility="gone"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_quiz_content"
-        tools:visibility="visible" />
-
 </merge>

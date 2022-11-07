@@ -5,80 +5,100 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_upcoming_cover"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:scaleType="center"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_upcoming_cover"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            android:id="@+id/v_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/Unify_NN900"
+            android:alpha="0.7"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/view_gradient_background"
+        layout="@layout/view_gradient_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/view_gradient_background"
-        layout="@layout/view_gradient_background"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
-    <include
         android:id="@+id/view_toolbar_room"
         layout="@layout/view_toolbar_room"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/view_partner_info"
         layout="@layout/view_partner_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/play_offset_12"
-        android:layout_marginEnd="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_24"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@id/view_upcoming_share_experience"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_toolbar_room"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
-        app:layout_goneMarginEnd="@dimen/spacing_lvl5"
-        />
+        app:layout_goneMarginEnd="@dimen/spacing_lvl5" />
 
     <include
         android:id="@+id/view_upcoming_share_experience"
         layout="@layout/view_share_experience"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="@id/view_partner_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view_partner_info"
-        />
+        app:layout_constraintTop_toTopOf="@id/view_partner_info" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_upcoming_title"
+        android:id="@+id/tv_upcoming_description"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/play_upcoming_description_top"
+        app:layout_constraintHeight_default="wrap"
         android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="3"
+        android:maxLines="2"
+        android:layout_marginBottom="@dimen/unify_space_16"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toTopOf="@id/view_upcoming_timer"
+        app:layout_constraintBottom_toTopOf="@+id/view_upcoming_timer"
         app:layout_constraintEnd_toEndOf="@id/btn_action"
-        app:layout_constraintStart_toStartOf="@id/btn_action"
-        app:typographyType="heading_2"
-        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="@+id/view_upcoming_timer"
+        app:layout_constraintTop_toBottomOf="@+id/view_partner_info"
+        app:layout_constraintVertical_bias="1.0"
+        app:typographyType="body_2"
         tools:text="Dapatkan Promo menarik selama Live Streaming berlangsung" />
 
     <include
@@ -86,10 +106,12 @@
         layout="@layout/view_upcoming_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl5"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_8"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/btn_action"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_action"
+        app:layout_constraintEnd_toStartOf="@id/btn_action"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
@@ -97,11 +119,12 @@
         android:id="@+id/btn_action"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl4"
+        android:layout_margin="@dimen/unify_space_16"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/view_upcoming_timer"
+        app:unifyButtonSize="medium"
         tools:text="@string/play_remind_me"
         tools:visibility="visible" />
 

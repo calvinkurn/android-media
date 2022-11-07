@@ -4,6 +4,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodPromoCardBinding
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoActionListener
@@ -34,8 +35,8 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
         with(viewBinding) {
             if (element.isAvailable) {
                 textPromoHighlightIdentifierTokofood.text = element.highlightWording
-                textPromoHighlightIdentifierTokofood.show()
-                promoHighlightIdentifierTokofood.show()
+                textPromoHighlightIdentifierTokofood.showWithCondition(element.highlightWording.isNotBlank())
+                promoHighlightIdentifierTokofood.showWithCondition(element.highlightWording.isNotBlank())
                 containerErrorInfoTokofood.gone()
                 imageSelectPromoTokofood.show()
                 itemView.setOnClickListener {  }

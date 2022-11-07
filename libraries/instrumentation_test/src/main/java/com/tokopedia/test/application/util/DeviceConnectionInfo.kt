@@ -22,7 +22,7 @@ object DeviceConnectionInfo {
     fun getSSID(context: Context): String {
         var ssid = ""
         try {
-            val connManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connManager = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connManager.activeNetworkInfo
             if (networkInfo != null && networkInfo.isConnected &&
                     networkInfo.type == ConnectivityManager.TYPE_WIFI) {
@@ -61,7 +61,7 @@ object DeviceConnectionInfo {
                             checkEthernet: Boolean = false): Boolean {
         var result = false
         val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val networkCapabilities = connectivityManager.activeNetwork ?: return false
             val actNw =

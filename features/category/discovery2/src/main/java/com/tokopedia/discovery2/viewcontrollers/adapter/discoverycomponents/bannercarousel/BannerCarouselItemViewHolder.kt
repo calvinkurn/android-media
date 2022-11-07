@@ -30,6 +30,7 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
     private var bannerImage: ImageView = itemView.findViewById(R.id.banner_image)
     private lateinit var bannerCarouselItemViewModel: BannerCarouselItemViewModel
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
+    private var compType :String? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         bannerCarouselItemViewModel = discoveryBaseViewModel as BannerCarouselItemViewModel
@@ -37,7 +38,7 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
             bannerCarouselItemViewModel.getNavigationUrl()?.let {
                 RouteManager.route(fragment.activity, it)
                 bannerCarouselItemViewModel.getBannerData()?.let { itemData ->
-                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerClick(itemData, adapterPosition)
+                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerClick(itemData, adapterPosition, compType ?: "")
                 }
             }
         }
@@ -52,6 +53,7 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
                         setupImage(it.first(),componentItem)
                     }
                 }
+                compType = componentItem.properties?.compType
             })
         }
     }

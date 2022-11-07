@@ -8,6 +8,7 @@ import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.network.exception.ResponseErrorException
 import javax.inject.Inject
 
 
@@ -29,7 +30,7 @@ class DigitalCheckoutUseCase @Inject constructor(
             val result = gqlUseCase.executeOnBackground().rechargeCheckoutV3
 
             if (result.errors.isNotEmpty()) {
-                throw Throwable(result.errors.first().title)
+                throw ResponseErrorException(result.errors.first().title)
             }
 
             DigitalCheckoutMapper.mapToPaymentPassData(result)

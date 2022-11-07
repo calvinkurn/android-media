@@ -24,6 +24,7 @@ import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -31,6 +32,7 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
@@ -116,6 +118,15 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
             onLoadingAtc(false)
         })
+
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
+            when{
+                it.atcErrorPage.isShowErrorPage -> redirectToCart(categoryId.toString())
+                it.appLinkUrl.isEmpty() -> showErrorMessage(MessageErrorException(it.title))
+                else -> redirectErrorUnVerifiedNumber(it)
+            }
+            onLoadingAtc(false)
+        }
 
         topupBillsViewModel.enquiryData.observe(viewLifecycleOwner, Observer {
             it.run {
@@ -251,7 +262,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_CODE_LOGIN -> {
+                REQUEST_CODE_LOGIN or REQUEST_CODE_VERIFY_NUMBER -> {
                     when (pendingPromoNavigation) {
                         NAVIGATION_PROMO_LIST -> navigateToPromoList()
                         NAVIGATION_PROMO_DETAIL -> navigateToPromoDetail()
@@ -401,11 +412,11 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         )
     }
 
-    fun getMenuDetail(menuId: Int) {
+    fun getMenuDetail(menuId: Int, platformId: Int = 5) {
         onLoadingMenuDetail(true)
         topupBillsViewModel.getMenuDetail(
             CommonTopupBillsGqlQuery.catalogMenuDetail,
-            topupBillsViewModel.createMenuDetailParams(menuId)
+            topupBillsViewModel.createMenuDetailParams(menuId, platformId)
         )
     }
 
@@ -448,6 +459,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     abstract fun showErrorMessage(error: Throwable)
+
+    abstract fun redirectErrorUnVerifiedNumber(error:ErrorAtc)
 
     private fun processExpressCheckout(checkOtp: Boolean = false) {
         // Check if promo code is valid
@@ -546,6 +559,17 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         }
     }
 
+    // this function used to redirect to cart if getting error from atc Response
+    private fun redirectToCart(categoryId: String){
+        context?.let {
+            RouteManager.route(it, CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
+                checkoutPassData.productId ?: "",
+                checkoutPassData.clientNumber ?: "",
+                categoryId
+            ))
+        }
+    }
+
     fun navigateToLoginPage() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
@@ -590,6 +614,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
         const val REQUEST_CODE_OTP = 1001
+        const val REQUEST_CODE_VERIFY_NUMBER = 1012
 
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
 

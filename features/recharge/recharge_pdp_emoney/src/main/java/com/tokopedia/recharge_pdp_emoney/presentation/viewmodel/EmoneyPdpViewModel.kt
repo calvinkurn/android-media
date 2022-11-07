@@ -111,13 +111,16 @@ class EmoneyPdpViewModel @Inject constructor(private val userSession: UserSessio
 
     fun generateCheckoutPassData(copiedPromoCode: String, clientNumber: String,
                                  selectedProductId: String? = null,
-                                 selectedOperatorId: String? = null): DigitalCheckoutPassData {
+                                 selectedOperatorId: String? = null,
+                                 categoryIdFromPDP: String?
+    ): DigitalCheckoutPassData {
         val checkoutPassData = DigitalCheckoutPassData().apply {
             idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
             voucherCodeCopied = copiedPromoCode
             this.clientNumber = clientNumber
             productId = selectedProductId ?: selectedProduct.value?.id
             operatorId = selectedOperatorId ?: selectedOperator.value?.key
+            categoryId = categoryIdFromPDP ?: EMONEY_CATEGORY_ID
             isFromPDP = true
         }
 
@@ -127,5 +130,6 @@ class EmoneyPdpViewModel @Inject constructor(private val userSession: UserSessio
 
     companion object {
         const val ERROR_GRPC_TIMEOUT = "grpc timeout"
+        const val EMONEY_CATEGORY_ID = "34"
     }
 }

@@ -27,7 +27,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/ivNewSellerIllustration"
         app:layout_constraintTop_toBottomOf="@id/ivNewSellerIllustration"
-        app:typographyType="heading_4" />
+        app:typographyType="display_1"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvResultNewSellerEndTenure"
@@ -37,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="@id/tvTitleNewSellerEndTenure"
         app:layout_constraintStart_toStartOf="@id/tvTitleNewSellerEndTenure"
         app:layout_constraintTop_toBottomOf="@id/tvTitleNewSellerEndTenure"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         android:textColor="@color/Unify_N700_68"
         android:text="@string/desc_result_new_seller_end_tenure_pop_up" />
 
@@ -117,7 +118,8 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintStart_toEndOf="@id/tvShopScoreValue"
         app:layout_constraintTop_toTopOf="@id/tvShopScoreValue"
-        app:typographyType="heading_4" />
+        app:typographyType="display_1"
+        app:typographyWeight="bold" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierTipsIncreasePerformance"
@@ -139,7 +141,7 @@
         app:layout_constraintStart_toStartOf="@id/tvTitleNewSellerEndTenure"
         app:layout_constraintTop_toBottomOf="@id/tvShopLevel"
         app:layout_constraintEnd_toEndOf="@id/tvTitleNewSellerEndTenure"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:visibility="gone"
         android:textColor="@color/Unify_N700_68"
         android:text="@string/title_tips_increase_performance"/>

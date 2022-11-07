@@ -406,7 +406,7 @@ constructor(private val userSession: UserSessionInterface) {
             Product.NAME, item.name,
             Product.VARIANT, "",
             Product.PRICE,
-            if (item.campaign?.dPrice?.toInt() != 0) formatStringPrice(item.campaign?.dPrice
+            if (item.campaign?.dPrice?.toLong() != 0L) formatStringPrice(item.campaign?.dPrice
                 ?: "") else formatStringPrice(
                 item.price?.priceIdr ?: ""),
         )

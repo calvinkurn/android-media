@@ -1,9 +1,11 @@
 package com.tokopedia.topchat.chatlist.view.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -28,20 +30,24 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
+import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
+import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import java.util.Calendar
 import javax.inject.Inject
 
 /**
@@ -74,9 +80,11 @@ class ChatItemListViewModel @Inject constructor(
     private val getChatListUseCase: GetChatListMessageUseCase,
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
+    private val operationalInsightUseCase: GetOperationalInsightUseCase,
+    private val sharedPref: SharedPreferences,
     private val userSession: UserSessionInterface,
-    private val dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher), ChatItemListContract {
+    private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main), ChatItemListContract {
 
     var filter: String = PARAM_FILTER_ALL
         set(value) {
@@ -111,6 +119,10 @@ class ChatItemListViewModel @Inject constructor(
     private val _isChatAdminEligible = MutableLiveData<Result<Boolean>>()
     val isChatAdminEligible: LiveData<Result<Boolean>>
         get() = _isChatAdminEligible
+
+    private val _chatOperationalInsight = MutableLiveData<Result<ShopChatTicker>>()
+    val chatOperationalInsight: LiveData<Result<ShopChatTicker>>
+        get()= _chatOperationalInsight
 
     private var getChatAdminAccessJob: Job? = null
 
@@ -175,9 +187,9 @@ class ChatItemListViewModel @Inject constructor(
             getChatAdminAccessJob =
                     launchCatchError(
                             block = {
-                                _isChatAdminEligible.value = withContext(dispatcher) {
+                                _isChatAdminEligible.postValue(withContext(dispatcher.io) {
                                     Success(getIsChatAdminAccessAuthorized())
-                                }
+                                })
                             },
                             onError = {
                                 _isChatAdminEligible.value = Fail(it)
@@ -272,7 +284,7 @@ class ChatItemListViewModel @Inject constructor(
         val params = mapOf(PARAM_MESSAGE_IDS to msgIds)
 
         launchCatchError(block = {
-            val data = withContext(dispatcher) {
+            val data = withContext(dispatcher.io) {
                 val request = GraphqlRequest(query, ChatChangeStateResponse::class.java, params)
                 repository.response(listOf(request))
             }.getSuccessData<ChatChangeStateResponse>()
@@ -286,7 +298,7 @@ class ChatItemListViewModel @Inject constructor(
     fun loadChatBlastSellerMetaData() {
         val query = QUERY_CHAT_BLAST_SELLER_METADATA
         launchCatchError(block = {
-            val data = withContext(dispatcher) {
+            val data = withContext(dispatcher.io) {
                 val request = GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
                 repository.response(listOf(request))
             }.getSuccessData<BlastSellerMetaDataResponse>()
@@ -297,7 +309,7 @@ class ChatItemListViewModel @Inject constructor(
                 onErrorLoadChatBlastSellerMetaData()
             }
         }) {
-            onErrorLoadChatBlastSellerMetaData(it)
+            onErrorLoadChatBlastSellerMetaData()
         }
     }
 
@@ -307,7 +319,7 @@ class ChatItemListViewModel @Inject constructor(
         setBroadcastButtonUrl(broadCastUrl)
     }
 
-    private fun onErrorLoadChatBlastSellerMetaData(throwable: Throwable? = null) {
+    private fun onErrorLoadChatBlastSellerMetaData() {
         broadCastButtonVisibility(false)
     }
 
@@ -367,9 +379,42 @@ class ChatItemListViewModel @Inject constructor(
         coroutineContext.cancelChildren()
     }
 
+    fun getOperationalInsight(shopId: String) {
+        launchCatchError(block = {
+            val dataResponse = operationalInsightUseCase(shopId)
+            dataResponse.shopChatTicker?.let {
+                if (it.showTicker == true) {
+                    val shouldShowTicker = shouldShowOperationalInsightTicker()
+                    it.showTicker = shouldShowTicker
+                }
+                _chatOperationalInsight.value = Success(it)
+            }
+        }, onError = {
+            _chatOperationalInsight.value = Fail(it)
+        })
+    }
+
+    private fun shouldShowOperationalInsightTicker(): Boolean {
+        val nextMonday = sharedPref.getLong(getTickerPrefName(), 0)
+        val todayTimeMillis = System.currentTimeMillis()
+        return todayTimeMillis > nextMonday
+    }
+
+    fun saveNextMondayDate() {
+        val newNextMonday = Utils.getNextParticularDay(Calendar.MONDAY)
+        sharedPref.edit()
+            .putLong(getTickerPrefName(), newNextMonday)
+            .apply()
+    }
+
+    private fun getTickerPrefName(): String {
+        return "${OPERATIONAL_INSIGHT_NEXT_MONDAY}_${userSession.userId}"
+    }
+
     companion object {
         private const val SELLER_FILTER_THRESHOLD = 3
         private const val ONE_MILLION = 1_000_000L
+        const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,

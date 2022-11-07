@@ -29,7 +29,7 @@ class TokoNowProductCardViewHolder(
             setProductModel(data.product)
             setOnClickListener {
                 goToProductDetail(data)
-                listener?.onProductCardClicked(adapterPosition, data)
+                listener?.onProductCardClicked(data.position, data)
             }
             setAddVariantClickListener {
                 listener?.onAddVariantClicked(data)
@@ -41,7 +41,7 @@ class TokoNowProductCardViewHolder(
             })
             setImageProductViewHintListener(data, object : ViewHintListener {
                 override fun onViewHint() {
-                    listener?.onProductCardImpressed(adapterPosition, data)
+                    listener?.onProductCardImpressed(data.position, data)
                 }
             })
         }

@@ -68,9 +68,9 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icSearchShowcase"
-                android:layout_width="@dimen/dp_26"
-                android:layout_height="@dimen/dp_26"
-                android:layout_marginTop="@dimen/dp_18"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginTop="18dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

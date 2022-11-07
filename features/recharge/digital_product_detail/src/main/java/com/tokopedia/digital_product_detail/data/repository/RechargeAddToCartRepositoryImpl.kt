@@ -35,7 +35,7 @@ class RechargeAddToCartRepositoryImpl @Inject constructor(
         )
 
         addToCart?.let {
-            if (addToCart.cartId.isNotEmpty()) {
+            if (addToCart.cartId.isNotEmpty() || addToCart.atcError != null) {
                 return@withContext mapAtcToResult.mapAtcToResult(addToCart)
             } else throw DigitalAddToCartViewModel.DigitalFailGetCartId()
         } ?: throw DigitalAddToCartViewModel.DigitalFailGetCartId()

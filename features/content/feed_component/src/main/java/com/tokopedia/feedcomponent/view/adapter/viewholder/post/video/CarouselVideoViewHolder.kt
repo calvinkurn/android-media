@@ -30,7 +30,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by kenny.hadisaputra on 29/06/22
  */
-internal class CarouselVideoViewHolder(
+class CarouselVideoViewHolder(
     itemView: View,
     private val listener: Listener,
 ) : BaseViewHolder(itemView) {
@@ -113,10 +113,6 @@ internal class CarouselVideoViewHolder(
             toggleMute(item)
         }
 
-        frameVideo.setOnClickListener {
-            toggleMute(item)
-            runAutoHideMute()
-        }
     }
 
     private fun toggleMute(media: FeedXMedia) {
@@ -153,8 +149,6 @@ internal class CarouselVideoViewHolder(
         videoPlayer?.destroy()
         videoPlayer = null
         layoutVideo.player = null
-
-        isMuted = true
 
         videoPreviewImage.visible()
         icPlay.visible()
@@ -202,6 +196,12 @@ internal class CarouselVideoViewHolder(
         if (videoPlayer == null) {
             videoPlayer = FeedExoPlayer(itemView.context)
             layoutVideo.player = videoPlayer?.getExoPlayer()
+            layoutVideo.videoSurfaceView?.setOnClickListener {
+                toggleMute(media)
+                runAutoHideMute()
+                listener.onVideoSurfaceTapped(this, media, isMuted)
+            }
+            videoPlayer?.toggleVideoVolume(isMuted)
             videoPlayer?.setVideoStateListener(createVideoStateListener(media))
         }
         media.canPlay = true
@@ -253,5 +253,6 @@ internal class CarouselVideoViewHolder(
         fun onLihatProductClicked(viewHolder: CarouselVideoViewHolder, media: FeedXMedia)
         fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long)
         fun onMuteChanged(viewHolder: CarouselVideoViewHolder, media: FeedXMedia, isMuted: Boolean)
+        fun onVideoSurfaceTapped(viewHolder: CarouselVideoViewHolder, media: FeedXMedia, isMuted: Boolean)
     }
 }

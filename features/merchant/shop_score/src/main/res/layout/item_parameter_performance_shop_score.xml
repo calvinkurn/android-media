@@ -23,7 +23,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/separator_parameter_performance"
-        app:typographyType="heading_5"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
         tools:text="@string/title_parameter_shop_score_1" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -37,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_indicator_parameter_performance"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="@string/desc_parameter_shop_score_1" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -52,7 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_desc_indicator_parameter_performance"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -68,7 +69,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_score_label"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="@string/score_parameter_shop_score_1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

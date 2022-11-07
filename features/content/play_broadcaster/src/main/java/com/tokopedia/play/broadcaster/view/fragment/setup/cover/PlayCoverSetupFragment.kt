@@ -149,8 +149,6 @@ class PlayCoverSetupFragment @Inject constructor(
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
-        try { Toaster.snackBar.dismiss() } catch (e: Throwable) {}
-
         val state = viewModel.cropState
         val coverChangeState = viewModel.coverChangeState()
         return when {
@@ -542,6 +540,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     return coverSetupViewModelFactory.create(
                         mDataSource?.getProductList().orEmpty(),
+                        mDataSource?.getAuthorId().orEmpty(),
                         mDataSource?.getChannelId().orEmpty(),
                     ) as T
                 }
@@ -659,6 +658,7 @@ class PlayCoverSetupFragment @Inject constructor(
 
     interface DataSource {
         fun getProductList(): List<ProductUiModel>
+        fun getAuthorId(): String
         fun getChannelId(): String
     }
 }

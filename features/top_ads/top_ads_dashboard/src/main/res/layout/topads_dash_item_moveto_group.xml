@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/topads_common_ads_active"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintStart_toStartOf="@id/img"
         app:layout_constraintTop_toBottomOf="@id/group_title"
         app:typographyType="small" />

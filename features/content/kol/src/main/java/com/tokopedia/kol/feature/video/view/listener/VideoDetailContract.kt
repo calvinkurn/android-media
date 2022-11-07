@@ -37,8 +37,8 @@ interface VideoDetailContract {
 
         fun unFollowKol(id: Int)
 
-        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
+        fun likeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener)
 
-        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
+        fun unlikeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener)
     }
 }

@@ -14,17 +14,17 @@ import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopUiModel;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 /**
  * Created by errysuprayogi on 4/16/18.
  */
 
-public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel> {
+public class BannerShopViewHolder extends AbstractViewHolder<BannerShopUiModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.layout_ads_banner_shop_a;
+    public static int LAYOUT = com.tokopedia.topads.sdk.R.layout.layout_ads_banner_shop_a;
     private static final String TAG = BannerShopViewHolder.class.getSimpleName();
     private TextView descriptionTxt;
     private TextView ctaTxt;
@@ -52,7 +52,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     }
 
     @Override
-    public void bind(final BannerShopViewModel element) {
+    public void bind(final BannerShopUiModel element) {
         final Cpm cpm = element.getCpmData().getCpm();
         if(cpm!=null) {
             descriptionTxt.setText(TopAdsBannerView.Companion.escapeHTML(cpm.getCpmShop().getSlogan()));
@@ -80,7 +80,10 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 }
             }
             if(shopImage!=null){
-                Glide.with(shopImage).load(cpm.getCpmShop().getImageShop().getsEcs()).into(shopImage);
+                if (cpm.getCpmShop().getImageShop().getSEcs() != null) {
+                    Glide.with(shopImage).load(cpm.getCpmShop().getImageShop().getSEcs()).into(shopImage);
+                }
+
             }
             if(shopName!=null){
                 shopName.setText(cpm.getCpmShop().getName());

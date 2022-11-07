@@ -1,0 +1,10 @@
+{
+  "validate_user_data": {
+    "error": "Input tidak valid",
+    "error_email": "Email tidak valid",
+    "error_password": "Kata sandi tidak valid",
+    "error_fullname": "Nama tidak valid",
+    "is_valid": false,
+    "is_exist": false
+  }
+}

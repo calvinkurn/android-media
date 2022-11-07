@@ -8,14 +8,14 @@
     app:contentInsetEnd="0dp"
     app:contentInsetStart="0dp"
     app:contentInsetStartWithNavigation="0dp"
-    tools:layout_height="@dimen/dp_130">
+    tools:layout_height="130dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:orientation="horizontal"
         android:padding="@dimen/spacing_lvl3"
-        tools:layout_height="@dimen/dp_100">
+        tools:layout_height="100dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"

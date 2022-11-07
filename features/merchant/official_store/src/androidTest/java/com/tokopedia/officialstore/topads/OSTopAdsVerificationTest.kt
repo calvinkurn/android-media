@@ -35,6 +35,7 @@ import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.preloadRecomOnOSPage
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -52,6 +53,7 @@ import org.junit.Test
  *
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
+@TopAdsTest
 class OSTopAdsVerificationTest {
 
     @get:Rule

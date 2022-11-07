@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -10,28 +11,28 @@ class DataVoucher {
     var code: String = ""
     @SerializedName("promo_code_id")
     @Expose
-    var promoCodeId: Int = 0
+    var promoCodeId: String = ""
     @SerializedName("discount_amount")
     @Expose
     var discountAmount: String = ""
     @SerializedName("cashback_amount")
     @Expose
-    var cashbackAmount: Int = 0
+    var cashbackAmount: Long = 0L
     @SerializedName("saldo_amount")
     @Expose
-    var saldoAmount: Int = 0
+    var saldoAmount: Long = 0L
     @SerializedName("cashback_top_cash_amount")
     @Expose
-    var cashbackTopCashAmount: Int = 0
+    var cashbackTopCashAmount: Long = 0L
     @SerializedName("cashback_voucher_amount")
     @Expose
-    var cashbackVoucherAmount: Int = 0
+    var cashbackVoucherAmount: Long = 0L
     @SerializedName("cashback_advocate_referral_amount")
     @Expose
-    var cashbackAdvocateReferralAmount: Int = 0
+    var cashbackAdvocateReferralAmount: Long = 0L
     @SerializedName("extra_amount")
     @Expose
-    var extraAmount: Int = 0
+    var extraAmount: Long = 0L
     @SerializedName("cashback_voucher_description")
     @Expose
     var cashbackVoucherDescription: String = ""
