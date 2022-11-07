@@ -65,9 +65,10 @@ class RechargeHomepageViewModelTest {
         val searchBarApplink = "tokopedia://recharge/home"
         val searchbarScreenName = "/kpk"
         val searchBarRedirection = "kpk"
+        val searchBarType = "solid"
         val skeletonResponse = RechargeHomepageSectionSkeleton(
             searchBarPlaceholder, searchBarApplink,
-            "", searchbarScreenName, searchBarRedirection, sectionSkeletonItem
+            "", searchbarScreenName, searchBarRedirection, searchBarType, sectionSkeletonItem
         )
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
@@ -109,7 +110,7 @@ class RechargeHomepageViewModelTest {
         val searchBarApplink = "tokopedia://recharge/home"
         val skeletonResponse = RechargeHomepageSectionSkeleton(
             searchBarPlaceholder, searchBarApplink,
-            "", "", "", sectionSkeletonItem
+            "", "", "", "",sectionSkeletonItem
         )
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
@@ -170,7 +171,7 @@ class RechargeHomepageViewModelTest {
         val searchBarApplink = "tokopedia://recharge/home"
         val skeletonResponse = RechargeHomepageSectionSkeleton(
             searchBarPlaceholder, searchBarApplink,
-            "", "", "", sectionSkeletonItem
+            "", "", "", "",sectionSkeletonItem
         )
         val sectionSkeletonResult = HashMap<Type, Any>()
         val skeletonObjectType = RechargeHomepageSectionSkeleton.Response::class.java
@@ -249,7 +250,7 @@ class RechargeHomepageViewModelTest {
         val searchBarApplink = "tokopedia://recharge/home"
         val skeletonResponse = RechargeHomepageSectionSkeleton(
             searchBarPlaceholder, searchBarApplink,
-            "", "", "", sectionSkeletonItem
+            "", "", "", "",sectionSkeletonItem
         )
         val sectionSkeletonResult = HashMap<Type, Any>()
         val skeletonObjectType = RechargeHomepageSectionSkeleton.Response::class.java

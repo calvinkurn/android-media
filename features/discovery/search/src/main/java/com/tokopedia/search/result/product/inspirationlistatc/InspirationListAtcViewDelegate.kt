@@ -21,6 +21,7 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
 import com.tokopedia.search.utils.FragmentProvider
+import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
@@ -85,6 +86,8 @@ class InspirationListAtcViewDelegate @Inject constructor(
                 if (isSuccess) openApplink(context, ApplinkConst.CART)
             }.show()
         }
+
+        SearchIdlingResource.decrement()
     }
 
     override fun openVariantBottomSheet(
@@ -110,6 +113,8 @@ class InspirationListAtcViewDelegate @Inject constructor(
             trackItemClick(trackingData)
             trackAddToCart(trackingData)
         }
+
+        SearchIdlingResource.decrement()
     }
 
     override fun trackAddToCartVariant(product: InspirationCarouselDataView.Option.Product) {

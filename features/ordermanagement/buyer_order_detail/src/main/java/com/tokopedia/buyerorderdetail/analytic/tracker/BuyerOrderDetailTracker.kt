@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.analytic.tracker
 
 import android.os.Bundle
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
+import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.track.TrackApp
@@ -287,5 +288,19 @@ object BuyerOrderDetailTracker {
             .appendProductIds(products)
             .appendUserId(userId)
             .sendEnhancedEcommerce(BuyerOrderDetailTrackerConstant.EVENT_NAME_ADD_TO_CART)
+    }
+
+    fun eventClickInsuranceWidget(
+        trackerData: OrderInsuranceUiModel.TrackerData
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_INSURANCE_WIDGET,
+            eventLabel = "${trackerData.orderStatusCode}${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}${trackerData.orderId}"
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_CLICK_INSURANCE_WIDGET)
+            .sendGeneralEvent()
     }
 }

@@ -13,7 +13,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,8 +23,7 @@ import com.tokopedia.coachmark.*
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
-import com.tokopedia.imagepicker_insta.common.BundleData
-import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
+import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
@@ -82,7 +80,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     lateinit var noMediaAvailableText: String
     lateinit var loadingMediaText: String
     lateinit var queryConfiguration: QueryConfiguration
-    var maxMultiSelect: Int = DEFAULT_MULTI_SELECT_LIMIT
+    var maxMultiSelect: Int = BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED
 
     @Inject
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
