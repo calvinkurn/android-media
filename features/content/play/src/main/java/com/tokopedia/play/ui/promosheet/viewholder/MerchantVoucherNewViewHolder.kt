@@ -50,19 +50,6 @@ class MerchantVoucherNewViewHolder(
                     ),
                     fgColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                 )
-                if (item.voucherStock <= VOUCHER_THRESHOLD) {
-                    append(
-                        " " + getString(R.string.play_product_pinned_info_separator) + " ",
-                        baseColor,
-                        Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-                    )
-                    append(
-                        getString(
-                            R.string.play_voucher_widget_low_quantity,
-                            item.voucherStock, ""
-                        ), baseColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-                    )
-                }
             }
         }
 
