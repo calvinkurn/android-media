@@ -1,5 +1,7 @@
 package com.tokopedia.feedcomponent.shoprecom.adapter
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationLoadingBinding
 
@@ -8,4 +10,15 @@ import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationLoadingBind
  **/
 class ShopRecomLoadingViewHolder(
     binding: ItemShopRecommendationLoadingBinding,
-) : RecyclerView.ViewHolder(binding.root)
+) : RecyclerView.ViewHolder(binding.root) {
+
+    companion object {
+        fun create(parent: ViewGroup) = ShopRecomLoadingViewHolder(
+            ItemShopRecommendationLoadingBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            ),
+        )
+    }
+}

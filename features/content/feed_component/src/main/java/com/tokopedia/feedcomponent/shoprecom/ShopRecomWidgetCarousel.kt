@@ -19,6 +19,7 @@ class ShopRecomWidgetCarousel(
 
     private val shopRecomWidgetCarousel = itemView as ShopRecomWidget
 
+    @OptIn(ExperimentalStdlibApi::class)
     override fun bind(element: ShopRecomWidgetModel?) {
         val data = element?.shopRecomUiModel ?: return
         shopRecomWidgetCarousel.setListener(lifecycleOwner, shopRecomWidgetCallback)

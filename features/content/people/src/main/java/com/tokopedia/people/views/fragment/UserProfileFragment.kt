@@ -534,6 +534,7 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     private fun renderShopRecom(
         prev: UserProfileUiState?,
         value: UserProfileUiState
