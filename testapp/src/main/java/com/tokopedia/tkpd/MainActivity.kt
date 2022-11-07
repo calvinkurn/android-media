@@ -115,16 +115,16 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-
-        RouteManager.route(this, getDefaultAppLink())
-//        startActivity(Intent(this, TokopediaWatchActivity::class.java))
-
+        val appLink = etAppLink.text.toString()
+        if(appLink.isNotBlank())
+            RouteManager.route(this, appLink)
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here
          */
-        return "sellerapp://voucher-creation"
+        return ""
     }
 }
