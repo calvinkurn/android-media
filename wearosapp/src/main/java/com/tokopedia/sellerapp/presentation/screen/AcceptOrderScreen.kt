@@ -21,6 +21,7 @@ import com.tokopedia.sellerapp.presentation.theme.NEST_LAYOUT_LVL3
 import com.tokopedia.sellerapp.presentation.theme.NestLightGN500
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.UiState
+import kotlinx.coroutines.delay
 
 @Composable
 fun AcceptOrderScreen(
@@ -57,6 +58,11 @@ fun AcceptOrderScreen(
                                 vertical = NEST_LAYOUT_LVL1,
                             ),
                     )
+                    LaunchedEffect(Unit) {
+                        val successOrderDelayTime = 2000L
+                        delay(successOrderDelayTime)
+                        screenNavigation.popBackStack()
+                    }
                 }
             }
             is UiState.Loading -> {
