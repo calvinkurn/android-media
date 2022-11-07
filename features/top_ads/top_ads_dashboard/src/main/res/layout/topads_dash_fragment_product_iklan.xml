@@ -111,13 +111,14 @@
                     android:id="@+id/collapsing_toolbar_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:contentScrim="@color/white"
+                    app:contentScrim="@color/Unify_NN0"
                     app:layout_scrollFlags="scroll|enterAlways">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_scrollFlags="scroll">
+                        app:layout_scrollFlags="scroll"
+                        android:background="@color/Unify_Background">
 
                         <include
                             android:id="@+id/hari_ini"

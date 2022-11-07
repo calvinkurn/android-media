@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view;
 import androidx.fragment.app.FragmentManager;
 
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -143,6 +144,12 @@ public interface ShipmentAdapterActionListener {
     void onViewUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
 
     void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
+
+    void onViewNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel);
+
+    void onClickApplyNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel);
+
+    void onClickCancelNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel);
 
     void onViewFreeShippingPlusBadge();
 

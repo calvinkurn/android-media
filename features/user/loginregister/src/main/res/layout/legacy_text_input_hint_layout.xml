@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Legacy -->
+<!-- Migrate from TkpdDesign to remove dependencies from it-->
+<!-- Also renew component with unify as well -->
+<!-- TODO: Remove it when unify component is ready! -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:addStatesFromChildren="true"
+    android:focusable="true">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        tools:text="Label"/>
+
+    <FrameLayout
+        android:id="@+id/frame_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-8dp"
+        android:layout_marginBottom="-6dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_counter">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_helper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:typographyType="display_3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="HelperText"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:typographyType="display_3"
+                app:layout_constraintTop_toBottomOf="@id/tv_helper"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="ErrorText"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_success"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:typographyType="display_3"
+                app:layout_constraintTop_toBottomOf="@id/tv_error"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Toped Sukses"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            app:typographyType="display_3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="2/20"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

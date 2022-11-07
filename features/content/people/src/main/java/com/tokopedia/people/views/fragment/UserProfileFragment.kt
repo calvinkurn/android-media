@@ -12,25 +12,28 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
-import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
+import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
+import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
-import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
-import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
@@ -46,7 +49,6 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
-import com.tokopedia.people.analytic.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
@@ -59,6 +61,8 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
+import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_LIVE
+import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_POST
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
@@ -66,6 +70,8 @@ import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -94,12 +100,8 @@ class UserProfileFragment @Inject constructor(
     ScreenShotListener,
     PermissionListener,
     UserPostBaseAdapter.PlayWidgetCallback,
-    ShopRecommendationCallback,
+    ShopRecomWidgetCallback,
     FeedPlusContainerListener {
-
-    private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        LinearLayoutManager(activity, HORIZONTAL, false)
-    }
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, 2)
@@ -110,6 +112,7 @@ class UserProfileFragment @Inject constructor(
 
     private var shouldRefreshRecyclerView: Boolean = false
     private var isViewMoreClickedBio: Boolean = false
+    private var fabCreated: Boolean = false
 
     private var _binding: UpFragmentUserProfileBinding? = null
 
@@ -120,10 +123,6 @@ class UserProfileFragment @Inject constructor(
         get() = _binding!!.mainLayout
 
     private lateinit var viewModel: UserProfileViewModel
-
-    private val mAdapterShopRecom: ShopRecomAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ShopRecomAdapter(this)
-    }
 
     private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserPostBaseAdapter(this, this) { cursor ->
@@ -154,11 +153,9 @@ class UserProfileFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         feedFloatingButtonManager.setInitialData(this)
-        binding.mainLayout.fabUserProfile.isShrinkOnClick = false
 
         initObserver()
         initListener()
-        initShopRecommendation()
         setHeader()
         setupPlayVideo()
 
@@ -169,7 +166,7 @@ class UserProfileFragment @Inject constructor(
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             mainBinding.userPostContainer.displayedChild = PAGE_LOADING
-            if (viewModel.isShopRecomShow) showLoadingShopRecom()
+            if (viewModel.isShopRecomShow) mainBinding.shopRecommendation.showLoadingShopRecom()
             refreshLandingPageData(true)
         }
 
@@ -199,11 +196,21 @@ class UserProfileFragment @Inject constructor(
                 permissionListener = this
             )
         }
+
+        initFabUserProfile()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainBinding.fabUserProfile.checkFabMenuStatusWithTimer {
+            mainBinding.fabUp.menuOpen
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        impressionCoordinator.sendTracker()
+        mainBinding.fabUserProfile.stopTimer()
+        impressionCoordinator.sendTracker { userProfileTracker.sendAll() }
     }
 
     override fun onDestroyView() {
@@ -217,11 +224,15 @@ class UserProfileFragment @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when(childFragment) {
-            is FeedUGCOnboardingParentFragment -> {
-                childFragment.setListener(object : FeedUGCOnboardingParentFragment.Listener {
+            is UGCOnboardingParentFragment -> {
+                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
                         submitAction(UserProfileAction.LoadProfile())
-                        goToCreatePostPage()
+                        when (viewModel.ugcOnboardingOpenFrom) {
+                            UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
+                            UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
+                            else -> {}
+                        }
                     }
 
                     override fun impressTncOnboarding() {
@@ -247,6 +258,9 @@ class UserProfileFragment @Inject constructor(
                             viewModel.profileUserID
                         )
                     }
+
+                    override fun clickCloseIcon() {}
+
                 })
             }
         }
@@ -262,6 +276,7 @@ class UserProfileFragment @Inject constructor(
             textFollowingCount.setOnClickListener { goToFollowingFollowerPage(false) }
             textFollowerLabel.setOnClickListener { goToFollowingFollowerPage(true) }
             textFollowerCount.setOnClickListener { goToFollowingFollowerPage(true) }
+            shopRecommendation.setListener(this@UserProfileFragment, this@UserProfileFragment)
 
             textSeeMore.setOnClickListener {
                 userProfileTracker.clickSelengkapnya(userSession.userId, self = viewModel.isSelfProfile)
@@ -285,21 +300,6 @@ class UserProfileFragment @Inject constructor(
                 } else doFollowUnfollow()
             }
 
-            fabUserProfile.setOnClickListener {
-                userProfileTracker.clickCreatePost(viewModel.profileUserID)
-                if(viewModel.needOnboarding) {
-                    val bundle = Bundle().apply {
-                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
-                    }
-                    childFragmentManager.beginTransaction()
-                        .add(FeedUGCOnboardingParentFragment::class.java, bundle, FeedUGCOnboardingParentFragment.TAG)
-                        .commit()
-                }
-                else {
-                    goToCreatePostPage()
-                }
-            }
-
             mainBinding.cardUserReminder.btnCompleteProfile.setOnClickListener {
                 userProfileTracker.clickProfileCompletionPrompt(viewModel.profileUserID)
                 navigateToEditProfile()
@@ -307,10 +307,14 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
-        layoutManager = linearLayoutManager
-        adapter = mAdapterShopRecom
-        if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(requireContext()))
+    private fun initFabUserProfile() = with(mainBinding) {
+        fabUp.type = FloatingButtonUnify.BASIC
+        fabUp.color = FloatingButtonUnify.COLOR_GREEN
+        fabUp.circleMainMenu.invisible()
+
+        fabUserProfile.setOnClickListener {
+            fabUp.menuOpen = !fabUp.menuOpen
+        }
     }
 
     private fun initUserPost(userId: String) {
@@ -343,7 +347,7 @@ class UserProfileFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
                 renderButtonAction(it.prevValue, it.value)
-                renderCreatePostButton(it.prevValue, it.value)
+                renderCreateContentButton(it.prevValue, it.value)
                 renderProfileReminder(it.prevValue, it.value)
                 renderShopRecom(it.prevValue, it.value)
             }
@@ -508,7 +512,7 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun renderCreatePostButton(
+    private fun renderCreateContentButton(
         prev: UserProfileUiState?,
         value: UserProfileUiState
     ) {
@@ -517,8 +521,47 @@ class UserProfileFragment @Inject constructor(
             prev.profileWhitelist == value.profileWhitelist
         ) return
 
-        mainBinding.fabUserProfile.showWithCondition(
-            value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist
+        if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist && !fabCreated) {
+            val items = arrayListOf<FloatingButtonItem>()
+            items.add(createLiveFab())
+            items.add(createPostFab())
+            mainBinding.fabUp.addItem(items)
+            mainBinding.fabUserProfile.show()
+            fabCreated = true
+        } else mainBinding.fabUserProfile.hide()
+    }
+
+    private fun createLiveFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            title = getString(feedComponentR.string.feed_fab_create_live),
+            listener = {
+                mainBinding.fabUp.menuOpen = false
+
+                // TODO onboarding for `Buat Live` will be in the next phase
+//                if (viewModel.needOnboarding) {
+//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
+//                    openUGCOnboardingBottomSheet()
+//                } else goToCreateLiveStream()
+
+                goToCreateLiveStream()
+            }
+        )
+    }
+
+    private fun createPostFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
+            title = getString(feedComponentR.string.feed_fab_create_post),
+            listener = {
+                mainBinding.fabUp.menuOpen = false
+                userProfileTracker.clickCreatePost(viewModel.profileUserID)
+                if (viewModel.needOnboarding) {
+                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
+                    openUGCOnboardingBottomSheet()
+                }
+                else goToCreatePostPage()
+            }
         )
     }
 
@@ -547,29 +590,12 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev?.shopRecom == value.shopRecom) return
 
-        mainBinding.shopRecommendation.txtWordingFollow.text = value.shopRecom.title
-        mAdapterShopRecom.updateData(value.shopRecom.items)
+        val shopRecom = value.shopRecom
 
-        if (value.shopRecom.items.isEmpty()) showEmptyShopRecom()
-        else showContentShopRecom()
-    }
+        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items)
 
-    private fun showLoadingShopRecom() = with(mainBinding.shopRecommendation) {
-        txtWordingFollow.hide()
-        rvShopRecom.hide()
-        shimmerShopRecom.root.show()
-    }
-
-    private fun showContentShopRecom() = with(mainBinding.shopRecommendation) {
-        txtWordingFollow.show()
-        rvShopRecom.show()
-        shimmerShopRecom.root.hide()
-    }
-
-    private fun showEmptyShopRecom() = with(mainBinding.shopRecommendation) {
-        txtWordingFollow.hide()
-        rvShopRecom.hide()
-        shimmerShopRecom.root.hide()
+        if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
+        else mainBinding.shopRecommendation.showContentShopRecom()
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
@@ -643,12 +669,16 @@ class UserProfileFragment @Inject constructor(
                 userProfileTracker.viewShareChannel(userSession.userId, self = viewModel.isSelfProfile)
             }
 
-            val imgMenu = addRightIcon(0)
+            if (!GlobalConfig.isSellerApp()) addNavigationMainMenu(this)
+        }
+    }
 
-            imgMenu.clearImage()
-            imgMenu.setImageDrawable(getIconUnifyDrawable(context, IconUnify.MENU_HAMBURGER))
+    private fun addNavigationMainMenu(parent: HeaderUnify) {
+        parent.addRightIcon(0).apply {
+            clearImage()
+            setImageDrawable(getIconUnifyDrawable(context, IconUnify.MENU_HAMBURGER))
 
-            imgMenu.setColorFilter(
+            setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
                     com.tokopedia.unifyprinciples.R.color.Unify_NN1000
@@ -656,7 +686,7 @@ class UserProfileFragment @Inject constructor(
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
 
-            imgMenu.setOnClickListener {
+            setOnClickListener {
                 userProfileTracker.clickBurgerMenu(userSession.userId, self = viewModel.isSelfProfile)
                 RouteManager.route(activity, APPLINK_MENU)
             }
@@ -724,8 +754,14 @@ class UserProfileFragment @Inject constructor(
         })
     }
 
+    private fun goToCreateLiveStream() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PLAY_BROADCASTER)
+        intent.putExtra(KEY_AUTHOR_TYPE, TYPE_USER)
+        startActivity(intent)
+    }
+
     private fun goToCreatePostPage() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.IMAGE_PICKER_V2)
         intent.putExtra(KEY_APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
         intent.putExtra(KEY_MAX_MULTI_SELECT_ALLOWED, KEY_MAX_MULTI_SELECT_ALLOWED_VALUE)
         intent.putExtra(KEY_TITLE, getString(feedComponentR.string.feed_post_sebagai))
@@ -733,6 +769,22 @@ class UserProfileFragment @Inject constructor(
         intent.putExtra(KEY_IS_CREATE_POST_AS_BUYER, true)
         intent.putExtra(KEY_IS_OPEN_FROM, VALUE_IS_OPEN_FROM_USER_PROFILE)
         startActivity(intent)
+    }
+
+    private fun openUGCOnboardingBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
+        if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
+        val bundle = Bundle().apply {
+            putInt(
+                UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
+                if (viewModel.profileUsername.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETE
+                else VALUE_ONBOARDING_TYPE_TNC
+            )
+        }
+        childFragmentManager.beginTransaction()
+            .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
+            .commit()
     }
 
     private fun getFollowersBundle(isFollowers: Boolean): Bundle {
@@ -788,7 +840,13 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
-        impressionCoordinator.initiateShopImpress(viewModel.profileUserID, item, postPosition + 1)
+        impressionCoordinator.initiateShopImpress(item) { shopImpress ->
+            userProfileTracker.impressionProfileRecommendation(
+                viewModel.profileUserID,
+                shopImpress,
+                postPosition
+            )
+        }
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
@@ -863,70 +921,6 @@ class UserProfileFragment @Inject constructor(
             setOgImageUrl(viewModel.profileCover)
         }
         universalShareBottomSheet?.show(childFragmentManager, this, screenShotDetector)
-    }
-
-    companion object {
-        const val PAGE_NAME_PROFILE = "UserProfile"
-        const val FEATURE_SHARE = "share"
-        const val VAL_FEEDS_PROFILE = "feeds-profile"
-        const val VAL_SOURCE_BUYER = "buyer"
-        const val EXTRA_DISPLAY_NAME = "display_name"
-        const val EXTRA_TOTAL_FOLLOWERS = "total_followers"
-        const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
-        const val EXTRA_USER_NAME = "user_name"
-        const val EXTRA_USER_ID = "userid"
-        const val EXTRA_PROFILE_USER_ID = "profileUserid"
-        const val EXTRA_IS_FOLLOWERS = "is_followers"
-        const val APPLINK_MENU = "tokopedia://navigation/main"
-        const val APPLINK_PROFILE = "tokopedia://setting/profile"
-        const val OFFSET_USERINFO = 136F
-        const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
-        const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
-        const val REQUEST_CODE_EDIT_PROFILE = 2423
-        const val REQUEST_CODE_USER_PROFILE = 99
-        const val EXTRA_POSITION_OF_PROFILE = "profile_position"
-        const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
-        const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
-        const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
-        private const val LOADING = -94567
-
-        const val PAGE_CONTENT = 0
-        const val PAGE_ERROR = 2
-        const val PAGE_LOADING = 1
-        const val PAGE_EMPTY = 3
-        const val SEE_ALL_LINE = 3
-        const val MAX_LINE = 20
-        const val SUCCESS_STATUS = 200
-        
-        private const val REQUEST_CODE_PLAY_ROOM = 123
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-
-        private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
-        private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
-        private const val KEY_MAX_MULTI_SELECT_ALLOWED_VALUE = 5
-        private const val KEY_TITLE = "title"
-        private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
-        private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
-        private const val KEY_IS_OPEN_FROM = "key_is_open_from"
-        private const val VALUE_IS_OPEN_FROM_USER_PROFILE = 11023
-
-        private const val TAG = "UserProfileFragment"
-
-        fun getFragment(
-            fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-            bundle: Bundle,
-        ): UserProfileFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileFragment
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                UserProfileFragment::class.java.name
-            ).apply {
-                arguments = bundle
-            } as UserProfileFragment
-        }
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -1044,7 +1038,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun expandFab() {
-        mainBinding.fabUserProfile.expand()
+        if(!mainBinding.fabUp.menuOpen) mainBinding.fabUserProfile.expand()
     }
 
     override fun shrinkFab() {
@@ -1054,4 +1048,69 @@ class UserProfileFragment @Inject constructor(
     override fun onChildRefresh() {
         /** Not yet implemented */
     }
+
+    companion object {
+        const val PAGE_NAME_PROFILE = "UserProfile"
+        const val FEATURE_SHARE = "share"
+        const val VAL_FEEDS_PROFILE = "feeds-profile"
+        const val VAL_SOURCE_BUYER = "buyer"
+        const val EXTRA_DISPLAY_NAME = "display_name"
+        const val EXTRA_TOTAL_FOLLOWERS = "total_followers"
+        const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
+        const val EXTRA_USER_NAME = "user_name"
+        const val EXTRA_USER_ID = "userid"
+        const val EXTRA_PROFILE_USER_ID = "profileUserid"
+        const val EXTRA_IS_FOLLOWERS = "is_followers"
+        const val APPLINK_MENU = "tokopedia://navigation/main"
+        const val APPLINK_PROFILE = "tokopedia://setting/profile"
+        const val OFFSET_USERINFO = 136F
+        const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
+        const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
+        const val REQUEST_CODE_EDIT_PROFILE = 2423
+        const val REQUEST_CODE_USER_PROFILE = 99
+        const val EXTRA_POSITION_OF_PROFILE = "profile_position"
+        const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
+        const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
+        const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
+        private const val LOADING = -94567
+
+        const val PAGE_CONTENT = 0
+        const val PAGE_ERROR = 2
+        const val PAGE_LOADING = 1
+        const val PAGE_EMPTY = 3
+        const val SEE_ALL_LINE = 3
+        const val MAX_LINE = 20
+        const val SUCCESS_STATUS = 200
+
+        private const val REQUEST_CODE_PLAY_ROOM = 123
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
+        private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
+        private const val KEY_MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+        private const val KEY_TITLE = "title"
+        private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
+        private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
+        private const val KEY_IS_OPEN_FROM = "key_is_open_from"
+        private const val VALUE_IS_OPEN_FROM_USER_PROFILE = "is_open_from_user_profile"
+
+        private const val TAG = "UserProfileFragment"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle,
+        ): UserProfileFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                UserProfileFragment::class.java.name
+            ).apply {
+                arguments = bundle
+            } as UserProfileFragment
+        }
+    }
+
 }

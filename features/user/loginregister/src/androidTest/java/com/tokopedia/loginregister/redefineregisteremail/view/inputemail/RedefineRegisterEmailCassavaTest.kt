@@ -36,7 +36,7 @@ class RedefineRegisterEmailCassavaTest {
     )
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
     private val applicationContext: Context
         get() = InstrumentationRegistry

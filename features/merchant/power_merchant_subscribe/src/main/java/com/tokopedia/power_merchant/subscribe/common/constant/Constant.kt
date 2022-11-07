@@ -9,10 +9,6 @@ object Constant {
     const val DATE_FORMAT_HH_MM = "HH:mm"
     const val DATE_FORMAT_EXPIRED = "yyyy-MM-dd HH:mm:ss"
 
-    const val REGULAR_MERCHANT_CHARGING = "0,5%"
-    const val POWER_MERCHANT_CHARGING = "1,25%"
-    const val POWER_MERCHANT_PRO_CHARGING = "1,5%"
-
     const val PM_TOP_ADS_CREDIT = "5%"
     const val PM_BROAD_CAST_CHAT = "200"
     const val PM_PRO_ADV_TOP_ADS_CREDIT = "5,5%"
@@ -29,8 +25,8 @@ object Constant {
     const val PM_PRO_ADV_PRODUCT_BUNDLING = 10
     const val PM_PRO_EXP_PRODUCT_BUNDLING = 15
     const val PM_PRO_ULT_PRODUCT_BUNDLING = 25
-    const val PM_FREE_DELIVERY = "2,25%"
-    const val PM_PRO_FREE_DELIVERY = "1,5%"
+    const val PM_FREE_DELIVERY = "3%"
+    const val PM_PRO_FREE_DELIVERY = "2,5%"
 
     const val POWER_MERCHANT = "Power Merchant"
     const val PM_PRO_ADVANCED = "Advanced"

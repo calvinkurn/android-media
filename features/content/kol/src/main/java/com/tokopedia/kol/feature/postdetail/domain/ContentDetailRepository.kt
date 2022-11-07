@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.domain
 
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
@@ -30,6 +31,7 @@ interface ContentDetailRepository {
         shopId: String,
         action: ShopFollowAction,
         rowNumber: Int,
+        isFollowedFromRSRestrictionBottomSheet: Boolean = false
     ): ShopFollowModel
 
     suspend fun addToCart(
@@ -65,4 +67,13 @@ interface ContentDetailRepository {
         contentId: String,
         rowNumber: Int,
     ): VisitContentModel
+
+    suspend fun checkUpcomingCampaign(
+        campaignId: Long
+    ): Boolean
+
+    suspend fun subscribeUpcomingCampaign(
+        campaignId: Long,
+        reminderType: FeedASGCUpcomingReminderStatus
+    ): Pair<Boolean, String>
 }

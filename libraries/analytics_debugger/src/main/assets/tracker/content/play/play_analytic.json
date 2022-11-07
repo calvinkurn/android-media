@@ -15,6 +15,17 @@
       "theme": ".*"
     },
     {
+      "event": "clickTopAds",
+      "eventAction": "swipe channel",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - .* - \\d+",
+      "trackerId": "6663",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
       "businessUnit": "play",
       "eventCategory": "groupchat room",
       "currentSite": ".*",
@@ -23,6 +34,16 @@
       "eventAction": "swipe channel",
       "eventLabel": ".+",
       "sessionIris": ".*"
+    },
+    {
+      "event": "openScreen",
+      "trackerId": "13881",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "(true|false)",
+      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true/false)",
+      "sessionIris": ".*",
+      "userId": ".*"
     },
     {
       "eventAction": "leave room",

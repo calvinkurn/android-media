@@ -34,6 +34,7 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelThematicViewHolder
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
@@ -49,6 +50,7 @@ import kotlin.reflect.KClass
 /**
  * Created by Lukas on 1/11/21.
  */
+@CassavaTest
 class OfficialStoreAnalyticsTest {
 
     companion object {

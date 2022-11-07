@@ -16,6 +16,7 @@ import com.tokopedia.vouchercreation.databinding.ItemMvcVoucherListBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import timber.log.Timber
+import java.util.Locale
 import kotlin.reflect.KFunction1
 
 /**
@@ -102,7 +103,7 @@ class VoucherViewHolder(
         if (isActiveVoucher) {
             val startTime = DateTimeUtils.reformatUnsafeDateTime(element.startTime, newFormat)
             val finishTime = DateTimeUtils.reformatUnsafeDateTime(element.finishTime, newFormat)
-            binding?.tvMvcVoucherDuration?.text = String.format("%s - %s", startTime, finishTime)
+            binding?.tvMvcVoucherDuration?.text = String.format(Locale.getDefault(),"%s - %s", startTime, finishTime)
         } else {
             /**
              * this is not fix, need to confirm which date(create/update/start/finish)
@@ -180,7 +181,7 @@ class VoucherViewHolder(
             if (isVisible) viewMvcVoucherCodeBg.visible() else viewMvcVoucherCodeBg.invisible()
             if (isVisible) tvLblCode.visible() else tvLblCode.invisible()
             if (isVisible) tvVoucherCode.visible() else tvVoucherCode.invisible()
-            tvVoucherCode.text = String.format(" %s", voucherCode)
+            tvVoucherCode.text = String.format(Locale.getDefault(), " %s", voucherCode)
         }
     }
 

@@ -1,5 +1,7 @@
 package com.tokopedia.contactus.createticket.interactor;
 
+import static com.tokopedia.contactus.inboxticket2.domain.usecase.UploadImageUseCaseKt.IMAGE_QUALITY;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,8 +52,6 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-
-import static com.tokopedia.contactus.inboxticket2.domain.usecase.UploadImageUseCaseKt.IMAGE_QUALITY;
 
 /**
  * Created by nisie on 8/12/16.

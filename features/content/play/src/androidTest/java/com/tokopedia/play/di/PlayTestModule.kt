@@ -51,7 +51,6 @@ import javax.inject.Named
 @Module
 class PlayTestModule(
     val mContext: Context,
-    val channelStateStorage: PlayChannelStateStorage = PlayChannelStateStorage(),
     val trackingQueue: TrackingQueue = TrackingQueue(mContext),
     val userSession: (appContext: Context) -> UserSessionInterface = { UserSession(it) },
 ) {
@@ -130,7 +129,7 @@ class PlayTestModule(
     @PlayScope
     @Provides
     fun providePlayChannelStateStorage(): PlayChannelStateStorage {
-        return channelStateStorage
+        return PlayChannelStateStorage()
     }
 
     @PlayScope

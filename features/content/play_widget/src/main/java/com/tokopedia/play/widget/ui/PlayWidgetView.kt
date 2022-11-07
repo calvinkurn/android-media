@@ -16,6 +16,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import java.lang.Exception
 
 /**
  * Created by jegul on 08/10/20
@@ -124,7 +125,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     }
 
     private fun addSmallView(model: PlayWidgetUiModel) {
-        val widgetView = addWidgetView { PlayWidgetSmallView(context) }
+        val widgetView = addWidgetView { PlayWidgetSmallView(context) } ?: return
 
         if (model.items.isNullOrEmpty()) {
             widgetView.hide()
@@ -138,7 +139,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     }
 
     private fun addMediumView(model: PlayWidgetUiModel) {
-        val widgetView = addWidgetView { PlayWidgetMediumView(context) }
+        val widgetView = addWidgetView { PlayWidgetMediumView(context) } ?: return
 
         val isWidgetEmpty = model.items.isEmpty()
         if (isWidgetEmpty) {
@@ -153,7 +154,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     }
 
     private fun addLargeView(model: PlayWidgetUiModel) {
-        val widgetView = addWidgetView { PlayWidgetLargeView(context) }
+        val widgetView = addWidgetView { PlayWidgetLargeView(context) } ?: return
         if (model.items.isEmpty()) {
             widgetView.hide()
         } else {
@@ -165,7 +166,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     }
 
     private fun addJumboView(model: PlayWidgetUiModel) {
-        val widgetView = addWidgetView { PlayWidgetJumboView(context) }
+        val widgetView = addWidgetView { PlayWidgetJumboView(context) } ?: return
         if (model.items.isEmpty()) {
             widgetView.hide()
         } else {
@@ -177,22 +178,26 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     }
 
     private fun addPlaceholderView() {
-        val widgetView = addWidgetView { PlayWidgetPlaceholderView(context) }
+        val widgetView = addWidgetView { PlayWidgetPlaceholderView(context) } ?: return
 
         widgetView.setData()
     }
 
-    private inline fun <reified T : View> addWidgetView(creator: () -> T): T {
+    private inline fun <reified T : View> addWidgetView(creator: () -> T): T? {
         val firstChild = getFirstChild()
-        return if (firstChild !is T) {
-            removeCurrentView()
-            val widget = creator().apply {
-                layoutParams = getChildLayoutParams()
-            }
-            addView(widget)
+        return try {
+            if (firstChild !is T) {
+                removeCurrentView()
+                val widget = creator().apply {
+                    layoutParams = getChildLayoutParams()
+                }
+                addView(widget)
 
-            widget
-        } else firstChild
+                widget
+            } else firstChild
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun getFirstChild(): View? = getChildAt(0)

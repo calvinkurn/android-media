@@ -65,7 +65,7 @@ class CpmModelMapper @Inject constructor(@ApplicationContext private val context
                 name = it.productName
                 priceFormat = it.productPrice
                 applinks = it.productUri
-                countReviewFormat = it.productReviewCount.toString()
+                countReviewFormat = it.productReviewCount
                 productRating = it.productRating
                 imageProduct = ImageProduct().apply {
                     id = it.productID

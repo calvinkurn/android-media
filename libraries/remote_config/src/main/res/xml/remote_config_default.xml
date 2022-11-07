@@ -646,4 +646,8 @@
         <key>android_robust_tester</key>
         <value></value>
     </entry>
+    <entry>
+        <key>android_pdp_show_variant_with_chip_group</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
