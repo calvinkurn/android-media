@@ -684,8 +684,6 @@ class TopPayActivity :
         override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
             val uri = request?.url
             if (uri != null) {
-                val uriString = uri.toString()
-                hideCreditCardLoader()
                 if ((uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) || uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS)) &&
                     isInterceptOtp && uri.getQueryParameter(PaymentFingerprintConstant.ENABLE_FINGERPRINT).equals("true", true) &&
                     getEnableFingerprintPayment()
@@ -709,7 +707,7 @@ class TopPayActivity :
                 }
 
                 if (uriString.equals(CC_LOADING_COMPLETE)) {
-                    showCreditCardLoader()
+                    hideCreditCardLoader()
                 }
             }
 
@@ -934,7 +932,7 @@ class TopPayActivity :
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
-        private const val CC_LOADING_COMPLETE = "https://centinelapistag.cardinalcommerce.com/V1/Cruise/CollectRedirect"
+        private const val CC_LOADING_COMPLETE = "https://centinelapistag.cardinalcommerce.com/V2/Cruise/StepUp"
         private const val CC_LOADING_URL = "https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
