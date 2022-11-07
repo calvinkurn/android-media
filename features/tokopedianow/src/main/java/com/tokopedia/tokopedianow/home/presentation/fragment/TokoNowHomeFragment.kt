@@ -1975,8 +1975,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getDialogReceiverReferral() {
-//        val referralCode = activity?.intent?.data?.getQueryParameter(QUERY_REFERRAL_CODE)
-        val referralCode = "01246015e809300149b0020"
+        val referralCode = activity?.intent?.data?.getQueryParameter(QUERY_REFERRAL_CODE)
         if (!(referralCode.isNullOrEmpty())) {
             viewModelTokoNow.getReceiverHomeDialog(referralCode)
         }
