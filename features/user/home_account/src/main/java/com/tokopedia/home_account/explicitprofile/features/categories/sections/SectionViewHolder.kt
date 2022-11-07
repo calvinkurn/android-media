@@ -74,7 +74,7 @@ class SectionViewHolder(
         isChipSelected: Boolean,
         updateChipsSelection: (Boolean) -> Unit
     ) {
-        var isActive = false
+        var isActive = isChipSelected
 
         if (isChipSelected) {
             selectedAnswers.remove(questionDataModel)
