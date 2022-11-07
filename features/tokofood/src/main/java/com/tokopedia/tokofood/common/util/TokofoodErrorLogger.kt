@@ -37,6 +37,7 @@ object TokofoodErrorLogger {
         internal const val AGREE_CONSENT_ERROR = "error agree consent"
         internal const val POOL_BASED_ERROR = "error of pool based order status"
         internal const val UNREAD_CHAT_COUNT_ERROR = "error of unread chat count in post purchase"
+        internal const val INIT_MUTATION_PROFILE_ERROR = "error of init mutation profile in post purchase"
 
         internal const val ERROR_DRIVER_PHONE_NUMBER = "error of get driver phone number"
         internal const val ERROR_ELIGIBLE_SET_ADDRESS = "error of user not eligible set address"
@@ -60,6 +61,8 @@ object TokofoodErrorLogger {
         internal const val ERROR_POOL_POST_PURCHASE = "error_pool_post_purchase"
         internal const val ERROR_UNREAD_CHAT_COUNT_POST_PURCHASE = "error_unread_chat_count"
         internal const val ERROR_COMPLETED_ORDER_POST_PURCHASE = "error_completed_order_post_purchase"
+        internal const val INIT_MUTATION_PROFILE_ERROR = "error_init_mutation_profile_post_purchase"
+
         internal const val ERROR_DRIVER_PHONE_NUMBER = "error_driver_phone_number"
         internal const val ERROR_ELIGIBLE_SET_ADDRESS = "error_eligible_set_address"
         internal const val ERROR_LOAD_MORE_CATEGORY = "error_load_more_category"

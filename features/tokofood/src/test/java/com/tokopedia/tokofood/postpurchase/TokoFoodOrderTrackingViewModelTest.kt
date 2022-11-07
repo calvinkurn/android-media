@@ -436,32 +436,39 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
     }
 
     @Test
-    fun `when getProfileUserId should return set live data success`() {
-        val expectedUnreadCount = 5
-
-        every {
-            getTokoChatUnreadChatCountUseCase.get().unReadCount()
-        } returns MutableLiveData(expectedUnreadCount)
-
-        val actualResult = (viewModel.getUnReadChatCount().observeAwaitValue() as Success).data
-
-        verify {
-            getTokoChatUnreadChatCountUseCase.get().unReadCount()
-        }
-
-        assertEquals(expectedUnreadCount, actualResult)
-    }
-
-    @Test
-    fun `when initializeConversationProfileProfile, this method should be called`() {
+    fun `when initializeConversationProfile, this method should be called`() {
 
         //when
-        viewModel.initializeConversationProfileProfile()
+        viewModel.initializeConversationProfile()
 
         //then
         verify {
             getTokoChatConfigMutationProfileUseCase.initializeConversationProfile()
         }
+    }
+
+    @Test
+    fun `when initializeConversationProfile, this method should not be called`() {
+
+        val errorException = Throwable()
+
+        every {
+            getTokoChatConfigMutationProfileUseCase.initializeConversationProfile()
+        } throws errorException
+
+        //when
+        viewModel.initializeConversationProfile()
+
+        //then
+        verify {
+            getTokoChatConfigMutationProfileUseCase.initializeConversationProfile()
+        }
+
+        val actualResult =
+            (viewModel.mutationProfile.observeAwaitValue() as Fail).throwable::class.java
+
+        val expectedResult = errorException::class.java
+        assertEquals(expectedResult, actualResult)
     }
 
     @Test

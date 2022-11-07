@@ -140,6 +140,7 @@ class BaseTokoFoodOrderTrackingFragment :
         observeOrderDetail()
         observeOrderCompletedLiveTracking()
         observeDriverPhoneNumber()
+        observeTokoChatMutationProfile()
     }
 
     override fun onDestroy() {
@@ -228,7 +229,7 @@ class BaseTokoFoodOrderTrackingFragment :
     private fun initializeChatProfile() {
         val userId = viewModel.getProfileUserId()
         if (userId.isEmpty() || userId.isBlank()) {
-            viewModel.initializeConversationProfileProfile()
+            viewModel.initializeConversationProfile()
         }
     }
 
@@ -310,6 +311,20 @@ class BaseTokoFoodOrderTrackingFragment :
                         context?.getString(
                             com.tokopedia.tokofood.R.string.error_message_hit_driver_phone_number
                         ).orEmpty()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeTokoChatMutationProfile() {
+        observe(viewModel.mutationProfile) {
+            when (it) {
+                is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.INIT_MUTATION_PROFILE_ERROR,
+                        TokofoodErrorLogger.ErrorDescription.INIT_MUTATION_PROFILE_ERROR
                     )
                 }
             }

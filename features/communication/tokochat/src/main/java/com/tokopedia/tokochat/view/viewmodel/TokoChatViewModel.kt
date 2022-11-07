@@ -283,12 +283,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getUserId(): String {
-        return try {
-            profileUseCase.getUserId()
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-            ""
-        }
+        return profileUseCase.getUserId()
     }
 
     fun getMemberLeft(): MutableLiveData<String> {

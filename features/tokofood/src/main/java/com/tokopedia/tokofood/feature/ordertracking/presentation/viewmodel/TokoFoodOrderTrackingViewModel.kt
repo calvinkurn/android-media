@@ -70,6 +70,10 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     val driverPhoneNumber: LiveData<Result<DriverPhoneNumberUiModel>>
         get() = _driverPhoneNumber
 
+    private val _mutationProfile = MutableLiveData<Result<Boolean>>()
+    val mutationProfile: LiveData<Result<Boolean>>
+        get() = _mutationProfile
+
     private var foodItems = listOf<FoodItemUiModel>()
     private var merchantData: MerchantDataUiModel? = null
     private var orderId = ""
@@ -157,8 +161,13 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         }
     }
 
-    fun initializeConversationProfileProfile() {
-        tokoChatConfigMutationProfileUseCase.get().initializeConversationProfile()
+    fun initializeConversationProfile() {
+        try {
+            tokoChatConfigMutationProfileUseCase.get().initializeConversationProfile()
+            _mutationProfile.value = Success(true)
+        } catch (t: Throwable) {
+            _mutationProfile.value = Fail(t)
+        }
     }
 
     fun getProfileUserId(): String {
