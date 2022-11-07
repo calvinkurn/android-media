@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.list.analytics
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.manage.common.feature.list.constant.CLICK
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.BUSINESS_UNIT_BROADCAST_CHAT
@@ -71,6 +72,12 @@ object ProductManageTracking {
     fun eventClickNotifyMeIcon(
         productId: String, parentId: String = "0"
     ) {
+        val trackerId = if (GlobalConfig.isSellerApp()) {
+            "36711"
+        } else {
+            "36727"
+        }
+
         val label = arrayOf(productId, parentId).joinToString(" - ")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EventTracking(
@@ -78,11 +85,17 @@ object ProductManageTracking {
                 EVENT_CATEGORY_PRODUCT_LIST_PAGE,
                 ProductManageDataLayer.EVENT_ACTION_CLICK_OOS_NOTIFY_ME,
                 label
-            ).dataTracking.customDimension("36711")
+            ).dataTracking.customDimension(trackerId)
         )
     }
 
     fun eventClickAturStockNotifyMe(productId: String, parentId: String = "0") {
+        val trackerId = if (GlobalConfig.isSellerApp()) {
+            "36712"
+        } else {
+            "36728"
+        }
+
         val label = arrayOf(productId, parentId).joinToString(" - ")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EventTracking(
@@ -90,18 +103,24 @@ object ProductManageTracking {
                 EVENT_CATEGORY_PRODUCT_LIST_PAGE,
                 ProductManageDataLayer.EVENT_ACTION_CLICK_ATUR_STOCK_OOS_NOTIFY_ME,
                 label
-            ).dataTracking.customDimension("36712")
+            ).dataTracking.customDimension(trackerId)
         )
     }
 
     fun eventClickFilterNotifyMe() {
+        val trackerId = if (GlobalConfig.isSellerApp()) {
+            "36718"
+        } else {
+            "36734"
+        }
+
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EventTracking(
                 ProductManageDataLayer.EVENT_NAME_CLICK_PG,
                 EVENT_CATEGORY_PRODUCT_LIST_PAGE,
                 ProductManageDataLayer.EVENT_ACTION_CLICK_FILTER_NOTIFY_ME,
                 ""
-            ).dataTracking.customDimension("36718")
+            ).dataTracking.customDimension(trackerId)
         )
     }
 
