@@ -29,7 +29,7 @@ class ShopRecomUiMapperImpl: ShopRecomUiMapper {
                 },
                 nextCursor = nextCursor,
                 title = title,
-                loadNexPage = nextCursor.isNotEmpty() && items.isNotEmpty() && items.size == limit,
+                loadNexPage = nextCursor.isNotEmpty(),
             )
         }
     }
