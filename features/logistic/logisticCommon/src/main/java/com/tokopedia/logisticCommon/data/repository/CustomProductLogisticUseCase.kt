@@ -14,14 +14,14 @@ class CustomProductLogisticUseCase @Inject constructor(@ApplicationContext priva
     CoroutineUseCase<CPLParam, OngkirGetCPLQGLResponse>(dispatcher.io) {
 
     fun getParam(shopId: Long,
-                 productId: Long,
-                 cplParam: List<Long>
+                 productId: Long?,
+                 cplParam: List<Long>?
     ) : CPLParam {
         return CPLParam(
             cplDataParam = CPLParam.CPLDataParam(
                 shopId = shopId,
                 productId = productId,
-                productCpls = cplParam.joinToString(separator = ",")
+                productCpls = cplParam?.joinToString(separator = ",")
             )
         )
     }

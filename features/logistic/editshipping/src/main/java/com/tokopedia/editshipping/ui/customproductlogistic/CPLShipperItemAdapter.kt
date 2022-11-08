@@ -9,7 +9,7 @@ import com.tokopedia.logisticCommon.data.model.ShipperProductCPLModel
 
 class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShipperItemViewHolder>() {
 
-    val cplShipperItem = mutableListOf<ShipperProductCPLModel>()
+    private val cplShipperItem = mutableListOf<ShipperProductCPLModel>()
     var listener: CPLShipperItemAdapterListener? = null
 
     interface CPLShipperItemAdapterListener {

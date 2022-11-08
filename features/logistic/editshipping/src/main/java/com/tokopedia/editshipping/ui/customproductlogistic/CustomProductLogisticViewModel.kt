@@ -7,9 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,96 +16,85 @@ class CustomProductLogisticViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _cplList = MutableLiveData<Result<CustomProductLogisticModel>>()
-    val cplList: LiveData<Result<CustomProductLogisticModel>>
-        get() = _cplList
+    var cplData: CustomProductLogisticModel = CustomProductLogisticModel()
+    private val _cplState = MutableLiveData<CPLState>()
+    val cplState: LiveData<CPLState>
+        get() = _cplState
 
     fun getCPLList(
         shopId: Long,
-        productId: Long,
+        productId: Long?,
         shipperServicesIds: List<Long>?,
         cplParam: List<Long>?,
         shouldShowOnBoarding: Boolean = false
     ) {
         viewModelScope.launch {
             try {
-                val param = getCplList.getParam(shopId, productId, cplParam?: listOf())
+                _cplState.value = CPLState.Loading
+                val param = getCplList.getParam(shopId, productId, cplParam)
                 val cplList = getCplList(param)
-                _cplList.value =
-                    Success(mapper.mapCPLData(cplList.response.data, shipperServicesIds, shouldShowOnBoarding))
+                cplData = mapper.mapCPLData(
+                    cplList.response.data,
+                    shipperServicesIds,
+                    shouldShowOnBoarding
+                )
+                _cplState.value =
+                    CPLState.FirstLoad(cplData)
             } catch (e: Throwable) {
-                _cplList.value = Fail(e)
+                _cplState.value = CPLState.Failed(e)
             }
         }
     }
 
     fun setAllShipperServiceState(active: Boolean, shipperId: Long) {
-        _cplList.value.let {
-            if (it is Success) {
-                run loop@{
-                    it.data.shipperList.forEach { shipperGroup ->
-                        val selectedShipper =
-                            shipperGroup.shipper.find { s -> s.shipperId == shipperId }
-                        selectedShipper?.let { s ->
-                            selectedShipper.isActive = active
-                            s.shipperProduct.forEach { sp -> sp.isActive = active }
-                            return@loop
-                        }
-                    }
-                }
-                _cplList.value = it
+        cplData.shipperList.forEach { shipperGroup ->
+            val selectedShipper =
+                shipperGroup.shipper.find { s -> s.shipperId == shipperId }
+            selectedShipper?.let { s ->
+                selectedShipper.isActive = active
+                s.shipperProduct.forEach { sp -> sp.isActive = active }
+                _cplState.value = CPLState.Update(selectedShipper, shipperGroup.header)
+                return
             }
         }
     }
 
     fun setShipperServiceState(active: Boolean, shipperProductId: Long) {
-        _cplList.value.let {
-            if (it is Success) {
-                run loop@{
-                    it.data.shipperList.forEach { shipperGroup ->
-                        for (s in shipperGroup.shipper) {
-                            for (sp in s.shipperProduct) {
-                                if (sp.shipperProductId == shipperProductId) {
-                                    sp.isActive = active
-                                    s.isActive = s.shipperProduct.any { allSp -> allSp.isActive }
-                                    return@loop
-                                }
-                            }
+        cplData.shipperList.forEach { shipperGroup ->
+            for (s in shipperGroup.shipper) {
+                for (sp in s.shipperProduct) {
+                    if (sp.shipperProductId == shipperProductId) {
+                        sp.isActive = active
+                        val lastActiveState = s.isActive
+                        s.isActive = s.shipperProduct.any { allSp -> allSp.isActive }
+                        if (lastActiveState != s.isActive) {
+                            _cplState.value = CPLState.Update(s, shipperGroup.header)
                         }
+                        return
                     }
                 }
-                _cplList.value = it
             }
         }
+
     }
 
     fun setWhitelabelServiceState(spIds: List<Long>, check: Boolean) {
-        _cplList.value.let {
-            if (it is Success) {
-                run loop@{
-                    it.data.shipperList.forEach { shipperGroup ->
-                        val whitelabelShippers = shipperGroup.shipper.filter { shipper -> shipper.isWhitelabel }
-                        for (service in whitelabelShippers) {
-                            val shipperProductIds = service.shipperProduct.map { sp -> sp.shipperProductId }
-                            if (spIds.containsAll(shipperProductIds)) {
-                                service.isActive = check
-                                service.shipperProduct.forEach { sp -> sp.isActive = check }
-                                return@loop
-                            }
-                        }
-                    }
+        cplData.shipperList.forEach { shipperGroup ->
+            val whitelabelShippers =
+                shipperGroup.shipper.filter { shipper -> shipper.isWhitelabel }
+            for (service in whitelabelShippers) {
+                val shipperProductIds = service.shipperProduct.map { sp -> sp.shipperProductId }
+                if (spIds.containsAll(shipperProductIds)) {
+                    service.isActive = check
+                    service.shipperProduct.forEach { sp -> sp.isActive = check }
+                    return
                 }
-                _cplList.value = it
             }
         }
     }
 
     fun setAlreadyShowOnBoarding() {
-        _cplList.value.let {
-            if (it is Success) {
-                it.data.shouldShowOnBoarding = false
-                _cplList.value = it
-            }
-        }
+        cplData.shouldShowOnBoarding = false
     }
+
 }

@@ -10,15 +10,13 @@ import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
     RecyclerView.Adapter<CPLItemViewHolder>() {
 
-    var cplItem = mutableListOf<ShipperCPLModel>()
+    private val cplItem = mutableListOf<ShipperCPLModel>()
 
     interface CPLItemAdapterListener {
         fun onShipperCheckboxClicked(shipperId: Long, check: Boolean)
         fun onShipperProductCheckboxClicked(spId: Long, check: Boolean)
         fun onWhitelabelServiceCheckboxClicked(spIds: List<Long>, check: Boolean)
     }
-
-    var shipperServices = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CPLItemViewHolder {
         val binding = ItemShippingEditorCardBinding.inflate(
@@ -59,5 +57,13 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         cplItem.clear()
         cplItem.addAll(data)
         notifyDataSetChanged()
+    }
+
+    fun modifyData(shipper: ShipperCPLModel) {
+        val index = cplItem.indexOfFirst { shipperCPLModel -> shipperCPLModel.shipperId == shipper.shipperId }
+        if (index != -1 && cplItem.elementAtOrNull(index) != null) {
+            cplItem[index] = shipper
+            notifyItemChanged(index)
+        }
     }
 }

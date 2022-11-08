@@ -3,7 +3,6 @@ package com.tokopedia.editshipping.ui.customproductlogistic
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.editshipping.util.CPLDataProvider
-import com.tokopedia.editshipping.util.CustomProductLogisticConstant
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticUseCase
@@ -36,7 +35,7 @@ class CustomProductLogisticViewModelTest {
     private val repo: CustomProductLogisticUseCase = mockk(relaxed = true)
     private val mapper = CustomProductLogisticMapper()
 
-    private val cplListObserver: Observer<Result<CustomProductLogisticModel>> =
+    private val cplListObserver: Observer<CPLState> =
         mockk(relaxed = true)
 
     private lateinit var customProductLogisticViewModel: CustomProductLogisticViewModel
@@ -47,7 +46,7 @@ class CustomProductLogisticViewModelTest {
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         customProductLogisticViewModel = CustomProductLogisticViewModel(repo, mapper)
-        customProductLogisticViewModel.cplList.observeForever(cplListObserver)
+        customProductLogisticViewModel.cplState.observeForever(cplListObserver)
     }
 
     @After
@@ -68,14 +67,14 @@ class CustomProductLogisticViewModelTest {
             arrayListOf(shipperServicesId),
             cplParam
         )
-        verify { cplListObserver.onChanged(match { it is Success }) }
+        verify { cplListObserver.onChanged(match { it is CPLState.FirstLoad }) }
     }
 
     @Test
     fun `Get CPL List failed`() {
         coEvery { repo(any()) } throws defaultThrowable
         customProductLogisticViewModel.getCPLList(1234, 9876, null, null)
-        verify { cplListObserver.onChanged(match { it is Fail }) }
+        verify { cplListObserver.onChanged(match { it is CPLState.Failed }) }
     }
 
     @Test
@@ -86,19 +85,9 @@ class CustomProductLogisticViewModelTest {
 
         customProductLogisticViewModel.setAllShipperServiceState(true, selectedShipperId)
 
-        val result = (customProductLogisticViewModel.cplList.value as Success).data.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperId == selectedShipperId }!!
+        val result = customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperId == selectedShipperId }!!
         assertTrue(result.isActive)
         assertTrue(result.shipperProduct.all { it.isActive })
-    }
-
-    @Test
-    fun `WHEN check shipper checkbox but cpl is failed THEN do nothing`() {
-        loadMockCplData(null)
-        val selectedShipperId = 11L
-
-        customProductLogisticViewModel.setAllShipperServiceState(true, selectedShipperId)
-
-        assertFalse(customProductLogisticViewModel.cplList.value is Success)
     }
 
     @Test
@@ -110,7 +99,7 @@ class CustomProductLogisticViewModelTest {
 
         customProductLogisticViewModel.setAllShipperServiceState(true, selectedShipperId)
 
-        val result = (customProductLogisticViewModel.cplList.value as Success).data.shipperList[0].shipper[1]
+        val result = customProductLogisticViewModel.cplData.shipperList[0].shipper[1]
         assertTrue(result.shipperName == mockResponse.response.data.shipperList[0].shipper[0].shipperName)
         assertFalse(result.isActive)
     }
@@ -125,7 +114,7 @@ class CustomProductLogisticViewModelTest {
         customProductLogisticViewModel.setShipperServiceState(true, selectedShipperServiceId)
 
         val shipper =
-            (customProductLogisticViewModel.cplList.value as Success).data.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperProduct.find { it.shipperProductId == selectedShipperServiceId } != null }!!
+            customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperProduct.find { it.shipperProductId == selectedShipperServiceId } != null }!!
         val result =
             shipper.shipperProduct.find { sp -> sp.shipperProductId == selectedShipperServiceId }!!
         assertTrue(result.isActive)
@@ -141,7 +130,7 @@ class CustomProductLogisticViewModelTest {
         customProductLogisticViewModel.setShipperServiceState(false, selectedShipperServiceId)
 
         val shipper =
-            (customProductLogisticViewModel.cplList.value as Success).data.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperProduct.find { it.shipperProductId == selectedShipperServiceId } != null }!!
+            customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperProduct.find { it.shipperProductId == selectedShipperServiceId } != null }!!
         val result =
             shipper.shipperProduct.find { sp -> sp.shipperProductId == selectedShipperServiceId }!!
         assertFalse(result.isActive)
@@ -157,18 +146,8 @@ class CustomProductLogisticViewModelTest {
         customProductLogisticViewModel.setShipperServiceState(false, selectedShipperServiceId)
 
         val shipper =
-            (customProductLogisticViewModel.cplList.value as Success).data.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperProduct.find { it.shipperProductId == selectedShipperServiceId } != null }
+            customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperProduct.find { it.shipperProductId == selectedShipperServiceId } != null }
         assertNull(shipper)
-    }
-
-    @Test
-    fun `WHEN uncheck shipper service checkbox but cpl is failed THEN do nothing`() {
-        loadMockCplData(null)
-        val selectedShipperServiceId = 18L
-
-        customProductLogisticViewModel.setShipperServiceState(true, selectedShipperServiceId)
-
-        assertFalse(customProductLogisticViewModel.cplList.value is Success)
     }
 
     @Test
@@ -179,7 +158,7 @@ class CustomProductLogisticViewModelTest {
 
         customProductLogisticViewModel.setWhitelabelServiceState(selectedShipperIds, false)
 
-        val result = (customProductLogisticViewModel.cplList.value as Success).data.shipperList.getOrNull(0)?.shipper?.find { s -> s.isWhitelabel}!!
+        val result = customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.isWhitelabel}!!
         assertFalse(result.isActive)
         assertFalse(result.shipperProduct.all { it.isActive })
     }
@@ -193,35 +172,15 @@ class CustomProductLogisticViewModelTest {
 
         customProductLogisticViewModel.setWhitelabelServiceState(selectedShipperIds, false)
 
-        val result = (customProductLogisticViewModel.cplList.value as Success).data.shipperList.getOrNull(0)?.shipper?.find { s -> s.isWhitelabel}!!
+        val result = customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.isWhitelabel}!!
         assertTrue(result.isActive)
         assertTrue(result.shipperProduct.all { it.isActive })
     }
 
-    @Test
-    fun `WHEN check whitelabel service checkbox but failed to get CPL data THEN do nothing`() {
-        loadMockCplData(null)
-        val selectedShipperIds = listOf<Long>(28, 38)
-
-        customProductLogisticViewModel.setWhitelabelServiceState(selectedShipperIds, false)
-
-        assertFalse(customProductLogisticViewModel.cplList.value is Success)
-    }
-
     private fun loadMockCplData(mockData: OngkirGetCPLQGLResponse?) {
-        val shipperServicesId = 1L
-        val cplParam = listOf<Long>(6, 22)
-
         if (mockData != null) {
-            coEvery { repo(any()) } returns mockData
-        } else {
-            coEvery { repo(any())} throws defaultThrowable
+            val uiModel = mapper.mapCPLData(mockData.response.data, null, true)
+            customProductLogisticViewModel.cplData = uiModel
         }
-        customProductLogisticViewModel.getCPLList(
-            1234,
-            9876,
-            arrayListOf(shipperServicesId),
-            cplParam
-        )
     }
 }

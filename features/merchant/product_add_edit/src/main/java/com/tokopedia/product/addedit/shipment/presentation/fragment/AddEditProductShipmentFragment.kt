@@ -325,13 +325,13 @@ class AddEditProductShipmentFragment:
 
     private fun initShipmentData() {
         if (shipmentViewModel.isAddMode) {
-            getCplList(0L)
+            getCplList(null)
         } else {
             getCplList(shipmentViewModel.productInputModel?.productId ?: 0L)
         }
     }
 
-    private fun getCplList(productId: Long) {
+    private fun getCplList(productId: Long?) {
         shipmentViewModel.getCPLList(
             shopId = shopId.toLong(),
             productId = productId,
@@ -397,9 +397,7 @@ class AddEditProductShipmentFragment:
                 ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
             ).apply {
                 putExtra(EXTRA_SHOP_ID, shopId.toLong())
-                if (shipmentViewModel.isAddMode) {
-                    putExtra(EXTRA_PRODUCT_ID, "")
-                } else {
+                if (!shipmentViewModel.isAddMode) {
                     putExtra(EXTRA_PRODUCT_ID, shipmentViewModel.productInputModel?.productId)
                 }
                 putExtra(EXTRA_SHOW_ONBOARDING_CPL, isOnBoarding)

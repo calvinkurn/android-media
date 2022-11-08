@@ -35,8 +35,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -56,7 +54,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private val cplItemConventionalAdapter by lazy { CPLItemAdapter(this) }
 
     private var shopId: Long = 0
-    private var productId: Long = 0
+    private var productId: Long? = null
     private var shipperServicesIds: List<Long>? = null
     private var cplParam: List<Long>? = null
 
@@ -74,7 +72,9 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         super.onCreate(savedInstanceState)
         arguments?.let {
             shopId = it.getLong(EXTRA_SHOP_ID)
-            productId = it.getLong(EXTRA_PRODUCT_ID)
+            if (it.containsKey(EXTRA_PRODUCT_ID)) {
+                productId = it.getLong(EXTRA_PRODUCT_ID)
+            }
             shipperServicesIds = it.getExtraShipperServices(EXTRA_SHIPPER_SERVICES)
             cplParam = it.getExtraShipperServices(EXTRA_CPL_PARAM)
         }
@@ -95,16 +95,14 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
+        initData()
         initAdapter()
         initObserver()
     }
 
-    private fun initViews() {
-        binding.swipeRefresh.isRefreshing = true
+    private fun initData() {
         val shouldShowOnBoarding = arguments?.getBoolean(EXTRA_SHOW_ONBOARDING_CPL, false) ?: false
         viewModel.getCPLList(shopId, productId, shipperServicesIds, cplParam, shouldShowOnBoarding)
-
     }
 
     private fun getWhitelabelView(): View? {
@@ -196,18 +194,25 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun initObserver() {
-        viewModel.cplList.observe(viewLifecycleOwner, {
+        viewModel.cplState.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> {
+                is CPLState.FirstLoad -> {
                     populateView(it.data)
                 }
-                is Fail -> {
+                is CPLState.Failed -> {
                     binding.swipeRefresh.isRefreshing = false
                     if (it.throwable != null) {
                         handleError(it.throwable)
                     }
                 }
-                else -> {
+                is CPLState.Update -> {
+                    if (it.shipperGroup == ON_DEMAND_VALIDATION) {
+                        cplItemOnDemandAdapter.modifyData(it.shipper)
+                    } else if (it.shipperGroup == CONVENTIONAL_VALIDATION) {
+                        cplItemConventionalAdapter.modifyData(it.shipper)
+                    }
+                }
+                is CPLState.Loading -> {
                     binding.swipeRefresh.isRefreshing = true
                     binding.shippingEditorLayoutOndemand.gone()
                     binding.shippingEditorLayoutConventional.gone()
@@ -228,7 +233,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 showOnBoardingCoachmark(data)
             }, COACHMARK_ON_BOARDING_DELAY)
         }
-        binding.btnSaveShipper.setOnClickListener { validateSaveButton(data.getActivatedSpIds()) }
+        binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
@@ -264,7 +269,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         }
     }
 
-    private fun validateSaveButton(activatedSpIds: List<Long>) {
+    private fun validateSaveButton() {
+        val activatedSpIds = viewModel.cplData.getActivatedSpIds()
         if (activatedSpIds.isEmpty()) {
             Toaster.build(
                 requireView(),
@@ -333,9 +339,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private fun showGlobalError(type: Int) {
         binding.globalError.setType(type)
         binding.globalError.setActionClickListener {
-            context?.let {
-                viewModel.getCPLList(shopId, productId, shipperServicesIds, cplParam)
-            }
+            initData()
         }
         binding.globalError.visible()
         binding.svShippingEditor.gone()
