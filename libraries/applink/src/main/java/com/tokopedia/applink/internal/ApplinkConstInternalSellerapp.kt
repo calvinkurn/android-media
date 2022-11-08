@@ -79,16 +79,16 @@ object ApplinkConstInternalSellerapp {
     // Seller Tokopedia Flash Sale - CampaignDetailActivity
     const val SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/campaign-detail/{campaign_id}/"
 
-    // Seller MVC Creation - CampaignDetailActivity
+    // Seller MVC Creation - MvcListActivity
     const val SELLER_MVC_LIST = "$INTERNAL_SELLERAPP/seller-mvc/list"
 
-    // Seller MVC Creation - CampaignDetailActivity
+    // Seller MVC Creation -
     const val SELLER_MVC_SHOP_CREATE = "$INTERNAL_SELLERAPP/seller-mvc/create/shop"
 
-    // Seller MVC Creation - CampaignDetailActivity
+    // Seller MVC Creation -
     const val SELLER_MVC_PRODUCT_CREATE = "$INTERNAL_SELLERAPP/seller-mvc/create/product"
 
-    // Seller MVC Creation - CampaignDetailActivity
+    // Seller MVC Creation -
     const val SELLER_MVC_DETAIL = "$INTERNAL_SELLERAPP/seller-mvc/detail/{voucher_id}/"
 
     // CampaignListActivity
