@@ -473,7 +473,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, channelGrid.attribution)
                     putString(Promotion.CREATIVE_SLOT, position)
-                    putString(Promotion.ITEM_ID, FORMAT_UNDERSCORE_TWO_VALUES.format(channelGrid.id, channelModel.id))
+                    putString(Promotion.ITEM_ID, FORMAT_UNDERSCORE_TWO_VALUES.format(channelModel.channelBanner.id, channelModel.id))
                     putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME_FOUR_VALUES.format(
                         categoryName, VALUE_DYNAMIC_CHANNEL,
                         headerName, channelGrid.applink))
@@ -490,7 +490,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         val headerName = channelModel.channelHeader.name
         val promotionBody = channelModel.channelGrids.mapIndexed { index, grid ->
             DataLayer.mapOf(
-                Promotion.ITEM_ID, FORMAT_UNDERSCORE_TWO_VALUES.format(grid.id, channelModel.id),
+                Promotion.ITEM_ID, FORMAT_UNDERSCORE_TWO_VALUES.format(channelModel.channelBanner.id, channelModel.id),
                 Promotion.ITEM_NAME, FORMAT_ITEM_NAME_FOUR_VALUES.format(
                     categoryName, VALUE_DYNAMIC_CHANNEL,
                     headerName, grid.applink),

@@ -33,7 +33,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
             putString(Action.KEY, FORMAT_CLICK_BANNER.format(VALUE_FEATURED_SHOP))
             putString(Label.KEY, FORMAT_DASH_FIVE_VALUES.format(
                 VALUE_FEATURED_SHOP, channel.id, channel.channelHeader.name,
-                grid.shopId, categoryName))
+                grid.shop.id, categoryName))
             putString(UserId.KEY, userId)
             putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
             putString(CurrentSite.KEY, CurrentSite.DEFAULT)
@@ -41,7 +41,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, grid.attribution)
                     putString(Promotion.CREATIVE_SLOT, (bannerPosition+1).toString())
-                    putString(Promotion.ITEM_ID, FORMAT_UNDERSCORE_THREE_VALUES.format(channel.channelBanner.id, channel.id, grid.shopId))
+                    putString(Promotion.ITEM_ID, FORMAT_UNDERSCORE_THREE_VALUES.format(channel.channelBanner.id, channel.id, grid.shop.id))
                     putString(Promotion.ITEM_NAME, FORMAT_ITEM_NAME_FOUR_VALUES.format(
                         categoryName, VALUE_FEATURED_SHOP,
                         channel.channelHeader.name, grid.applink))
@@ -66,7 +66,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
                 promotions = listOf(
                     Promotion(
                         id = FORMAT_UNDERSCORE_THREE_VALUES.format(
-                            channel.channelBanner.id, channel.id, grid.shopId),
+                            channel.channelBanner.id, channel.id, grid.shop.id),
                         name = FORMAT_ITEM_NAME_FOUR_VALUES.format(
                             categoryName, VALUE_FEATURED_SHOP,
                             channel.channelHeader.name, grid.applink),

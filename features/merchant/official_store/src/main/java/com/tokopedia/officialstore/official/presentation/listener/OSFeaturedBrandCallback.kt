@@ -21,7 +21,7 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
 
     override fun onLegoItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
         val bannerId = channelModel.channelBanner.id
-        val shopId = channelGrid.shopId
+        val shopId = channelGrid.shop.id
         tracking?.eventImpressionFeatureBrandOS(
             categoryName = dcEventHandler.getOSCategory()?.title ?: "",
             shopPosition = (position + 1),
@@ -36,7 +36,7 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
 
     override fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int, applink: String) {
         val bannerId = channelModel.channelBanner.id
-        val shopId = channelGrid.shopId
+        val shopId = channelGrid.shop.id
         tracking?.eventClickFeaturedBrandOS(
             categoryName = dcEventHandler.getOSCategory()?.title ?: "",
             shopPosition = (position + 1),

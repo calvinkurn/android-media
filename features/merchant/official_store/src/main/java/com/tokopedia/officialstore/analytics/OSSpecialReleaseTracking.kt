@@ -51,7 +51,7 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
             promotions = listOf(
                 Promotion(
                     id = FORMAT_UNDERSCORE_TWO_VALUES.format(
-                        grid.id,
+                        channel.channelBanner.id,
                         channel.id
                     ),
                     name = FORMAT_ITEM_NAME_FOUR_VALUES.format(
@@ -68,7 +68,7 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
                             CAMPAIGN_TYPE_FLASH_SALE_TOKO -> FLASH_SALE
                             else -> ""
                         },
-                        grid.shopId
+                        grid.shop.id
                     ),
                     position = (position + 1).toString()
                 )
@@ -108,10 +108,10 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
                             CAMPAIGN_TYPE_FLASH_SALE_TOKO -> FLASH_SALE
                             else -> ""
                         },
-                        channelGrid.shopId
+                        channelGrid.shop.id
                     ))
                     putString(Promotion.CREATIVE_SLOT, (position+1).toString())
-                    putString(Promotion.ITEM_ID, FORMAT_UNDERSCORE_TWO_VALUES.format(channelGrid.id, channelModel.id))
+                    putString(Promotion.ITEM_ID, FORMAT_UNDERSCORE_TWO_VALUES.format(channelModel.channelBanner.id, channelModel.id))
                     putString(Promotion.ITEM_NAME,  FORMAT_ITEM_NAME_FOUR_VALUES.format(
                         categoryName,
                         VALUE_FEATURE_CAMPAIGN,
