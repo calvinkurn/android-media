@@ -6,12 +6,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
-import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
 /**
  * Created by kenny.hadisaputra on 06/07/22
@@ -22,8 +20,6 @@ class ProductCarouselUiView(
 ) {
 
     private val context = binding.root.context
-
-    private val impressionSet = mutableSetOf<String>()
 
     private val adapter = ProductCarouselAdapter(
         listener = object : ProductBasicViewHolder.Listener {
@@ -90,7 +86,6 @@ class ProductCarouselUiView(
 
         invalidateItemDecorations()
 
-        clearImpress()
         sendImpression()
 
         adapter.setItemsAndAnimateChanges(products)
@@ -146,25 +141,16 @@ class ProductCarouselUiView(
     /**
      * Expose
      */
-    private fun sendImpression() = synchronized(impressionSet) {
+    private fun sendImpression()  {
         val products = getVisibleProducts()
-        val productsToBeImpressed = products.filter {
-            !impressionSet.contains(it.key.id)
-        }
-        listener.onProductImpressed(this, productsToBeImpressed)
-        productsToBeImpressed.forEach {
-            impressionSet.add(it.key.id)
-        }
+        listener.onProductImpressed(this, products)
     }
 
-    private fun clearImpress() {
-        impressionSet.clear()
-    }
 
     /**
      * Analytic Helper
      */
-    private fun getVisibleProducts(): Map<PlayProductUiModel.Product, Int> {
+    fun getVisibleProducts(): Map<PlayProductUiModel.Product, Int> {
         val products = adapter.getItems()
         if (products.isNotEmpty()) {
             val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()

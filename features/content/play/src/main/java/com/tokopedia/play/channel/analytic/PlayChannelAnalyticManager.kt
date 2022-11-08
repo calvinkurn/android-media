@@ -34,8 +34,10 @@ class PlayChannelAnalyticManager @Inject constructor(
     private val trackingQueue: TrackingQueue,
 ) {
 
-    private var analytic2 : PlayAnalytic2? = null
+    private var analytic2: PlayAnalytic2? = null
     private var partnerType: PartnerType = PartnerType.Unknown
+
+    private val impressionSet = mutableSetOf<String>() //productIds
 
     fun observe(
         scope: CoroutineScope,
@@ -64,18 +66,18 @@ class PlayChannelAnalyticManager @Inject constructor(
                     }
                     is ProductCarouselUiComponent.Event.OnImpressed -> {
                         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) ||
-                                it.productMap.isEmpty()) return@collect
+                            it.productMap.isEmpty()
+                        ) return@collect
 
                         it.productMap.forEach { entry ->
                             if (!entry.key.isPinned) return@forEach
                             analytic2?.impressPinnedProductInCarousel(entry.key, entry.value)
                         }
-                        /**
-                         * Send double tracker due to DA request
-                         */
-                        val finalProducts = it.productMap.map { it.key to it.value }
-                        analytic.impressFeaturedProducts(finalProducts)
-                        if(partnerType == PartnerType.TokoNow) newAnalytic.impressFeaturedProductNow(finalProducts)
+                        sendImpression(it.productMap)
+                    }
+                    is ProductCarouselUiComponent.Event.OnUpdated -> {
+                        clearProducts()
+                        sendImpression(it.productMap)
                     }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                 }
@@ -121,6 +123,27 @@ class PlayChannelAnalyticManager @Inject constructor(
             newAnalytic.clickFeaturedProductNow(product, position)
         } else {
             analytic.clickFeaturedProduct(product, position)
+        }
+    }
+
+
+    private fun clearProducts() = impressionSet.clear()
+
+    private fun sendImpression(products: Map<PlayProductUiModel.Product, Int>) {
+        /**
+         * Send double tracker due to DA request
+         */
+        val finalProducts = products.filterNot {
+            impressionSet.contains(it.key.id)
+        }.map { it.key to it.value }.distinctBy { it.first.id }
+
+        if(finalProducts.isEmpty()) return
+
+        analytic.impressFeaturedProducts(finalProducts)
+        if(partnerType == PartnerType.TokoNow) newAnalytic.impressFeaturedProductNow(finalProducts)
+
+        finalProducts.forEach {
+            impressionSet.add(it.first.id)
         }
     }
 }

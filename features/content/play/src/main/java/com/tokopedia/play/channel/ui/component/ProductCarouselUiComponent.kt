@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
  */
 class ProductCarouselUiComponent(
     binding: ViewProductFeaturedBinding,
-    bus: EventBus<Any>,
+    private val bus: EventBus<Any>,
     scope: CoroutineScope,
 ) : UiComponent<PlayViewerNewUiState> {
 
@@ -107,6 +107,10 @@ class ProductCarouselUiComponent(
             !state.value.address.shouldShow
         ) uiView.show()
         else uiView.hide()
+
+        if(state.isChanged { it.tagItems }) {
+            bus.emit(uiView.getVisibleProducts())
+        }
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -118,6 +122,7 @@ class ProductCarouselUiComponent(
 
     sealed interface Event {
         data class OnImpressed(val productMap: Map<PlayProductUiModel.Product, Int>) : Event
+        data class OnUpdated(val productMap: Map<PlayProductUiModel.Product, Int>) : Event
         data class OnClicked(val product: PlayProductUiModel.Product, val position: Int) : Event
 
         data class OnAtcClicked(val product: PlayProductUiModel.Product) : Event
