@@ -10,6 +10,7 @@ import dagger.Component
 @Component(
     modules = [
         PlayShortsModule::class,
+        PlayShortsBindModule::class,
         PlayShortsViewModelModule::class,
         PlayShortsFragmentModule::class
     ],
