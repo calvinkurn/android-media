@@ -146,7 +146,7 @@ class ProductCarouselUiView(
     /**
      * Expose
      */
-    fun sendImpression() = synchronized(impressionSet) {
+    private fun sendImpression() = synchronized(impressionSet) {
         val products = getVisibleProducts()
         val productsToBeImpressed = products.filter {
             !impressionSet.contains(it.key.id)
@@ -157,7 +157,7 @@ class ProductCarouselUiView(
         }
     }
 
-    fun clearImpress() {
+    private fun clearImpress() {
         impressionSet.clear()
     }
 
