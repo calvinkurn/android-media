@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
 import com.tokopedia.mvc.data.response.ProductListResponse
@@ -81,7 +82,7 @@ class GetInitiateVoucherPage @Inject constructor(
         }
         val params = mapOf(
             REQUEST_PARAM_ACTION to action,
-            REQUEST_PARAM_TARGET_BUYER to 0,
+            REQUEST_PARAM_TARGET_BUYER to Int.ZERO,
             REQUEST_PARAM_COUPON_TYPE to promoType,
             REQUEST_PARAM_IS_VOUCHER_PRODUCT to voucherProduct
         )
