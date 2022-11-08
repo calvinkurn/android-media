@@ -178,4 +178,8 @@
     <string name="title_tokomember" translatable="false">Tokomember</string>
     <string name="title_tokopedia_flash_sale_campaign_detail">Campaign Detail</string>
 
+    <string name="title_seller_mvc_list">Mvc list</string>
+    <string name="title_seller_mvc_shop_create">Mvc Shop Create</string>
+    <string name="title_seller_mvc_product_create">Mvc Product Create</string>
+    <string name="title_seller_mvc_detail">Mvc Detail</string>
 </resources>
