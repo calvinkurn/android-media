@@ -2,12 +2,14 @@ package com.tokopedia.tkpd
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.ui.NestTheme
@@ -37,16 +38,24 @@ class MainActivity : AppCompatActivity() {
     lateinit var userSession: UserSessionInterface
 
     private val applink = mutableStateOf(getDefaultAppLink())
+    private val darkMode = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
+        darkMode.value = getDarkModeStatus()
+        delegate.applyDayNight()
         setContent {
             NestTheme {
                 val applinkStr by remember { applink }
+                val darkModeBool by remember { darkMode }
                 TestAppHome(
-                    Model(applinkStr, getLiveStatus(), false),
-                    { },
+                    Model(applinkStr, getLiveStatus(), darkModeBool),
+                    {
+                        val newState = darkMode.value.not()
+                        setDarkModeAndRecreate(newState)
+                        darkMode.value = newState
+                    },
                     { this.applink.value = it },
                     {
                         when (it) {
@@ -58,19 +67,23 @@ class MainActivity : AppCompatActivity() {
                     })
             }
         }
-//
-//        toggle_dark_mode.isChecked = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-//        toggle_dark_mode.setOnCheckedChangeListener { _: CompoundButton?, state: Boolean ->
-//            AppCompatDelegate.setDefaultNightMode(if (state) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
-//        }
-//
-//        testGqlButton.setOnClickListener { TestGqlUseCase().execute() }
-//
     }
 
     private fun gotoDeveloperOptions() {
         RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
     }
+
+    private fun setDarkModeAndRecreate(active: Boolean) {
+        AppCompatDelegate.setDefaultNightMode(
+            if (active) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+        finish()
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        startActivity(Intent(this, this.javaClass))
+    }
+
+    private fun getDarkModeStatus(): Boolean =
+        resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
     private fun getLiveStatus(): String {
         return if (TokopediaUrl.getInstance().GQL.contains("staging")) {
@@ -186,7 +199,8 @@ fun TestAppHome(
     Surface {
         Column {
             NestHeader(title = "Tokopedia Test App", showBackNav = false)
-            val urlBgColor = (if (model.urlState.contains("live", true)) "#27ae60" else "#e67e22").toColorInt()
+            val urlBgColor =
+                (if (model.urlState.contains("live", true)) "#27ae60" else "#e67e22").toColorInt()
             Text(
                 text = model.urlState,
                 modifier = Modifier
