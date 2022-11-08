@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.network.ConversationsNetworkError
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -62,7 +64,8 @@ import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class BaseTokoFoodOrderTrackingFragment :
-    BaseDaggerFragment(), RecyclerViewPollerListener, OrderTrackingListener {
+    BaseDaggerFragment(), RecyclerViewPollerListener, OrderTrackingListener,
+    ConversationsGroupBookingListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -101,6 +104,8 @@ class BaseTokoFoodOrderTrackingFragment :
     private var loaderDialog: LoaderDialog? = null
 
     private var channelId: String = ""
+
+    private var goFoodOrderNumber: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -227,6 +232,18 @@ class BaseTokoFoodOrderTrackingFragment :
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
+    override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
+        initializeUnreadCounter(goFoodOrderNumber)
+    }
+
+    override fun onGroupBookingChannelCreationStarted() {
+        // No op
+    }
+
+    override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
+        this.channelId = channelUrl
+    }
+
     private fun initializeChatProfile() {
         val userId = viewModel.getProfileUserId()
         if (userId.isEmpty() || userId.isBlank()) {
@@ -234,16 +251,47 @@ class BaseTokoFoodOrderTrackingFragment :
         }
     }
 
-    private fun initializeUnreadCounter() {
+
+    /*
+     * initializeUnreadCounter -> when get goFoodOrderNumber
+     * check channelId is Blank or not, if yes, initGroupBooking to get channelId and observeUnreadChatCount else observeUnreadChatCount
+     * initGroupBooking -> channelId -> observeUnreadChatCount
+     */
+    private fun initializeUnreadCounter(goFoodOrderNumber: String) {
+        this.goFoodOrderNumber = goFoodOrderNumber
         if (channelId.isBlank()) {
-            viewModel.initGroupBooking(orderId, onSuccess = {
-                orderLiveTrackingFragment?.observeUnreadChatCount(channelId)
+            viewModel.initGroupBooking(goFoodOrderNumber, onSuccess = { channelId ->
+                this.channelId = channelId
+                observeUnreadChatCount(channelId)
             }, onError = {
-                orderLiveTrackingFragment?.updateUnreadChatCounter(Int.ZERO)
+                updateUnreadChatCounter(Int.ZERO)
             })
         } else {
-            orderLiveTrackingFragment?.observeUnreadChatCount(channelId)
+            observeUnreadChatCount(channelId)
         }
+    }
+
+    private fun observeUnreadChatCount(channelId: String) {
+        observe(viewModel.getUnReadChatCount(channelId)) {
+            when (it) {
+                is Success -> {
+                    updateUnreadChatCounter(it.data)
+                }
+                is Fail -> {
+                    logExceptionReadCounterToServerLogger(it.throwable)
+                    updateUnreadChatCounter(Int.ZERO)
+                }
+            }
+        }
+    }
+
+    private fun updateUnreadChatCounter(unReadCounter: Int?) {
+        val newDriverSection = orderTrackingAdapter
+            .list
+            .filterIsInstance<DriverSectionUiModel>()
+            .firstOrNull()
+            ?.copy(badgeCounter = unReadCounter)
+        orderTrackingAdapter.updateLiveTrackingItem(newDriverSection)
     }
 
     private fun showLoaderDriverCall() {
@@ -452,11 +500,11 @@ class BaseTokoFoodOrderTrackingFragment :
                     binding,
                     viewModel,
                     orderTrackingAdapter,
-                    toolbarHandler
+                    toolbarHandler,
+                    ::initializeUnreadCounter
                 )
                 orderLiveTrackingFragment?.let {
                     lifecycle.addObserver(it)
-                    initializeUnreadCounter()
                 }
                 updateViewsOrderLiveTracking(
                     actionButtonsUiModel,
@@ -555,6 +603,18 @@ class BaseTokoFoodOrderTrackingFragment :
             errorType,
             viewModel.userSession.deviceId.orEmpty(),
             errorDesc
+        )
+    }
+
+    private fun logExceptionReadCounterToServerLogger(
+        throwable: Throwable
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.POST_PURCHASE,
+            throwable,
+            TokofoodErrorLogger.ErrorType.ERROR_UNREAD_CHAT_COUNT_POST_PURCHASE,
+            viewModel.userSession.deviceId.orEmpty(),
+            TokofoodErrorLogger.ErrorDescription.UNREAD_CHAT_COUNT_ERROR
         )
     }
 

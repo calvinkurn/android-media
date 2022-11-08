@@ -24,10 +24,13 @@ class TokoFoodOrderLiveTrackingFragment(
     private val binding: FragmentTokofoodOrderTrackingBinding?,
     private val viewModel: TokoFoodOrderTrackingViewModel,
     private val orderTrackingAdapter: OrderTrackingAdapter,
-    private val toolbarHandler: OrderTrackingToolbarHandler?
+    private val toolbarHandler: OrderTrackingToolbarHandler?,
+    private val initializeUnReadCounter: (String) -> Unit,
 ): LifecycleObserver {
 
     private var lifecycleOwner: LifecycleOwner? = null
+
+    private var goFoodOrderNumber = ""
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun onResumeListener(owner: LifecycleOwner) {
@@ -56,39 +59,22 @@ class TokoFoodOrderLiveTrackingFragment(
         }
     }
 
-    fun observeUnreadChatCount(channelId: String) {
-        lifecycleOwner?.let { lifecycleOwner ->
-            viewModel.getUnReadChatCount(channelId).observe(lifecycleOwner) {
-                when (it) {
-                    is Success -> {
-                        updateUnreadChatCounter(it.data)
-                    }
-                    is Fail -> {
-                        logExceptionReadCounterToServerLogger(it.throwable)
-                        updateUnreadChatCounter(Int.ZERO)
-                    }
-                }
-            }
-        }
-    }
-
-    fun updateUnreadChatCounter(unReadCounter: Int?) {
-        val newDriverSection = orderTrackingAdapter
-            .list
-            .filterIsInstance<DriverSectionUiModel>()
-            .firstOrNull()
-            ?.copy(badgeCounter = unReadCounter)
-        orderTrackingAdapter.updateLiveTrackingItem(newDriverSection)
-    }
-
     private fun updateAllOrderLiveTracking(orderStatusLiveTrackingUiModel: OrderStatusLiveTrackingUiModel) {
         with(orderStatusLiveTrackingUiModel) {
+            setGoFoodOrderNumber(invoiceOrderNumberUiModel?.goFoodOrderNumber)
             toolbarHandler?.updateToolbarPoolBased(toolbarLiveTrackingUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(tickerInfoData)
             orderTrackingAdapter.updateLiveTrackingItem(orderTrackingStatusInfoUiModel)
             orderTrackingAdapter.updateEtaLiveTracking(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(invoiceOrderNumberUiModel)
+        }
+    }
+
+    private fun setGoFoodOrderNumber(goFoodOrderNumber: String?) {
+        if (goFoodOrderNumber?.isNotBlank() == true && this.goFoodOrderNumber.isBlank()) {
+            this.goFoodOrderNumber = goFoodOrderNumber
+            initializeUnReadCounter(goFoodOrderNumber)
         }
     }
 
@@ -101,18 +87,6 @@ class TokoFoodOrderLiveTrackingFragment(
             TokofoodErrorLogger.ErrorType.ERROR_POOL_POST_PURCHASE,
             viewModel.userSession.deviceId.orEmpty(),
             TokofoodErrorLogger.ErrorDescription.POOL_BASED_ERROR
-        )
-    }
-
-    private fun logExceptionReadCounterToServerLogger(
-        throwable: Throwable
-    ) {
-        TokofoodErrorLogger.logExceptionToServerLogger(
-            TokofoodErrorLogger.PAGE.POST_PURCHASE,
-            throwable,
-            TokofoodErrorLogger.ErrorType.ERROR_UNREAD_CHAT_COUNT_POST_PURCHASE,
-            viewModel.userSession.deviceId.orEmpty(),
-            TokofoodErrorLogger.ErrorDescription.UNREAD_CHAT_COUNT_ERROR
         )
     }
 }
