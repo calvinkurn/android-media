@@ -177,6 +177,27 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
+    fun `when user login, self profile, success load shop and isShown then it will emit the data then fail load more`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+
+        robot.use {
+            it.setup {
+                coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShown
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            }
+            it.recordState {
+                coEvery { mockRepo.getShopRecom("") } throws mockException
+                submitAction(UserProfileAction.LoadNextPageShopRecom)
+            } andThen {
+                robot.viewModel.isShopRecomShow.assertTrue()
+                shopRecom.items.size equalTo 10
+            }
+        }
+    }
+
+    @Test
     fun `when user login, self profile, success load shop and isNotShown then it will emit empty`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
