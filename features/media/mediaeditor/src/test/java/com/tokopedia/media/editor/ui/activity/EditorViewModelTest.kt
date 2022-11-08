@@ -188,7 +188,7 @@ class EditorViewModelTest {
     @Test
     fun `save image to gallery`() {
         // Given
-        val dataList = createUiModelState(-1, -1)
+        val dataList = createUiModelState(0, -1)
 
         // When
         every { saveImageRepo.saveToGallery(any(), any())}.answers {
@@ -219,23 +219,6 @@ class EditorViewModelTest {
         verify { saveImageRepo.saveToGallery(any(), any()) }
     }
 
-    private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {
-        return pathSampleList.mapIndexed { index, path ->
-            val stateList = listOf<EditorDetailUiModel>().toMutableList()
-            val originalPath = if (cameraIndex == index) "$tokopediaCacheDir/$path" else path
-
-            if (index != excludeIndex) {
-                stateList.add(
-                    EditorDetailUiModel(originalUrl = originalPath, resultUrl = originalPath)
-                )
-            }
-
-            EditorUiModel(originalUrl = originalPath,
-                editList = stateList
-            )
-        }
-    }
-
     @Test
     fun `clean cache`() {
         // When
@@ -260,6 +243,23 @@ class EditorViewModelTest {
 
         // Then
         verify { saveImageRepo.saveToCache(any(), any(), any()) }
+    }
+
+    private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {
+        return pathSampleList.mapIndexed { index, path ->
+            val stateList = listOf<EditorDetailUiModel>().toMutableList()
+            val originalPath = if (cameraIndex == index) "$tokopediaCacheDir/$path" else path
+
+            if (index != excludeIndex) {
+                stateList.add(
+                    EditorDetailUiModel(originalUrl = originalPath, resultUrl = originalPath)
+                )
+            }
+
+            EditorUiModel(originalUrl = originalPath,
+                editList = stateList
+            )
+        }
     }
 
     companion object {
