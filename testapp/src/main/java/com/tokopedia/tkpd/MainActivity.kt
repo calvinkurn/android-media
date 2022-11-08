@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                         when (it) {
                             HomeDestination.LOGIN -> handleNavigationLogin()
                             HomeDestination.LOGOUT -> handleNavigationLogout()
-                            HomeDestination.DEVELOPER_OPTION -> TODO()
+                            HomeDestination.DEVELOPER_OPTION -> gotoDeveloperOptions()
                             HomeDestination.APPLINK -> goTo()
                         }
                     })
@@ -66,9 +66,10 @@ class MainActivity : AppCompatActivity() {
 //
 //        testGqlButton.setOnClickListener { TestGqlUseCase().execute() }
 //
-//        devOptButton.setOnClickListener {
-//            RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
-//        }
+    }
+
+    private fun gotoDeveloperOptions() {
+        RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
     }
 
     private fun getLiveStatus(): String {
