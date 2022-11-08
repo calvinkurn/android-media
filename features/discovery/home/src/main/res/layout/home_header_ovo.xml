@@ -32,6 +32,27 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout
+        android:id="@+id/view_pull_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:descendantFocusability="blocksDescendants"
+        app:indicator_overlay="false"
+        app:lottie_rawRes="@raw/pull_to_refresh"
+        app:layout_constraintTop_toBottomOf="@id/view_empty"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <FrameLayout
+            android:id="@+id/root2"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/Unify_Background"
+            android:descendantFocusability="blocksDescendants"
+            app:layout_type="content" />
+
+    </com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout>
+
     <ViewStub
         android:id="@+id/view_choose_address"
         android:inflatedId="@+id/view_choose_address"
@@ -44,7 +65,7 @@
         android:layout_marginTop="5dp"
         android:visibility="gone"
         tools:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@+id/view_empty"
+        app:layout_constraintTop_toBottomOf="@+id/view_pull_refresh"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 

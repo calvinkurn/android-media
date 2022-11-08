@@ -57,6 +57,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
         if (headerTopRounded == null) {
             headerTopRounded = getParentLayout(binding?.headerTopRounded)
         }
+//        listener.pullRefreshCaptured(binding?.viewPullRefresh)
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {

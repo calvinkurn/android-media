@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.listener
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -139,4 +140,6 @@ interface HomeCategoryListener {
     fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel)
 
     fun refreshBalanceWidget()
+
+    fun pullRefreshCaptured(view: ViewGroup?)
 }

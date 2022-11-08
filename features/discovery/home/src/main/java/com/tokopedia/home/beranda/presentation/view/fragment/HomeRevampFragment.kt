@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -2630,14 +2631,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun changeStatusBarToDark() {
-        mainParentStatusBarListener?.requestStatusBarDark()
-        navToolbar?.setMargin(0, -4, 0, 0)
+//        mainParentStatusBarListener?.requestStatusBarDark()
+//        navToolbar?.setMargin(0, -4, 0, 0)
     }
 
     override fun changeStatusBarToLight() {
-        if (isLightThemeStatusBar) {
-            mainParentStatusBarListener?.requestStatusBarLight()
+//        if (isLightThemeStatusBar) {
+//            mainParentStatusBarListener?.requestStatusBarLight()
+//        }
+//        navToolbar?.setMargin(0, 0, 0, 0)
+    }
+
+    override fun pullRefreshCaptured(view: ViewGroup?) {
+        view?.let {
+            refreshLayout.setContentChildViewPullRefresh(it)
         }
-        navToolbar?.setMargin(0, 0, 0, 0)
     }
 }
