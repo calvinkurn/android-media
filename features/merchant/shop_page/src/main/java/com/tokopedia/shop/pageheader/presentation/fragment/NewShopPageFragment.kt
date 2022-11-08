@@ -2881,7 +2881,7 @@ class NewShopPageFragment :
                         var shareString = getString(
                                 R.string.shop_page_share_text_with_link,
                                 shopPageHeaderDataModel?.shopName,
-                                linkerShareData?.shareContents
+                                linkerShareData?.url
                         )
                         shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
                         SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
