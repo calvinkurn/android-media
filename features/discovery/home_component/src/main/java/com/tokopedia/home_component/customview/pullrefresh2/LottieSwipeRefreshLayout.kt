@@ -51,12 +51,14 @@ class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs
         }
 
         setOnRefreshListener {
-            Log.d("dhabalog", "startRefresh")
+            layoutIconPullRefreshView?.startRefreshing()
+//            Log.d("dhabalog", "startRefresh")
 //            lottieSwipeRefreshListener?.changeStatusBarToDark()
         }
 
         addProgressListener {
-            Log.d("dhabalog", it.toString())
+            layoutIconPullRefreshView?.progressRefresh(it)
+//            Log.d("dhabalog", it.toString())
 //            lottieAnimationView.progress = it
 //            if (it > 0.5f) {
 //                lottieSwipeRefreshListener?.changeStatusBarToDark()
@@ -68,7 +70,7 @@ class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs
         }
 
         removeOnTriggerListener {
-            Log.d("dhabalog", "stopRefresh")
+//            Log.d("dhabalog", "stopRefresh")
         }
     }
 

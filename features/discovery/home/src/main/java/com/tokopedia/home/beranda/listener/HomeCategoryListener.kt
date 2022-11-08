@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
+import com.tokopedia.home_component.customview.pullrefresh2.LayoutIconPullRefreshView
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.recharge_component.model.WidgetSource
@@ -141,5 +142,5 @@ interface HomeCategoryListener {
 
     fun refreshBalanceWidget()
 
-    fun pullRefreshCaptured(view: ViewGroup?)
+    fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?)
 }

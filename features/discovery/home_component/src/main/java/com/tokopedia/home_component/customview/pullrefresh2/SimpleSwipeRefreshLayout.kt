@@ -31,6 +31,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     private var lottieSwipeRefreshListener: LottieSwipeRefreshListener? = null
     private var canChildScrollUp = false
     private var notify: Boolean = true
+    var layoutIconPullRefreshView: LayoutIconPullRefreshView? = null
     var isRefreshing: Boolean = false
         set(refreshing) {
             if (isRefreshing != refreshing) {
@@ -38,6 +39,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
                 if (refreshing) {
                     if (currentState != State.TRIGGERING) {
                         startRefreshing()
+                        layoutIconPullRefreshView?.startRefreshing()
                     }
                 } else {
                     notify = false
@@ -295,12 +297,12 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
             MotionEvent.ACTION_DOWN -> {
                 downX = ev.x
                 downY = ev.y
-                Log.d("dhabalog", "actionMove $downX $downY")
+//                Log.d("dhabalog", "actionMove $downX $downY")
             }
             MotionEvent.ACTION_MOVE -> {
                 val dx = ev.x - downX
                 val dy = ev.y - downY
-                Log.d("dhabalog", "actionMove $dy $dx")
+//                Log.d("dhabalog", "actionMove $dy $dx")
                 shouldStealTouchEvents = checkIfScrolledFurther(ev, dy, dx)
             }
         }
@@ -367,7 +369,8 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         onProgressListeners.forEach { it(pullFraction) }
         lastPullFraction = pullFraction
 
-        Log.d("dhabalog", "move $offsetY")
+        layoutIconPullRefreshView?.offsetView(offsetY)
+//        Log.d("dhabalog", "move $offsetY")
 
 //        positionChildren(offsetY)
     }
@@ -432,6 +435,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
      * gesture.
      */
     open fun setOnRefreshListener(listener: () -> Unit) {
+        layoutIconPullRefreshView?.startRefreshing()
         onTriggerListeners.add(listener)
     }
 
@@ -625,8 +629,9 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         this@SimpleSwipeRefreshLayout.canChildScrollUp = canChildScrollUp
     }
 
-    fun setContentChildViewPullRefresh(view: ViewGroup) {
+    fun setContentChildViewPullRefresh(view: LayoutIconPullRefreshView) {
+        layoutIconPullRefreshView = view
 //        contentChildViewPullRefresh = ChildView(view)
-        contentChildView = ChildView(view.getChildAt(0))
+//        contentChildView = ChildView(view.getChildAt(0))
     }
 }

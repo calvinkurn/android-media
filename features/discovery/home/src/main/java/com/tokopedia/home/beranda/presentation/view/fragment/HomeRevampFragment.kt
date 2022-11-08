@@ -149,6 +149,8 @@ import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.util.HomeServerLogger
 //import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
+import com.tokopedia.home_component.customview.pullrefresh2.LayoutIconPullRefreshView
+import com.tokopedia.home_component.customview.pullrefresh2.SimpleSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
@@ -351,7 +353,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
     private lateinit var root: FrameLayout
-    private lateinit var refreshLayout: LottieSwipeRefreshLayout
+    private lateinit var refreshLayout: SimpleSwipeRefreshLayout
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
@@ -2637,7 +2639,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 //        navToolbar?.setMargin(0, 0, 0, 0)
     }
 
-    override fun pullRefreshCaptured(view: ViewGroup?) {
+    override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?) {
         view?.let {
             refreshLayout.setContentChildViewPullRefresh(it)
         }
