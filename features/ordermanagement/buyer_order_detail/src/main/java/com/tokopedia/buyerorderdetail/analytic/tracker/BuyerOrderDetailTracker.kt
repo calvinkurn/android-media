@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 
 /**
  * Created by yusuf.hendrawan on 08/06/21.
