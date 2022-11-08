@@ -153,6 +153,7 @@ class ShippingCourierConverter @Inject constructor() {
         return ScheduleDeliveryUiModel(
             isSelected = recommend,
             available = available,
+            ratesId = ratesId,
             hidden = hidden,
             title = title,
             text = text,

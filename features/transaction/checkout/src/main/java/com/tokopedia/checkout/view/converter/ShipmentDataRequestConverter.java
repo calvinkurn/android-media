@@ -107,10 +107,19 @@ public class ShipmentDataRequestConverter {
                 ShippingInfoCheckoutRequest shippingInfoCheckoutRequest = new ShippingInfoCheckoutRequest();
                 shippingInfoCheckoutRequest.setShippingId(selectedShipperModel.getShipperId());
                 shippingInfoCheckoutRequest.setSpId(selectedShipperModel.getShipperProductId());
-                shippingInfoCheckoutRequest.setRatesId(
-                        shipmentDetailData.getShippingCourierViewModels() != null ?
-                                shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
-                );
+                if (courierItemData.getScheduleDeliveryUiModel() != null && courierItemData.getScheduleDeliveryUiModel().isSelected()) {
+                    shippingInfoCheckoutRequest.setRatesId(
+                            courierItemData.getScheduleDeliveryUiModel().getRatesId() != 0 ?
+                                    String.valueOf(courierItemData.getScheduleDeliveryUiModel().getRatesId()) :
+                                    ""
+                    );
+                }
+                else {
+                    shippingInfoCheckoutRequest.setRatesId(
+                            shipmentDetailData.getShippingCourierViewModels() != null ?
+                                    shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
+                    );
+                }
                 shippingInfoCheckoutRequest.setChecksum(selectedShipperModel.getChecksum());
                 shippingInfoCheckoutRequest.setUt(selectedShipperModel.getUt());
                 shippingInfoCheckoutRequest.setAnalyticsDataShippingCourierPrice(String.valueOf(selectedShipperModel.getShipperPrice()));
