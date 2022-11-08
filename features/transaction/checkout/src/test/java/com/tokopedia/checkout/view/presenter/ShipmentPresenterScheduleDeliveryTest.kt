@@ -7,7 +7,6 @@ import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
@@ -21,21 +20,18 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterGetShippingRatesTest {
+class ShipmentPresenterScheduleDeliveryTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
@@ -107,25 +103,31 @@ class ShipmentPresenterGetShippingRatesTest {
     fun before() {
         MockKAnnotations.init(this)
         presenter = ShipmentPresenter(
-                compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                ratesStatesConverter, shippingCourierConverter,
-                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase,
-                getRatesWithScheduleUseCase
+            compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
+            editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+            getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+            ratesStatesConverter, shippingCourierConverter,
+            shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+            checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+            validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase,
+            getRatesWithScheduleUseCase
         )
         presenter.attachView(view)
     }
 
     @Test
-    fun `WHEN get shipping rates success THEN should render success`() {
+    fun `WHEN get shipping rates and schedule delivery rates success THEN should render success`() {
         // Given
-        val response = DataProvider.provideRatesV3Response()
-        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.scheduleDeliveryData
 
-        every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.just(
+            shippingRecommendationData
+        )
 
         val shipperId = 1
         val spId = 1
@@ -153,7 +155,9 @@ class ShipmentPresenterGetShippingRatesTest {
                 isFulfillment = false
             }
         }
-        val shipmentCartItemModel = ShipmentCartItemModel()
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            ratesValidationFlow = true
+        )
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
         val products = ArrayList<Product>()
@@ -167,24 +171,31 @@ class ShipmentPresenterGetShippingRatesTest {
 
         // When
         presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
         )
 
         // Then
         verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload);
+            getRatesWithScheduleUseCase.execute(any(), any())
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload)
         }
     }
 
     @Test
-    fun `WHEN get shipping rates for trade in indopaket success THEN should render success`() {
+    fun `WHEN get shipping rates services null and get schedule delivery rates success THEN should render failed`() {
         // Given
-        val response = DataProvider.provideRatesV3apiResponse()
-        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        val ratesResponse = DataProvider.provideRatesV3EmptyServicesResponse()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.scheduleDeliveryData
 
-        every { getRatesApiUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.just(
+            shippingRecommendationData
+        )
 
         val shipperId = 1
         val spId = 1
@@ -212,133 +223,9 @@ class ShipmentPresenterGetShippingRatesTest {
                 isFulfillment = false
             }
         }
-        val shipmentCartItemModel = ShipmentCartItemModel()
-        val shopShipmentList = ArrayList<ShopShipment>()
-        val isInitialLoad = true
-        val products = ArrayList<Product>()
-        val cartString = "123-abc"
-        val isTradeInDropOff = true
-        val recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            locationDataModel = LocationDataModel().apply {
-                district = "1"
-                postalCode = "1"
-                latitude = "1"
-                longitude = "1"
-            }
-        }
-        val isForceReload = false
-        val skipMvc = true
-
-        // When
-        presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            ratesValidationFlow = true
         )
-
-        // Then
-        verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload);
-        }
-    }
-
-    @Test
-    fun `WHEN get shipping rates with mvc success THEN should render success`() {
-        // Given
-        val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
-
-        val response = DataProvider.provideRatesV3apiResponse()
-        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-
-        every { getRatesApiUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-
-        val shipperId = 1
-        val spId = 1
-        val itemPosition = 1
-        val shipmentDetailData = ShipmentDetailData().apply {
-            shopId = "1"
-            isBlackbox = true
-            preorder = false
-            shipmentCartData = ShipmentCartData().apply {
-                originDistrictId = "1"
-                originPostalCode = "1"
-                originLatitude = "1"
-                originLongitude = "1"
-                destinationDistrictId = "1"
-                destinationPostalCode = "1"
-                destinationLatitude = "1"
-                destinationLongitude = "1"
-                token = "1"
-                ut = "1"
-                insurance = 1
-                productInsurance = 1
-                orderValue = 1
-                categoryIds = ""
-                preOrderDuration = 0
-                isFulfillment = false
-            }
-        }
-        val shipmentCartItemModel = ShipmentCartItemModel()
-        val shopShipmentList = ArrayList<ShopShipment>()
-        val isInitialLoad = true
-        val products = ArrayList<Product>()
-        val cartString = "123-abc"
-        val isTradeInDropOff = true
-        val recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-        }
-        val isForceReload = false
-        val skipMvc = false
-
-        // When
-        presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
-        )
-
-        // Then
-        verify {
-            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff, isForceReload);
-        }
-    }
-
-    @Test
-    fun `WHEN get shipping rates success twice THEN should have exactly two shipping courier view models states`() {
-        // Given
-        val response = DataProvider.provideRatesV3Response()
-        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-
-        every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-
-        val shipperId = 1
-        val spId = 1
-        var itemPosition = 1
-        val shipmentDetailData = ShipmentDetailData().apply {
-            shopId = "1"
-            isBlackbox = true
-            preorder = false
-            shipmentCartData = ShipmentCartData().apply {
-                originDistrictId = "1"
-                originPostalCode = "1"
-                originLatitude = "1"
-                originLongitude = "1"
-                destinationDistrictId = "1"
-                destinationPostalCode = "1"
-                destinationLatitude = "1"
-                destinationLongitude = "1"
-                token = "1"
-                ut = "1"
-                insurance = 1
-                productInsurance = 1
-                orderValue = 1
-                categoryIds = ""
-                preOrderDuration = 0
-                isFulfillment = false
-            }
-        }
         val shopShipmentList = ArrayList<ShopShipment>()
         val isInitialLoad = true
         val products = ArrayList<Product>()
@@ -350,45 +237,84 @@ class ShipmentPresenterGetShippingRatesTest {
         val isForceReload = false
         val skipMvc = true
 
-        // When get first shipping
-        presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, ShipmentCartItemModel().apply { orderNumber = itemPosition },
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
-        )
-
-        itemPosition++
-
-        // When get second shipping
-        presenter.processGetCourierRecommendation(
-                shipperId, spId, itemPosition, shipmentDetailData, ShipmentCartItemModel().apply { orderNumber = itemPosition },
-                shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
-                recipientAddressModel, isForceReload, skipMvc
-        )
-
-        // Then
-        assertNotNull(presenter.getShippingCourierViewModelsState(itemPosition))
-        assertNotNull(presenter.getShippingCourierViewModelsState(itemPosition - 1))
-
-        assertNull(presenter.getShippingCourierViewModelsState(itemPosition - 2))
-        assertNull(presenter.getShippingCourierViewModelsState(itemPosition + 1))
-    }
-
-    @Test
-    fun `WHEN get shipping courier view model state before get rates THEN should return null`() {
-        assertNull(presenter.getShippingCourierViewModelsState(0))
-    }
-
-    @Test
-    fun `WHEN presenter detached THEN all usecases is unsubscribed`() {
         // When
-        presenter.detachView()
+        presenter.processGetCourierRecommendation(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
+        )
 
         // Then
         verify {
-            getRatesUseCase.unsubscribe()
-            getRatesApiUseCase.unsubscribe()
-            getRatesWithScheduleUseCase.unsubscribe()
+            getRatesWithScheduleUseCase.execute(any(), any())
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
         }
     }
+
+    @Test
+    fun `WHEN get shipping rates services success and get schedule delivery rates null THEN should render failed`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData = null
+
+        every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.just(
+            shippingRecommendationData
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData().apply {
+                originDistrictId = "1"
+                originPostalCode = "1"
+                originLatitude = "1"
+                originLongitude = "1"
+                destinationDistrictId = "1"
+                destinationPostalCode = "1"
+                destinationLatitude = "1"
+                destinationLongitude = "1"
+                token = "1"
+                ut = "1"
+                insurance = 1
+                productInsurance = 1
+                orderValue = 1
+                categoryIds = ""
+                preOrderDuration = 0
+                isFulfillment = false
+            }
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            ratesValidationFlow = true
+        )
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val isInitialLoad = true
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val isForceReload = false
+        val skipMvc = true
+
+        // When
+        presenter.processGetCourierRecommendation(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, isInitialLoad, products, cartString, isTradeInDropOff,
+            recipientAddressModel, isForceReload, skipMvc
+        )
+
+        // Then
+        verify {
+            getRatesWithScheduleUseCase.execute(any(), any())
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
+        }
+    }
+
 }

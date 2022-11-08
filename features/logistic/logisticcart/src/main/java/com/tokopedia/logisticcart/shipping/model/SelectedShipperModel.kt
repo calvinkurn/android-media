@@ -63,11 +63,11 @@ data class SelectedShipperModel(
             ontimeDelivery = onTimeDeliveryData?.let {
                 OntimeDelivery(
                     it.available,
-                    it.textLabel,
-                    it.textDetail,
-                    it.urlDetail,
+                    it.textLabel ?: "",
+                    it.textDetail ?: "",
+                    it.urlDetail ?: "",
                     it.value,
-                    it.iconUrl
+                    it.iconUrl ?: ""
                 )
             }
             etaText = scheduleDelivery.deliveryProduct?.textEta
