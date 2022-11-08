@@ -6,11 +6,14 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.interceptor.ErrorResponseInterceptor
-import com.tokochat.tokochat_config_common.repository.interceptor.GojekInterceptor
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.data.model.response.TkpdV4ResponseError
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -24,7 +27,7 @@ import java.util.concurrent.TimeUnit
 object TokoChatConfigNetworkModule {
 
     //TODO: Move this to TokopediaUrl
-    const val BASE_URL = "https://integration-api.gojekapi.com/"
+    const val BASE_URL = "https://chat-staging.tokopedia.com/tokochat/"
 
     private const val NET_READ_TIMEOUT = 300
     private const val NET_WRITE_TIMEOUT = 300
@@ -81,18 +84,19 @@ object TokoChatConfigNetworkModule {
         @TokoChatQualifier loggingInterceptor: HttpLoggingInterceptor,
         @TokoChatQualifier errorResponseInterceptor: ErrorResponseInterceptor,
         @TokoChatQualifier chuckerInterceptor: ChuckerInterceptor,
-        @TokoChatQualifier gojekInterceptor: GojekInterceptor
+        @TokoChatQualifier akamaiBotInterceptor: AkamaiBotInterceptor,
+        @TokoChatQualifier tkpdAuthInterceptor: TkpdAuthInterceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(errorResponseInterceptor)
+        builder.addInterceptor(tkpdAuthInterceptor)
+        builder.addInterceptor(akamaiBotInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             builder.addInterceptor(loggingInterceptor)
             builder.addInterceptor(chuckerInterceptor)
         }
-
-        builder.addInterceptor(gojekInterceptor)
 
         builder.readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
         builder.connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
@@ -122,13 +126,28 @@ object TokoChatConfigNetworkModule {
 
     @Provides
     @TokoChatQualifier
-    fun provideGojekInterceptor(): GojekInterceptor {
-        return GojekInterceptor()
+    fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
+        return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
     }
 
     @Provides
     @TokoChatQualifier
-    fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
-        return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
+    fun provideNetworkRouter(@TokoChatQualifier context: Context): NetworkRouter {
+        return context as NetworkRouter
+    }
+
+    @Provides
+    @TokoChatQualifier
+    fun provideTkpdAuthInterceptor(@TokoChatQualifier context: Context,
+                                   @TokoChatQualifier networkRouter: NetworkRouter,
+                                   @TokoChatQualifier userSessionInterface: UserSessionInterface
+    ): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
+    }
+
+    @Provides
+    @TokoChatQualifier
+    fun provideAkamaiBotInterceptor(@TokoChatQualifier context: Context): AkamaiBotInterceptor {
+        return AkamaiBotInterceptor(context)
     }
 }

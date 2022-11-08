@@ -8,6 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.network.ConversationsNetworkError
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -105,6 +108,9 @@ class BaseTokoFoodOrderTrackingFragment :
             DaggerTokoFoodOrderTrackingComponent
                 .builder()
                 .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .tokoChatConfigComponent(
+                    (it.applicationContext as? BaseMainApplication)?.tokoChatConnection?.tokoChatConfigComponent
+                )
                 .build()
                 .inject(this)
         }
@@ -126,12 +132,15 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AndroidThreeTen.init(context?.applicationContext)
+        initializeChatProfile()
         setupToolbar()
         setupRvOrderTracking()
         fetchOrderDetail()
         observeOrderDetail()
         observeOrderCompletedLiveTracking()
         observeDriverPhoneNumber()
+        observeTokoChatMutationProfile()
     }
 
     override fun onDestroy() {
@@ -217,6 +226,13 @@ class BaseTokoFoodOrderTrackingFragment :
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
+    private fun initializeChatProfile() {
+        val userId = viewModel.getProfileUserId()
+        if (userId.isEmpty() || userId.isBlank()) {
+            viewModel.initializeConversationProfile()
+        }
+    }
+
     private fun showLoaderDriverCall() {
         context?.let {
             loaderDialog = LoaderDialog(it).apply {
@@ -295,6 +311,20 @@ class BaseTokoFoodOrderTrackingFragment :
                         context?.getString(
                             com.tokopedia.tokofood.R.string.error_message_hit_driver_phone_number
                         ).orEmpty()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeTokoChatMutationProfile() {
+        observe(viewModel.mutationProfile) {
+            when (it) {
+                is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.INIT_MUTATION_PROFILE_ERROR,
+                        TokofoodErrorLogger.ErrorDescription.INIT_MUTATION_PROFILE_ERROR
                     )
                 }
             }

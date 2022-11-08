@@ -20,6 +20,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
 
     // Gojek dependencies
     api rootProject.ext.miscDependencies.conversation

@@ -31,6 +31,7 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.util.TokoChatViewUtil.downloadAndSaveByteArrayImage
 import com.tokopedia.tokochat.util.TokoChatViewUtil.getTokoChatPhotoPath
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -137,7 +138,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun initGroupBooking(
         orderId: String,
-        serviceType: Int = 2,
+        serviceType: Int = TOKOFOOD_SERVICE_TYPE,
         groupBookingListener: ConversationsGroupBookingListener,
         orderChatType: OrderChatType = OrderChatType.Unknown
     ) {
@@ -255,12 +256,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun loadChatRoomTicker() {
         launchCatchError(block = {
-//            TODO: Change after BE side ready
-//            val result = getTokoChatRoomTickerUseCase(GetTokoChatRoomTickerUseCase.PARAM_TOKOFOOD)
-            val result = TokochatRoomTickerResponse().apply {
-                this.tokochatRoomTicker.message = "Resto sudah terima pesananmu, jadi nggak bisa dibatalin. Driver hanya jemput & antar pesanan ke kamu."
-                this.tokochatRoomTicker.tickerType = 0
-            }
+            val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
             _chatRoomTicker.value = Success(result)
         }, onError = {
             _chatRoomTicker.value = Fail(it)
@@ -276,12 +272,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getUserId(): String {
-        return try {
-            profileUseCase.getUserId()
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-            ""
-        }
+        return profileUseCase.getUserId()
     }
 
     fun getMemberLeft(): MutableLiveData<String> {
@@ -373,6 +364,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     companion object {
+        private const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
         private const val DELAY_FETCH_IMAGE = 500L
     }
