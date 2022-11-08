@@ -259,4 +259,10 @@ object AccountConstants {
     object RollenceKey {
         const val BIOMETRIC_ENTRY_POINT = "and_biom_entry_point"
     }
+
+    object OfferInterruptionList {
+        const val OFFER_PHONE = "phone"
+        const val OFFER_VERIFY_PHONE = "phone-verif"
+        const val OFFER_ACCOUNT_LINKING = "account-link"
+    }
 }
