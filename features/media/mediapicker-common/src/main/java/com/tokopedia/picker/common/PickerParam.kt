@@ -92,6 +92,7 @@ data class PickerParam(
     fun modeType(@ModeType value: Int) = apply { modeType = value }
     fun multipleSelectionMode() = apply { isMultipleSelection = true }
     fun singleSelectionMode() = apply { isMultipleSelection = false }
+    fun previewActionText(value: String) = apply { previewActionText = value }
 
     companion object {
         private const val CUSTOM_ACTION_TEXT_LIMIT = 10
