@@ -15,7 +15,7 @@ import com.tokopedia.mvc.data.response.ProductListResponse
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import javax.inject.Inject
 
-class GetInitiateVoucherPage @Inject constructor(
+class GetInitiateVoucherPageUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: GetInitiateVoucherPageMapper
 ) : GraphqlUseCase<VoucherCreationMetadata>(repository) {

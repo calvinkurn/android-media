@@ -5,12 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
-import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPage
+import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.seller_mvc_creation.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -69,7 +68,7 @@ class AddProductFragment : BaseDaggerFragment() {
         viewModel.getShopShowcases()
         viewModel.getProductListMeta(0L)
         viewModel.getProducts(13121049L, 1, "DEFAULT", "DESC")
-        viewModel.getMaxProductSelection(GetInitiateVoucherPage.Param.Action.CREATE, GetInitiateVoucherPage.Param.PromoType.CASHBACK, true)
+        viewModel.getMaxProductSelection(GetInitiateVoucherPageUseCase.Param.Action.CREATE, GetInitiateVoucherPageUseCase.Param.PromoType.CASHBACK, true)
         //viewModel.getCurrentMonthRemainingQuota()
     }
 
