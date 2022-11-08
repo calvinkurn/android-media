@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
@@ -35,7 +36,7 @@ class HomeProductRecomViewHolder(
     override fun bind(element: HomeProductRecomUiModel) {
         binding?.apply {
             channelId = element.id
-            headerName = element.headerModel?.ctaText.orEmpty()
+            headerName = element.headerModel?.title.orEmpty()
             productRecom.setItems(
                 items = element.productList,
                 seeMoreUiModel = element.seeMoreModel
@@ -78,7 +79,7 @@ class HomeProductRecomViewHolder(
             product = product,
             channelId = channelId,
             headerName = headerName,
-            position = (layoutPosition + 1).toString()
+            position = layoutPosition.getTrackerPosition().toString()
         )
     }
 
@@ -90,7 +91,7 @@ class HomeProductRecomViewHolder(
             product = product,
             channelId = channelId,
             headerName = headerName,
-            position = (layoutPosition + 1).toString()
+            position = layoutPosition.getTrackerPosition().toString()
         )
     }
 
@@ -103,7 +104,7 @@ class HomeProductRecomViewHolder(
             product = product,
             quantity = quantity,
             channelId = channelId,
-            position = (layoutPosition + 1).toString()
+            position = layoutPosition.getTrackerPosition().toString()
         )
     }
 
@@ -116,7 +117,7 @@ class HomeProductRecomViewHolder(
             product = product,
             quantity = quantity,
             channelId = channelId,
-            position = (layoutPosition + 1).toString()
+            position = layoutPosition.getTrackerPosition().toString()
         )
     }
 

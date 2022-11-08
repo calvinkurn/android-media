@@ -38,16 +38,16 @@ class HomeLeftCarouselAtcViewHolder(
 
         private const val FIRST_VISIBLE_ITEM_POSITION = 0
         private const val NO_SCROLLED = 0
-        private const val IMAGE_PARALLAX_ALPHA = 0.80f
+        private const val IMAGE_PARALLAX_ALPHA = 0.5f
         private const val EXPECTED_IMAGE_PARALLAX_POSITION = 0.067f
+        private const val DEFAULT_IMAGE_TRANSLATION_VALUE = 0f
+        private const val DEFAULT_IMAGE_ALPHA_VALUE = 1f
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_atc
     }
 
     private var binding: ItemTokopedianowHomeLeftCarouselAtcBinding? by viewBinding()
-
-    private val masterJob = SupervisorJob()
 
     private val adapter by lazy {
         HomeLeftCarouselAtcProductCardAdapter(
@@ -78,6 +78,8 @@ class HomeLeftCarouselAtcViewHolder(
             }
         }
     }
+
+    private val masterJob = SupervisorJob()
 
     init {
         binding?.apply {
@@ -163,11 +165,11 @@ class HomeLeftCarouselAtcViewHolder(
                 layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())?.apply {
                     val distanceLeftFirstItem = left
                     val translateX = distanceLeftFirstItem * EXPECTED_IMAGE_PARALLAX_POSITION
-                    parallaxImageView.translationX = translateX
+                    parallaxImageView.translationX = translateX - (rvProduct.paddingStart.toFloat() * EXPECTED_IMAGE_PARALLAX_POSITION)
 
                     val itemSize = width.toFloat()
                     val alpha = (abs(distanceLeftFirstItem).toFloat() / itemSize * IMAGE_PARALLAX_ALPHA)
-                    parallaxImageView.alpha = alpha
+                    parallaxImageView.alpha = alpha + (abs(rvProduct.paddingStart).toFloat() / itemSize * IMAGE_PARALLAX_ALPHA)
                 }
             }
         }
@@ -187,7 +189,10 @@ class HomeLeftCarouselAtcViewHolder(
                 IMAGE_TRANSLATION_X to parallaxImageView.translationX,
                 IMAGE_ALPHA to parallaxImageView.alpha
             )
-            tokoNowView?.saveParallaxState(mapParallaxState)
+            tokoNowView?.saveParallaxState(
+                adapterPosition = layoutPosition,
+                mapParallaxState = mapParallaxState
+            )
         }
     }
 
@@ -198,9 +203,8 @@ class HomeLeftCarouselAtcViewHolder(
                     adapterPosition = layoutPosition
                 )
                 rvProduct.layoutManager?.onRestoreInstanceState(scrollState)
-                parallaxImageView.translationX = tokoNowView.getParallaxState()[IMAGE_TRANSLATION_X]
-                    ?: (rvProduct.paddingStart.toFloat() * EXPECTED_IMAGE_PARALLAX_POSITION)
-                parallaxImageView.alpha = tokoNowView.getParallaxState()[IMAGE_ALPHA] ?: 1f
+                parallaxImageView.translationX = tokoNowView.getParallaxState(layoutPosition)?.get(IMAGE_TRANSLATION_X) ?: DEFAULT_IMAGE_TRANSLATION_VALUE
+                parallaxImageView.alpha = tokoNowView.getParallaxState(layoutPosition)?.get(IMAGE_ALPHA) ?: DEFAULT_IMAGE_ALPHA_VALUE
             }
         }
     }

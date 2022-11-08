@@ -58,7 +58,6 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetRouterListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -276,7 +275,7 @@ class TokoNowHomeFragment: Fragment(),
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
-    private var carouselParallaxState = mutableMapOf<String, Float>()
+    private var carouselParallaxState = mutableMapOf<Int, Map<String, Float>>()
     private var hasEducationalInformationAppeared = false
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
     private var switcherCoachMark: SwitcherCoachMark? = null
@@ -448,16 +447,16 @@ class TokoNowHomeFragment: Fragment(),
         carouselScrollState[adapterPosition] = scrollState
     }
 
-    override fun saveParallaxState(mapParallaxState: Map<String, Float>) {
-        carouselParallaxState = mapParallaxState.toMutableMap()
-    }
-
     override fun getScrollState(adapterPosition: Int): Parcelable? {
         return carouselScrollState[adapterPosition]
     }
 
-    override fun getParallaxState(): Map<String, Float> {
-        return carouselParallaxState
+    override fun saveParallaxState(adapterPosition: Int, mapParallaxState: Map<String, Float>) {
+        carouselParallaxState[adapterPosition] = mapParallaxState
+    }
+
+    override fun getParallaxState(adapterPosition: Int): Map<String, Float>? {
+        return carouselParallaxState[adapterPosition]
     }
 
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
