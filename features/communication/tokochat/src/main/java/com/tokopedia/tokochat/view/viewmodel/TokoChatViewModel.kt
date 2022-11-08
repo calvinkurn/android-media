@@ -1,9 +1,10 @@
 package com.tokopedia.tokochat.view.viewmodel
 
+import android.content.Context
+import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
@@ -22,7 +23,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
-import com.tokopedia.tokochat.domain.response.extension.TokoChatImageResult
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
@@ -35,7 +35,8 @@ import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -48,6 +49,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -99,6 +101,7 @@ class TokoChatViewModel @Inject constructor(
         get() = _error
 
     val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
+    var connectionCheckJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -230,29 +233,15 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun doCheckChatConnection() {
-        launchCatchError(context = dispatcher.io, block = {
-            withContext(NonCancellable) {
-                while (true) {
-                    _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
-                    delay(5000)
-                }
+        connectionCheckJob?.cancel()
+        connectionCheckJob = launchCatchError(context = dispatcher.io, block = {
+            while (currentCoroutineContext().isActive) {
+                delay(DELAY_UPDATE_ORDER_STATE)
+                _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
             }
         }, onError = {
             _isChatConnected.postValue(false)
         })
-    }
-
-    fun isChatConnected(): Boolean {
-        return chatChannelUseCase.isChatConnected()
-    }
-
-    fun getTotalUnreadCount(): LiveData<Int> {
-        return try {
-            getChatHistoryUseCase.getTotalUnreadCount(listOf(ChannelType.GroupBooking))
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-            MutableLiveData()
-        }
     }
 
     fun getTokoChatBackground() {
@@ -333,31 +322,39 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getImageWithId(
+        context: Context,
         imageId: String,
         channelId: String,
         onImageReady: (File?) -> Unit,
-        onError: () -> Unit
+        onError: () -> Unit,
+        onDirectLoad: () -> Unit,
+        imageView: ImageView? = null,
+        isFromRetry: Boolean = false
     ) {
         launchCatchError(context = dispatcher.io, block = {
-            val imageUrlResponse = getImageUrlUseCase(
-                TokoChatGetImageUseCase.Param(imageId, channelId)
-            )
             val cachedImage = getTokoChatPhotoPath(generateImageName(imageId, channelId))
             // If image has never been downloaded, then download
-            if (!cachedImage.exists()) {
+            if (!cachedImage.exists() || isFromRetry) {
+                delay(DELAY_FETCH_IMAGE)
+                val imageUrlResponse = getImageUrlUseCase(
+                    TokoChatGetImageUseCase.Param(imageId, channelId)
+                )
                 imageUrlResponse.data?.url?.let {
                     downloadAndSaveByteArrayImage(
+                        context,
                         generateImageName(imageId, channelId),
                         getImageUrlUseCase.getImage(it).byteStream(),
                         onImageReady,
-                        onError
+                        onError,
+                        onDirectLoad,
+                        imageView
                     )
                 }
             } else { // Else use the downloaded image
                 onImageReady(cachedImage)
             }
         }, onError = {
-            _error.value = it
+            _error.postValue(it)
             onError()
         })
     }
@@ -369,5 +366,6 @@ class TokoChatViewModel @Inject constructor(
     companion object {
         private const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
+        private const val DELAY_FETCH_IMAGE = 500L
     }
 }

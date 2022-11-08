@@ -5,6 +5,7 @@ object TokoChatValueUtil {
      * Role Value
      */
     const val DRIVER = "driver"
+    const val CUSTOMER = "customer"
 
     /**
      * SOURCE
@@ -28,10 +29,11 @@ object TokoChatValueUtil {
     const val HEADER_DATE_FORMAT = "d MMMM, yyyy"
 
     /**
-     * Compose Message
+     * Compose & Bubble Message
      */
-    const val MAX_DISPLAYED_OFFSET = 1_000
-    const val MAX_DISPLAYED_STRING = "1000+"
+    const val MAX_DISPLAYED_OFFSET = 10_000
+    const val MAX_DISPLAYED_STRING = "10.000+"
+    const val MAX_MESSAGE_IN_BUBBLE = 400
 
     /*
     * TokoChatPrefManager
