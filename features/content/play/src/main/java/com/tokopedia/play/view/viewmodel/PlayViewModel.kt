@@ -197,11 +197,6 @@ class PlayViewModel @AssistedInject constructor(
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
 
-    /**
-     * Partner Id in current page
-     */
-    private val currentStreamerId = MutableStateFlow(0L)
-
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
     ) { leaderboard, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
@@ -298,14 +293,6 @@ class PlayViewModel @AssistedInject constructor(
 
     }.flowOn(dispatchers.computation)
 
-    private val _followPopUpState = combine(_channelDetail, _partnerInfo, _bottomInsets, currentStreamerId) { channelDetail, partnerInfo, bottomInsets, id ->
-        FollowPopUpUiState(
-            shouldShow = partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && (partnerInfo.status as? PlayPartnerFollowStatus.Followable)?.followStatus != PartnerFollowableStatus.Followed
-                && !bottomInsets.isAnyShown && !isFreezeOrBanned && playPreference.isFollowPopup(id.toString()) && channelDetail.popupConfig.isEnabled && partnerInfo.id == id,
-            popupConfig = channelDetail.popupConfig
-        )
-    }.flowOn(dispatchers.computation)
-
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -330,11 +317,10 @@ class PlayViewModel @AssistedInject constructor(
         _loadingBuy,
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
-        _followPopUpState.distinctUntilChanged(),
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,
-        featuredProducts, followPopUp ->
+        featuredProducts ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -352,7 +338,6 @@ class PlayViewModel @AssistedInject constructor(
             isLoadingBuy = isLoadingBuy,
             address = address,
             featuredProducts = featuredProducts,
-            followPopUp = followPopUp
         )
     }.stateIn(
         viewModelScope,
@@ -1045,8 +1030,8 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
         updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
+        handleFollowPopUp(channelData)
         sendInitialLog()
-        setupPopUp()
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1146,10 +1131,6 @@ class PlayViewModel @AssistedInject constructor(
         updatePartnerInfo(channelData.partnerInfo)
         if (!channelData.status.channelStatus.statusType.isFreeze) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
-        }
-
-        currentStreamerId.setValue {
-            channelData.partnerInfo.id
         }
     }
 
@@ -2632,8 +2613,23 @@ class PlayViewModel @AssistedInject constructor(
         playLog.sendAll(channelId, videoPlayer)
     }
 
-    private fun setupPopUp () {
-        playPreference.setFollowPopUp(currentStreamerId.value.toString())
+    private fun handleFollowPopUp (channelData: PlayChannelData) {
+        val streamerId = channelData.partnerInfo.id.toString()
+        val config = channelData.channelDetail.popupConfig
+        val shouldShow = _partnerInfo.value.status is PlayPartnerFollowStatus.Followable &&
+            ( _partnerInfo.value.status as? PlayPartnerFollowStatus.Followable)?.followStatus != PartnerFollowableStatus.Followed
+            && !bottomInsets.isAnyShown && !isFreezeOrBanned
+            && playPreference.isFollowPopup(streamerId) && config.isEnabled
+
+        if (shouldShow) {
+            viewModelScope.launch(dispatchers.computation){
+                delay(config.duration)
+                if (!shouldShow) return@launch
+                _uiEvent.emit(ShowPopUp(config))
+            }
+        }
+
+        playPreference.setFollowPopUp(streamerId)
     }
 
     private fun CoroutineScope.launch(
