@@ -1396,6 +1396,10 @@ open class DynamicProductDetailFragment :
                     componentTrackDataModel
                 )
             }
+            ProductDetailConstant.INFO_OBAT_KERAS -> {
+                goToApplink(appLink)
+                // TODO - vindo to add tracker when on click
+            }
         }
     }
 
