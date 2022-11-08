@@ -6,11 +6,11 @@ import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
+import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -18,7 +18,7 @@ import javax.inject.Inject
  */
 class PlayShortsViewModel @Inject constructor(
     private val repo: PlayShortsRepository,
-    private val sharedPref: HydraSharedPreferences,
+    private val sharedPref: HydraSharedPreferences
 ) : ViewModel() {
 
     private val _mediaUri = MutableStateFlow("")
@@ -31,7 +31,7 @@ class PlayShortsViewModel @Inject constructor(
         _shortsId,
         _mediaUri,
         _accountList,
-        _selectedAccount,
+        _selectedAccount
     ) { shortsId, mediaUri, accountList, selectedAccount ->
         PlayShortsUiState(
             shortsId = shortsId,
@@ -41,8 +41,16 @@ class PlayShortsViewModel @Inject constructor(
         )
     }
 
-    /**
-     * shortsId != null && mediaUri == null -> MediaPicker
-     * shortsId != null && mediaUri != null -> Preparation
-     */
+    fun submitAction(action: PlayShortsAction) {
+        when (action) {
+            is PlayShortsAction.PreparePage -> handlePreparePage(action.preferredAccountType)
+        }
+    }
+
+    private fun handlePreparePage(preferredAccountType: String) {
+        viewModelScope.launchCatchError(block = {
+            val lastSelectedAccount = sharedPref.getLastSelectedAccount()
+        }) {
+        }
+    }
 }

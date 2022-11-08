@@ -3,9 +3,12 @@ package com.tokopedia.play.broadcaster.shorts.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -13,6 +16,11 @@ import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
+import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play_common.util.extension.withCache
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -26,18 +34,19 @@ class PlayShortsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityPlayShortsBinding
 
+    private val viewModel by viewModels<PlayShortsViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         setupFragmentFactory()
-        super.onCreate(savedInstanceState)
-        binding = ActivityPlayShortsBinding.inflate(
-            LayoutInflater.from(this),
-            null,
-            false
-        )
-        setContentView(binding.root)
 
-        openMediaPicker()
+        super.onCreate(savedInstanceState)
+
+        setupBinding()
+        setupObserver()
+
+        val preferredAccountType = intent.getStringExtra(ContentCommonUserType.KEY_AUTHOR_TYPE).orEmpty()
+        viewModel.submitAction(PlayShortsAction.PreparePage(preferredAccountType))
     }
 
     private fun inject() {
@@ -52,6 +61,45 @@ class PlayShortsActivity : BaseActivity() {
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
+    private fun setupBinding() {
+        binding = ActivityPlayShortsBinding.inflate(
+            LayoutInflater.from(this),
+            null,
+            false
+        )
+        setContentView(binding.root)
+    }
+
+    private fun setupObserver() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                renderPage(it.prevValue, it.value)
+            }
+        }
+    }
+
+    private fun renderPage(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        /**
+         * Need to put validation here so render page only run once
+         */
+
+        /**
+         * shortsId != null && mediaUri == null -> MediaPicker
+         * shortsId != null && mediaUri != null -> Preparation
+         */
+        when {
+            curr.shortsId.isNotEmpty() && curr.mediaUri.isEmpty() -> {
+                openMediaPicker()
+            }
+            curr.shortsId.isNotEmpty() && curr.mediaUri.isNotEmpty() -> {
+                openPreparation()
+            }
+        }
+    }
+
     private fun openMediaPicker() {
         val intent = MediaPicker.intent(this) {
             pageSource(PageSource.Unknown)
@@ -63,6 +111,9 @@ class PlayShortsActivity : BaseActivity() {
         }
 
         startActivityForResult(intent, MEDIA_PICKER_REQ)
+    }
+
+    private fun openPreparation() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
