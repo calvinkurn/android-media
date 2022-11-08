@@ -135,7 +135,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun initGroupBooking(
         orderId: String,
-        serviceType: Int = 2,
+        serviceType: Int = TOKOFOOD_SERVICE_TYPE,
         groupBookingListener: ConversationsGroupBookingListener,
         orderChatType: OrderChatType = OrderChatType.Unknown
     ) {
@@ -367,6 +367,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     companion object {
+        private const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
     }
 }
