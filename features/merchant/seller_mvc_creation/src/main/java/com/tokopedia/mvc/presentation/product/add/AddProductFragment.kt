@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.seller_mvc_creation.databinding.SmvcFragmentAddProductBinding
+import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
