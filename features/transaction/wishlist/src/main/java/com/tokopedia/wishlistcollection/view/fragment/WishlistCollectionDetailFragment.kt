@@ -112,6 +112,7 @@ import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_SHOW_COACHMARK_TOOLBAR
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_NAME_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_BULK_ADD
@@ -175,10 +176,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var countRemovableAutomaticDelete = 0
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
+    private val handlerCoachmark = Handler(Looper.getMainLooper())
     private var userAddressData: LocalCacheModel? = null
     private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
+    }
+    private val showCoarchmarkRunnable = Runnable {
+        showCoachMarkSharingIcon()
     }
     private var collectionId = ""
     private var collectionName = ""
@@ -1033,7 +1038,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
             coachMarkSharingIcon?.let {
                 if (!it.isShowing) {
-                    it.showCoachMark(coachMarkItemSharingIcon, null, 1)
+                    it.showCoachMark(coachMarkItemSharingIcon, null)
                 }
                 CoachMarkPreference.setShown(requireContext(),
                     COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE, true)
@@ -1072,7 +1077,18 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             wishlistCollectionDetailNavtoolbar.setIcon(icons)
-            wishlistCollectionDetailNavtoolbar.getShareIconView()?.let { showCoachMarkOnSharingIcon(it) }
+            handler.postDelayed(
+                showCoarchmarkRunnable,
+                DELAY_SHOW_COACHMARK_TOOLBAR
+            )
+        }
+    }
+
+    private fun showCoachMarkSharingIcon() {
+        binding?.run {
+            wishlistCollectionDetailNavtoolbar.getShareIconView()?.let {
+                showCoachMarkOnSharingIcon(it)
+            }
         }
     }
 
