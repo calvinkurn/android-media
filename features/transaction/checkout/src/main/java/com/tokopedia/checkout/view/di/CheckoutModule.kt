@@ -116,7 +116,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 analyticsPurchaseProtection, checkoutAnalytics,
                 shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
                 validateUsePromoRevampUseCase, gson,
-                executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase)
+                executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase
+        )
     }
 
     @Provides
