@@ -32,4 +32,9 @@ object TokoChatValueUtil {
      */
     const val MAX_DISPLAYED_OFFSET = 1_000
     const val MAX_DISPLAYED_STRING = "1000+"
+
+    /*
+    * TokoChatPrefManager
+     */
+    const val TOKOCHAT_CACHE = "tokoChatCache"
 }
