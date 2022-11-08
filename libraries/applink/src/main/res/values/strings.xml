@@ -174,9 +174,6 @@
     <!--Tokopedia Flash Sale-->
     <string name="title_tokopedia_flash_sale">Flash Sale Tokopedia</string>
 
-    <!--Merchant Voucher Creation-->
-    <string name="title_merchant_voucher_creation">Kupon Diskon</string>
-
 <!--    Tokomember seller dashboard-->
     <string name="title_tokomember" translatable="false">Tokomember</string>
     <string name="title_tokopedia_flash_sale_campaign_detail">Campaign Detail</string>

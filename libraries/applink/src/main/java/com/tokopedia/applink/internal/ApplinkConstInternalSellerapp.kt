@@ -119,7 +119,4 @@ object ApplinkConstInternalSellerapp {
 
     //TokomemberMemberListActivity
     const val INTERNAL_MEMBER_LIST = "$TOKOMEMBER/member-list"
-
-    //Merchant Voucher Creation
-    const val MERCHANT_VOUCHER_CREATION = "$INTERNAL_SELLERAPP/voucher-creation"
 }

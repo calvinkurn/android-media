@@ -530,7 +530,6 @@ public interface ApplinkConst {
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
         String SELLER_SHOP_FLASH_SALE = "sellerapp://shop-flash-sale";
-        String SELLER_MERCHANT_VOUCHER_CREATION = "sellerapp://voucher-creation";
         String SELLER_TOKOPEDIA_FLASH_SALE = "sellerapp://tokopedia-flash-sale";
         String SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "sellerapp://tokopedia-flash-sale/campaign-detail/{campaign_id}";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
