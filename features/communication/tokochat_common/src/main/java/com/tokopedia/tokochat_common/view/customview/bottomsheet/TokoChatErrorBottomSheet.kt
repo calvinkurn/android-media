@@ -40,12 +40,9 @@ class TokoChatErrorBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupViews() {
-        binding?.tokochatGlobalError?.apply {
-            errorIllustration
-            setType(errorType)
-            setActionClickListener {
-                buttonAction?.invoke()
-            }
+        binding?.tokochatGlobalError?.setType(errorType)
+        binding?.tokochatGlobalError?.setActionClickListener {
+            buttonAction?.invoke()
         }
         binding?.tokochatLayoutGlobalError?.show()
     }
