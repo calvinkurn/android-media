@@ -1233,8 +1233,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun setRefreshing() {
+        isAturMode = false
         isBulkDeleteShow = false
-        // listSelectedProductIds.clear()
         listExcludedBulkDelete.clear()
         collectionItemsAdapter.hideCheckbox()
         countRemovableAutomaticDelete = 0
