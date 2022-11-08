@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -173,7 +174,7 @@ class MainActivity : AppCompatActivity() {
         val applink: String = "",
         val urlState: String = "live",
         val isDarkModeChecked: Boolean = false,
-        val loginText: String = "Login"
+        val loginText: String = "Logged in as fjlasdkjflkdsfeafesafdsaf"
     )
 }
 
@@ -214,11 +215,17 @@ fun TestAppHome(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                NestButton(
-                    text = model.loginText,
+                Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onNavigateTo(HomeDestination.LOGIN) }
-                )
+                ) {
+                    Text(
+                        text = model.loginText,
+                        textAlign = TextAlign.Center,
+                        style = NestTheme.typography.heading6,
+                        color = Color.White
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 NestButton(
                     text = "Logout",

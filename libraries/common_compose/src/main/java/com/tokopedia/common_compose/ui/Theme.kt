@@ -1,6 +1,7 @@
 package com.tokopedia.common_compose.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
 import androidx.compose.material.darkColors
@@ -29,6 +30,12 @@ private val NestThemeDark = darkColors(
 private val LightElevation = Elevations()
 private val DarkElevation = Elevations(card = 1.dp)
 
+private val NestShape = Shapes(
+    small = RoundedCornerShape(8.dp), // based on NestButton
+    medium = RoundedCornerShape(8.dp), // TBD
+    large = RoundedCornerShape(4.dp) // TBD
+)
+
 
 @Composable
 fun NestTheme(
@@ -51,7 +58,8 @@ fun NestTheme(
         MaterialTheme(
             colors = themeColors,
             typography = OpenSauceTypography,
-            content = content
+            content = content,
+            shapes = NestShape,
         )
     }
 }
