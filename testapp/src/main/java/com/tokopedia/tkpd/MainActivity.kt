@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.service.autofill.Validators.not
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -38,25 +39,25 @@ class MainActivity : AppCompatActivity() {
     val REQUEST_CODE_LOGOUT = 456
     lateinit var userSession: UserSessionInterface
 
-    private val applink = mutableStateOf(getDefaultAppLink())
-    private val darkMode = mutableStateOf(false)
+    private val model = mutableStateOf(
+        Model(getDefaultAppLink(), getLiveStatus(), false, "Login")
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
-        darkMode.value = getDarkModeStatus()
+        model.value = model.value.copy(isDarkModeChecked = getDarkModeStatus())
         setContent {
             NestTheme {
-                val applinkStr by remember { applink }
-                val darkModeBool by remember { darkMode }
+                var modelState by remember { model }
                 TestAppHome(
-                    Model(applinkStr, getLiveStatus(), darkModeBool),
+                    modelState,
                     {
-                        val newState = darkMode.value.not()
+                        val newState = modelState.isDarkModeChecked.not()
                         setDarkModeAndRecreate(newState)
-                        darkMode.value = newState
+                        modelState = modelState.copy(isDarkModeChecked = newState)
                     },
-                    { this.applink.value = it },
+                    { modelState = modelState.copy(applink = it) },
                     {
                         when (it) {
                             HomeDestination.LOGIN -> handleNavigationLogin()
@@ -139,21 +140,15 @@ class MainActivity : AppCompatActivity() {
         if (userSession.isLoggedIn) {
             val identity =
                 if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            findViewById<TextView>(R.id.loginButton)?.run {
-                text = "Logged in as:\n${identity}"
-                visibility = View.VISIBLE
-            }
+            model.value = model.value.copy(loginText = "Logged in as:\n${identity}")
         } else {
-            findViewById<TextView>(R.id.loginButton)?.run {
-                text = "Login"
-                visibility = View.GONE
-            }
+            model.value = model.value.copy(loginText = "Login")
         }
     }
 
     override fun onResume() {
         super.onResume()
-//        setLoginStatus()
+        setLoginStatus()
     }
 
     private fun goTo() {
@@ -163,7 +158,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        if (applink.value.isNotBlank()) RouteManager.route(this, applink.value)
+        if (model.value.applink.isNotBlank()) RouteManager.route(this, model.value.applink)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
@@ -177,7 +172,8 @@ class MainActivity : AppCompatActivity() {
     data class Model(
         val applink: String = "",
         val urlState: String = "live",
-        val isDarkModeChecked: Boolean = false
+        val isDarkModeChecked: Boolean = false,
+        val loginText: String = "Login"
     )
 }
 
@@ -219,7 +215,7 @@ fun TestAppHome(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 NestButton(
-                    text = "Login",
+                    text = model.loginText,
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onNavigateTo(HomeDestination.LOGIN) }
                 )
