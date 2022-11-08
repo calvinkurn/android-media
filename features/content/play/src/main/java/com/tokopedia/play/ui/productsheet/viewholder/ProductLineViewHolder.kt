@@ -59,11 +59,10 @@ class ProductLineViewHolder(
     }
 
     fun bind(item: ProductSheetAdapter.Item.Product) {
-        binding.root.setItem(item.product, item.section)
-
         binding.root.addImpressionListener(item.product.impressHolder) {
             listener.onProductImpressed(this, item, adapterPosition)
         }
+        binding.root.setItem(item.product, item.section)
     }
 
     companion object {

@@ -379,10 +379,12 @@ class ProductSheetViewComponent(
     private fun sendImpression() = synchronized(impressionSet) {
         if (!rootView.isShown) return@synchronized
 
-        val products = impressionSet.filter {
-            impressionSet.containsValue(it.value)
-        }
+        val products = getProducts()
         listener.onProductImpressed(this, products)
+    }
+
+    private fun getProducts() : Map<ProductSheetAdapter.Item.Product, Int> {
+        return impressionSet.toList().distinctBy { it.first.product.id }.toMap()
     }
 
     /**
