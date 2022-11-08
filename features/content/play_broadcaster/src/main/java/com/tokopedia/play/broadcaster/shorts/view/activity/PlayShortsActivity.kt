@@ -3,6 +3,10 @@ package com.tokopedia.play.broadcaster.shorts.view.activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
 
 /**
@@ -21,5 +25,18 @@ class PlayShortsActivity : BaseActivity() {
             false
         )
         setContentView(binding.root)
+    }
+
+    private fun openMediaPicker() {
+        val intent = MediaPicker.intent(this) {
+            pageSource(PageSource.Unknown)
+            minVideoDuration(1000)
+            maxVideoDuration(90000)
+            pageType(PageType.GALLERY)
+            modeType(ModeType.VIDEO_ONLY)
+            singleSelectionMode()
+        }
+
+        startActivityForResult(intent, 123)
     }
 }
