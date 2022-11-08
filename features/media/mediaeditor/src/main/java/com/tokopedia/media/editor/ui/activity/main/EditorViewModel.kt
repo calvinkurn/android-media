@@ -44,15 +44,12 @@ class EditorViewModel @Inject constructor(
         } else {
             // if state not last edit (user did undo and do edit again) then we will remove last state until current redo state)
             if (state.backValue != 0) {
-                var index = 0
-                while (index < state.backValue) {
+                (0 until state.backValue).forEach { _ ->
                     if (state.editList.last().removeBackgroundUrl != null) {
                         state.removedBackgroundUrl = null
                         state.removeBackgroundStartState = 0
                     }
                     state.editList.removeLast()
-
-                    index++
                 }
                 state.backValue = 0
             }
