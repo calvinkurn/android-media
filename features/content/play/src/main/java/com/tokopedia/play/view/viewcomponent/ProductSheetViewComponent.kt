@@ -113,6 +113,7 @@ class ProductSheetViewComponent(
         ) {
             if(impressionSet.containsValue(position)) return
             impressionSet[product] = position
+            sendImpression()
         }
     }
 
