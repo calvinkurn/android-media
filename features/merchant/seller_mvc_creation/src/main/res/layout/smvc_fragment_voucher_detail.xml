@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/voucher_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="false" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ViewStub
+                android:id="@+id/layout_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout="@layout/smvc_voucher_detail_header_section"
+                android:inflatedId="@+id/header_layout"/>
+
+            <ViewStub
+                android:id="@+id/layout_voucher_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout="@layout/smvc_voucher_detail_voucher_type_section"
+                android:inflatedId="@+id/voucher_type_layout"/>
+
+            <ViewStub
+                android:id="@+id/layout_voucher_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout="@layout/smvc_voucher_detail_voucher_info_section"
+                android:inflatedId="@+id/voucher_info_layout" />
+
+            <ViewStub
+                android:id="@+id/layout_voucher_setting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout="@layout/smvc_voucher_detail_voucher_setting_section"
+                android:inflatedId="@+id/voucher_setting_layout" />
+
+            <ViewStub
+                android:id="@+id/layout_product_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout="@layout/smvc_voucher_detail_product_section"
+                android:inflatedId="@+id/voucher_setting_layout" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

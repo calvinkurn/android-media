@@ -3,16 +3,20 @@
     package="com.tokopedia.seller_mvc_creation">
 
     <application>
-
+        <activity
+            android:name="com.tokopedia.mvc.presentation.detail.VoucherDetailActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name="com.tokopedia.mvc.presentation.product.add.AddProductActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:label="@string/smvc_add_product"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-        </activity>
-
+            android:theme="@style/Theme.White"></activity>
     </application>
 
 </manifest>

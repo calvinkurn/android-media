@@ -11,4 +11,23 @@
     <string name="smvc_placeholder_product_sold_count">Terjual: %d</string>
     <string name="smvc_placeholder_variant_product_count">%d Varian Produk</string>
     <string name="smvc_placeholder_product_price">%s - %s</string>
+    <string name="smvc_ubah_kupon_label">Ubah Kupon</string>
+    <string name="smvc_kuota_terpakai_label">Kuota terpakai</string>
+    <string name="smvc_jenis_kupon_label">Jenis Kupon</string>
+    <string name="smvc_informasi_kupon_label">Informasi Kupon</string>
+    <string name="smvc_target_kupon_label">Target Kupon</string>
+    <string name="smvc_nama_kupon_label">Nama Kupon</string>
+    <string name="smvc_kode_kupon_label">Kode Kupon</string>
+    <string name="smvc_periode_mulai_label">Periode Mulai</string>
+    <string name="smvc_periode_berakhir_label">Periode Berakhir</string>
+    <string name="smvc_pengaturan_kupon_label">Pengaturan Kupon</string>
+    <string name="smvc_tipe_promo_label">Tipe Promo</string>
+    <string name="smvc_tipe_potongan_label">Tipe Potongan</string>
+    <string name="smvc_maks_potongan_harga_label">Maks. Potongan Harga</string>
+    <string name="smvc_minimum_pembelian_label">Minimum Pembelian</string>
+    <string name="smvc_kuota_label">Kuota</string>
+    <string name="smvc_target_pembeli_label">Target Pembeli</string>
+    <string name="smvc_daftar_produk_label">Daftar Produk</string>
+    <string name="smvc_produk_terdaftar_label">Produk Terdaftar</string>
+    <string name="smvc_lihat_produk_label">Lihat Produk</string>
 </resources>
