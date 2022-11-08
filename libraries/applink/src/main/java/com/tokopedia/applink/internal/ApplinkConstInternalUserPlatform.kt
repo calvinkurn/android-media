@@ -459,4 +459,11 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val KYC_LIVENESS_BASE = "${NEW_INTERNAL_USER}/liveness-detection"
     const val KYC_LIVENESS = "$KYC_LIVENESS_BASE?$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}"
+
+    /**
+     * com.tokopedia.privacyaccount.PrivacyCenterActivity
+     * @Applink : tokopedia-android-internal://user/privacy-center
+     **/
+    const val PRIVACY_CENTER = "$NEW_INTERNAL_USER/privacy-center"
+
 }

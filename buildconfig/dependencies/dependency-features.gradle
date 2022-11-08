@@ -283,6 +283,7 @@ ext {
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
+            privacycenter                   : ":features:user:privacycenter",
             profileCompletion               : ":features:user:profilecompletion",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
             sessioncommon                   : ":features:user:sessioncommon",

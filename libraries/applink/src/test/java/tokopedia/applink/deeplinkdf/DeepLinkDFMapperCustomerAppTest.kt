@@ -910,6 +910,12 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check privacy center appLink then should return DF_PRIVACY_CENTER in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/privacy-center"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_PRIVACYCENTER)
+    }
+
+    @Test
     fun `check notification appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalNotification.INTERNAL_MARKETPLACE}/notification"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
