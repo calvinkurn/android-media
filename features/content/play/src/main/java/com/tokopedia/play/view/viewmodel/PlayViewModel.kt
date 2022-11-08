@@ -416,6 +416,11 @@ class PlayViewModel @AssistedInject constructor(
 
     private var mChannelData: PlayChannelData? = null
 
+    /**
+     * Partner Id in current page
+     */
+    private var currentStreamerId : Long? = null
+
     val latestCompleteChannelData: PlayChannelData
         get() {
             val channelData = mChannelData ?: error("Channel Data should not be null")
@@ -1141,6 +1146,7 @@ class PlayViewModel @AssistedInject constructor(
         if (!channelData.status.channelStatus.statusType.isFreeze) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
         }
+        currentStreamerId = channelData.partnerInfo.id
     }
 
     /**
