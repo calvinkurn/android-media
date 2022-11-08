@@ -197,6 +197,11 @@ class PlayViewModel @AssistedInject constructor(
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
 
+    /**
+     * Partner Id in current page
+     */
+    private val currentStreamerId = MutableStateFlow(0L)
+
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
     ) { leaderboard, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
@@ -293,10 +298,10 @@ class PlayViewModel @AssistedInject constructor(
 
     }.flowOn(dispatchers.computation)
 
-    private val _followPopUpState = combine(_channelDetail, _partnerInfo, _bottomInsets) { channelDetail, partnerInfo, bottomInsets ->
+    private val _followPopUpState = combine(_channelDetail, _partnerInfo, _bottomInsets, currentStreamerId) { channelDetail, partnerInfo, bottomInsets, id ->
         FollowPopUpUiState(
             shouldShow = partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && (partnerInfo.status as? PlayPartnerFollowStatus.Followable)?.followStatus != PartnerFollowableStatus.Followed
-                && !bottomInsets.isAnyShown && !isFreezeOrBanned && playPreference.isFollowPopup(currentStreamerId.toString()) && channelDetail.popupConfig.isEnabled && partnerInfo.id == currentStreamerId,
+                && !bottomInsets.isAnyShown && !isFreezeOrBanned && playPreference.isFollowPopup(id.toString()) && channelDetail.popupConfig.isEnabled && partnerInfo.id == id,
             popupConfig = channelDetail.popupConfig
         )
     }.flowOn(dispatchers.computation)
@@ -416,11 +421,6 @@ class PlayViewModel @AssistedInject constructor(
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
     private var mChannelData: PlayChannelData? = null
-
-    /**
-     * Partner Id in current page
-     */
-    private var currentStreamerId : Long? = null
 
     val latestCompleteChannelData: PlayChannelData
         get() {
@@ -1147,7 +1147,10 @@ class PlayViewModel @AssistedInject constructor(
         if (!channelData.status.channelStatus.statusType.isFreeze) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
         }
-        currentStreamerId = channelData.partnerInfo.id
+
+        currentStreamerId.setValue {
+            channelData.partnerInfo.id
+        }
     }
 
     /**
@@ -2630,7 +2633,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun setupPopUp () {
-        playPreference.setFollowPopUp(currentStreamerId.toString())
+        playPreference.setFollowPopUp(currentStreamerId.value.toString())
     }
 
     private fun CoroutineScope.launch(
