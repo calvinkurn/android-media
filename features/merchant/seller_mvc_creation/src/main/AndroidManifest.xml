@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.seller_mvc_creation">
+    package="com.tokopedia.mvc">
 
     <application>
+        <activity
+            android:name=".presentation.list.MvcListActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
 
         <activity
             android:name="com.tokopedia.mvc.presentation.product.add.AddProductActivity"
@@ -12,7 +17,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
         </activity>
-
     </application>
 
 </manifest>
