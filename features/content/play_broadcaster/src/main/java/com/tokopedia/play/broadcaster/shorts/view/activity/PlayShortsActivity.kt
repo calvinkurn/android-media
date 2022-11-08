@@ -3,12 +3,17 @@ package com.tokopedia.play.broadcaster.shorts.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.fragment.app.FragmentFactory
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
+import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
+import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on November 02, 2022
@@ -16,9 +21,14 @@ import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
 @Suppress("LateinitUsage")
 class PlayShortsActivity : BaseActivity() {
 
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
     private lateinit var binding: ActivityPlayShortsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        setupFragmentFactory()
         super.onCreate(savedInstanceState)
         binding = ActivityPlayShortsBinding.inflate(
             LayoutInflater.from(this),
@@ -28,6 +38,18 @@ class PlayShortsActivity : BaseActivity() {
         setContentView(binding.root)
 
         openMediaPicker()
+    }
+
+    private fun inject() {
+        DaggerPlayShortsComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .playShortsModule(PlayShortsModule(this))
+            .build()
+            .inject(this)
+    }
+
+    private fun setupFragmentFactory() {
+        supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
     private fun openMediaPicker() {
