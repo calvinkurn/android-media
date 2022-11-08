@@ -41,9 +41,16 @@ object ChooseProductUiMapper {
     }
 
     // limit max selected to MAX_PRODUCT_SELECTION due to server limitation
-    fun getMaxSelectedProduct(maximumFromRemote: Int): Int {
-        return if (maximumFromRemote < MAX_PRODUCT_SELECTION) maximumFromRemote
-        else MAX_PRODUCT_SELECTION
+    fun getMaxSelectedProduct(
+        maximumFromRemote: Int,
+        submittedProductIds: List<Long>
+    ): Int {
+        return if (submittedProductIds.isNotEmpty()) {
+            val maximumRemaining = maximumFromRemote - submittedProductIds.size
+            maximumRemaining.coerceAtMost(MAX_PRODUCT_SELECTION) + submittedProductIds.size
+        } else {
+            maximumFromRemote.coerceAtMost(MAX_PRODUCT_SELECTION)
+        }
     }
 
     fun mapToReserveParam(campaignId: Long, reservationId: String, selectedProducts: List<ChooseProductItem>?): DoFlashSaleProductReserveUseCase.Param {
