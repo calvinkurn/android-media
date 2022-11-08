@@ -73,7 +73,7 @@ object ProductManageTracking {
         productId: String, parentId: String = "0"
     ) {
         val trackerId = getTrackerIdPlatform(
-            sellerTrackerId = "36711",
+            sellerappTrackerId = "36711",
             mainappTrackerId = "36727"
         )
 
@@ -90,7 +90,7 @@ object ProductManageTracking {
 
     fun eventClickAturStockNotifyMe(productId: String, parentId: String = "0") {
         val trackerId = getTrackerIdPlatform(
-            sellerTrackerId = "36712",
+            sellerappTrackerId = "36712",
             mainappTrackerId = "36728"
         )
 
@@ -107,7 +107,7 @@ object ProductManageTracking {
 
     fun eventClickFilterNotifyMe() {
         val trackerId = getTrackerIdPlatform(
-            sellerTrackerId = "36718",
+            sellerappTrackerId = "36718",
             mainappTrackerId = "36734"
         )
 
