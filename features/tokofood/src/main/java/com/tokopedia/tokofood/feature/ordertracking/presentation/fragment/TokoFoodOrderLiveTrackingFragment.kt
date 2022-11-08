@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
@@ -32,7 +33,6 @@ class TokoFoodOrderLiveTrackingFragment(
     private fun onResumeListener(owner: LifecycleOwner) {
         this.lifecycleOwner = owner
         observeOrderLiveTracking()
-        observeUnreadChatCount()
     }
 
     fun setSwipeRefreshDisabled() {
@@ -56,22 +56,23 @@ class TokoFoodOrderLiveTrackingFragment(
         }
     }
 
-    private fun observeUnreadChatCount() {
+    fun observeUnreadChatCount(channelId: String) {
         lifecycleOwner?.let { lifecycleOwner ->
-            viewModel.getUnReadChatCount().observe(lifecycleOwner) {
+            viewModel.getUnReadChatCount(channelId).observe(lifecycleOwner) {
                 when (it) {
                     is Success -> {
                         updateUnreadChatCounter(it.data)
                     }
                     is Fail -> {
                         logExceptionReadCounterToServerLogger(it.throwable)
+                        updateUnreadChatCounter(Int.ZERO)
                     }
                 }
             }
         }
     }
 
-    private fun updateUnreadChatCounter(unReadCounter: Int) {
+    fun updateUnreadChatCounter(unReadCounter: Int?) {
         val newDriverSection = orderTrackingAdapter
             .list
             .filterIsInstance<DriverSectionUiModel>()

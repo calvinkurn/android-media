@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.domain.usecase
 
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.network.ConversationsNetworkError
 import com.gojek.courier.CourierConnection
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokochat.tokochat_config_common.repository.courier.TokoChatBabbleCourierImpl.Companion.SOURCE_APP_INIT
@@ -23,6 +25,28 @@ class TokoChatConfigMutationProfileUseCase @Inject constructor(
     }
 
     fun getUserId(): String {
-        return repository.getConversationRepository().getUserId()?: ""
+        return repository.getConversationRepository().getUserId() ?: ""
+    }
+
+    fun initGroupBooking(
+        orderId: String,
+        serviceType: Int = 5,
+        onSuccess: (String) -> Unit,
+        onError: () -> Unit
+    ) {
+        repository.getConversationRepository().initGroupBookingChat(
+            orderId, serviceType, object : ConversationsGroupBookingListener {
+                override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
+                    onError()
+                }
+
+                override fun onGroupBookingChannelCreationStarted() {
+                    // no-op
+                }
+
+                override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
+                    onSuccess(channelUrl)
+                }
+            })
     }
 }

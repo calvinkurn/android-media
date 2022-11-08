@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
-import com.gojek.conversations.network.ConversationsNetworkError
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -20,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
@@ -100,6 +99,8 @@ class BaseTokoFoodOrderTrackingFragment :
     private var delayAutoRefreshFinishOrderTempJob: Job? = null
 
     private var loaderDialog: LoaderDialog? = null
+
+    private var channelId: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -230,6 +231,18 @@ class BaseTokoFoodOrderTrackingFragment :
         val userId = viewModel.getProfileUserId()
         if (userId.isEmpty() || userId.isBlank()) {
             viewModel.initializeConversationProfile()
+        }
+    }
+
+    private fun initializeUnreadCounter() {
+        if (channelId.isBlank()) {
+            viewModel.initGroupBooking(orderId, onSuccess = {
+                orderLiveTrackingFragment?.observeUnreadChatCount(channelId)
+            }, onError = {
+                orderLiveTrackingFragment?.updateUnreadChatCounter(Int.ZERO)
+            })
+        } else {
+            orderLiveTrackingFragment?.observeUnreadChatCount(channelId)
         }
     }
 
@@ -441,7 +454,10 @@ class BaseTokoFoodOrderTrackingFragment :
                     orderTrackingAdapter,
                     toolbarHandler
                 )
-                orderLiveTrackingFragment?.let { lifecycle.addObserver(it) }
+                orderLiveTrackingFragment?.let {
+                    lifecycle.addObserver(it)
+                    initializeUnreadCounter()
+                }
                 updateViewsOrderLiveTracking(
                     actionButtonsUiModel,
                     toolbarLiveTrackingUiModel,

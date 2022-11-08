@@ -151,9 +151,9 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         })
     }
 
-    fun getUnReadChatCount(): LiveData<Result<Int>> {
+    fun getUnReadChatCount(channelId: String): LiveData<Result<Int>> {
         return try {
-            Transformations.map(getUnReadChatCountUseCase.get().unReadCount()) {
+            Transformations.map(getUnReadChatCountUseCase.get().unReadCount(channelId)) {
                 Success(it)
             }
         } catch (t: Throwable) {
@@ -165,6 +165,19 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         try {
             tokoChatConfigMutationProfileUseCase.get().initializeConversationProfile()
             _mutationProfile.value = Success(true)
+        } catch (t: Throwable) {
+            _mutationProfile.value = Fail(t)
+        }
+    }
+
+    fun initGroupBooking(
+        orderId: String,
+        onSuccess: (String) -> Unit,
+        onError: () -> Unit
+    ) {
+        try {
+            tokoChatConfigMutationProfileUseCase.get().initGroupBooking(
+                orderId = orderId, onSuccess = onSuccess, onError = onError)
         } catch (t: Throwable) {
             _mutationProfile.value = Fail(t)
         }

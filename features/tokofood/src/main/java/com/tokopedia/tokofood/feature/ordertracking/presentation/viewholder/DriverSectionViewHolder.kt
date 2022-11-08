@@ -114,7 +114,7 @@ class DriverSectionViewHolder(
     ) {
         icDriverChat.run {
             if (isShowDriverChat()) {
-                if (badgeCounter.isZero() || badgeCounter.isLessThanZero()) {
+                if (badgeCounter == null || badgeCounter.isZero() || badgeCounter.isLessThanZero()) {
                     notificationRef.hide()
                 } else {
                     notificationRef.show()
