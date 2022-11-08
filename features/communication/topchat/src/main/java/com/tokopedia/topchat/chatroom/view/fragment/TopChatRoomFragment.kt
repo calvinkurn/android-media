@@ -586,6 +586,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun markAsReadFromBubble() {
         if (isFromBubble) {
             viewModel.isFromBubble = isFromBubble
+            viewModel.isOnStop = false
             viewModel.markAsRead()
             val replyId = (viewModel.newMsg.value as? BaseChatUiModel)?.replyId.orEmpty()
             TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
