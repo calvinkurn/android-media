@@ -30,7 +30,7 @@ class TokoChatConfigMutationProfileUseCase @Inject constructor(
 
     fun initGroupBooking(
         orderId: String,
-        serviceType: Int = 5,
+        serviceType: Int = TOKOFOOD_SERVICE_TYPE,
         onSuccess: (String) -> Unit,
         onError: () -> Unit
     ) {
@@ -48,5 +48,9 @@ class TokoChatConfigMutationProfileUseCase @Inject constructor(
                     onSuccess(channelUrl)
                 }
             })
+    }
+
+    companion object {
+        private const val TOKOFOOD_SERVICE_TYPE = 5
     }
 }
