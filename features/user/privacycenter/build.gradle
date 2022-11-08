@@ -45,6 +45,7 @@ kapt {
 }
 
 dependencies {
+    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -69,6 +70,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.unifyDependencies.header
 
     // Test
     testImplementation rootProject.ext.testDependencies.mockk

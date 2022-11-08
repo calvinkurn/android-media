@@ -6,7 +6,10 @@ import com.tokopedia.privacycenter.PrivacyCenterFragment
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [PrivacyCenterModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [
+    PrivacyCenterModule::class,
+    PrivacyCenterViewModelModule::class
+], dependencies = [BaseAppComponent::class])
 interface PrivacyCenterComponent {
     fun inject(fragment: PrivacyCenterFragment)
 }
