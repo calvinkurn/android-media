@@ -15,9 +15,10 @@ class GetPrescriptionIdsUseCaseCoroutine @Inject constructor(
 
     private var params: Map<String, Any?>? = null
 
-    fun setParams(checkoutId: String): GetPrescriptionIdsUseCaseCoroutine {
+    fun setParams(checkoutId: String, source: String? = SOURCE_CHECKOUT): GetPrescriptionIdsUseCaseCoroutine {
         params = mapOf(
-            PARAM_CHECKOUT_ID to checkoutId
+            PARAM_CHECKOUT_ID to checkoutId,
+            PARAM_SOURCE to source
         )
         return this
     }
@@ -37,7 +38,11 @@ class GetPrescriptionIdsUseCaseCoroutine @Inject constructor(
 
     companion object {
         private const val PARAM_CHECKOUT_ID = "checkout_id"
+        private const val PARAM_SOURCE = "source"
 
         private const val QUERY_PRESCRIPTION_IDS = "PrescriptionIdsQuery"
+
+        const val SOURCE_CHECKOUT = "checkout"
+        const val SOURCE_OCC = "occ"
     }
 }
