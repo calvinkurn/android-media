@@ -61,6 +61,8 @@ class PlayVoucherAnalyticImpl @Inject constructor(
     }
 
     override fun impressVoucherBottomSheet(voucherId: String) {
+        if (voucherId.isBlank()) return
+
         Tracker.Builder()
             .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
             .setEventAction("view - voucher bottomsheet")

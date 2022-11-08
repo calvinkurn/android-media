@@ -60,10 +60,6 @@ class MerchantVoucherNewViewHolder(
             if(item.isPrivate) listener.onCopyItemVoucherClicked(item)
             else listener.onVoucherItemClicked(item)
         }
-
-        binding.root.addImpressionListener(item.impressHolder) {
-            listener.onVouchersImpressed(item.id)
-        }
     }
 
     private fun countDays(expiredDate: String): Long {
@@ -81,6 +77,5 @@ class MerchantVoucherNewViewHolder(
     interface Listener {
         fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.Merchant)
         fun onVoucherItemClicked(voucher: PlayVoucherUiModel.Merchant)
-        fun onVouchersImpressed(voucherId: String)
     }
 }

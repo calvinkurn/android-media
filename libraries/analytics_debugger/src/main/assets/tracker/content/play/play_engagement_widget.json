@@ -27,7 +27,6 @@
       "eventAction": "view - voucher bottomsheet",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "trackerId": "35808",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
