@@ -31,7 +31,6 @@ class WidgetCampaignProductSubmissionProgress(
     private var loader: View? = null
     private var textTitle: Typography? = null
     private var iconChevron: IconUnify? = null
-    private var iconClose: IconUnify? = null
     private var rvCampaignList: RecyclerView? = null
     private var onCampaignItemClicked: ((campaign: FlashSaleProductSubmissionProgress.Campaign) -> Unit)? =
         null
@@ -50,9 +49,7 @@ class WidgetCampaignProductSubmissionProgress(
         containerHeader?.setOnClickListener {
             toggleExpandCollapseCampaignList()
         }
-        iconClose?.setOnClickListener {
-            hide()
-        }
+        hide()
     }
 
     private fun toggleExpandCollapseCampaignList() {
@@ -82,7 +79,6 @@ class WidgetCampaignProductSubmissionProgress(
             loader = it.loader
             textTitle = it.title
             iconChevron = it.iconChevron
-            iconClose = it.iconClose
             rvCampaignList = it.rvCampaignProductSubmission
         }
     }
