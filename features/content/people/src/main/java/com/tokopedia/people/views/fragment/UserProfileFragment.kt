@@ -521,14 +521,18 @@ class UserProfileFragment @Inject constructor(
             prev.profileWhitelist == value.profileWhitelist
         ) return
 
-        if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist && !fabCreated) {
-            val items = arrayListOf<FloatingButtonItem>()
-            items.add(createLiveFab())
-            items.add(createPostFab())
-            mainBinding.fabUp.addItem(items)
-            mainBinding.fabUserProfile.show()
-            fabCreated = true
-        } else mainBinding.fabUserProfile.hide()
+        try {
+            if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist) {
+                if (!fabCreated) {
+                    val items = arrayListOf<FloatingButtonItem>()
+                    items.add(createLiveFab())
+                    items.add(createPostFab())
+                    mainBinding.fabUp.addItem(items)
+                    mainBinding.fabUserProfile.show()
+                    fabCreated = true
+                }
+            } else mainBinding.fabUserProfile.hide()
+        } catch (e: Exception) { }
     }
 
     private fun createLiveFab(): FloatingButtonItem {
