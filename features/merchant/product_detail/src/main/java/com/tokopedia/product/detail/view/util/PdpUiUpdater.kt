@@ -92,7 +92,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.REVIEW] as? ProductMostHelpfulReviewDataModel
 
     val fintechWidgetMap: FintechWidgetDataModel?
-        get()= mapOfData[ProductDetailConstant.FINTECH_WIDGET_NAME] as? FintechWidgetDataModel
+        get() = mapOfData[ProductDetailConstant.FINTECH_WIDGET_NAME] as? FintechWidgetDataModel
 
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
@@ -102,6 +102,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val productProtectionMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_PROTECTION] as? ProductGeneralInfoDataModel
+
+    val infoObatKerasMap: ProductGeneralInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.INFO_OBAT_KERAS] as? ProductGeneralInfoDataModel
 
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
@@ -164,14 +167,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.PRODUCT_CONTENT, loadInitialData) {
                 basicContentMap?.run {
                     data = ProductContentMainData(
-                            campaign = it.data.campaign,
-                            thematicCampaign = it.data.thematicCampaign,
-                            cashbackPercentage = it.data.isCashback.percentage,
-                            price = it.data.price,
-                            stockWording = it.data.stock.stockWording,
-                            isVariant = it.data.variant.isVariant,
-                            productName = it.data.name,
-                            isProductActive = it.basic.isActive()
+                        campaign = it.data.campaign,
+                        thematicCampaign = it.data.thematicCampaign,
+                        cashbackPercentage = it.data.isCashback.percentage,
+                        price = it.data.price,
+                        stockWording = it.data.stock.stockWording,
+                        isVariant = it.data.variant.isVariant,
+                        productName = it.data.name,
+                        isProductActive = it.basic.isActive()
                     )
                     data?.campaign?.originalPriceFmt = it.data.campaign.originalPrice.getCurrencyFormatted()
                     data?.campaign?.discountedPriceFmt = it.data.campaign.discountedPrice.getCurrencyFormatted()
@@ -250,7 +253,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             if (loadInitialData) {
                 verticalRecommendationItems.clear()
             }
-
         }
     }
 
@@ -283,8 +285,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun updateBestSellerData(
-            dataP1: DynamicProductInfoP1? = null,
-            productId: String? = null
+        dataP1: DynamicProductInfoP1? = null,
+        productId: String? = null
     ) {
         updateData(ProductDetailConstant.BEST_SELLER) {
             bestSellerData?.run {
@@ -304,7 +306,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             productTradeinMap?.run {
                 subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                     context?.getString(com.tokopedia.common_tradein.R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
-                            ?: ""
+                        ?: ""
                 } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
                     tradeinResponse.widgetString
                 } else {
@@ -327,7 +329,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             if (variantData == null) {
                 productIdToPriceURLMap[productDetail.basic.productID] =
                     FintechPriceDataModel(productDetail.data.price.value.toString())
-
             } else {
                 for (i in variantData.children.indices) {
                     productIdToPriceURLMap[variantData.children[i].productId] =
@@ -337,8 +338,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
-            {
+            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME) {
                 fintechWidgetMap?.run {
                     productId = selectedProductId
                     categoryId = productCategoryId
@@ -350,8 +350,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateFintechDataWithProductId(selectedProductId: String, loggedIn: Boolean) {
-        updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
-        {
+        updateData(ProductDetailConstant.FINTECH_WIDGET_NAME) {
             fintechWidgetMap?.run {
                 productId = selectedProductId
                 isLoggedIn = loggedIn
@@ -373,10 +372,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2(context: Context?,
-                     p2Data: ProductInfoP2UiData,
-                     productId: String,
-                     boeImageUrl: String) {
+    fun updateDataP2(
+        context: Context?,
+        p2Data: ProductInfoP2UiData,
+        productId: String,
+        boeImageUrl: String
+    ) {
         p2Data.let {
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
                 shopCredibility?.run {
@@ -387,14 +388,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopWarehouseCount = it.shopInfo.shopMultilocation.warehouseCount
                     shopWarehouseApplink = it.shopInfo.shopMultilocation.eduLink.applink
                     shopTierBadgeUrl = it.shopInfo.shopTierBadgeUrl
-                    infoShopData = if (context == null) listOf() else
-                        getTwoShopInfoHieararchy(context,
-                                it.shopSpeed,
-                                it.shopChatSpeed.toLongOrZero(),
-                                it.shopInfo.activeProduct.toLongOrZero(),
-                                it.shopInfo.createdInfo.shopCreated,
-                                it.shopRating,
-                                it.shopFinishRate)
+                    infoShopData = if (context == null) {
+                        listOf()
+                    } else {
+                        getTwoShopInfoHieararchy(
+                            context,
+                            it.shopSpeed,
+                            it.shopChatSpeed.toLongOrZero(),
+                            it.shopInfo.activeProduct.toLongOrZero(),
+                            it.shopInfo.createdInfo.shopCreated,
+                            it.shopRating,
+                            it.shopFinishRate
+                        )
+                    }
                     tickerDataResponse = it.shopInfo.tickerData
                 }
             }
@@ -440,13 +446,15 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            //old installment component
+            // old installment component
             if (it.productFinancingRecommendationData.data.partnerCode.isNotBlank()) {
                 updateData(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO) {
                     productInstallmentInfoMap?.run {
-                        subtitle = String.format(context?.getString(R.string.new_installment_template)
+                        subtitle = String.format(
+                            context?.getString(R.string.new_installment_template)
                                 ?: "",
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(it.productFinancingRecommendationData.data.monthlyPrice.roundToLong(), false))
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(it.productFinancingRecommendationData.data.monthlyPrice.roundToLong(), false)
+                        )
                     }
                 }
             } else {
@@ -484,6 +492,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     labels = it.shopAdditional.label
                     appLink = it.shopAdditional.appLink
                     linkText = it.shopAdditional.linkText
+                }
+            }
+
+            updateData(ProductDetailConstant.INFO_OBAT_KERAS) {
+                infoObatKerasMap?.apply {
+                    subtitle = it.obatKeras.subtitle
+                    applink = it.obatKeras.applink
                 }
             }
         }
@@ -526,14 +541,21 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateNotifyMeAndContent(productId: String,
-                                         upcomingData: Map<String, ProductUpcomingData>?, eligibleTradein: Boolean, freeOngkirImgUrl: String) {
+    private fun updateNotifyMeAndContent(
+        productId: String,
+        upcomingData: Map<String, ProductUpcomingData>?,
+        eligibleTradein: Boolean,
+        freeOngkirImgUrl: String
+    ) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
-                upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
-                        selectedUpcoming?.startDate ?: "")
+                upcomingNplData = UpcomingNplDataModel(
+                    selectedUpcoming?.upcomingType
+                        ?: "",
+                    selectedUpcoming?.campaignTypeName ?: "",
+                    selectedUpcoming?.startDate ?: ""
+                )
                 shouldShowTradein = if (productTradeinMap == null) false else eligibleTradein
                 this.freeOngkirImgUrl = freeOngkirImgUrl
             }
@@ -542,8 +564,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateUpcoming(productId, upcomingData)
     }
 
-    private fun updateUpcoming(productId: String,
-                               upcomingData: Map<String, ProductUpcomingData>?) {
+    private fun updateUpcoming(
+        productId: String,
+        upcomingData: Map<String, ProductUpcomingData>?
+    ) {
         updateData(ProductDetailConstant.UPCOMING_DEALS) {
             notifyMeMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
@@ -554,9 +578,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 notifyMe = selectedUpcoming?.notifyMe ?: false
                 bgColorUpcoming = selectedUpcoming?.bgColorUpcoming ?: ""
                 upcomingNplData = UpcomingNplDataModel(
-                        upcomingType = selectedUpcoming?.upcomingType ?: "",
-                        ribbonCopy = selectedUpcoming?.campaignTypeName ?: "",
-                        startDate = selectedUpcoming?.startDate ?: "",
+                    upcomingType = selectedUpcoming?.upcomingType ?: "",
+                    ribbonCopy = selectedUpcoming?.campaignTypeName ?: "",
+                    startDate = selectedUpcoming?.startDate ?: ""
                 )
             }
         }
@@ -569,9 +593,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
-                upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
-                        selectedUpcoming?.startDate ?: "")
+                upcomingNplData = UpcomingNplDataModel(
+                    selectedUpcoming?.upcomingType
+                        ?: "",
+                    selectedUpcoming?.campaignTypeName ?: "",
+                    selectedUpcoming?.startDate ?: ""
+                )
                 this.freeOngkirImgUrl = freeOngkirImgUrl
             }
         }
@@ -688,9 +715,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         } else {
             updateData(data.pageName) {
                 mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
-                        "",
-                        data.pageName,
-                        data
+                    "",
+                    data.pageName,
+                    data
                 )
             }
         }
@@ -702,7 +729,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 filterData = data.filterData
                 recomWidgetData = data.recomWidgetData
                 cardModel = data.recomWidgetData?.recommendationItemList?.toProductCardModels(hasThreeDots = true)
-                        ?: listOf()
+                    ?: listOf()
             }
         }
     }
@@ -792,19 +819,21 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?, key: String) {
         val dataList = recomWidget.copyRecomItemList()
         dataList.forEach { recomItem ->
-            //update data based on tokonow cart
+            // update data based on tokonow cart
             if (recomItem.isRecomProductShowVariantAndCart) {
                 recomItem.setDefaultCurrentStock()
                 miniCart?.let { cartData ->
-                    recomItem.updateItemCurrentStock(when {
-                        recomItem.isProductHasParentID() -> {
-                            getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
+                    recomItem.updateItemCurrentStock(
+                        when {
+                            recomItem.isProductHasParentID() -> {
+                                getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
+                            }
+                            cartData.containsKey(recomItem.productId.toString()) -> {
+                                cartData[recomItem.productId.toString()]?.quantity ?: 0
+                            }
+                            else -> 0
                         }
-                        cartData.containsKey(recomItem.productId.toString()) -> {
-                            cartData[recomItem.productId.toString()]?.quantity ?: 0
-                        }
-                        else -> 0
-                    })
+                    )
                 }
             }
         }
@@ -868,7 +897,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage, userLocationLocalData: LocalCacheModel) {
-        //pair.first boType, pair.second boImage
+        // pair.first boType, pair.second boImage
         updateData(ProductDetailConstant.SHIPMENT) {
             shipmentData?.rates = data ?: P2RatesEstimateData()
             shipmentData?.isFullfillment = isFullfillment
@@ -892,7 +921,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 this.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
             }
         }
-
     }
 
     fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
