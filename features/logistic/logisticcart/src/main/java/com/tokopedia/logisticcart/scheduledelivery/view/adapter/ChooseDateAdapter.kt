@@ -55,6 +55,8 @@ class ChooseDateAdapter(
                 binding.root.setOnClickListener {
                     listener.onClickDateListener(buttonDateUiModel)
                 }
+            } else {
+                binding.root.setOnClickListener(null)
             }
         }
 
