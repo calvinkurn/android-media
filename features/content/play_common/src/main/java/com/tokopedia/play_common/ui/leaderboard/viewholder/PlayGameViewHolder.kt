@@ -126,9 +126,11 @@ class PlayGameViewHolder {
     internal class Footer(private val binding: ItemPlayLeaderboardFooterBinding) :
         BaseViewHolder(binding.root) {
         fun bind(item: LeaderboardGameUiModel.Footer) {
-            binding.tvLeaderboardFooter.text =
-                if (item.totalParticipant > 0) item.otherParticipantText
-                else item.emptyLeaderBoardCopyText
+            val text = if (item.totalParticipant > 0) item.otherParticipantText
+            else item.emptyLeaderBoardCopyText
+
+            binding.tvLeaderboardFooter.showWithCondition(text.isNotBlank())
+            binding.tvLeaderboardFooter.text = text
         }
     }
 }
