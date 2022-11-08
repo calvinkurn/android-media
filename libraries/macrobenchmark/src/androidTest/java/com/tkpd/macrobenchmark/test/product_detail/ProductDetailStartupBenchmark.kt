@@ -29,7 +29,7 @@ class ProductDetailStartupBenchmark(startupMode: StartupMode) : BaseStartupBench
 
     override fun getIntent() = MacroIntent.ProductDetail.getStartupIntent()
 
-    override fun traceName() = "product_detail_trace"
+    override fun traceName() = MacroIntent.ProductDetail.TRACE
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
