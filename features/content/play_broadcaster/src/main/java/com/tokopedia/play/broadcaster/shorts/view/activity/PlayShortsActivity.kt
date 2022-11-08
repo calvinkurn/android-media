@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -25,6 +26,8 @@ class PlayShortsActivity : BaseActivity() {
             false
         )
         setContentView(binding.root)
+
+        openMediaPicker()
     }
 
     private fun openMediaPicker() {
@@ -37,6 +40,22 @@ class PlayShortsActivity : BaseActivity() {
             singleSelectionMode()
         }
 
-        startActivityForResult(intent, 123)
+        startActivityForResult(intent, MEDIA_PICKER_REQ)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == MEDIA_PICKER_REQ) {
+            if (resultCode == RESULT_OK) {
+                val data = MediaPicker.result(data)
+            } else {
+                finish()
+            }
+        }
+    }
+
+    companion object {
+        private const val MEDIA_PICKER_REQ = 123
     }
 }
