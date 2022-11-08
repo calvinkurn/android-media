@@ -78,31 +78,27 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         getComponent(PrivacyCenterComponent::class.java).inject(this)
     }
 
-    companion object {
-        fun newInstance() = PrivacyCenterFragment()
-    }
-
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-        setUpCollapseToolbar(verticalOffset < -136)
+        setUpCollapseToolbar(verticalOffset < OFFSET_CHANGE_COLOR_STATUS_BAR)
     }
 
     private fun setUpCollapseToolbar(isCollapsed: Boolean) {
-        val getWhiteColor = if (isCollapsed) {
+        val isExpand = if (isCollapsed) {
             isUsingNightModeResources()
         } else {
             true
         }
 
         requireActivity().apply {
-            val textColor = getIdColor(getWhite = getWhiteColor)
-            val backIcon = getIconBackWithColor(getWhite = getWhiteColor)
+            val textColor = getIdColor(getWhite = isExpand)
+            val backIcon = getIconBackWithColor(getWhite = isExpand)
 
-            window.statusBarColor = if (getWhiteColor) {
+            window.statusBarColor = if (isExpand) {
                 Color.TRANSPARENT
             } else {
                 getDynamicColorStatusBar()
             }
-            setTextStatusBar(setToWhite = getWhiteColor)
+            setTextStatusBar(setToWhite = isExpand)
 
             binding?.unifyToolbar?.apply {
                 headerView?.setTextColor(textColor)
@@ -110,5 +106,10 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
             }
         }
 
+    }
+
+    companion object {
+        fun newInstance() = PrivacyCenterFragment()
+        private const val OFFSET_CHANGE_COLOR_STATUS_BAR = -136
     }
 }
