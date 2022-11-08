@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tkpd.macrobenchmark.test.R
 import com.tokopedia.macrobenchmark_util.env.mock.InstrumentationMockHelper.getRawString
 import com.tokopedia.macrobenchmark_util.env.mock.config.HomeMockResponseConfig
+import com.tokopedia.macrobenchmark_util.env.mock.config.ProductDetailMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.SearchMockResponseConfig
 
 fun Intent.putMockData(key: String, res: Int) {
@@ -36,6 +37,7 @@ object MacroIntent {
         object Config {
             const val Home = "home"
             const val Search = "search"
+            const val ProductDetail = "product_detail"
         }
 
         fun getMockSetupIntent(configName: String): Intent {
@@ -63,6 +65,13 @@ object MacroIntent {
             intent.putMockData(SearchMockResponseConfig.KEY_QUERY_TOPADS_BANNER, R.raw.response_mock_search_topads_tdn)
             intent.putMockData(SearchMockResponseConfig.KEY_QUERY_HEADLINE_ADS, R.raw.response_mock_search_topads_tdn_2)
             return intent
+        }
+
+        fun getProductDetailMockIntent() = getMockSetupIntent(Mock.Config.ProductDetail).apply {
+            putMockData(ProductDetailMockResponseConfig.KEY_PDP_LAYOUT, R.raw.response_pdp_layout)
+            putMockData(ProductDetailMockResponseConfig.KEY_PDP_DATA, R.raw.response_pdp_data)
+            putMockData(ProductDetailMockResponseConfig.KEY_PDP_RECOMM, R.raw.response_pdp_recom)
+            putMockData(ProductDetailMockResponseConfig.KEY_PDP_PLAY, R.raw.response_pdp_play)
         }
     }
 

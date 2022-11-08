@@ -1,0 +1,458 @@
+[
+  {
+    "data": {
+      "playGetWidgetV2": {
+        "data": [
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "700062",
+            "title": "FLASH SALE 11.11 🔥",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/700062?source_id=300299\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/700062",
+            "startTime": "2022-11-08T15:13:06+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Kejar Diskon",
+                  "type": "ONLY_LIVE"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "300299",
+              "name": "Tissor Official"
+            },
+            "video": {
+              "ID": "1100773",
+              "type": "live",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/8/5d38ce8a-db24-42f6-aa53-3582a7e8746c.jpg?b=UUIsC6E2Ayt85DtR%3D%3FRi%3FwWAI9t7NKoJj%5Dj%40",
+              "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=d8e0ca23-5f3b-11ed-a301-42010a2946ba",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "281"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"FLASH SALE 11.11 🔥\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/700062?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Tissor Official di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Tissor Official di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "710050",
+            "title": "SPECTACULAR NOVEMBER!! FULL PROMO",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/710050?source_id=10563434\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/710050",
+            "startTime": "2022-11-08T15:38:04+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 15%",
+                  "type": "ONLY_LIVE"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "10563434",
+              "name": "PT INDO BISMAR"
+            },
+            "video": {
+              "ID": "1100906",
+              "type": "live",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/8/06510871-4103-4a04-81e3-2a84711accd9.jpg?b=USJRdqV%5DxJt7~XofIqj%40%25PWBRhWB%25gWAn%25WX",
+              "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=a957dd0b-5f40-11ed-9331-42010a2946b1",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "194"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"SPECTACULAR NOVEMBER!! FULL PROMO\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/710050?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton PT INDO BISMAR di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton PT INDO BISMAR di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "709991",
+            "title": "Beli Casing Dapet Free Gift!!!!",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/709991?source_id=375037\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/709991",
+            "startTime": "2022-11-08T14:33:58+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 92%",
+                  "type": "ONLY_LIVE"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "375037",
+              "name": "Caseayangan ID"
+            },
+            "video": {
+              "ID": "1100675",
+              "type": "live",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/8/d747f337-68d6-4cd1-9fa3-1366e51ff017.png?b=UBSPe8j%5D~qof%3FIj%5BM_ay-Xayofj%5BO7j%5BRQay",
+              "streamSource": "https://live-stream.tokopedia.net/live/v0.2/play_20221108143358_b508c364-5f37-11ed-a2e0-42010a2946ba/live/abr.m3u8",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "81"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/709991?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Caseayangan ID di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Caseayangan ID di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "709861",
+            "title": "11.11 Mega Sale. Mulai 500perak",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/709861?source_id=2096867\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/709861",
+            "startTime": "2022-11-08T14:01:39+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 22%",
+                  "type": "ONLY_LIVE"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "2096867",
+              "name": "VIBOSTECH"
+            },
+            "video": {
+              "ID": "1100551",
+              "type": "live",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/8/5ef67176-9c87-46f1-9fde-e5dac7c423c0.jpg?b=UPLfIEj%5B%25%23WBbHt7e.WB.mof-qjZ%25Noeozf6",
+              "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=30ae05ba-5f33-11ed-a2ad-42010a2946ba",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "56"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"11.11 Mega Sale. Mulai 500perak\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/709861?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Toko di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Toko di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "710114",
+            "title": "Live Sale",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/710114?source_id=373452\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/710114",
+            "startTime": "2022-11-08T15:35:29+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": false,
+              "isReminderSet": false,
+              "promo_labels": []
+            },
+            "partner": {
+              "ID": "373452",
+              "name": "NYATACELL"
+            },
+            "video": {
+              "ID": "1100893",
+              "type": "live",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/8/55fcfd35-e356-4f04-a840-46e62a87cad6.jpg?b=U%3BKUZkWBt7j%5BWBfQfQfQ00ofRjfQoffQayfQ",
+              "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=4cab842f-5f40-11ed-a32d-42010a2946ba",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "45"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/710114?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton NYATACELL di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton NYATACELL di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "710133",
+            "title": "Promo Ayok Mampirr",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/710133?source_id=2119036\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/710133",
+            "startTime": "2022-11-08T15:46:43+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Kupon Spesial",
+                  "type": "ONLY_LIVE"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "2119036",
+              "name": "4acc"
+            },
+            "video": {
+              "ID": "1100934",
+              "type": "live",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/8/9c7d24e4-d8a0-4be7-ae7c-46d229da06de.jpg?b=UKH_lPV%5D_NfN%3FbxatRR-xtRjITS2Dit7W%3DVs",
+              "streamSource": "https://live-stream.tokopedia.net/live/v0.2/play_20221108154643_deb898e9-5f41-11ed-a33a-42010a2946ba/live/abr.m3u8",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "15"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"Promo Ayok Mampirr\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/710133?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton 4acc di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton 4acc di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "668772",
+            "title": "Jenis-Jenis Asuransi yang Harus Dikenali",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/668772?source_id=11232713\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/668772",
+            "startTime": "2022-11-08T11:00:00+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 90%",
+                  "type": "DEFAULT"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "11232713",
+              "name": "Tokopedia Play"
+            },
+            "video": {
+              "ID": "1099211",
+              "type": "vod",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/10/31/41abd37f-3a14-4a40-8a80-66a984ad6a0d.jpg?b=UFLC2%7BrWWAx%5EtloIocW%3FL%7DXmt8MxQlR-Wsng",
+              "streamSource": "https://vod.tokopedia.com/view/adaptive.m3u8?id=9b34f8505ea871ed9c1386c6360c0102",
+              "isShowTotalView": true,
+              "isLive": false
+            },
+            "stats": {
+              "view": {
+                "formatted": "22 rb"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"Jenis-Jenis Asuransi yang Harus Dikenali\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/668772?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Toko di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Toko di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "708502",
+            "title": "PROMO SPECTA NOVEMBER 🔥🤩💥",
+            "widgetType": "WATCH_AGAIN",
+            "appLink": "tokopedia://play/708502?source_id=10563434\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/708502",
+            "startTime": "2022-11-07T16:01:44+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 8%",
+                  "type": "DEFAULT"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "10563434",
+              "name": "PT INDO BISMAR"
+            },
+            "video": {
+              "ID": "1098589",
+              "type": "vod",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/7/72ab8ff9-e674-4c89-a82c-be054f9bf012.jpg?b=URK%5EE%24V%5Bw6t7~EofM%23j%5B%3DjWBNEWByDWAsAWD",
+              "streamSource": "https://vod.tokopedia.net/liveRecord/f85e64cd584687e170c3fb851569d466/play_record/cd5a50ab-5e7a-11ed-90b9-42010a2946b1/2022-11-07-17-01-46_2022-11-07-18-02-01.m3u8",
+              "isShowTotalView": true,
+              "isLive": false
+            },
+            "stats": {
+              "view": {
+                "formatted": "1,2 rb"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"PROMO SPECTA NOVEMBER 🔥🤩💥\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/708502?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton PT INDO BISMAR di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton PT INDO BISMAR di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "699997",
+            "title": "5 Tips Sebelum Beli Gadget Baru",
+            "widgetType": "WATCH_AGAIN",
+            "appLink": "tokopedia://play/699997?source_id=11232713\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/699997",
+            "startTime": "2022-11-06T11:00:00+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 98%",
+                  "type": "DEFAULT"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "11232713",
+              "name": "Tokopedia Play"
+            },
+            "video": {
+              "ID": "1089580",
+              "type": "vod",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/3/0e417c72-033d-43f9-aa3d-dfe2d5004e5c.jpg?b=UGACx%3DCT%2BtW%2C%3BJKkwIa_AerVS%25j%5D2x%2BFOYbJ",
+              "streamSource": "https://vod.tokopedia.com/view/adaptive.m3u8?id=b6155aa04e0171edbffc36a5e8aa0102",
+              "isShowTotalView": true,
+              "isLive": false
+            },
+            "stats": {
+              "view": {
+                "formatted": "909"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"cb 6 nov 1100\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/699997?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Tokopedia Play di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Tokopedia Play di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          }
+        ],
+        "meta": {
+          "isAutoRefresh": true,
+          "autoRefreshTimer": 30,
+          "widgetTitle": "Tayangan seru dari barang serupa",
+          "buttonText": "Lihat Semua",
+          "widgetBackground": "",
+          "autoplayAmount": 2,
+          "autoplay": false,
+          "buttonApplink": "tokopedia://webview?pull_to_refresh=true\u0026titlebar=false\u0026autoplay=true\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+          "buttonWeblink": "https://www.tokopedia.com/play/channels",
+          "overlayImage": "",
+          "overlayImageAppLink": "",
+          "overlayImageWebLink": "",
+          "gradient": [],
+          "serverTimeOffset": "1667897800",
+          "maxAutoplayCell": 30,
+          "maxAutoplayWifi": 300,
+          "template": "MEDIUM",
+          "isButtonVisible": false,
+          "businessWidgetPosition": 0
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,959 @@
+[
+    {
+        "data": {
+            "pdpGetLayout": {
+                "name": "test custom layout",
+                "pdpSession": "{\"sid\":9361157,\"sd\":\"honestyshop88\",\"cat\":{\"id\":3055},\"pid\":1411449586,\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true},\"opr\":5980000,\"pr\":4590000,\"mo\":1,\"pn\":\"New Iphone x 256 GB Silver Black - Hitam\",\"purl\":\"https://www.tokopedia.com/honestyshop88/new-iphone-x-256-gb-silver-black-hitam\",\"st\":63,\"cn\":\"new\",\"it\":true,\"li\":4,\"ln\":\"test custom layout\",\"w\":0.5,\"sf\":{},\"nid\":1,\"cr\":127,\"v\":1,\"vd\":{\"1414921089\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true},\"s\":71,\"ib\":true,\"p\":4590000,\"whid\":9486581,\"mo\":1},\"1414921090\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true},\"s\":63,\"ib\":true,\"p\":4590000,\"whid\":9486581,\"mo\":1}},\"pi\":1414921090,\"pse\":1,\"ps\":\"ACTIVE\",\"fc\":[\"upcoming_deals\",\"paylater_cicilan\",\"shipment_v2\",\"cod\",\"shop_voucher\",\"fulfillment\",\"product_info\",\"pet_disclaimer\"]}",
+                "basicInfo": {
+                    "shopMultilocation": {
+                        "isReroute": false,
+                        "cityName": "Jakarta Barat",
+                        "eduLink": {
+                            "appLink": "tokopedia://product-edu/1"
+                        }
+                    },
+                    "isGiftable": false,
+                    "isTokoNow": false,
+                    "shopName": "Honesty Shop 88",
+                    "productID": "1414921090",
+                    "shopID": "9361157",
+                    "minOrder": 1,
+                    "maxOrder": 63,
+                    "weight": 500,
+                    "weightUnit": "GRAM",
+                    "status": "ACTIVE",
+                    "url": "https://www.tokopedia.com/honestyshop88/new-iphone-x-256-gb-silver-black-hitam",
+                    "sku": "Black256GB",
+                    "needPrescription": false,
+                    "catalogID": "0",
+                    "isLeasing": false,
+                    "isBlacklisted": false,
+                    "totalStockFmt": "134",
+                    "defaultMediaURL": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/11/530dd0df-9755-4816-ab2b-678bbe407c43.jpg",
+                    "menu": {
+                        "id": "0",
+                        "name": "",
+                        "url": ""
+                    },
+                    "category": {
+                        "id": "3055",
+                        "name": "iOS",
+                        "title": "iOS",
+                        "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet/handphone/ios",
+                        "isAdult": false,
+                        "isKyc": false,
+                        "lastUpdateCategory": "09/12/2020 18:57:30",
+                        "detail": [
+                            {
+                                "id": "65",
+                                "name": "Handphone \u0026 Tablet",
+                                "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet",
+                                "isAdult": false
+                            },
+                            {
+                                "id": "24",
+                                "name": "Handphone",
+                                "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet/handphone",
+                                "isAdult": false
+                            },
+                            {
+                                "id": "3055",
+                                "name": "iOS",
+                                "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet/handphone/ios",
+                                "isAdult": false
+                            }
+                        ]
+                    },
+                    "blacklistMessage": {
+                        "title": "",
+                        "description": "",
+                        "button": "",
+                        "url": ""
+                    },
+                    "txStats": {
+                        "transactionSuccess": "216",
+                        "transactionReject": "11",
+                        "countSold": "210",
+                        "paymentVerified": "216",
+                        "itemSoldFmt": "210"
+                    },
+                    "stats": {
+                        "countReview": "127",
+                        "countTalk": "57",
+                        "rating": 5
+                    }
+                },
+                "components": [
+                    {
+                        "name": "product_snapshot",
+                        "type": "product_snapshot",
+                        "data": [
+                            {}
+                        ]
+                    },
+                    {
+                        "name": "product_media",
+                        "type": "product_media",
+                        "data": [
+                            {
+                                "media": [
+                                    {
+                                        "type": "image",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/11/530dd0df-9755-4816-ab2b-678bbe407c43.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/11/530dd0df-9755-4816-ab2b-678bbe407c43.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/5/11/530dd0df-9755-4816-ab2b-678bbe407c43.jpg",
+                                        "description": "",
+                                        "videoURLAndroid": "",
+                                        "isAutoplay": false,
+                                        "variantOptionID": "0"
+                                    },
+                                    {
+                                        "type": "image",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/17/f5d3e85f-3740-4045-bde0-73770add3718.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/17/f5d3e85f-3740-4045-bde0-73770add3718.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/3/17/f5d3e85f-3740-4045-bde0-73770add3718.jpg",
+                                        "description": "",
+                                        "videoURLAndroid": "",
+                                        "isAutoplay": false,
+                                        "variantOptionID": "0"
+                                    },
+                                    {
+                                        "type": "image",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/17/53637df0-2586-4023-96b2-79e92a2099fe.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/17/53637df0-2586-4023-96b2-79e92a2099fe.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/3/17/53637df0-2586-4023-96b2-79e92a2099fe.jpg",
+                                        "description": "",
+                                        "videoURLAndroid": "",
+                                        "isAutoplay": false,
+                                        "variantOptionID": "0"
+                                    },
+                                    {
+                                        "type": "image",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/15/fd32c007-6805-47b8-86f3-a2cee4be9323.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/15/fd32c007-6805-47b8-86f3-a2cee4be9323.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/9/15/fd32c007-6805-47b8-86f3-a2cee4be9323.jpg",
+                                        "description": "",
+                                        "videoURLAndroid": "",
+                                        "isAutoplay": false,
+                                        "variantOptionID": "0"
+                                    },
+                                    {
+                                        "type": "image",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/15/5b53dd16-a226-41d9-a1c4-96b5913d04c9.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/15/5b53dd16-a226-41d9-a1c4-96b5913d04c9.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/9/15/5b53dd16-a226-41d9-a1c4-96b5913d04c9.jpg",
+                                        "description": "",
+                                        "videoURLAndroid": "",
+                                        "isAutoplay": false,
+                                        "variantOptionID": "0"
+                                    },
+                                    {
+                                        "type": "image",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
+                                        "description": "Putih",
+                                        "videoURLAndroid": "",
+                                        "isAutoplay": false,
+                                        "variantOptionID": "82715912"
+                                    },
+                                    {
+                                        "type": "image",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
+                                        "description": "Hitam",
+                                        "videoURLAndroid": "",
+                                        "isAutoplay": false,
+                                        "variantOptionID": "82715913"
+                                    }
+                                ],
+                                "videos": [],
+                                "containerType": "square"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ticker_info",
+                        "type": "ticker_info",
+                        "data": []
+                    },
+                    {
+                        "name": "button_ar",
+                        "type": "button_ar",
+                        "data": []
+                    },
+                    {
+                        "name": "upcoming_deals",
+                        "type": "teaser",
+                        "data": []
+                    },
+                    {
+                        "name": "product_content",
+                        "type": "product_content",
+                        "data": [
+                            {
+                                "name": "New Iphone x 256 GB Silver Black - Hitam",
+                                "parentName": "New Iphone x 256 GB Silver Black",
+                                "isCOD": false,
+                                "price": {
+                                    "value": 4590000
+                                },
+                                "campaign": {
+                                    "campaignID": "-10000",
+                                    "campaignType": "0",
+                                    "campaignTypeName": "Diskon Terbatas",
+                                    "percentageAmount": 23,
+                                    "originalPrice": 5980000,
+                                    "discountedPrice": 4590000,
+                                    "stock": 63,
+                                    "stockSoldPercentage": 0,
+                                    "threshold": 0,
+                                    "startDate": "2022-03-16 14:19:21",
+                                    "endDate": "2023-03-16 14:14:21",
+                                    "endDateUnix": "1678950861",
+                                    "appLinks": "",
+                                    "isAppsOnly": false,
+                                    "isActive": true,
+                                    "hideGimmick": false,
+                                    "isCheckImei": false,
+                                    "isUsingOvo": false,
+                                    "background": "#D74049,#F56958",
+                                    "campaignIdentifier": 2,
+                                    "paymentInfoWording": ""
+                                },
+                                "thematicCampaign": {
+                                    "campaignName": "",
+                                    "icon": "",
+                                    "background": "",
+                                    "additionalInfo": ""
+                                },
+                                "stock": {
+                                    "useStock": true,
+                                    "value": "63",
+                                    "stockWording": ""
+                                },
+                                "variant": {
+                                    "isVariant": true,
+                                    "parentID": "1411449586"
+                                },
+                                "wholesale": [],
+                                "isCashback": {
+                                    "percentage": 0
+                                },
+                                "preorder": {
+                                    "duration": 0,
+                                    "isActive": false,
+                                    "preorderInDays": 0
+                                },
+                                "isTradeIn": true,
+                                "isOS": false,
+                                "isPowerMerchant": true,
+                                "isWishlist": false
+                            }
+                        ]
+                    },
+                    {
+                        "name": "stock_assurance",
+                        "type": "one_liners",
+                        "data": []
+                    },
+                    {
+                        "name": "social_proof_mini",
+                        "type": "social_proof_mini",
+                        "data": []
+                    },
+                    {
+                        "name": "best_seller",
+                        "type": "one_liners",
+                        "data": []
+                    },
+                    {
+                        "name": "mvc",
+                        "type": "mvc",
+                        "data": []
+                    },
+                    {
+                        "name": "product_bundling",
+                        "type": "product_bundling",
+                        "data": []
+                    },
+                    {
+                        "name": "mini_variant_options",
+                        "type": "variant",
+                        "data": [
+                            {
+                                "errorCode": 0,
+                                "parentID": "1411449586",
+                                "defaultChild": "1414921090",
+                                "sizeChart": "",
+                                "maxFinalPrice": 4590000,
+                                "variants": [
+                                    {
+                                        "productVariantID": "25130920",
+                                        "variantID": "1",
+                                        "name": "warna",
+                                        "identifier": "colour",
+                                        "option": [
+                                            {
+                                                "productVariantOptionID": "82715912",
+                                                "variantUnitValueID": "1",
+                                                "value": "Putih",
+                                                "hex": "#ffffff",
+                                                "picture": {
+                                                    "url": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
+                                                    "url100": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg"
+                                                }
+                                            },
+                                            {
+                                                "productVariantOptionID": "82715913",
+                                                "variantUnitValueID": "2",
+                                                "value": "Hitam",
+                                                "hex": "#000000",
+                                                "picture": {
+                                                    "url": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
+                                                    "url100": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "children": [
+                                    {
+                                        "productID": "1414921089",
+                                        "price": 4590000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "Silver256GB",
+                                        "optionID": [
+                                            82715912
+                                        ],
+                                        "optionName": [
+                                            "Putih"
+                                        ],
+                                        "productName": "New Iphone x 256 GB Silver Black - Putih",
+                                        "productURL": "https://www.tokopedia.com/honestyshop88/new-iphone-x-256-gb-silver-black-putih",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "71",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "71",
+                                            "stockFmt": "Stok: 71",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "-10000",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "Diskon Terbatas",
+                                            "campaignIdentifier": 2,
+                                            "background": "#D74049,#F56958",
+                                            "discountPercentage": 23,
+                                            "originalPrice": 5980000,
+                                            "discountPrice": 4590000,
+                                            "stock": 71,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "2022-03-16 14:19:21",
+                                            "endDateUnix": "1678950861",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": true,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 1
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "1414921090",
+                                        "price": 4590000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "Black256GB",
+                                        "optionID": [
+                                            82715913
+                                        ],
+                                        "optionName": [
+                                            "Hitam"
+                                        ],
+                                        "productName": "New Iphone x 256 GB Silver Black - Hitam",
+                                        "productURL": "https://www.tokopedia.com/honestyshop88/new-iphone-x-256-gb-silver-black-hitam",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "63",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "63",
+                                            "stockFmt": "Stok: 63",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "-10000",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "Diskon Terbatas",
+                                            "campaignIdentifier": 2,
+                                            "background": "#D74049,#F56958",
+                                            "discountPercentage": 23,
+                                            "originalPrice": 5980000,
+                                            "discountPrice": 4590000,
+                                            "stock": 63,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "2022-03-16 14:19:21",
+                                            "endDateUnix": "1678950861",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": true,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 1
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "installment_paylater",
+                        "type": "info",
+                        "data": [
+                            {
+                                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                                "title": "Paylater \u0026 Cicilan",
+                                "isApplink": true,
+                                "applink": "tokopedia://fintech/paylater?category=iOS\u0026price=4590000.000000\u0026productID=1414921090\u0026productURL=https%3A%2F%2Fwww.tokopedia.com%2Fhonestyshop88%2Fnew-iphone-x-256-gb-silver-black-hitam",
+                                "lightIcon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                                "darkIcon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "product_detail",
+                        "type": "product_detail",
+                        "data": [
+                            {
+                                "title": "Spesifikasi produk",
+                                "catalogBottomsheet": {
+                                    "actionTitle": "Baca Selengkapnya",
+                                    "bottomSheetTitle": "Spesifikasi produk",
+                                    "param": "{\"type\": 1, \"experiment_id\": \"var\"}"
+                                },
+                                "bottomsheet": {
+                                    "actionTitle": "Baca Selengkapnya",
+                                    "bottomSheetTitle": "Deskripsi produk",
+                                    "param": "{\"type\": 2, \"experiment_id\": \"var\"}"
+                                },
+                                "content": [
+                                    {
+                                      "title": "Kondisi",
+                                      "subtitle": "Baru",
+                                      "applink": "",
+                                      "showAtFront": true,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Min. Pemesanan",
+                                      "subtitle": "1 Pcs",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Tipe Garansi",
+                                      "subtitle": "Garansi Merek",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": true,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Periode Garansi",
+                                      "subtitle": "12 Bualn",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": true,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Cara Klaim",
+                                      "subtitle": "Hubungi Penjual",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Ukuran Layar",
+                                      "subtitle": "6.1 Inch",
+                                      "applink": "",
+                                      "showAtFront": true,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": false
+                                    },
+                                    {
+                                      "title": "Katalog",
+                                      "subtitle": "Samsung Galaxy S22",
+                                      "applink": "tokopedia://catalog/samsung-74497/samsung-galaxy-s22",
+                                      "showAtFront": false,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Memory Internal",
+                                      "subtitle": "128GB",
+                                      "applink": "",
+                                      "showAtFront": true,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": false
+                                    },
+                                    {
+                                      "title": "RAM",
+                                      "subtitle": "8GB, 16GB",
+                                      "applink": "",
+                                      "showAtFront": true,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": false
+                                    },
+                                    {
+                                      "title": "Baterai",
+                                      "subtitle": "Li-Ion 3700 mAh, non-removeable adsf asdf asdf asdf asdf asdf asdfa sfdsa",
+                                      "applink": "",
+                                      "showAtFront": true,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "GSM",
+                                      "subtitle": "3G, 4G, 5G",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": true,
+                                      "icon": "",
+                                      "infoLink": "asfasdf",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Memory Internal",
+                                      "subtitle": "128GB",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Etalase",
+                                      "subtitle": "Samsung",
+                                      "applink": "tokopedia://idigitalid/etalase/samsung",
+                                      "showAtFront": true,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "RAM",
+                                      "subtitle": "16GB",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Resolusi",
+                                      "subtitle": "768x1024",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Garansi",
+                                      "subtitle": "1 Tahun",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Mode In",
+                                      "subtitle": "China",
+                                      "applink": "",
+                                      "showAtFront": false,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    },
+                                    {
+                                      "title": "Deskripsi",
+                                      "subtitle": "- 'asdfas' dfasdIMEI AMAN SUDAH TERDAFTAR DI KEMENPERIN \n\n- 3UTOOLS 100 HIJAU \n- BH 100 ( KARENA BARANG BARU ) \n- UNIT SEGEL GREEN PEEL\n- NO MODEL M \n- ICLOUD AMAN BEBAS RESET\n- UNIT ORIGINAL 100% BISA DICEK DI WEBSITE RESMI APPLE ( CEK COVERAGE APPLE )\n\nIsi Box \n- UNIT\n- BUKU PANDUAN \n- STICKER APPLE \n- CHARGER \n- HEADSET \n\nBonus \n- SOFTCASE BEBAS PILIH \n- ANTI GORES\n\niPhone X 256Gb Original\n- Truetone On\n- Faceid On\n- 3utools hijau 100%\n- Baterai Health 100%\n\nDeskripsi IPHONE X 256 GB SILVER BLACK GARANSI TOKO 1 TAHUN\nALL OPERATOR\nSebelum order silakan dibaca terlebih dahulu\nReady warna SILVER BLACK\n-Iphone 100% ORIGINAL\n-New segel, Fullset.\n-Barang yang di terima tersegel utuh dusnya\n-Mohon untuk menanyakan ready warna stok sebelum order\n\nKONDISI dan KELENGKAPAN :\n+ Kondisi original 100% (bukan replika/imitasi)\n+ Mesin : 100% Normal\n+ Kondisi Fisik : new 100% Mulus,\n+ Mesin 100% bersegel.\n+ IMEI dan ICLOUD AMAN\n+ FU ( bisa semua kartu gsm indonesia maupun mancanegara )\n+ FULLSET TERSEGEL (dus, buku panduan, headset, charger, kabel data)\n+ Face ID Garansi 3 Bulan\n\nKETENTUAN GARANSI :\n1. Segel harus dalam kondisi utuh, tidak boleh rusak atau terindikasi pernah dibongkar.\n2. Aksesoris [charger, headset, kabel data] harus dalam keadaan baik.\n3. Harap menjaga kondisi handphone dalam kondisi mulus tidak lecet / cacat fisik, lengkap dan segel utuh selama masa garansi.\n\nGARANSI HANGUS APABILA\n1. Segel bolong/lepas/sobek yang terindikasi pernah dibongkar.\n2. Body lecet / gompal bekas jatuh.\n3. LCD pecah / rusak karena kesalahan pemakaian.\n4. Handphone terkena cairan ataupun terbakar.\n\n* Dengan membeli maka kami anggap anda telah membaca dan menyetujui ketentuan kami\nKepuasan Pembeli Adalah Prioritas Kami \nSelamat Berbelanja Di Honesty Shop Bossku",
+                                      "applink": "",
+                                      "showAtFront": true,
+                                      "isAnnotation": false,
+                                      "icon": "",
+                                      "infoLink": "",
+                                      "showAtBottomsheet": true
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "shop_credibility",
+                        "type": "shop_credibility",
+                        "data": []
+                    },
+                    {
+                        "name": "shipment",
+                        "type": "shipment",
+                        "data": []
+                    },
+                    {
+                        "name": "restricted_categories",
+                        "type": "custom_info",
+                        "data": []
+                    },
+                    {
+                        "name": "info_donation",
+                        "type": "custom_info",
+                        "data": []
+                    },
+                    {
+                        "name": "review",
+                        "type": "review",
+                        "data": []
+                    },
+                    {
+                        "name": "social_proof",
+                        "type": "social_proof",
+                        "data": []
+                    },
+                    {
+                        "name": "social_proof_pv",
+                        "type": "social_proof",
+                        "data": []
+                    },
+                    {
+                        "name": "value_prop",
+                        "type": "value_prop",
+                        "data": []
+                    },
+                    {
+                        "name": "tokonow_usp",
+                        "type": "custom_info",
+                        "data": []
+                    },
+                    {
+                        "name": "palugada",
+                        "type": "custom_info",
+                        "data": []
+                    },
+                    {
+                        "name": "obat_keras",
+                        "type": "custom_info",
+                        "data": []
+                    },
+                    {
+                        "name": "pet_disclaimer",
+                        "type": "custom_info",
+                        "data": [
+                            {
+                                "icon": "https://images.tokopedia.net/img/pdp/info/icon/FeaturesServices_Pet@3x.png",
+                                "title": "Cek panduan adopsi hewan",
+                                "isApplink": true,
+                                "applink": "https://www.tokopedia.com/blog/peringatan-ketentuan-adopsi-hewan/",
+                                "separator": "top",
+                                "description": "Biar aman, baca dulu sebelum bertransaksi, ya.",
+                                "lightIcon": "https://images.tokopedia.net/img/pdp/info/icon/light/adoption.png",
+                                "darkIcon": "https://images.tokopedia.net/img/pdp/info/icon/dark/adoption.png",
+                                "label": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "wholesale",
+                        "type": "info",
+                        "data": [
+                            {
+                                "icon": "",
+                                "title": "Harga Grosir",
+                                "isApplink": true,
+                                "applink": "",
+                                "lightIcon": "",
+                                "darkIcon": "",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "shipping",
+                        "type": "info",
+                        "data": [
+                            {
+                                "icon": "",
+                                "title": "Kurir",
+                                "isApplink": true,
+                                "applink": "",
+                                "lightIcon": "",
+                                "darkIcon": "",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "tradein",
+                        "type": "info",
+                        "data": [
+                            {
+                                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/Tradein@3x.png",
+                                "title": "Beli dengan Tukar Tambah",
+                                "isApplink": true,
+                                "applink": "",
+                                "lightIcon": "https://images.tokopedia.net/img/pdp/info/icon/light/tukar_tambah.png",
+                                "darkIcon": "https://images.tokopedia.net/img/pdp/info/icon/dark/tukar_tambah.png",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "protection",
+                        "type": "info",
+                        "data": [
+                            {
+                                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
+                                "title": "Proteksi Gadget",
+                                "isApplink": false,
+                                "applink": "",
+                                "lightIcon": "https://images.tokopedia.net/img/pdp/info/icon/light/protection_check.png",
+                                "darkIcon": "https://images.tokopedia.net/img/pdp/info/icon/dark/protection_check.png",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "order_prio",
+                        "type": "info",
+                        "data": [
+                            {
+                                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+                                "title": "Order Prioritas",
+                                "isApplink": false,
+                                "applink": "",
+                                "lightIcon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+                                "darkIcon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "byme",
+                        "type": "info",
+                        "data": [
+                            {
+                                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icBymeColor_3x.png",
+                                "title": "Rekomendasi dapat komisi",
+                                "isApplink": true,
+                                "applink": "",
+                                "lightIcon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-tokocabang@3x.png",
+                                "darkIcon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-tokocabang@3x.png",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "imei",
+                        "type": "custom_info",
+                        "data": [
+                            {
+                                "icon": "https://images.tokopedia.net/img/pdp/info/icon/sinyal_aktif.png",
+                                "title": "Status sinyal aktif",
+                                "isApplink": true,
+                                "applink": "https://www.tokopedia.com/help/article/status-sinyal-tokopedia",
+                                "separator": "top",
+                                "description": "Bisa terhubung ke jaringan operator Indonesia.",
+                                "lightIcon": "https://images.tokopedia.net/img/pdp/info/icon/light/signal_active.png",
+                                "darkIcon": "https://images.tokopedia.net/img/pdp/info/icon/dark/signal_active.png",
+                                "label": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "most_helpful_review",
+                        "type": "most_helpful_review",
+                        "data": []
+                    },
+                    {
+                        "name": "discussion_faq",
+                        "type": "discussion_faq",
+                        "data": []
+                    },
+                    {
+                        "name": "report",
+                        "type": "report",
+                        "data": []
+                    },
+                    {
+                        "name": "tdn_topads",
+                        "type": "banner_ads",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_1",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "shop_info",
+                        "type": "shop_info",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_2",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_3",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_4",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_5",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_7",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_6",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_9_tokonow",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "play_carousel",
+                        "type": "content_widget",
+                        "data": []
+                    },
+                    {
+                        "name": "restricted_categories",
+                        "type": "custom_info",
+                        "data": []
+                    },
+                    {
+                        "name": "k2k_pdp",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "local_alternative",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "shopads_carousel",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "palugada_hampers",
+                        "type": "custom_info",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_1_dynamic",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_2_dynamic",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_3_dynamic",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_4_dynamic",
+                        "type": "product_list",
+                        "data": []
+                    },
+                    {
+                        "name": "info_donation",
+                        "type": "custom_info",
+                        "data": []
+                    }
+                ]
+            }
+        }
+    }
+]
