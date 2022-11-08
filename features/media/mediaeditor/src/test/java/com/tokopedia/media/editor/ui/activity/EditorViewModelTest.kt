@@ -191,7 +191,7 @@ class EditorViewModelTest {
         val dataList = createUiModelState(0, -1)
 
         // When
-        every { saveImageRepo.saveToGallery(any(), any())}.answers {
+        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
             (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
         }
         viewModel.saveToGallery(dataList) {}
@@ -210,7 +210,7 @@ class EditorViewModelTest {
         // When
         mockkStatic(FileUtil::class)
         every { getTokopediaCacheDir() } returns tokopediaCacheDir
-        every { saveImageRepo.saveToGallery(any(), any())}.answers {
+        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
             (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
         }
         viewModel.saveToGallery(dataList) {}
@@ -256,7 +256,8 @@ class EditorViewModelTest {
                 )
             }
 
-            EditorUiModel(originalUrl = originalPath,
+            EditorUiModel(
+                originalUrl = originalPath,
                 editList = stateList
             )
         }
