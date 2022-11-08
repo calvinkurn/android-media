@@ -25,6 +25,8 @@ class GetInitiateVoucherPage @Inject constructor(
     }
 
     companion object {
+        private const val VOUCHER_TYPE_SHOP = 0
+        private const val VOUCHER_TYPE_PRODUCT = 1
         private const val REQUEST_PARAM_ACTION = "Action"
         private const val REQUEST_PARAM_TARGET_BUYER = "TargetBuyer"
         private const val REQUEST_PARAM_COUPON_TYPE = "CouponType"
@@ -69,7 +71,7 @@ class GetInitiateVoucherPage @Inject constructor(
     }
 
     private fun buildRequest(param: Param): GraphqlRequest {
-        val voucherProduct = if (param.isVoucherProduct) 1 else 0
+        val voucherProduct = if (param.isVoucherProduct) VOUCHER_TYPE_PRODUCT else VOUCHER_TYPE_SHOP
 
         val action = when(param.action) {
             Param.Action.CREATE -> "create"
