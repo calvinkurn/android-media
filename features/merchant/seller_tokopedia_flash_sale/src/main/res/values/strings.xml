@@ -298,7 +298,7 @@
     <string name="stfs_content_description_scroll_up">Scroll up</string>
 
     <string name="stfs_bottomsheet_error_product_submission_sse_list_ticker_description">Kamu bisa pebaiki dan coba ajukan lagi varian produkmu yang bermasalah.</string>
-    <string name="stfs_bottomsheet_error_product_submission_sse_list_title">Daftar varian produk yang gagal diajukan</string>
+    <string name="stfs_bottomsheet_error_product_submission_sse_list_title">Varian produk gagal diajukan</string>
     <string name="stfs_bottomsheet_error_product_submission_sse_item_sku">SKU: %1s</string>
 
     <string name="stfs_dialog_error_product_submission_sse_title_partial_success">Yaah, beberapa varian produkmu gagal diajukan</string>
