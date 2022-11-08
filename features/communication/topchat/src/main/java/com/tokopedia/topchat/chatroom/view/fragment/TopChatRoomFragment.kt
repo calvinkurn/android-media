@@ -580,8 +580,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onResume() {
         super.onResume()
         this.isFromBubble = activity?.isFromBubble() == true
+        markAsReadFromBubble()
+    }
+
+    private fun markAsReadFromBubble() {
         if (isFromBubble) {
             viewModel.isFromBubble = isFromBubble
+            viewModel.markAsRead()
+            val replyId = (viewModel.newMsg.value as? BaseChatUiModel)?.replyId.orEmpty()
+            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
         }
     }
 
@@ -1055,8 +1062,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
 
-        if (isFromBubble) {
-            TopChatAnalyticsKt.eventViewReadMsgFromBubble(chatBubble?.replyId.orEmpty())
+        if (isFromBubble && !viewModel.isOnStop) {
+            val replyId = chatBubble?.replyId.orEmpty()
+            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
         }
 
         renderTickerReminder(chatBubble)
