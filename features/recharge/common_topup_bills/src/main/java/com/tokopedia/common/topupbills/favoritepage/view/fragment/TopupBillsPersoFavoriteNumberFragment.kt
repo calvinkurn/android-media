@@ -691,7 +691,8 @@ class TopupBillsPersoFavoriteNumberFragment :
                 categoryId = favNumber?.categoryId ?: "",
                 productId = favNumber?.productId ?: "",
                 inputNumberActionTypeIndex = inputNumberActionType?.ordinal ?: -1,
-                operatorId = favNumber?.operatorId ?: ""
+                operatorId = favNumber?.operatorId ?: "",
+                token = favNumber?.token ?: "",
             )
 
             intent.putExtra(
