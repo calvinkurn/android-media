@@ -26,6 +26,11 @@ class ContentCoachMarkManager @Inject constructor(
     private val coachMarkGlobalLayoutListenerMap = mutableMapOf<View, ViewTreeObserver.OnGlobalLayoutListener>()
     private val jobMap = mutableMapOf<View, Job>()
 
+    /**
+     * Use this function if you want the manager handling your coachmark behavior
+     * or else you need to show & dismiss your coachmark manually by calling
+     * showCoachMark(config: [ContentCoachMarkConfig]) & dismissCoachMark(view: [View])
+     */
     fun setupCoachMark(
         config: ContentCoachMarkConfig
     ) {
@@ -67,7 +72,7 @@ class ContentCoachMarkManager @Inject constructor(
         }
     }
 
-    fun dismissCoachmark(view: View) {
+    fun dismissCoachMark(view: View) {
         coachMarkMap[view]?.dismissCoachMark()
         jobMap[view]?.cancel()
     }
@@ -97,7 +102,7 @@ class ContentCoachMarkManager @Inject constructor(
             coachMarkSharedPref.setHasBeenShown(config.coachMarkPrefKey, config.coachMarkPrefKeyId)
         }
 
-        dismissCoachmark(view)
+        dismissCoachMark(view)
     }
 
     private fun showCoachMarkInternal(
@@ -134,7 +139,7 @@ class ContentCoachMarkManager @Inject constructor(
                 if (config.view.visibility == View.VISIBLE) {
                     showCoachMark(config)
                 } else {
-                    dismissCoachmark(config.view)
+                    dismissCoachMark(config.view)
                 }
             }
         }
