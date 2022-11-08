@@ -40,6 +40,7 @@ object RollenceKey {
     const val WISHLIST_CONTROL_VARIANT = "control_variant"
     const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
     const val WISHLIST_COLLECTION = "WL_collection_andro"
+    const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
