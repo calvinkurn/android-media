@@ -120,6 +120,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.composeDependencies.composeActivity
+    implementation project(rootProject.ext.libraries.commonCompose)
 
     implementation rootProject.ext.playServicesDependencies.base
 
