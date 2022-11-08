@@ -63,7 +63,8 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                             view.logOnErrorLoadCourier(
                                                 MessageErrorException(
                                                     shippingCourierUiModel.productData.error?.errorMessage
-                                                ), itemPosition
+                                                ),
+                                                itemPosition
                                             )
                                             return
                                         } else {
@@ -124,7 +125,9 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                         if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
                                             // courier should only be used with BO, but no BO code found
                                             view.renderCourierStateFailed(
-                                                itemPosition, false, false
+                                                itemPosition,
+                                                false,
+                                                false
                                             )
                                             view.logOnErrorLoadCourier(
                                                 MessageErrorException("rates ui hidden but no promo"),
@@ -163,7 +166,8 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                                 shippingCourier.isSelected = true
                                 view.renderCourierStateSuccess(
                                     generateCourierItemData(
-                                        shippingCourier, shippingRecommendationData
+                                        shippingCourier,
+                                        shippingRecommendationData
                                     ),
                                     itemPosition,
                                     false,
