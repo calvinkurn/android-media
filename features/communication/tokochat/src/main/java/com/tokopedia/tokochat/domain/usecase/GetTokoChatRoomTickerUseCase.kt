@@ -16,7 +16,7 @@ class GetTokoChatRoomTickerUseCase @Inject constructor(
         query getTokochatRoomTicker($$PARAM_SERVICE_TYPE: String!){
              tokochatRoomTicker(serviceType: $$PARAM_SERVICE_TYPE) {
                 message
-                status
+                enable
                 tickerType
             }
         }
