@@ -56,12 +56,12 @@ class BannerChannelAdapter(
 
     override fun onBindViewHolder(holder: BannerChannelImageViewHolder, position: Int) {
         if(position != -1) {
-            holder.bind(itemList[position], imageRatio)
+            holder.bind(itemList[position % itemList.size], imageRatio)
         }
     }
 
     override fun getItemCount(): Int {
-        return itemList.size
+        return Integer.MAX_VALUE
     }
 }
 

@@ -125,8 +125,7 @@ class BannerComponentViewHolder(itemView: View,
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
         if (isAutoScroll) {
-            val size = channelModel?.channelGrids?.size?:0
-            val nextPagePosition = if (currentPagePosition >= (size-1) ) {
+            val nextPagePosition = if (currentPagePosition >= Integer.MAX_VALUE) {
                 0
             } else {
                 currentPagePosition+1
