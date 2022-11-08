@@ -159,6 +159,7 @@ class HomeTopAdsVerificationTest {
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
         when (val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)) {
             is MixTopComponentViewHolder -> {
+                waitForData()
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
@@ -172,7 +173,6 @@ class HomeTopAdsVerificationTest {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
             }
             is FeaturedShopViewHolder -> {
-                waitForData()
                 waitForData()
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
