@@ -31,7 +31,7 @@ class GetPrescriptionIdsUseCase @Inject constructor(private val gql: GraphqlUseC
 
     private fun getRequestParams(
         checkoutId: String,
-        source: String? = "checkout"
+        source: String? = SOURCE_CHECKOUT
     ): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[PARAM_CHECKOUT_ID] = checkoutId
@@ -42,5 +42,8 @@ class GetPrescriptionIdsUseCase @Inject constructor(private val gql: GraphqlUseC
     companion object {
         const val PARAM_CHECKOUT_ID = "checkout_id"
         const val PARAM_SOURCE = "source"
+
+        const val SOURCE_CHECKOUT = "checkout"
+        const val SOURCE_OCC = "occ"
     }
 }
