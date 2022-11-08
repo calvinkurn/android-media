@@ -41,6 +41,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.Create
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousInfoBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewIncentiveBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaBottomSheetUiState
@@ -111,6 +112,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private val baseCreateReviewCustomViewListener = BaseCreateReviewCustomViewListener()
     private val anonymousListener = AnonymousListener()
     private val badRatingCategoryListener = BadRatingCategoryListener()
+    private val createReviewAnonymousInfoBottomSheetListener = CreateReviewAnonymousInfoBottomSheetListener()
     private val incentiveOvoBottomSheetListener = IncentiveOvoBottomSheetListener()
     private val mediaPickerListener = MediaPickerListener()
     private val ratingListener = RatingListener()
@@ -394,6 +396,12 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             ) as? CreateReviewPostSubmitBottomSheet)
         }
 
+        private fun getCreateReviewAnonymousInfoBottomSheetFromFragmentManager(): CreateReviewAnonymousInfoBottomSheet? {
+            return (childFragmentManager.findFragmentByTag(
+                CreateReviewAnonymousInfoBottomSheet.TAG
+            ) as? CreateReviewAnonymousInfoBottomSheet)
+        }
+
         fun showOvoIncentiveBottomSheet(data: IncentiveOvoBottomSheetUiModel) {
             getOvoIncentiveBottomSheetFromFragmentManager()?.init(
                 data, incentiveOvoBottomSheetListener
@@ -440,6 +448,14 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                 }
         }
 
+        fun showCreateReviewAnonymousInfoBottomSheet() {
+            getCreateReviewAnonymousInfoBottomSheetFromFragmentManager()
+                ?: CreateReviewAnonymousInfoBottomSheet().also {
+                    it.setListener(createReviewAnonymousInfoBottomSheetListener)
+                    it.show(childFragmentManager, CreateReviewAnonymousInfoBottomSheet.TAG)
+                }
+        }
+
         fun dismissOvoIncentiveBottomSheet() {
             getOvoIncentiveBottomSheetFromFragmentManager()?.dismiss()
         }
@@ -450,6 +466,10 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         fun dismissCreateReviewPostSubmitBottomSheet() {
             getCreateReviewPostSubmitBottomSheetFromFragmentManager()?.dismiss()
+        }
+
+        fun dismissCreateReviewAnonymousInfoBottomSheet() {
+            getCreateReviewAnonymousInfoBottomSheetFromFragmentManager()?.dismiss()
         }
     }
 
@@ -684,6 +704,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             collectIncentiveBottomSheetUiState()
             collectTextAreaBottomSheetUiState()
             collectPostSubmitBottomSheetUiState()
+            collectAnonymousInfoBottomSheetUiState()
             collectToasterQueue()
             collectSubmitReviewResult()
         }
@@ -855,6 +876,16 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             }
         }
 
+        private fun collectAnonymousInfoBottomSheetUiState() {
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.anonymousInfoBottomSheetUiState) {
+                if (it is CreateReviewAnonymousInfoBottomSheetUiState.Showing) {
+                    bottomSheetHandler.showCreateReviewAnonymousInfoBottomSheet()
+                } else {
+                    bottomSheetHandler.dismissCreateReviewAnonymousInfoBottomSheet()
+                }
+            }
+        }
+
         private fun collectToasterQueue() {
             viewLifecycleOwner.collectWhenResumed(viewModel.toasterQueue) {
                 suspendCoroutine { cont ->
@@ -942,6 +973,10 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             viewModel.setAnonymous(anonymous)
         }
 
+        override fun onClickSeeAnonymousInfo() {
+            viewModel.showAnonymousInfoBottomSheet()
+        }
+
         fun attachListener() {
             binding?.reviewFormAnonymous?.setListener(this)
         }
@@ -1021,7 +1056,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private inner class SubmitButtonListener : CreateReviewSubmitButton.Listener {
         override fun onSubmitButtonClicked() {
             trackingHandler.trackClickSubmitForm()
-            if (!viewModel.isReviewComplete() && viewModel.hasIncentive()) {
+            if (!viewModel.isReviewComplete() && (viewModel.hasIncentive() || viewModel.hasOngoingChallenge())) {
                 dialogHandler.showReviewIncompleteDialog()
             } else {
                 viewModel.submitReview()
@@ -1092,6 +1127,12 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                 ),
                 feedbackId = viewModel.getFeedbackId()
             )
+        }
+    }
+
+    private inner class CreateReviewAnonymousInfoBottomSheetListener: CreateReviewAnonymousInfoBottomSheet.Listener {
+        override fun onDismissCreateReviewAnonymousInfoBottomSheet() {
+            viewModel.dismissAnonymousInfoBottomSheet()
         }
     }
 }

@@ -59,7 +59,8 @@
         app:srcCompat="@drawable/priority_label_image"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintStart_toEndOf="@+id/view"
-        app:layout_constraintTop_toTopOf="@+id/view" />
+        app:layout_constraintTop_toTopOf="@+id/view"
+        android:contentDescription="@string/contact_us_priority_image"/>
 
     <View
         android:id="@+id/verticalView"
