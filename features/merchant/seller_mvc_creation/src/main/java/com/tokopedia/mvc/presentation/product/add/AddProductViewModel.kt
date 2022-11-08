@@ -2,7 +2,7 @@ package com.tokopedia.mvc.presentation.product.add
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPage
+import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
@@ -16,7 +16,7 @@ class AddProductViewModel @Inject constructor(
     private val getShopShowcasesByShopIDUseCase: ShopShowcasesByShopIDUseCase,
     private val getProductListMetaUseCase: ProductListMetaUseCase,
     private val getProductsUseCase: ProductListUseCase,
-    private val getInitiateVoucherPage: GetInitiateVoucherPage
+    private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     fun getShopWarehouseLocations() {
@@ -90,15 +90,15 @@ class AddProductViewModel @Inject constructor(
     }
 
     fun getMaxProductSelection(
-        action: GetInitiateVoucherPage.Param.Action,
-        promoType: GetInitiateVoucherPage.Param.PromoType,
+        action: GetInitiateVoucherPageUseCase.Param.Action,
+        promoType: GetInitiateVoucherPageUseCase.Param.PromoType,
         isVoucherProduct: Boolean
     ) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val param = GetInitiateVoucherPage.Param(action, promoType, isVoucherProduct)
-                val response = getInitiateVoucherPage.execute(param)
+                val param = GetInitiateVoucherPageUseCase.Param(action, promoType, isVoucherProduct)
+                val response = getInitiateVoucherPageUseCase.execute(param)
                 println()
             },
             onError = { error ->
