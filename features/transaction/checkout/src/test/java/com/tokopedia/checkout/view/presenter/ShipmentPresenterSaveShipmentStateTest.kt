@@ -333,9 +333,11 @@ class ShipmentPresenterSaveShipmentStateTest {
         every { view.isTradeInByDropOff } returns false
 
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-            })
+            cartItemModels = listOf(
+                CartItemModel().apply {
+                    productId = 1
+                }
+            )
             selectedShipmentDetailData = ShipmentDetailData().apply {
                 selectedCourier = CourierItemData().apply {
                     shipperId = 1
@@ -386,9 +388,11 @@ class ShipmentPresenterSaveShipmentStateTest {
         every { view.isTradeInByDropOff } returns false
 
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel().apply {
-                productId = 1
-            })
+            cartItemModels = listOf(
+                CartItemModel().apply {
+                    productId = 1
+                }
+            )
             selectedShipmentDetailData = ShipmentDetailData().apply {
                 selectedCourier = CourierItemData().apply {
                     shipperId = 1
