@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -27,7 +28,6 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
@@ -42,6 +42,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
@@ -799,7 +800,7 @@ class TokoNowHomeViewModel @Inject constructor(
     ) {
         currentLayoutType = type
 
-        if (type == MIX_LEFT_CAROUSEL_ATC) return
+        if (type == MIX_LEFT_CAROUSEL_ATC || type == PRODUCT_RECOM) return
 
         homeLayoutItemList.updateProductQuantity(productId, quantity, type)
 
@@ -858,7 +859,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
         setMiniCartSimplifiedData(miniCart)
 
-        if (currentLayoutType != MIX_LEFT_CAROUSEL_ATC) {
+        if (currentLayoutType != MIX_LEFT_CAROUSEL_ATC && currentLayoutType != PRODUCT_RECOM) {
             updateProductQuantity(miniCart)
             currentLayoutType = ""
         }
@@ -922,7 +923,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun trackRecentProductRecomAddToCart(productId: String, quantity: Int, cartId: String) {
         homeLayoutItemList.updateProductRecom(productId, quantity)?.let { productRecom ->
-            val recomItemList = productRecom.recomWidget.recommendationItemList
+            val recomItemList = productRecom.productList
             val position = getPositionProductRecom(recomItemList, productId)
             val data = HomeAddToCartTracker(position, quantity, cartId, productRecom)
             _homeAddToCartTracker.postValue(data)
@@ -931,7 +932,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun trackRecentProductRecomRemoveCart(productId: String, cartId: String) {
         homeLayoutItemList.updateProductRecom(productId, DEFAULT_QUANTITY)?.let { productRecom ->
-            val recomItemList = productRecom.recomWidget.recommendationItemList
+            val recomItemList = productRecom.productList
             val position = getPositionProductRecom(recomItemList, productId)
             val data = HomeRemoveFromCartTracker(position, DEFAULT_QUANTITY, cartId, productRecom)
             _homeRemoveFromCartTracker.postValue(data)
@@ -939,11 +940,11 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun getPositionProductRecom(
-        recomItemList: List<RecommendationItem>,
+        recomItemList: List<TokoNowProductCardCarouselItemUiModel>,
         productId: String
     ): Int {
-        val product = recomItemList.first { it.productId.toString() == productId }
-        return product.position
+        val product = recomItemList.first { it.id == productId }
+        return recomItemList.indexOf(product)
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {

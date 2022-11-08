@@ -86,7 +86,6 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
@@ -152,6 +151,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewMod
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -176,7 +176,6 @@ class TokoNowHomeFragment: Fragment(),
         HomeTickerViewHolder.HomeTickerListener,
         TokoNowCategoryGridListener,
         MiniCartWidgetListener,
-        HomeProductRecomListener,
         TokoNowProductCardListener,
         ShareBottomsheetListener,
         ScreenShotListener,
@@ -241,7 +240,7 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowCategoryGridListener = this,
                 bannerComponentListener = createSlideBannerCallback(),
-                homeProductRecomListener = this,
+                homeProductRecomListener = createProductRecomCallback(),
                 tokoNowProductCardListener = this,
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
@@ -443,68 +442,6 @@ class TokoNowHomeFragment: Fragment(),
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
         analytics.trackCategoryImpression(data, warehouseId)
-    }
-
-    override fun onRecomProductCardClicked(
-        recomItem: RecommendationItem,
-        channelId: String,
-        headerName: String,
-        position: String,
-        isOoc: Boolean,
-        applink: String
-    ) {
-        RouteManager.route(context, applink)
-
-        analytics.onClickProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            recommendationItem = recomItem,
-            position = position,
-            isOoc = isOoc
-        )
-    }
-
-    override fun onRecomProductCardImpressed(
-        recomItem: RecommendationItem,
-        channelId: String,
-        headerName: String,
-        pageName: String,
-        isOoc: Boolean
-    ) {
-        analytics.onImpressProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            recomItem = recomItem,
-            isOoc = isOoc
-        )
-    }
-
-    override fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean, applink: String) {
-        RouteManager.route(context, applink)
-        analytics.onClickAllProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            isOoc = isOoc
-        )
-    }
-
-    override fun onProductRecomNonVariantClick(
-        recomItem: RecommendationItem,
-        quantity: Int,
-        headerName: String,
-        channelId: String,
-        position: String
-    ) {
-        if (userSession.isLoggedIn) {
-            viewModelTokoNow.addProductToCart(
-                recomItem.productId.toString(),
-                quantity,
-                recomItem.shopId.toString(),
-                TokoNowLayoutType.PRODUCT_RECOM
-            )
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
     }
 
     override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
@@ -1227,9 +1164,9 @@ class TokoNowHomeFragment: Fragment(),
     private fun trackProductRecomAddToCart(quantity: Int, position: Int, cartId: String, productRecomModel: HomeProductRecomUiModel) {
         analytics.onClickProductRecomAddToCart(
             channelId = productRecomModel.id,
-            headerName = productRecomModel.recomWidget.title,
+            headerName = productRecomModel.title,
             quantity = quantity.toString(),
-            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position - ADDITIONAL_POSITION],
+            recommendationItem = productRecomModel.productList[position - ADDITIONAL_POSITION],
             position = position.toString(),
             cartId = cartId
         )
@@ -1238,9 +1175,9 @@ class TokoNowHomeFragment: Fragment(),
     private fun trackProductRecomRemoveFromCart(quantity: Int, position: Int, productRecomModel: HomeProductRecomUiModel) {
         analytics.onClickProductRecomRemoveFromCart(
             channelId = productRecomModel.id,
-            headerName = productRecomModel.recomWidget.title,
+            headerName = productRecomModel.title,
             quantity = quantity.toString(),
-            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position - ADDITIONAL_POSITION],
+            recommendationItem = productRecomModel.productList[position - ADDITIONAL_POSITION],
             position = position.toString()
         )
     }
@@ -1896,6 +1833,16 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun createHomeSwitcherListener(): HomeSwitcherListener {
         return HomeSwitcherListener(requireContext(), viewModelTokoNow)
+    }
+
+    private fun createProductRecomCallback(): HomeProductRecomCallback {
+        return HomeProductRecomCallback(
+            context = requireContext(),
+            userSession = userSession,
+            viewModel = viewModelTokoNow,
+            analytics = analytics,
+            startActivityForResult = this::startActivityForResult
+        )
     }
 
     private fun createLeftCarouselAtcCallback(): HomeLeftCarouselAtcCallback {

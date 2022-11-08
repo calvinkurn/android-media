@@ -34,14 +34,6 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         this.itemView = view
     }
 
-    fun setModel(
-        model: TokoNowDynamicHeaderUiModel,
-        listener: TokoNowDynamicHeaderListener? = null
-    ) {
-        this.listener = listener
-        handleHeaderComponent(model)
-    }
-
     private fun handleHeaderComponent(
         model: TokoNowDynamicHeaderUiModel
     ) {
@@ -136,6 +128,18 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         } else {
             tusCountDown?.visibility = View.GONE
         }
+    }
+
+    fun setModel(
+        model: TokoNowDynamicHeaderUiModel
+    ) {
+        handleHeaderComponent(model)
+    }
+
+    fun setListener(
+        headerListener: TokoNowDynamicHeaderListener? = null
+    ) {
+        listener = headerListener
     }
 
     interface TokoNowDynamicHeaderListener {

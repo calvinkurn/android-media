@@ -10,6 +10,7 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
@@ -83,6 +84,7 @@ class HomeLeftCarouselAtcViewHolder(
             rvProduct.addOnScrollListener(scrollListener)
             rvProduct.layoutManager = layoutManager
             rvProduct.itemAnimator = null
+            rvProduct.addItemDecoration(ProductCardCarouselDecoration(rvProduct.context))
         }
     }
 
@@ -109,8 +111,10 @@ class HomeLeftCarouselAtcViewHolder(
         element: HomeLeftCarouselAtcUiModel
     ) {
         dynamicHeaderCustomView.setModel(
-            model = element.header,
-            listener = getDynamicHeaderListener(
+            model = element.header
+        )
+        dynamicHeaderCustomView.setListener(
+            headerListener = getDynamicHeaderListener(
                 element = element
             )
         )

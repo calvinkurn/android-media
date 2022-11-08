@@ -8,9 +8,9 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardSeeMoreViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowSeeMoreCardCarouselViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -23,7 +23,7 @@ class HomeLeftCarouselAtcCallback (
     private val analytics: HomeAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
 ): HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
-   HomeLeftCarouselAtcProductCardSeeMoreViewHolder.HomeLeftCarouselAtcProductCardSeeMoreListener,
+   TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener,
    HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener
 {
 
@@ -119,12 +119,12 @@ class HomeLeftCarouselAtcCallback (
         viewModel.removeLeftCarouselAtc(channelId)
     }
 
-    override fun onProductCardSeeMoreClickListener(product: HomeLeftCarouselAtcProductCardSeeMoreUiModel) {
-        openAppLink(product.appLink)
+    override fun onProductCardSeeMoreClickListener(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
+        openAppLink(seeMoreUiModel.appLink)
 
         trackClickViewAllEvent(
-            channelId = product.channelId,
-            channelHeaderName = product.channelHeaderName
+            channelId = seeMoreUiModel.channelId,
+            channelHeaderName = seeMoreUiModel.channelHeaderName
         )
     }
 

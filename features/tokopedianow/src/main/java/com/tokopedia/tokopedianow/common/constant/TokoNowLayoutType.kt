@@ -21,7 +21,8 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.MAIN_QUEST,
     TokoNowLayoutType.MIX_LEFT_CAROUSEL,
     TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC,
-    TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED
+    TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED,
+    TokoNowLayoutType.PRODUCT_RECOM_ANIMATION_FINISHED
 )
 annotation class TokoNowLayoutType {
     companion object {
@@ -37,8 +38,10 @@ annotation class TokoNowLayoutType {
         const val MAIN_QUEST = "tokonow_main_quest"
         const val MIX_LEFT_CAROUSEL = "left_carousel"
         const val MIX_LEFT_CAROUSEL_ATC = "left_carousel_atc"
-        const val MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED = "left_carousel_atc_animation_finished"
         const val MEDIUM_PLAY_WIDGET = "play_carousel"
         const val SMALL_PLAY_WIDGET = "play_carousel_small"
+
+        const val PRODUCT_RECOM_ANIMATION_FINISHED = "product_recom_animation_finished"
+        const val MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED = "left_carousel_atc_animation_finished"
     }
 }

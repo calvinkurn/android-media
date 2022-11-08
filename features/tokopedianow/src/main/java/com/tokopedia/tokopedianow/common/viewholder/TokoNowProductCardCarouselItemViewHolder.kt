@@ -1,18 +1,18 @@
-package com.tokopedia.tokopedianow.home.presentation.viewholder
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductCardCarouselBinding
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HomeLeftCarouselAtcProductCardViewHolder(
-    itemView: View,
-    private var listener: HomeLeftCarouselAtcProductCardListener? = null
-): AbstractViewHolder<HomeLeftCarouselAtcProductCardUiModel>(itemView) {
+class TokoNowProductCardCarouselItemViewHolder(
+    view: View,
+    private var listener: TokoNowCarouselProductCardItemListener? = null
+): AbstractViewHolder<TokoNowProductCardCarouselItemUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -21,48 +21,68 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     private var binding: ItemTokopedianowProductCardCarouselBinding? by viewBinding()
 
-    override fun bind(element: HomeLeftCarouselAtcProductCardUiModel) {
+    override fun bind(element: TokoNowProductCardCarouselItemUiModel) {
         binding?.productCard?.apply {
             setData(
                 model = element.productCardModel
             )
             setOnClickListener {
                 listener?.onProductCardClicked(
-                    position = element.position,
+                    position = layoutPosition,
                     product = element
                 )
             }
             setOnClickQuantityEditorListener { quantity ->
                 listener?.onProductCardQuantityChanged(
+                    position = layoutPosition,
                     product = element,
                     quantity = quantity
                 )
             }
             setOnClickQuantityEditorVariantListener {
                 listener?.onProductCardAddVariantClicked(
+                    position = layoutPosition,
                     product = element
                 )
             }
             setOnAnimationFinishedListener { quantity ->
                 listener?.onProductCardAnimationFinished(
+                    position = layoutPosition,
                     product = element,
                     quantity = quantity
                 )
             }
             addOnImpressionListener(element) {
                 listener?.onProductCardImpressed(
-                    position = element.position,
+                    position = layoutPosition,
                     product = element
                 )
             }
         }
     }
 
-    interface HomeLeftCarouselAtcProductCardListener {
-        fun onProductCardAddVariantClicked(product: HomeLeftCarouselAtcProductCardUiModel)
-        fun onProductCardAnimationFinished(product: HomeLeftCarouselAtcProductCardUiModel, quantity: Int)
-        fun onProductCardQuantityChanged(product: HomeLeftCarouselAtcProductCardUiModel, quantity: Int)
-        fun onProductCardClicked(position: Int, product: HomeLeftCarouselAtcProductCardUiModel)
-        fun onProductCardImpressed(position: Int, product: HomeLeftCarouselAtcProductCardUiModel)
+    interface TokoNowCarouselProductCardItemListener {
+        fun onProductCardAddVariantClicked(
+            position: Int,
+            product: TokoNowProductCardCarouselItemUiModel
+        )
+        fun onProductCardAnimationFinished(
+            position: Int,
+            product: TokoNowProductCardCarouselItemUiModel,
+            quantity: Int
+        )
+        fun onProductCardQuantityChanged(
+            position: Int,
+            product: TokoNowProductCardCarouselItemUiModel,
+            quantity: Int
+        )
+        fun onProductCardClicked(
+            position: Int,
+            product: TokoNowProductCardCarouselItemUiModel
+        )
+        fun onProductCardImpressed(
+            position: Int,
+            product: TokoNowProductCardCarouselItemUiModel
+        )
     }
 }

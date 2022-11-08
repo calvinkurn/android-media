@@ -13,7 +13,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelM
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 
 object LeftCarouselMapper {
@@ -55,11 +55,10 @@ object LeftCarouselMapper {
         // Add see more at the end of products
         if(channelModel.channelGrids.size > 1 && channelModel.channelHeader.applink.isNotEmpty()) {
             productList.add(
-                HomeLeftCarouselAtcProductCardSeeMoreUiModel(
+                TokoNowSeeMoreCardCarouselUiModel(
                     channelId = channelModel.id,
                     channelHeaderName = channelModel.channelHeader.name,
-                    appLink = channelModel.channelHeader.applink,
-                    backgroundImage = channelModel.channelHeader.backImage
+                    appLink = channelModel.channelHeader.applink
                 )
             )
         }
