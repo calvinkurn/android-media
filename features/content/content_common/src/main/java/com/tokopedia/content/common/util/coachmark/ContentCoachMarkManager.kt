@@ -37,7 +37,7 @@ class ContentCoachMarkManager @Inject constructor(
         }
     }
 
-    private fun showCoachMark(
+    fun showCoachMark(
         config: ContentCoachMarkConfig
     ) {
         if (config.hasPrefKey) {
