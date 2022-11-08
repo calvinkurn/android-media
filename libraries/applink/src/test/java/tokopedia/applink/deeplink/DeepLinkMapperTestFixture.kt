@@ -91,6 +91,13 @@ open class DeepLinkMapperTestFixture {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_FOOD, "")
         } returns RollenceKey.KEY_ROLLENCE_FOOD
     }
+
+    protected fun tokochatRollenceEnabler(result: String = RollenceKey.KEY_ROLLENCE_TOKOCHAT) {
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_TOKOCHAT, "")
+        } returns result
+    }
 }
 
 enum class AppType(val isMainApp: Boolean) {
