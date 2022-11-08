@@ -2884,7 +2884,7 @@ class NewShopPageFragment :
                                 linkerShareData?.url
                         )
                         shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
-                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        SharingUtil.executeShopPageShareIntent(shareModel, linkerShareData, activity, view, shareString)
                         // send gql tracker
                         shareModel.socialMediaName?.let { name ->
                             shopViewModel?.sendShopShareTracker(
