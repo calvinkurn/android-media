@@ -99,6 +99,7 @@
 /features/merchant/campaign_common/                     @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_flash_sale               @tokopedia/android-minionken-dev
 /features/promo/mvc_widget  					        @tokopedia/android-minionken-dev
+/features/merchant/seller_tokopedia_flash_sale          @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
@@ -199,6 +200,7 @@
 /features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev @tokopedia/android-minionlance-dev
 /features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
 /features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
+/features/media/mediaeditor/                            @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionken-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev

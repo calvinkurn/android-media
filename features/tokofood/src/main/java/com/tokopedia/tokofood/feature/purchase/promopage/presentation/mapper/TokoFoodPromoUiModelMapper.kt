@@ -15,12 +15,14 @@ object TokoFoodPromoUiModelMapper {
                     add(TokoFoodPromoEligibilityHeaderUiModel(title = title))
                 }
                 data.availableSection.subSection.let { availableSubSection ->
-                    add(
-                        TokoFoodPromoHeaderUiModel(
-                            title = availableSubSection.title,
-                            iconUrl = availableSubSection.iconUrl
+                    availableSubSection.title.takeIf { it.isNotBlank() }?.let {
+                        add(
+                            TokoFoodPromoHeaderUiModel(
+                                title = availableSubSection.title,
+                                iconUrl = availableSubSection.iconUrl
+                            )
                         )
-                    )
+                    }
                     availableSubSection.tickerMessage.takeIf { it.isNotEmpty() }
                         ?.let { tickerMessage ->
                             add(TokoFoodPromoTickerUiModel(tickerMessage))
@@ -39,12 +41,14 @@ object TokoFoodPromoUiModelMapper {
                     add(TokoFoodPromoEligibilityHeaderUiModel(title = title))
                 }
                 data.unavailableSection.subSection.let { unavailableSubSection ->
-                    add(
-                        TokoFoodPromoHeaderUiModel(
-                            title = unavailableSubSection.title,
-                            iconUrl = unavailableSubSection.iconUrl
+                    unavailableSubSection.title.takeIf { it.isNotBlank() }?.let {
+                        add(
+                            TokoFoodPromoHeaderUiModel(
+                                title = unavailableSubSection.title,
+                                iconUrl = unavailableSubSection.iconUrl
+                            )
                         )
-                    )
+                    }
                     unavailableSubSection.tickerMessage.takeIf { it.isNotEmpty() }
                         ?.let { tickerMessage ->
                             add(TokoFoodPromoTickerUiModel(tickerMessage))
