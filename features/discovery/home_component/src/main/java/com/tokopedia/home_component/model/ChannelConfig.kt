@@ -1,5 +1,8 @@
 package com.tokopedia.home_component.model
 
+import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_BLEEDING
+import com.tokopedia.home_component.util.ChannelStyleUtil.DEFAULT_DIVIDER_SIZE
+
 data class ChannelConfig (
         val layout: String = "",
         val showPromoBadge: Boolean = false,
@@ -8,7 +11,9 @@ data class ChannelConfig (
         val createdTimeMillis: String = "",
         val isAutoRefreshAfterExpired: Boolean = false,
         val enableTimeDiffMoreThan24h: Boolean = false,
-        val dividerType: Int = DIVIDER_NO_DIVIDER
+        val dividerType: Int = DIVIDER_NO_DIVIDER,
+        val dividerSize: Int = DEFAULT_DIVIDER_SIZE,
+        val borderStyle: String = BORDER_STYLE_BLEEDING,
 ) {
         companion object {
                 const val DIVIDER_NO_DIVIDER = 0
