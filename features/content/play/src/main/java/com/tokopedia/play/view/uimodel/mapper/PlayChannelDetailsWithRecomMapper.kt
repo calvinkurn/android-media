@@ -20,6 +20,7 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -283,7 +284,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     }
 
     private fun mapPopUp(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.popupConfig){
-        PlayPopUpConfigUiModel(isEnabled = isEnabled, text = copyText, duration = duration)
+        PlayPopUpConfigUiModel(isEnabled = isEnabled, text = copyText, duration = TimeUnit.SECONDS.toMillis(duration))
     }
 
     companion object {
