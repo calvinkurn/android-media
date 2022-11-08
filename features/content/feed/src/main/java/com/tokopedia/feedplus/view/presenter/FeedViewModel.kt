@@ -292,6 +292,7 @@ class FeedViewModel @Inject constructor(
 
     fun getFeedFirstPage() {
         pagingHandler.resetPage()
+        shopRecomNextCursor = ""
         currentCursor = ""
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
@@ -338,8 +339,6 @@ class FeedViewModel @Inject constructor(
                     _playWidgetModel.value = Fail(e)
                 }
             }
-
-            if (shouldGetShopRecomWidget(results)) getShopRecomWidget()
 
         }) {
             getFeedNextPageResp.value = Fail(it)
@@ -836,7 +835,7 @@ class FeedViewModel @Inject constructor(
         launchCatchError(baseDispatcher.io, block = {
             val request = requestShopRecomWidget(shopRecomNextCursor)
             if (request.shopRecomUiModel.isShown) {
-                shopRecomNextCursor = request.shopRecomUiModel.nextCursor
+                if (shopRecomNextCursor.isEmpty()) _shopRecom.emit(ShopRecomWidgetModel())
                 _shopRecom.setValue {
                     copy(
                         shopRecomUiModel = shopRecomUiModel.copy(
@@ -845,12 +844,21 @@ class FeedViewModel @Inject constructor(
                             title = request.shopRecomUiModel.title,
                             loadNexPage = request.shopRecomUiModel.loadNexPage,
                             items = shopRecomUiModel.items + request.shopRecomUiModel.items
-                        )
+                        ),
+                        onError = ""
                     )
                 }
             } else _shopRecom.emit(ShopRecomWidgetModel())
+            shopRecomNextCursor = request.shopRecomUiModel.nextCursor
         }, onError = {
-            _shopRecom.value = ShopRecomWidgetModel()
+            shopRecomNextCursor = ""
+            if (_shopRecom.value.onError.isNotEmpty()) return@launchCatchError
+            _shopRecom.update { data ->
+                data.copy(
+                    shopRecomUiModel = data.shopRecomUiModel.copy(loadNexPage = false),
+                    onError = it.message.orEmpty()
+                )
+            }
         })
     }
 
