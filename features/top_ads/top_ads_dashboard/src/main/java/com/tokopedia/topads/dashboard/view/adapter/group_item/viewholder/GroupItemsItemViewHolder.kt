@@ -150,7 +150,7 @@ class GroupItemsItemViewHolder(
                             com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
                     else
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                            Unify_NN0))
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN0))
                 }
             }
             itemCard.setOnLongClickListener {
