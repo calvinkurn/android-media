@@ -27,7 +27,8 @@ data class PickerParam(
     @SerializedName("pageSource") private var pageSource: PageSource = PageSource.Unknown,
     @SerializedName("includeMedias") private var includeMedias: List<File> = emptyList(),
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
-    @SerializedName("previewActionText") private var previewActionText: String = ""
+    @SerializedName("previewActionText") private var previewActionText: String = "",
+    @SerializedName("editorParam")private var editorParam: EditorParam? = null
 ) : Parcelable {
 
     // getter
@@ -55,6 +56,7 @@ data class PickerParam(
     fun maxImageFileSize() = maxImageFileSize
     fun minStorageThreshold() = minStorageThreshold
     fun isEditorEnabled() = withEditor
+    fun getEditorParam() = editorParam
     fun previewActionText(): String {
         return if (previewActionText.length > CUSTOM_ACTION_TEXT_LIMIT) {
             previewActionText.substring(IntRange(
@@ -78,7 +80,10 @@ data class PickerParam(
     fun minImageResolution(value: Int) = apply { minImageResolution = value }
     fun maxImageResolution(value: Int) = apply { maxImageResolution = value }
     fun minStorageThreshold(value: Long) = apply { minStorageThreshold = value }
-    fun withEditor(value: Boolean) = apply { withEditor = value }
+    fun withEditor(param: EditorParam.() -> Unit = {}) = apply {
+        withEditor = true
+        editorParam = EditorParam().apply(param)
+    }
     fun includeAnimationGif(value: Boolean) = apply { isIncludeAnimation = value }
     fun includeMedias(value: List<File>) = apply { includeMedias = value }
     fun excludeMedias(value: List<File>) = apply { excludedMedias = value }

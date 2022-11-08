@@ -36,7 +36,8 @@ open class InactivePhonePinVerificationFragment : VerificationFragment() {
             mode = modeListData.modeText,
             userIdEnc = otpData.userIdEnc,
             validateToken = otpData.accessToken,
-            userId = otpData.userId.toIntOrZero()
+            userId = otpData.userId.toIntOrZero(),
+            msisdn = otpData.msisdn
         )
     }
 

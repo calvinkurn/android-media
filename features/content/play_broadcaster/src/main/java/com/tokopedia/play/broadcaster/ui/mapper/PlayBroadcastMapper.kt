@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
@@ -20,22 +22,15 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.util.Calendar
 
 /**
  * Created by jegul on 21/09/20
  */
 interface PlayBroadcastMapper {
-
-    fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel>
-
-    fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ): List<ProductContentUiModel>
 
     fun mapSearchSuggestionList(
         keyword: String,
@@ -51,7 +46,7 @@ interface PlayBroadcastMapper {
         media: CreateLiveStreamChannelResponse.GetMedia
     ): LiveStreamInfoUiModel
 
-    fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel>
+    fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel>
 
     fun mapTotalView(totalView: TotalView): TotalViewUiModel
 
@@ -90,7 +85,7 @@ interface PlayBroadcastMapper {
 
     fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
 
-    fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel
+    fun mapInteractiveConfig(authorType: String, response: GetInteractiveConfigResponse): InteractiveConfigUiModel
 
     fun mapInteractiveSession(
         response: PostInteractiveCreateSessionResponse,
@@ -115,7 +110,7 @@ interface PlayBroadcastMapper {
         interactiveId: String,
     ): QuizDetailDataUiModel
 
-    fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel
+    fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel, endTime: Calendar?): List<LeaderboardGameUiModel>
 
     fun mapChoiceDetail(
         response: GetInteractiveQuizChoiceDetailResponse,
@@ -127,11 +122,13 @@ interface PlayBroadcastMapper {
     fun mapLeaderBoardWithSlot(
         response: GetSellerLeaderboardSlotResponse,
         allowChat: Boolean,
-    ): List<PlayLeaderboardUiModel>
+    ): List<LeaderboardGameUiModel>
 
     fun mapBroadcasterMetric(
         metric: BroadcasterMetric,
         authorId: String,
         channelId: String,
     ): PlayBroadcasterMetric
+
+    fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel>
 }

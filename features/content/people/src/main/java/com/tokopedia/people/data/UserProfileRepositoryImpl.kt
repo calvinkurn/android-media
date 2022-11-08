@@ -2,8 +2,8 @@ package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
@@ -32,7 +32,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
-    private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
+    private val getWhitelistNewUseCase: GetWhiteListNewUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val shopFollowUseCase: ShopFollowUseCase,
     private val getFollowerListUseCase: GetFollowerListUseCase,
