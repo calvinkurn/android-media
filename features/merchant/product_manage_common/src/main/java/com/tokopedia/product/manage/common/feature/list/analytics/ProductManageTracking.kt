@@ -72,11 +72,10 @@ object ProductManageTracking {
     fun eventClickNotifyMeIcon(
         productId: String, parentId: String = "0"
     ) {
-        val trackerId = if (GlobalConfig.isSellerApp()) {
-            "36711"
-        } else {
-            "36727"
-        }
+        val trackerId = getTrackerIdPlatform(
+            sellerTrackerId = "36711",
+            mainappTrackerId = "36727"
+        )
 
         val label = arrayOf(productId, parentId).joinToString(" - ")
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -90,11 +89,10 @@ object ProductManageTracking {
     }
 
     fun eventClickAturStockNotifyMe(productId: String, parentId: String = "0") {
-        val trackerId = if (GlobalConfig.isSellerApp()) {
-            "36712"
-        } else {
-            "36728"
-        }
+        val trackerId = getTrackerIdPlatform(
+            sellerTrackerId = "36712",
+            mainappTrackerId = "36728"
+        )
 
         val label = arrayOf(productId, parentId).joinToString(" - ")
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -108,11 +106,10 @@ object ProductManageTracking {
     }
 
     fun eventClickFilterNotifyMe() {
-        val trackerId = if (GlobalConfig.isSellerApp()) {
-            "36718"
-        } else {
-            "36734"
-        }
+        val trackerId = getTrackerIdPlatform(
+            sellerTrackerId = "36718",
+            mainappTrackerId = "36734"
+        )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EventTracking(
@@ -494,6 +491,17 @@ object ProductManageTracking {
                 ProductManageDataLayer.SCREEN_NAME_STOCK_ALLOCATION_SINGLE
             }
         sendScreen(screenName)
+    }
+
+    private fun getTrackerIdPlatform(
+        sellerTrackerId: String,
+        mainappTrackerId: String
+    ) {
+        val trackerId = if (GlobalConfig.isSellerApp()) {
+            sellerTrackerId
+        } else {
+            mainappTrackerId
+        }
     }
 
     private fun addProductIdAndShopId(
