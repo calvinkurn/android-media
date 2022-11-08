@@ -2629,7 +2629,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun setupPopUp () {
-        playPreference.setFollowPopUp(_partnerInfo.value.id.toString())
+        playPreference.setFollowPopUp(currentStreamerId.toString())
     }
 
     private fun CoroutineScope.launch(
