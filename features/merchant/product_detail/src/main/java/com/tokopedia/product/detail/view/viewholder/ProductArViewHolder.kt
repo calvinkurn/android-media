@@ -52,11 +52,4 @@ class ProductArViewHolder(
             itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
-
-    private fun getComponentTrackData(element: ArButtonDataModel) = ComponentTrackDataModel(
-            componentType = element.type(),
-            componentName = element.name(),
-            adapterPosition = adapterPosition + 1
-    )
-
 }

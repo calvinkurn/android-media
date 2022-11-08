@@ -178,7 +178,7 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             val result = addToCartUseCase.executeOnBackground()
 
             if (result.isDataError()) {
-                _addToCartLiveData.emit(Fail(MessageErrorException(result.getAtcErrorMessageSafely())))
+                _addToCartLiveData.emit(Fail(MessageErrorException(result.getAtcErrorMessage())))
             } else {
                 _addToCartLiveData.emit(Success(result))
             }
