@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/unify_space_16">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_footer"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/unify_space_16"
         android:gravity="start"
@@ -21,8 +21,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_goneMarginTop="@dimen/spacing_lvl3"
-        app:layout_goneMarginBottom="0dp"
         app:typographyType="body_3"
         tools:text="Dari 100 peserta game"
         tools:visibility="visible" />
