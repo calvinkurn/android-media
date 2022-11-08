@@ -25,6 +25,9 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
@@ -97,6 +100,7 @@ class UserProfileFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
     private val impressionCoordinator: ShopRecomImpressCoordinator,
+    private val coachMarkManager: ContentCoachMarkManager,
 ) : TkpdBaseV4Fragment(),
     AdapterCallback,
     ShareBottomsheetListener,
@@ -220,6 +224,7 @@ class UserProfileFragment @Inject constructor(
         super.onDestroyView()
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
         feedFloatingButtonManager.cancel()
+        coachMarkManager.dismissAllCoachMark()
 
         _binding = null
     }
@@ -317,6 +322,8 @@ class UserProfileFragment @Inject constructor(
         fabUp.circleMainMenu.invisible()
 
         fabUserProfile.setOnClickListener {
+            coachMarkManager.hasBeenShown(fabUserProfile)
+
             fabUp.menuOpen = !fabUp.menuOpen
         }
     }
@@ -525,15 +532,19 @@ class UserProfileFragment @Inject constructor(
             prev.profileWhitelist == value.profileWhitelist
         ) return
 
-        if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist && !fabCreated) {
-            val items = arrayListOf<FloatingButtonItem>()
-            items.add(createLiveFab())
-            items.add(createPostFab())
-            items.add(createShortsFab())
+        if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist) {
+            if(!fabCreated) {
+                val items = arrayListOf<FloatingButtonItem>()
+                items.add(createLiveFab())
+                items.add(createPostFab())
+                items.add(createShortsFab())
 
-            mainBinding.fabUp.addItem(items)
-            mainBinding.fabUserProfile.show()
-            fabCreated = true
+                mainBinding.fabUp.addItem(items)
+                mainBinding.fabUserProfile.show()
+                fabCreated = true
+
+                showShortEntryPointCoachMark()
+            }
         } else mainBinding.fabUserProfile.hide()
     }
 
@@ -589,6 +600,16 @@ class UserProfileFragment @Inject constructor(
 //                else goToCreateShortsPage()
 
                 goToCreateShortsPage()
+            }
+        )
+    }
+
+    private fun showShortEntryPointCoachMark() {
+        coachMarkManager.showCoachMark(
+            ContentCoachMarkConfig(mainBinding.fabUserProfile).apply {
+                title = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_title)
+                subtitle = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_description)
+                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
         )
     }

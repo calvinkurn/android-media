@@ -772,8 +772,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun showPlayShortsOnBoarding() {
         coachMarkManager?.showCoachMark(
             config = ContentCoachMarkConfig(feedFloatingButton).apply {
-                title = getString(R.string.feed_play_shorts_entry_point_coachmark_title)
-                subtitle = getString(R.string.feed_play_shorts_entry_point_coachmark_description)
+                title = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_title)
+                subtitle = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_description)
                 setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
         )
