@@ -295,7 +295,8 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _followPopUpState = combine(_channelDetail, _partnerInfo, _bottomInsets) { channelDetail, partnerInfo, bottomInsets ->
         FollowPopUpUiState(
-            shouldShow = partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && !bottomInsets.isAnyShown && !isFreezeOrBanned && playPreference.isFollowPopup(partnerInfo.id.toString()),
+            shouldShow = partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && (partnerInfo.status as? PlayPartnerFollowStatus.Followable)?.followStatus != PartnerFollowableStatus.Followed
+                && !bottomInsets.isAnyShown && !isFreezeOrBanned && playPreference.isFollowPopup(currentStreamerId.toString()) && channelDetail.popupConfig.isEnabled && partnerInfo.id == currentStreamerId,
             popupConfig = channelDetail.popupConfig
         )
     }.flowOn(dispatchers.computation)

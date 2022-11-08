@@ -15,10 +15,13 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -66,6 +69,7 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
 
         bindView()
         observeState()
+        observeEvent()
     }
 
     private fun observeState () {
@@ -75,6 +79,17 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
                 val prevState = cachedState.prevValue
 
                 if(prevState?.followPopUp != state.followPopUp) setupView(description = state.followPopUp.popupConfig.text, partnerInfo = state.partner)
+            }
+        }
+    }
+
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is ShowInfoEvent -> dismiss()
+                    is ShowErrorEvent -> dismiss()
+                }
             }
         }
     }
