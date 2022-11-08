@@ -200,7 +200,7 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        products.map { it }.forEach {
+                        products.forEach {
                             add(convertProductToHashMapWithList(it.key.product, it.value, "bottom sheet"))
                         }
                     }

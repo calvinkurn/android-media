@@ -190,13 +190,9 @@ class PlayBottomSheetFragment @Inject constructor(
     ) {
         if (!playViewModel.bottomInsets.isProductSheetsShown) return
 
-        val impressedProduct = products.apply {
-            keys.distinctBy { it.product.id}
-        }
-
         if (playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.TokoNow)
-            newAnalytic.impressProductBottomSheetNow(impressedProduct)
-        else analytic.impressBottomSheetProduct(impressedProduct)
+            newAnalytic.impressProductBottomSheetNow(products)
+        else analytic.impressBottomSheetProduct(products)
     }
 
     private fun onProductCountChanged() {
