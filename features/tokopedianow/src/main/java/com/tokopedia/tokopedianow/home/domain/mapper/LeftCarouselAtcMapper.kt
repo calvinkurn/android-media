@@ -39,7 +39,8 @@ object LeftCarouselAtcMapper {
     fun mapToLeftCarouselAtc(
         response: HomeLayoutResponse,
         state: HomeLayoutItemState,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        warehouseId: String
     ): HomeLayoutItemUiModel {
         val channelModel = mapToChannelModel(response)
         val productList = mutableListOf<Visitable<*>>()
@@ -112,6 +113,8 @@ object LeftCarouselAtcMapper {
             imageBannerAppLink = channelModel.channelBanner.applink,
             realTimeRecom = HomeRealTimeRecomUiModel(
                 channelId = channelModel.id,
+                headerName = channelModel.channelHeader.name,
+                warehouseId = warehouseId,
                 pageName = pageName,
                 enabled = enableRTR,
                 type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC

@@ -649,9 +649,9 @@ object HomeLayoutMapper {
             // Layout content data already returned from dynamic channel query, set state to loaded.
             LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, loadedState)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
-            PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState, miniCartData)
+            PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState, miniCartData, warehouseId)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
-            MIX_LEFT_CAROUSEL_ATC -> mapToLeftCarouselAtc(response, loadedState, miniCartData)
+            MIX_LEFT_CAROUSEL_ATC -> mapToLeftCarouselAtc(response, loadedState, miniCartData, warehouseId)
             // endregion
 
             // region TokoNow Component

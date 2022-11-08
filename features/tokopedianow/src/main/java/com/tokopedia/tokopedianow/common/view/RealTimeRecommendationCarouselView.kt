@@ -8,6 +8,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -17,6 +18,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
@@ -42,6 +44,9 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     private var container: ConstraintLayout? = null
 
     var listener: RealTimeRecommendationListener? = null
+    var analytics: RealTimeRecommendationAnalytics? = null
+
+    private var rtrData: HomeRealTimeRecomUiModel? = null
 
     init {
         itemView = LayoutInflater.from(context)
@@ -57,10 +62,19 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     fun bind(data: HomeRealTimeRecomUiModel) {
-        when(data.widgetState) {
+        setData(data)
+        addImpressionTracker(data)
+        renderWidgetView(data)
+    }
+
+    private fun renderWidgetView(data: HomeRealTimeRecomUiModel) {
+        when (data.widgetState) {
             RealTimeRecomWidgetState.LOADING -> renderLoadingState()
             RealTimeRecomWidgetState.READY -> renderRealTimeRecom(data)
-            RealTimeRecomWidgetState.REFRESH -> renderRefreshRecommendation(data)
+            RealTimeRecomWidgetState.REFRESH -> {
+                renderRefreshRecommendation(data)
+                trackRefreshImpression(data)
+            }
             else -> hideContent()
         }
     }
@@ -109,6 +123,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
 
     private fun onClickRefresh(data: HomeRealTimeRecomUiModel) {
         listener?.refreshRealTimeRecommendation(data)
+        analytics?.trackClickRefresh(data.parentProductId)
         textRefreshRecommendation?.hide()
     }
 
@@ -166,6 +181,38 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         progressBar?.hide()
     }
 
+    private fun addImpressionTracker(data: HomeRealTimeRecomUiModel) {
+        addOnImpressionListener(data.impressHolder) {
+            analytics?.trackWidgetImpression(data.parentProductId, data.warehouseId)
+        }
+    }
+
+    private fun trackRefreshImpression(data: HomeRealTimeRecomUiModel) {
+        analytics?.trackRefreshImpression(data.parentProductId)
+    }
+
+    private fun trackProductImpression(recomItem: RecommendationItem, position: Int) {
+        val headerName = rtrData?.headerName.orEmpty()
+        val productId = rtrData?.parentProductId.orEmpty()
+        analytics?.trackProductImpression(headerName, productId, recomItem, position)
+    }
+
+    private fun trackProductClick(recomItem: RecommendationItem, itemPosition: Int) {
+        val headerName = rtrData?.headerName.orEmpty()
+        val productId = rtrData?.parentProductId.orEmpty()
+        analytics?.trackProductClick(headerName, productId, recomItem, itemPosition)
+    }
+
+
+    private fun trackProductAddToCart(recomItem: RecommendationItem, quantity: Int) {
+        val productId = rtrData?.parentProductId.orEmpty()
+        analytics?.trackAddToCart(productId, recomItem, quantity)
+    }
+
+    private fun setData(data: HomeRealTimeRecomUiModel) {
+        rtrData = data
+    }
+
     override fun onRecomBannerImpressed(
         data: RecommendationCarouselData,
         adapterPosition: Int
@@ -203,11 +250,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener?.onRecomProductCardImpressed(
-            recomItem,
-            data.recommendationData.title,
-            data.recommendationData.pageName
-        )
+        trackProductImpression(recomItem, itemPosition)
     }
 
     override fun onSeeAllBannerClicked(
@@ -229,6 +272,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
             recomItem.position.toString(),
             applink
         )
+        trackProductClick(recomItem, itemPosition)
     }
 
     override fun onRecomProductCardAddToCartNonVariant(
@@ -243,6 +287,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
             data.recommendationData.title,
             recomItem.position.toString()
         )
+        trackProductAddToCart(recomItem, quantity)
     }
 
     override fun onRecomProductCardAddVariantClick(

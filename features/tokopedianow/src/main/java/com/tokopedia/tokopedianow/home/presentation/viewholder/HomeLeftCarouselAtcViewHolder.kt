@@ -17,6 +17,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderCustomView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
@@ -38,7 +39,8 @@ class HomeLeftCarouselAtcViewHolder (
     itemView: View,
     private val homeLeftCarouselAtcCallback: HomeLeftCarouselAtcCallback? = null,
     private val tokoNowView: TokoNowView? = null,
-    private val rtrListener: RealTimeRecommendationListener? = null
+    private val rtrListener: RealTimeRecommendationListener? = null,
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeLeftCarouselAtcUiModel>(itemView), CoroutineScope,
     TokoNowDynamicHeaderCustomView.HeaderCustomViewListener {
 
@@ -119,6 +121,7 @@ class HomeLeftCarouselAtcViewHolder (
     private fun setupRealTimeRecommendation(element: HomeLeftCarouselAtcUiModel) {
         binding?.realTimeRecommendationCarousel?.apply {
             listener = rtrListener
+            analytics = rtrAnalytics
             bind(element.realTimeRecom)
         }
     }

@@ -93,6 +93,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         val realTimeRecom = HomeRealTimeRecomUiModel(
             channelId = channelId,
+            headerName = "Lagi Diskon",
             parentProductId = productId,
             productImageUrl = "https://tokopedia.com/image.jpg",
             category = "Sayur",
@@ -218,6 +219,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         val realTimeRecom = HomeRealTimeRecomUiModel(
             channelId = channelId,
+            headerName = "Lagi Diskon",
             parentProductId = "5",
             productImageUrl = "https://tokopedia.com/image.jpg",
             category = "Sayur",
@@ -350,6 +352,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         val latestRealTimeRecom = HomeRealTimeRecomUiModel(
             channelId = channelId,
+            headerName = "Lagi Diskon",
             parentProductId = "2",
             productImageUrl = "https://tokopedia.com/image.jpg",
             category = "Sayur",
@@ -455,6 +458,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         val realTimeRecom = HomeRealTimeRecomUiModel(
             channelId = channelId,
+            headerName = "Lagi Diskon",
             parentProductId = "",
             productImageUrl = "",
             category = "",
@@ -601,6 +605,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         val realTimeRecom = HomeRealTimeRecomUiModel(
             channelId = channelId,
+            headerName = "Lagi Diskon",
             parentProductId = productId,
             productImageUrl = "https://tokopedia.com/image.jpg",
             category = "Sayur",

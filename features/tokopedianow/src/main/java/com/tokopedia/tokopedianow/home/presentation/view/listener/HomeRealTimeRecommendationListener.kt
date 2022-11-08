@@ -71,13 +71,6 @@ class HomeRealTimeRecommendationListener(
         }
     }
 
-    override fun onRecomProductCardImpressed(
-        recomItem: RecommendationItem,
-        headerName: String,
-        pageName: String
-    ) {
-    }
-
     override fun refreshRealTimeRecommendation(data: HomeRealTimeRecomUiModel) {
         viewModel.refreshRealTimeRecommendation(data.channelId, data.parentProductId, data.type)
     }

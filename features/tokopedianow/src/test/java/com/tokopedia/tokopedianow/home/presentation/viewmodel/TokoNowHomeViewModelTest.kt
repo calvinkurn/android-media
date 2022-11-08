@@ -790,7 +790,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
-        val realTimeRecom = HomeRealTimeRecomUiModel(channelId = channelId)
+        val realTimeRecom = HomeRealTimeRecomUiModel(
+            channelId = channelId,
+            headerName = "Product Recommendation",
+            warehouseId = warehouseId
+        )
 
         val data = HomeLayoutListUiModel(
             items = listOf(
@@ -820,6 +824,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 createLeftCarouselAtcDataModel(
                     id = "2122",
                     headerName = "Mix Left Atc Carousel",
+                    warehouseId = warehouseId
                 ),
                 createLeftCarouselDataModel(
                     id = "2333",
@@ -875,6 +880,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     createLeftCarouselAtcDataModel(
                         id = "2122",
                         headerName = "Mix Left Atc Carousel",
+                        warehouseId = warehouseId
                     )
                 ),
                 state = TokoNowLayoutState.UPDATE
@@ -1478,7 +1484,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val recomItemList = listOf(RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", position = 1))
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
-        val realTimeRecom = HomeRealTimeRecomUiModel(channelId = channelId)
+        val realTimeRecom = HomeRealTimeRecomUiModel(channelId = channelId, headerName = "Lagi Diskon")
 
         val homeRecomUiModel = HomeProductRecomUiModel(
             id = "1001",
@@ -1609,7 +1615,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = quantity, position = 2)
         )
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
-        val realTimeRecom = HomeRealTimeRecomUiModel(channelId = channelId)
+        val realTimeRecom = HomeRealTimeRecomUiModel(channelId = channelId, headerName = "Lagi Diskon")
 
         val homeRecomUiModel = HomeProductRecomUiModel(
             id = "1001",
@@ -1682,7 +1688,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0, position = 2)
         )
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
-        val realTimeRecom = HomeRealTimeRecomUiModel(channelId = channelId)
+        val realTimeRecom = HomeRealTimeRecomUiModel(channelId = channelId, headerName = "Lagi Diskon")
 
         val homeRecomUiModel = HomeProductRecomUiModel(
             id = "1001",
@@ -1809,7 +1815,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0, position = 2)
         )
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
-        val realTimeRecom = HomeRealTimeRecomUiModel(channelId = channelId)
+        val realTimeRecom = HomeRealTimeRecomUiModel(channelId = channelId, headerName = "Lagi Diskon")
 
         val homeRecomUiModel = HomeProductRecomUiModel(
             id = "1001",

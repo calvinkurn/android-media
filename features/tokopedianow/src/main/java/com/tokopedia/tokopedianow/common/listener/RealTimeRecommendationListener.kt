@@ -13,12 +13,6 @@ interface RealTimeRecommendationListener {
         applink: String
     )
 
-    fun onRecomProductCardImpressed(
-        recomItem: RecommendationItem,
-        headerName: String,
-        pageName: String
-    )
-
     fun onProductRecomNonVariantClick(
         recomItem: RecommendationItem,
         quantity: Int,

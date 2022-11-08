@@ -30,7 +30,8 @@ object ProductRecomMapper {
     fun mapProductRecomDataModel(
         response: HomeLayoutResponse,
         state: HomeLayoutItemState,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData? = null,
+        warehouseId: String
     ): HomeLayoutItemUiModel {
         val channelModel = ChannelMapper.mapToChannelModel(response)
         val recomWidget = mapChannelToRecommendationWidget(channelModel, miniCartData)
@@ -44,6 +45,8 @@ object ProductRecomMapper {
             recomWidget = recomWidget,
             realTimeRecom = HomeRealTimeRecomUiModel(
                 channelId = channelModel.id,
+                headerName = channelModel.channelHeader.name,
+                warehouseId = warehouseId,
                 pageName = pageName,
                 enabled = enableRTR,
                 type = TokoNowLayoutType.PRODUCT_RECOM
