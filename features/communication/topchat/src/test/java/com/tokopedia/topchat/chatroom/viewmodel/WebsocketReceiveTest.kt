@@ -54,6 +54,7 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(viewModel.isFromBubble, true)
+        assertEquals(viewModel.isOnStop, true)
         verify(exactly = 0) {
             val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
             chatWebSocket.sendPayload(payload)
@@ -65,12 +66,14 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         // Given
         val isFromBubble = false
         viewModel.isFromBubble = isFromBubble
+        viewModel.isOnStop = false
 
         // When
         viewModel.markAsRead()
 
         // Then
         assertEquals(viewModel.isFromBubble, false)
+        assertEquals(viewModel.isOnStop, false)
         verify {
             val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
             chatWebSocket.sendPayload(payload)
@@ -89,6 +92,7 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(viewModel.isFromBubble, false)
+        assertEquals(viewModel.isOnStop, true)
         verify {
             val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
             chatWebSocket.sendPayload(payload)
@@ -107,6 +111,7 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(viewModel.isFromBubble, true)
+        assertEquals(viewModel.isOnStop, false)
         verify {
             val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
             chatWebSocket.sendPayload(payload)

@@ -275,7 +275,7 @@ open class TopChatViewModel @Inject constructor(
     /*
     * these flags use to handle messages in order to unread when from the bubble and on stop
      */
-    private var isOnStop = false
+    var isOnStop = false
     var isFromBubble = false
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
