@@ -39,7 +39,7 @@ class HomeLeftCarouselAtcViewHolder(
         private const val FIRST_VISIBLE_ITEM_POSITION = 0
         private const val NO_SCROLLED = 0
         private const val IMAGE_PARALLAX_ALPHA = 0.5f
-        private const val EXPECTED_IMAGE_PARALLAX_POSITION = 0.067f
+        private const val EXPECTED_IMAGE_PARALLAX_RATIO= 0.2f
         private const val DEFAULT_IMAGE_TRANSLATION_VALUE = 0f
         private const val DEFAULT_IMAGE_ALPHA_VALUE = 1f
 
@@ -164,8 +164,8 @@ class HomeLeftCarouselAtcViewHolder(
             if (layoutManager.findFirstVisibleItemPosition() == FIRST_VISIBLE_ITEM_POSITION && dx != NO_SCROLLED) {
                 layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())?.apply {
                     val distanceLeftFirstItem = left
-                    val translateX = distanceLeftFirstItem * EXPECTED_IMAGE_PARALLAX_POSITION
-                    parallaxImageView.translationX = translateX - (rvProduct.paddingStart.toFloat() * EXPECTED_IMAGE_PARALLAX_POSITION)
+                    val translateX = distanceLeftFirstItem * EXPECTED_IMAGE_PARALLAX_RATIO
+                    parallaxImageView.translationX = translateX - (rvProduct.paddingStart.toFloat() * EXPECTED_IMAGE_PARALLAX_RATIO)
 
                     val itemSize = width.toFloat()
                     val alpha = (abs(distanceLeftFirstItem).toFloat() / itemSize * IMAGE_PARALLAX_ALPHA)
