@@ -97,7 +97,7 @@ open class BuyerOrderDetailTypeFactory(
             )
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
             AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent)
-            OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator)
+            OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator, orderResolutionListener)
             PlatformFeeInfoViewHolder.LAYOUT -> PlatformFeeInfoViewHolder(parent, navigator)
             OrderInsuranceViewHolder.LAYOUT -> OrderInsuranceViewHolder(parent, navigator)
             else -> super.createViewHolder(parent, type)
