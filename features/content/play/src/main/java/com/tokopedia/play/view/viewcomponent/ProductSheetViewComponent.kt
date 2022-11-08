@@ -111,6 +111,7 @@ class ProductSheetViewComponent(
             product: ProductSheetAdapter.Item.Product,
             position: Int
         ) {
+            if(impressionSet.containsValue(position)) return
             impressionSet[product] = position
         }
     }
