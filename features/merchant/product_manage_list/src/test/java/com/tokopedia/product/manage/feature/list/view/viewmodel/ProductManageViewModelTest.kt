@@ -2,6 +2,8 @@ package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import android.accounts.NetworkErrorException
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
+import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccessResponse.*
@@ -921,9 +923,11 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+            onGetStatusShop_thenReturn(StatusInfo("3", "", "", ""))
             onGetTickerData_thenReturn(listOf(mockk()))
             onGetIsShowNotifyMeTicker(true)
 
+            viewModel.getProductManageAccess()
             viewModel.getTickerData()
             viewModel.getProductList(shopId, paramsProductList)
 
@@ -1215,13 +1219,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val productListMetaData = ProductListMetaData(tabs = tabs)
         val productListMeta = ProductListMetaWrapper(productListMetaData = productListMetaData)
         val productListMetaResponse = ProductListMetaResponse(productListMeta)
-
-        val filterList = listOf(CashBackOnly, FeaturedOnly)
-        val filterOptions = FilterOptionWrapper(
-            filterOptions = filterList,
-            sortOption = SortByName(ASC),
-            selectedFilterCount = 3
-        )
 
         onGetFiltersTab_thenReturn(productListMetaResponse)
         viewModel.getFiltersTab()
@@ -2456,6 +2453,84 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
+    fun `when getStatusShopUseCase is called should return shop status moderated`() {
+        runBlocking {
+            onGetIsShopOwner_thenReturn(isShopOwner = true)
+            val statusShop = StatusInfo("3", "", "", "")
+            onGetStatusShop_thenReturn(statusShop)
+            viewModel.getProductManageAccess()
+            viewModel.getTickerData()
+            viewModel.shopStatus.verifyValueEquals(statusShop)
+        }
+
+    }
+
+    @Test
+    fun `when getStatusShopUseCase is called should return shop status moderated permanent`() {
+        runBlocking {
+            onGetIsShopOwner_thenReturn(isShopOwner = true)
+            val statusShop = StatusInfo("5", "", "", "")
+            onGetStatusShop_thenReturn(statusShop)
+            viewModel.getProductManageAccess()
+            viewModel.getTickerData()
+            viewModel.shopStatus.verifyValueEquals(statusShop)
+        }
+
+    }
+
+    @Test
+    fun `given shop moderate data when getProductList more than once should set showStockTicker TRUE`() {
+        runBlocking {
+            val isMultiLocationShop = true
+
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val paramsProductList = createFilterOptions(1)
+
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+            val statusInfo = StatusInfo("3", "", "", "")
+            onGetStatusShop_thenReturn(statusInfo)
+            onGetIsShopOwner_thenReturn(isShopOwner = true)
+            onGetTickerData_thenReturn(listOf(mockk()))
+            viewModel.getProductManageAccess()
+            viewModel.getProductList(shopId, paramsProductList)
+            viewModel.getTickerData()
+            viewModel.showTicker()
+            viewModel.shopStatus
+                .verifyValueEquals(statusInfo)
+            viewModel.showTicker.verifyValueEquals(true)
+        }
+    }
+
+    @Test
+    fun `when getStatusShopUseCase is called should return shop status null`() {
+        runBlocking {
+            onGetIsShopOwner_thenReturn(isShopOwner = true)
+            var statusShop = StatusInfo("", "", "", "")
+            onGetStatusShop_thenReturn(statusShop)
+            viewModel.getProductManageAccess()
+            viewModel.getTickerData()
+            viewModel.shopStatus.verifyValueEquals(statusShop)
+        }
+    }
+
+    @Test
     fun `when getUploadStatusUseCase is called should return model data`() {
         val entity = UploadStatusEntity(
             id = 12,
@@ -2490,6 +2565,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getUploadStatusUseCase,
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
+            getStatusShopUseCase,
             tickerStaticDataProvider,
             remoteConfigImpl,
             CoroutineTestDispatchersProvider
@@ -2537,6 +2613,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getUploadStatusUseCase,
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
+            getStatusShopUseCase,
             tickerStaticDataProvider,
             remoteConfigImpl,
             CoroutineTestDispatchersProvider
@@ -2578,6 +2655,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getUploadStatusUseCase,
             clearUploadStatusUseCase,
             getMaxStockThresholdUseCase,
+            getStatusShopUseCase,
             tickerStaticDataProvider,
             remoteConfigImpl,
             CoroutineTestDispatchersProvider
@@ -2703,6 +2781,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         coEvery { getProductListUseCase.execute(any()) } returns productListData
     }
 
+    private suspend fun onGetStatusShop_thenReturn(statusInfo: StatusInfo) {
+        coEvery {
+            getStatusShopUseCase.params = GetStatusShopUseCase.createRequestParams(0)
+            getStatusShopUseCase.executeOnBackground()
+        } returns statusInfo
+    }
+
     private suspend fun onGetProductList_thenError(error: Throwable) {
         coEvery { getProductListUseCase.execute(any()) } coAnswers { throw error }
     }
@@ -2796,7 +2881,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     private fun onGetTickerData_thenReturn(tickerData: List<TickerData>) {
         every {
-            tickerStaticDataProvider.getTickers(any(), any())
+            tickerStaticDataProvider.getTickers(any(), any(), any())
         } returns tickerData
     }
 

@@ -11,97 +11,91 @@ import javax.inject.Inject
 /**
  * Created by jegul on 02/07/21
  */
-class PlayInteractiveLeaderboardMapper @Inject constructor(private val decodeHtml : HtmlTextTransformer) {
+class PlayInteractiveLeaderboardMapper @Inject constructor(private val decodeHtml: HtmlTextTransformer) {
 
-    /***
-     * New leaderboard
-     */
-    fun mapNewLeaderboard(response: GetLeaderboardSlotResponse, isChatAllowed: () -> Boolean) =
-        PlayLeaderboardInfoUiModel(
-            leaderboardWinners = mapNewLeaderboardInteractive(response.data.slots, isChatAllowed),
-        )
-
-    private fun mapNewLeaderboardInteractive(
-        leaderboardsResponse: List<GetLeaderboardSlotResponse.SlotData>,
+    @OptIn(ExperimentalStdlibApi::class)
+    fun mapNewPlayLeaderboard(
+        response: GetLeaderboardSlotResponse,
         isChatAllowed: () -> Boolean
-    ): List<PlayLeaderboardUiModel> = leaderboardsResponse.map {
-        PlayLeaderboardUiModel(
-            title = if (getLeaderboardType(it) == LeadeboardType.Quiz) decodeHtml.transform(it.question) else it.title,
-            winners = mapInteractiveWinner(
-                title = it.title,
-                winnersResponse = it.winner,
-                isChatAllowed = isChatAllowed
-            ),
-            otherParticipantText = it.otherParticipantCountText,
-            otherParticipant = it.otherParticipantCount.toLong(),
-            choices = mapChoices(it.choices, it.userChoice),
-            leaderBoardType = getLeaderboardType(it),
-            emptyLeaderBoardCopyText = it.emptyLeaderboardCopyText,
-            reward = decodeHtml.transform(it.reward),
-            id = it.interactiveId
-        )
+    ): List<LeaderboardGameUiModel> = buildList {
+        response.data.slots.forEach {
+            //Header
+            add(
+                LeaderboardGameUiModel.Header(
+                    id = it.interactiveId,
+                    reward = if (getLeaderboardType(it) == LeadeboardType.Quiz) "" else decodeHtml.transform(it.reward),
+                    leaderBoardType = getLeaderboardType(it),
+                    title = if (getLeaderboardType(it) == LeadeboardType.Quiz) decodeHtml.transform(
+                        it.question
+                    ) else it.title
+                )
+            )
+
+            // Quiz if any
+            if (it.choices.isNotEmpty()) addAll(mapChoices(it.choices, it.userChoice))
+
+            //Winner if any
+            if (it.winner.isNotEmpty()) addAll(
+                mapInteractiveWinnerNew(
+                    title = it.title,
+                    winnersResponse = it.winner,
+                    isChatAllowed = isChatAllowed
+                )
+            ) // need to add topChat
+
+            //Footer
+                add(
+                    LeaderboardGameUiModel.Footer(
+                        otherParticipantText = it.otherParticipantCountText,
+                        otherParticipant = it.otherParticipantCount.toLong(),
+                        leaderBoardType = getLeaderboardType(it),
+                        totalParticipant = it.winner.size.toLong(),
+                        emptyLeaderBoardCopyText = it.emptyLeaderboardCopyText,
+                        id = it.interactiveId,
+                    )
+                )
+        }
     }
+
 
     /***
      * Change to typename to make sure
      */
     private fun getLeaderboardType(leaderboardsResponse: GetLeaderboardSlotResponse.SlotData): LeadeboardType {
-        return when(leaderboardsResponse.type){
+        return when (leaderboardsResponse.type) {
             "PlayInteractiveViewerLeaderboardGiveaway" -> LeadeboardType.Giveaway
             "PlayInteractiveViewerLeaderboardQuiz" -> LeadeboardType.Quiz
             else -> LeadeboardType.Unknown
         }
     }
 
-    fun mapChoices(choices: List<QuizResponse.Choice>, userPicksId: String): List<QuizChoicesUiModel> {
+    private fun mapChoices(
+        choices: List<QuizResponse.Choice>,
+        userPicksId: String
+    ): List<LeaderboardGameUiModel.QuizOption> {
         return choices.mapIndexed { index, item: QuizResponse.Choice ->
-            QuizChoicesUiModel(
-                index,
-                item.id,
-                decodeHtml.transform(item.text),
-                if(item.id == userPicksId)
-                    PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
-                else
-                    PlayQuizOptionState.Other(isCorrect = item.isCorrect ?: false)
+            LeaderboardGameUiModel.QuizOption(
+                option =
+                QuizChoicesUiModel(
+                    index,
+                    item.id,
+                    decodeHtml.transform(item.text),
+                    if (item.id == userPicksId)
+                        PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
+                    else
+                        PlayQuizOptionState.Other(isCorrect = item.isCorrect ?: false)
+                )
             )
         }
     }
 
-    /***
-     * Old leaderboard
-     */
-    fun mapLeaderboard(response: GetInteractiveLeaderboardResponse, isChatAllowed: () -> Boolean) =
-        PlayLeaderboardInfoUiModel(
-            leaderboardWinners = mapLeaderboardWinner(
-                response.data.data,
-                response.data.config.topChatMessage,
-                isChatAllowed
-            ),
-            totalParticipant = response.data.summary.totalParticipant.toString(),
-            config = mapLeaderboardConfig(response),
-        )
-
-    private fun mapLeaderboardWinner(
-        leaderboardsResponse: List<GetInteractiveLeaderboardResponse.Data>,
-        topChatResponseRaw: String,
-        isChatAllowed: () -> Boolean
-    ): List<PlayLeaderboardUiModel> = leaderboardsResponse.map {
-        PlayLeaderboardUiModel(
-            title = it.title,
-            winners = mapInteractiveWinner(it.title, it.winner, topChatResponseRaw, isChatAllowed),
-            otherParticipantText = it.otherParticipantCountText,
-            otherParticipant = it.otherParticipantCount.toLong(),
-            id = "" //temp for old leaderboard, removed if bro doesnt use it anymore
-        )
-    }
-
-    private fun mapInteractiveWinner(
+    private fun mapInteractiveWinnerNew(
         title: String,
         winnersResponse: List<GetInteractiveLeaderboardResponse.Winner>,
         topChatResponseRaw: String = "",
         isChatAllowed: () -> Boolean,
     ) = winnersResponse.mapIndexed { index, winner ->
-        PlayWinnerUiModel(
+        LeaderboardGameUiModel.Winner(
             rank = index + 1,
             id = winner.userID.toString(),
             name = winner.userName,
@@ -110,27 +104,6 @@ class PlayInteractiveLeaderboardMapper @Inject constructor(private val decodeHtm
             topChatMessage = topChatResponseRaw
                 .replace(FORMAT_FIRST_NAME, winner.userName)
                 .replace(FORMAT_TITLE, title)
-        )
-    }
-
-    private fun mapLeaderboardConfig(response: GetInteractiveLeaderboardResponse): PlayLeaderboardConfigUiModel {
-        val configResponse = response.data.config
-        val currentInteractive = response.data.data.firstOrNull()
-        val currentInteractiveWinner = currentInteractive?.winner?.firstOrNull()
-        val winnerName = currentInteractiveWinner?.userName.orEmpty()
-
-        return PlayLeaderboardConfigUiModel(
-            sellerMessage = configResponse.sellerMessage
-                .replace(FORMAT_WINNER_NAME, winnerName)
-                .replace(
-                    FORMAT_TOTAL_PARTICIPANT,
-                    response.data.summary.totalParticipant.toString()
-                ),
-            winnerMessage = configResponse.winnerMessage,
-            winnerDetail = configResponse.winnerDetail,
-            loserMessage = configResponse.loserMessage
-                .replace(FORMAT_WINNER_NAME, winnerName),
-            loserDetail = configResponse.loserDetail
         )
     }
 
