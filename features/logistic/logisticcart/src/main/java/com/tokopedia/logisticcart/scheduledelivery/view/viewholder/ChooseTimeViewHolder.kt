@@ -99,6 +99,7 @@ class ChooseTimeViewHolder(
                     com.tokopedia.logisticcart.R.color.Unify_NN400
                 )
             )
+            viewBinding.root.setOnClickListener(null)
         }
     }
 
