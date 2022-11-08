@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -32,7 +33,6 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
     private val uiModelBuilder = UiModelBuilder()
     private val interactiveUiModelBuilder = InteractiveUiModelBuilder()
 
-    private val mockLeaderboardInfoResponse = interactiveUiModelBuilder.buildLeaderboardInfoModel()
     private val mockException = uiModelBuilder.buildException()
     private val mockInteractiveConfigInactiveResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
         giveawayConfig = interactiveUiModelBuilder.buildGiveawayConfig(isActive = false),
@@ -43,14 +43,16 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
         channelId = "123"
     )
 
-    init {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+    @Before
+    fun setUp() {
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
     }
 
     @Test
     fun `when user starts livestreaming, get interactive config and interactive config is inactive, it should emit interactive state forbidden`() {
 
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigInactiveResponse
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigInactiveResponse
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -59,7 +61,7 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
 
                 startLive()
             }

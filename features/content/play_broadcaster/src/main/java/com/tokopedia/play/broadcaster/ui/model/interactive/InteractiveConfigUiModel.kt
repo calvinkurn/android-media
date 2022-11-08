@@ -52,6 +52,7 @@ data class GiveawayConfigUiModel(
 
 data class QuizConfigUiModel(
     val isActive: Boolean,
+    val isGiftActive: Boolean,
     val maxTitleLength: Int,
     val maxChoicesCount: Int,
     val minChoicesCount: Int,
@@ -62,6 +63,7 @@ data class QuizConfigUiModel(
     companion object {
         fun empty() = QuizConfigUiModel(
             isActive = false,
+            isGiftActive = false,
             maxTitleLength = 0,
             maxChoicesCount = 0,
             minChoicesCount = 0,

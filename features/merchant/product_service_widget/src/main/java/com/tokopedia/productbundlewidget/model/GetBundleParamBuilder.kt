@@ -26,6 +26,12 @@ class GetBundleParamBuilder {
         this.widgetType = widgetType
     }
 
+    fun setWidgetType(widgetType: Int) = apply {
+        this.widgetType = WidgetType.values().firstOrNull {
+            it.typeCode == widgetType
+        } ?: return@apply
+    }
+
     fun setBundleId(bundleIds: List<String>) = apply {
         this.bundleIds = bundleIds.toMutableList()
     }
