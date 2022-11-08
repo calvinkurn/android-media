@@ -81,6 +81,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.coreKtx
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.miscDependencies.exoPlayerCore
