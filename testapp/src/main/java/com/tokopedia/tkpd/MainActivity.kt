@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
         darkMode.value = getDarkModeStatus()
-        delegate.applyDayNight()
         setContent {
             NestTheme {
                 val applinkStr by remember { applink }
