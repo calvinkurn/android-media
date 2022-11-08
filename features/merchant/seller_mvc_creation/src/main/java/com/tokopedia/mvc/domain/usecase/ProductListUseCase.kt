@@ -37,8 +37,8 @@ class ProductListUseCase @Inject constructor(
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "ProductList"
         private val QUERY = """
-           query ProductList(${'$'}shopID: String!, ${'$'}filter: [GoodsFilterInput], ${'$'}sort: GoodsSortInput, ${'$'}extraInfo: [String], ${'$'}warehouseID: String) {
-              ProductList(shopID: ${'$'}shopID, filter: ${'$'}filter, sort: ${'$'}sort, extraInfo: ${'$'}extraInfo, warehouseID: ${'$'}warehouseID) {
+           query $OPERATION_NAME(${'$'}shopID: String!, ${'$'}filter: [GoodsFilterInput], ${'$'}sort: GoodsSortInput, ${'$'}extraInfo: [String], ${'$'}warehouseID: String) {
+              $OPERATION_NAME(shopID: ${'$'}shopID, filter: ${'$'}filter, sort: ${'$'}sort, extraInfo: ${'$'}extraInfo, warehouseID: ${'$'}warehouseID) {
                 data {
                   id
                   name

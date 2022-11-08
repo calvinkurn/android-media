@@ -6,6 +6,7 @@ import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
+import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
 import com.tokopedia.mvc.domain.usecase.ShopShowcasesByShopIDUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
@@ -16,7 +17,8 @@ class AddProductViewModel @Inject constructor(
     private val getShopShowcasesByShopIDUseCase: ShopShowcasesByShopIDUseCase,
     private val getProductListMetaUseCase: ProductListMetaUseCase,
     private val getProductsUseCase: ProductListUseCase,
-    private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase
+    private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
+    private val getProductVariant: ProductV3UseCase
 ) : BaseViewModel(dispatchers.main) {
 
     fun getShopWarehouseLocations() {
@@ -99,6 +101,21 @@ class AddProductViewModel @Inject constructor(
             block = {
                 val param = GetInitiateVoucherPageUseCase.Param(action, promoType, isVoucherProduct)
                 val response = getInitiateVoucherPageUseCase.execute(param)
+                println()
+            },
+            onError = { error ->
+
+            }
+        )
+
+    }
+
+    fun getProductVariants(productId:Long, warehouseId: String) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val param = ProductV3UseCase.Param(productId, warehouseId)
+                val response = getProductVariant.execute(param)
                 println()
             },
             onError = { error ->

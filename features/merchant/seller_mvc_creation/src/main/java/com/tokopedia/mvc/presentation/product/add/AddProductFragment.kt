@@ -69,6 +69,7 @@ class AddProductFragment : BaseDaggerFragment() {
         viewModel.getProductListMeta(0L)
         viewModel.getProducts(13121049L, 1, "DEFAULT", "DESC")
         viewModel.getMaxProductSelection(GetInitiateVoucherPageUseCase.Param.Action.CREATE, GetInitiateVoucherPageUseCase.Param.PromoType.CASHBACK, true)
+        viewModel.getProductVariants(2150693317L, "")
         //viewModel.getCurrentMonthRemainingQuota()
     }
 
