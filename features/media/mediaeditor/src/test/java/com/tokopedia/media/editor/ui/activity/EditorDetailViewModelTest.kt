@@ -166,44 +166,15 @@ class EditorDetailViewModelTest  {
     }
 
     @Test
-    fun `set editor watermark without asset initialize should get watermark bitmap`() {
+    fun `set editor watermark thumbnail without asset init should get thumbnail bitmap`() {
         // Given
         val shopName = "Watermark"
         val bitmap = ShadowBitmapFactory.create(shopName, BitmapFactory.Options())
 
         // When
         every { watermarkFilterRepository.isAssetInitialize() } returns true
-        every { userSession.shopName } returns shopName
-        every {
-            hint(Bitmap::class)
-            getWatermarkUseCase(any())
-        } returns bitmap
-        viewModel.setWatermark(
-            bitmap,
-            WatermarkType.Diagonal,
-            detailUiModel = EditorDetailUiModel(),
-            useStorageColor = false
-        )
-
-        // Then
-        verify { getWatermarkUseCase(any()) }
-        assertEquals(bitmap, viewModel.watermarkFilter.value)
-    }
-
-    @Test
-    fun `set editor watermark thumbnail should get thumbnail bitmap`() {
-        // Given
-        val shopName = "Watermark"
-        val bitmap = ShadowBitmapFactory.create(shopName, BitmapFactory.Options())
-        val drawable = ShadowDrawable.createFromResourceId(editorR.drawable.watermark_tokopedia)
-
-        // When
-        every { watermarkFilterRepository.isAssetInitialize() } returns false
         every { watermarkFilterRepository.watermarkDrawerItem(any(), any()) } returns Pair(bitmap, bitmap)
-        every { watermarkFilterRepository.setAsset(any(), any(), any()) } just Runs
         every { userSession.shopName } returns shopName
-        every { resourceProvider.getWatermarkLogoDrawable() } returns drawable
-        every { resourceProvider.getWatermarkTextColor() } returns Pair(0, 0)
 
         viewModel.setWatermarkFilterThumbnail(
             bitmap
@@ -214,15 +185,20 @@ class EditorDetailViewModelTest  {
     }
 
     @Test
-    fun `set editor watermark thumbnail without asset initialize should get thumbnail bitmap`() {
+    fun `set editor watermark thumbnail with asset init should get thumbnail bitmap`() {
         // Given
         val shopName = "Watermark"
         val bitmap = ShadowBitmapFactory.create(shopName, BitmapFactory.Options())
+        val drawable = ShadowDrawable.createFromResourceId(editorR.drawable.watermark_tokopedia)
 
         // When
-        every { watermarkFilterRepository.isAssetInitialize() } returns true
+
+        every { watermarkFilterRepository.isAssetInitialize() } returns false
+        every { watermarkFilterRepository.setAsset(any(), any(), any()) } just Runs
         every { watermarkFilterRepository.watermarkDrawerItem(any(), any()) } returns Pair(bitmap, bitmap)
         every { userSession.shopName } returns shopName
+        every { resourceProvider.getWatermarkLogoDrawable() } returns drawable
+        every { resourceProvider.getWatermarkTextColor() } returns Pair(0, 0)
 
         viewModel.setWatermarkFilterThumbnail(
             bitmap
