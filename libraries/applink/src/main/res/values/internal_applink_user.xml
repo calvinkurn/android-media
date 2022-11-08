@@ -49,7 +49,9 @@
     <string name="applink_digital_deals_title">digital_deals</string>
     <string name="applink_liveness_detection">Liveness Detection</string>
     <string name="applink_fingerprint">Sidik Jari</string>
-    <string name="applink_privacy_center">Privacy Center</string>
+
+    <!--Title for DF Privacy Center-->
+    <string name="title_privacy_center">Privacy Center</string>
 
     <string name="applink_notif_troubleshooter">Push Notif Troubleshooter</string>
     <string name="applink_choose_account_fingerprint">/choose-account-fingerprint</string>

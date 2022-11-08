@@ -561,7 +561,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
             add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_choose_account))
             add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
-            add(DFP({ it.startsWithPattern(PRIVACY_CENTER) }, DF_USER_PRIVACYCENTER, R.string.applink_privacy_center))
+            add(DFP({ it.startsWithPattern(PRIVACY_CENTER) }, DF_USER_PRIVACYCENTER, R.string.title_privacy_center))
 
             // Media
             add(DFP({
