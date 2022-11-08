@@ -103,7 +103,10 @@ data class DynamicHomeChannel(
             var timestamp: String = "",
             @SerializedName("isCache")
             @Expose
-            var isCache: Boolean = true
+            var isCache: Boolean = true,
+            @SerializedName("styleParam")
+            @Expose
+            var styleParam: String = "borderStyle=bleeding&dividerSize=8"
     ) : ImpressHolder() {
 
         private var position: Int = 0
