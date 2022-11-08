@@ -100,7 +100,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel) {
         findWidget<HomeHeaderDataModel>(homeDataModel) { model, index ->
-            homeDataModel.updateWidgetModel(visitable = homeHeaderDataModel, position = index) {}
+            if (model.needToShowUserWallet) {
+                homeDataModel.updateWidgetModel(visitable = homeHeaderDataModel, position = index) {}
+            }
         }
     }
 
