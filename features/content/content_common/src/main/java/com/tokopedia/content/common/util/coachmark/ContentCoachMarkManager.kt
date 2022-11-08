@@ -2,10 +2,10 @@ package com.tokopedia.content.common.util.coachmark
 
 import android.content.Context
 import android.view.View
+import android.view.ViewTreeObserver
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.createpost.common.di.ActivityContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,34 +18,53 @@ import javax.inject.Inject
 class ContentCoachMarkManager @Inject constructor(
     private val context: Context,
     private val dispatcher: CoroutineDispatchers,
-    private val coachMarkSharedPref: ContentCoachMarkSharedPref,
+    private val coachMarkSharedPref: ContentCoachMarkSharedPref
 ) {
 
     private val coachMarkMap = mutableMapOf<View, CoachMark2>()
     private val coachMarkConfigMap = mutableMapOf<View, ContentCoachMarkConfig>()
+    private val coachMarkGlobalLayoutListenerMap = mutableMapOf<View, ViewTreeObserver.OnGlobalLayoutListener>()
     private val jobMap = mutableMapOf<View, Job>()
 
-    fun showCoachMark(
-        config: ContentCoachMarkConfig,
+    /**
+     * Use this function if you want the manager handling your coachmark behavior
+     * or else you need to show & dismiss your coachmark manually by calling
+     * showCoachMark(config: [ContentCoachMarkConfig]) & dismissCoachMark(view: [View])
+     */
+    fun setupCoachMark(
+        config: ContentCoachMarkConfig
     ) {
-        if(config.hasPrefKey) {
-            if(coachMarkSharedPref.hasBeenShown(config.coachMarkPrefKey, config.coachMarkPrefKeyId)) return
+        getOrCreateCoachMark(config)
+
+        val globalLayoutListener = coachMarkGlobalLayoutListenerMap[config.view]
+        if (globalLayoutListener != null) {
+            config.view.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+        }
+    }
+
+    fun showCoachMark(
+        config: ContentCoachMarkConfig
+    ) {
+        if (config.hasPrefKey) {
+            if (coachMarkSharedPref.hasBeenShown(config.coachMarkPrefKey, config.coachMarkPrefKeyId)) return
         }
 
-        if(config.delay == 0L && config.duration == 0L)
+        if (coachMarkMap[config.view]?.isShowing == true) return
+
+        if (config.delay == 0L && config.duration == 0L) {
             showCoachMarkInternal(config)
-        else {
+        } else {
             jobMap[config.view]?.cancel()
             jobMap[config.view] = CoroutineScope(dispatcher.main).launch {
-                if(config.delay != 0L) delay(config.delay)
+                if (config.delay != 0L) delay(config.delay)
 
                 showCoachMarkInternal(config)
 
-                if(config.duration != 0L) {
+                if (config.duration != 0L) {
                     delay(config.duration)
 
                     val coachMark = getOrCreateCoachMark(config)
-                    if(coachMark.isShowing) {
+                    if (coachMark.isShowing) {
                         coachMark.dismissCoachMark()
                     }
                 }
@@ -53,10 +72,9 @@ class ContentCoachMarkManager @Inject constructor(
         }
     }
 
-    fun dismissCoachmark(view: View) {
+    fun dismissCoachMark(view: View) {
         coachMarkMap[view]?.dismissCoachMark()
         jobMap[view]?.cancel()
-        coachMarkConfigMap.remove(view)
     }
 
     fun dismissAllCoachMark() {
@@ -68,7 +86,14 @@ class ContentCoachMarkManager @Inject constructor(
             jobMap[it.key]?.cancel()
         }
 
+        coachMarkGlobalLayoutListenerMap.forEach {
+            it.key.viewTreeObserver.removeOnGlobalLayoutListener(it.value)
+        }
+
+        jobMap.clear()
+        coachMarkMap.clear()
         coachMarkConfigMap.clear()
+        coachMarkGlobalLayoutListenerMap.clear()
     }
 
     fun hasBeenShown(view: View) {
@@ -77,11 +102,11 @@ class ContentCoachMarkManager @Inject constructor(
             coachMarkSharedPref.setHasBeenShown(config.coachMarkPrefKey, config.coachMarkPrefKeyId)
         }
 
-        dismissCoachmark(view)
+        dismissCoachMark(view)
     }
 
     private fun showCoachMarkInternal(
-        config: ContentCoachMarkConfig,
+        config: ContentCoachMarkConfig
     ) {
         val coachMark = getOrCreateCoachMark(config)
 
@@ -110,6 +135,13 @@ class ContentCoachMarkManager @Inject constructor(
         return coachMarkMap[config.view] ?: CoachMark2(context).also {
             coachMarkMap[config.view] = it
             coachMarkConfigMap[config.view] = config
+            coachMarkGlobalLayoutListenerMap[config.view] = ViewTreeObserver.OnGlobalLayoutListener {
+                if (config.view.visibility == View.VISIBLE) {
+                    showCoachMark(config)
+                } else {
+                    dismissCoachMark(config.view)
+                }
+            }
         }
     }
 }
