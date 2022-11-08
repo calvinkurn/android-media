@@ -1168,8 +1168,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun updateCustomToolbarSubTitle(subtitle: String) {
-        val customToolbar = LayoutInflater.from(context).inflate(Rv2.layout.toolbar_custom_add_bulk, null, false)
+        val customToolbar = LayoutInflater.from(context).inflate(Rv2.layout.toolbar_custom, null, false)
+        val titleLayout = customToolbar?.findViewById<Typography>(Rv2.id.toolbar_title)
         val subtitleLayout = customToolbar?.findViewById<Typography>(Rv2.id.toolbar_subtitle)
+
+        titleLayout?.text = getString(Rv2.string.wishlist_add_label_toolbar)
         subtitleLayout?.text = subtitle
 
         binding?.run {
