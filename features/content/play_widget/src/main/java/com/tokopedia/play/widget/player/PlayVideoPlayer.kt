@@ -23,22 +23,22 @@ import com.tokopedia.play_common.util.PlayConnectionCommon
  * Created by mzennis on 09/10/20.
  */
 open class PlayVideoPlayer(val context: Context) {
-
-    private val trackSelector = DefaultTrackSelector(context).apply {
-        parameters = DefaultTrackSelector.ParametersBuilder(context).setForceLowestBitrate(true).build()
-    }
-
-    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
-        .setTrackSelector(trackSelector)
-        .build()
-
     private var autoStopTimer: CountDownTimer? = null
 
     var listener: VideoPlayerListener? = null
     var videoUrl: String? = null
     var shouldCache: Boolean = false
+    var shouldForceLowest: Boolean = true
 
     var maxDurationCellularInSeconds: Int? = null
+
+    private val trackSelector = DefaultTrackSelector(context).apply {
+        parameters = DefaultTrackSelector.ParametersBuilder(context).setForceLowestBitrate(shouldForceLowest).build()
+    }
+
+    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
+        .setTrackSelector(trackSelector)
+        .build()
 
     init {
         exoPlayer.volume = 0F
