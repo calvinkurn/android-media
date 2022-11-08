@@ -32,26 +32,24 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_pull_refresh"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:descendantFocusability="blocksDescendants"
-        app:indicator_overlay="false"
-        app:lottie_rawRes="@raw/pull_to_refresh"
+        android:layout_height="1dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/view_empty"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <FrameLayout
-            android:id="@+id/root2"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@color/Unify_Background"
-            android:descendantFocusability="blocksDescendants"
-            app:layout_type="content" />
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:text="asdf"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    </com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ViewStub
         android:id="@+id/view_choose_address"

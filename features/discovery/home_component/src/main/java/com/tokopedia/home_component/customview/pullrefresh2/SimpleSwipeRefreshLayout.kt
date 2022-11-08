@@ -1,11 +1,10 @@
-package com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2
+package com.tokopedia.home_component.customview.pullrefresh2
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.util.Log
 import android.util.TypedValue
@@ -14,15 +13,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.animation.DecelerateInterpolator
-import android.widget.ListView
-import androidx.core.content.ContextCompat
 import androidx.core.view.NestedScrollingChild
 import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.NestedScrollingParent
 import androidx.core.view.NestedScrollingParentHelper
 import androidx.core.view.ViewCompat
-import androidx.core.widget.ListViewCompat
-import com.tokopedia.home.R
+import com.tokopedia.home_component.R
 import kotlin.math.abs
 
 @SuppressLint("DrawAllocation")

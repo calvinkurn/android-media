@@ -1,24 +1,12 @@
-package com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2
+package com.tokopedia.home_component.customview.pullrefresh2
 
 import android.content.Context
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.util.Log
-import android.util.TypedValue
-import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieDrawable
-import com.airbnb.lottie.LottieProperty
-import com.airbnb.lottie.model.KeyPath
-import com.airbnb.lottie.value.LottieValueCallback
-import com.tokopedia.home.R
-import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.R
 
 class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0)
     : SimpleSwipeRefreshLayout(context, attrs, defStyle) {
@@ -86,7 +74,7 @@ class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs
 
     fun setColorSchemeResources(color: Int) {
         val filter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
-        val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
+//        val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
 //        lottieAnimationView.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER, callback)
     }
 

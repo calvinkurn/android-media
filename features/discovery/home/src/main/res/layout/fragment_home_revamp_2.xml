@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="@+id/header_background_home"
         app:unify_image_corner_radius="0" />
 
-    <com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout
+    <com.tokopedia.home_component.customview.pullrefresh2.LottieSwipeRefreshLayout
         android:id="@+id/home_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -66,7 +66,7 @@
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout>
+    </com.tokopedia.home_component.customview.pullrefresh2.LottieSwipeRefreshLayout>
 
     <View
         android:id="@+id/status_bar_bg"
