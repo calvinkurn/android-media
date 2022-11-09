@@ -242,8 +242,10 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
         if (courierItemData.scheduleDeliveryUiModel != null) {
             val isScheduleDeliverySelected = courierItemData.scheduleDeliveryUiModel?.isSelected
             if (isScheduleDeliverySelected == true &&
-                (courierItemData.scheduleDeliveryUiModel?.timeslotId != shipmentCartItemModel.timeslotId ||
-                    courierItemData.scheduleDeliveryUiModel?.scheduleDate != shipmentCartItemModel.scheduleDate)
+                (
+                    courierItemData.scheduleDeliveryUiModel?.timeslotId != shipmentCartItemModel.timeslotId ||
+                    courierItemData.scheduleDeliveryUiModel?.scheduleDate != shipmentCartItemModel.scheduleDate
+                )
             ) {
                 shipmentCartItemModel.scheduleDate =
                     courierItemData.scheduleDeliveryUiModel?.scheduleDate ?: ""
