@@ -3,12 +3,12 @@ package com.tokopedia.people.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.library.baseadapter.BaseItem
 
-data class ProfileFollowerListBase(
+data class ProfileFollowerListBase (
     @SerializedName("feedXProfileFollowerList")
-    val profileFollowers: ProfileFollowerList
+    val profileFollowers: ProfileFollowerList,
 )
 
-data class ProfileFollowerList(
+data class ProfileFollowerList (
     @SerializedName("followers")
     val profileFollower: List<ProfileFollowerV2>,
 
@@ -16,12 +16,12 @@ data class ProfileFollowerList(
     val newCursor: String
 )
 
-data class ProfileFollowingListBase(
+data class ProfileFollowingListBase (
     @SerializedName("feedXProfileFollowingList")
-    val profileFollowings: ProfileFollowingList
+    val profileFollowings: ProfileFollowingList,
 )
 
-data class ProfileFollowingList(
+data class ProfileFollowingList (
     @SerializedName("followings")
     val profileFollower: List<ProfileFollowerV2>,
 
@@ -29,10 +29,12 @@ data class ProfileFollowingList(
     val newCursor: String
 )
 
-data class ProfileFollowerV2(
+data class ProfileFollowerV2 (
     @SerializedName("profile")
     val profile: Profile,
 
     @SerializedName("isFollow")
     var isFollow: Boolean
 ) : BaseItem()
+
+

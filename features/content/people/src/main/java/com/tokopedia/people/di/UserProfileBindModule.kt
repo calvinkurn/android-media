@@ -26,4 +26,5 @@ abstract class UserProfileBindModule {
     @Binds
     @UserProfileScope
     abstract fun bindUserProfileTracker(userProfileTracker: UserProfileTrackerImpl): UserProfileTracker
+
 }

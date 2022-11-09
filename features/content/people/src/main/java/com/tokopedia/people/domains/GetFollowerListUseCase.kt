@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 @GqlQuery(GetFollowerListUseCase.QUERY_NAME, GetFollowerListUseCase.QUERY)
 class GetFollowerListUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<ProfileFollowerListBase>(graphqlRepository) {
 
     init {
@@ -25,12 +25,12 @@ class GetFollowerListUseCase @Inject constructor(
     suspend fun executeOnBackground(
         username: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): ProfileFollowerListBase {
         val request = mapOf(
             KEY_USERNAME to username,
             KEY_CURSOR to cursor,
-            KEY_LIMIT to limit
+            KEY_LIMIT to limit,
         )
         setRequestParams(request)
 

@@ -1,8 +1,8 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
@@ -75,7 +75,7 @@ class UserProfileShopRecomViewModelTest {
         username = mockOwnUserId,
         repo = mockRepo,
         dispatcher = testDispatcher,
-        userSession = mockUserSession
+        userSession = mockUserSession,
     )
 
     private val shopActionFollow = ShopFollowAction.Follow
@@ -332,7 +332,7 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordStateAndEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
@@ -360,7 +360,7 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordStateAndEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
@@ -383,7 +383,7 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordStateAndEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
@@ -411,7 +411,7 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordStateAndEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
@@ -533,7 +533,7 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordStateAndEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
@@ -561,7 +561,7 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordStateAndEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
@@ -584,7 +584,7 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordStateAndEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
@@ -612,7 +612,7 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordStateAndEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
@@ -638,8 +638,7 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.RemoveShopRecomItem(mockItemId))
             } andThen {
                 val deletedItem = shopRecom.items.findLast {
-                        find ->
-                    find.id == mockItemId
+                        find -> find.id == mockItemId
                 } ?: mockEmptyItemShopRecom
                 deletedItem equalTo mockEmptyItemShopRecom
                 shopRecom.items.size equalTo 9
@@ -888,4 +887,5 @@ class UserProfileShopRecomViewModelTest {
             }
         }
     }
+
 }

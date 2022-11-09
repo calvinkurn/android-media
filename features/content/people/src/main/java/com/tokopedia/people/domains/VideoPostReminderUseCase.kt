@@ -2,10 +2,10 @@ package com.tokopedia.people.domains
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.people.model.VideoPostReimderModel
 import javax.inject.Inject
 
 @GqlQuery(VideoPostReminderUseCase.QUERY_NAME, VideoPostReminderUseCase.QUERY)
@@ -21,11 +21,11 @@ class VideoPostReminderUseCase @Inject constructor(
 
     suspend fun executeOnBackground(
         channelId: String,
-        isActive: Boolean
+        isActive: Boolean,
     ): VideoPostReimderModel {
         val request = mapOf(
             KEY_CHANNEL_ID to channelId,
-            KEY_SET_ACTIVE to isActive
+            KEY_SET_ACTIVE to isActive,
         )
         setRequestParams(request)
 

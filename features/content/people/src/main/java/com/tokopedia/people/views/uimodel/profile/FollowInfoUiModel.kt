@@ -6,14 +6,14 @@ package com.tokopedia.people.views.uimodel.profile
 data class FollowInfoUiModel(
     val userID: String,
     val encryptedUserID: String,
-    val status: Boolean
+    val status: Boolean,
 ) {
     companion object {
         val Empty: FollowInfoUiModel
             get() = FollowInfoUiModel(
                 userID = "",
                 encryptedUserID = "",
-                status = false
+                status = false,
             )
     }
 }

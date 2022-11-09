@@ -8,7 +8,7 @@ import com.tokopedia.people.model.*
 class PlayVideoModelBuilder {
 
     fun buildModel(
-        size: Int = 10
+        size: Int = 10,
     ): UserPostModel {
         return UserPostModel(
             playGetContentSlot = PlayGetContentSlot(
@@ -32,15 +32,15 @@ class PlayVideoModelBuilder {
                                 stats = PlayPostContentItemStats(
                                     view = StatsView(
                                         value = "123",
-                                        formatted = "123"
+                                        formatted = "123",
                                     )
                                 ),
                                 configurations = PlayPostConfigurations(
                                     hasPromo = false,
                                     reminder = PostReminder(
-                                        isSet = false
+                                        isSet = false,
                                     ),
-                                    promoLabels = emptyList()
+                                    promoLabels = emptyList(),
                                 ),
                                 partner = PlayPostContentItem.Partner(
                                     id = "1",
@@ -53,7 +53,7 @@ class PlayVideoModelBuilder {
                 playGetContentSlot = PlayGetContentSlotMeta(
                     isAutoplay = true,
                     maxAutoplayInCell = 30,
-                    nextCursor = ""
+                    nextCursor = "",
                 )
             )
         )

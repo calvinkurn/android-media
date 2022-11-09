@@ -10,7 +10,7 @@ class FollowingListModelBuilder {
     fun buildModel(
         size: Int = 5,
         isFollow: Boolean = false,
-        cursor: String = ""
+        cursor: String = "",
     ): ProfileFollowingListBase {
         return ProfileFollowingListBase(
             profileFollowings = ProfileFollowingList(
@@ -25,7 +25,7 @@ class FollowingListModelBuilder {
                             biography = "Bio $it",
                             sharelink = Link(
                                 applink = "applink $it",
-                                weblink = "weblink $it"
+                                weblink = "weblink $it",
                             ),
                             badges = emptyList(),
                             liveplaychannel = Liveplaychannel(
@@ -33,14 +33,14 @@ class FollowingListModelBuilder {
                                 liveplaychannelid = it.toString(),
                                 liveplaychannellink = Link(
                                     applink = "applink live $it",
-                                    weblink = "weblink live $it"
+                                    weblink = "weblink live $it",
                                 )
                             )
                         ),
-                        isFollow = isFollow
+                        isFollow = isFollow,
                     )
                 },
-                newCursor = cursor
+                newCursor = cursor,
             )
         )
     }

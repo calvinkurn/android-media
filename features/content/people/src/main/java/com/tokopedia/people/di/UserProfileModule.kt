@@ -30,4 +30,5 @@ class UserProfileModule {
     fun provideTrackingQueue(@ApplicationContext context: Context): TrackingQueue {
         return TrackingQueue(context)
     }
+
 }

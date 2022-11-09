@@ -20,8 +20,9 @@ import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_T
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
+
 class FollowerFollowingListingFragment @Inject constructor(
-    private var userProfileTracker: UserProfileTracker
+    private var userProfileTracker: UserProfileTracker,
 ) : TkpdBaseV4Fragment() {
 
     private var userId = ""
@@ -69,19 +70,21 @@ class FollowerFollowingListingFragment @Inject constructor(
             arguments?.getString(
                 EXTRA_TOTAL_FOLLOWERS,
                 getString(com.tokopedia.people.R.string.up_lb_followers)
-            ) +
-                " " +
-                getString(com.tokopedia.people.R.string.up_lb_followers)
+            )
+                    + " " +
+                    getString(com.tokopedia.people.R.string.up_lb_followers)
         )
         tabLayout?.addNewTab(
-            arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following)) +
-                " " +
-                getString(R.string.up_lb_following)
+            arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following))
+                    + " " +
+                    getString(R.string.up_lb_following)
         )
 
-        if (tabLayout != null &&
-            tabLayout?.getUnifyTabLayout() != null &&
-            tabLayout?.getUnifyTabLayout()?.tabCount!! >= 2
+
+
+        if(tabLayout != null
+            && tabLayout?.getUnifyTabLayout() != null
+            && tabLayout?.getUnifyTabLayout()?.tabCount!! >= 2
         ) {
             if (isFollowersTab) {
                 tabLayout?.getUnifyTabLayout()?.getTabAt(0)?.select()
@@ -99,7 +102,7 @@ class FollowerFollowingListingFragment @Inject constructor(
             FollowerListingFragment.getFragment(
                 childFragmentManager,
                 requireContext().classLoader,
-                it
+                it,
             )
         }?.let {
             adapter?.addFragment(
@@ -107,8 +110,8 @@ class FollowerFollowingListingFragment @Inject constructor(
                 arguments?.getString(
                     EXTRA_TOTAL_FOLLOWERS,
                     getString(com.tokopedia.people.R.string.up_lb_followers)
-                ) +
-                    " " + getString(com.tokopedia.people.R.string.up_lb_followers)
+                )
+                        + " " + getString(com.tokopedia.people.R.string.up_lb_followers)
             )
         }
 
@@ -116,13 +119,13 @@ class FollowerFollowingListingFragment @Inject constructor(
             FollowingListingFragment.getFragment(
                 childFragmentManager,
                 requireContext().classLoader,
-                it
+                it,
             )
         }?.let {
             adapter?.addFragment(
                 it,
-                arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following)) +
-                    " " + getString(R.string.up_lb_following)
+                arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following))
+                        + " " + getString(R.string.up_lb_following)
             )
         }
 
@@ -135,14 +138,16 @@ class FollowerFollowingListingFragment @Inject constructor(
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
+
             }
 
             override fun onPageSelected(position: Int) {
-                if (position == 1) {
+                if(position == 1) {
                     userProfileTracker.openFollowingTab(
                         userId
                     )
-                } else {
+                }
+                else{
                     userProfileTracker.openFollowersTab(
                         userId
                     )
@@ -150,6 +155,7 @@ class FollowerFollowingListingFragment @Inject constructor(
             }
 
             override fun onPageScrollStateChanged(state: Int) {
+
             }
         })
     }
@@ -157,6 +163,7 @@ class FollowerFollowingListingFragment @Inject constructor(
     private fun setHeader() {
         val header = view?.findViewById<HeaderUnify>(R.id.header_follower)
         header?.apply {
+
             title = arguments?.getString(EXTRA_DISPLAY_NAME).toString()
             userId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).toString()
             subheaderView?.gone()
@@ -164,6 +171,7 @@ class FollowerFollowingListingFragment @Inject constructor(
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
+
         }
     }
 
@@ -176,7 +184,7 @@ class FollowerFollowingListingFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle
+            bundle: Bundle,
         ): FollowerFollowingListingFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerFollowingListingFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
@@ -188,3 +196,4 @@ class FollowerFollowingListingFragment @Inject constructor(
         }
     }
 }
+

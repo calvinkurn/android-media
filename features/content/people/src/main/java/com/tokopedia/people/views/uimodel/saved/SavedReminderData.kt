@@ -8,7 +8,7 @@ sealed interface SavedReminderData {
     data class Saved(
         val channelId: String,
         val position: Int,
-        val isActive: Boolean
+        val isActive: Boolean,
     ) : SavedReminderData
 
     object NoData : SavedReminderData

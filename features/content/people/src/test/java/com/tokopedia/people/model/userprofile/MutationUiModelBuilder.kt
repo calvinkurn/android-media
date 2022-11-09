@@ -8,10 +8,10 @@ import com.tokopedia.feedcomponent.people.model.MutationUiModel
 class MutationUiModelBuilder {
 
     fun buildSuccess(
-        message: String = "Yeay"
+        message: String = "Yeay",
     ) = MutationUiModel.Success(message)
 
     fun buildError(
-        message: String = "Terjadi kesalahan"
+        message: String = "Terjadi kesalahan",
     ) = MutationUiModel.Error(message)
 }

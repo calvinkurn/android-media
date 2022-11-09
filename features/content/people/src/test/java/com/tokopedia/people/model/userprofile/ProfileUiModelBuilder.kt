@@ -20,7 +20,7 @@ class ProfileUiModelBuilder {
         badges: List<Any?> = emptyList(),
         stats: ProfileStatsUiModel = ProfileStatsUiModel.Empty,
         shareLink: LinkUiModel = LinkUiModel.Empty,
-        liveInfo: LivePlayChannelUiModel = LivePlayChannelUiModel.Empty
+        liveInfo: LivePlayChannelUiModel = LivePlayChannelUiModel.Empty,
     ) = ProfileUiModel(
         userID = userID,
         encryptedUserID = encryptedUserID,
@@ -31,6 +31,6 @@ class ProfileUiModelBuilder {
         badges = badges,
         stats = stats,
         shareLink = shareLink,
-        liveInfo = liveInfo
+        liveInfo = liveInfo,
     )
 }

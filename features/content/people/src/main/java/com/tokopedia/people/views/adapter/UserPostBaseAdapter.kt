@@ -17,7 +17,7 @@ import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
 open class UserPostBaseAdapter(
     callback: AdapterCallback,
     val playWidgetCallback: PlayWidgetCallback,
-    val onLoadMore: (cursor: String) -> Unit
+    val onLoadMore: (cursor: String) -> Unit,
 ) : BaseAdapter<PlayPostContentItem>(callback), PlayWidgetCardLargeChannelView.Listener {
 
     var cursor: String = ""
@@ -83,7 +83,7 @@ open class UserPostBaseAdapter(
 
     private fun getItemPosition(channelId: String): Int {
         items.forEachIndexed { index, playPostContentItem ->
-            if (playPostContentItem.id == channelId) {
+            if(playPostContentItem.id == channelId){
                 return index
             }
         }
@@ -93,7 +93,7 @@ open class UserPostBaseAdapter(
     fun updatePlayWidgetLatestData(
         channelId: String,
         totalView: String?,
-        isReminderSet: Boolean?
+        isReminderSet: Boolean?,
     ) {
         val selectedData = items
             .filterIsInstance<PlayPostContentItem>()
@@ -102,12 +102,14 @@ open class UserPostBaseAdapter(
         val currTotalView = selectedData.stats.view.formatted
         val currIsReminderSet = selectedData.configurations.reminder.isSet
 
-        if (totalView != null && totalView != currTotalView) {
+        if(totalView != null && totalView != currTotalView) {
             selectedData.stats.view.formatted = totalView
             selectedData.stats.view.value = totalView
-        } else if (isReminderSet != null && isReminderSet != currIsReminderSet) {
+        }
+        else if(isReminderSet != null && isReminderSet != currIsReminderSet) {
             selectedData.configurations.reminder.isSet = isReminderSet
-        } else return
+        }
+        else return
 
         val position = items.indexOf(selectedData)
 

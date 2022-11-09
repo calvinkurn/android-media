@@ -24,18 +24,18 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
             stats = ProfileStatsUiModel(
                 totalPostFmt = response.profileHeader.stats.totalPostFmt,
                 totalFollowerFmt = response.profileHeader.stats.totalFollowerFmt,
-                totalFollowingFmt = response.profileHeader.stats.totalFollowingFmt
+                totalFollowingFmt = response.profileHeader.stats.totalFollowingFmt,
             ),
             shareLink = LinkUiModel(
                 webLink = response.profileHeader.profile.sharelink.weblink,
-                appLink = response.profileHeader.profile.sharelink.applink
+                appLink = response.profileHeader.profile.sharelink.applink,
             ),
             liveInfo = LivePlayChannelUiModel(
                 isLive = response.profileHeader.profile.liveplaychannel.islive,
                 channelId = response.profileHeader.profile.liveplaychannel.liveplaychannelid,
                 channelLink = LinkUiModel(
                     webLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.weblink,
-                    appLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.applink
+                    appLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.applink,
                 )
             )
         )
@@ -45,7 +45,7 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
         return FollowInfoUiModel(
             userID = response.profileHeader.items.firstOrNull()?.userID ?: "",
             encryptedUserID = response.profileHeader.items.firstOrNull()?.encryptedUserID ?: "",
-            status = response.profileHeader.items.firstOrNull()?.status ?: false
+            status = response.profileHeader.items.firstOrNull()?.status ?: false,
         )
     }
 
@@ -55,13 +55,13 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
         return ProfileWhitelistUiModel(
             isWhitelist = authorUgc != null,
             hasUsername = authorUgc?.post?.hasUsername ?: false,
-            hasAcceptTnc = authorUgc?.post?.enable ?: false
+            hasAcceptTnc = authorUgc?.post?.enable ?: false,
         )
     }
 
     override fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel {
         return with(response.playToggleChannelReminder) {
-            if (header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
+            if(header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
             else MutationUiModel.Error(header.message)
         }
     }

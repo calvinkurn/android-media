@@ -21,13 +21,13 @@ class UserProfileViewModelRobot(
     private val username: String = "",
     private val repo: UserProfileRepository = mockk(relaxed = true),
     private val userSession: UserSessionInterface = mockk(relaxed = true),
-    private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers
+    private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
     val viewModel = UserProfileViewModel(
         username = username,
         repo = repo,
-        userSession = userSession
+        userSession = userSession,
     )
 
     fun setup(fn: suspend UserProfileViewModelRobot.() -> Unit): UserProfileViewModelRobot {

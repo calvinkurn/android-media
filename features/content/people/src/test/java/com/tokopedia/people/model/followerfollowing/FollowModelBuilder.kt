@@ -13,7 +13,7 @@ class FollowModelBuilder {
         userIdSource: String,
         userIdTarget: String,
         relation: String = "",
-        isSuccess: String = "1"
+        isSuccess: String = "1",
     ): ProfileDoFollowModelBase {
         return ProfileDoFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
@@ -21,10 +21,10 @@ class FollowModelBuilder {
                     userIdSource = userIdSource,
                     userIdTarget = userIdTarget,
                     relation = relation,
-                    isSuccess = isSuccess
+                    isSuccess = isSuccess,
                 ),
                 messages = emptyList(),
-                errorCode = ""
+                errorCode = "",
             )
         )
     }

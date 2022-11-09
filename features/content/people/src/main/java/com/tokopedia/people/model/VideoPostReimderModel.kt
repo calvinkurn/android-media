@@ -19,3 +19,4 @@ data class ChannelReminderDataHeader(
     @SerializedName("status")
     val status: Int
 )
+

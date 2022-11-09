@@ -12,17 +12,17 @@ import java.io.Closeable
  * Created By : Jonathan Darwin on July 06, 2022
  */
 class FollowerFollowingViewModelRobot(
-    repo: UserProfileRepository = mockk(relaxed = true)
+    repo: UserProfileRepository = mockk(relaxed = true),
 ) : Closeable {
 
     val viewModel = FollowerFollowingViewModel(
-        repo = repo
+        repo = repo,
     )
 
     fun getFollowers(
         username: String = "",
         cursor: String = "",
-        limit: Int = 10
+        limit: Int = 10,
     ) {
         viewModel.getFollowers(username, cursor, limit)
     }
@@ -30,7 +30,7 @@ class FollowerFollowingViewModelRobot(
     fun getFollowings(
         username: String = "",
         cursor: String = "",
-        limit: Int = 10
+        limit: Int = 10,
     ) {
         viewModel.getFollowings(username, cursor, limit)
     }

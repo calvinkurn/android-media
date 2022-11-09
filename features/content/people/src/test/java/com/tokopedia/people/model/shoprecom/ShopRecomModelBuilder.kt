@@ -52,4 +52,5 @@ class ShopRecomModelBuilder {
         }
         return shopRecomItem
     }
+
 }

@@ -13,7 +13,7 @@ data class ProfileUiModel(
     val badges: List<Any?>,
     val stats: ProfileStatsUiModel,
     val shareLink: LinkUiModel,
-    val liveInfo: LivePlayChannelUiModel
+    val liveInfo: LivePlayChannelUiModel,
 ) {
 
     companion object {
@@ -28,7 +28,7 @@ data class ProfileUiModel(
                 badges = emptyList(),
                 stats = ProfileStatsUiModel.Empty,
                 shareLink = LinkUiModel.Empty,
-                liveInfo = LivePlayChannelUiModel.Empty
+                liveInfo = LivePlayChannelUiModel.Empty,
             )
     }
 }

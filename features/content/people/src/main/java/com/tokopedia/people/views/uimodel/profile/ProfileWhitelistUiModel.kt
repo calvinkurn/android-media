@@ -6,14 +6,14 @@ package com.tokopedia.people.views.uimodel.profile
 data class ProfileWhitelistUiModel(
     val isWhitelist: Boolean,
     val hasUsername: Boolean,
-    val hasAcceptTnc: Boolean
+    val hasAcceptTnc: Boolean,
 ) {
     companion object {
         val Empty: ProfileWhitelistUiModel
             get() = ProfileWhitelistUiModel(
                 isWhitelist = false,
                 hasUsername = false,
-                hasAcceptTnc = false
+                hasAcceptTnc = false,
             )
     }
 }

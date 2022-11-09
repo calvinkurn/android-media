@@ -14,5 +14,5 @@ data class UserProfileUiState(
     val followInfo: FollowInfoUiModel,
     val profileType: ProfileType,
     val profileWhitelist: ProfileWhitelistUiModel,
-    val shopRecom: ShopRecomUiModel
+    val shopRecom: ShopRecomUiModel,
 )
