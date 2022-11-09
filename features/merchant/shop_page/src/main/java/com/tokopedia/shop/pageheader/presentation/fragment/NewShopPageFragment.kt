@@ -138,7 +138,7 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
-import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
+
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -2935,15 +2935,31 @@ class NewShopPageFragment :
     }
 
     private fun getShareBottomSheetOgTitle(): String {
-        return shopPageHeaderDataModel?.let{
-            "${joinStringWithDelimiter(it.shopName, it.location, delimiter = " - ")} | Tokopedia"
-        } ?: ""
+        return shopPageHeaderDataModel?.shopName.orEmpty()
     }
 
     private fun getShareBottomSheetOgDescription(): String {
-        return shopPageHeaderDataModel?.let{
-            joinStringWithDelimiter(it.description, it.tagline, delimiter = " - ")
-        } ?: ""
+        var ogDescription = shopPageHeaderDataModel?.location.orEmpty()
+        if (shopPageHeaderWidgetList.isNotEmpty()) {
+            val performanceWidget = shopPageHeaderWidgetList.filter { it.type == ShopPageParamModel.ShopInfoType.SHOP_PERFORMANCE.typeName }
+            val performanceBadgeTextWidget = performanceWidget.first().components.filter {
+                (it.type == ShopPageParamModel.ShopInfoType.BADGE_TEXT.typeName)
+            }
+            if (performanceBadgeTextWidget.isNotEmpty()) {
+                val opsHourWidget = performanceBadgeTextWidget.filter {
+                    (it as ShopHeaderBadgeTextValueComponentUiModel).text[Int.ONE].textHtml ==
+                        ShopPageParamModel.ShopPerformanceLabel.OPERATIONAL_HOURS.labelName
+                }
+                if (opsHourWidget.isNotEmpty()) {
+                    var infoValue = (opsHourWidget.first() as ShopHeaderBadgeTextValueComponentUiModel).text[Int.ZERO].textHtml
+                    if (infoValue != getString(R.string.shop_ops_hour_open_all_day) && infoValue != getString(R.string.shop_ops_hour_holiday)) {
+                        infoValue = "Buka $infoValue WIB"
+                    }
+                    ogDescription += " | $infoValue"
+                }
+            }
+        }
+        return ogDescription
     }
 
     override fun onCloseOptionClicked() {

@@ -56,6 +56,9 @@ data class ShopPageParamModel(
         POWER_MERCHANT_PRO("pro"),
         REGULAR("regular")
     }
+    enum class ShopPerformanceLabel(val labelName: String) {
+        OPERATIONAL_HOURS("Jam operasi toko")
+    }
 }
 
 enum class BoTypeImageGeneratorParam(val value: String) {
