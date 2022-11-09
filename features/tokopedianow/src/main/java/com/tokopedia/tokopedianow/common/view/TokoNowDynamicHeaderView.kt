@@ -10,6 +10,7 @@ import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -65,13 +66,11 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     }
 
     private fun handleSubtitle(subtitle: String, expiredTime: String) {
-        if (subtitle.isNotBlank()) {
-            tpSubtitle?.text = subtitle
-        } else {
-            if (expiredTime.isNotBlank()) {
-                tpSubtitle?.text = context.getString(R.string.tokopedianow_dynamic_header_subtitle_default_value)
+        tpSubtitle?.showIfWithBlock(subtitle.isNotBlank() || expiredTime.isNotBlank()) {
+            if (subtitle.isNotBlank()) {
+                tpSubtitle?.text = subtitle
             } else {
-                tpSubtitle?.gone()
+                tpSubtitle?.text = context.getString(R.string.tokopedianow_dynamic_header_subtitle_default_value)
             }
         }
     }

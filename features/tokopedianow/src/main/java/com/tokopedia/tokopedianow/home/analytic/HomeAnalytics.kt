@@ -493,11 +493,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         headerName: String,
         quantity: String,
         recommendationItem: TokoNowProductCardCarouselItemUiModel,
-        position: String,
+        position: Int,
         cartId: String
     ) {
         val item = productItemDataLayer(
-            index = position,
+            index = position.getTrackerPosition().toString(),
             productId = recommendationItem.id,
             productName = recommendationItem.productCardModel.name,
             price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
@@ -533,10 +533,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         headerName: String,
         quantity: String,
         recommendationItem: TokoNowProductCardCarouselItemUiModel,
-        position: String
+        position: Int
     ) {
         val item = productItemDataLayer(
-            index = position,
+            index = position.getTrackerPosition().toString(),
             productId = recommendationItem.id,
             productName = recommendationItem.productCardModel.name,
             price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero()

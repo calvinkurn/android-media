@@ -1166,8 +1166,8 @@ class TokoNowHomeFragment: Fragment(),
             channelId = productRecomModel.id,
             headerName = productRecomModel.title,
             quantity = quantity.toString(),
-            recommendationItem = productRecomModel.productList[position - ADDITIONAL_POSITION],
-            position = position.toString(),
+            recommendationItem = productRecomModel.productList[position],
+            position = position,
             cartId = cartId
         )
     }
@@ -1177,8 +1177,8 @@ class TokoNowHomeFragment: Fragment(),
             channelId = productRecomModel.id,
             headerName = productRecomModel.title,
             quantity = quantity.toString(),
-            recommendationItem = productRecomModel.productList[position - ADDITIONAL_POSITION],
-            position = position.toString()
+            recommendationItem = productRecomModel.productList[position],
+            position = position
         )
     }
 
