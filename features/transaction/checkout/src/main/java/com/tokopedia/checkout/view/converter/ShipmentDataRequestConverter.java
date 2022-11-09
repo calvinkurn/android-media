@@ -138,10 +138,11 @@ public class ShipmentDataRequestConverter {
                 shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
                 shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
 
-                boolean needToSendValidationMetadata = !selectedShipperModel.getScheduleDate().equals("") &&
+                shopProductCheckout.setNeedToSendValidationMetadata(
+                        !selectedShipperModel.getScheduleDate().equals("") &&
                         selectedShipperModel.getTimeslotId() != 0L &&
-                        !shipmentCartItemModel.getValidationMetadata().equals("");
-                shopProductCheckout.setNeedToSendValidationMetadata(needToSendValidationMetadata);
+                        !shipmentCartItemModel.getValidationMetadata().equals("")
+                );
                 shopProductCheckout.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
 
                 ArrayList<String> promoCodes = new ArrayList<>();
