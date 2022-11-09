@@ -20,11 +20,11 @@ import com.tokopedia.unifycomponents.CardUnify2
 @Suppress("unused")
 @SuppressLint("SyntheticAccessor")
 class BannerChannelAdapter(
-    itemList: List<BannerItemModel>,
+    private val itemList: List<BannerItemModel>,
     private val bannerItemListener: BannerItemListener,
-    private val cardInteraction: Boolean = false
+    private val cardInteraction: Boolean = false,
+    private val isUsingInfiniteScroll: Boolean = false,
 ) : RecyclerView.Adapter<BannerChannelImageViewHolder>() {
-    private var itemList: List<BannerItemModel> = listOf()
     private var imageRatio = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerChannelImageViewHolder {
@@ -36,11 +36,6 @@ class BannerChannelAdapter(
 
     val listCount: Int
         get() = itemList.size
-
-    fun setItemList(newItemList: List<BannerItemModel>) {
-        itemList = newItemList
-        notifyDataSetChanged()
-    }
 
     fun setImageRatio(imageRatio: String) {
         this.imageRatio = imageRatio
@@ -61,7 +56,7 @@ class BannerChannelAdapter(
     }
 
     override fun getItemCount(): Int {
-        return Integer.MAX_VALUE
+        return if(isUsingInfiniteScroll) Integer.MAX_VALUE else itemList.size
     }
 }
 

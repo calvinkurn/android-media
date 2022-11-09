@@ -1,14 +1,21 @@
 package com.tokopedia.home_component.viewholders
 
+import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentBannerBinding
 import com.tokopedia.home_component.decoration.BannerChannelDecoration
@@ -18,6 +25,7 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.removeAllItemDecoration
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
@@ -27,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +60,11 @@ class BannerComponentViewHolder(itemView: View,
     private var binding: HomeComponentBannerBinding? by viewBinding()
     private var isCache = true
     private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
+    private val indicatorLayout: LinearLayout = itemView.findViewById(R.id.indicator_layout)
     private var layoutManager = LinearLayoutManager(itemView.context)
+
+    private var isUsingDotsAndInfiniteScroll: Boolean = false
+    private var scrollTransitionDuration: Long = 5000L
 
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
@@ -61,9 +74,9 @@ class BannerComponentViewHolder(itemView: View,
 
     //set to true if you want to activate auto-scroll
     private var isAutoScroll = true
-    private var currentPagePosition = INITIAL_PAGE_POSITION
-
     private var autoScrollState = STATE_PAUSED
+    private var currentPagePosition = INITIAL_PAGE_POSITION
+    private var lastPagePosition = Integer.MAX_VALUE
 
     private fun autoScrollLauncher() = launch(coroutineContext) {
         while (autoScrollState == STATE_RUNNING) {
@@ -86,6 +99,12 @@ class BannerComponentViewHolder(itemView: View,
 
     override fun bind(element: BannerDataModel) {
         try {
+            isUsingDotsAndInfiniteScroll = HomeComponentRollenceController.isHPBUsingDotsAndInfiniteScroll()
+            scrollTransitionDuration = when(HomeComponentRollenceController.getHPBDurationRollenceValue()) {
+                RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_4S -> 4000L
+                RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_6S -> 6000L
+                else -> 5000L
+            }
             setHeaderComponent(element)
             setViewPortImpression(element)
             channelModel = element.channelModel
@@ -93,6 +112,9 @@ class BannerComponentViewHolder(itemView: View,
 
             channelModel?.let { it ->
                 this.isCache = element.isCache
+                val size = it.channelGrids.size
+                lastPagePosition = if(isUsingDotsAndInfiniteScroll) Integer.MAX_VALUE else size-1
+                drawIndicators(indicatorLayout, 0, it.channelGrids.size)
                 try {
                     initBanner(it.convertToBannerItemModel(), element.dimenMarginTop, element.dimenMarginBottom)
                 } catch (e: NumberFormatException) {
@@ -125,7 +147,7 @@ class BannerComponentViewHolder(itemView: View,
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
         if (isAutoScroll) {
-            val nextPagePosition = if (currentPagePosition >= Integer.MAX_VALUE) {
+            val nextPagePosition = if (currentPagePosition >= lastPagePosition) {
                 0
             } else {
                 currentPagePosition+1
@@ -175,9 +197,8 @@ class BannerComponentViewHolder(itemView: View,
                 rvBanner.addItemDecoration(BannerChannelSingleItemDecoration())
             } else rvBanner.addItemDecoration(BannerChannelDecoration())
         }
-        val adapter = BannerChannelAdapter(list, this, cardInteraction)
+        val adapter = BannerChannelAdapter(list, this, cardInteraction, isUsingDotsAndInfiniteScroll)
         rvBanner.adapter = adapter
-        adapter.setItemList(list)
     }
 
     private fun setScrollListener() {
@@ -187,6 +208,10 @@ class BannerComponentViewHolder(itemView: View,
                     RecyclerView.SCROLL_STATE_IDLE -> {
                         onPageDragStateChanged(false)
                         currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                        channelModel?.let {
+                            val dotsPosition = currentPagePosition % (channelModel?.channelGrids?.size?:0)
+                            drawIndicators(indicatorLayout, dotsPosition, it.channelGrids.size)
+                        }
                         resumeAutoScroll()
                     }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
@@ -248,6 +273,42 @@ class BannerComponentViewHolder(itemView: View,
         }
     }
 
+    private fun drawIndicators(viewGroup: ViewGroup, currentPage: Int, totalSize: Int) {
+        if(isUsingDotsAndInfiniteScroll) {
+            viewGroup.visible()
+            if (viewGroup.childCount > 0) {
+                viewGroup.removeAllViews()
+            }
+
+            val params = LinearLayout.LayoutParams(
+                DOTS_SIZE.toDpInt(),
+                DOTS_SIZE.toDpInt()
+            )
+            params.setMargins(
+                DOTS_MARGIN.toDpInt(),
+                MARGIN_ZERO,
+                DOTS_MARGIN.toDpInt(),
+                MARGIN_ZERO
+            )
+
+            for (i in 0 until totalSize) {
+                viewGroup.addView(AppCompatImageView(viewGroup.context).apply {
+                    layoutParams = params
+                    background = GradientDrawable().apply {
+                        shape = GradientDrawable.OVAL
+                        if(currentPage == i) {
+                            setColor(ContextCompat.getColor(context, RUnify.color.Unify_GN500))
+                        } else {
+                            setColor(ContextCompat.getColor(context, RUnify.color.Unify_NN200))
+                        }
+                    }
+                })
+            }
+        } else {
+            viewGroup.gone()
+        }
+    }
+
     private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {
         return try {
             this.channelGrids.map{ BannerItemModel(it.id.toIntOrZero(), it.imageUrl) }
@@ -271,5 +332,7 @@ class BannerComponentViewHolder(itemView: View,
         private const val STATE_PAUSED = 1
         private const val INITIAL_PAGE_POSITION = 0
         private const val MARGIN_ZERO = 0
+        private const val DOTS_SIZE = 6f
+        private const val DOTS_MARGIN = 2f
     }
 }
