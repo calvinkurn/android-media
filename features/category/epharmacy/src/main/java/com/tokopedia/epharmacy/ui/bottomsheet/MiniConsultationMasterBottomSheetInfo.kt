@@ -14,9 +14,7 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.GetMiniConsultationBottomSheetParams
 import com.tokopedia.epharmacy.network.response.EPharmacyMiniConsultationMasterResponse
 import com.tokopedia.epharmacy.ui.adapter.EpharmacyMiniConsultationStepsAdapter
-import com.tokopedia.epharmacy.utils.DATA_TYPE
-import com.tokopedia.epharmacy.utils.ENABLER_NAME
-import com.tokopedia.epharmacy.utils.EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL
+import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.viewmodel.MiniConsultationMasterBsViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
@@ -33,11 +31,13 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<EpharmacyMasterMiniConsultationBottomSheetBinding>()
     private val miniConsultationAdapter: EpharmacyMiniConsultationStepsAdapter by lazy {
-        EpharmacyMiniConsultationStepsAdapter(mutableListOf())
+        EpharmacyMiniConsultationStepsAdapter()
     }
 
     companion object {
-        fun newInstance(dataType: String, enabler: String
+        fun newInstance(
+            dataType: String,
+            enabler: String
         ): MiniConsultationMasterBottomSheetInfo {
             return MiniConsultationMasterBottomSheetInfo().apply {
                 showCloseIcon = false
@@ -72,7 +72,9 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         binding = EpharmacyMasterMiniConsultationBottomSheetBinding.inflate(
-            inflater, container, false
+            inflater,
+            container,
+            false
         )
         setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -85,7 +87,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         setupObservers()
     }
 
-    private fun init(){
+    private fun init() {
         binding?.let {
             with(it) {
                 parentShimmerView.show()
@@ -107,17 +109,19 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
     private fun requestParams(): GetMiniConsultationBottomSheetParams {
         val dataType = arguments?.getString(DATA_TYPE)
         val enabler = arguments?.getString(ENABLER_NAME)
-        return if(!dataType.isNullOrBlank() && !enabler.isNullOrBlank()) {
+        return if (!dataType.isNullOrBlank() && !enabler.isNullOrBlank()) {
             GetMiniConsultationBottomSheetParams(
-                dataType = dataType,GetMiniConsultationBottomSheetParams.EpharmacyStaticInfoParams(
-                enablerName = enabler
+                dataType = dataType,
+                GetMiniConsultationBottomSheetParams.EpharmacyStaticInfoParams(
+                    enablerName = enabler
                 )
             )
-        }
-        else{
+        } else {
             closeBottomSheet()
-            GetMiniConsultationBottomSheetParams("",
-                GetMiniConsultationBottomSheetParams.EpharmacyStaticInfoParams(""))
+            GetMiniConsultationBottomSheetParams(
+                "",
+                GetMiniConsultationBottomSheetParams.EpharmacyStaticInfoParams("")
+            )
         }
     }
 
@@ -156,16 +160,21 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
                     bottomImageLogo.show()
                     bottomImageLogo.loadImage(bottomSheetData?.logoUrl)
                 }
-                bottomImage.loadImage(EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL)
+                if (arguments?.getString(DATA_TYPE, "")?.contains(EPHARMACY_PDP_INFO_DATA_TYPE) == true) {
+                    val layoutParams: ViewGroup.LayoutParams = bottomImage.layoutParams
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    bottomImage.loadImage(EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL)
+                } else {
+                    bottomImage.loadImage(EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL)
+                }
             }
         }
 
         bottomSheetData?.steps?.let {
-            miniConsultationAdapter.clearStepsList()
-            miniConsultationAdapter.setStepList(it)
+            miniConsultationAdapter.submitList(mutableListOf())
+            miniConsultationAdapter.submitList(it)
         }
     }
-
 
     private fun onFailMiniConsultationData(miniConsultationMasterResponseFail: Fail) {
         binding?.parentShimmerView?.hide()
@@ -187,7 +196,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         }
     }
 
-    private fun closeBottomSheet(){
+    private fun closeBottomSheet() {
         dismiss()
         activity?.finish()
     }
