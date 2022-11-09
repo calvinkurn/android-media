@@ -120,7 +120,7 @@ object ChooseProductUiMapper {
         remainingQuota: Int,
         selectedProductList: List<ChooseProductItem>
     ): SelectionValidationResult {
-        val isExceedMaxProduct = isExceedMaxProduct(selectedProductCount)
+        val isExceedMaxProduct = isExceedMaxProduct(selectedProductList.size)
         val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, maxSelectedProduct,
             remainingQuota, selectedProductList)
         val disabledCriteriaIds = criteriaList.getDisabledCriteriaIds()
