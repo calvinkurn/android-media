@@ -165,7 +165,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
-        if (!rewardStr.isEmpty()) mTextPoints?.text = rewardStr
+        if (rewardStr.isNotEmpty()) mTextPoints?.text = rewardStr
         isPointsAvailable = true
         mAppBarHeader?.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }
@@ -181,13 +181,9 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             //TODO please replace with
             mViewModel.currentCategoryId = 0
             mViewModel.currentSubCategoryId = 0
-            mPagerSortType!!.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
-            mTabSortType!!.visibility = View.GONE
-        } else if (filters.categories[0].isHideSubCategory || filters.categories[0].subCategory.isEmpty()) {
             mPagerSortType?.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
             mTabSortType?.visibility = View.GONE
-        } else if (filters.categories[0] != null
-                && (filters.categories[0].isHideSubCategory || filters.categories[0].subCategory == null || filters.categories[0].subCategory.isEmpty())) {
+        } else if (filters.categories[0].isHideSubCategory || filters.categories[0].subCategory.isEmpty()) {
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
             mViewPagerAdapter?.setPointsAvailable(isPointsAvailable)
             mPagerSortType?.adapter = mViewPagerAdapter
@@ -201,11 +197,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             mViewModel.currentCategoryId = filters.categories[0].id
             mViewModel.currentSubCategoryId = 0
             mPagerSortType?.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
-        } else if (filters.categories[0] != null
-                && filters.categories[0].subCategory != null) {
-            mTabSortType?.visibility = View.VISIBLE
-            mPagerSortType!!.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
-        } else {
+        }  else {
             mTabSortType!!.visibility = View.VISIBLE
             updateToolbarTitle(filters.categories[0].name)
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, filters.categories[0].subCategory)
