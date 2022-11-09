@@ -1192,31 +1192,36 @@ class OrderSummaryPageRobot {
     }
 
     fun assertUploadPrescription(prescriptionText: String, descriptionText: String? = "") {
-        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object :
-            BaseMatcher<RecyclerView.ViewHolder?>() {
-            override fun describeTo(description: Description?) {
+        onView(withId(R.id.rv_order_summary_page)).perform(
+            actionOnHolderItem(
+                object :
+                    BaseMatcher<RecyclerView.ViewHolder?>() {
+                    override fun describeTo(description: Description?) {
+                        //no op
+                    }
 
-            }
+                    override fun matches(item: Any?): Boolean {
+                        return item is UploadPrescriptionViewHolder
+                    }
+                },
+                object : ViewAction {
+                    override fun getConstraints(): Matcher<View>? = null
 
-            override fun matches(item: Any?): Boolean {
-                return item is UploadPrescriptionViewHolder
-            }
-        }, object : ViewAction {
-            override fun getConstraints(): Matcher<View>? = null
+                    override fun getDescription(): String = "assert upload prescription"
 
-            override fun getDescription(): String = "assert upload prescription"
-
-            override fun perform(uiController: UiController?, view: View) {
-                assertEquals(
-                    prescriptionText,
-                    view.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.upload_prescription_text).text.toString()
-                )
-                assertEquals(
-                    descriptionText,
-                    view.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.upload_description_text).text.toString()
-                )
-            }
-        }))
+                    override fun perform(uiController: UiController?, view: View) {
+                        assertEquals(
+                            prescriptionText,
+                            view.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.upload_prescription_text).text.toString()
+                        )
+                        assertEquals(
+                            descriptionText,
+                            view.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.upload_description_text).text.toString()
+                        )
+                    }
+                }
+            )
+        )
     }
 }
 
