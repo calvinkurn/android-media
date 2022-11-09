@@ -24,6 +24,12 @@ class ProductCarouselUiView(
 
     private val impressionSet = mutableSetOf<String>()
 
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
+        }
+    }
+
     private val adapter = ProductCarouselAdapter(
         listener = object : ProductBasicViewHolder.Listener {
             override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
@@ -51,12 +57,6 @@ class ProductCarouselUiView(
             }
         }
     )
-
-    private val scrollListener = object: RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
-        }
-    }
 
     private val layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
@@ -119,10 +119,6 @@ class ProductCarouselUiView(
         binding.root.gone()
     }
 
-    fun cleanUp() {
-        binding.rvProductFeatured.removeOnScrollListener(scrollListener)
-    }
-
     private fun getPlaceholder() = List(3) { PlayProductUiModel.Placeholder }
 
     private fun invalidateItemDecorations() {
@@ -159,6 +155,10 @@ class ProductCarouselUiView(
             }
         }
         return emptyMap()
+    }
+
+    fun cleanUp() {
+        binding.rvProductFeatured.removeOnScrollListener(scrollListener)
     }
 
     interface Listener {

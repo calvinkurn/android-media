@@ -78,7 +78,7 @@ class PostListViewHolder(
             data == null || postListWidgetUiModel.showLoadingState -> showLoadingState()
             data.error.isNotEmpty() -> {
                 onError(postListWidgetUiModel)
-                listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel, data.error)
+                listener.setOnErrorWidget(absoluteAdapterPosition, postListWidgetUiModel, data.error)
             }
             else -> onSuccessLoadData(postListWidgetUiModel)
         }
@@ -101,9 +101,9 @@ class PostListViewHolder(
         when {
             isEmpty && !postListWidgetUiModel.isShowEmpty -> {
                 if (listener.getIsShouldRemoveWidget()) {
-                    listener.removeWidget(adapterPosition, postListWidgetUiModel)
+                    listener.removeWidget(absoluteAdapterPosition, postListWidgetUiModel)
                 } else {
-                    listener.onRemoveWidget(adapterPosition)
+                    listener.onRemoveWidget(absoluteAdapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
                 setupLastUpdated(postListWidgetUiModel)
@@ -335,9 +335,9 @@ class PostListViewHolder(
                 showEmptyState(element)
             } else {
                 if (listener.getIsShouldRemoveWidget()) {
-                    listener.removeWidget(adapterPosition, element)
+                    listener.removeWidget(absoluteAdapterPosition, element)
                 } else {
-                    listener.onRemoveWidget(adapterPosition)
+                    listener.onRemoveWidget(absoluteAdapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
             }
