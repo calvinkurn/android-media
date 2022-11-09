@@ -497,7 +497,7 @@ object ProductManageTracking {
         sellerappTrackerId: String,
         mainappTrackerId: String
     ) : String {
-        val trackerId = if (GlobalConfig.isSellerApp()) {
+        return if (GlobalConfig.isSellerApp()) {
             sellerappTrackerId
         } else {
             mainappTrackerId
