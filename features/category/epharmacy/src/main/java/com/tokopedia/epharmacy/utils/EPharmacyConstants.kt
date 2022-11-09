@@ -66,3 +66,10 @@ const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
 
 const val EPHARMACY_TICKER_ICON = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc.png"
 const val EPHARMACY_TICKER_BACKGROUND = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_mini_consult_ticker_background.png"
+
+enum class EPharmacyConsultationStatus(val status: Int) {
+    EXPIRED(0),
+    ACTIVE(1),
+    APPROVED(2),
+    REJECTED(4)
+}

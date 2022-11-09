@@ -101,6 +101,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
 
     private fun setUpObservers() {
         observerEPharmacyDetail()
+        observerEPharmacyButtonData()
     }
 
     private fun initViews(view: View) {
@@ -114,7 +115,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
 
     private fun initData(){
         setupRecyclerView()
-        renderButtons()
     }
 
     private fun getData() {
@@ -129,18 +129,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         }
     }
 
-    private fun renderButtons() {
-        ePharmacyDoneButton?.setOnClickListener {
-            onDoneButtonClick()
-        }
-    }
-
-    private fun onDoneButtonClick(){
-        ePharmacyLoader?.show()
-
-    }
-
-
     private fun observerEPharmacyDetail(){
         ePharmacyPrescriptionAttachmentViewModel.productGroupLiveDataResponse.observe(viewLifecycleOwner){
             when (it) {
@@ -150,6 +138,16 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
                 is Fail -> {
                     onFailGroupData(it)
                 }
+            }
+        }
+    }
+
+    private fun observerEPharmacyButtonData() {
+        ePharmacyPrescriptionAttachmentViewModel.buttonLiveData.observe(viewLifecycleOwner){
+            if(it.second.isNotBlank()){
+                enableButton(it.first,it.second)
+            }else {
+                disableButton(it.first)
             }
         }
     }
@@ -192,16 +190,25 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         submitList(newData)
     }
 
-    private fun showDoneButtonState(){
-        ePharmacyDoneButton?.show()
+    private fun enableButton(buttonText : String, appLink : String ){
+        ePharmacyDoneButton?.apply {
+            text = buttonText
+            isEnabled = true
+            setOnClickListener {
+                onDoneButtonClick(appLink)
+            }
+        }
     }
 
-    private fun showUploadPhotoButtonState(){
-        ePharmacyDoneButton?.hide()
+    private fun onDoneButtonClick(appLink: String){
+        RouteManager.route(activity,appLink)
     }
 
-    private fun hideAllButtons(){
-        ePharmacyDoneButton?.hide()
+    private fun disableButton(buttonText: String){
+        ePharmacyDoneButton?.apply {
+            text = buttonText
+            isEnabled = false
+        }
     }
 
     private fun submitList(visitableList: List<BaseEPharmacyDataModel>) {

@@ -24,8 +24,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val _productGroupLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
     val productGroupLiveDataResponse: LiveData<Result<EPharmacyDataModel>> = _productGroupLiveData
 
-    private val _buttonLiveData = MutableLiveData<String?>()
-    val buttonLiveData: LiveData<String?> = _buttonLiveData
+    private val _buttonLiveData = MutableLiveData<Pair<String,String>>()
+    val buttonLiveData: LiveData<Pair<String,String>> = _buttonLiveData
 
     fun getPrepareProductGroup() {
         ePharmacyPrepareProductsGroupUseCase.cancelJobs()
@@ -41,7 +41,24 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                 onFailPrepareProductGroup(IllegalStateException("Data invalid"))
             else {
                 _productGroupLiveData.postValue(Success(mapGroupsDataIntoDataModel(data)))
+                mapButtonData(ePharmacyPrepareProductsGroupResponse)
             }
+        }
+    }
+
+    private fun mapButtonData(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
+        var rejectedCount = 0
+        ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
+            if(group?.consultationData?.consultationStatus == EPharmacyConsultationStatus.REJECTED.status
+                || group?.consultationData?.consultationStatus == EPharmacyConsultationStatus.EXPIRED.status){
+                rejectedCount += 1
+            }
+        }
+
+        if(rejectedCount > 0){
+            _buttonLiveData.postValue(Pair("Lanjut ke Pengiriman","tokopedia://checkout/"))
+        }else {
+            _buttonLiveData.postValue(Pair("Lanjut ke Beli Langsung","tokopedia://cart/"))
         }
     }
 
@@ -56,31 +73,36 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         data.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
             if(!group?.shopInfo.isNullOrEmpty()){
                 group?.shopInfo?.forEachIndexed { index, info ->
-                    if(info?.products?.isNullOrEmpty() != true){
-                        val ePharmacyGroupData = EPharmacyAttachmentDataModel(
-                            "${group.epharmacyGroupId},${info?.shopId  ?: ""}",GROUP_COMPONENT,
-                            group.epharmacyGroupId,
-                            group.consultationSource?.enablerName,
-                            group.consultationSource?.enablerLogoUrl,
-                            info,
-                            group.consultationData?.consultationStatus,
-                            group.consultationData?.consultationString,
-                            group.consultationData?.prescription,
-                            group.consultationData?.partnerConsultationId,
-                            group.consultationData?.tokoConsultationId,
-                            group.prescriptionImages,
-                            group.prescriptionSource,
-                            group.consultationSource,
-                            false,
-                            prepareCtaData(group.prescriptionSource,group.consultationData?.prescription,group.prescriptionImages),
-                            index == ((group.shopInfo?.size ?: 0) - 1)
-                            )
-                        listOfComponents.add(ePharmacyGroupData)
+                    if(info?.products?.isEmpty() != true){
+                        listOfComponents.add(getGroupComponent(group,info,index))
                     }
                 }
             }
         }
         return EPharmacyDataModel(listOfComponents)
+    }
+
+    private fun getGroupComponent(group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
+                                  info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
+                                  index: Int): BaseEPharmacyDataModel {
+        return EPharmacyAttachmentDataModel(
+            "${group.epharmacyGroupId},${info?.shopId  ?: ""}",GROUP_COMPONENT,
+            group.epharmacyGroupId,
+            group.consultationSource?.enablerName,
+            group.consultationSource?.enablerLogoUrl,
+            info,
+            group.consultationData?.consultationStatus,
+            group.consultationData?.consultationString,
+            group.consultationData?.prescription,
+            group.consultationData?.partnerConsultationId,
+            group.consultationData?.tokoConsultationId,
+            group.prescriptionImages,
+            group.prescriptionSource,
+            group.consultationSource,
+            false,
+            prepareCtaData(group.prescriptionSource,group.consultationData?.prescription,group.prescriptionImages),
+            index == ((group.shopInfo?.size ?: 0) - 1)
+        )
     }
 
     private fun onFailPrepareProductGroup(throwable: Throwable) {
