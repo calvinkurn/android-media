@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.shorts.ui.model.state
 
-import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022
@@ -15,19 +15,19 @@ data class PlayShortsUiState(
     val menuList: List<DynamicPreparationMenu>,
 
     val titleForm: PlayShortsTitleFormUiState,
-    val coverForm: PlayShortsCoverFormUiState,
+    val coverForm: PlayShortsCoverFormUiState
 )
 
 data class PlayShortsTitleFormUiState(
     val title: String,
-    val state: State,
+    val state: State
 ) {
 
     companion object {
         val Empty: PlayShortsTitleFormUiState
             get() = PlayShortsTitleFormUiState(
                 title = "",
-                state = State.Unknown,
+                state = State.Unknown
             )
     }
 
@@ -37,14 +37,31 @@ data class PlayShortsTitleFormUiState(
 }
 
 data class PlayShortsCoverFormUiState(
-    val cover: String,
-    val state: State,
+    val cover: CoverSetupState,
+    val state: State
 ) {
+    val coverUri: String
+        get() {
+            if (cover is CoverSetupState.Cropped.Uploaded) {
+                return if (cover.coverImage.toString().isNotEmpty() &&
+                    cover.coverImage.toString().contains("http")
+                ) {
+                    cover.coverImage.toString()
+                } else if (!cover.localImage?.toString().isNullOrEmpty()) {
+                    cover.localImage.toString()
+                } else {
+                    ""
+                }
+            }
+
+            return ""
+        }
+
     companion object {
         val Empty: PlayShortsCoverFormUiState
             get() = PlayShortsCoverFormUiState(
-                cover = "",
-                state = State.Unknown,
+                cover = CoverSetupState.Blank,
+                state = State.Unknown
             )
     }
 

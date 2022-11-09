@@ -15,11 +15,11 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.util.oneTimeUpdate
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -31,11 +31,22 @@ class PlayShortsViewModel @Inject constructor(
 ) : ViewModel() {
 
     /** Public Getter */
+    val shortsId: String
+        get() = _shortsId.value
+
     val title: String
         get() = _titleForm.value.title
 
     val titleFormState: PlayShortsTitleFormUiState.State
         get() = _titleForm.value.state
+
+    /** TODO: adjust authorName here */
+    val authorName: String
+        get() = "Test"
+
+    /** TODO: adjust authorId here */
+    val authorId: String
+        get() = "author_id"
 
     private val _mediaUri = MutableStateFlow("")
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
@@ -49,7 +60,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _menuListUiState = kotlinx.coroutines.flow.combine(
         _menuList,
         _titleForm,
-        _coverForm,
+        _coverForm
     ) { menuList, titleForm, coverForm ->
         /** Will update this validation with product checking as well */
         val isAllMandatoryChecked = titleForm.title.isNotEmpty()
@@ -64,8 +75,10 @@ class PlayShortsViewModel @Inject constructor(
                     it
                 }
                 DynamicPreparationMenu.COVER -> {
-                    /** Will handle isChecked later */
-                    it.copy(isEnabled = isAllMandatoryChecked)
+                    it.copy(
+                        isChecked = coverForm.coverUri.isNotEmpty(),
+                        isEnabled = isAllMandatoryChecked
+                    )
                 }
                 else -> {
                     it
@@ -81,7 +94,7 @@ class PlayShortsViewModel @Inject constructor(
         _selectedAccount,
         _menuListUiState,
         _titleForm,
-        _coverForm,
+        _coverForm
     ) { shortsId, mediaUri, accountList, selectedAccount, menuListUiState, titleForm, coverForm ->
         PlayShortsUiState(
             shortsId = shortsId,
@@ -90,7 +103,7 @@ class PlayShortsViewModel @Inject constructor(
             selectedAccount = selectedAccount,
             menuList = menuListUiState,
             titleForm = titleForm,
-            coverForm = coverForm,
+            coverForm = coverForm
         )
     }
 
@@ -113,6 +126,7 @@ class PlayShortsViewModel @Inject constructor(
 
             /** Cover Form */
             is PlayShortsAction.OpenCoverForm -> handleOpenCoverForm()
+            is PlayShortsAction.SetCover -> handleSetCover(action.cover)
             is PlayShortsAction.CloseCoverForm -> handleCloseCoverForm()
         }
     }
@@ -182,6 +196,12 @@ class PlayShortsViewModel @Inject constructor(
     private fun handleOpenCoverForm() {
         _coverForm.update {
             it.copy(state = PlayShortsCoverFormUiState.State.Editing)
+        }
+    }
+
+    private fun handleSetCover(cover: CoverSetupState) {
+        _coverForm.update {
+            it.copy(cover = cover)
         }
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +23,10 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
@@ -67,6 +72,34 @@ class PlayShortsPreparationFragment @Inject constructor(
         setupView()
         setupListener()
         setupObserver()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is PlayBroadcastSetupBottomSheet -> {
+                childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
+                    override fun onCoverChanged(cover: PlayCoverUiModel) {
+                        viewModel.submitAction(PlayShortsAction.SetCover(cover.croppedCover))
+                    }
+                })
+                childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
+                    override fun getProductList(): List<ProductUiModel> {
+                        /** TODO: send product here */
+                        return emptyList()
+//                        return parentViewModel.productSectionList.flatMap { it.products }
+                    }
+
+                    override fun getAuthorId(): String {
+                        return viewModel.authorId
+                    }
+
+                    override fun getChannelId(): String {
+                        return viewModel.shortsId
+                    }
+                })
+            }
+        }
     }
 
     override fun onBackPressed(): Boolean {
@@ -118,6 +151,16 @@ class PlayShortsPreparationFragment @Inject constructor(
 
                 override fun onTitleSaved(view: TitleFormView, title: String) {
                     viewModel.submitAction(PlayShortsAction.SubmitTitle(title))
+                }
+            })
+
+            formCover.setListener(object : CoverFormView.Listener {
+                override fun onCloseCoverForm() {
+                    viewModel.submitAction(PlayShortsAction.CloseCoverForm)
+                }
+
+                override fun onClickCoverPreview(isEditCover: Boolean) {
+                    openCoverSetupFragment()
                 }
             })
         }
@@ -198,9 +241,17 @@ class PlayShortsPreparationFragment @Inject constructor(
                 showCoverForm(false)
             }
             PlayShortsCoverFormUiState.State.Editing -> {
-                showTitleForm(true)
+                showCoverForm(true)
 
-                /** TODO: set cover here */
+                binding.formCover.setTitle(viewModel.title)
+                binding.formCover.setAuthorName(viewModel.authorName)
+
+                val coverUri = curr.coverForm.coverUri
+                if (coverUri.isNotEmpty()) {
+                    binding.formCover.setCover(coverUri)
+                } else {
+                    binding.formCover.setInitialCover()
+                }
             }
         }
     }
@@ -217,6 +268,13 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun showCoverForm(isShow: Boolean) {
         showMainComponent(!isShow)
         binding.formCover.showWithCondition(isShow)
+    }
+
+    private fun openCoverSetupFragment() {
+        val setupClass = PlayBroadcastSetupBottomSheet::class.java
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
+        setupFragment.show(childFragmentManager)
     }
 
     companion object {
