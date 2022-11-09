@@ -60,7 +60,7 @@ class PlayEngagementAnalyticTest {
         {
           "type" : "CHANNEL_INTERACTIVE_STATUS",
           "data" : {
-            "channel_id" : 12665,
+            "channel_id" : $channelId,
             "exist" : true 
           }
         }
@@ -204,6 +204,7 @@ class PlayEngagementAnalyticTest {
             assertCassavaByEventAction("view - voucher bottomsheet")
             clickVoucherInBottomSheet(1)
             assertCassavaByEventAction("view - toaster public voucher")
+            clickToasterAction()
             assertCassavaByEventAction("click - lihat toaster public voucher")
         }
     }
