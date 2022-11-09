@@ -145,6 +145,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
                 phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
             } else {
                 showLoading()
+                storeLocalSession(phone, false)
                 viewModel.userProfileValidate(phone)
             }
         }
@@ -230,7 +231,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     open fun onSuccessAddPhone(result: AddPhoneResult) {
         dismissLoading()
-        storeLocalSession(result.phoneNumber)
+        storeLocalSession(result.phoneNumber, true)
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
@@ -243,8 +244,8 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    protected fun storeLocalSession(phone: String) {
-        userSession.setIsMSISDNVerified(true)
+    protected fun storeLocalSession(phone: String, isVerified: Boolean) {
+        userSession.setIsMSISDNVerified(isVerified)
         userSession.phoneNumber = phone
     }
 
