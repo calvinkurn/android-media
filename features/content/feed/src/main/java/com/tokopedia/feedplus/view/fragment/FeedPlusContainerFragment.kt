@@ -664,8 +664,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun createShortsFab(): FloatingButtonItem {
         return FloatingButtonItem(
-            /** TODO: will change to IconUnify.SHORT_VIDEO later after upgrading iconUnifyVersion */
-            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.SHORT_VIDEO),
             title = getString(R.string.feed_fab_create_shorts_video),
             listener = {
                 fabFeed.menuOpen = false
