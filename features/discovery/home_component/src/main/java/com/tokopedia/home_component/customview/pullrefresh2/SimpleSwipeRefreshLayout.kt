@@ -90,7 +90,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         private const val STICKY_FACTOR = 0.66F
         private const val STICKY_MULTIPLIER = 0.75F
         private const val ROLL_BACK_DURATION = 300L
-        const val DEFAULT_INDICATOR_TARGET = 67f
+        const val DEFAULT_INDICATOR_TARGET = 33f
         const val ELEVATION = 4
     }
 
