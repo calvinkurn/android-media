@@ -10,6 +10,6 @@ interface TokoChatImageApi {
     @GET("v1/image/{id}/url")
     suspend fun getImageUrl(
         @Path("id") id: String,
-        @Header("Image_Key") channelId: String
+        @Header("Image-Key") channelId: String
     ): TokoChatImageResult
 }
