@@ -924,6 +924,8 @@ class OfficialHomeFragment :
             viewModel.removeRecommendation()
             viewModel.removeRecomWidget()
             viewModel.removeTopAdsHeadlineWidget()
+            viewModel.removeOfficialTopAdsBanner()
+            viewModel.removeOfficialFeaturedShop()
             loadData(true)
             viewModel.resetShopWidgetImpressionCount()
             viewModel.resetIsFeatureShopAllowed()

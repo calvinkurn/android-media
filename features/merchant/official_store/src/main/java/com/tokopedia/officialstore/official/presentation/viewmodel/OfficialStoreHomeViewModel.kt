@@ -20,6 +20,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -33,14 +34,6 @@ import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialStoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsBannerDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -392,6 +385,20 @@ class OfficialStoreHomeViewModel @Inject constructor(
     fun removeRecommendation(){
         _officialStoreListVisitable.run {
             removeAll { it is ProductRecommendationDataModel || it is ProductRecommendationTitleDataModel }
+            _officialStoreLiveData.postValue(this)
+        }
+    }
+
+    fun removeOfficialTopAdsBanner(){
+        _officialStoreListVisitable.run {
+            removeAll { it is OfficialTopAdsBannerDataModel }
+            _officialStoreLiveData.postValue(this)
+        }
+    }
+
+    fun removeOfficialFeaturedShop(){
+        _officialStoreListVisitable.run {
+            removeAll { it is OfficialFeaturedShopDataModel }
             _officialStoreLiveData.postValue(this)
         }
     }
