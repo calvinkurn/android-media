@@ -1017,15 +1017,19 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     fun executeShareOptionClick(shareModel: ShareModel) {
         setIfAffiliate(shareModel)
         if (getImageFromMedia) {
-            when (sourceId) {
-                ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
-                    executePdpContextualImage(shareModel)
+            try {
+                when (sourceId) {
+                    ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
+                        executePdpContextualImage(shareModel)
+                    }
+                    else -> {
+                        addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
+                        addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
+                        imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
+                    }
                 }
-                else -> {
-                    addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
-                    addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
-                    imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
-                }
+            } catch (e: Exception) {
+                executeSharingFlow(shareModel)
             }
         } else {
             executeSharingFlow(shareModel)
@@ -1037,10 +1041,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorParam?.apply {
             this.platform = shareModel.platform
         }
+
         lifecycleScope.launch {
-            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
-            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+            try {
+                val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+                val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
+                executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+            } catch (e: Exception) {
+                executeSharingFlow(shareModel)
+            }
         }
     }
 
