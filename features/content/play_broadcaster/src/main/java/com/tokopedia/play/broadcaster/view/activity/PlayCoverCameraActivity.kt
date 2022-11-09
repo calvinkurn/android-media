@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
@@ -44,6 +45,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     private val retainedComponent by retainedComponent {
         DaggerActivityRetainedComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .playBroadcastModule(PlayBroadcastModule(this))
             .build()
     }
 
@@ -61,7 +63,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     private val tvTimer0 by lazy { findViewById<TextView>(R.id.tv_timer_0) }
     private val tvTimer5 by lazy { findViewById<TextView>(R.id.tv_timer_5) }
     private val tvTimer10 by lazy { findViewById<TextView>(R.id.tv_timer_10) }
-    
+
     private val groupAction by lazy { findViewById<Group>(R.id.group_action) }
     private val countDownTimer by lazy { findViewById<PlayTimerCountDown>(R.id.countdown_timer) }
 
@@ -118,7 +120,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        cvCamera.setListener(object : PlayCameraView.Listener{
+        cvCamera.setListener(object : PlayCameraView.Listener {
             override fun onCameraInstantiated() {
                 openCamera()
             }
@@ -188,8 +190,8 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun setLayoutFullScreen() {
         systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
     }
 
     private fun openCamera() {
@@ -204,26 +206,28 @@ class PlayCoverCameraActivity : AppCompatActivity() {
                 groupAction.gone()
 
                 val animationProcess = PlayTimerCountDown.AnimationProperty.Builder()
-                        .setTotalCount(cameraTimerEnum.seconds)
-                        .build()
+                    .setTotalCount(cameraTimerEnum.seconds)
+                    .build()
 
-                countDownTimer.startCountDown(animationProcess, object : PlayTimerCountDown.Listener {
-                    override fun onTick(milisUntilFinished: Long) {
+                countDownTimer.startCountDown(
+                    animationProcess,
+                    object : PlayTimerCountDown.Listener {
+                        override fun onTick(milisUntilFinished: Long) {
+                        }
 
+                        override fun onFinish() {
+                            cvCamera.takePicture()
+                            countDownTimer.gone()
+                        }
                     }
-
-                    override fun onFinish() {
-                        cvCamera.takePicture()
-                        countDownTimer.gone()
-                    }
-                })
+                )
             }
         }
     }
 
     private fun saveToFile(imageByte: ByteArray) {
         val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG)
-        if (cameraResultFile!= null) {
+        if (cameraResultFile != null) {
             onSuccessCaptureImageFromCamera(cameraResultFile)
         }
     }
@@ -284,24 +288,24 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun requestRequiredPermission() {
         permissionHelper.requestMultiPermissionsFullFlow(
-                permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
-                requestCode = REQUEST_CODE_PERMISSION,
-                permissionResultListener = object : PermissionResultListener {
-                    override fun onRequestPermissionResult(): PermissionStatusHandler {
-                        return {
-                            if (isAllGranted()) cvCamera.open()
-                        }
-                    }
-
-                    override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
-                        return false
+            permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
+            requestCode = REQUEST_CODE_PERMISSION,
+            permissionResultListener = object : PermissionResultListener {
+                override fun onRequestPermissionResult(): PermissionStatusHandler {
+                    return {
+                        if (isAllGranted()) cvCamera.open()
                     }
                 }
+
+                override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+                    return false
+                }
+            }
         )
     }
 
     private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
     )
 
     companion object {
