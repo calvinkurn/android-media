@@ -1203,8 +1203,8 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onFeedbackCtaClicked(view: View) {
-        TokoNowProductFeedbackBottomSheet().apply {
-            showBottomSheet(activity?.supportFragmentManager,view)
+        TokoNowProductFeedbackBottomSheet().also {
+            it.showBottomSheet(activity?.supportFragmentManager,view)
         }
     }
 }

@@ -29,8 +29,6 @@ class GetSearchFirstPageUseCase(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
 ): UseCase<SearchModel>() {
 
-    private var feedbackFieldToggle = false
-
     override suspend fun executeOnBackground(): SearchModel {
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
         val categoryFilterParams = createCategoryFilterParams(queryParams)
@@ -42,11 +40,9 @@ class GetSearchFirstPageUseCase(
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
         graphqlUseCase.addRequest(createDynamicChannelRequest(TOKONOW_SEARCH))
         graphqlUseCase.addRequest(createCategoryJumperRequest(queryParams))
-        if(!feedbackFieldToggle)
-            graphqlUseCase.addRequest(createFeedbackFieldToggleRequest())
+        graphqlUseCase.addRequest(createFeedbackFieldToggleRequest())
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
-        if(!feedbackFieldToggle) feedbackFieldToggle = true
         return SearchModel(
                 searchProduct = getSearchProduct(graphqlResponse),
                 categoryFilter = getCategoryFilter(graphqlResponse),

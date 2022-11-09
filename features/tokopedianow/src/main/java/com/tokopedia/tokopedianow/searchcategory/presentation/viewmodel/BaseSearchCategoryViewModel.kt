@@ -491,7 +491,7 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         visitableList.addAll(createHeaderVisitableList(headerDataView))
         visitableList.addAll(createContentVisitableList(contentDataView))
-        if(feedbackFieldToggle && contentDataView.aceSearchProductData.productList.size<= MIN_PRODUCT_COUNT)
+        if(isLastPage() && feedbackFieldToggle && headerDataView.aceSearchProductHeader.totalData<= MIN_PRODUCT_COUNT)
             visitableList.add(TokoNowFeedbackWidgetUiModel(true))
         visitableList.addFooter()
     }

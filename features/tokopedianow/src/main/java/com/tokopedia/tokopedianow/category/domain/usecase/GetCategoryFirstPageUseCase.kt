@@ -31,7 +31,6 @@ import com.tokopedia.usecase.coroutines.UseCase
 class GetCategoryFirstPageUseCase(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
 ): UseCase<CategoryModel>() {
-    private var feedbackFieldToggle = false
 
     override suspend fun executeOnBackground(): CategoryModel {
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
@@ -45,11 +44,9 @@ class GetCategoryFirstPageUseCase(
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
         graphqlUseCase.addRequest(createDynamicChannelRequest(TOKONOW_CATEGORY))
         graphqlUseCase.addRequest(createRepurchaseWidgetRequest(useCaseRequestParams.parameters))
-        if(!feedbackFieldToggle)
-            graphqlUseCase.addRequest(createFeedbackFieldToggleRequest())
+        graphqlUseCase.addRequest(createFeedbackFieldToggleRequest())
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
-        if(!feedbackFieldToggle) feedbackFieldToggle = true
 
         return CategoryModel(
                 categoryDetail = getCategoryDetail(graphqlResponse),
