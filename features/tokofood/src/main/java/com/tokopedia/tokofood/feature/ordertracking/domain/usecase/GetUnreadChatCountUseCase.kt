@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetUnreadChatCountUseCase @Inject constructor(
     private val repository: TokoChatRepository
 ) {
-    fun unReadCount(): LiveData<Int> {
-        return repository.getConversationRepository().getUnreadCount()
+    fun unReadCount(channelId: String): LiveData<Int> {
+        return repository.getConversationRepository().getUnreadCountForGroupBookings(channelId)
     }
 }
