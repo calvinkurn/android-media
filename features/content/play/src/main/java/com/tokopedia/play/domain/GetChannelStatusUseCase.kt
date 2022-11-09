@@ -18,7 +18,7 @@ class GetChannelStatusUseCase @Inject constructor(
 ): GraphqlUseCase<ChannelStatusResponse>(gqlRepository) {
 
     init {
-        setGraphqlQuery(GetChannelStatusUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(GetChannelStatusUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(ChannelStatusResponse::class.java)
@@ -37,6 +37,12 @@ class GetChannelStatusUseCase @Inject constructor(
                   status
                 }
                 waiting_duration
+                archivedConfig {
+                    title
+                    description
+                    button_text
+                    button_app_link
+                }
               }
             }
         """

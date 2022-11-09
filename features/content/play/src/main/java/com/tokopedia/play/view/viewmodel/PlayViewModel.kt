@@ -1181,7 +1181,7 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val channelStatus = repo.getChannelStatus(channelId)
             _status.update {
-                it.copy(channelStatus = channelStatus)
+                it.copy(channelStatus = channelStatus, config = it.config.copy(archivedModel = channelStatus.config.archivedModel))
             }
         }) {}
     }

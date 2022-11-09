@@ -2,6 +2,7 @@ package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.play.data.ChannelStatusResponse
 import com.tokopedia.play.di.PlayScope
+import com.tokopedia.play.view.uimodel.recom.ArchivedUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import javax.inject.Inject
 
@@ -20,4 +21,13 @@ class PlayChannelStatusMapper @Inject constructor() {
         channelStatus.playGetChannelsStatus.waitingDuration
 
     fun mapStatusBanned(isBanned: Boolean) = if (isBanned) PlayStatusType.Banned else PlayStatusType.Active
+
+    fun mapArchived(channelStatus: ChannelStatusResponse) = with(channelStatus.playGetChannelsStatus.archivedConfig){
+        ArchivedUiModel(
+            title = title,
+            description = description,
+            btnTitle = buttonText,
+            appLink = appLink,
+        )
+    }
 }

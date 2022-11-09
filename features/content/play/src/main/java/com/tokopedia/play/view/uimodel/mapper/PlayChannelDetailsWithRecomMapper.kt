@@ -262,6 +262,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 statusType = statusType,
                 statusSource = PlayStatusSource.Network,
                 waitingDuration = 0,
+                config = PlayStatusConfig(
+                    bannedModel = mapBannedModel(configResponse.bannedData),
+                    freezeModel = mapFreezeUiModel(configResponse.freezeData, title),
+                ),
             ),
             config = PlayStatusConfig(
                 bannedModel = mapBannedModel(configResponse.bannedData),

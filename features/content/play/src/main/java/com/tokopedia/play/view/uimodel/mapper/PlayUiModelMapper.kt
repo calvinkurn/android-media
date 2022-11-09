@@ -13,6 +13,9 @@ import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.recom.BannedUiModel
+import com.tokopedia.play.view.uimodel.recom.FreezeUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayStatusConfig
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
@@ -142,4 +145,10 @@ class PlayUiModelMapper @Inject constructor(
             isRilisanSpesial = prevDetail.isRilisanSpesial,
         )
     }
+
+    fun mapChannelStatusConfig(channelStatusResponse: ChannelStatusResponse) = PlayStatusConfig(
+        archivedModel = channelStatusMapper.mapArchived(channelStatusResponse),
+        bannedModel = BannedUiModel.Empty,
+        freezeModel = FreezeUiModel.Empty,
+    )
 }
