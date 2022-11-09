@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -406,6 +407,7 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun addListObserver() {
         viewModel.playPostContentLiveData.observe(viewLifecycleOwner) {
             it?.let {

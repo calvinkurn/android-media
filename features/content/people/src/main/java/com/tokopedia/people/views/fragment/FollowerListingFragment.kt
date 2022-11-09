@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -103,6 +104,7 @@ class FollowerListingFragment @Inject constructor(
         mAdapter.startDataLoading(arguments?.getString(UserProfileFragment.EXTRA_USER_ID))
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun addListObserver() =
         viewModel.profileFollowersListLiveData.observe(
             viewLifecycleOwner,
