@@ -114,9 +114,10 @@ class ContentCoachMarkManager @Inject constructor(
         coachMark.showCoachMark(
             arrayListOf(
                 CoachMark2Item(
-                    config.view,
-                    config.title,
-                    config.subtitle
+                    anchorView = config.view,
+                    title = config.title,
+                    description = config.subtitle,
+                    position = config.position
                 )
             )
         )

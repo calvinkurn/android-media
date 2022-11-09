@@ -9,7 +9,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.content.common.ui.toolbar.ContentColor
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -32,6 +36,7 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -40,7 +45,9 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on November 08, 2022
  */
 class PlayShortsPreparationFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val userSession: UserSessionInterface,
+    private val coachMarkManager: ContentCoachMarkManager,
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
@@ -72,6 +79,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         setupView()
         setupListener()
         setupObserver()
+        setupCoachMark()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -100,6 +108,11 @@ class PlayShortsPreparationFragment @Inject constructor(
                 })
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        coachMarkManager.dismissAllCoachMark()
     }
 
     override fun onBackPressed(): Boolean {
@@ -134,9 +147,14 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun setupListener() {
         with(binding) {
             preparationMenu.setOnMenuClickListener {
+                coachMarkManager.hasBeenShown(binding.preparationMenu)
+
                 when (it.menuId) {
                     DynamicPreparationMenu.TITLE -> {
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
+                    }
+                    DynamicPreparationMenu.PRODUCT -> {
+                        /** TODO: open product picker */
                     }
                     DynamicPreparationMenu.COVER -> {
                         viewModel.submitAction(PlayShortsAction.OpenCoverForm)
@@ -197,6 +215,17 @@ class PlayShortsPreparationFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun setupCoachMark() {
+        coachMarkManager.setupCoachMark(
+            ContentCoachMarkConfig(binding.preparationMenu).apply {
+                title = getString(R.string.play_shorts_preparation_coachmark_title)
+                subtitle = getString(R.string.play_shorts_preparation_coachmark_description)
+                position = CoachMark2.POSITION_TOP
+                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
+            }
+        )
     }
 
     private fun renderPreparationMenu(

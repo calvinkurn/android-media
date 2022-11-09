@@ -10,6 +10,7 @@ class ContentCoachMarkConfig(
 ){
     var title: String = ""
     var subtitle: String = ""
+    var position: Int = -1
     var delay: Long = 0L
     var duration: Long = 0L
     var onClickCloseListener: () -> Unit = {}

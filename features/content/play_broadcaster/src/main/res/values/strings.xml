@@ -272,4 +272,8 @@
     <string name="play_bro_banner_shorts_description">Buat video yang menarik &amp; inspiratif, yuk</string>
     <string name="play_bro_banner_shorts_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
     <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
+    
+    <!-- Shorts -->
+    <string name="play_shorts_preparation_coachmark_title">Mau ceritain pengalaman belanjamu?</string>
+    <string name="play_shorts_preparation_coachmark_description">Bikin judul yang menarik dan tambahkan produk terkait supaya videomu ramai ditonton!</string>
 </resources>
