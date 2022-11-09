@@ -11,7 +11,6 @@ import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.officialstore.official.presentation.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.TopAdsHeadlineConstant.PAGE
 import com.tokopedia.officialstore.TopAdsHeadlineConstant.SEEN_ADS
 import com.tokopedia.officialstore.category.data.model.Category
@@ -22,6 +21,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChanne
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.officialstore.official.presentation.mapper.OfficialHomeMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
