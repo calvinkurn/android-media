@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.product_detail
+package com.tkpd.macrobenchmark.test.productdetail
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
