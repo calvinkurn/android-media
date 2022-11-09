@@ -145,7 +145,6 @@ class VariantSheetViewComponent(
 
     fun setAction(button: ProductButtonUiModel) {
         btnAction.text = button.text
-        btnAction.generateButton(button.color)
 
         mAction = button.type.toAction
     }
