@@ -13,6 +13,7 @@
         android:id="@+id/loader"
         android:layout_width="@dimen/play_bro_title_form_loading_size"
         android:layout_height="@dimen/play_bro_title_form_loading_size"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

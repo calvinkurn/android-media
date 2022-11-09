@@ -13,9 +13,24 @@ data class PlayShortsUiState(
     val accountList: List<ContentAccountUiModel>,
     val selectedAccount: ContentAccountUiModel,
     val menuList: List<DynamicPreparationMenu>,
+
+    val titleForm: PlayShortsTitleFormUiState,
 )
 
-data class PlayShortsFormUiState(
+data class PlayShortsTitleFormUiState(
     val title: String,
-    val products: List<ProductUiModel>,
-)
+    val state: State,
+) {
+
+    companion object {
+        val Empty: PlayShortsTitleFormUiState
+            get() = PlayShortsTitleFormUiState(
+                title = "",
+                state = State.Unknown,
+            )
+    }
+
+    enum class State {
+        Editing, Loading, Unknown
+    }
+}

@@ -8,13 +8,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.content.common.producttag.view.fragment.LastTaggedProductFragment
 import com.tokopedia.content.common.ui.toolbar.ContentColor
+import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
@@ -59,7 +59,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     override fun onBackPressed(): Boolean {
         return when {
             binding.formTitle.visibility == View.VISIBLE -> {
-                showTitleForm(false)
+                viewModel.submitAction(PlayShortsAction.CloseTitleForm)
                 true
             }
             else -> {
@@ -77,21 +77,22 @@ class PlayShortsPreparationFragment @Inject constructor(
                 activity?.onBackPressed()
             }
         }
-
-        binding.preparationMenu.setOnMenuClickListener {
-            when(it.menuId) {
-                DynamicPreparationMenu.TITLE -> {
-                    showTitleForm(true)
-                }
-            }
-        }
     }
 
     private fun setupListener() {
         with(binding) {
+            preparationMenu.setOnMenuClickListener {
+                when(it.menuId) {
+                    DynamicPreparationMenu.TITLE -> {
+                        viewModel.submitAction(PlayShortsAction.OpenTitleForm)
+                    }
+                }
+            }
+
             formTitle.setListener(object : TitleFormView.Listener {
                 override fun onCloseTitleForm(view: TitleFormView) {
-                    activity?.onBackPressed()
+                    viewModel.submitAction(PlayShortsAction.CloseTitleForm)
+//                    activity?.onBackPressed()
                 }
 
                 override fun onTitleSaved(view: TitleFormView, title: String) {
@@ -105,6 +106,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderPreparationMenu(it.prevValue, it.value)
+                renderTitleForm(it.prevValue, it.value)
             }
         }
     }
@@ -118,6 +120,33 @@ class PlayShortsPreparationFragment @Inject constructor(
         binding.preparationMenu.submitMenu(curr.menuList)
     }
 
+    private fun renderTitleForm(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if(prev?.titleForm == curr.titleForm) return
+
+        when(curr.titleForm.state) {
+            PlayShortsTitleFormUiState.State.Unknown -> {
+                showTitleForm(false)
+
+                binding.formTitle.setLoading(false)
+            }
+            PlayShortsTitleFormUiState.State.Editing -> {
+                showTitleForm(true)
+
+                if(prev?.titleForm?.state == PlayShortsTitleFormUiState.State.Unknown) {
+                    binding.formTitle.setTitle(viewModel.title)
+                    binding.formTitle.setLoading(false)
+                }
+            }
+            PlayShortsTitleFormUiState.State.Loading -> {
+                hideKeyboard()
+                binding.formTitle.setLoading(true)
+            }
+        }
+    }
+
     private fun showMainComponent(isShow: Boolean) {
         binding.groupPreparationMain.showWithCondition(isShow)
     }
@@ -125,11 +154,6 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun showTitleForm(isShow: Boolean) {
         showMainComponent(!isShow)
         binding.formTitle.showWithCondition(isShow)
-
-        if(isShow) {
-            binding.formTitle.setTitle(viewModel.title)
-            binding.formTitle.setLoading(false)
-        }
     }
 
     companion object {

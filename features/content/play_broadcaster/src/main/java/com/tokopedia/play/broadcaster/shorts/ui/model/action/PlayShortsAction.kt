@@ -9,7 +9,12 @@ sealed interface PlayShortsAction {
         val preferredAccountType: String
     ) : PlayShortsAction
 
+    /** Title Form */
+    object OpenTitleForm : PlayShortsAction
+
     data class SubmitTitle(
         val title: String,
     ) : PlayShortsAction
+
+    object CloseTitleForm : PlayShortsAction
 }

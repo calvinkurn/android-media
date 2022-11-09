@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationTitleFormBinding
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.util.extension.showKeyboard
@@ -142,7 +143,7 @@ class TitleFormView : ConstraintLayout {
 
     override fun setVisibility(visibility: Int) {
         super.setVisibility(visibility)
-        if (visibility == View.VISIBLE) showInputMethod()
+        if (isAllowShowKeyboard(visibility)) showInputMethod()
     }
 
     private fun showInputMethod() {
@@ -151,13 +152,17 @@ class TitleFormView : ConstraintLayout {
                 delay(DELAY_SHOW_KEYBOARD)
 
                 withContext(dispatchers.main) {
-                    if(visibility == View.VISIBLE) {
+                    if(isAllowShowKeyboard(visibility)) {
                         binding.textFieldTitle.editText.requestFocus()
                         binding.textFieldTitle.editText.showKeyboard()
                     }
                 }
             }
         }
+    }
+
+    private fun isAllowShowKeyboard(formVisibility: Int): Boolean {
+        return formVisibility == View.VISIBLE && binding.textFieldTitle.visibility == View.VISIBLE
     }
 
     interface Listener {
