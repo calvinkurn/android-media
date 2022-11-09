@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 @GqlQuery(PlayPostContentUseCase.QUERY_NAME, PlayPostContentUseCase.QUERY)
 class PlayPostContentUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<UserPostModel>(graphqlRepository) {
 
     init {
