@@ -1017,19 +1017,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     fun executeShareOptionClick(shareModel: ShareModel) {
         setIfAffiliate(shareModel)
         if (getImageFromMedia) {
-            try {
-                when (sourceId) {
-                    ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
-                        executePdpContextualImage(shareModel)
-                    }
-                    else -> {
-                        addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
-                        addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
-                        imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
-                    }
+            when (sourceId) {
+                ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
+                    executePdpContextualImage(shareModel)
                 }
-            } catch (e: Exception) {
-                executeSharingFlow(shareModel)
+                else -> {
+                    addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
+                    addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
+                    imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
+                }
             }
         } else {
             executeSharingFlow(shareModel)
