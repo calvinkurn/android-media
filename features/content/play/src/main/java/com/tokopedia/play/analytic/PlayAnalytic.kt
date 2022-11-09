@@ -606,15 +606,15 @@ class PlayAnalytic(
         Bundle().apply {
             putString("item_name", product.title)
             putString("item_id", product.id)
-            putString("price", when(product.price) {
+            putDouble("price", when(product.price) {
                 is DiscountedPrice -> product.price.discountedPriceNumber
                 is OriginalPrice -> product.price.priceNumber
-            }.toString())
+            })
             putString("item_brand", "")
             putString("item_category", "")
             putString("item_variant", "")
             putString("dimension40", "/groupchat - $sourceFrom")
-            putString("index", position.toString())
+            putInt("index", position)
         }
 
     private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
