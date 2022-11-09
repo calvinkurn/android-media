@@ -293,6 +293,14 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
 
+    public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
+
+    public static final String SEARCH_DEBUG_LOG = "android_search_debug_enable";
+
+    public static final String HOME_USE_GQL_FED_QUERY = "android_home_use_gql_fed_query";
+
+    public static final String ENABLE_TICKER_NOTIFY_ME = "android_show_ticker_notify_me";
+
     public static final String ENABLE_SEND_SUCCESS_LOG_BRANCH = "android_enable_success_log_branch";
 
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
