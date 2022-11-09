@@ -33,5 +33,5 @@ class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
         )
     }
 
-    override fun getIntent(): Intent = MacroIntent.ProductDetail.getFrameTimingIntent()
+    override fun getIntent(): Intent = MacroIntent.ProductDetail.getStartupIntent()
 }
