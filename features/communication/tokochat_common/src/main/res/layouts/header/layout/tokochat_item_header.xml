@@ -26,7 +26,7 @@
             android:contentDescription="@string/tokochat_content_desc_user_avatar"
             android:visibility="gone"
             tools:visibility="visible"
-            tools:src="@color/Unify_Y500" />
+            tools:src="@color/Unify_YN600" />
 
     </FrameLayout>
 
@@ -65,7 +65,7 @@
             app:layout_constraintTop_toTopOf="@id/tokochat_text_user_title"
             app:unify_image_corner_radius="0"
             app:unify_image_type="circle"
-            tools:src="@color/Unify_Y300" />
+            tools:src="@color/Unify_YN300" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tokochat_text_user_title"
@@ -75,7 +75,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:includeFontPadding="false"
-            android:textColor="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN400"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title"
             app:typographyType="display_3"
