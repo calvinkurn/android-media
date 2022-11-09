@@ -6,6 +6,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.fake.FakePlayWebSocket
+import com.tokopedia.play.fake.chat.FakeChatManager
+import com.tokopedia.play.fake.chat.FakeChatStreams
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
@@ -13,6 +15,7 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.*
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.util.chat.ChatStreams
@@ -120,15 +123,27 @@ class PlayViewModelWebSocketTest {
         val message1 = "Message 1"
         val message2 = "Message 2"
 
+        val mockChatStreams = FakeChatStreams(
+            CoroutineScope(testDispatcher.main),
+            dispatchers = testDispatcher
+        )
+        val mockChatManager = FakeChatManager(mockChatStreams)
+
         val chatStreamsFactory = object : ChatStreams.Factory {
             override fun create(scope: CoroutineScope): ChatStreams {
-                return ChatStreams(scope, testDispatcher)
+                return mockChatStreams
+            }
+        }
+        val chatManagerFactory = object : ChatManager.Factory {
+            override fun create(chatStreams: ChatStreams): ChatManager {
+                return mockChatManager
             }
         }
 
         val robot = createPlayViewModelRobot(
             playChannelWebSocket = fakePlayWebSocket,
             dispatchers = testDispatcher,
+            chatManagerFactory = chatManagerFactory,
             chatStreamsFactory = chatStreamsFactory,
         )
 

@@ -65,4 +65,4 @@ sellerapp/src/main/assets/df.cfg
 
 jacoco.exec
 /robust/
-/robust/
+/tools/ktlint

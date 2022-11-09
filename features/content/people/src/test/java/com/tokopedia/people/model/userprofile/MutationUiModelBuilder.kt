@@ -1,6 +1,6 @@
 package com.tokopedia.people.model.userprofile
 
-import com.tokopedia.people.views.uimodel.MutationUiModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 
 /**
  * Created By : Jonathan Darwin on July 05, 2022

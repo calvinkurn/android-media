@@ -63,8 +63,7 @@
             app:layout_constraintBottom_toBottomOf="@id/label_discount_bundle"
             android:layout_marginStart="4dp"
             android:textColor="@color/Unify_NN600"
-            app:typographyWeight="reguler"
-            app:typographyType="display_3" />
+            app:typographyType="small" />
 
         <include
             android:id="@+id/bundle_widget_header_footer"
