@@ -33,7 +33,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<EpharmacyMasterMiniConsultationBottomSheetBinding>()
     private val miniConsultationAdapter: EpharmacyMiniConsultationStepsAdapter by lazy {
-        EpharmacyMiniConsultationStepsAdapter(mutableListOf())
+        EpharmacyMiniConsultationStepsAdapter()
     }
 
     companion object {
@@ -161,8 +161,8 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
         }
 
         bottomSheetData?.steps?.let {
-            miniConsultationAdapter.clearStepsList()
-            miniConsultationAdapter.setStepList(it)
+            miniConsultationAdapter.submitList(mutableListOf())
+            miniConsultationAdapter.submitList(it)
         }
     }
 
