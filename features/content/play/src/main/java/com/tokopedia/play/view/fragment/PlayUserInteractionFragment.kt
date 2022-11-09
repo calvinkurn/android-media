@@ -72,6 +72,7 @@ import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
@@ -1474,10 +1475,18 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun endLiveInfoViewOnStateChanged(
             event: PlayStatusUiModel
     ) {
-        if(event.channelStatus.statusType.isFreeze) {
-            endLiveInfoView.setInfo(title = event.config.freezeModel.title)
-            endLiveInfoView.show()
-        } else endLiveInfoView.hide()
+        when (event.channelStatus.statusType) {
+            PlayStatusType.Freeze -> {
+                endLiveInfoView.setInfo(title = event.config.freezeModel.title)
+                endLiveInfoView.show()
+            }
+            PlayStatusType.Archived -> {
+                endLiveInfoView.setInfo(title = getString(R.string.play_archived_title))
+                endLiveInfoView.showToaster(text = getString(R.string.play_archived_title))
+                endLiveInfoView.show()
+            }
+            else -> endLiveInfoView.hide()
+        }
     }
 
     private fun pipViewOnStateChanged(
@@ -1757,7 +1766,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun handleStatus(status: PlayStatusUiModel) {
         getBottomSheetInstance().setState(status.channelStatus.statusType.isFreeze)
 
-        if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned) {
+        if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned || status.channelStatus.statusType.isArchive) {
             gradientBackgroundView.hide()
             likeCountView.hide()
             likeView.hide()
