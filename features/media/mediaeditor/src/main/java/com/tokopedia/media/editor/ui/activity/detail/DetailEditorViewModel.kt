@@ -118,9 +118,7 @@ class DetailEditorViewModel @Inject constructor(
         detailUiModel: EditorDetailUiModel,
         useStorageColor: Boolean
     ) {
-        if (!watermarkFilterRepository.isAssetInitialize()) {
-            initializeWatermarkAsset()
-        }
+        initializeWatermarkAsset()
 
         _watermarkFilter.value = getWatermarkUseCase(
             WatermarkUseCaseParam(
@@ -137,9 +135,7 @@ class DetailEditorViewModel @Inject constructor(
     fun setWatermarkFilterThumbnail(
         implementedBaseBitmap: Bitmap
     ): Pair<Bitmap, Bitmap> {
-        if (!watermarkFilterRepository.isAssetInitialize()) {
-            initializeWatermarkAsset()
-        }
+        initializeWatermarkAsset()
 
         return watermarkFilterRepository.watermarkDrawerItem(
             implementedBaseBitmap,
