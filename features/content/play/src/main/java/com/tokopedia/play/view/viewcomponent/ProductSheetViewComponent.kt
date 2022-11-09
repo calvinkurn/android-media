@@ -67,7 +67,7 @@ class ProductSheetViewComponent(
     private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
 
-    private val impressionSet = mutableMapOf<ProductSheetAdapter.Item.Product, Int>()
+    private val impressionSet = mutableSetOf<String>()
 
     private val productCardListener = object : ProductLineViewHolder.Listener {
         override fun onProductClicked(
@@ -105,16 +105,6 @@ class ProductSheetViewComponent(
                 product,
                 section,
             )
-        }
-
-        override fun onProductImpressed(
-            viewHolder: ProductLineViewHolder,
-            product: ProductSheetAdapter.Item.Product,
-            position: Int
-        ) {
-            if(impressionSet.containsValue(position)) return
-            impressionSet[product] = position
-            sendImpression()
         }
     }
 
@@ -382,12 +372,27 @@ class ProductSheetViewComponent(
     private fun sendImpression() = synchronized(impressionSet) {
         if (getVisiblePercent(rootView) == -1) return@synchronized
 
-        val products = getProducts()
+        val products = getVisibleProducts().filterNot {
+            impressionSet.contains(it.key.product.id)
+        }
         listener.onProductImpressed(this, products)
+        products.forEach {
+            impressionSet.add(it.key.product.id)
+        }
     }
 
-    private fun getProducts() : Map<ProductSheetAdapter.Item.Product, Int> {
-        return impressionSet.toList().distinctBy { it.first.product.id }.toMap()
+    private fun getVisibleProducts(): Map<ProductSheetAdapter.Item.Product, Int> {
+        val products = productAdapter.getItems()
+        if (products.isNotEmpty()) {
+            val startPosition = linearLayoutManager.findFirstVisibleItemPosition()
+            val endPosition = linearLayoutManager.findLastVisibleItemPosition()
+            if (startPosition > -1 && endPosition < products.size) {
+                return (startPosition..endPosition)
+                    .filter { rvProductList.findViewHolderForAdapterPosition(it) is ProductLineViewHolder }
+                    .associateBy { products[it] as ProductSheetAdapter.Item.Product}
+            }
+        }
+        return emptyMap()
     }
 
     /**

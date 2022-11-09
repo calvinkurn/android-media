@@ -146,7 +146,6 @@ class ProductCarouselUiView(
         listener.onProductImpressed(this, products)
     }
 
-
     /**
      * Analytic Helper
      */
