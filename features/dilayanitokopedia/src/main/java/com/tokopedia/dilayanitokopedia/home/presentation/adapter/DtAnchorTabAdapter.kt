@@ -6,9 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dilayanitokopedia.databinding.DtItemAnchorTabsBinding
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify
 
 
+/**
+ * Created by irpan on 8/11/22.
+ */
 class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
     RecyclerView.Adapter<DtAnchorTabAdapter.DtAnchorTabViewHolder>() {
 
@@ -16,8 +20,7 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
 
     private var selectedMenu = 0
 
-    private var selectedPos = RecyclerView.NO_POSITION
-    private var isItemClicked = false
+    private var maximizeIcons = true
 
     interface AnchorTabListener {
         fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel)
@@ -28,18 +31,12 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
         return DtAnchorTabViewHolder(binding, listener)
     }
 
-    override fun getItemCount(): Int {
-        return listMenu.size
-    }
+    override fun getItemCount() = listMenu.size
 
     override fun onBindViewHolder(holder: DtAnchorTabViewHolder, position: Int) {
         holder.itemView.isClickable = true
-        if (position == selectedMenu) {
-            holder.bindData(listMenu[position], true)
-        } else {
-            holder.bindData(listMenu[position], false)
-        }
-
+        val isSelected = position == selectedMenu
+        holder.bindData(listMenu[position], maximizeIcons, isSelected)
     }
 
     fun updateList(data: List<AnchorTabUiModel>) {
@@ -52,54 +49,42 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
         notifyDataSetChanged()
     }
 
-    fun clearData() {
-//        selectedPos = RecyclerView.NO_POSITION
-        listMenu.clear()
+    fun setMaximizeIcons() {
+        maximizeIcons = true
         notifyDataSetChanged()
+    }
+
+    fun setMinimizeIcons() {
+        maximizeIcons = false
+        notifyDataSetChanged()
+
     }
 
     inner class DtAnchorTabViewHolder(
         private val binding: DtItemAnchorTabsBinding,
         private val listener: AnchorTabListener
     ) : RecyclerView.ViewHolder(binding.root) {
-//        val assetMoreBtn = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_more_horiz)
 
-        fun bindData(data: AnchorTabUiModel, isSelected: Boolean) {
+        fun bindData(data: AnchorTabUiModel, isMaximize: Boolean = false, isSelected: Boolean = false) {
 
-
+            binding.anchorIcon.loadImage(data.imageUrl)
             binding.anchorText.text = data.title
 
-
+            setIconVisibility(isMaximize)
 
             cardSelection(isSelected)
             setListener(data)
         }
 
-//        private fun setPrimary(peopleAddress: AnchorTabUiModel) {
-//            if (peopleAddress.addressStatus == 2) {
-//                binding.lblMainAddress.visible()
-//                binding.btnSecondary.gone()
-//            } else {
-//                binding.lblMainAddress.gone()
-//                binding.btnSecondary.visible()
-//            }
-//        }
+        private fun setIconVisibility(isMaximize: Boolean) {
+            if (isMaximize) {
+                binding.anchorIcon.visibility = View.VISIBLE
+            } else {
+                binding.anchorIcon.visibility = View.GONE
+            }
+        }
 
-        //        private fun setVisibility(peopleAddress: AnchorTabUiModel) {
-//            if (peopleAddress.latitude.isNullOrEmpty() || peopleAddress.longitude.isNullOrEmpty() ||
-//                peopleAddress.latitude == "0.0" || peopleAddress.longitude == "0.0"
-//            ) {
-//                val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-//                binding.imgLocationState.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
-//                binding.tvPinpointState.text = itemView.context.getString(R.string.no_pinpoint)
-//            } else {
-//                val colorGreen = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-//                binding.imgLocationState.setImage(IconUnify.LOCATION, colorGreen, colorGreen)
-//                binding.tvPinpointState.text = itemView.context.getString(R.string.pinpoint)
-//            }
-//        }
-//
-        private fun setListener( anchorTabUiModel: AnchorTabUiModel) {
+        private fun setListener(anchorTabUiModel: AnchorTabUiModel) {
             binding.root.setOnClickListener {
                 listener.onMenuSelected(anchorTabUiModel)
             }

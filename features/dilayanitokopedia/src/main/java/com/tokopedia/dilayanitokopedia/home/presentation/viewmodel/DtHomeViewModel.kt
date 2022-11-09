@@ -81,10 +81,7 @@ class DtHomeViewModel @Inject constructor(
         return homeLayoutItemList.mapNotNull { it.layout }
     }
 
-    fun getHomeLayout(
-        localCacheModel: LocalCacheModel,
-//                      removeAbleWidgets: List<HomeRemoveAbleWidget>
-    ) {
+    fun getHomeLayout(localCacheModel: LocalCacheModel) {
 //        getHomeLayoutJob?.cancel()
         launchCatchError(block = {
             homeLayoutItemList.clear()
@@ -96,9 +93,6 @@ class DtHomeViewModel @Inject constructor(
 
             homeLayoutItemList.mapHomeLayoutList(
                 homeLayoutResponse,
-//                hasTickerBeenRemoved,
-//                removeAbleWidgets,
-//                miniCartSimplifiedData,
                 localCacheModel,
 //                userSession.isLoggedIn
             )
@@ -107,10 +101,11 @@ class DtHomeViewModel @Inject constructor(
                 items = getHomeVisitableList(),
                 state = DtLayoutState.SHOW
             )
+
+
             _homeLayoutList.postValue(Success(data))
-
-
             _menuList.postValue(dataMenuList().mapMenuList(homeLayoutResponse))
+
         }) {
             _homeLayoutList.postValue(Fail(it))
         }.let {
@@ -124,19 +119,19 @@ class DtHomeViewModel @Inject constructor(
      */
     private fun dataMenuList(): MutableList<AnchorTabUiModel> {
         val anchorTabList = mutableListOf<AnchorTabUiModel>()
-        anchorTabList.add(AnchorTabUiModel(0, "title 1", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 3", "", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 4", "", "363"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 5", "", ""))
+        anchorTabList.add(AnchorTabUiModel(0, "title 1", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 2", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 3", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "30"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 4", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 5", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 6", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 7", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 8", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 9", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 10", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 11", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 12", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "363"))
+        anchorTabList.add(AnchorTabUiModel(0, "title 13", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", ""))
 
         return anchorTabList
     }

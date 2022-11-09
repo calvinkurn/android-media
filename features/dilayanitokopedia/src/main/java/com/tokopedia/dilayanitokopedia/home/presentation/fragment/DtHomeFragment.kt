@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,9 +52,11 @@ import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -66,6 +69,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -116,7 +120,6 @@ class DtHomeFragment : Fragment() {
                 featuredShopListener = createFeatureShopCallback(),
 
 //                homeTickerListener = this,
-//                tokoNowChooseAddressWidgetListener = this,
 //                tokoNowCategoryGridListener = this,
                 bannerComponentListener = createSlideBannerCallback(),
 //                homeProductRecomListener = this,
@@ -166,7 +169,7 @@ class DtHomeFragment : Fragment() {
         initNavToolbar()
         initRecyclerView()
         initAnchorTabMenu()
-
+        initRecyclerScrollListener()
         setupChooseAddressWidget()
         setupStatusBar()
         updateCurrentPageLocalCacheModelData()
@@ -202,7 +205,7 @@ class DtHomeFragment : Fragment() {
 
             override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel) {
                 anchorTabAdapter?.selectMenu(anchorTabUiModel)
-               val a = ""
+                
             }
         }
 
@@ -382,9 +385,9 @@ class DtHomeFragment : Fragment() {
 //    }
 
     private fun addNavBarScrollListener() {
-        navBarScrollListener?.let {
-            rvHome?.addOnScrollListener(it)
-        }
+//        navBarScrollListener?.let {
+//            rvHome?.addOnScrollListener(it)
+//        }
     }
 
 
@@ -898,7 +901,7 @@ class DtHomeFragment : Fragment() {
                         }
 
                         override fun onSwitchToDarkToolbar() {
-                            navToolbar?.hideShadow()
+//                            navToolbar?.hideShadow()
                         }
 
                         override fun onYposChanged(yOffset: Int) {}
@@ -976,4 +979,89 @@ class DtHomeFragment : Fragment() {
     }
 
 
+    private fun initRecyclerScrollListener() {
+        binding?.rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            var dy = 0
+            var dx = 0
+            var scrollDist = 0
+            val MINIMUM = 25.toPx()
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                this.dy = dy
+                this.dx = dx
+//                if (dy >= 0) {
+////                    ivToTop.hide()
+////                    calculateScrollDepth(recyclerView)
+//                } else if (dy < 0) {
+//                    ivToTop.show()
+//                }
+                scrollDist += dy
+                Timber.d("recyclerScrollListener onScrolled $recyclerView, $dx, $dy")
+
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                Timber.d("recyclerScrollListener onScrollStateChanged $recyclerView, $scrollDist, $newState")
+
+                if (scrollDist > MINIMUM) {
+                    Timber.d("recyclerScrollListrecyclerScrollListenerener scrollDown $recyclerView, $scrollDist, $newState")
+
+                    anchorTabAdapter?.setMinimizeIcons()
+//                    chooseAddressWidgetDivider?.hide()
+//                    shouldShowChooseAddressWidget = false
+                    scrollDist = 0
+//                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
+//                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
+//                        scrollToLastSection()
+
+
+                    updateAfterScrollDown()
+                } else if (scrollDist < -MINIMUM) {
+                    Timber.d("recyclerScrollListener scrollUp $recyclerView, $scrollDist, $newState")
+
+//                    if (discoveryViewModel.getAddressVisibilityValue()) {
+
+                    updateAfterScrollUp()
+
+//                        chooseAddressWidgetDivider?.show()
+//                        shouldShowChooseAddressWidget = true
+//                    }
+                    scrollDist = 0
+//                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
+//                    if(mAnchorHeaderView.childCount == 0){
+//                        setupObserveAndShowAnchor()
+//                    }
+//                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
+//                        scrollToLastSection()
+                }
+            }
+        })
+    }
+
+    private fun updateAfterScrollUp() {
+        anchorTabAdapter?.setMaximizeIcons()
+
+        val transparentUnify = android.R.color.transparent
+        val transparentColor = ResourcesCompat.getColor(requireContext().resources, transparentUnify, null)
+
+        navToolbar?.setBackgroundColor(transparentColor)
+        binding?.headerCompHolder?.setBackgroundColor(transparentColor)
+        binding?.chooseAddressWidget?.setBackgroundColor(transparentColor)
+        binding?.dtViewBackgroundImage?.visible()
+    }
+
+    private fun updateAfterScrollDown() {
+
+        val whiteUnify = com.tokopedia.unifyprinciples.R.color.Unify_NN0
+        val whiteColor = ResourcesCompat.getColor(requireContext().resources, whiteUnify, null)
+
+        navToolbar?.setBackgroundColor(whiteColor)
+        binding?.headerCompHolder?.setBackgroundColor(whiteColor)
+        binding?.chooseAddressWidget?.setBackgroundColor(whiteColor)
+        binding?.dtViewBackgroundImage?.gone()
+
+    }
 }

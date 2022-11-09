@@ -6,6 +6,6 @@ package com.tokopedia.dilayanitokopedia.home.presentation.uimodel
 data class AnchorTabUiModel(
     val id: Int = 0,
     val title: String = "",
-    val image: String,
+    val imageUrl: String,
     val groupId: String
 )
