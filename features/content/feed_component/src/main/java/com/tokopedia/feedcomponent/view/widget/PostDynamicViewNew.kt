@@ -591,6 +591,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 typography.setType(Typography.DISPLAY_3)
                 typography.ellipsize = TextUtils.TruncateAt.END
                 typography.maxLines = 1
+                typography.setTextColor(
+                    MethodChecker.getColor(
+                        context,
+                        unifyPrinciplesR.color.Unify_N0
+                    )
+                )
                 typography.text = subtitle
 
                 topAdsProductSubtitleContainer.addView(typography)
@@ -1947,7 +1953,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 .addTarget(topAdsCard)
         )
         topAdsProductName.setTextColor(secondaryColor)
-        topAdsProductSubtitle.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setBackgroundColor(primaryColor)
     }
@@ -1957,7 +1962,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         secondaryColor: Int,
     ) {
         topAdsProductName.setTextColor(secondaryColor)
-        topAdsProductSubtitle.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setGradientBackground(colorArray)
     }
