@@ -21,8 +21,14 @@ class EmptyProductTestHelper(
         private val callback: Callback,
 ) {
 
+    fun `empty product list with feedback widget active should show feedback view`(){
+        callback.`Given first page product list is empty`(true)
+        `When view created`()
+        `Then asset empty result visitable list with feedback widget`()
+    }
+
     fun `empty product list should show empty product view`() {
-        callback.`Given first page product list is empty`()
+        callback.`Given first page product list is empty`(false)
 
         `When view created`()
 
@@ -44,6 +50,17 @@ class EmptyProductTestHelper(
         callback.`Then assert empty result visitable list`(visitableList)
     }
 
+    private fun `Then asset empty result visitable list with feedback widget`(){
+        val visitableList = baseViewModel.visitableListLiveData.value!!
+        val listSize = visitableList.size
+        visitableList.first().assertChooseAddressDataView()
+        visitableList[1].assertEmptyProductDataView()
+        visitableList[listSize-2].assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
+        visitableList.last().assertProductFeedbackWidget()
+
+        callback.`Then assert empty result visitable list`(visitableList)
+    }
+
     private fun Visitable<*>.assertEmptyProductDataView() {
         assertThat(this, instanceOf(TokoNowEmptyStateNoResultUiModel::class.java))
     }
@@ -55,7 +72,7 @@ class EmptyProductTestHelper(
     fun `empty product list because of filter should show filter list`() {
         callback.`Given first page product list will be successful`()
         `Given view already created`()
-        callback.`Given first page product list is empty`()
+        callback.`Given first page product list is empty`(false)
 
         val visitableList = baseViewModel.visitableListLiveData.value!!
         val quickFilterDataView = visitableList.filterIsInstance<QuickFilterDataView>().first()
@@ -99,7 +116,7 @@ class EmptyProductTestHelper(
         val quickFilterItemList = quickFilterDataView.quickFilterItemList
         val chosenQuickFilter = quickFilterItemList[1]
 
-        callback.`Given first page product list is empty`()
+        callback.`Given first page product list is empty`(false)
         `Given view apply quick filter`(chosenQuickFilter)
 
         val removedOption = chosenQuickFilter.firstOption!!
@@ -139,7 +156,7 @@ class EmptyProductTestHelper(
         val chosenCategoryFilter = categoryFilterItemList[0]
         val removedOption = chosenCategoryFilter.option
 
-        callback.`Given first page product list is empty`()
+        callback.`Given first page product list is empty`(false)
         `Given view apply category filter`(removedOption)
 
         `When view remove filter from empty state`(removedOption)
@@ -166,7 +183,7 @@ class EmptyProductTestHelper(
     }
 
     interface Callback {
-        fun `Given first page product list is empty`()
+        fun `Given first page product list is empty`(feedbackFieldToggle:Boolean)
         fun `Given first page product list will be successful`()
         fun `Then verify first page API is called`(
                 count: Int,

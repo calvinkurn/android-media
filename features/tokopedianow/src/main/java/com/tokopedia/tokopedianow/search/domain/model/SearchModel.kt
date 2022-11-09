@@ -31,7 +31,7 @@ data class SearchModel(
 
         @SerializedName("feedbackFieldToggle")
         @Expose
-        val feedbackFieldToggle:GetFeedbackFieldModel = GetFeedbackFieldModel()
+        var feedbackFieldToggle:GetFeedbackFieldModel = GetFeedbackFieldModel()
 ) {
         fun getResponseCode() = searchProduct.header.responseCode
 

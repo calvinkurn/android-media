@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.data.model.response.Header
 data class GetFeedbackFieldModel(
     @Expose
     @SerializedName("TokonowFeedbackFieldToggle")
-    val tokonowFeedbackFieldToggle:TokonowFeedbackFieldToggle = TokonowFeedbackFieldToggle()
+    var tokonowFeedbackFieldToggle:TokonowFeedbackFieldToggle = TokonowFeedbackFieldToggle()
 ){
    data class TokonowFeedbackFieldToggle(
        @Expose
@@ -16,11 +16,11 @@ data class GetFeedbackFieldModel(
        val header:Header?=null,
        @Expose
        @SerializedName("data")
-       val data:Data = Data()
+       var data:Data = Data()
    )
    data class Data(
        @Expose
        @SerializedName("isActive")
-       val isActive:Boolean = false
+       var isActive:Boolean = false
    )
 }

@@ -23,6 +23,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVa
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
@@ -204,6 +205,10 @@ fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState(
     val recomWidget = this as TokoNowRecommendationCarouselUiModel
     assertThat(recomWidget.pageName, shouldBe(expectedPageName))
     assertThat(recomWidget.carouselData.state, shouldBe(RecommendationCarouselData.STATE_LOADING))
+}
+
+fun Visitable<*>.assertProductFeedbackWidget(){
+    assertThat(this, instanceOf(TokoNowFeedbackWidgetUiModel::class.java))
 }
 
 fun assertTokonowRecommendationCarouselRequestParams(
