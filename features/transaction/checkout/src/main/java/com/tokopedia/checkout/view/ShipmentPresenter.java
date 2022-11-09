@@ -288,11 +288,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
         }
-        if (ratesUseCase != null) {
-            ratesUseCase.unsubscribe();
+        if (getShipmentAddressFormV3UseCase != null) {
+            getShipmentAddressFormV3UseCase.cancelJobs();
         }
-        if (ratesApiUseCase != null) {
-            ratesApiUseCase.unsubscribe();
+        if (eligibleForAddressUseCase != null) {
+            eligibleForAddressUseCase.cancelJobs();
         }
     }
 
@@ -1278,66 +1278,68 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode) {
-        setCouponStateChanged(true);
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
-        getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
+        if (getView() != null) {
+            setCouponStateChanged(true);
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
+            getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
 
-        compositeSubscription.add(
-                validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(executorSchedulers.getIo())
-                        .observeOn(executorSchedulers.getMain())
-                        .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
-                            @Override
-                            public void onCompleted() {
+            compositeSubscription.add(
+                    validateUsePromoRevampUseCase.createObservable(requestParams)
+                            .subscribeOn(executorSchedulers.getIo())
+                            .observeOn(executorSchedulers.getMain())
+                            .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
+                                @Override
+                                public void onCompleted() {
 
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                getView().setStateLoadingCourierStateAtIndex(cartPosition, false);
-                                Timber.d(e);
-                                if (getView() != null) {
-                                    mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
-                                    if (e instanceof AkamaiErrorException) {
-                                        clearAllPromo();
-                                        getView().showToastError(e.getMessage());
-                                        getView().resetAllCourier();
-                                        getView().cancelAllCourierPromo();
-                                        getView().doResetButtonPromoCheckout();
-                                    } else {
-                                        getView().showToastError(e.getMessage());
-                                        getView().resetCourier(cartPosition);
-                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
-                                getView().setStateLoadingCourierStateAtIndex(cartPosition, false);
-                                ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
-                                if (getView() != null) {
-                                    updateTickerAnnouncementData(validateUsePromoRevampUiModel);
-                                    showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
-                                    validateBBOWithSpecificOrder(validateUsePromoRevampUiModel, cartString, promoCode);
-                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200);
-                                    if (isValidatePromoRevampSuccess) {
-                                        getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
-                                    } else {
-                                        if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
-                                            String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
-                                            mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
-                                            PromoRevampAnalytics.INSTANCE.eventCheckoutViewPromoMessage(errMessage);
-                                            getView().showToastError(errMessage);
-                                            getView().resetCourier(cartPosition);
+                                @Override
+                                public void onError(Throwable e) {
+                                    Timber.d(e);
+                                    if (getView() != null) {
+                                        getView().setStateLoadingCourierStateAtIndex(cartPosition, false);
+                                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
+                                        if (e instanceof AkamaiErrorException) {
+                                            clearAllPromo();
+                                            getView().showToastError(e.getMessage());
+                                            getView().resetAllCourier();
+                                            getView().cancelAllCourierPromo();
+                                            getView().doResetButtonPromoCheckout();
                                         } else {
-                                            getView().showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO);
+                                            getView().showToastError(e.getMessage());
                                             getView().resetCourier(cartPosition);
                                         }
                                     }
                                 }
-                            }
-                        }));
+
+                                @Override
+                                public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+                                    if (getView() != null) {
+                                        getView().setStateLoadingCourierStateAtIndex(cartPosition, false);
+                                        ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
+                                        updateTickerAnnouncementData(validateUsePromoRevampUiModel);
+                                        showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
+                                        validateBBOWithSpecificOrder(validateUsePromoRevampUiModel, cartString, promoCode);
+                                        boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200);
+                                        if (isValidatePromoRevampSuccess) {
+                                            getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
+                                        } else {
+                                            if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
+                                                String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
+                                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
+                                                PromoRevampAnalytics.INSTANCE.eventCheckoutViewPromoMessage(errMessage);
+                                                getView().showToastError(errMessage);
+                                                getView().resetCourier(cartPosition);
+                                            } else {
+                                                getView().showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO);
+                                                getView().resetCourier(cartPosition);
+                                            }
+                                        }
+                                    }
+                                }
+                            }));
+        }
     }
 
     private int getBBOCount(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
@@ -2237,16 +2239,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         } else {
             observable = ratesUseCase.execute(param);
         }
-        observable
-                .map(shippingRecommendationData ->
-                        stateConverter.fillState(shippingRecommendationData, shopShipmentList,
-                                spId, 0))
-                .subscribe(
-                        new GetCourierRecommendationSubscriber(
-                                getView(), this, shipperId, spId, itemPosition,
-                                shippingCourierConverter, shipmentCartItemModel,
-                                isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
-                        ));
+        compositeSubscription.add(
+                observable
+                        .map(shippingRecommendationData ->
+                                stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                        spId, 0))
+                        .subscribe(
+                                new GetCourierRecommendationSubscriber(
+                                        getView(), this, shipperId, spId, itemPosition,
+                                        shippingCourierConverter, shipmentCartItemModel,
+                                        isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
+                                ))
+        );
     }
 
     @Override
