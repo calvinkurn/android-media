@@ -238,6 +238,25 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
             }
             courierItemData = shippingCourierConverter.convertToCourierItemData(courierUiModel, shippingRecommendationData, shipmentCartItemModel)
         }
+
+        if (courierItemData.scheduleDeliveryUiModel != null) {
+            val isScheduleDeliverySelected = courierItemData.scheduleDeliveryUiModel?.isSelected
+            if (isScheduleDeliverySelected == true &&
+                (courierItemData.scheduleDeliveryUiModel?.timeslotId != shipmentCartItemModel.timeslotId ||
+                    courierItemData.scheduleDeliveryUiModel?.scheduleDate != shipmentCartItemModel.scheduleDate)
+            ) {
+                shipmentCartItemModel.scheduleDate = courierItemData.scheduleDeliveryUiModel?.scheduleDate ?: ""
+                shipmentCartItemModel.timeslotId = courierItemData.scheduleDeliveryUiModel?.timeslotId ?: 0
+                shipmentCartItemModel.validationMetadata = courierItemData.scheduleDeliveryUiModel?.deliveryProduct?.validationMetadata ?: ""
+            }
+            else if (isScheduleDeliverySelected == false && (shipmentCartItemModel.scheduleDate != "" || shipmentCartItemModel.timeslotId != 0L)
+            ) {
+                shipmentCartItemModel.scheduleDate = ""
+                shipmentCartItemModel.timeslotId = 0L
+                shipmentCartItemModel.validationMetadata = ""
+            }
+        }
+
         logisticPromoChosen?.let {
             courierItemData.logPromoCode = it.promoCode
             courierItemData.discountedRate = it.discountedRate
