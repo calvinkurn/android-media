@@ -15,7 +15,10 @@ data class Product(
     val stock: Int,
     val txStats: TxStats,
     val warehouse: List<Warehouse>,
-    val warehouseCount: Int
+    val warehouseCount: Int,
+    val isEligible: Boolean,
+    val ineligibleReason: String,
+    val variants: List<Variant>
 ) : DelegateAdapterItem {
 
     data class Preorder(val durationDays: Int)
@@ -31,6 +34,8 @@ data class Product(
     data class TxStats(val sold: Int)
 
     data class Warehouse(val id: Long)
+
+    data class Variant(val variantProductId : Long)
 
     override fun id() = id
 }

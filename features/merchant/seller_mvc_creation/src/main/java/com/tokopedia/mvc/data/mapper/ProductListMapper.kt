@@ -22,7 +22,10 @@ class ProductListMapper @Inject constructor() {
                 product.stock,
                 Product.TxStats(product.txStats.sold),
                 product.warehouse.map { warehouse -> Product.Warehouse(warehouse.id.toLongOrZero()) },
-                product.warehouseCount
+                product.warehouseCount,
+                isEligible = true,
+                ineligibleReason = "",
+                variants = emptyList()
             )
         }
     }

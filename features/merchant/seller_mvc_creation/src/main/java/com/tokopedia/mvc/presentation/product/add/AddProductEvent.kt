@@ -1,12 +1,10 @@
 package com.tokopedia.mvc.presentation.product.add
 
-import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 
 sealed class AddProductEvent {
-    data class FetchRequiredData(
-        val action: GetInitiateVoucherPageUseCase.Param.Action,
-        val promoType: GetInitiateVoucherPageUseCase.Param.PromoType
-    ) : AddProductEvent()
+    data class FetchRequiredData(val action: VoucherAction, val promoType: PromoType) : AddProductEvent()
 
     data class LoadPage(
         val warehouseId: Long,

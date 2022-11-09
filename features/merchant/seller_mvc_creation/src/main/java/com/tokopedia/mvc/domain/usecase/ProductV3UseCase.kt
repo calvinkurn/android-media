@@ -8,7 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.mvc.data.mapper.ProductListMapper
+import com.tokopedia.mvc.data.mapper.ProductV3Mapper
 import com.tokopedia.mvc.data.request.ProductV3ExtraInfo
 import com.tokopedia.mvc.data.request.ProductV3Options
 import com.tokopedia.mvc.data.response.ProductListResponse
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class ProductV3UseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val mapper: ProductListMapper,
+    private val mapper: ProductV3Mapper,
 ) : GraphqlUseCase<String>(repository) {
 
     init {
@@ -89,7 +89,7 @@ class ProductV3UseCase @Inject constructor(
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<ProductV3Response>()
-        return ""
+        return mapper.map(data)
     }
 
     private fun buildRequest(param: Param): GraphqlRequest {

@@ -9,7 +9,7 @@ import com.tokopedia.mvc.domain.entity.Warehouse
 
 data class AddProductUiState(
     val isLoading: Boolean = true,
-    val products : List<Product> = emptyList(),
+    val parentProducts : List<Product> = emptyList(),
     val voucherCreationMetadata: VoucherCreationMetadata? = null,
     val warehouses : List<Warehouse> = emptyList(),
     val selectedProducts : List<Long> = emptyList(),

@@ -20,7 +20,8 @@ import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
-import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.seller_mvc_creation.R
 import com.tokopedia.seller_mvc_creation.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.sortfilter.SortFilterItem
@@ -92,12 +93,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         observeUiEffect()
         observeUiState()
 
-        viewModel.processEvent(
-            AddProductEvent.FetchRequiredData(
-                GetInitiateVoucherPageUseCase.Param.Action.CREATE,
-                GetInitiateVoucherPageUseCase.Param.PromoType.CASHBACK
-            )
-        )
+        viewModel.processEvent(AddProductEvent.FetchRequiredData(VoucherAction.CREATE, PromoType.CASHBACK))
     }
 
     private fun setupView() {
@@ -138,7 +134,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             adapter = productAdapter
 
             attachPaging(this, pagingConfig) { page, _ ->
-                viewModel.processEvent(AddProductEvent.LoadPage(0L, page, "DEFAULT", "DESC"))
+                val nextPage = page + 1
+                viewModel.processEvent(AddProductEvent.LoadPage(0L, nextPage, "DEFAULT", "DESC"))
             }
         }
     }

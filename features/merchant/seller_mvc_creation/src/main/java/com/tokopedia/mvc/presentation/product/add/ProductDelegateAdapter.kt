@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.splitByThousand
@@ -48,15 +49,25 @@ class ProductDelegateAdapter(
                 tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_total_stock, item.stock)
                 tpgSoldCount.text = binding.tpgSoldCount.context.getString(R.string.smvc_placeholder_product_sold_count, item.txStats.sold)
                 tpgPrice.setPrice(item)
+                tpgIneligibleReason.setIneligibleReason(item)
                 layoutVariant.setVariantCount(item)
             }
         }
 
+        private fun Typography.setIneligibleReason(item: Product) {
+            if (item.ineligibleReason.isNotEmpty()) {
+                visible()
+                text = item.ineligibleReason
+            } else {
+                gone()
+            }
+        }
+
         private fun RelativeLayout.setVariantCount(item: Product) {
-            isVisible = item.isVariant
+            isVisible = item.variants.isNotEmpty()
             binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
                 R.string.smvc_placeholder_variant_product_count,
-                0
+                item.variants.size
             )
         }
 

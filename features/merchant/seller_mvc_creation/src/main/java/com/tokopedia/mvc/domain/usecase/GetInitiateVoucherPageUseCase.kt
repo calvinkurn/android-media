@@ -11,7 +11,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
+import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import javax.inject.Inject
 
 class GetInitiateVoucherPageUseCase @Inject constructor(
@@ -73,14 +75,16 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
         val voucherProduct = if (param.isVoucherProduct) VOUCHER_TYPE_PRODUCT else VOUCHER_TYPE_SHOP
 
         val action = when(param.action) {
-            Param.Action.CREATE -> "create"
-            Param.Action.UPDATE -> "update"
+            VoucherAction.CREATE -> "create"
+            VoucherAction.UPDATE -> "update"
         }
 
         val promoType = when(param.promoType) {
-            Param.PromoType.CASHBACK -> "cashback"
-            Param.PromoType.FREE_SHIPPING -> "shipping"
+            PromoType.CASHBACK -> "cashback"
+            PromoType.FREE_SHIPPING -> "shipping"
+            PromoType.DISCOUNT -> "discount"
         }
+
         val params = mapOf(
             REQUEST_PARAM_ACTION to action,
             REQUEST_PARAM_TARGET_BUYER to Int.ZERO,
@@ -97,19 +101,11 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
 
 
     data class Param(
-        val action: Action,
+        val action: VoucherAction,
         val promoType: PromoType,
         val isVoucherProduct: Boolean
     ) {
-        enum class Action {
-            CREATE,
-            UPDATE
-        }
-        
-        enum class PromoType {
-            CASHBACK,
-            FREE_SHIPPING
-        }
+
     }
 
 }

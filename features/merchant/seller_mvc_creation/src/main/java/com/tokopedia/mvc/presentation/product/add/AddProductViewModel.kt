@@ -2,13 +2,20 @@ package com.tokopedia.mvc.presentation.product.add
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.VoucherValidationResult
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
 import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
 import com.tokopedia.mvc.domain.usecase.ShopShowcasesByShopIDUseCase
+import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,7 +32,8 @@ class AddProductViewModel @Inject constructor(
     private val getProductListMetaUseCase: ProductListMetaUseCase,
     private val getProductsUseCase: ProductListUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
-    private val getProductVariant: ProductV3UseCase
+    private val getProductVariant: ProductV3UseCase,
+    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(AddProductUiState())
@@ -60,8 +68,8 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun fetchRequiredData(
-        action: GetInitiateVoucherPageUseCase.Param.Action,
-        promoType: GetInitiateVoucherPageUseCase.Param.PromoType,
+        action: VoucherAction,
+        promoType: PromoType,
     ) {
         launchCatchError(
             dispatchers.io,
@@ -96,7 +104,6 @@ class AddProductViewModel @Inject constructor(
                     )
                 }
 
-
                 getProducts(defaultWarehouseId, 1, "DEFAULT", "DESC")
 
             },
@@ -122,14 +129,33 @@ class AddProductViewModel @Inject constructor(
                     sortId = sortId,
                     sortDirection = sortDirection
                 )
-                val products = getProductsUseCase.execute(param)
 
-                val allProducts = currentState.products + products
+                val currentPageParentProductsResponse = getProductsUseCase.execute(param)
+                val currentPageParentProductsIds = currentPageParentProductsResponse.map { product -> product.id }
 
-                _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(products, allProducts))
+                val voucherValidationParam = VoucherValidationPartialUseCase.Param(
+                    benefitIdr = 25_000,
+                    benefitMax = 500_000,
+                    benefitPercent = 0,
+                    BenefitType.NOMINAL,
+                    PromoType.CASHBACK,
+                    isLockToProduct = true,
+                    minPurchase = 50_000,
+                    productIds = currentPageParentProductsIds
+                )
 
+
+                val voucherValidationResponse = voucherValidationPartialUseCase.execute(voucherValidationParam)
+
+                val updatedProducts = combineParentProductDataWithVariant(
+                    currentPageParentProductsResponse,
+                    voucherValidationResponse.validationProduct
+                )
+
+                val allProducts = currentState.parentProducts + updatedProducts
+                _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedProducts, allProducts))
                 _uiState.update {
-                    it.copy(products = allProducts)
+                    it.copy(parentProducts = allProducts)
                 }
 
             },
@@ -138,6 +164,29 @@ class AddProductViewModel @Inject constructor(
             }
         )
 
+    }
+
+    private fun combineParentProductDataWithVariant(currentPageParentProduct: List<Product>, validatedProducts: List<VoucherValidationResult.ValidationProduct>): List<Product> {
+        val formattedProducts = currentPageParentProduct.map { product ->
+
+            val matchedProduct = findValidatedProduct(product.id, validatedProducts)
+            val variants = matchedProduct?.variant?.map { Product.Variant(it.productId) }
+
+            product.copy(
+                isEligible = matchedProduct?.isEligible.orTrue(),
+                ineligibleReason = matchedProduct?.reason.orEmpty(),
+                variants = variants.orEmpty()
+            )
+        }
+
+        return formattedProducts
+    }
+
+    private fun findValidatedProduct(
+        productId: Long,
+        products: List<VoucherValidationResult.ValidationProduct>
+    ): VoucherValidationResult.ValidationProduct? {
+        return products.find { it.parentProductId == productId }
     }
 
 
