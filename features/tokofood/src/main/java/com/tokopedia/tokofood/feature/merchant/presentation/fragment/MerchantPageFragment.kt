@@ -413,9 +413,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                     }
                 }
             }
-        }
-        onOffsetChangedListener?.let {
-            binding?.toolbarParent?.addOnOffsetChangedListener(it)
+            onOffsetChangedListener?.let {
+                binding?.toolbarParent?.addOnOffsetChangedListener(it)
+            }
         }
     }
 
