@@ -598,8 +598,7 @@ class UserProfileFragment @Inject constructor(
 
     private fun createShortsFab(): FloatingButtonItem {
         return FloatingButtonItem(
-            /** TODO: will change IconUnify to SHORT_VIDEO later on */
-            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.SHORT_VIDEO),
             title = getString(feedComponentR.string.feed_fab_create_shorts),
             listener = {
                 mainBinding.fabUp.menuOpen = false
