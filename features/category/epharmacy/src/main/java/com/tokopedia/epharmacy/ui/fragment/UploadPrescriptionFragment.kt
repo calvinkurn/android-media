@@ -188,7 +188,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
         MethodChecker.getDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_camera)?.let {
             DrawableCompat.setTint(
                 DrawableCompat.wrap(it),
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             )
             ePharmacyUploadPhotoButton?.setDrawable(it, UnifyButton.DrawablePosition.LEFT)
         }
