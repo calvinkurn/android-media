@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_icon_pull_refresh"
     android:layout_width="match_parent"
-    android:animateLayoutChanges="true"
     android:layout_height="0dp"
     android:visibility="gone">
 
@@ -16,19 +15,18 @@
         android:progress="0"
         android:max="100"
         android:progressDrawable="@drawable/unify_loader_decorative_white"
-        android:indeterminateDrawable="@drawable/unify_loader_decorative_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <com.tokopedia.unifycomponents.LoaderUnify-->
-<!--        android:id="@+id/loader_pull_refresh"-->
-<!--        android:layout_width="30dp"-->
-<!--        android:layout_height="30dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:loader_type="decorative_white" />-->
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_pull_refresh"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="decorative_white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

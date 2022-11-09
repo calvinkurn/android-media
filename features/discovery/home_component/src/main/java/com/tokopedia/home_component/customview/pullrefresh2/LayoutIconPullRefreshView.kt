@@ -10,7 +10,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlin.math.roundToInt
 
@@ -26,12 +28,13 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     private var containerIconPullRefresh: ConstraintLayout? = null
     private var contentChildView: SimpleSwipeRefreshLayout.ChildView? = null
+    private var loaderPullRefresh: LoaderUnify? = null
     private var maxOffset : Int = 0
     private var progressRefresh : Float = 0.0f
     private var offsetY : Float = 0.0f
     private var pullRefreshIcon: ProgressBar? = null
     companion object {
-        private const val MAXIMUM_HEIGHT_SCROLL = 89
+        private const val MAXIMUM_HEIGHT_SCROLL = 120
     }
 
     init {
@@ -40,7 +43,8 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         pullRefreshIcon = view.findViewById(R.id.progress_pull_refresh)
         containerIconPullRefresh?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         contentChildView = SimpleSwipeRefreshLayout.ChildView(getChildAt(0))
-
+        loaderPullRefresh = view.findViewById(R.id.loader_pull_refresh)
+//        progressPullRefresh = view.findViewById(R.id.progress_pull_refresh)
     }
 
     override fun maxOffsetTop(maxOffsetTop: Int) {
@@ -50,15 +54,20 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     override fun offsetView(offset: Float) {
         offsetY = offset
         positionChildren()
+        loaderPullRefresh?.gone()
+        pullRefreshIcon?.show()
 //        Log.d("dhabalog", "offsetIcon $offset")
     }
 
     override fun startRefreshing() {
         Log.d("dhabalog", "startRefreshing")
         containerIconPullRefresh?.visible()
+
         val layoutParams = containerIconPullRefresh?.layoutParams
         layoutParams?.height = 64
         containerIconPullRefresh?.layoutParams = layoutParams
+        loaderPullRefresh?.visible()
+        pullRefreshIcon?.gone()
     }
 
     override fun stopRefreshing(isAfterRefresh: Boolean) {
