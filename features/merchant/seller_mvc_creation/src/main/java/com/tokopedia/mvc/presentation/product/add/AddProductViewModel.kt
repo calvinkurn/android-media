@@ -209,7 +209,8 @@ class AddProductViewModel @Inject constructor(
             product.copy(
                 isEligible = matchedProduct?.isEligible.orTrue(),
                 ineligibleReason = matchedProduct?.reason.orEmpty(),
-                variants = variants.orEmpty(),
+                originalVariants = variants.orEmpty(),
+                modifiedVariants = variants.orEmpty(),
                 isSelected = currentState.isSelectAllActive
             )
         }
@@ -249,8 +250,18 @@ class AddProductViewModel @Inject constructor(
 
     private fun handleAddProductToSelection(productIdToAdd: Long) {
         val updatedProducts = currentState.products.map {
+            val hasVariants = it.originalVariants.isNotEmpty()
+
             if (it.id == productIdToAdd) {
-                it.copy(isSelected = true)
+
+                if (hasVariants) {
+                    val modifiedVariants = it.originalVariants.toMutableList()
+                    modifiedVariants.removeLast()
+                    it.copy(isSelected = true, originalVariants = it.originalVariants, modifiedVariants = modifiedVariants)
+                } else {
+                    it.copy(isSelected = true)
+                }
+
             } else {
                 it
             }

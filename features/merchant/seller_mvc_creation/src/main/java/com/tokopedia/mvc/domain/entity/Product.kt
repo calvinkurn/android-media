@@ -18,7 +18,8 @@ data class Product(
     val warehouseCount: Int,
     val isEligible: Boolean,
     val ineligibleReason: String,
-    val variants: List<Variant>,
+    val originalVariants: List<Variant>,
+    val modifiedVariants : List<Variant>,
     val isSelected: Boolean
 ) : DelegateAdapterItem {
 

@@ -6,7 +6,6 @@ import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
@@ -70,11 +69,20 @@ class ProductDelegateAdapter(
         }
 
         private fun RelativeLayout.setVariantCount(item: Product) {
-            isVisible = item.variants.isNotEmpty()
-            binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
-                R.string.smvc_placeholder_variant_product_count,
-                item.variants.size
-            )
+            isVisible = item.originalVariants.isNotEmpty()
+
+            if (item.originalVariants.size != item.modifiedVariants.size) {
+                binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
+                    R.string.smvc_placeholder_selected_variant_product_count,
+                    item.modifiedVariants.size,
+                    item.originalVariants.size
+                )
+            } else {
+                binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
+                    R.string.smvc_placeholder_variant_product_count,
+                    item.originalVariants.size
+                )
+            }
         }
 
         private fun Typography.setSku(item: Product) {
