@@ -30,6 +30,8 @@ import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -70,6 +72,12 @@ class ManageAddressViewModel @Inject constructor(
     var source = ""
     private val isTokonow: Boolean
         get() = source == ManageAddressSource.TOKONOW.source
+
+    val isEligibleShareAddress: Boolean
+        get() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            KEY_SHARE_ADDRESS_LOGI,
+            ""
+        ) == KEY_SHARE_ADDRESS_LOGI
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>

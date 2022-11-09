@@ -12,6 +12,8 @@ import com.tokopedia.manageaddress.di.DaggerTestAppComponent
 import com.tokopedia.manageaddress.di.FakeAppModule
 import com.tokopedia.manageaddress.di.FakeGraphqlUseCase
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.Before
 import org.junit.Rule
@@ -23,7 +25,8 @@ import org.junit.runner.RunWith
 class DirectShareAddressTest {
 
     @get:Rule
-    var mRuntimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.READ_CONTACTS)
+    var mRuntimePermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(Manifest.permission.READ_CONTACTS)
 
     @get:Rule
     var mActivityTestRule = IntentsTestRule(ManageAddressActivity::class.java, false, false)
@@ -39,6 +42,14 @@ class DirectShareAddressTest {
         val component = DaggerTestAppComponent.builder().fakeAppModule(FakeAppModule(ctx)).build()
         fakeGql = component.fakeGraphql() as FakeGraphqlUseCase
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(component)
+        setupAbTestRemoteConfig()
+    }
+
+    private fun setupAbTestRemoteConfig() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            KEY_SHARE_ADDRESS_LOGI,
+            KEY_SHARE_ADDRESS_LOGI
+        )
     }
 
     @Test

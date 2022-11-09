@@ -28,9 +28,15 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
     private var isItemClicked = false
     private var mainAddressListener: MainAddressItemAdapterListener? = null
     private var isNeedToShareAddress = false
+    private var isEligibleShareAddress = false
     private var fromFriendAddressListener: FromFriendAddressItemAdapterListener? = null
 
-    fun setMainAddressListener(isNeedToShareAddress: Boolean, listener: MainAddressItemAdapterListener) {
+    fun setMainAddressListener(
+        isEligibleShareAddress: Boolean,
+        isNeedToShareAddress: Boolean,
+        listener: MainAddressItemAdapterListener
+    ) {
+        this.isEligibleShareAddress = isEligibleShareAddress
         this.isNeedToShareAddress = isNeedToShareAddress
         this.mainAddressListener = listener
     }
@@ -163,7 +169,11 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
         }
 
         private fun showIconShare() {
-            binding.iconShare.visible()
+            if (isEligibleShareAddress) {
+                binding.iconShare.visible()
+            } else {
+                binding.iconShare.gone()
+            }
             binding.imgGift.gone()
         }
 

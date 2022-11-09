@@ -181,7 +181,11 @@ class MainAddressFragment :
 
     private fun initAdapter() {
         adapter.apply {
-            setMainAddressListener(viewModel.isNeedToShareAddress, this@MainAddressFragment)
+            setMainAddressListener(
+                isEligibleShareAddress = viewModel.isEligibleShareAddress,
+                isNeedToShareAddress = viewModel.isNeedToShareAddress,
+                listener = this@MainAddressFragment
+            )
         }
 
         binding?.addressList?.let {

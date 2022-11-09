@@ -10,6 +10,8 @@ import com.tokopedia.manageaddress.di.DaggerTestAppComponent
 import com.tokopedia.manageaddress.di.FakeAppModule
 import com.tokopedia.manageaddress.di.FakeGraphqlUseCase
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.Before
 import org.junit.Rule
@@ -34,6 +36,14 @@ class ShareAddressFromNotifTest {
         val component = DaggerTestAppComponent.builder().fakeAppModule(FakeAppModule(ctx)).build()
         fakeGql = component.fakeGraphql() as FakeGraphqlUseCase
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(component)
+        setupAbTestRemoteConfig()
+    }
+
+    private fun setupAbTestRemoteConfig() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            KEY_SHARE_ADDRESS_LOGI,
+            KEY_SHARE_ADDRESS_LOGI
+        )
     }
 
     @Test
