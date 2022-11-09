@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
+import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
@@ -74,6 +75,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                 viewModel.submitAction(PlayShortsAction.CloseTitleForm)
                 true
             }
+            binding.formCover.visibility == View.VISIBLE -> {
+                viewModel.submitAction(PlayShortsAction.CloseCoverForm)
+                true
+            }
             else -> {
                 super.onBackPressed()
             }
@@ -100,6 +105,9 @@ class PlayShortsPreparationFragment @Inject constructor(
                     DynamicPreparationMenu.TITLE -> {
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
                     }
+                    DynamicPreparationMenu.COVER -> {
+                        viewModel.submitAction(PlayShortsAction.OpenCoverForm)
+                    }
                 }
             }
 
@@ -120,6 +128,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 renderPreparationMenu(it.prevValue, it.value)
                 renderTitleForm(it.prevValue, it.value)
+                renderCoverForm(it.prevValue, it.value)
             }
         }
 
@@ -178,6 +187,24 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
     }
 
+    private fun renderCoverForm(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if (prev?.coverForm == curr.coverForm) return
+
+        when (curr.coverForm.state) {
+            PlayShortsCoverFormUiState.State.Unknown -> {
+                showCoverForm(false)
+            }
+            PlayShortsCoverFormUiState.State.Editing -> {
+                showTitleForm(true)
+
+                /** TODO: set cover here */
+            }
+        }
+    }
+
     private fun showMainComponent(isShow: Boolean) {
         binding.groupPreparationMain.showWithCondition(isShow)
     }
@@ -185,6 +212,11 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun showTitleForm(isShow: Boolean) {
         showMainComponent(!isShow)
         binding.formTitle.showWithCondition(isShow)
+    }
+
+    private fun showCoverForm(isShow: Boolean) {
+        showMainComponent(!isShow)
+        binding.formCover.showWithCondition(isShow)
     }
 
     companion object {

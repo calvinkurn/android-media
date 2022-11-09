@@ -17,4 +17,8 @@ sealed interface PlayShortsAction {
     ) : PlayShortsAction
 
     object CloseTitleForm : PlayShortsAction
+
+    /** Cover Form */
+    object OpenCoverForm : PlayShortsAction
+    object CloseCoverForm : PlayShortsAction
 }

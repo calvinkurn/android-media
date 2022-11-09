@@ -15,6 +15,7 @@ data class PlayShortsUiState(
     val menuList: List<DynamicPreparationMenu>,
 
     val titleForm: PlayShortsTitleFormUiState,
+    val coverForm: PlayShortsCoverFormUiState,
 )
 
 data class PlayShortsTitleFormUiState(
@@ -32,5 +33,22 @@ data class PlayShortsTitleFormUiState(
 
     enum class State {
         Editing, Loading, Unknown
+    }
+}
+
+data class PlayShortsCoverFormUiState(
+    val cover: String,
+    val state: State,
+) {
+    companion object {
+        val Empty: PlayShortsCoverFormUiState
+            get() = PlayShortsCoverFormUiState(
+                cover = "",
+                state = State.Unknown,
+            )
+    }
+
+    enum class State {
+        Editing, Unknown
     }
 }
