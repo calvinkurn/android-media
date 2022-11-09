@@ -297,7 +297,8 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
                 isGoApotik,
                 epharmacyInfo.siaNumber,
                 epharmacyInfo.sipaNumber,
-                epharmacyInfo.apj
+                epharmacyInfo.apj,
+                partnerLabel
         )
     }
 

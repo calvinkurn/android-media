@@ -5,17 +5,15 @@ import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils.Companion.getType
@@ -26,32 +24,47 @@ import com.tokopedia.loginregister.common.utils.KeyboardHandler
 import com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener
 import com.tokopedia.loginregister.common.view.emailextension.EmailExtension
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
+import com.tokopedia.loginregister.databinding.LayoutPartialRegisterInputBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.TextFieldUnify2
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 /**
  * @author by alvinatin on 11/06/18.
  */
 class PartialRegisterInputView : BaseCustomView {
-    var fieldUnifyInputEmailPhone: TextFieldUnify2? = null
-    var etInputEmailPhone: AutoCompleteTextView? = null
-    var btnAction: UnifyButton? = null
     var emailExtension: EmailExtension? = null
-    var wrapperPassword: TextFieldUnify2? = null
-    var btnForgotPassword: Typography? = null
-    var btnChange: Typography? = null
     var registerAnalytics = RegisterAnalytics()
     private var isExtensionSelected = false
     private var listener: PartialRegisterInputViewListener? = null
     private var emailExtensionList: List<String>? = null
+
     fun setListener(listener: PartialRegisterInputViewListener?) {
         this.listener = listener
     }
 
     interface PartialRegisterInputViewListener {
         fun onActionPartialClick(id: String)
+    }
+
+    private val viewBinding: LayoutPartialRegisterInputBinding = LayoutPartialRegisterInputBinding
+        .inflate(
+            LayoutInflater.from(context)
+        ).also {
+            addView(it.root)
+        }
+
+    val inputEmailPhoneField by lazy {
+        viewBinding.inputEmailPhone
+    }
+
+    val wrapperPassword by lazy {
+        viewBinding.wrapperPassword
+    }
+
+    val buttonContinue by lazy {
+        viewBinding.registerBtn
     }
 
     constructor(context: Context) : super(context) {
@@ -62,58 +75,67 @@ class PartialRegisterInputView : BaseCustomView {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
+        attrs,
+        defStyleAttr) {
         init()
     }
 
     private fun init() {
-        val view = View.inflate(context, R.layout.layout_partial_register_input, this)
-        fieldUnifyInputEmailPhone = view.findViewById(R.id.input_email_phone)
-        etInputEmailPhone = fieldUnifyInputEmailPhone?.editText
-        btnAction = view.findViewById(R.id.register_btn)
-        wrapperPassword = view.findViewById(R.id.wrapper_password)
-        btnForgotPassword = view.findViewById(R.id.forgot_pass)
-        btnChange = view.findViewById(R.id.change_button)
-
-        etInputEmailPhone?.typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
-
+        viewBinding.changeButton
+        viewBinding.inputEmailPhone.editText.typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
         renderData()
     }
 
     fun renderData() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            etInputEmailPhone?.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO
+            viewBinding.inputEmailPhone.editText.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO
         }
-        val background = ContextCompat.getDrawable(context, R.drawable.bg_rounded_corner_autocomplete_partial_input)
-        etInputEmailPhone?.setDropDownBackgroundDrawable(background)
-        etInputEmailPhone?.onItemClickListener = OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long -> registerAnalytics.trackClickPhoneNumberSuggestion() }
-        etInputEmailPhone?.addTextChangedListener(watcher(fieldUnifyInputEmailPhone))
-        etInputEmailPhone?.setOnEditorActionListener { v: TextView, actionId: Int, event: KeyEvent? ->
-            var handled = false
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val imm: InputMethodManager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(v.windowToken, 0)
-                if (isValidValue(v.text.toString()) && isButtonValidatorActived) {
-                    btnAction?.performClick()
-                }
-                handled = true
+        val background = ContextCompat.getDrawable(
+            context,
+            R.drawable.bg_rounded_corner_autocomplete_partial_input
+        )
+
+        viewBinding.inputEmailPhone.editText.apply {
+            setDropDownBackgroundDrawable(background)
+            addTextChangedListener(watcherEmailPhone(viewBinding.inputEmailPhone))
+            setOnItemClickListener { _, _, _, _ ->
+                registerAnalytics.trackClickPhoneNumberSuggestion()
             }
-            handled
+            setOnEditorActionListener { v, actionId, _ ->
+                var handled = false
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    val imm: InputMethodManager = v
+                        .context
+                        .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                    if (isValidValue(v.text.toString()) && isButtonValidatorActivated) {
+                        viewBinding.registerBtn.performClick()
+                    }
+                    handled = true
+                }
+                handled
+            }
+
         }
-        wrapperPassword?.editText?.addTextChangedListener(watcherUnify(wrapperPassword))
-        btnAction?.setOnClickListener(ClickRegister())
-        btnChange?.setOnClickListener(OnClickListener {
+
+        viewBinding.wrapperPassword.editText.addTextChangedListener(
+            watcherPassword(viewBinding.wrapperPassword)
+        )
+        viewBinding.registerBtn.setOnClickListener(ClickRegister())
+        viewBinding.changeButton.setOnClickListener {
             showDefaultView()
             hideEmailExtension()
-        })
+        }
     }
 
     fun onErrorInputEmailPhoneValidate(message: String?) {
-        setWrapperInputEmailPhoneError(fieldUnifyInputEmailPhone, message)
+        setWrapperInputEmailPhoneError(viewBinding.inputEmailPhone, message)
     }
 
     fun onErrorPassword(message: String?) {
-        setWrapperErrorPassword(wrapperPassword, message)
+        setWrapperErrorPassword(viewBinding.wrapperPassword, message)
     }
 
     private fun setWrapperInputEmailPhoneError(wrapper: TextFieldUnify2?, s: String?) {
@@ -135,27 +157,29 @@ class PartialRegisterInputView : BaseCustomView {
         }
     }
 
-    private fun watcher(wrapper: TextFieldUnify2?): TextWatcher {
+    private fun watcherEmailPhone(wrapper: TextFieldUnify2?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 setWrapperInputEmailPhoneError(wrapper, null)
-                if (s != null) {
-                    if (isButtonValidatorActived) {
-                        validateValue(s.toString())
-                    }
-                    if (etInputEmailPhone?.isFocused == true && etInputEmailPhone?.text.toString().contains("@") && (emailExtension != null)) {
-                        showEmailExtension()
-                        isExtensionSelected = false
-                        val charEmail = etInputEmailPhone?.text.toString().split("@").toTypedArray()
-                        if (charEmail.size > 1) {
-                            emailExtension?.filterExtensions(charEmail[1])
-                        } else {
-                            emailExtension?.updateExtensions((emailExtensionList ?: listOf()))
-                        }
+                if (isButtonValidatorActivated) {
+                    validateValue(s.toString())
+                }
+                if (viewBinding.inputEmailPhone.editText.isFocused &&
+                    viewBinding.inputEmailPhone.editText.text.toString().contains("@") &&
+                    emailExtension != null
+                ) {
+                    showEmailExtension()
+                    isExtensionSelected = false
+                    val charEmail = viewBinding.inputEmailPhone.editText.text.toString()
+                        .split("@").toTypedArray()
+                    if (charEmail.size > 1) {
+                        emailExtension?.filterExtensions(charEmail[1])
                     } else {
-                        hideEmailExtension()
+                        emailExtension?.updateExtensions(emailExtensionList ?: listOf())
                     }
+                } else {
+                    hideEmailExtension()
                 }
             }
 
@@ -163,27 +187,29 @@ class PartialRegisterInputView : BaseCustomView {
         }
     }
 
-    private fun watcherUnify(wrapper: TextFieldUnify2?): TextWatcher {
+    private fun watcherPassword(wrapper: TextFieldUnify2?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 setWrapperErrorPassword(wrapper, null)
-                if (s != null) {
-                    if (isButtonValidatorActived) {
-                        validateValue(s.toString())
-                    }
-                    if (etInputEmailPhone?.isFocused == true && etInputEmailPhone?.text.toString().contains("@") && (emailExtension != null)) {
-                        showEmailExtension()
-                        isExtensionSelected = false
-                        val charEmail = etInputEmailPhone?.text.toString().split("@").toTypedArray()
-                        if (charEmail.size > 1) {
-                            emailExtension?.filterExtensions(charEmail[1])
-                        } else {
-                            emailExtension?.updateExtensions(emailExtensionList ?: listOf())
-                        }
+                if (isButtonValidatorActivated) {
+                    validateValue(s.toString())
+                }
+                if (viewBinding.inputEmailPhone.editText.isFocused &&
+                    viewBinding.inputEmailPhone.editText.text.toString().contains("@") &&
+                    emailExtension != null
+                ) {
+                    showEmailExtension()
+                    isExtensionSelected = false
+                    val charEmail = viewBinding.inputEmailPhone.editText.text.toString()
+                        .split("@").toTypedArray()
+                    if (charEmail.size > 1) {
+                        emailExtension?.filterExtensions(charEmail[1])
                     } else {
-                        hideEmailExtension()
+                        emailExtension?.updateExtensions(emailExtensionList ?: listOf())
                     }
+                } else {
+                    hideEmailExtension()
                 }
             }
 
@@ -192,7 +218,7 @@ class PartialRegisterInputView : BaseCustomView {
     }
 
     fun setButtonValidator(status: Boolean) {
-        isButtonValidatorActived = status
+        isButtonValidatorActivated = status
         if (status) onInvalidValue() else onValidValue()
     }
 
@@ -201,44 +227,49 @@ class PartialRegisterInputView : BaseCustomView {
     }
 
     private fun validateValue(value: String) {
-        if(value.isNotEmpty()) {
+        if (value.isNotEmpty()) {
             when (getType(value)) {
                 PartialRegisterInputUtils.PHONE_TYPE -> {
                     if (isValidPhone(value)) {
                         onValidValue()
-                    } else { onInvalidValue() }
+                    } else {
+                        onInvalidValue()
+                    }
                 }
                 PartialRegisterInputUtils.EMAIL_TYPE -> {
                     if (isValidEmail(value)) {
                         onValidValue()
-                    } else { onInvalidValue() }
+                    } else {
+                        onInvalidValue()
+                    }
                 }
             }
-        }else {
+        } else {
             onInvalidValue()
         }
     }
 
     private fun onValidValue() {
         defaultMessageInputEmailPhone()
-        btnAction?.isEnabled = true
+        viewBinding.registerBtn.isEnabled = true
     }
 
     private fun onInvalidValue() {
-        btnAction?.isEnabled = false
+        viewBinding.registerBtn.isEnabled = false
     }
 
     val textValue: String
-        get() = etInputEmailPhone?.text.toString()
+        get() = viewBinding.inputEmailPhone.editText.text.toString()
 
-    fun setAdapterInputEmailPhone(adapter: ArrayAdapter<String>,
-                                  onFocusChangeListener: OnFocusChangeListener?
+    fun setAdapterInputEmailPhone(
+        adapter: ArrayAdapter<String>,
+        onFocusChangeListener: OnFocusChangeListener?,
     ) {
-        if (adapter.getItem(0) != null && etInputEmailPhone != null) {
-            etInputEmailPhone?.run {
+        if (adapter.getItem(0) != null) {
+            viewBinding.inputEmailPhone.editText.run {
                 setText(adapter.getItem(0))
                 setSelection(text.length)
-                etInputEmailPhone?.onFocusChangeListener = onFocusChangeListener
+                viewBinding.inputEmailPhone.editText.onFocusChangeListener = onFocusChangeListener
                 setAdapter(adapter)
             }
         }
@@ -247,18 +278,26 @@ class PartialRegisterInputView : BaseCustomView {
     fun setEmailExtension(emailExtension: EmailExtension?, emailExtensionList: List<String>?) {
         this.emailExtensionList = emailExtensionList
         this.emailExtension = emailExtension
-        emailExtensionList?.let {
-            this.emailExtension?.setExtensions(it, object: EmailExtensionAdapter.ClickListener {
+        emailExtensionList?.let { extension ->
+            this.emailExtension?.setExtensions(extension, object : EmailExtensionAdapter.ClickListener {
                 override fun onExtensionClick(extension: String, position: Int) {
-                    val charEmail: Array<String> = etInputEmailPhone?.text.toString().split("@").toTypedArray()
-                    if (charEmail.size > 0) {
-                        etInputEmailPhone?.setText(String.format("%s@%s", charEmail.get(0), extension))
-                    } else {
-                        etInputEmailPhone?.setText(String.format("%s@%s", etInputEmailPhone?.text.toString().replace("@", ""), extension))
+                    viewBinding.inputEmailPhone.apply {
+                        val textInput = editText.text
+                        val charEmail: Array<String> = textInput.split("@").toTypedArray()
+                        if (charEmail.isNotEmpty()) {
+                            editText.setText(String.format(Locale.getDefault(), "%s@%s", charEmail[0], extension))
+                        } else {
+                            editText.setText(String.format(
+                                Locale.getDefault(),
+                                "%s@%s",
+                                textInput.toString().replace("@", ""),
+                                extension)
+                            )
+                        }
+                        editText.setSelection(textInput.trim { it <= ' ' }.length)
+                        isExtensionSelected = true
+                        hideEmailExtension()
                     }
-                    etInputEmailPhone?.setSelection(etInputEmailPhone?.text.toString().trim { it <= ' ' }.length)
-                    isExtensionSelected = true
-                    hideEmailExtension()
                 }
             })
         }
@@ -268,8 +307,8 @@ class PartialRegisterInputView : BaseCustomView {
         view?.run {
             KeyboardHandler(view, object : OnKeyBoardVisibilityChangeListener {
                 override fun onKeyboardShow() {
-                    if (etInputEmailPhone != null) {
-                        if (etInputEmailPhone?.text.toString().contains("@") && !isExtensionSelected && etInputEmailPhone?.isFocused == true) {
+                    viewBinding.inputEmailPhone.editText.apply {
+                        if (text.contains("@") && isFocused && !isExtensionSelected) {
                             showEmailExtension()
                         }
                     }
@@ -284,77 +323,96 @@ class PartialRegisterInputView : BaseCustomView {
 
     private inner class ClickRegister : OnClickListener {
         override fun onClick(v: View) {
-            val id = etInputEmailPhone?.text.toString()
+            val id = viewBinding.inputEmailPhone.editText.text.toString()
             listener?.onActionPartialClick(id)
         }
     }
 
     private fun defaultMessageInputEmailPhone() {
-        fieldUnifyInputEmailPhone?.isInputError = false
-        fieldUnifyInputEmailPhone?.setMessage(
-            fieldUnifyInputEmailPhone?.context?.getString(R.string.default_placeholder).toString()
-        )
+        viewBinding.inputEmailPhone.apply {
+            isInputError = false
+            setMessage(
+            context?.getString(R.string.default_placeholder).toString()
+        )}
     }
 
     private fun hideMessageInputEmailPhone() {
-        fieldUnifyInputEmailPhone?.isInputError = false
-        fieldUnifyInputEmailPhone?.setMessage("")
+        viewBinding.inputEmailPhone.apply {
+            isInputError = false
+            setMessage("")
+        }
     }
 
     fun showLoginEmailView(email: String) {
-        isButtonValidatorActived = false
+        isButtonValidatorActivated = false
         showForgotPassword()
-        wrapperPassword?.visibility = View.VISIBLE
-        btnChange?.visibility = View.VISIBLE
-        fieldUnifyInputEmailPhone?.setLabel(this.context?.getString(R.string.title_email).toString())
-        btnAction?.text = btnAction?.context?.getString(R.string.login)
-        btnAction?.contentDescription = btnAction?.context?.getString(R.string.content_desc_register_btn)
-        etInputEmailPhone?.setText(email)
-        etInputEmailPhone?.isEnabled = false
+        viewBinding.wrapperPassword.show()
+        viewBinding.changeButton.show()
+
+        viewBinding.registerBtn.apply {
+            text = context?.getString(R.string.login)
+            contentDescription = context?.getString(R.string.content_desc_register_btn)
+        }
+
+        viewBinding.inputEmailPhone.apply {
+            setLabel(context?.getString(R.string.title_email).toString())
+            editText.setText(email)
+            editText.isEnabled = false
+        }
         hideMessageInputEmailPhone()
     }
 
     fun showDefaultView() {
-        isButtonValidatorActived = true
+        isButtonValidatorActivated = true
         hideForgotPassword()
-        wrapperPassword?.visibility = View.GONE
-        btnChange?.visibility = View.GONE
+        viewBinding.wrapperPassword.hide()
+        viewBinding.changeButton.hide()
         defaultMessageInputEmailPhone()
-        fieldUnifyInputEmailPhone?.setLabel(this.context?.getString(R.string.phone_or_email_input).toString())
-        etInputEmailPhone?.setText("")
-        etInputEmailPhone?.isEnabled = true
+        viewBinding.inputEmailPhone.apply {
+            setLabel(context?.getString(R.string.phone_or_email_input).toString())
+            editText.setText("")
+            editText.isEnabled = true
+        }
     }
 
     fun resetErrorWrapper() {
         hideMessageInputEmailPhone()
-        setWrapperErrorPassword(wrapperPassword, null)
+        setWrapperErrorPassword(viewBinding.wrapperPassword, null)
     }
 
     private fun showEmailExtension() {
         if (emailExtension != null) {
-            emailExtension?.visibility = View.VISIBLE
+            emailExtension?.show()
         }
     }
 
     private fun hideEmailExtension() {
         if (emailExtension != null) {
-            emailExtension?.visibility = View.GONE
+            emailExtension?.hide()
         }
     }
 
     fun showForgotPassword() {
-        if (btnForgotPassword != null) {
-            btnForgotPassword?.visibility = View.VISIBLE
-        }
+        viewBinding.forgotPass.show()
     }
 
     fun hideForgotPassword() {
-        if (btnForgotPassword != null) {
-            btnForgotPassword?.visibility = View.GONE
-        }
+        viewBinding.forgotPass.hide()
+    }
+
+    fun setPassword(pass: String) {
+        viewBinding.wrapperPassword.editText.setText(pass)
+    }
+
+    fun setPasswordListener(listener: TextView.OnEditorActionListener) {
+        viewBinding.wrapperPassword.editText.setOnEditorActionListener(listener)
+    }
+
+    fun getPassword(): String {
+        return viewBinding.wrapperPassword.editText.text.toString()
     }
 
     companion object {
-        private var isButtonValidatorActived = false
+        private var isButtonValidatorActivated = false
     }
 }

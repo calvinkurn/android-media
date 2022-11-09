@@ -931,7 +931,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
         }
-        manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
 
         refreshQuestWidget()
         adapter?.onResumeSpecialRelease()
@@ -1995,9 +1994,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         when (isVisibleToUser) {
             false -> {
                 if (tokonowCoachmarkIsShowing) {
+                    tokonowCoachmarkIsShowing = false
                     coachmarkTokonow?.hideCoachMark()
                 }
                 else if (subscriptionCoachmarkIsShowing) {
+                    subscriptionCoachmarkIsShowing = false
                     coachmarkSubscription?.hideCoachMark()
                 }
             }
@@ -2356,16 +2357,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             channel.id, channel.grids, position
                     )
             )
-            DynamicChannelViewHolder.TYPE_ORGANIC -> putEEToIris(
-                    HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
-                            channel.id, channel.grids, channel.header.name
-                    )
-            )
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                     getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
-            DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
-                    HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
         }
     }
