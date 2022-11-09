@@ -8,7 +8,7 @@ import com.tokopedia.mvc.databinding.SmvcDummyBinding
 
 class DummyAdapter: RecyclerView.Adapter<DummyAdapter.CriteriaViewHolder>() {
 
-    private var data: List<String> = emptyList()
+    private var data: MutableList<String> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
         val binding = SmvcDummyBinding.inflate(LayoutInflater.from(parent.context),
@@ -25,7 +25,12 @@ class DummyAdapter: RecyclerView.Adapter<DummyAdapter.CriteriaViewHolder>() {
     }
 
     fun setDataList(newData: List<String>) {
-        data = newData
+        data = newData.toMutableList()
+        notifyItemRangeChanged(Int.ZERO, newData.size)
+    }
+
+    fun addDataList(newData: List<String>) {
+        data.addAll(newData)
         notifyItemRangeChanged(Int.ZERO, newData.size)
     }
 

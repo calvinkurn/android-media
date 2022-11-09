@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/smvc_item_voucher_header"/>
+
+        <include layout="@layout/smvc_item_voucher_data"/>
+
+        <include layout="@layout/smvc_item_voucher_header"/>
+
+        <include layout="@layout/smvc_item_voucher_header"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</com.tokopedia.unifycomponents.CardUnify>

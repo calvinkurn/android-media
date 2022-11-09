@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.campaign.delegates.HasPaginatedList
+import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.presentation.list.adapter.DummyAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class MvcListFragment: BaseDaggerFragment() {
+class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
 
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
 
@@ -41,5 +43,21 @@ class MvcListFragment: BaseDaggerFragment() {
                 it.toString() + it.toString()
             })
         }
+        val config = HasPaginatedList.Config(
+            pageSize = 100,
+            onLoadNextPage = {
+                //flashSaleAdapter.addItem(LoadingItem)
+            }, onLoadNextPageFinished = {
+                //flashSaleAdapter.removeItem(LoadingItem)
+            })
+        attachPaging(rvVoucher, config, ::getDataList)
+    }
+
+    private fun getDataList(page: Int, pageSize: Int) {
+        val aaa = binding?.rvVoucher?.adapter as? DummyAdapter
+        aaa?.addDataList(List(pageSize) {
+            it.toString() + it.toString()
+        })
+        notifyLoadResult(true)
     }
 }
