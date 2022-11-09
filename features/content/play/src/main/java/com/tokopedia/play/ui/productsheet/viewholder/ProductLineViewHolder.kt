@@ -8,7 +8,6 @@ import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.custom.ProductBottomSheetCardView
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.play_common.util.addImpressionListener
 
 /**
  * Created by jegul on 03/03/20
@@ -59,9 +58,6 @@ class ProductLineViewHolder(
     }
 
     fun bind(item: ProductSheetAdapter.Item.Product) {
-        binding.root.addImpressionListener(item.product.impressHolder) {
-            listener.onProductImpressed(this, item, adapterPosition)
-        }
         binding.root.setItem(item.product, item.section)
     }
 
@@ -95,11 +91,6 @@ class ProductLineViewHolder(
             viewHolder: ProductLineViewHolder,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
-        )
-        fun onProductImpressed(
-            viewHolder: ProductLineViewHolder,
-            product: ProductSheetAdapter.Item.Product,
-            position: Int,
         )
     }
 }

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.getVisiblePercent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
@@ -379,7 +380,7 @@ class ProductSheetViewComponent(
     }
 
     private fun sendImpression() = synchronized(impressionSet) {
-        if (!rootView.isShown) return@synchronized
+        if (getVisiblePercent(rootView) == -1) return@synchronized
 
         val products = getProducts()
         listener.onProductImpressed(this, products)

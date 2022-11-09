@@ -207,6 +207,11 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun impressProductBottomSheetNow(
         products: Map<ProductSheetAdapter.Item.Product, Int>
     ) {
+
+        val impressedProducts = products.toList().distinctBy {
+            it.first.product.id
+        }.toMap()
+
         trackingQueue.putEETracking(
             event = EventModel(
                 "productView",
@@ -218,7 +223,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        products.forEach {
+                        impressedProducts.forEach {
                             add(convertProductToHashMapWithList(it.key.product, it.value, "bottom sheet"))
                         }
                     }
