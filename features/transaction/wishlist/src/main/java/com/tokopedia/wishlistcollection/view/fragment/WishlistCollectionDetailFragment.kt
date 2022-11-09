@@ -1021,27 +1021,25 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun showCoachMarkOnSharingIcon(view: View) {
-        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE)) {
-            if (coachMarkItemSharingIcon.isEmpty()) {
-                coachMarkItemSharingIcon.add(
-                    CoachMark2Item(
-                        view,
-                        "",
-                        getString(com.tokopedia.wishlist.R.string.collection_coachmark_wishlist_detail),
-                        CoachMark2.POSITION_BOTTOM
-                    )
+        if (coachMarkItemSharingIcon.isEmpty()) {
+            coachMarkItemSharingIcon.add(
+                CoachMark2Item(
+                    view,
+                    "",
+                    getString(com.tokopedia.wishlist.R.string.collection_coachmark_wishlist_detail),
+                    CoachMark2.POSITION_BOTTOM
                 )
-            }
-            if (coachMarkSharingIcon == null)
-                coachMarkSharingIcon = CoachMark2(requireContext())
+            )
+        }
+        if (coachMarkSharingIcon == null)
+            coachMarkSharingIcon = CoachMark2(requireContext())
 
-            coachMarkSharingIcon?.let {
-                if (!it.isShowing) {
-                    it.showCoachMark(coachMarkItemSharingIcon, null)
-                }
-                CoachMarkPreference.setShown(requireContext(),
-                    COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE, true)
+        coachMarkSharingIcon?.let {
+            if (!it.isShowing) {
+                it.showCoachMark(coachMarkItemSharingIcon, null)
             }
+            CoachMarkPreference.setShown(requireContext(),
+                COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE, true)
         }
     }
 
@@ -1076,7 +1074,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             wishlistCollectionDetailNavtoolbar.setIcon(icons)
-            if (collectionType != TYPE_COLLECTION_PUBLIC_OTHERS) {
+            if (collectionType != TYPE_COLLECTION_PUBLIC_OTHERS && !CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE)) {
                 Handler().postDelayed(
                     showCoarchmarkRunnable,
                     DELAY_SHOW_COACHMARK_TOOLBAR
