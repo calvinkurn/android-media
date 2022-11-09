@@ -77,7 +77,6 @@ import com.tokopedia.tokofood.feature.merchant.common.util.MerchantShareComponen
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTopBanner
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.MerchantPageCarouselAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductListAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CategoryFilterBottomSheet
@@ -989,12 +988,11 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun setMvcImpressionHandling(promoName: String) {
         removeCurrentMvcScrollChangedListener()
         mvcImpressHolder = ImpressHolder()
-        val onScrollChangedListener = mvcImpressHolder?.let { impressHolder ->
-            binding?.mvcTokofoodMerchantPage?.addAndReturnImpressionListener(impressHolder) {
+        mvcImpressHolder?.let { impressHolder ->
+            binding?.mvcTokofoodMerchantPage?.addAndReturnImpressionListener(impressHolder, this) {
                 merchantPageAnalytics.impressPromoMvc(promoName, merchantId)
             }
         }
-        mvcOnScrollChangeListener = onScrollChangedListener
     }
 
     private fun removeCurrentMvcScrollChangedListener() {

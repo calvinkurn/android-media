@@ -69,7 +69,7 @@ class InitialStateTypeFactoryImpl(
             RecentSearchItemViewHolder.LAYOUT -> RecentSearchItemViewHolder(parent, initialStateListener, tokofoodScrollChangedListener)
             SeeMoreCuisineViewHolder.LAYOUT -> SeeMoreCuisineViewHolder(parent, initialStateListener)
             SeeMoreRecentSearchViewHolder.LAYOUT -> SeeMoreRecentSearchViewHolder(parent, initialStateListener)
-            ChipsListViewHolder.LAYOUT -> ChipsListViewHolder(parent, initialStateListener)
+            ChipsListViewHolder.LAYOUT -> ChipsListViewHolder(parent, initialStateListener, tokofoodScrollChangedListener)
             CuisineItemViewHolder.LAYOUT -> CuisineItemViewHolder(parent, initialStateListener, tokofoodScrollChangedListener)
             TokofoodSearchErrorStateViewHolder.LAYOUT -> TokofoodSearchErrorStateViewHolder(parent, tokoFoodSearchStateListener)
             else ->  super.createViewHolder(parent, type)
