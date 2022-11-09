@@ -51,7 +51,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
-            getPrescriptionIdsUseCase.setParams(any()).executeOnBackground()
+            getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
         } returns GetPrescriptionIdsResponse(null)
 
         // When
@@ -67,7 +67,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
             orderSummaryPageViewModel.uploadPrescriptionUiModel.value.prescriptionIds.isEmpty()
         )
         assertEquals(false, orderSummaryPageViewModel.uploadPrescriptionUiModel.value.isError)
-        coVerify(exactly = 1) { getPrescriptionIdsUseCase.setParams(any()).executeOnBackground() }
+        coVerify(exactly = 1) { getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground() }
     }
 
     @Test
@@ -77,7 +77,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
-            getPrescriptionIdsUseCase.setParams(any()).executeOnBackground()
+            getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
         } returns helper.prescriptionIdsResponse
 
         // When
@@ -97,7 +97,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
             helper.uploadPrescriptionUiModel.prescriptionIds.size,
             orderSummaryPageViewModel.uploadPrescriptionUiModel.value.uploadedImageCount
         )
-        coVerify(exactly = 1) { getPrescriptionIdsUseCase.setParams(any()).executeOnBackground() }
+        coVerify(exactly = 1) { getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground() }
     }
 
     @Test
@@ -107,7 +107,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
-            getPrescriptionIdsUseCase.setParams(any()).executeOnBackground()
+            getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
         } returns GetPrescriptionIdsResponse(null)
 
         // When
@@ -127,7 +127,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
             helper.uploadPrescriptionUiModel.prescriptionIds.toString(),
             orderSummaryPageViewModel.uploadPrescriptionUiModel.value.prescriptionIds.toString()
         )
-        coVerify(exactly = 1) { getPrescriptionIdsUseCase.setParams(any()).executeOnBackground() }
+        coVerify(exactly = 1) { getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground() }
     }
 
     @Test
