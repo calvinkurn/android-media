@@ -484,7 +484,7 @@ class OfficialHomeFragment :
 
         gridData.let {
             tracking?.clickLego36Image(
-                    viewModel.currentSlug,
+                    viewModel.currentSlugDC,
                     channelModel.channelHeader.name,
                     (position + POS_1).toString(POS_10),
                     it,
@@ -498,14 +498,14 @@ class OfficialHomeFragment :
 
     override fun legoImpression(channelModel: ChannelModel) {
         if (!sentDynamicChannelTrackers.contains(channelModel.id)) {
-            tracking?.impressionLego36Image(viewModel.currentSlug, channelModel, getUserId())
+            tracking?.impressionLego36Image(viewModel.currentSlugDC, channelModel, getUserId())
             sentDynamicChannelTrackers.add(channelModel.id)
         }
     }
 
     override fun onClickFlashSaleActionText(applink: String, channelId: String, headerName: String): View.OnClickListener {
         return View.OnClickListener {
-            tracking?.flashSaleClickViewAll(viewModel.currentSlug, channelId, headerName)
+            tracking?.flashSaleClickViewAll(viewModel.currentSlugDC, channelId, headerName)
             RouteManager.route(context, applink)
         }
     }
@@ -514,10 +514,8 @@ class OfficialHomeFragment :
         return View.OnClickListener {
             channelData.grids.getOrNull(position)?.let { gridData ->
                 val applink = gridData.applink
-                val campaignId = channelData.campaignID
-                val campaignCode = channelData.campaignCode
                 tracking?.flashSalePDPClick(
-                        viewModel.currentSlug,
+                        viewModel.currentSlugDC,
                         channelData.header?.name ?: "",
                         (position + POS_1).toString(POS_10),
                         gridData,
@@ -532,8 +530,7 @@ class OfficialHomeFragment :
 
     override fun flashSaleImpression(channelData: Channel) {
         if (!sentDynamicChannelTrackers.contains(channelData.id)) {
-            val campaignId = channelData.campaignID
-            tracking?.flashSaleImpression(viewModel.currentSlug, channelData, getUserId())
+            tracking?.flashSaleImpression(viewModel.currentSlugDC, channelData, getUserId())
             sentDynamicChannelTrackers.add(channelData.id)
         }
     }
@@ -544,7 +541,7 @@ class OfficialHomeFragment :
 
     override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, headerName: String, channelBannerAttribution: String) {
         tracking?.mixTopBannerCtaButtonClicked(
-                viewModel.currentSlug,
+                viewModel.currentSlugDC,
                 cta.text,
                 channelId,
                 headerName,
