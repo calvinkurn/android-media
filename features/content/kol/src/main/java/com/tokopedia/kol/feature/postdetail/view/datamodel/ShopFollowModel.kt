@@ -7,5 +7,6 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
  */
 data class ShopFollowModel(
     val rowNumber: Int,
-    val action: ShopFollowAction
+    val action: ShopFollowAction,
+    val isFollowedFromRSRestrictionBottomSheet: Boolean = false
 )
