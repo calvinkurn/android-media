@@ -12,15 +12,21 @@ import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -37,6 +43,10 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private var _binding: FragmentPlayShortsPreparationBinding? = null
     private val binding: FragmentPlayShortsPreparationBinding get() = _binding!!
+
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -108,6 +118,24 @@ class PlayShortsPreparationFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 renderPreparationMenu(it.prevValue, it.value)
                 renderTitleForm(it.prevValue, it.value)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when(val toasterData = event.toaster) {
+                    is PlayShortsToaster.ErrorSubmitTitle -> {
+                        toaster.showError(
+                            toasterData.throwable,
+                            duration = Toaster.LENGTH_LONG,
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = {
+                                toasterData.onRetry()
+                            }
+                        )
+                    }
+                    else -> {}
+                }
             }
         }
     }

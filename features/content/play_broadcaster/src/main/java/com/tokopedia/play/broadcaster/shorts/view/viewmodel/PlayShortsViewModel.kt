@@ -7,8 +7,11 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.util.oneTimeUpdate
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import kotlinx.coroutines.delay
@@ -86,6 +89,10 @@ class PlayShortsViewModel @Inject constructor(
         )
     }
 
+    private val _uiEvent = MutableStateFlow(PlayShortsUiEvent.Empty)
+    val uiEvent: Flow<PlayShortsUiEvent>
+        get() = _uiEvent
+
     init {
         setupPreparationMenu()
     }
@@ -133,22 +140,27 @@ class PlayShortsViewModel @Inject constructor(
             /** Will call real GQL here */
             delay(2000)
 
-            throw Exception("test")
-
             _titleForm.update {
                 it.copy(
                     title = title,
                     state = PlayShortsTitleFormUiState.State.Unknown
                 )
             }
-        }) {
+        }) { throwable ->
+
             _titleForm.update {
                 it.copy(
                     state = PlayShortsTitleFormUiState.State.Editing
                 )
             }
 
-            /** Show error toaster */
+            _uiEvent.oneTimeUpdate {
+                it.copy(
+                    toaster = PlayShortsToaster.ErrorSubmitTitle(throwable) {
+                        submitAction(PlayShortsAction.SubmitTitle(title = title))
+                    }
+                )
+            }
         }
     }
 
