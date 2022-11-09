@@ -33,7 +33,7 @@ class TokoNowWishlistViewModel @Inject constructor(
     fun addToWishlist(productId: String){
         launchCatchError(coroutineContext, block = {
             _addToWishlistLiveData.postValue(Success(
-                addToWishlistUseCase.execute(productId, userSession.userId, 12))
+                addToWishlistUseCase.execute(productId, userSession.userId))
             )
         }, onError = {
             _addToWishlistLiveData.postValue(Fail(it))
@@ -43,7 +43,7 @@ class TokoNowWishlistViewModel @Inject constructor(
     fun removeFromWishlist(productId: String){
         launchCatchError(coroutineContext, block = {
             _removeFromWishlistLiveData.postValue(Success(
-                removeFromWishlistUseCase.execute(productId, userSession.userId, 12))
+                removeFromWishlistUseCase.execute(productId, userSession.userId))
             )
         }, onError = {
             _removeFromWishlistLiveData.postValue(Fail(it))

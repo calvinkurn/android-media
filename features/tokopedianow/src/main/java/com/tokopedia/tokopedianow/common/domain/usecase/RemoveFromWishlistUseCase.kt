@@ -18,13 +18,12 @@ class RemoveFromWishlistUseCase @Inject constructor(graphqlRepository: GraphqlRe
 
     private val graphql by lazy { GraphqlUseCase<RemoveFromWishListResponse>(graphqlRepository) }
 
-    suspend fun execute(productId: String, userID: String, sourceCollectionID: Int): RemoveFromWishListResponse {
+    suspend fun execute(productId: String, userID: String): RemoveFromWishListResponse {
         graphql.apply {
 
             val requestParams = RequestParams().apply {
                 putInt(PARAM_PRODUCT_ID, productId.toIntOrZero())
                 putInt(PARAM_USER_ID, userID.toIntOrZero())
-                putInt(PARAM_SOURCE_COLLECTION_ID, sourceCollectionID)
             }.parameters
 
             setGraphqlQuery(RemoveFromWishlistQuery)
