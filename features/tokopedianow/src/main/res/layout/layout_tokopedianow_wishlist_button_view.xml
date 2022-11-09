@@ -5,6 +5,20 @@
     android:layout_height="wrap_content"
     app:layoutDescription="@xml/layout_tokopedianow_wishlist_button_view_scene">
 
+    <View
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:translationZ="2dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/parent_wishlist"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/background"
         android:layout_width="30dp"

@@ -7,13 +7,11 @@
         motion:constraintSetEnd="@+id/end"
         motion:constraintSetStart="@id/start"
         motion:duration="300">
-        <OnClick />
     </Transition>
     <Transition
         motion:constraintSetStart="@+id/end"
         motion:constraintSetEnd="@+id/start"
         motion:duration="300">
-        <OnClick />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
