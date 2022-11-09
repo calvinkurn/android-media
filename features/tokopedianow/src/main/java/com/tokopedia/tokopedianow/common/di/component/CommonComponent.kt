@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.tokopedianow.common.di.module.CommonModule
 import com.tokopedia.tokopedianow.common.di.module.CommonViewModelModule
 import com.tokopedia.tokopedianow.common.di.scope.CommonScope
-import com.tokopedia.tokopedianow.common.view.TokoNowWishlistButtonView
+import com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
 import dagger.Component
 
 @CommonScope
