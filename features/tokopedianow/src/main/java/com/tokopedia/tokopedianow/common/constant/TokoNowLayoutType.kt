@@ -21,7 +21,11 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.MAIN_QUEST,
     TokoNowLayoutType.MIX_LEFT_CAROUSEL,
     TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC,
-    TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED
+    TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED,
+    TokoNowLayoutType.PRODUCT_RECOM_ANIMATION_FINISHED,
+    TokoNowLayoutType.PRODUCT_RECOM_OOC,
+    TokoNowLayoutType.MEDIUM_PLAY_WIDGET,
+    TokoNowLayoutType.SMALL_PLAY_WIDGET
 )
 annotation class TokoNowLayoutType {
     companion object {
@@ -30,6 +34,7 @@ annotation class TokoNowLayoutType {
         const val LEGO_3_IMAGE = "lego_3_image"
         const val LEGO_6_IMAGE = "6_image"
         const val PRODUCT_RECOM = "top_carousel_tokonow"
+        const val PRODUCT_RECOM_OOC = "product_recom_ooc"
         const val REPURCHASE_PRODUCT = "recent_purchase_tokonow"
         const val EDUCATIONAL_INFORMATION = "tokonow_usp"
         const val SHARING_EDUCATION = "tokonow_share"
@@ -37,8 +42,14 @@ annotation class TokoNowLayoutType {
         const val MAIN_QUEST = "tokonow_main_quest"
         const val MIX_LEFT_CAROUSEL = "left_carousel"
         const val MIX_LEFT_CAROUSEL_ATC = "left_carousel_atc"
-        const val MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED = "left_carousel_atc_animation_finished"
         const val MEDIUM_PLAY_WIDGET = "play_carousel"
         const val SMALL_PLAY_WIDGET = "play_carousel_small"
+
+        /**
+         * Types of layout will be used after animation finished
+         * During the animation is running, recyclerview should not be updated
+         */
+        const val PRODUCT_RECOM_ANIMATION_FINISHED = "product_recom_animation_finished"
+        const val MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED = "left_carousel_atc_animation_finished"
     }
 }

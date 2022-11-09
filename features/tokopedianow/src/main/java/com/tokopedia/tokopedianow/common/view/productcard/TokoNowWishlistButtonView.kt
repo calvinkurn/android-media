@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.common.view
+package com.tokopedia.tokopedianow.common.view.productcard
 
 import android.animation.ObjectAnimator
 import android.content.Context
