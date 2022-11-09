@@ -104,7 +104,7 @@ object LeftCarouselAtcMapper {
                 ctaText = "",
                 ctaTextLink = channelModel.channelHeader.applink,
                 expiredTime = channelModel.channelHeader.expiredTime,
-                serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channelModel.channelHeader.serverTimeUnix),
+                serverTimeOffset = channelModel.channelConfig.serverTimeOffset,
                 backColor = channelModel.channelHeader.backColor
             ),
             productList = productList,

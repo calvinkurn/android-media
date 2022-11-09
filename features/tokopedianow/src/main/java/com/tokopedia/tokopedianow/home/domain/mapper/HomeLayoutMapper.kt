@@ -515,7 +515,8 @@ object HomeLayoutMapper {
         productId: String,
         quantity: Int
     ) {
-        firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.run {
+        filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel ->
+            val layout = homeLayoutItemUiModel.layout
             val layoutUiModel = layout as HomeLeftCarouselAtcUiModel
             val productList = layoutUiModel.productList.toMutableList()
             val productUiModel = productList.firstOrNull {
@@ -540,7 +541,7 @@ object HomeLayoutMapper {
             updateItemById(layout.getVisitableId()) {
                 rtrProductUiModel?.copy(quantity = quantity)?.let { rtrItemList[rtrIndex] = it }
                 val rtrWidget = realTimeRecom.widget?.copy(recommendationItemList = rtrItemList)
-                copy(layout = layoutUiModel.copy(realTimeRecom = realTimeRecom.copy(widget = rtrWidget)))
+                homeLayoutItemUiModel.copy(layout = layoutUiModel.copy(realTimeRecom = realTimeRecom.copy(widget = rtrWidget)))
             }
 
             (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.productCardModel?.run {
@@ -557,7 +558,7 @@ object HomeLayoutMapper {
                     (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.copy(productCardModel = it)?.apply {
                         productList[index] = this
                     }
-                    copy(layout = layoutUiModel.copy(productList = productList))
+                    homeLayoutItemUiModel.copy(layout = layoutUiModel.copy(productList = productList))
                 }
             }
         }

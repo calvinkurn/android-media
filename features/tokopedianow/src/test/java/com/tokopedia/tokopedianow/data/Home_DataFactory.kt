@@ -422,13 +422,17 @@ fun createSliderBannerDataModel(
 fun createLeftCarouselAtcDataModel(
     id: String,
     headerName: String,
-    warehouseId: String = ""
+    warehouseId: String = "",
+    productList: List<Visitable<*>> = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(
+        channelId = id,
+        channelHeaderName = headerName
+    ))
 ): HomeLeftCarouselAtcUiModel {
     return HomeLeftCarouselAtcUiModel(
         id = id,
         name = "",
         header = TokoNowDynamicHeaderUiModel(title = headerName),
-        productList = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName)),
+        productList = productList,
         realTimeRecom = HomeRealTimeRecomUiModel(
             channelId = id,
             headerName = headerName,
