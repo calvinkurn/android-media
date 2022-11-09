@@ -14,7 +14,8 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
         tracking?.eventClickAllFeaturedBrandOS(
             dcEventHandler.getOSCategory()?.title ?: "",
             channelModel.id,
-            channelModel.channelHeader.name
+            channelModel.channelHeader.name,
+            channelModel.trackingAttributionModel.brandId
         )
         dcEventHandler.goToApplink(applink)
     }
@@ -30,7 +31,8 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
             userId = dcEventHandler.getUserId(),
             headerName = channelModel.channelHeader.name,
             bannerId =  bannerId,
-            channelId = channelModel.id
+            channelId = channelModel.id,
+            brandId = channelModel.trackingAttributionModel.brandId
         )
     }
 
@@ -45,7 +47,8 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
             userId = dcEventHandler.getUserId(),
             headerName = channelModel.channelHeader.name,
             bannerId =  bannerId,
-            channelId = channelModel.id
+            channelId = channelModel.id,
+            brandId = channelModel.trackingAttributionModel.brandId
         )
 
         dcEventHandler.goToApplink(applink)

@@ -31,6 +31,7 @@ data class CarouselMerchantVoucherDataModel(
     val campaignCode: String,
     val channelId: String,
     val attribution: String,
+    val brandId: String,
     val impressHolder: ImpressHolder = ImpressHolder(),
     val merchantVoucherComponentListener: MerchantVoucherComponentListener,
 ) : Visitable<CommonCarouselProductCardTypeFactory> {

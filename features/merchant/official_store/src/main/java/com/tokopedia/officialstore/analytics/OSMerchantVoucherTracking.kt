@@ -64,7 +64,7 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
             eventCategory = OS_MICROSITE_SINGLE,
             eventAction = MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(VALUE_VIEW_COUPON),
             eventLabel = FORMAT_DASH_FIVE_VALUES.format(MERCHANT_VOUCHER_MULTIPLE, element.channelId,
-                element.headerName, element.shopId, categoryName),
+                element.headerName, element.brandId, categoryName),
             promotions = listPromotions
         )
             .appendBusinessUnit(BusinessUnit.DEFAULT)
@@ -90,7 +90,7 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(
             Label.KEY,
             FORMAT_DASH_FIVE_VALUES.format(MERCHANT_VOUCHER_MULTIPLE, element.channelId,
-                element.headerName, element.shopId, categoryName)
+                element.headerName, element.brandId, categoryName)
         )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
@@ -158,7 +158,7 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(
             Label.KEY,
             FORMAT_DASH_FIVE_VALUES.format(MERCHANT_VOUCHER_MULTIPLE, element.channelId,
-                element.headerName, element.shopId, categoryName)
+                element.headerName, element.brandId, categoryName)
         )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)

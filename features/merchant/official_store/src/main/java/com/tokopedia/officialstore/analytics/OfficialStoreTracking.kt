@@ -261,7 +261,8 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
     fun eventClickAllFeaturedBrandOS(
         categoryName: String,
         channelId: String,
-        headerName: String
+        headerName: String,
+        brandId: String
     ) {
         val trackingBuilder = BaseTrackerBuilder().constructBasicGeneralClick(
             CLICK_HOMEPAGE,
@@ -271,7 +272,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 VALUE_POPULAR_BRANDS,
                 channelId,
                 headerName,
-                "",
+                brandId,
                 categoryName
             )
         ).apply {
@@ -292,6 +293,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         bannerId: String,
         userId: String,
         channelId: String,
+        brandId: String
     ) {
         val bundle = Bundle().apply {
             putString(Event.KEY, SELECT_CONTENT)
@@ -301,7 +303,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 VALUE_POPULAR_BRANDS,
                 channelId,
                 headerName,
-                shopId,
+                brandId,
                 categoryName
             ))
             putString(UserId.KEY, userId)
@@ -334,7 +336,8 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
         userId: String,
         headerName: String,
         bannerId: String,
-        channelId: String
+        channelId: String,
+        brandId: String
     ) {
         val data = DataLayer.mapOf(
             Event.KEY, PROMO_VIEW,
@@ -344,7 +347,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
                 VALUE_POPULAR_BRANDS,
                 channelId,
                 headerName,
-                shopId,
+                brandId,
                 categoryName
             ),
             UserId.KEY, userId,
@@ -515,31 +518,6 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             CurrentSite.KEY, CurrentSite.DEFAULT
         ) as HashMap<String, Any>)
     }
-
-    // Row 14
-    fun dynamicChannelThematicCardClick(
-        categoryName: String,
-        channelId: String,
-        headerName: String,
-        position: String,
-        gridData: Grid,
-        userId: String
-    ) { }
-
-    // Row 15
-    fun dynamicChannelThematicImpression(categoryName: String, channelData: Channel) { }
-
-    // Row 16
-    fun dynamicChannelMixBannerClick(
-        categoryName: String,
-        headerName: String,
-        bannerData: Banner,
-        channelData: Channel,
-        userId: String
-    ) { }
-
-    // Row 17
-    fun dynamicChannelMixBannerImpression(categoryName: String, channelData: Channel) { }
 
     // Row 21 & Row 25
     fun carouselProductCardImpression(

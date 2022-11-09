@@ -115,7 +115,8 @@ class MerchantVoucherViewHolder(
                     recommendationType = element.recommendationType,
                     campaignCode = element.campaignCode.ifEmpty { channel.trackingAttributionModel.campaignCode },
                     channelId = channel.id,
-                    attribution = element.attribution
+                    attribution = element.attribution,
+                    brandId = channel.trackingAttributionModel.brandId
                 )
             )
         }

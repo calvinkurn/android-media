@@ -33,7 +33,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
             putString(Action.KEY, FORMAT_CLICK_BANNER.format(VALUE_FEATURED_SHOP))
             putString(Label.KEY, FORMAT_DASH_FIVE_VALUES.format(
                 VALUE_FEATURED_SHOP, channel.id, channel.channelHeader.name,
-                grid.shop.id, categoryName))
+                channel.trackingAttributionModel.brandId, categoryName))
             putString(UserId.KEY, userId)
             putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
             putString(CurrentSite.KEY, CurrentSite.DEFAULT)
@@ -62,7 +62,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
                 eventCategory = OS_MICROSITE_SINGLE,
                 eventLabel = FORMAT_DASH_FIVE_VALUES.format(
                     VALUE_FEATURED_SHOP, channel.id, channel.channelHeader.name,
-                    grid.shop.id, categoryName),
+                    channel.trackingAttributionModel.brandId, categoryName),
                 promotions = listOf(
                     Promotion(
                         id = FORMAT_UNDERSCORE_THREE_VALUES.format(
