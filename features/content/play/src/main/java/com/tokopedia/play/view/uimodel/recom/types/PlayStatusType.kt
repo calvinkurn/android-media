@@ -8,7 +8,7 @@ enum class PlayStatusType(val value: String) {
     Active("ACTIVE"),
     Freeze("FREEZE"),
     Banned("BANNED"),
-    Archived("ARCHIVE");
+    Archived("ARCHIVED");
 
     val isFreeze: Boolean
         get() = this == Freeze
