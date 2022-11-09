@@ -19,6 +19,7 @@ class PlayShortsUiMapper @Inject constructor(
                 iconUrl = it.thumbnail,
                 badge = it.badge,
                 type = it.type,
+                /** Need to change it.livestream to it.short */
                 hasUsername = it.livestream.hasUsername,
                 hasAcceptTnc = it.livestream.enable,
             )

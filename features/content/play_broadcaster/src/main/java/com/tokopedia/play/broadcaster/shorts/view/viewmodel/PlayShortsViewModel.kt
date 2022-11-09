@@ -50,6 +50,15 @@ class PlayShortsViewModel @Inject constructor(
     private fun handlePreparePage(preferredAccountType: String) {
         viewModelScope.launchCatchError(block = {
             val lastSelectedAccount = sharedPref.getLastSelectedAccount()
+
+            val selectedAccount = when {
+                preferredAccountType.isNotEmpty() -> preferredAccountType
+                lastSelectedAccount.isNotEmpty() -> lastSelectedAccount
+                else -> ""
+            }
+
+            val accountList = repo.getAccountList()
+
         }) {
         }
     }
