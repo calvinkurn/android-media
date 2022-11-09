@@ -103,9 +103,13 @@ class HomeSharingWidgetViewHolder(
             ivBgImageBtm.loadImage(IMG_SHARING_REFERRAL_BG_BTM)
             ivBgImageTopRight.loadImage(IMG_SHARING_REFERRAL_BG_TOP)
 
-            itemView.setOnClickListener {
+            containerWidgetSharing.setOnClickListener {
                 val url = REFERRAL_PAGE_URL + element.slug
                 listener?.onMoreReferralClicked(element, url)
+            }
+
+            btnSharing.setOnClickListener {
+                listener?.onShareBtnReferralSenderClicked(element)
             }
         }
     }
