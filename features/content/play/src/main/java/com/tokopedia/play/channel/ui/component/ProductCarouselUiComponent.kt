@@ -109,7 +109,7 @@ class ProductCarouselUiComponent(
         else uiView.hide()
 
         if(state.isChanged { it.tagItems }) {
-            bus.emit(uiView.getVisibleProducts())
+            bus.emit(Event.OnUpdated(uiView.getVisibleProducts()))
         }
     }
 
