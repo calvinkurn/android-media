@@ -1,11 +1,9 @@
 package com.tokopedia.tokopedianow.common.view.productcard
 
 import android.content.Context
-import android.graphics.Rect
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -15,6 +13,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductCardC
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.CustomProductCardCarouselLinearLayoutManager
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardCarouselItemViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowSeeMoreCardCarouselViewHolder
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardCarouselViewBinding
@@ -44,15 +43,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         )
     }
 
-    private var layoutManager: LinearLayoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
-        override fun requestChildRectangleOnScreen(
-            parent: RecyclerView,
-            child: View,
-            rect: Rect,
-            immediate: Boolean,
-            focusedChildVisible: Boolean
-        ): Boolean = false
-    }
+    private var layoutManager: LinearLayoutManager = CustomProductCardCarouselLinearLayoutManager(context)
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -72,7 +63,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         ).apply {
             root.addOnScrollListener(scrollListener)
             root.addItemDecoration(ProductCardCarouselDecoration(context))
-            root.layoutManager = layoutManager
             root.itemAnimator = null
         }
     }
@@ -161,6 +151,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         items: List<Visitable<*>>,
         seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel? = null
     ) {
+        binding.root.layoutManager = layoutManager
         binding.root.adapter = adapter
         if (seeMoreUiModel != null && seeMoreUiModel.appLink.isNotBlank()) {
             val newItems = items.toMutableList()

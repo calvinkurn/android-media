@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
-import android.graphics.Rect
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
+import com.tokopedia.tokopedianow.common.util.CustomProductCardCarouselLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
@@ -59,15 +59,7 @@ class HomeLeftCarouselAtcViewHolder(
         )
     }
 
-    private var layoutManager: LinearLayoutManager = object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
-        override fun requestChildRectangleOnScreen(
-            parent: RecyclerView,
-            child: View,
-            rect: Rect,
-            immediate: Boolean,
-            focusedChildVisible: Boolean
-        ): Boolean = false
-    }
+    private var layoutManager: LinearLayoutManager = CustomProductCardCarouselLinearLayoutManager(itemView.context)
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -84,7 +76,6 @@ class HomeLeftCarouselAtcViewHolder(
     init {
         binding?.apply {
             rvProduct.addOnScrollListener(scrollListener)
-            rvProduct.layoutManager = layoutManager
             rvProduct.itemAnimator = null
             rvProduct.addItemDecoration(ProductCardCarouselDecoration(rvProduct.context))
         }
@@ -143,6 +134,7 @@ class HomeLeftCarouselAtcViewHolder(
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRecyclerView(
         element: HomeLeftCarouselAtcUiModel
     ) {
+        rvProduct.layoutManager = layoutManager
         rvProduct.adapter = adapter
         adapter.submitList(ArrayList(element.productList))
         restoreInstanceStateToLayoutManager()
