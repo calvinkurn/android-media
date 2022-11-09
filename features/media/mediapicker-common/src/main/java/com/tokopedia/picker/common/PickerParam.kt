@@ -25,7 +25,7 @@ data class PickerParam(
     @SerializedName("isIncludeAnimation") private var isIncludeAnimation: Boolean = false,
     @SerializedName("withEditor") private var withEditor: Boolean = false,
     @SerializedName("pageSource") private var pageSource: PageSource = PageSource.Unknown,
-    @SerializedName("includeMedias") private var includeMedias: List<File> = emptyList(),
+    @SerializedName("includeMedias") private var includeMedias: List<String> = emptyList(),
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
     @SerializedName("previewActionText") private var previewActionText: String = "",
     @SerializedName("editorParam")private var editorParam: EditorParam? = null
@@ -84,13 +84,15 @@ data class PickerParam(
         withEditor = true
         editorParam = EditorParam().apply(param)
     }
+    fun withoutEditor() = apply { withEditor = false }
     fun includeAnimationGif(value: Boolean) = apply { isIncludeAnimation = value }
-    fun includeMedias(value: List<File>) = apply { includeMedias = value }
+    fun includeMedias(value: List<String>) = apply { includeMedias = value }
     fun excludeMedias(value: List<File>) = apply { excludedMedias = value }
     fun pageType(@PageType value: Int) = apply { pageType = value }
     fun modeType(@ModeType value: Int) = apply { modeType = value }
     fun multipleSelectionMode() = apply { isMultipleSelection = true }
     fun singleSelectionMode() = apply { isMultipleSelection = false }
+    fun previewActionText(value: String) = apply { previewActionText = value }
 
     companion object {
         private const val CUSTOM_ACTION_TEXT_LIMIT = 10
