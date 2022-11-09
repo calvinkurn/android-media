@@ -628,6 +628,10 @@ class OfficialStoreHomeViewModelTest {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } returns osFeatured
     }
 
+    private fun onGetTopAdsImage_thenReturn(osTopAdsImages: ArrayList<TopAdsImageViewModel>) {
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns osTopAdsImages
+    }
+
     private fun onGetDynamicChannel_thenReturn(list: List<OfficialStoreChannel>) {
         coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns list
     }
@@ -918,6 +922,60 @@ class OfficialStoreHomeViewModelTest {
         viewModel.removeRecomWidget()
         viewModel.removeRecommendation()
         viewModel.removeTopAdsHeadlineWidget()
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel })
+        assertEquals(viewModel.productRecommendationTitleSection, title)
+    }
+
+    @Test
+    fun given_refresh__when_swipe_layout__then_remove_official_top_ads_and_official_featured_shop() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelType = "$prefixUrl$slug"
+        val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
+        val osBenefits = OfficialStoreBenefits()
+        val osFeatured = OfficialStoreFeaturedShop()
+        val osDynamicChannel = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL)
+            )
+        )
+        val page = 1
+        val title = "Rekomendasi Untukmu"
+
+        onGetOfficialStoreBanners_thenReturn(osBanners)
+        onGetOfficialStoreBenefits_thenReturn(osBenefits)
+        onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+        onGetDynamicChannel_thenReturn(osDynamicChannel)
+        onSetupDynamicChannelParams_thenCompleteWith(channelType)
+        onGetTopAdsImage_thenReturn(arrayListOf())
+
+        val listOfRecom = mutableListOf(
+            RecommendationWidget(
+                title = title,
+                recommendationItemList = listOf(
+                    RecommendationItem()
+                )
+            )
+        )
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.loadFirstData(category)
+        viewModel.counterTitleShouldBeRendered += 1
+        viewModel.loadMoreProducts(category.categoryId, page)
+
+        viewModel.removeRecomWidget()
+        viewModel.removeRecommendation()
+        viewModel.removeTopAdsHeadlineWidget()
+        viewModel.removeOfficialTopAdsBanner()
+        viewModel.removeOfficialFeaturedShop()
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialTopAdsBannerDataModel })
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialFeaturedShopDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel })
