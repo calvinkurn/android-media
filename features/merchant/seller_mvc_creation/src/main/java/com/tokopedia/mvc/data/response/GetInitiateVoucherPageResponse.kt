@@ -1,7 +1,6 @@
 package com.tokopedia.mvc.data.response
 
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetInitiateVoucherPageResponse(
@@ -23,14 +22,12 @@ data class GetInitiateVoucherPageResponse(
             val maxProduct: Int = 0,
             @SerializedName("prefix_voucher_code")
             val prefixVoucherCode: String = "",
-            @SuppressLint("Invalid Data Type")
             @SerializedName("shop_id")
-            val shopId: Int = 0,
+            val shopId: String = "",
             @SerializedName("token")
             val token: String = "",
-            @SuppressLint("Invalid Data Type")
             @SerializedName("user_id")
-            val userId: Int = 0
+            val userId: String = ""
         )
 
         data class Header(

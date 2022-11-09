@@ -11,7 +11,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
-import com.tokopedia.mvc.data.response.ProductListResponse
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import javax.inject.Inject
 
@@ -91,7 +90,7 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
 
         return GraphqlRequest(
             query,
-            ProductListResponse::class.java,
+            GetInitiateVoucherPageResponse::class.java,
             params
         )
     }

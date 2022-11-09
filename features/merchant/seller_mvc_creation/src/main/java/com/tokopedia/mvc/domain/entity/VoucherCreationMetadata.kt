@@ -5,7 +5,7 @@ data class VoucherCreationMetadata(
     val isEligible: Int,
     val maxProduct: Int,
     val prefixVoucherCode: String,
-    val shopId: Int,
+    val shopId: Long,
     val token: String,
-    val userId: Int
+    val userId: Long
 )
