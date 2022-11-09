@@ -267,7 +267,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         hasBeenWishlist: Boolean,
         productId: String
     ) {
-        wishlistButton.showIfWithBlock(true) {
+        wishlistButton.showIfWithBlock(isShown && isOos) {
             wishlistButton.setValue(hasBeenWishlist)
             wishlistButton.setProductId(productId)
         }
