@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
@@ -37,6 +36,7 @@ class HomeProductRecomViewHolder(
         binding?.apply {
             channelId = element.id
             headerName = element.headerModel?.title.orEmpty()
+
             productRecom.setItems(
                 items = element.productList,
                 seeMoreUiModel = element.seeMoreModel
@@ -79,7 +79,7 @@ class HomeProductRecomViewHolder(
             product = product,
             channelId = channelId,
             headerName = headerName,
-            position = layoutPosition.getTrackerPosition().toString()
+            position = layoutPosition
         )
     }
 
@@ -91,7 +91,7 @@ class HomeProductRecomViewHolder(
             product = product,
             channelId = channelId,
             headerName = headerName,
-            position = layoutPosition.getTrackerPosition().toString()
+            position = layoutPosition
         )
     }
 
@@ -103,8 +103,7 @@ class HomeProductRecomViewHolder(
         listener?.onProductRecomAnimationFinished(
             product = product,
             quantity = quantity,
-            channelId = channelId,
-            position = layoutPosition.getTrackerPosition().toString()
+            channelId = channelId
         )
     }
 
@@ -116,8 +115,7 @@ class HomeProductRecomViewHolder(
         listener?.onProductRecomQuantityChanged(
             product = product,
             quantity = quantity,
-            channelId = channelId,
-            position = layoutPosition.getTrackerPosition().toString()
+            channelId = channelId
         )
     }
 
@@ -146,42 +144,34 @@ class HomeProductRecomViewHolder(
             product: TokoNowProductCardCarouselItemUiModel,
             channelId: String,
             headerName: String,
-            position: String
+            position: Int
         )
-
         fun onProductRecomImpressed(
             product: TokoNowProductCardCarouselItemUiModel,
             channelId: String,
             headerName: String,
-            position: String
+            position: Int
         )
-
         fun onSeeAllClicked(
             channelId: String,
             appLink: String,
             headerName: String
         )
-
         fun onSeeMoreClicked(
             channelId: String,
             appLink: String,
             headerName: String
         )
-
         fun onProductRecomQuantityChanged(
             product: TokoNowProductCardCarouselItemUiModel,
             quantity: Int,
-            channelId: String,
-            position: String
+            channelId: String
         )
-
         fun onProductRecomAnimationFinished(
             product: TokoNowProductCardCarouselItemUiModel,
             quantity: Int,
-            channelId: String,
-            position: String
+            channelId: String
         )
-
         fun onProductCardAddVariantClicked(
             product: TokoNowProductCardCarouselItemUiModel,
             position: Int

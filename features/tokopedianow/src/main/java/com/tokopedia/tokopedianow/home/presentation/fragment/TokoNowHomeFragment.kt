@@ -140,7 +140,6 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBan
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
@@ -151,6 +150,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -239,6 +239,7 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowCategoryGridListener = this,
                 bannerComponentListener = createSlideBannerCallback(),
+                homeProductRecomOocListener = createProductRecomOocCallback(),
                 homeProductRecomListener = createProductRecomCallback(),
                 tokoNowProductCardListener = this,
                 homeSharingEducationListener = this,
@@ -1834,9 +1835,16 @@ class TokoNowHomeFragment: Fragment(),
         return HomeSwitcherListener(requireContext(), viewModelTokoNow)
     }
 
+    private fun createProductRecomOocCallback(): HomeProductRecomOocCallback {
+        return HomeProductRecomOocCallback(
+            context = context,
+            analytics = analytics
+        )
+    }
+
     private fun createProductRecomCallback(): HomeProductRecomCallback {
         return HomeProductRecomCallback(
-            context = requireContext(),
+            context = context,
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
@@ -1846,7 +1854,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun createLeftCarouselAtcCallback(): HomeLeftCarouselAtcCallback {
         return HomeLeftCarouselAtcCallback(
-            context = requireContext(),
+            context = context,
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,

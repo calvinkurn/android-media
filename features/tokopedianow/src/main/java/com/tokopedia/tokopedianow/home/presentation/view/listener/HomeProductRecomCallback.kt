@@ -14,7 +14,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewMod
 import com.tokopedia.user.session.UserSessionInterface
 
 class HomeProductRecomCallback(
-    private val context: Context,
+    private val context: Context?,
     private val userSession: UserSessionInterface,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
@@ -25,14 +25,13 @@ class HomeProductRecomCallback(
         product: TokoNowProductCardCarouselItemUiModel,
         channelId: String,
         headerName: String,
-        position: String
+        position: Int
     ) {
         analytics.onClickProductRecom(
             channelId = channelId,
             headerName = headerName,
             recommendationItem = product,
-            position = position,
-            isOoc = false
+            position = position
         )
 
         openAppLink(product.appLink)
@@ -42,18 +41,21 @@ class HomeProductRecomCallback(
         product: TokoNowProductCardCarouselItemUiModel,
         channelId: String,
         headerName: String,
-        position: String
+        position: Int
     ) {
         analytics.onImpressProductRecom(
             channelId = channelId,
             headerName = headerName,
             recommendationItem = product,
-            position = position,
-            isOoc = false
+            position = position
         )
     }
 
-    override fun onSeeAllClicked(channelId: String, appLink: String, headerName: String) {
+    override fun onSeeAllClicked(
+        channelId: String,
+        appLink: String,
+        headerName: String
+    ) {
         analytics.onClickAllProductRecom(
             channelId = channelId,
             headerName = headerName,
@@ -63,21 +65,18 @@ class HomeProductRecomCallback(
         RouteManager.route(context, appLink)
     }
 
-    override fun onSeeMoreClicked(channelId: String, appLink: String, headerName: String) {
-        analytics.onClickAllProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            isOoc = false
-        )
-
+    override fun onSeeMoreClicked(
+        channelId: String,
+        appLink: String,
+        headerName: String
+    ) {
         RouteManager.route(context, appLink)
     }
 
     override fun onProductRecomQuantityChanged(
         product: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
-        channelId: String,
-        position: String
+        channelId: String
     ) {
         if (userSession.isLoggedIn) {
             viewModel.addProductToCart(
@@ -94,8 +93,7 @@ class HomeProductRecomCallback(
     override fun onProductRecomAnimationFinished(
         product: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
-        channelId: String,
-        position: String
+        channelId: String
     ) {
         if (userSession.isLoggedIn) {
             viewModel.addProductToCart(
@@ -113,14 +111,16 @@ class HomeProductRecomCallback(
         product: TokoNowProductCardCarouselItemUiModel,
         position: Int
     ) {
-        AtcVariantHelper.goToAtcVariant(
-            context = context,
-            productId = product.id,
-            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
-            isTokoNow = true,
-            shopId = product.shopId,
-            startActivitResult = startActivityForResult
-        )
+        context?.apply {
+            AtcVariantHelper.goToAtcVariant(
+                context = this,
+                productId = product.id,
+                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
+                isTokoNow = true,
+                shopId = product.shopId,
+                startActivitResult = startActivityForResult
+            )
+        }
     }
 
     private fun openAppLink(appLink: String) {
@@ -128,4 +128,5 @@ class HomeProductRecomCallback(
             RouteManager.route(context, appLink)
         }
     }
+
 }
