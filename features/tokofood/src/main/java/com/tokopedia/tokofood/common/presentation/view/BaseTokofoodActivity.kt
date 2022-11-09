@@ -31,7 +31,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
 
     var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
 
-    private var currentFragmentName: String = String.EMPTY
+    private var currentFragmentName: String? = null
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(newBase)
@@ -56,6 +56,11 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         viewModel.onSavedInstanceState()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        currentFragmentName = null
     }
 
     override fun viewModel(): MultipleFragmentsViewModel = viewModel
