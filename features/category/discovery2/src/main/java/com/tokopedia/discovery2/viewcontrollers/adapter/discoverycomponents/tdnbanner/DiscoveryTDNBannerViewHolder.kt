@@ -48,7 +48,6 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as DiscoveryTDNBannerViewModel
-        isTopAdsGlsp = discoveryBaseViewModel.components.design == TOP_ADS_GSLP_TDN
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -61,15 +60,19 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
                             tdnImageView?.getImageData(inventoryID, adCount, dimenID, depId = it.data?.firstOrNull()?.depID
                                     ?: "")
                         }
-                        if (isTopAdsGlsp) {
-                            itemView.rootView.setMargin(
-                                itemView.getDimens(R.dimen.dp_12),
-                                itemView.getDimens(R.dimen.dp_12),
-                                itemView.getDimens(R.dimen.dp_12),
-                                itemView.getDimens(R.dimen.dp_12)
-                            )
-                        } else {
-                            itemView.rootView.setMargin(0, 0, 0, 0)
+                        val temp = it.design == TOP_ADS_GSLP_TDN
+                        if (isTopAdsGlsp != temp){
+                            isTopAdsGlsp = temp
+                            if (isTopAdsGlsp) {
+                                itemView.rootView.setMargin(
+                                    itemView.getDimens(R.dimen.dp_12),
+                                    itemView.getDimens(R.dimen.dp_12),
+                                    itemView.getDimens(R.dimen.dp_12),
+                                    itemView.getDimens(R.dimen.dp_12)
+                                )
+                            } else {
+                                itemView.rootView.setMargin(0, 0, 0, 0)
+                            }
                         }
                     })
                 } else {
