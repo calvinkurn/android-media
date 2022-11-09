@@ -184,7 +184,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val feedVODViewHolder: FeedVODViewHolder = findViewById(R.id.feed_vod_viewholder)
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
     private val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
-    private val topAdsProductSubtitle = findViewById<Typography>(R.id.top_ads_product_subtitle)
+    private val topAdsProductSubtitleContainer =
+        findViewById<LinearLayout>(R.id.top_ads_product_subtitle_container)
     private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
     private val pageControl: PageControl = findViewById(R.id.page_indicator)
     private val likeButton: IconUnify = findViewById(R.id.like_button)
@@ -582,10 +583,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     fun bindTopAds(feedXCard: FeedXCard) {
         topAdsProductName.text = getCTAButtonText(feedXCard)
-        getCTAButtonSubtitle(feedXCard)?.let {
-            topAdsProductSubtitle.text = it
-            topAdsProductSubtitle.show()
-        } ?: topAdsProductSubtitle.hide()
+        val subtitles = getCTAButtonSubtitle(feedXCard)
+
+        if (!subtitles.isNullOrEmpty()) {
+            subtitles.map { subtitle ->
+                val typography = Typography(context)
+                typography.setType(Typography.DISPLAY_3)
+                typography.ellipsize = TextUtils.TruncateAt.END
+                typography.maxLines = 1
+                typography.text = subtitle
+
+                topAdsProductSubtitleContainer.addView(typography)
+            }
+
+            topAdsProductSubtitleContainer.show()
+        } else {
+            topAdsProductSubtitleContainer.hide()
+        }
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
@@ -1970,8 +1984,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (card.isTypeProductHighlight) card.cta.text
         else context.getString(R.string.feeds_cek_sekarang)
 
+    /**
+     * get subtitles from FeedXCard model
+     * only get max 2 subtitles
+     */
     private fun getCTAButtonSubtitle(card: FeedXCard) =
-        if (card.isTypeProductHighlight) card.cta.subtitle.firstOrNull()
+        if (card.isTypeProductHighlight && card.cta.subtitle.isNotEmpty())
+            if (card.cta.subtitle.size >= TWO) card.cta.subtitle.subList(ZERO, ONE)
+            else card.cta.subtitle
         else null
 
     override fun onDetachedFromWindow() {
@@ -2066,6 +2086,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             ratio.toString() //original ratio
         else
             SQUARE_RATIO
+    }
+
+    companion object {
+        private const val ZERO = 0
+        private const val ONE = 1
+        private const val TWO = 2
     }
 
 }
