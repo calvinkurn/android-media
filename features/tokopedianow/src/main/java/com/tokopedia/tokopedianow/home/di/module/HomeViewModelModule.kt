@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.tokopedianow.common.viewmodel.TokoNowWishlistViewModel
 import com.tokopedia.tokopedianow.home.di.scope.HomeScope
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import dagger.Binds
@@ -22,9 +21,4 @@ abstract class HomeViewModelModule {
     @IntoMap
     @ViewModelKey(TokoNowHomeViewModel::class)
     internal abstract fun tokoNowHomeViewModel(viewModelTokoNow: TokoNowHomeViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(TokoNowWishlistViewModel::class)
-    internal abstract fun tokoNowWishlistViewModel(viewModelTokoNow: TokoNowWishlistViewModel): ViewModel
 }
