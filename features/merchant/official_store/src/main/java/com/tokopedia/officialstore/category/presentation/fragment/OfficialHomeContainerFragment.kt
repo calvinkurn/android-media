@@ -58,6 +58,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -107,6 +108,9 @@ class OfficialHomeContainerFragment
 
     @Inject
     lateinit var viewModel: OfficialStoreCategoryViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     fun selectFirstTab() {
         val tab = tabLayout?.getTabAt(0)
@@ -278,7 +282,7 @@ class OfficialHomeContainerFragment
                                         category.title,
                                         category.categoryId,
                                         index,
-                                        category.icon
+                                        userSession.userId
                                 )
                             }
                     }
@@ -325,9 +329,8 @@ class OfficialHomeContainerFragment
                     category.title,
                     category.categoryId,
                     index,
-                    category.icon
-            )
-            }
+                    userSession.userId
+            ) }
         }
 
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
@@ -336,7 +339,7 @@ class OfficialHomeContainerFragment
                 chooseAddressView?.forceExpandView(whenWidgetShow = {binding?.osDivider?.show()})
                 categoryReselected?.let {
                     selectedCategory = categoryReselected
-                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
+                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it, userSession.userId)
                 }
             }
 
@@ -347,7 +350,7 @@ class OfficialHomeContainerFragment
                 chooseAddressView?.forceExpandView(whenWidgetShow = {binding?.osDivider?.show()})
                 categorySelected?.let {
                     selectedCategory = categorySelected
-                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
+                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it, userSession.userId)
                 }
             }
 
