@@ -412,8 +412,7 @@ class PlayFragment @Inject constructor(
         if (status.channelStatus.statusType.isFreeze) {
             dismissToaster()
 
-            if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && status.channelStatus.statusSource == PlayStatusSource.Socket) doAutoSwipe()
-            else if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
+            if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
 
         } else if (status.channelStatus.statusType.isBanned) {
             showEventDialog(status.config.bannedModel.title, status.config.bannedModel.message, status.config.bannedModel.btnTitle)
@@ -571,10 +570,6 @@ class PlayFragment @Inject constructor(
                 view?.background = resource
             }
         })
-    }
-
-    private fun doAutoSwipe() {
-        if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
     }
 
     @Throws(IndexOutOfBoundsException::class)
