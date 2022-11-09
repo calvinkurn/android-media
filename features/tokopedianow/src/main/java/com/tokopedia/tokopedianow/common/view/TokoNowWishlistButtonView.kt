@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.di.component.DaggerCommonComponent
@@ -37,9 +36,6 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
 
     @Inject
     lateinit var viewModel: TokoNowWishlistViewModel
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     init {
         initInjector()

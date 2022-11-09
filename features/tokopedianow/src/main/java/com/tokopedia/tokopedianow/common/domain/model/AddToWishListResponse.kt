@@ -2,7 +2,13 @@ package com.tokopedia.tokopedianow.common.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Button(
+data class AddToWishListResponse(
+
+    @SerializedName("wishlist_add_v2")
+    val wishlistAdd: AddToWishlistData? = null
+)
+
+data class AddToWishlistButton(
 
 	@SerializedName("action")
 	val action: String? = null,
@@ -14,10 +20,10 @@ data class Button(
 	val url: String? = null
 )
 
-data class WishlistData(
+data class AddToWishlistData(
 
 	@SerializedName("button")
-	val button: Button? = null,
+	val button: AddToWishlistButton? = null,
 
 	@SerializedName("success")
 	val success: Boolean? = null,
@@ -33,10 +39,4 @@ data class WishlistData(
 
 	@SerializedName("message")
 	val message: String? = null
-)
-
-data class AddToWishListResponse(
-
-	@SerializedName("wishlist_add_v2")
-	val wishlistAdd: WishlistData? = null
 )
