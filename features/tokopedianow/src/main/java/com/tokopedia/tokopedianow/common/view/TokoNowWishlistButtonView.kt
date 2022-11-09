@@ -87,20 +87,26 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             when(it){
                 is Success ->{
                     if(it.data.wishlistAdd?.success == true){
-                        Toaster.build(rootView, "Added to wishlist").show()
+                        Toaster.build(rootView, "Barang berhasil disimpan di Wishist. Kamu akan dapat notifikasi saat stok kembali.", actionText = "Oke").show()
                     }
                     else{
                         changeStateToAddWishlist()
-                        it.data.wishlistAdd?.message?.let { it1 ->
-                            Toaster.build(
-                                rootView,
-                                it1, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
-                            ).show()
-                        }
+                        Toaster.build(rootView, "Oops, barang gagal disimpan di Wishlist.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        "Coba Lagi",
+                        clickListener = {
+                            changeStateToRemoveWishlist()
+                            viewModel.addToWishlist(productId)
+                        }).show()
                     }
                 }
                 is Fail ->{
                     changeStateToAddWishlist()
+                    Toaster.build(rootView, "Oops, barang gagal disimpan di Wishlist.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        "Coba Lagi",
+                        clickListener = {
+                            changeStateToRemoveWishlist()
+                            viewModel.addToWishlist(productId)
+                        }).show()
                 }
             }
         })
@@ -108,19 +114,26 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             when(it){
                 is Success ->{
                     if(it.data.wishlistRemove?.success == true){
-                        Toaster.build(rootView, "Removed from wishlist").show()
+                        Toaster.build(rootView, "Barang sudah dihapus dari Wishlist.", actionText = "Oke").show()
                     }
                     else{
                         changeStateToRemoveWishlist()
-                        it.data.wishlistRemove?.message?.let { it1 ->
-                            Toaster.build(rootView,
-                                it1, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
-                            ).show()
-                        }
+                        Toaster.build(rootView, "Oops, barang gagal dihapus dari Wishlist.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            "Coba Lagi",
+                            clickListener = {
+                                changeStateToAddWishlist()
+                                viewModel.removeFromWishlist(productId)
+                            }).show()
                     }
                 }
                 is Fail ->{
                     changeStateToRemoveWishlist()
+                    Toaster.build(rootView, "Oops, barang gagal dihapus dari Wishlist.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        "Coba Lagi",
+                        clickListener = {
+                            changeStateToAddWishlist()
+                            viewModel.removeFromWishlist(productId)
+                        }).show()
                 }
             }
         })
