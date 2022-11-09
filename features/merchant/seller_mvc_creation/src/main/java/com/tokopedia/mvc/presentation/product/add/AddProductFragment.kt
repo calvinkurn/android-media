@@ -171,12 +171,12 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         )
         binding?.tpgSelectedProductCount?.text = getString(
             R.string.smvc_placeholder_selected_product_count,
-            uiState.selectedProducts.size,
+            uiState.selectedProductsIds.size,
             uiState.voucherCreationMetadata?.maxProduct.orZero()
         )
-        binding?.btnAddProduct?.isEnabled = uiState.selectedProducts.isNotEmpty()
+        binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
 
-        productAdapter.submit(uiState.parentProducts)
+        productAdapter.submit(uiState.products)
     }
 
     /*private fun renderSortFilter(uiState: FlashSaleListUiState) {

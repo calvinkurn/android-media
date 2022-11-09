@@ -49,74 +49,23 @@ class AddProductViewModel @Inject constructor(
         when(event) {
             is AddProductEvent.FetchRequiredData -> fetchRequiredData(event.action, event.promoType)
             is AddProductEvent.LoadPage -> getProducts(event.warehouseId, event.page, event.sortId, event.sortDirection)
-            is AddProductEvent.AddProductToSelection -> {
-                val updatedProducts = currentState.parentProducts.map {
-                    if (it.id == event.productId) {
-                        it.copy(isSelected = true)
-                    } else {
-                        it
-                    }
-                }
-
-                val updatedSelectedProducts = currentState.selectedProducts.toMutableList()
-                updatedSelectedProducts.add(event.productId)
-
-
-                _uiState.update {
-                    it.copy(
-                        isSelectAllActive = false,
-                        selectedProducts = updatedSelectedProducts,
-                        parentProducts = updatedProducts
-                    )
-                }
-            }
+            is AddProductEvent.AddProductToSelection -> handleAddProductToSelection(event.productId)
             AddProductEvent.ApplyCategoryFilter -> {}
             AddProductEvent.ApplyLocationFilter -> {}
             AddProductEvent.ApplyShowCaseFilter -> {}
             AddProductEvent.ApplySortFilter -> {}
-            AddProductEvent.ClearFilter -> {}
-            AddProductEvent.ClearSearchBar -> {}
+            AddProductEvent.ClearFilter -> {
+                _uiState.update { it.copy(products = emptyList()) }
+                getProducts(0L, 0, "DEFAULT", "DESC")
+            }
+            AddProductEvent.ClearSearchBar -> {
+                _uiState.update { it.copy(products = emptyList()) }
+                getProducts(0L, 0, "DEFAULT", "DESC")
+            }
             AddProductEvent.ConfirmAddProduct -> {}
-            AddProductEvent.DisableSelectAllCheckbox -> {
-                val disabledProducts = currentState.parentProducts.map { it.copy(isSelected = false) }
-                _uiState.update {
-                    it.copy(
-                        isSelectAllActive = false,
-                        selectedProducts = emptyList(),
-                        parentProducts = disabledProducts
-                    )
-                }
-            }
-            AddProductEvent.EnableSelectAllCheckbox -> {
-                val enabledProducts = currentState.parentProducts.map { it.copy(isSelected = true) }
-                _uiState.update {
-                    it.copy(
-                        isSelectAllActive = true,
-                        selectedProducts = enabledProducts.map { it.id },
-                        parentProducts = enabledProducts
-                    )
-                }
-            }
-            is AddProductEvent.RemoveProductFromSelection -> {
-                val updatedProducts = currentState.parentProducts.map {
-                    if (it.id == event.productId) {
-                        it.copy(isSelected = false)
-                    } else {
-                        it
-                    }
-                }
-
-                val updatedSelectedProducts = currentState.selectedProducts.toMutableList()
-                updatedSelectedProducts.remove(event.productId)
-
-                _uiState.update {
-                    it.copy(
-                        isSelectAllActive = false,
-                        selectedProducts = updatedSelectedProducts,
-                        parentProducts = updatedProducts
-                    )
-                }
-            }
+            AddProductEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
+            AddProductEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
+            is AddProductEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.productId)
             AddProductEvent.TapCategoryFilter -> {}
             AddProductEvent.TapLocationFilter -> {}
             AddProductEvent.TapShowCaseFilter -> {}
@@ -211,10 +160,18 @@ class AddProductViewModel @Inject constructor(
                 )
 
 
-                val allProducts = currentState.parentProducts + updatedProducts
+                val allProducts = currentState.products + updatedProducts
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedProducts, allProducts))
+
+                val selectedProducts = if (currentState.isSelectAllActive) {
+                    //If select all active, products from new page should be auto checked
+                    currentState.selectedProductsIds + currentPageParentProductsIds
+                } else {
+                    currentState.selectedProductsIds
+                }
+
                 _uiState.update {
-                    it.copy(parentProducts = allProducts, selectedProducts = allProducts.map { it.id })
+                    it.copy(products = allProducts, selectedProductsIds = selectedProducts)
                 }
 
             },
@@ -249,6 +206,71 @@ class AddProductViewModel @Inject constructor(
         return products.find { it.parentProductId == productId }
     }
 
+
+    private fun handleCheckAllProduct() {
+        val enabledProducts = currentState.products.map { it.copy(isSelected = true) }
+        _uiState.update {
+            it.copy(
+                isSelectAllActive = true,
+                selectedProductsIds = enabledProducts.map { it.id },
+                products = enabledProducts
+            )
+        }
+    }
+
+    private fun handleUncheckAllProduct() {
+        val disabledProducts = currentState.products.map { it.copy(isSelected = false) }
+        _uiState.update {
+            it.copy(
+                isSelectAllActive = false,
+                selectedProductsIds = emptyList(),
+                products = disabledProducts
+            )
+        }
+    }
+
+    private fun handleAddProductToSelection(productIdToAdd: Long) {
+        val updatedProducts = currentState.products.map {
+            if (it.id == productIdToAdd) {
+                it.copy(isSelected = true)
+            } else {
+                it
+            }
+        }
+
+        val updatedSelectedProducts = currentState.selectedProductsIds.toMutableList()
+        updatedSelectedProducts.add(productIdToAdd)
+
+
+        _uiState.update {
+            it.copy(
+                isSelectAllActive = false,
+                selectedProductsIds = updatedSelectedProducts,
+                products = updatedProducts
+            )
+        }
+    }
+
+    private fun handleRemoveProductFromSelection(productIdToDelete: Long) {
+        val updatedProducts = currentState.products.map {
+            if (it.id == productIdToDelete) {
+                it.copy(isSelected = false)
+            } else {
+                it
+            }
+        }
+
+        val updatedSelectedProducts = currentState.selectedProductsIds.toMutableList()
+        updatedSelectedProducts.remove(productIdToDelete)
+
+        _uiState.update {
+            it.copy(
+                isSelectAllActive = false,
+                selectedProductsIds = updatedSelectedProducts,
+                products = updatedProducts
+            )
+        }
+    }
 
     fun getProductVariants(productId:Long, warehouseId: String) {
         launchCatchError(

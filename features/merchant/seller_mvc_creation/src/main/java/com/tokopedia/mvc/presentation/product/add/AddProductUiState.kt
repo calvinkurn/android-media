@@ -9,10 +9,10 @@ import com.tokopedia.mvc.domain.entity.Warehouse
 
 data class AddProductUiState(
     val isLoading: Boolean = true,
-    val parentProducts : List<Product> = emptyList(),
+    val products : List<Product> = emptyList(),
     val voucherCreationMetadata: VoucherCreationMetadata? = null,
     val warehouses : List<Warehouse> = emptyList(),
-    val selectedProducts : List<Long> = emptyList(),
+    val selectedProductsIds : List<Long> = emptyList(),
     val isSelectAllActive: Boolean = false,
     val sortOptions: List<ProductSortOptions> = emptyList(),
     val categoryOptions: List<ProductCategoryOption> = emptyList(),
