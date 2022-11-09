@@ -154,7 +154,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                     }
 
                     // corner case auto selection if BE default duration failed
-                    if (shipmentCartItemModel.isAutoCourierSelection) {
+                    if (shipmentCartItemModel.isAutoCourierSelection || shipmentCartItemModel.isDisableChangeCourier) {
                         val shippingDuration =
                             shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
                         if (shippingDuration != null) {
@@ -245,12 +245,15 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                 (courierItemData.scheduleDeliveryUiModel?.timeslotId != shipmentCartItemModel.timeslotId ||
                     courierItemData.scheduleDeliveryUiModel?.scheduleDate != shipmentCartItemModel.scheduleDate)
             ) {
-                shipmentCartItemModel.scheduleDate = courierItemData.scheduleDeliveryUiModel?.scheduleDate ?: ""
-                shipmentCartItemModel.timeslotId = courierItemData.scheduleDeliveryUiModel?.timeslotId ?: 0
-                shipmentCartItemModel.validationMetadata = courierItemData.scheduleDeliveryUiModel?.deliveryProduct?.validationMetadata ?: ""
+                shipmentCartItemModel.scheduleDate =
+                    courierItemData.scheduleDeliveryUiModel?.scheduleDate ?: ""
+                shipmentCartItemModel.timeslotId =
+                    courierItemData.scheduleDeliveryUiModel?.timeslotId ?: 0
+                shipmentCartItemModel.validationMetadata =
+                    courierItemData.scheduleDeliveryUiModel?.deliveryProduct?.validationMetadata
+                        ?: ""
             }
-            else if (isScheduleDeliverySelected == false && (shipmentCartItemModel.scheduleDate != "" || shipmentCartItemModel.timeslotId != 0L)
-            ) {
+            else if (isScheduleDeliverySelected == false) {
                 shipmentCartItemModel.scheduleDate = ""
                 shipmentCartItemModel.timeslotId = 0L
                 shipmentCartItemModel.validationMetadata = ""
