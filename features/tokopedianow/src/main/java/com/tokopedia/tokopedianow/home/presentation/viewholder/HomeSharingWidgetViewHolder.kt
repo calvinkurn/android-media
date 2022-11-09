@@ -61,9 +61,10 @@ class HomeSharingWidgetViewHolder(
     private fun checkUiModel(element: HomeSharingWidgetUiModel) {
         binding?.apply {
             cvSharingEducation.show()
-            when(element) {
+            when (element) {
                 is HomeSharingReferralWidgetUiModel -> {
                     setReferralData(element)
+                    setReferralListener(element)
                 }
                 is HomeSharingEducationWidgetUiModel -> {
                     setEducationalInfoData(element)
@@ -102,15 +103,6 @@ class HomeSharingWidgetViewHolder(
             playAnimation()
             ivBgImageBtm.loadImage(IMG_SHARING_REFERRAL_BG_BTM)
             ivBgImageTopRight.loadImage(IMG_SHARING_REFERRAL_BG_TOP)
-
-            containerWidgetSharing.setOnClickListener {
-                val url = REFERRAL_PAGE_URL + element.slug
-                listener?.onMoreReferralClicked(element, url)
-            }
-
-            btnSharing.setOnClickListener {
-                listener?.onShareBtnReferralSenderClicked(element)
-            }
         }
     }
 
@@ -158,6 +150,13 @@ class HomeSharingWidgetViewHolder(
                     listener?.onShareBtnReferralSenderClicked(element)
                 } else {
                     listener?.onShareBtnReferralReceiverClicked(element)
+                }
+            }
+
+            if (element.isSender) {
+                containerWidgetSharing.setOnClickListener {
+                    val url = REFERRAL_PAGE_URL + element.slug
+                    listener?.onMoreReferralClicked(element, url)
                 }
             }
         }
