@@ -4,21 +4,21 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
-import com.tokopedia.product_bundle.common.customview.RoundedCornerImageView
 import com.tokopedia.product_bundle.common.customview.SpinnerView
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_service_widget.R
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundleDetailItemClickListener)
     : RecyclerView.ViewHolder(itemView) {
 
-    private var productImageView: RoundedCornerImageView? = null
+    private var productImageView: ImageUnify? = null
     private var productNameView: Typography? = null
     private var productVariantsView: SpinnerView? = null
     private var productPriceView: DiscountPriceView? = null

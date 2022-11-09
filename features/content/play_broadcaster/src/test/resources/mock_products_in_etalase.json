@@ -1,9 +1,9 @@
 {
-  "ProductList": {
-    "header": {
-      "messages": [],
-      "reason": "",
-      "errorCode": ""
+  "broadcasterGetProductList": {
+    "pagerCursor": {
+      "cursor": "",
+      "limit" : 25,
+      "hasNext": false
     },
     "data": [{
       "id": "423187982",

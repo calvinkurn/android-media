@@ -532,6 +532,8 @@ public interface ApplinkConst {
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
         String SELLER_SHOP_FLASH_SALE = "sellerapp://shop-flash-sale";
+        String SELLER_TOKOPEDIA_FLASH_SALE = "sellerapp://tokopedia-flash-sale";
+        String SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "sellerapp://tokopedia-flash-sale/campaign-detail/{campaign_id}";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
         String TOKOMEMBER = "sellerapp://tokomember";
         String TOKOMEMBER_PROGRAM_LIST = "sellerapp://tokomember/program-list";
@@ -542,6 +544,8 @@ public interface ApplinkConst {
         String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
+        String PRODUCT_MANAGE = "sellerapp://product/manage";
+
     }
 
     interface TokopediaNow {

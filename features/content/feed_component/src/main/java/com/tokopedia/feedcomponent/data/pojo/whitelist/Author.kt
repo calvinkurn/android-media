@@ -47,7 +47,7 @@ data class Author(
         data class PostConfig(
                 @SerializedName("enable")
                 @Expose
-                val hasAcceptTnc: Boolean = false,
+                val enable: Boolean = false,
 
                 @SerializedName("has_username")
                 @Expose
@@ -57,7 +57,7 @@ data class Author(
         data class LivestreamConfig(
                 @SerializedName("enable")
                 @Expose
-                val hasAcceptTnc: Boolean = false,
+                val enable: Boolean = false,
 
                 @SerializedName("has_username")
                 @Expose
