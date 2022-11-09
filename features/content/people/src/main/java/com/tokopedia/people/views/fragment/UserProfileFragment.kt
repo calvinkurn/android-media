@@ -593,7 +593,7 @@ class UserProfileFragment @Inject constructor(
 
         val shopRecom = value.shopRecom
 
-        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items, shopRecom.loadNexPage)
+        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items, shopRecom.loadNextPage)
 
         if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
         else mainBinding.shopRecommendation.showContentShopRecom()

@@ -339,7 +339,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     isShown = result.isShown,
                     nextCursor = result.nextCursor,
                     title = result.title,
-                    loadNexPage = result.loadNexPage,
+                    loadNextPage = result.loadNextPage,
                     items = items + result.items
                 )
             }

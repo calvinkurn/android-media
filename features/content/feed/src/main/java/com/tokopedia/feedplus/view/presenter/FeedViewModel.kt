@@ -842,7 +842,7 @@ class FeedViewModel @Inject constructor(
                             isShown = request.shopRecomUiModel.isShown,
                             nextCursor = request.shopRecomUiModel.nextCursor,
                             title = request.shopRecomUiModel.title,
-                            loadNexPage = request.shopRecomUiModel.loadNexPage,
+                            loadNextPage = request.shopRecomUiModel.loadNextPage,
                             items = shopRecomUiModel.items + request.shopRecomUiModel.items
                         ),
                         onError = ""
@@ -855,7 +855,7 @@ class FeedViewModel @Inject constructor(
             if (_shopRecom.value.onError.isNotEmpty()) return@launchCatchError
             _shopRecom.update { data ->
                 data.copy(
-                    shopRecomUiModel = data.shopRecomUiModel.copy(loadNexPage = false),
+                    shopRecomUiModel = data.shopRecomUiModel.copy(loadNextPage = false),
                     onError = it.message.orEmpty()
                 )
             }
