@@ -176,7 +176,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var countRemovableAutomaticDelete = 0
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
-    private val handlerCoachmark = Handler(Looper.getMainLooper())
     private var userAddressData: LocalCacheModel? = null
     private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
@@ -1078,7 +1077,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
             wishlistCollectionDetailNavtoolbar.setIcon(icons)
             if (collectionType != TYPE_COLLECTION_PUBLIC_OTHERS) {
-                handler.postDelayed(
+                Handler().postDelayed(
                     showCoarchmarkRunnable,
                     DELAY_SHOW_COACHMARK_TOOLBAR
                 )
