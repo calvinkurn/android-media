@@ -1077,10 +1077,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             wishlistCollectionDetailNavtoolbar.setIcon(icons)
-            handler.postDelayed(
-                showCoarchmarkRunnable,
-                DELAY_SHOW_COACHMARK_TOOLBAR
-            )
+            if (collectionType != TYPE_COLLECTION_PUBLIC_OTHERS) {
+                handler.postDelayed(
+                    showCoarchmarkRunnable,
+                    DELAY_SHOW_COACHMARK_TOOLBAR
+                )
+            }
         }
     }
 
