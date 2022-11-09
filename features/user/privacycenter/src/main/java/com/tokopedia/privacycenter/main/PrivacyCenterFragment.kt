@@ -1,4 +1,4 @@
-package com.tokopedia.privacycenter
+package com.tokopedia.privacycenter.main
 
 import android.graphics.Color
 import android.os.Bundle
@@ -8,13 +8,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.privacycenter.common.getDynamicColorStatusBar
-import com.tokopedia.privacycenter.common.getIconBackWithColor
-import com.tokopedia.privacycenter.common.getIdColor
-import com.tokopedia.privacycenter.common.setFitToWindows
-import com.tokopedia.privacycenter.common.setTextStatusBar
+import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.common.*
+import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
-import com.tokopedia.privacycenter.di.PrivacyCenterComponent
+import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
+import com.tokopedia.privacycenter.main.section.dummy.DummySection
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -22,6 +21,7 @@ import javax.inject.Inject
 class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChangedListener {
 
     private var binding by autoClearedNullable<FragmentPrivacyCenterBinding>()
+    private var privacyCenterSection: PrivacyCenterSection? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -30,6 +30,12 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
             PrivacyCenterViewModel::class.java
         )
     }
+
+//    private val viewModelConsentSection by lazy {
+//        ViewModelProvider(this, viewModelFactory).get(
+//            ConsentWithdrawalViewModel::class.java
+//        )
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +49,8 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
+        privacyCenterSection = PrivacyCenterSection(binding?.rootContent, PrivacyCenterSectionDelegateImpl())
+        privacyCenterSection?.renderSections()
     }
 
     override fun onStart() {
@@ -68,6 +76,12 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
     override fun onStop() {
         super.onStop()
         binding?.appbar?.removeOnOffsetChangedListener(this)
+    }
+
+    override fun onDestroy() {
+        privacyCenterSection?.removeAllViews()
+        privacyCenterSection = null
+        super.onDestroy()
     }
 
     override fun getScreenName(): String {
@@ -105,6 +119,14 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
                 navigationIcon = backIcon
             }
         }
+    }
+
+    inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
+        override val dummySection: DummySection = DummySection(context)
+        override val consentWithdrawalSection: ConsentWithdrawalSection = ConsentWithdrawalSection(
+            context,
+//            viewModelConsentSection
+        )
 
     }
 

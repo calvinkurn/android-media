@@ -1,8 +1,8 @@
-package com.tokopedia.privacycenter
+package com.tokopedia.privacycenter.main
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.privacycenter.domain.UserUseCase
+import com.tokopedia.privacycenter.common.domain.UserUseCase
 import javax.inject.Inject
 
 class PrivacyCenterViewModel @Inject constructor(
