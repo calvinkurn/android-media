@@ -1282,6 +1282,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun openBroadcastPage(id: String, type: Int) {
         RouteManager.route(context,
-            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://tokopedia.com/broadcast-chat/create?id=$id&type=$type"))
+            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/broadcast-chat/create/content?id=$id&type=$type"))
     }
 }
