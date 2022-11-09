@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
@@ -350,7 +351,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createBestSellingWidget(channel: DynamicHomeChannel.Channels){
         //best seller widget limited to only 1 widget per list
         if(!isCache && !visitableList.any { it is BestSellerDataModel }) {
-            visitableList.add(BestSellerDataModel(id = channel.id, pageName = channel.pageName, widgetParam = channel.widgetParam, dividerType = channel.dividerType)
+            visitableList.add(
+                BestSellerDataModel(id = channel.id, pageName = channel.pageName, widgetParam = channel.widgetParam,
+                    dividerType = channel.dividerType, dividerSize = channel.styleParam.parseDividerSize())
             )
         }
     }
