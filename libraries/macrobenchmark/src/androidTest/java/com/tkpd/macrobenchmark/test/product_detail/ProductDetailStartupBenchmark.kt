@@ -36,5 +36,9 @@ class ProductDetailStartupBenchmark(startupMode: StartupMode) : BaseStartupBench
             MacroIntent.TKPD_PACKAGE_NAME,
             MacroIntent.ProductDetail.RECYCLER_VIEW_ID
         )
+        MacroInteration.waitForRecyclerViewContent(
+            MacroIntent.TKPD_PACKAGE_NAME,
+            MacroIntent.ProductDetail.RECYCLER_VIEW_ID
+        )
     }
 }
