@@ -17,5 +17,6 @@ data class AddProductUiState(
     val sortOptions: List<ProductSortOptions> = emptyList(),
     val categoryOptions: List<ProductCategoryOption> = emptyList(),
     val shopShowcases : List<ShopShowcase> = emptyList(),
+    val selectedSort : ProductSortOptions = ProductSortOptions("DEFAULT", "", "DESC"),
     val error : Throwable? = null
 )

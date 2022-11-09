@@ -12,19 +12,25 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.LoadingDelegateAdapter
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.entity.LoadingItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
+import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
+import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.seller_mvc_creation.R
 import com.tokopedia.seller_mvc_creation.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -51,6 +57,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private val locationChips by lazy { SortFilterItem(getString(R.string.smvc_location)) }
     private val categoryChips by lazy { SortFilterItem(getString(R.string.smvc_category)) }
     private val showcaseChips by lazy { SortFilterItem(getString(R.string.smvc_showcase)) }
+    private val sortChips by lazy { SortFilterItem(getString(R.string.smvc_sort)) }
 
     private val productAdapter by lazy {
         CompositeAdapter.Builder()
@@ -131,6 +138,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             applyPaddingToLastItem()
+            attachDividerItemDecoration()
             adapter = productAdapter
 
             attachPaging(this, pagingConfig) { page, _ ->
@@ -159,6 +167,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 notifyLoadResult(hasNextPage)
                 productAdapter.submit(effect.allItems)
             }
+            is AddProductEffect.ShowSortBottomSheet -> {
+                showSortBottomSheet(effect.selectedSort, effect.sortOptions)
+            }
         }
     }
 
@@ -177,59 +188,18 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
 
         productAdapter.submit(uiState.products)
-    }
-
-    /*private fun renderSortFilter(uiState: FlashSaleListUiState) {
-        if (!uiState.isFilterActive && uiState.allItems.isEmpty()) {
-            binding?.sortFilter?.gone()
-        } else {
-            binding?.sortFilter?.visible()
-        }
         renderSortChips(uiState.selectedSort)
-        renderCategoryFilterChips(uiState.selectedCategoryIds)
-        renderStatusChips(uiState.selectedStatusIds)
     }
 
-    private fun renderSortChips(selectedSort: SingleSelectionItem) {
-        if (selectedSort.id == "DEFAULT_VALUE_PLACEHOLDER") {
+    private fun renderSortChips(selectedSort: ProductSortOptions) {
+        if (selectedSort.id == "DEFAULT") {
             sortChips.type = ChipsUnify.TYPE_NORMAL
-            sortChips.selectedItem = arrayListOf(getString(R.string.stfs_sort))
+            sortChips.selectedItem = arrayListOf(getString(R.string.smvc_sort))
         } else {
             sortChips.type = ChipsUnify.TYPE_SELECTED
             sortChips.selectedItem = arrayListOf(selectedSort.name)
         }
     }
-
-
-    private fun renderCategoryFilterChips(selectedCategoryIds: List<Long>) {
-        if (selectedCategoryIds.isEmpty()) {
-            categoryChips.type = ChipsUnify.TYPE_NORMAL
-            categoryChips.selectedItem = arrayListOf(getString(R.string.stfs_all_category))
-        } else {
-            categoryChips.type = ChipsUnify.TYPE_SELECTED
-            categoryChips.selectedItem = arrayListOf(
-                getString(
-                    R.string.stfs_placeholder_selected_category_count,
-                    selectedCategoryIds.size
-                )
-            )
-        }
-    }
-
-    private fun renderStatusChips(selectedStatusIds: List<String>) {
-        if (selectedStatusIds.isEmpty()) {
-            statusChips.type = ChipsUnify.TYPE_NORMAL
-            statusChips.selectedItem = arrayListOf(getString(R.string.stfs_all_status))
-        } else {
-            statusChips.type = ChipsUnify.TYPE_SELECTED
-            statusChips.selectedItem = arrayListOf(
-                getString(
-                    R.string.stfs_placeholder_selected_status_count,
-                    selectedStatusIds.size
-                )
-            )
-        }
-    }*/
 
     private fun setupSortFilter() {
         val onLocationClicked = { viewModel.processEvent(AddProductEvent.TapLocationFilter) }
@@ -245,7 +215,11 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         showcaseChips.listener = { onShowCaseClicked() }
         showcaseChips.chevronListener = { onShowCaseClicked() }
 
-        val items = arrayListOf(locationChips, categoryChips, showcaseChips)
+        val onSortClicked = { viewModel.processEvent(AddProductEvent.TapSortFilter) }
+        sortChips.listener = { onSortClicked() }
+        sortChips.chevronListener = { onSortClicked() }
+
+        val items = arrayListOf(locationChips, categoryChips, showcaseChips, sortChips)
 
         binding?.sortFilter?.addItem(items)
         binding?.sortFilter?.parentListener = {}
@@ -269,5 +243,38 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         } else {
             viewModel.processEvent(AddProductEvent.RemoveProductFromSelection(selectedItemId))
         }
+    }
+
+    private fun showSortBottomSheet(
+        selectedSort: ProductSortOptions,
+        remoteSortOptions: List<ProductSortOptions>
+    ) {
+        if (!isAdded) return
+        val sortAdapter = ProductSortAdapter()
+
+        val sortOptions = remoteSortOptions.map { sort ->
+            val isSelected = sort.id == selectedSort.id
+            SingleSelectionItem(sort.id, sort.name, isSelected, sort.value)
+        }
+
+        val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedSort.id, sortOptions)
+
+        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_sort))
+        bottomSheet.setOnApplyButtonClick {
+            val selectedItem = sortAdapter.getSelectedItem() ?: return@setOnApplyButtonClick
+            viewModel.processEvent(AddProductEvent.ApplySortFilter(ProductSortOptions(selectedItem.id, selectedItem.name, selectedItem.direction)))
+        }
+
+        sortAdapter.setOnItemClicked { newItem ->
+            sortAdapter.markAsSelected(newItem)
+            bottomSheet.getBottomsheetView()?.btnApply?.enable()
+        }
+
+        bottomSheet.setCustomAppearance {
+            recyclerView.adapter = sortAdapter
+            sortAdapter.submit(sortOptions)
+        }
+        
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }

@@ -48,8 +48,8 @@ class ProductDelegateAdapter(
                 imgProduct.loadImage(item.picture)
                 tpgProductName.text = item.name
                 tpgSku.setSku(item)
-                tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_total_stock, item.stock)
-                tpgSoldCount.text = binding.tpgSoldCount.context.getString(R.string.smvc_placeholder_product_sold_count, item.txStats.sold)
+                tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_total_stock, item.stock.splitByThousand())
+                tpgSoldCount.text = binding.tpgSoldCount.context.getString(R.string.smvc_placeholder_product_sold_count, item.txStats.sold.splitByThousand())
                 tpgPrice.setPrice(item)
                 tpgIneligibleReason.setIneligibleReason(item)
                 layoutVariant.setVariantCount(item)

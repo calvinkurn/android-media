@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
@@ -53,14 +54,23 @@ class AddProductViewModel @Inject constructor(
             AddProductEvent.ApplyCategoryFilter -> {}
             AddProductEvent.ApplyLocationFilter -> {}
             AddProductEvent.ApplyShowCaseFilter -> {}
-            AddProductEvent.ApplySortFilter -> {}
+            is AddProductEvent.ApplySortFilter -> {
+                _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedSort = event.selectedSort) }
+                getProducts(0L, 1, event.selectedSort.id, event.selectedSort.value)
+            }
             AddProductEvent.ClearFilter -> {
-                _uiState.update { it.copy(products = emptyList()) }
-                getProducts(0L, 0, "DEFAULT", "DESC")
+                _uiState.update {
+                    it.copy(
+                        isLoading = true,
+                        products = emptyList(),
+                        selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
+                    )
+                }
+                getProducts(0L, 1, "DEFAULT", "DESC")
             }
             AddProductEvent.ClearSearchBar -> {
-                _uiState.update { it.copy(products = emptyList()) }
-                getProducts(0L, 0, "DEFAULT", "DESC")
+                _uiState.update { it.copy(isLoading = true, products = emptyList()) }
+                getProducts(0L, 1, "DEFAULT", "DESC")
             }
             AddProductEvent.ConfirmAddProduct -> {}
             AddProductEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
@@ -69,7 +79,9 @@ class AddProductViewModel @Inject constructor(
             AddProductEvent.TapCategoryFilter -> {}
             AddProductEvent.TapLocationFilter -> {}
             AddProductEvent.TapShowCaseFilter -> {}
-            AddProductEvent.TapSortFilter -> {}
+            AddProductEvent.TapSortFilter -> {
+                _uiEffect.tryEmit(AddProductEffect.ShowSortBottomSheet(currentState.sortOptions, currentState.selectedSort))
+            }
         }
     }
 
@@ -171,7 +183,11 @@ class AddProductViewModel @Inject constructor(
                 }
 
                 _uiState.update {
-                    it.copy(products = allProducts, selectedProductsIds = selectedProducts)
+                    it.copy(
+                        isLoading = false,
+                        products = allProducts,
+                        selectedProductsIds = selectedProducts
+                    )
                 }
 
             },

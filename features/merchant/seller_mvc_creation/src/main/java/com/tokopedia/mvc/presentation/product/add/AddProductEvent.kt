@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.product.add
 
+import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 
@@ -26,6 +27,6 @@ sealed class AddProductEvent {
     object ApplyLocationFilter : AddProductEvent()
     object ApplyCategoryFilter : AddProductEvent()
     object ApplyShowCaseFilter : AddProductEvent()
-    object ApplySortFilter : AddProductEvent()
+    data class ApplySortFilter(val selectedSort: ProductSortOptions) : AddProductEvent()
     object ConfirmAddProduct : AddProductEvent()
 }

@@ -8,11 +8,11 @@
     <string name="smvc_placeholder_max_selected_product">Maks. %d Produk</string>
     <string name="smvc_placeholder_selected_product_count">%d/%d</string>
     <string name="smvc_placeholder_product_sku">SKU %s</string>
-    <string name="smvc_placeholder_product_sold_count">Terjual: %d</string>
+    <string name="smvc_placeholder_product_sold_count">Terjual: %s</string>
     <string name="smvc_placeholder_variant_product_count">%d Varian Produk</string>
     <string name="smvc_placeholder_product_price_range">Rp%s - Rp%s</string>
     <string name="smvc_placeholder_product_price">Rp%s</string>
-    <string name="smvc_placeholder_total_stock">Total stok: %d</string>
+    <string name="smvc_placeholder_total_stock">Total stok: %s</string>
 
     <string name="smvc_product">Produk</string>
 
