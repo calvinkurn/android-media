@@ -33,11 +33,11 @@ class ProductDetailStartupBenchmark(startupMode: StartupMode) : BaseStartupBench
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
-            MacroIntent.TKPD_PACKAGE_NAME,
+            MacroIntent.ProductDetail.PACKAGE_NAME,
             MacroIntent.ProductDetail.RECYCLER_VIEW_ID
         )
         MacroInteration.waitForRecyclerViewContent(
-            MacroIntent.TKPD_PACKAGE_NAME,
+            MacroIntent.ProductDetail.PACKAGE_NAME,
             MacroIntent.ProductDetail.RECYCLER_VIEW_ID
         )
     }

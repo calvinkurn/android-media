@@ -202,6 +202,9 @@ object MacroIntent {
 
     object ProductDetail {
 
+        private const val DF_MODULE_NAME = "df_base"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+
         const val RECYCLER_VIEW_ID = "rv_pdp"
         const val MEDIA_VIEW_HOLDER = "viewMediaPager"
         const val RECOMMENDATION_VIEW_HOLDER = "rvProductRecom"
