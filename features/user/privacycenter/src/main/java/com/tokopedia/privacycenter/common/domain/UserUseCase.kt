@@ -1,4 +1,4 @@
-package com.tokopedia.privacycenter.domain
+package com.tokopedia.privacycenter.common.domain
 
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
