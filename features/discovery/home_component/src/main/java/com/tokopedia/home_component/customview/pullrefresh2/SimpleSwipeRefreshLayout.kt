@@ -39,13 +39,12 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
                 if (refreshing) {
                     if (currentState != State.TRIGGERING) {
                         startRefreshing()
-                        layoutIconPullRefreshView?.startRefreshing()
                     }
                 } else {
                     notify = false
                     currentState = State.ROLLING
+                    layoutIconPullRefreshView?.stopRefreshing(true)
                     stopRefreshing()
-                    Log.d("dhabalog", "stopRefreshing")
                 }
             }
         }
@@ -120,6 +119,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
             if (maxOffSetTop <= triggerOffSetTop)
                 maxOffSetTop = triggerOffSetTop * 2
 
+            layoutIconPullRefreshView?.maxOffsetTop(maxOffSetTop)
             overlay = it.getBoolean(R.styleable.SimpleSwipeRefreshLayout_indicator_overlay, overlay)
             it.recycle()
         }
@@ -335,6 +335,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
             -> {
                 currentState = State.ROLLING
 //                Log.d("dhabalog", "currentState $currentState")
+                layoutIconPullRefreshView?.stopRefreshing(false)
                 stopRefreshing()
             }
         }
@@ -369,7 +370,26 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         onProgressListeners.forEach { it(pullFraction) }
         lastPullFraction = pullFraction
 
+        layoutIconPullRefreshView?.maxOffsetTop(maxOffSetTop)
         layoutIconPullRefreshView?.offsetView(offsetY)
+
+
+        ValueAnimator.ofFloat(0F, 1F).apply {
+            duration = ROLL_BACK_DURATION
+            interpolator = DecelerateInterpolator(2f)
+            addUpdateListener {
+//                positionChildren(triggerOffset * animatedValue as Float)
+
+//                layoutIconPullRefreshView?.maxOffsetTop(maxOffSetTop)
+//                layoutIconPullRefreshView?.offsetView(offsetY * animatedValue as Float)
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+//                    offsetY = triggerOffset.toFloat()
+                }
+            })
+            start()
+        }
 //        Log.d("dhabalog", "move $offsetY")
 
 //        positionChildren(offsetY)
@@ -531,6 +551,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         if (offsetY > 0) {
             notify = true
             currentState = State.ROLLING
+            layoutIconPullRefreshView?.stopRefreshing(false)
             stopRefreshing()
             offsetY = 0f
         }
