@@ -46,7 +46,6 @@ class SellerHomeWidgetSSEImpl(
 
     override fun connect(page: String, dataKeys: List<String>) {
         initLogger()
-        printLog("SSE Connecting...")
 
         val baseSseUrl = getBaseSseUrl()
         val dataKey = dataKeys.joinToString(DATA_KEY_SEPARATOR)
@@ -60,6 +59,7 @@ class SellerHomeWidgetSSEImpl(
             .build()
 
         closeSse()
+        printLog("SSE Connecting...$url")
         sse = OkSse().newServerSentEvent(request, getSseEventListener(request))
     }
 

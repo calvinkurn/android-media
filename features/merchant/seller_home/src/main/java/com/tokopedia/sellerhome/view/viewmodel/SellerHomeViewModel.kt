@@ -112,6 +112,7 @@ class SellerHomeViewModel @Inject constructor(
         private const val TICKER_PAGE_NAME = "seller"
     }
 
+    private val rawWidgets: MutableList<BaseWidgetUiModel<*>> = mutableListOf()
     private var sseJob: Job? = null
     private val shopId: String by lazy { userSession.get().shopId }
     private val dynamicParameter by lazy {
@@ -254,9 +255,12 @@ class SellerHomeViewModel @Inject constructor(
             val useCase = getLayoutUseCase.get()
             useCase.params = params
             if (heightDp == null) {
-                getDataFromUseCase(useCase, _widgetLayout)
+                getDataFromUseCase(useCase, _widgetLayout) { widgets ->
+                    saveRawWidgets(widgets)
+                }
             } else {
                 getDataFromUseCase(useCase, _widgetLayout) { widgets, isFromCache ->
+                    saveRawWidgets(widgets)
                     return@getDataFromUseCase sellerHomeLayoutHelper.get()
                         .getInitialWidget(widgets, heightDp, isFromCache)
                         .flowOn(dispatcher.io)
@@ -265,6 +269,11 @@ class SellerHomeViewModel @Inject constructor(
         }, onError = {
             _widgetLayout.value = Fail(it)
         })
+    }
+
+    private fun saveRawWidgets(widgets: List<BaseWidgetUiModel<*>>) {
+        this.rawWidgets.clear()
+        this.rawWidgets.addAll(widgets)
     }
 
     fun getCardWidgetData(dataKeys: List<String>) {
@@ -479,10 +488,11 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun startSse(widgets: List<BaseWidgetUiModel<*>>) {
+    fun getRawWidgets(): List<BaseWidgetUiModel<*>> = rawWidgets
+
+    fun startSse(realTimeDataKeys: List<String>) {
         cancelSseJob()
         sseJob = viewModelScope.launch(dispatcher.io) {
-            val realTimeDataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
             if (realTimeDataKeys.isNotEmpty()) {
                 widgetSse.get().connect(SELLER_HOME_SSE, realTimeDataKeys)
                 widgetSse.get().listen()
@@ -506,18 +516,21 @@ class SellerHomeViewModel @Inject constructor(
 
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
-        liveData: MutableLiveData<Result<T>>
+        liveData: MutableLiveData<Result<T>>,
+        onSuccess: (widgets: T) -> Unit = {}
     ) {
         try {
             useCase.setUseCache(false)
             val result = useCase.executeUseCase()
             liveData.value = Success(result)
+            onSuccess(result)
         } catch (networkException: Exception) {
             if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
                 try {
                     useCase.setUseCache(true)
                     val result = useCase.executeUseCase()
                     liveData.value = Success(result)
+                    onSuccess(result)
                 } catch (_: Exception) {
                     throw networkException
                 }
