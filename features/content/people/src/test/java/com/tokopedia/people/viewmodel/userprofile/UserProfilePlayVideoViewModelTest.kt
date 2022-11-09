@@ -77,7 +77,6 @@ class UserProfilePlayVideoViewModelTest {
 
     @Test
     fun `load profile with refresh - should emit LoadPlayVideo event`() {
-
         robot.start {
             recordEvent {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
@@ -89,7 +88,6 @@ class UserProfilePlayVideoViewModelTest {
 
     @Test
     fun `load profile with no refresh - should not emit LoadPlayVideo event`() {
-
         robot.start {
             recordEvent {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = false))
@@ -101,7 +99,6 @@ class UserProfilePlayVideoViewModelTest {
 
     @Test
     fun `when user successfully load user play video, it will emit the data`() {
-
         robot.start {
             submitAction(UserProfileAction.LoadPlayVideo(""))
 
@@ -112,7 +109,6 @@ class UserProfilePlayVideoViewModelTest {
 
     @Test
     fun `when user failed load user play video, it will emit error`() {
-
         robot.start {
             coEvery { mockRepo.getPlayVideo(any(), any()) } throws mockException
 

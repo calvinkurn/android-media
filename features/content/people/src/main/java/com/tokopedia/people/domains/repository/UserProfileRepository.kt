@@ -1,11 +1,11 @@
 package com.tokopedia.people.domains.repository
 
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
@@ -39,7 +39,7 @@ interface UserProfileRepository {
 
     suspend fun shopFollowUnfollow(
         shopId: String,
-        action: ShopFollowAction
+        action: ShopFollowAction,
     ): MutationUiModel
 
     suspend fun getFollowerList(
