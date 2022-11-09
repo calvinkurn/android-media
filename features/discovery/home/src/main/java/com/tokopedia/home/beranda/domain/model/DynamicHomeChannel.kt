@@ -19,7 +19,7 @@ data class DynamicHomeChannel(
             @SerializedName("id")
             val id: String = "",
             @Expose
-            @SerializedName("group_id", alternate = ["groupId"])
+            @SerializedName("group_id", alternate = ["groupID"])
             val groupId: String = "",
             @Expose
             @SerializedName("galaxy_attribution", alternate = ["galaxyAttribution"])
@@ -28,7 +28,7 @@ data class DynamicHomeChannel(
             @SerializedName("persona")
             val persona: String = "",
             @Expose
-            @SerializedName("brand_id", alternate = ["brandId"])
+            @SerializedName("brand_id", alternate = ["brandID"])
             val brandId: String = "",
             @Expose
             @SerializedName("category_persona", alternate = ["categoryPersona"])

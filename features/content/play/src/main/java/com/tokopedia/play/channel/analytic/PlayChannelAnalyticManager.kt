@@ -36,7 +36,6 @@ class PlayChannelAnalyticManager @Inject constructor(
 
     private var analytic2: PlayAnalytic2? = null
     private var partnerType: PartnerType = PartnerType.Unknown
-
     private val impressionSet = mutableSetOf<String>() //productIds
 
     fun observe(
@@ -125,7 +124,6 @@ class PlayChannelAnalyticManager @Inject constructor(
             analytic.clickFeaturedProduct(product, position)
         }
     }
-
 
     private fun clearProducts() = impressionSet.clear()
 

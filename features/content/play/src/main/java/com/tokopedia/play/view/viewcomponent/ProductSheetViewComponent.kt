@@ -229,7 +229,6 @@ class ProductSheetViewComponent(
             }
         }
 
-
         if (voucherList.isEmpty()) {
             clProductVoucher.hide()
         } else {
@@ -245,6 +244,8 @@ class ProductSheetViewComponent(
             impressionSet.clear()
             sendImpression()
         }
+
+        sendImpression()
     }
 
     fun showPlaceholder() {

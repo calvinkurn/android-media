@@ -8,7 +8,9 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.jsonToObject
+import com.tokopedia.search.result.cpmJSONObject
 import com.tokopedia.search.result.cpmJsonString
+import com.tokopedia.search.result.notCpmShopJsonObject
 import com.tokopedia.search.result.notCpmShopJsonString
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel

@@ -217,7 +217,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "productView",
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "view - now product bottomsheet",
-                "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value}"
+                "$channelId - ${impressedProducts.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value}"
             ),
             enhanceECommerceMap = hashMapOf(
                 "ecommerce" to hashMapOf(

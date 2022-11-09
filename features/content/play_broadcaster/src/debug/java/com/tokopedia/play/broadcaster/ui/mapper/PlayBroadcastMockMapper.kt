@@ -39,35 +39,6 @@ import kotlin.random.Random
  * Created by jegul on 21/09/20
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
-    @Suppress("MagicNumber")
-    override fun mapSearchSuggestionList(keyword: String, productsResponse: GetProductsByEtalaseResponse.GetProductListData): List<SearchSuggestionUiModel> {
-        return List(keyword.length) {
-            val suggestionText = " ${keyword.substring(0, it + 1)}"
-            val fullText = "$keyword$suggestionText"
-            SearchSuggestionUiModel(
-                    queriedText = keyword,
-                    suggestedId = "1",
-                    suggestedText = fullText,
-                    spannedSuggestion = SpannableStringBuilder(fullText).apply {
-                        setSpan(StyleSpan(Typeface.BOLD), fullText.indexOf(suggestionText), fullText.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                    }
-            )
-        }
-    }
-
-    @Suppress("MagicNumber")
-    override fun mapLiveFollowers(response: GetLiveFollowersResponse): FollowerDataUiModel {
-        return FollowerDataUiModel(
-                List(3) {
-                    FollowerUiModel.Unknown(when (it) {
-                        0 -> com.tokopedia.unifyprinciples.R.color.Unify_Y500
-                        1 -> com.tokopedia.unifyprinciples.R.color.Unify_B600
-                        else -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
-                    })
-                },
-                3
-        )
-    }
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel {
         return LiveStreamInfoUiModel(
@@ -118,10 +89,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
-    override fun mapProductTag(productTag: ProductTagging): List<ProductData> {
-        return emptyList()
-    }
-
     @Suppress("MagicNumber")
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
@@ -165,10 +132,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 ingestUrl = LOCAL_RTMP_URL,
                 status = ChannelStatus.Draft
         )
-    }
-
-    override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData> {
-        return emptyList()
     }
 
     override fun mapChannelSchedule(

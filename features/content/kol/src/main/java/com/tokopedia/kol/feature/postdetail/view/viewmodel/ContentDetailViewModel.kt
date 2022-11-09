@@ -141,9 +141,14 @@ class ContentDetailViewModel @Inject constructor(
         }
     }
 
-    fun followShop(shopId: String, action: ShopFollowAction, rowNumber: Int) {
+    fun followShop(
+        shopId: String,
+        action: ShopFollowAction,
+        rowNumber: Int,
+        isFollowedFromRSRestrictionBottomSheet: Boolean = false
+    ) {
         launchCatchError(block = {
-            val response = repository.followShop(shopId, action, rowNumber)
+            val response = repository.followShop(shopId, action, rowNumber, isFollowedFromRSRestrictionBottomSheet)
             _followShopObservable.value = ContentDetailResult.Success(response)
         }) {
             _followShopObservable.value = ContentDetailResult.Failure(it) {
