@@ -11,6 +11,17 @@ object WishlistV2RemoteConfigRollenceUtil {
         return isEnableRemoteConfigWishlistCollection(context) && isEnableRollenceWishlistCollection()
     }
 
+    fun isEnableRollenceWishlistSharing(): Boolean {
+        return try {
+            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+            val abTestWishlistCollectionSharing = abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION_SHARING, "")
+
+            abTestWishlistCollectionSharing == RollenceKey.WISHLIST_COLLECTION_SHARING
+        } catch (throwable: Throwable) {
+            false
+        }
+    }
+
     private fun isEnableRemoteConfigWishlistCollection(context: Context): Boolean {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
         isUseWishlistCollection = config.getBoolean(RemoteConfigKey.ENABLE_WISHLIST_COLLECTION, true)
