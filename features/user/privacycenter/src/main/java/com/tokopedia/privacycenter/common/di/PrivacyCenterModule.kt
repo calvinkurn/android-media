@@ -1,8 +1,6 @@
-package com.tokopedia.privacycenter.di
+package com.tokopedia.privacycenter.common.di
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.user.session.UserSession
