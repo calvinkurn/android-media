@@ -45,7 +45,6 @@ import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
-import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
@@ -60,7 +59,6 @@ import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
-import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
@@ -110,8 +108,6 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TO
 import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
-import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -135,9 +131,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
@@ -160,7 +153,6 @@ class ChatbotPresenter @Inject constructor(
     private val tkpdAuthInterceptor: TkpdAuthInterceptor,
     private val fingerprintInterceptor: FingerprintInterceptor,
     private val sendChatRatingUseCase: SendChatRatingUseCase,
-    private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
     private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
     private val getTickerDataUseCase: GetTickerDataUseCase,
     private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
@@ -176,7 +168,6 @@ class ChatbotPresenter @Inject constructor(
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
     object companion {
-        const val ERROR_CODE = "400"
         const val OPEN_CSAT = "13"
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER_DEBUGGING = "15"
@@ -194,7 +185,6 @@ class ChatbotPresenter @Inject constructor(
     private var mSubscription: CompositeSubscription
     private var isUploading: Boolean = false
     private var listInterceptor: ArrayList<Interceptor>
-    private var isErrorOnLeaveQueue = false
     lateinit var chatResponse: ChatSocketPojo
     private val job = SupervisorJob()
 
@@ -334,12 +324,10 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun handleSessionChange(agentMode: SessionChangeAttributes) {
-        if (agentMode != null) {
-            if (agentMode.sessionChange.mode == MODE_AGENT) {
-                view.sessionChangeStateHandler(true)
-            } else if (agentMode.sessionChange.mode == MODE_BOT) {
-                view.sessionChangeStateHandler(false)
-            }
+        if (agentMode.sessionChange.mode == MODE_AGENT) {
+            view.sessionChangeStateHandler(true)
+        } else if (agentMode.sessionChange.mode == MODE_BOT) {
+            view.sessionChangeStateHandler(false)
         }
     }
 
@@ -567,61 +555,6 @@ class ChatbotPresenter @Inject constructor(
             .build()
     }
 
-    override fun uploadImages(
-        it: ImageUploadUiModel,
-        messageId: String,
-        opponentId: String,
-        onError: (Throwable, ImageUploadUiModel) -> Unit
-    ) {
-        if (validateImageAttachment(it.imageUrl, MAX_FILE_SIZE)) {
-            isUploading = true
-            uploadImageUseCase.unsubscribe()
-
-            val reqParam = HashMap<String, RequestBody>()
-            val webService = "1".toRequestBody("text/plain".toMediaTypeOrNull())
-            reqParam.put("web_service", createRequestBody("1"))
-            reqParam.put(
-                "id",
-                createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
-            )
-            val params = uploadImageUseCase.createRequestParam(
-                it.imageUrl,
-                "/upload/attachment",
-                "fileToUpload\"; filename=\"image.jpg",
-                reqParam
-            )
-
-            uploadImageUseCase.execute(
-                params,
-                object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
-                    override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
-                        t.dataResultImageUpload.data?.run {
-                            sendUploadedImageToWebsocket(
-                                ChatbotSendWebsocketParam
-                                    .generateParamSendImage(
-                                        messageId,
-                                        this.picSrc,
-                                        this.picObj,
-                                        it.startTime,
-                                        opponentId
-                                    )
-                            )
-                        }
-                        isUploading = false
-                    }
-
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable) {
-                        isUploading = false
-                        onError(e, it)
-                    }
-                }
-            )
-        }
-    }
-
     override fun uploadImageSecureUpload(
         imageUploadViewModel: ImageUploadUiModel,
         messageId: String,
@@ -739,8 +672,8 @@ class ChatbotPresenter @Inject constructor(
         return uri.getQueryParameter(key).toBlankOrString()
     }
 
-    override fun cancelImageUpload() {
-        uploadImageUseCase.unsubscribe()
+     override fun cancelImageUpload() {
+         chatBotSecureImageUploadUseCase.unsubscribe()
     }
 
     fun sendUploadedImageToWebsocket(json: JsonObject) {
@@ -749,10 +682,6 @@ class ChatbotPresenter @Inject constructor(
         list.add(fingerprintInterceptor)
 
         RxWebSocket.send(json, list)
-    }
-
-    private fun createRequestBody(content: String): RequestBody {
-        return content.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun validateImageAttachment(uri: String?, maxFileSize: Int): Boolean {
@@ -982,9 +911,8 @@ class ChatbotPresenter @Inject constructor(
         val params = checkUploadSecureUseCase.createRequestParams(messageId)
         launchCatchError(
             block = {
-                val response = checkUploadSecureUseCase.checkUploadSecure(params)
-                val isSecureUpload = response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
-                if (isSecureUpload) view.uploadUsingSecureUpload(data) else view.uploadUsingOldMechanism(data)
+                checkUploadSecureUseCase.checkUploadSecure(params)
+                view.uploadUsingSecureUpload(data)
             },
             onError = {
                 ChatbotNewRelicLogger.logNewRelic(
