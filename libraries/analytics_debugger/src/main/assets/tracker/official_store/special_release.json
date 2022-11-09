@@ -39,7 +39,7 @@
       "trackerId": "30353"
     },
     {
-      "eventAction": "click view all on dynamic channel feature campaign",
+      "eventAction": "click view all on banner dynamic channel feature campaign",
       "eventCategory": "os microsite",
       "event": "clickHomepage",
       "sessionIris": ".*",
@@ -49,7 +49,7 @@
       "trackerId": "30354"
     },
     {
-      "eventAction": "click view all card on dynamic channel feature campaign",
+      "eventAction": "click view all card on banner dynamic channel feature campaign",
       "eventCategory": "os microsite",
       "event": "clickHomepage",
       "sessionIris": ".*",
