@@ -37,6 +37,7 @@ data class ShopProductCheckoutRequest(
     // order metadata
     var freeShippingMetadata: String = "",
     var needPrescription: Boolean = false,
+    var needToSendValidationMetadata: Boolean = false,
     var validationMetadata: String = "",
 
     // Additional data
