@@ -2,12 +2,12 @@ package com.tokopedia.people.model
 
 import com.google.gson.annotations.SerializedName
 
-data class ProfileHeaderBase (
+data class ProfileHeaderBase(
     @SerializedName("feedXProfileHeader")
     val profileHeader: FeedXProfileHeader
 )
 
-data class FeedXProfileHeader (
+data class FeedXProfileHeader(
     @SerializedName("profile")
     val profile: Profile,
 
@@ -21,7 +21,7 @@ data class FeedXProfileHeader (
     val shouldSeoIndex: Boolean
 )
 
-data class Profile (
+data class Profile(
     @SerializedName("userID")
     val userID: String,
 
@@ -50,7 +50,7 @@ data class Profile (
     val liveplaychannel: Liveplaychannel
 )
 
-data class Liveplaychannel (
+data class Liveplaychannel(
     @SerializedName("islive")
     val islive: Boolean,
 
@@ -61,7 +61,7 @@ data class Liveplaychannel (
     val liveplaychannellink: Link
 )
 
-data class Link (
+data class Link(
     @SerializedName("applink")
     val applink: String,
 
@@ -69,7 +69,7 @@ data class Link (
     val weblink: String
 )
 
-data class Stats (
+data class Stats(
     @SerializedName("totalPost")
     val totalPost: Long,
 
@@ -88,4 +88,3 @@ data class Stats (
     @SerializedName("totalFollowingFmt")
     val totalFollowingFmt: String
 )
-

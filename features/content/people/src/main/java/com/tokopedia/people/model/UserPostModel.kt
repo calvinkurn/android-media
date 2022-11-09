@@ -8,14 +8,13 @@ data class UserPostModel(
     val playGetContentSlot: PlayGetContentSlot
 )
 
-
 data class PlayGetContentSlot(
     @SerializedName("data")
     val data: MutableList<PlayPostContent>,
 
     @SerializedName("meta")
     val playGetContentSlot: PlayGetContentSlotMeta
-): BaseItem()
+) : BaseItem()
 
 data class PlayGetContentSlotMeta(
     @SerializedName("is_autoplay")
@@ -43,7 +42,7 @@ data class PlayPostContent(
 
     @SerializedName("items")
     val items: MutableList<PlayPostContentItem>
-): BaseItem()
+) : BaseItem()
 
 data class PlayPostContentItem(
     @SerializedName("app_link")
@@ -80,7 +79,7 @@ data class PlayPostContentItem(
     val configurations: PlayPostConfigurations,
 
     @SerializedName("partner")
-    val partner: Partner,
+    val partner: Partner
 ) : BaseItem() {
 
     data class Partner(
@@ -88,7 +87,7 @@ data class PlayPostContentItem(
         val id: String,
 
         @SerializedName("name")
-        val name: String,
+        val name: String
     )
 }
 

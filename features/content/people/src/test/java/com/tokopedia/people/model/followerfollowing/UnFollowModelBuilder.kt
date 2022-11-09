@@ -13,7 +13,7 @@ class UnFollowModelBuilder {
         userIdSource: String,
         userIdTarget: String,
         relation: String = "",
-        isSuccess: String = "1",
+        isSuccess: String = "1"
     ): ProfileDoUnFollowModelBase {
         return ProfileDoUnFollowModelBase(
             profileFollowers = ProfileDoFollowedData(
@@ -21,10 +21,10 @@ class UnFollowModelBuilder {
                     userIdSource = userIdSource,
                     userIdTarget = userIdTarget,
                     relation = relation,
-                    isSuccess = isSuccess,
+                    isSuccess = isSuccess
                 ),
                 messages = emptyList(),
-                errorCode = "",
+                errorCode = ""
             )
         )
     }

@@ -24,8 +24,8 @@ import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
-import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.listener.FollowerFollowingListener
+import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.ProfileFollowingAdapter
 import com.tokopedia.unifycomponents.LocalLoad
@@ -37,8 +37,8 @@ import javax.inject.Inject
 class FollowingListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userSession: UserSessionInterface,
-    private val userProfileTracker: UserProfileTracker,
-): TkpdBaseV4Fragment(),
+    private val userProfileTracker: UserProfileTracker
+) : TkpdBaseV4Fragment(),
     AdapterCallback,
     FollowerFollowingListener,
     FollowingFollowerListener {
@@ -99,94 +99,97 @@ class FollowingListingFragment @Inject constructor(
     }
 
     private fun addListObserver() =
-        mPresenter.profileFollowingsListLiveData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-                        mAdapter.resetAdapter()
-                        mAdapter.notifyDataSetChanged()
-                    }
-                    is Success -> {
-                        if (isSwipeRefresh == true) {
-                            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
-                                false
-                            isSwipeRefresh = !isSwipeRefresh!!
-                            mAdapter.clear()
-                            mAdapter.items.addAll(it.data.profileFollowings.profileFollower)
+        mPresenter.profileFollowingsListLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                it?.let {
+                    when (it) {
+                        is Loading -> {
+                            mAdapter.resetAdapter()
                             mAdapter.notifyDataSetChanged()
-                        } else {
-                            mAdapter.onSuccess(it.data)
                         }
-
-
-                    }
-                    is ErrorMessage -> {
-                        mAdapter.onError()
+                        is Success -> {
+                            if (isSwipeRefresh == true) {
+                                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                                    false
+                                isSwipeRefresh = !isSwipeRefresh!!
+                                mAdapter.clear()
+                                mAdapter.items.addAll(it.data.profileFollowings.profileFollower)
+                                mAdapter.notifyDataSetChanged()
+                            } else {
+                                mAdapter.onSuccess(it.data)
+                            }
+                        }
+                        is ErrorMessage -> {
+                            mAdapter.onError()
+                        }
                     }
                 }
             }
-        })
+        )
 
     private fun addFollowersErrorObserver() =
-        mPresenter.followersErrorLiveData.observe(viewLifecycleOwner, Observer {
-            if (isSwipeRefresh == true) {
-                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
-                    false
-                isSwipeRefresh = !isSwipeRefresh!!
-            } else {
-                //Hide shimmer
-            }
+        mPresenter.followersErrorLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (isSwipeRefresh == true) {
+                    view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing =
+                        false
+                    isSwipeRefresh = !isSwipeRefresh!!
+                } else {
+                    // Hide shimmer
+                }
 
+                it?.let {
+                    when (it) {
+                        is UnknownHostException, is SocketTimeoutException -> {
+                            followersContainer?.displayedChild = PAGE_ERROR
 
-            it?.let {
-                when (it) {
-                    is UnknownHostException, is SocketTimeoutException -> {
-                        followersContainer?.displayedChild = PAGE_ERROR
-
-                        globalError?.refreshBtn?.setOnClickListener {
-                            followersContainer?.displayedChild = PAGE_LOADING
-                            refreshMainUi()
-                        }
-                    }
-                    is IllegalStateException -> {
-                        followersContainer?.displayedChild = PAGE_ERROR
-
-                        globalError?.refreshBtn?.setOnClickListener {
-                            followersContainer?.displayedChild = PAGE_LOADING
-                            refreshMainUi()
-                        }
-                    }
-                    is RuntimeException -> {
-                        when (it.localizedMessage?.toIntOrNull()) {
-                            ReponseStatus.NOT_FOUND -> {
-                                followersContainer?.displayedChild = PAGE_ERROR
-
-                                globalError?.refreshBtn?.setOnClickListener {
-                                    followersContainer?.displayedChild = PAGE_LOADING
-                                    refreshMainUi()
-                                }
+                            globalError?.refreshBtn?.setOnClickListener {
+                                followersContainer?.displayedChild = PAGE_LOADING
+                                refreshMainUi()
                             }
-                            ReponseStatus.INTERNAL_SERVER_ERROR -> {
-                                followersContainer?.displayedChild = PAGE_ERROR
+                        }
+                        is IllegalStateException -> {
+                            followersContainer?.displayedChild = PAGE_ERROR
 
-                                globalError?.refreshBtn?.setOnClickListener {
-                                    followersContainer?.displayedChild = PAGE_LOADING
-                                    refreshMainUi()
-                                }
+                            globalError?.refreshBtn?.setOnClickListener {
+                                followersContainer?.displayedChild = PAGE_LOADING
+                                refreshMainUi()
                             }
-                            else -> {
-                                followersContainer?.displayedChild = PAGE_ERROR
+                        }
+                        is RuntimeException -> {
+                            when (it.localizedMessage?.toIntOrNull()) {
+                                ReponseStatus.NOT_FOUND -> {
+                                    followersContainer?.displayedChild = PAGE_ERROR
 
-                                globalError?.refreshBtn?.setOnClickListener {
-                                    followersContainer?.displayedChild = PAGE_LOADING
-                                    refreshMainUi()
+                                    globalError?.refreshBtn?.setOnClickListener {
+                                        followersContainer?.displayedChild = PAGE_LOADING
+                                        refreshMainUi()
+                                    }
+                                }
+                                ReponseStatus.INTERNAL_SERVER_ERROR -> {
+                                    followersContainer?.displayedChild = PAGE_ERROR
+
+                                    globalError?.refreshBtn?.setOnClickListener {
+                                        followersContainer?.displayedChild = PAGE_LOADING
+                                        refreshMainUi()
+                                    }
+                                }
+                                else -> {
+                                    followersContainer?.displayedChild = PAGE_ERROR
+
+                                    globalError?.refreshBtn?.setOnClickListener {
+                                        followersContainer?.displayedChild = PAGE_LOADING
+                                        refreshMainUi()
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        })
+        )
 
     override fun onDestroy() {
         super.onDestroy()
@@ -199,7 +202,7 @@ class FollowingListingFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        if(isLoggedIn != userSession.isLoggedIn){
+        if (isLoggedIn != userSession.isLoggedIn) {
             refreshMainUi()
             isLoggedIn = userSession.isLoggedIn
         }
@@ -210,7 +213,7 @@ class FollowingListingFragment @Inject constructor(
         if (requestCode == FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
             isLoggedIn = userSession.isLoggedIn
             refreshMainUi()
-        } else if (requestCode == UserProfileFragment.REQUEST_CODE_USER_PROFILE){
+        } else if (requestCode == UserProfileFragment.REQUEST_CODE_USER_PROFILE) {
             val position = data?.getIntExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, -1)
             data?.getStringExtra(UserProfileFragment.EXTRA_FOLLOW_UNFOLLOW_STATUS)?.let {
                 if (position != null && position != -1) {
@@ -218,10 +221,8 @@ class FollowingListingFragment @Inject constructor(
                         mAdapter.updateFollowUnfollow(position, true)
                     else
                         mAdapter.updateFollowUnfollow(position, false)
-
                 }
             }
-
         }
     }
 
@@ -256,7 +257,6 @@ class FollowingListingFragment @Inject constructor(
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
         followersContainer?.displayedChild = PAGE_CONTENT
-
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
@@ -279,7 +279,7 @@ class FollowingListingFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle,
+            bundle: Bundle
         ): FollowingListingFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowingListingFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
@@ -310,6 +310,4 @@ class FollowingListingFragment @Inject constructor(
     override fun clickFollow(userId: String, self: Boolean) {
         userProfileTracker.clickFollowFromFollowing(userId, self)
     }
-
 }
-

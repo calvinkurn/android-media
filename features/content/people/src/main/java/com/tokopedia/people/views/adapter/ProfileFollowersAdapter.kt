@@ -14,8 +14,8 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
-import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.listener.FollowerFollowingListener
+import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowerV2
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
@@ -31,7 +31,7 @@ open class ProfileFollowersAdapter(
     val callback: AdapterCallback,
     val userSession: UserSession,
     val listener: FollowerFollowingListener,
-    private val followerListener: FollowingFollowerListener,
+    private val followerListener: FollowingFollowerListener
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
@@ -63,16 +63,16 @@ open class ProfileFollowersAdapter(
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
         if (args == null || args.isEmpty()) {
-           return
+            return
         }
 
         args[0]?.let { viewModel.getFollowers(it, cursor, PAGE_COUNT) }
     }
 
     fun onSuccess(data: ProfileFollowerListBase) {
-        if (data == null
-            || data.profileFollowers == null
-            || data.profileFollowers.profileFollower == null
+        if (data == null ||
+            data.profileFollowers == null ||
+            data.profileFollowers.profileFollower == null
         ) {
             loadCompleted(mutableListOf(), data)
             isLastPage = true
@@ -81,7 +81,7 @@ open class ProfileFollowersAdapter(
 
         loadCompleted(data.profileFollowers.profileFollower, data)
         cursor = data.profileFollowers.newCursor
-        isLastPage = data.profileFollowers.newCursor.isEmpty();
+        isLastPage = data.profileFollowers.newCursor.isEmpty()
     }
 
     fun onError() {
@@ -108,7 +108,8 @@ open class ProfileFollowersAdapter(
             )
             intent.putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
             listener.callstartActivityFromFragment(
-                intent, UserProfileFragment.REQUEST_CODE_USER_PROFILE
+                intent,
+                UserProfileFragment.REQUEST_CODE_USER_PROFILE
             )
         }
 
@@ -121,8 +122,7 @@ open class ProfileFollowersAdapter(
                 updateToFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
-                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext)){
-
+                    if (!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext)) {
                         val snackBar = Toaster.build(
                             holder.btnAction as View,
                             itemContext.getString(com.tokopedia.people.R.string.up_error_unfollow),
@@ -138,7 +138,7 @@ open class ProfileFollowersAdapter(
                     if (!userSession?.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW,
+                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
                         followerListener.clickUnfollow(userSession.userId, item.profile.userID == userSession.userId)
@@ -151,8 +151,7 @@ open class ProfileFollowersAdapter(
                 updateToUnFollowUi(holder.btnAction)
 
                 holder.btnAction.setOnClickListener { v ->
-                    if(!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext)){
-
+                    if (!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext)) {
                         val snackBar = Toaster.build(
                             holder.btnAction as View,
                             itemContext.getString(com.tokopedia.people.R.string.up_error_follow),
@@ -168,7 +167,7 @@ open class ProfileFollowersAdapter(
                     if (!userSession?.isLoggedIn) {
                         listener.callstartActivityFromFragment(
                             ApplinkConst.LOGIN,
-                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW,
+                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
                         followerListener.clickFollow(userSession.userId, item.profile.userID == userSession.userId)
@@ -205,13 +204,11 @@ open class ProfileFollowersAdapter(
         if (vh is ViewHolder) {
             val holder = vh as ViewHolder
             val data = items[holder.adapterPosition] ?: return
-            //listener.shopProductImpressed(holder.adapterPosition, data)
+            // listener.shopProductImpressed(holder.adapterPosition, data)
         }
     }
 
     companion object {
         const val PAGE_COUNT = 20
     }
-
 }
-

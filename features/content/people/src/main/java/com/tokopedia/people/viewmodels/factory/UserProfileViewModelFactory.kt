@@ -15,14 +15,14 @@ import dagger.assisted.AssistedInject
 class UserProfileViewModelFactory @AssistedInject constructor(
     @Assisted owner: SavedStateRegistryOwner,
     @Assisted private val username: String,
-    private val userProfileViewModelFactory: UserProfileViewModel.Factory,
+    private val userProfileViewModelFactory: UserProfileViewModel.Factory
 ) : AbstractSavedStateViewModelFactory(owner, null) {
 
     @AssistedFactory
     interface Creator {
         fun create(
             owner: SavedStateRegistryOwner,
-            username: String,
+            username: String
         ): UserProfileViewModelFactory
     }
 

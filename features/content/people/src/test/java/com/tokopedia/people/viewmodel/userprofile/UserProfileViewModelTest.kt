@@ -77,7 +77,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when non-login user load data successfully, it should emit data successfully with type NotLoggedIn`() {
-
         coEvery { mockUserSession.isLoggedIn } returns false
         coEvery { mockUserSession.userId } returns ""
 
@@ -85,7 +84,7 @@ class UserProfileViewModelTest {
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -103,7 +102,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load own data, it should call and emit whitelist data`() {
-
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
         coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
@@ -112,7 +110,7 @@ class UserProfileViewModelTest {
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -130,14 +128,13 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load others profile and hasnt follow, it should emit follow status unfollow`() {
-
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -155,14 +152,13 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load others profile and alr follow, it should emit status followed`() {
-
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
 
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -180,7 +176,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load others profile and failed, it should emit empty profile and all related data`() {
-
         coEvery { mockRepo.getProfile(any()) } throws mockException
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
 
@@ -188,7 +183,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -206,7 +201,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load follow status and but hasnt logged in, it should emit status not followed`() {
-
         coEvery { mockRepo.getProfile(any()) } returns mockOtherProfile
         coEvery { mockRepo.getFollowInfo(any()) } throws mockException
         coEvery { mockUserSession.isLoggedIn } returns false
@@ -215,7 +209,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {

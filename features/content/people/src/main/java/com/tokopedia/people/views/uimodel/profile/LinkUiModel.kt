@@ -5,7 +5,7 @@ package com.tokopedia.people.views.uimodel.profile
  */
 data class LinkUiModel(
     val webLink: String,
-    val appLink: String,
+    val appLink: String
 ) {
     companion object {
         val Empty: LinkUiModel

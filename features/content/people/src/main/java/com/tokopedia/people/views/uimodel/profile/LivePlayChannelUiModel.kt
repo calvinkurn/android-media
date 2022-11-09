@@ -13,7 +13,7 @@ data class LivePlayChannelUiModel(
             get() = LivePlayChannelUiModel(
                 isLive = false,
                 channelId = "",
-                channelLink = LinkUiModel.Empty,
+                channelLink = LinkUiModel.Empty
             )
     }
 }

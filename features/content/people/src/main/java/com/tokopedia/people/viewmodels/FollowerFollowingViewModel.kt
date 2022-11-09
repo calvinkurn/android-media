@@ -3,19 +3,19 @@ package com.tokopedia.people.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.di.UserProfileScope
-import com.tokopedia.people.model.*
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
-import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.people.model.*
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @UserProfileScope
 class FollowerFollowingViewModel @Inject constructor(
-    private val repo: UserProfileRepository,
+    private val repo: UserProfileRepository
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val profileFollowers = MutableLiveData<Resources<ProfileFollowerListBase>>()
@@ -43,8 +43,8 @@ class FollowerFollowingViewModel @Inject constructor(
 
             profileFollowers.value = Success(result)
         }, onError = {
-            followersError.value = it
-        })
+                followersError.value = it
+            })
     }
 
     fun getFollowings(
@@ -57,8 +57,8 @@ class FollowerFollowingViewModel @Inject constructor(
 
             profileFollowingsList.value = Success(result)
         }, onError = {
-            followersError.value = it
-        })
+                followersError.value = it
+            })
     }
 
     fun doFollow(followingUserIdEnc: String) {

@@ -43,7 +43,7 @@ class FollowerFollowingViewModelTest {
     private val repo: UserProfileRepository = mockk(relaxed = true)
 
     private val robot = FollowerFollowingViewModelRobot(
-        repo = repo,
+        repo = repo
     )
 
     @Before

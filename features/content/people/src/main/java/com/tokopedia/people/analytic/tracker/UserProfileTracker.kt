@@ -128,5 +128,4 @@ interface UserProfileTracker {
     fun clickAccessMedia(userId: String, self: Boolean, allow: String)
 
     fun sendAll()
-
 }

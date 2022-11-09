@@ -13,8 +13,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.people.R
-import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.listener.FollowerFollowingListener
+import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.model.ProfileFollowerV2
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
@@ -74,9 +74,9 @@ open class ProfileFollowingAdapter(
     }
 
     fun onSuccess(data: ProfileFollowingListBase) {
-        if (data == null
-            || data.profileFollowings == null
-            || data.profileFollowings.profileFollower == null
+        if (data == null ||
+            data.profileFollowings == null ||
+            data.profileFollowings.profileFollower == null
         ) {
             loadCompleted(mutableListOf(), data)
             isLastPage = true
@@ -104,7 +104,6 @@ open class ProfileFollowingAdapter(
             holder.textUsername.hide()
         }
 
-
         if (item.profile.userID == userSession.userId) {
             holder.btnAction.hide()
         } else {
@@ -118,7 +117,6 @@ open class ProfileFollowingAdapter(
                             itemContext.applicationContext
                         )
                     ) {
-
                         val snackBar = Toaster.build(
                             holder.btnAction as View,
                             itemContext.getString(com.tokopedia.people.R.string.up_error_unfollow),
@@ -151,7 +149,6 @@ open class ProfileFollowingAdapter(
                             itemContext.applicationContext
                         )
                     ) {
-
                         val snackBar = Toaster.build(
                             holder.btnAction as View,
                             itemContext.getString(com.tokopedia.people.R.string.up_error_follow),
@@ -187,7 +184,8 @@ open class ProfileFollowingAdapter(
             )
             intent.putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
             listener.callstartActivityFromFragment(
-                intent, UserProfileFragment.REQUEST_CODE_USER_PROFILE
+                intent,
+                UserProfileFragment.REQUEST_CODE_USER_PROFILE
             )
         }
     }
@@ -216,6 +214,4 @@ open class ProfileFollowingAdapter(
     companion object {
         const val PAGE_COUNT = 20
     }
-
 }
-

@@ -10,34 +10,34 @@ class ProfileWhitelistUiModelBuilder {
     fun buildNoWhitelist() = buildWhitelist(
         isWhitelist = false,
         hasUsername = false,
-        hasAcceptTnc = false,
+        hasAcceptTnc = false
     )
 
     fun buildOnlyWhitelist() = buildWhitelist(
         isWhitelist = true,
         hasUsername = false,
-        hasAcceptTnc = false,
+        hasAcceptTnc = false
     )
 
     fun buildHasUsername() = buildWhitelist(
         isWhitelist = true,
         hasUsername = true,
-        hasAcceptTnc = false,
+        hasAcceptTnc = false
     )
 
     fun buildHasAcceptTnc() = buildWhitelist(
         isWhitelist = true,
         hasUsername = true,
-        hasAcceptTnc = true,
+        hasAcceptTnc = true
     )
 
     private fun buildWhitelist(
         isWhitelist: Boolean = false,
         hasUsername: Boolean = false,
-        hasAcceptTnc: Boolean = false,
+        hasAcceptTnc: Boolean = false
     ) = ProfileWhitelistUiModel(
         isWhitelist = isWhitelist,
         hasUsername = hasUsername,
-        hasAcceptTnc = hasAcceptTnc,
+        hasAcceptTnc = hasAcceptTnc
     )
 }

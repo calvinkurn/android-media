@@ -26,13 +26,13 @@ class PlayPostContentUseCase @Inject constructor(
         group: String,
         cursor: String,
         sourceType: String,
-        sourceId: String,
+        sourceId: String
     ): UserPostModel {
         val request = mapOf(
             KEY_GROUP to group,
             KEY_CURSOR to cursor,
             KEY_SOURCE_TYPE to sourceType,
-            KEY_SOURCE_ID to sourceId,
+            KEY_SOURCE_ID to sourceId
         )
         setRequestParams(request)
 

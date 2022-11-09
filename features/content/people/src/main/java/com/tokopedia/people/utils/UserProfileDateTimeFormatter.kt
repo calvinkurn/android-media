@@ -37,15 +37,14 @@ object UserProfileDateTimeFormatter {
                 calendar.time = it
 
                 val diff = (getDeviceGMT().toLong() - GMT07.toLong())
-                if(diff != 0L) {
+                if (diff != 0L) {
                     calendar.add(Calendar.HOUR_OF_DAY, (diff / GMT_DIVIDER).toInt())
                     calendar.add(Calendar.MINUTE, (diff % GMT_DIVIDER).toInt())
                 }
 
                 return@let outputFormat.format(calendar.time)
             } ?: raw
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             raw
         }
     }
@@ -55,8 +54,7 @@ object UserProfileDateTimeFormatter {
             val calendar = Calendar.getInstance(TimeZone.getTimeZone(GMT), locale)
             val dateFormat = SimpleDateFormat(Z, locale)
             dateFormat.format(calendar.time)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             GMT07
         }
     }
@@ -74,15 +72,14 @@ object UserProfileDateTimeFormatter {
                 calendar.time = it
 
                 val diff = (getDeviceGMT().toLong() - GMT07.toLong())
-                if(diff != 0L) {
+                if (diff != 0L) {
                     calendar.add(Calendar.HOUR_OF_DAY, (diff / GMT_DIVIDER).toInt())
                     calendar.add(Calendar.MINUTE, (diff % GMT_DIVIDER).toInt())
                 }
 
                 return@let calendar
             }
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             null
         }
     }

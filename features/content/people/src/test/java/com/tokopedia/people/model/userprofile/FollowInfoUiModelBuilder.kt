@@ -10,13 +10,12 @@ class FollowInfoUiModelBuilder {
     fun buildFollowInfo(
         userID: String = "",
         encryptedUserID: String = "",
-        status: Boolean = false,
+        status: Boolean = false
     ) = FollowInfoUiModel(
         userID = userID,
         encryptedUserID = encryptedUserID,
-        status = status,
+        status = status
     )
 
     fun buildEmptyFollowInfo() = FollowInfoUiModel.Empty
-
 }
