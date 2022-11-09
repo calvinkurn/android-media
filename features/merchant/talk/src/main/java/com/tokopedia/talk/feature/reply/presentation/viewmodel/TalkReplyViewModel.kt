@@ -18,7 +18,15 @@ import com.tokopedia.talk.feature.reply.data.model.report.TalkReportCommentRespo
 import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
-import com.tokopedia.talk.feature.reply.domain.usecase.*
+import com.tokopedia.talk.feature.reply.domain.usecase.DiscussionDataByQuestionIDUseCase
+import com.tokopedia.talk.feature.reply.domain.usecase.TalkCreateNewCommentUseCase
+import com.tokopedia.talk.feature.reply.domain.usecase.TalkDeleteCommentUseCase
+import com.tokopedia.talk.feature.reply.domain.usecase.TalkDeleteTalkUseCase
+import com.tokopedia.talk.feature.reply.domain.usecase.TalkFollowUnfollowTalkUseCase
+import com.tokopedia.talk.feature.reply.domain.usecase.TalkMarkCommentNotFraudUseCase
+import com.tokopedia.talk.feature.reply.domain.usecase.TalkMarkNotFraudUseCase
+import com.tokopedia.talk.feature.reply.domain.usecase.TalkReportCommentUseCase
+import com.tokopedia.talk.feature.reply.domain.usecase.TalkReportTalkUseCase
 import com.tokopedia.talk.feature.sellersettings.template.data.ChatTemplatesAll
 import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.GetAllTemplatesUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -89,6 +97,10 @@ class TalkReplyViewModel @Inject constructor(
     private val _reportTalkResult = MutableLiveData<Result<TalkReportTalkResponseWrapper>>()
     val reportTalkResult: LiveData<Result<TalkReportTalkResponseWrapper>>
         get() = _reportTalkResult
+
+    private val _blockTalkResult = MutableLiveData<Result<TalkReportTalkResponseWrapper>>()
+    val blockTalkResult: LiveData<Result<TalkReportTalkResponseWrapper>>
+        get() = _blockTalkResult
 
     private val _reportCommentResult = MutableLiveData<Result<TalkReportCommentResponseWrapper>>()
     val reportCommentResult: LiveData<Result<TalkReportCommentResponseWrapper>>
@@ -211,6 +223,20 @@ class TalkReplyViewModel @Inject constructor(
             }
         }) {
             _reportTalkResult.postValue(Fail(it))
+        }
+    }
+
+    fun blockTalk(questionId: String) {
+        launchCatchError(block = {
+            talkReportTalkUseCase.setParams(questionId.toLongOrZero(), TalkReportTalkUseCase.REPORT_REASON_BLOCK)
+            val response = talkReportTalkUseCase.executeOnBackground()
+            if (response.talkReportTalk.data.isSuccess == MUTATION_SUCCESS) {
+                _blockTalkResult.postValue(Success(response))
+            } else {
+                _blockTalkResult.postValue(Fail(MessageErrorException(response.talkReportTalk.messageError.firstOrNull())))
+            }
+        }) {
+            _blockTalkResult.postValue(Fail(it))
         }
     }
 

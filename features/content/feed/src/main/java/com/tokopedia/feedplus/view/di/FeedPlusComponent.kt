@@ -11,6 +11,8 @@ import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
+import com.tokopedia.feedcomponent.people.di.PeopleModule
+import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
 
 /**
  * @author by nisie on 5/15/17.
@@ -21,7 +23,9 @@ import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
         FeedComponentModule::class,
         ViewModelModule::class,
         PlayWidgetModule::class,
-        FeedFloatingButtonManagerModule::class
+        FeedFloatingButtonManagerModule::class,
+        ShopRecomModule::class,
+        PeopleModule::class
      ],
     dependencies = [BaseAppComponent::class]
 )
