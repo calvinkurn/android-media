@@ -254,8 +254,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
                 shipmentCartItemModel.validationMetadata =
                     courierItemData.scheduleDeliveryUiModel?.deliveryProduct?.validationMetadata
                         ?: ""
-            }
-            else if (isScheduleDeliverySelected == false) {
+            } else if (isScheduleDeliverySelected == false) {
                 shipmentCartItemModel.scheduleDate = ""
                 shipmentCartItemModel.timeslotId = 0L
                 shipmentCartItemModel.validationMetadata = ""
