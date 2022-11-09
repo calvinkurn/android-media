@@ -89,6 +89,8 @@ class PlayShortsPreparationFragment @Inject constructor(
                 activity?.onBackPressed()
             }
         }
+
+        /** TODO: setup title max character after getConfig */
     }
 
     private fun setupListener() {
@@ -123,7 +125,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                when(val toasterData = event.toaster) {
+                when (val toasterData = event.toaster) {
                     is PlayShortsToaster.ErrorSubmitTitle -> {
                         toaster.showError(
                             toasterData.throwable,
