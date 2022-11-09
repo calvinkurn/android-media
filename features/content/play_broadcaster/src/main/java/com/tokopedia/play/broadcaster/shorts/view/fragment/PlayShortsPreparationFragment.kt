@@ -163,6 +163,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                     openCoverSetupFragment()
                 }
             })
+
+            btnNext.setOnClickListener {
+                viewModel.submitAction(PlayShortsAction.ClickNext)
+            }
         }
     }
 
@@ -172,6 +176,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 renderPreparationMenu(it.prevValue, it.value)
                 renderTitleForm(it.prevValue, it.value)
                 renderCoverForm(it.prevValue, it.value)
+                renderNextButton(it.prevValue, it.value)
             }
         }
 
@@ -254,6 +259,15 @@ class PlayShortsPreparationFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun renderNextButton(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if(prev?.menuList == curr.menuList) return
+
+        binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
     }
 
     private fun showMainComponent(isShow: Boolean) {

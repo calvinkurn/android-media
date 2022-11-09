@@ -37,8 +37,9 @@ class PlayShortsViewModel @Inject constructor(
     val title: String
         get() = _titleForm.value.title
 
-    val titleFormState: PlayShortsTitleFormUiState.State
-        get() = _titleForm.value.state
+    /** TODO: Will update this validation with product checking as well */
+    val isAllMandatoryMenuChecked: Boolean
+        get() = _titleForm.value.title.isNotEmpty()
 
     /** TODO: adjust authorName here */
     val authorName: String
@@ -62,9 +63,6 @@ class PlayShortsViewModel @Inject constructor(
         _titleForm,
         _coverForm
     ) { menuList, titleForm, coverForm ->
-        /** Will update this validation with product checking as well */
-        val isAllMandatoryChecked = titleForm.title.isNotEmpty()
-
         menuList.map {
             when (it.menuId) {
                 DynamicPreparationMenu.TITLE -> {
@@ -77,7 +75,7 @@ class PlayShortsViewModel @Inject constructor(
                 DynamicPreparationMenu.COVER -> {
                     it.copy(
                         isChecked = coverForm.coverUri.isNotEmpty(),
-                        isEnabled = isAllMandatoryChecked
+                        isEnabled = isAllMandatoryMenuChecked,
                     )
                 }
                 else -> {
@@ -128,6 +126,8 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.OpenCoverForm -> handleOpenCoverForm()
             is PlayShortsAction.SetCover -> handleSetCover(action.cover)
             is PlayShortsAction.CloseCoverForm -> handleCloseCoverForm()
+
+            is PlayShortsAction.ClickNext -> handleClickNext()
         }
     }
 
@@ -209,6 +209,10 @@ class PlayShortsViewModel @Inject constructor(
         _coverForm.update {
             it.copy(state = PlayShortsCoverFormUiState.State.Unknown)
         }
+    }
+
+    private fun handleClickNext() {
+        /** TODO: handle this */
     }
 
     private fun setupPreparationMenu() {

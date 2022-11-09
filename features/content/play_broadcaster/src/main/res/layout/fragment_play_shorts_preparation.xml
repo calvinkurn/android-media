@@ -18,7 +18,7 @@
         android:id="@+id/preparation_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,11 +38,22 @@
         android:visibility="gone"
         />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_next"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/play_bro_next_action"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_preparation_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="toolbar, preparation_menu"
+        app:constraint_referenced_ids="toolbar, preparation_menu, btn_next"
         />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

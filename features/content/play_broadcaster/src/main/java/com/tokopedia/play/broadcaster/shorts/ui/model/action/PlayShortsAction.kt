@@ -28,4 +28,6 @@ sealed interface PlayShortsAction {
     ) : PlayShortsAction
 
     object CloseCoverForm : PlayShortsAction
+
+    object ClickNext : PlayShortsAction
 }
