@@ -47,7 +47,7 @@ import javax.inject.Inject
 class PlayShortsPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val userSession: UserSessionInterface,
-    private val coachMarkManager: ContentCoachMarkManager,
+    private val coachMarkManager: ContentCoachMarkManager
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
@@ -118,6 +118,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     override fun onBackPressed(): Boolean {
         return when {
             binding.formTitle.visibility == View.VISIBLE -> {
+                hideKeyboard()
                 viewModel.submitAction(PlayShortsAction.CloseTitleForm)
                 true
             }
@@ -164,6 +165,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
             formTitle.setListener(object : TitleFormView.Listener {
                 override fun onCloseTitleForm(view: TitleFormView) {
+                    hideKeyboard()
                     viewModel.submitAction(PlayShortsAction.CloseTitleForm)
                 }
 
@@ -294,7 +296,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(prev?.menuList == curr.menuList) return
+        if (prev?.menuList == curr.menuList) return
 
         binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
     }
