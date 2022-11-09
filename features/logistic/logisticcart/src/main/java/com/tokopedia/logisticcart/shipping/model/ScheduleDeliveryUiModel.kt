@@ -14,14 +14,14 @@ data class ScheduleDeliveryUiModel(
     val hidden: Boolean = false,
     val title: String = "",
     val text: String = "",
-    val notice: Notice? = null,
+    val notice: Notice = Notice(),
     val deliveryServices: List<DeliveryService> = arrayListOf(),
     // service id
     var scheduleDate: String = "",
     // product id
     var timeslotId: Long = 0L,
     // selected delivery products
-    var deliveryProduct: DeliveryProduct? = null,
+    var deliveryProduct: DeliveryProduct = DeliveryProduct(),
 ) : Parcelable {
 
     fun setScheduleDateAndTimeslotId(

@@ -11,10 +11,12 @@ import android.view.LayoutInflater
 import android.view.animation.CycleInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentShippingExperienceBinding
 import com.tokopedia.logisticcart.scheduledelivery.view.ShippingScheduleWidget
@@ -69,6 +71,8 @@ class ShippingWidget : ConstraintLayout {
         fun onViewErrorInCourierSection(logPromoDesc: String)
 
         fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel)
+
+        fun getHostFragmentManager() : FragmentManager
     }
 
     fun setupListener(shippingWidgetListener: ShippingWidgetListener) {
@@ -460,12 +464,6 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
-    private fun StringBuilder.appendHtmlBoldText(text: String) {
-        if (text.isNotBlank()) {
-            append(String.format(ShippingScheduleWidget.HTML_BOLD_FORMAT, text))
-        }
-    }
-
     private fun getSingleShippingLabelEta(
         selectedCourierItemData: CourierItemData
     ): String? {
@@ -639,6 +637,10 @@ class ShippingWidget : ConstraintLayout {
             listener = object : ShippingScheduleWidget.ShippingScheduleWidgetListener {
                 override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
                     mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
+                }
+
+                override fun getFragmentManager(): FragmentManager? {
+                    return mListener?.getHostFragmentManager()
                 }
             }
         )

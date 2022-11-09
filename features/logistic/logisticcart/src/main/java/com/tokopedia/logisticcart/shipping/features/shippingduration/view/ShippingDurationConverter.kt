@@ -8,6 +8,10 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Produ
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PromoStacking
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesDetailData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
 import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel
