@@ -8,25 +8,33 @@ object ChannelStyleUtil {
     const val BORDER_STYLE_PADDING = "padding"
 
     fun String.parseDividerSize(): Int {
-        val map = this.split("&").associate {
-            val (key, value ) = it.split("=")
-            key to value
-        }
-        val size = map[KEY_DIVIDER_SIZE]?.toIntOrNull()
-        size?.let {
-            return if(it > 0) it else DEFAULT_DIVIDER_SIZE
+        try {
+            val map = this.split("&").associate {
+                val (key, value ) = it.split("=")
+                key to value
+            }
+            val size = map[KEY_DIVIDER_SIZE]?.toIntOrNull()
+            size?.let {
+                return if(it > 0) it else DEFAULT_DIVIDER_SIZE
+            }
+        } catch (e: Exception) {
+            return DEFAULT_DIVIDER_SIZE
         }
         return DEFAULT_DIVIDER_SIZE
     }
 
     fun String.parseBorderStyle(): String {
-        val map = this.split("&").associate {
-            val (key, value ) = it.split("=")
-            key to value
-        }
-        val size = map[KEY_BORDER_STYLE]
-        size?.let {
-            return if(it.isBlank()) it else BORDER_STYLE_BLEEDING
+        try {
+            val map = this.split("&").associate {
+                val (key, value ) = it.split("=")
+                key to value
+            }
+            val size = map[KEY_BORDER_STYLE]
+            size?.let {
+                return if(it.isBlank()) it else BORDER_STYLE_BLEEDING
+            }
+        } catch (e: Exception) {
+            return BORDER_STYLE_BLEEDING
         }
         return BORDER_STYLE_BLEEDING
     }
