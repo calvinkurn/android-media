@@ -80,7 +80,7 @@ class BannerComponentViewHolder(itemView: View,
 
     private fun autoScrollLauncher() = launch(coroutineContext) {
         while (autoScrollState == STATE_RUNNING) {
-            delay(INTERVAL.toLong())
+            delay(scrollTransitionDuration)
             autoScrollCoroutine()
         }
     }
@@ -327,7 +327,6 @@ class BannerComponentViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner
-        private const val INTERVAL = 5000
         private const val STATE_RUNNING = 0
         private const val STATE_PAUSED = 1
         private const val INITIAL_PAGE_POSITION = 0
