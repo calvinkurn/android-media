@@ -79,7 +79,7 @@ class ProductDelegateAdapter(
 
         private fun Typography.setSku(item: Product) {
             if (item.sku.isEmpty()) {
-                invisible()
+                gone()
             } else {
                 visible()
                 text = context.getString(R.string.smvc_placeholder_product_sku, item.sku)

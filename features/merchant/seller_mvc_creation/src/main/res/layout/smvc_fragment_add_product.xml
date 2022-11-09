@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/checkbox"
         app:layout_constraintStart_toEndOf="@+id/checkbox"
         app:layout_constraintTop_toTopOf="@+id/checkbox"
-        app:typographyType="paragraph_1" />
+        app:typographyType="paragraph_2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgMaxProductSelection"
@@ -99,19 +99,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="display_1"
                 app:typographyWeight="bold"
-                tools:text="1/100 Produk" />
+                tools:text="1/100" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgProduct"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/smvc_product"
                 android:layout_marginStart="4dp"
-                android:gravity="bottom"
                 app:layout_constraintBottom_toBottomOf="@+id/tpgSelectedProductCount"
                 app:layout_constraintStart_toEndOf="@+id/tpgSelectedProductCount"
                 app:layout_constraintTop_toTopOf="@+id/tpgSelectedProductCount"
-                app:typographyType="paragraph_3"
-                android:text="@string/smvc_product" />
+                app:typographyType="paragraph_3" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnAddProduct"

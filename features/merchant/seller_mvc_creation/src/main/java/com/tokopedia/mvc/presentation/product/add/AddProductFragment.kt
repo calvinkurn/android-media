@@ -183,12 +183,26 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.tpgSelectedProductCount?.text = getString(
             R.string.smvc_placeholder_selected_product_count,
             uiState.selectedProductsIds.size,
-            uiState.voucherCreationMetadata?.maxProduct.orZero()
+            uiState.totalProducts.orZero()
         )
         binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
 
         productAdapter.submit(uiState.products)
         renderSortChips(uiState.selectedSort)
+        renderCheckbox(uiState)
+    }
+
+    private fun renderCheckbox(uiState: AddProductUiState) {
+        val checkboxWording = if (!uiState.isSelectAllActive) {
+            getString(R.string.smvc_select_all)
+        } else {
+            getString(
+                R.string.smvc_placeholder_check_all_selected_product_count,
+                uiState.selectedProductsIds.size,
+                uiState.totalProducts
+            )
+        } 
+        binding?.tpgSelectAll?.text = checkboxWording
     }
 
     private fun renderSortChips(selectedSort: ProductSortOptions) {

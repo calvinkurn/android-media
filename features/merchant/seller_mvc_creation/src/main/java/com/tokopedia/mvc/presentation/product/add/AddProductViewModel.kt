@@ -149,7 +149,8 @@ class AddProductViewModel @Inject constructor(
                     sortDirection = sortDirection
                 )
 
-                val currentPageParentProductsResponse = getProductsUseCase.execute(param)
+                val productsResponse = getProductsUseCase.execute(param)
+                val currentPageParentProductsResponse = productsResponse.products
                 val currentPageParentProductsIds = currentPageParentProductsResponse.map { product -> product.id }
 
                 val voucherValidationParam = VoucherValidationPartialUseCase.Param(
@@ -186,7 +187,8 @@ class AddProductViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         products = allProducts,
-                        selectedProductsIds = selectedProducts
+                        selectedProductsIds = selectedProducts,
+                        totalProducts = productsResponse.total
                     )
                 }
 
