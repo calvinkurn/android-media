@@ -31,6 +31,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
@@ -46,6 +47,10 @@ class CampaignListViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        const val TIMER_FOR_FLIP = 5000L
+    }
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
     val campaigns: LiveData<Result<CampaignMeta>>
@@ -74,6 +79,11 @@ class CampaignListViewModel @Inject constructor(
     private val _vpsPackages = MutableLiveData<Result<List<VpsPackage>>>()
     val vpsPackages: LiveData<Result<List<VpsPackage>>>
         get() = _vpsPackages
+
+    //Timer for running motion
+    private val _timeFlip = MutableLiveData<Int>()
+    val timeToFlip: LiveData<Int>
+        get() = _timeFlip
 
     private var drafts: List<CampaignUiModel> = emptyList()
     private var campaignId: Long = 0
@@ -272,4 +282,21 @@ class CampaignListViewModel @Inject constructor(
         }
         return vpsPackages.size
     }
+
+    fun timeToFlipCountdown() : Job {
+        return launchCatchError(
+            dispatchers.io,
+            block = {
+                while (isActive) {
+                    val currentValue = _timeFlip.value?:1
+                    _timeFlip.postValue(currentValue+1)
+                    delay(TIMER_FOR_FLIP)
+                }
+            },
+            onError = {
+                _timeFlip.postValue(1)
+            }
+        )
+    }
+
 }

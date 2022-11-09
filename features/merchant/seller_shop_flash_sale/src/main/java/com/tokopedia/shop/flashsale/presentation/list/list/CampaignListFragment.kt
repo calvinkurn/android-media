@@ -175,6 +175,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeShareComponentThumbnailImage()
         observeCampaignCreationEligibility()
         observeShopDecorStatus()
+        observerTimeToFlip()
     }
 
     override fun onResume() {
@@ -374,6 +375,16 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
+    private fun observerTimeToFlip(){
+        viewModel.timeToFlip.observe(viewLifecycleOwner){ result ->
+            if(result%2 == 0){
+                binding?.warningOfQuota?.transitionToEnd()
+            }else {
+                binding?.warningOfQuota?.transitionToStart()
+            }
+        }
+    }
+
     private fun handleShopDecorStatusResult(decorStatus: String) {
         val hasDraft = viewModel.getCampaignDrafts().isNotEmpty()
         val hasCampaign = adapter?.itemCount.isMoreThanZero()
@@ -498,10 +509,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         binding?.run {
             if (isNearExpirePackageAvailable) {
-                groupAvailableSourceQuota.gone()
                 tgExpireValue.visible()
+                viewModel.timeToFlipCountdown().start()
             } else {
-                groupAvailableSourceQuota.visible()
                 tgExpireValue.gone()
             }
             tgQuotaValue.run {
