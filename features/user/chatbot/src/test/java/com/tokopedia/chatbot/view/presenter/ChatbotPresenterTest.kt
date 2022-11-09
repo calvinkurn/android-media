@@ -17,7 +17,6 @@ import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
-import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
@@ -52,7 +51,6 @@ import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
@@ -97,7 +95,6 @@ class ChatbotPresenterTest {
     private lateinit var tkpdAuthInterceptor: TkpdAuthInterceptor
     private lateinit var fingerprintInterceptor: FingerprintInterceptor
     private lateinit var sendChatRatingUseCase: SendChatRatingUseCase
-    private lateinit var uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>
     private lateinit var submitCsatRatingUseCase: SubmitCsatRatingUseCase
     private lateinit var getTickerDataUseCase: GetTickerDataUseCase
     private lateinit var chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase
@@ -127,7 +124,6 @@ class ChatbotPresenterTest {
         tkpdAuthInterceptor = mockk(relaxed = true)
         fingerprintInterceptor = mockk(relaxed = true)
         sendChatRatingUseCase = mockk(relaxed = true)
-        uploadImageUseCase = mockk(relaxed = true)
         submitCsatRatingUseCase = mockk(relaxed = true)
         getTickerDataUseCase = mockk(relaxed = true)
         chipSubmitHelpfulQuestionsUseCase = mockk(relaxed = true)
@@ -149,7 +145,6 @@ class ChatbotPresenterTest {
                 tkpdAuthInterceptor,
                 fingerprintInterceptor,
                 sendChatRatingUseCase,
-                uploadImageUseCase,
                 submitCsatRatingUseCase,
                 getTickerDataUseCase,
                 chipSubmitHelpfulQuestionsUseCase,
@@ -974,12 +969,8 @@ class ChatbotPresenterTest {
             checkUploadSecureUseCase.checkUploadSecure(any())
         } returns response
 
-        coEvery {
-            response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
-        } returns true
-
         // replace mockk
-        presenter.checkUploadSecure(" ", Intent())
+        presenter.checkUploadSecure("123", Intent())
 
         verify {
             view.uploadUsingSecureUpload(any())
@@ -994,14 +985,10 @@ class ChatbotPresenterTest {
             checkUploadSecureUseCase.checkUploadSecure(any())
         } returns response
 
-        coEvery {
-            response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
-        } returns false
-
-        presenter.checkUploadSecure(" ", Intent())
+        presenter.checkUploadSecure("123", Intent())
 
         verify {
-            view.uploadUsingOldMechanism(any())
+            view.uploadUsingSecureUpload(any())
         }
     }
 
