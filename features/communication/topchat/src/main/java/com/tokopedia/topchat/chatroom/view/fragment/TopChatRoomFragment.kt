@@ -76,12 +76,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -586,10 +581,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun markAsReadFromBubble() {
         if (isFromBubble) {
             viewModel.isFromBubble = isFromBubble
-            viewModel.isOnStop = false
-            viewModel.markAsRead()
-            val replyId = (viewModel.newMsg.value as? BaseChatUiModel)?.replyId.orEmpty()
-            TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+            val currentUnreadMsg = viewModel.unreadMsg.value.orZero()
+            if (currentUnreadMsg > Int.ZERO) {
+                viewModel.isOnStop = false
+                viewModel.markAsRead()
+                val replyId = (viewModel.newMsg.value as? BaseChatUiModel)?.replyId.orEmpty()
+                TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
+            }
         }
     }
 
