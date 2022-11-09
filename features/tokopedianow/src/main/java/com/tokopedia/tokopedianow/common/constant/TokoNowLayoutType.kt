@@ -45,6 +45,10 @@ annotation class TokoNowLayoutType {
         const val MEDIUM_PLAY_WIDGET = "play_carousel"
         const val SMALL_PLAY_WIDGET = "play_carousel_small"
 
+        /**
+         * Types of layout will be used after animation finished
+         * During the animation is running, recyclerview should not be updated
+         */
         const val PRODUCT_RECOM_ANIMATION_FINISHED = "product_recom_animation_finished"
         const val MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED = "left_carousel_atc_animation_finished"
     }

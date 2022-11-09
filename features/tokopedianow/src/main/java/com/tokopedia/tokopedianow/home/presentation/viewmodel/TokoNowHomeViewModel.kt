@@ -181,6 +181,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _invalidatePlayImpression = MutableLiveData<Boolean>()
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
 
+    private val layoutTypesOfRunningAnimation = listOf(PRODUCT_RECOM, MIX_LEFT_CAROUSEL_ATC)
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
@@ -800,7 +801,7 @@ class TokoNowHomeViewModel @Inject constructor(
     ) {
         currentLayoutType = type
 
-        if (type == MIX_LEFT_CAROUSEL_ATC || type == PRODUCT_RECOM) return
+        if (type in layoutTypesOfRunningAnimation) return
 
         homeLayoutItemList.updateProductQuantity(productId, quantity, type)
 
@@ -859,10 +860,10 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
         setMiniCartSimplifiedData(miniCart)
 
-        if (currentLayoutType != MIX_LEFT_CAROUSEL_ATC && currentLayoutType != PRODUCT_RECOM) {
-            updateProductQuantity(miniCart)
-            currentLayoutType = ""
-        }
+        if (currentLayoutType in layoutTypesOfRunningAnimation) return
+
+        updateProductQuantity(miniCart)
+        currentLayoutType = ""
     }
 
     private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
