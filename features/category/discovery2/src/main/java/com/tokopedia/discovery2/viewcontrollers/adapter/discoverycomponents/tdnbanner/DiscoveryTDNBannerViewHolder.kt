@@ -68,6 +68,8 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
                                 itemView.getDimens(R.dimen.dp_12),
                                 itemView.getDimens(R.dimen.dp_12)
                             )
+                        } else {
+                            itemView.rootView.setMargin(0, 0, 0, 0)
                         }
                     })
                 } else {

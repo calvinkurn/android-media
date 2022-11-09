@@ -438,7 +438,7 @@ class DiscoveryPageDataMapper(
                     })
                 }
                 if (component.properties?.index != null &&
-                    component.properties?.index != Int.ZERO &&
+                    component.properties?.index!! > Int.ZERO &&
                     component.properties?.index!! < listComponents.size &&
                     !component.properties?.targetedComponentId.isNullOrEmpty())
                  {
