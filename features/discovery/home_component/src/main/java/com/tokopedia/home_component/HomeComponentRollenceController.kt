@@ -34,6 +34,6 @@ object HomeComponentRollenceController {
     }
 
     fun isHPBUsingDotsAndInfiniteScroll(): Boolean {
-        return getRollenceValueHPBDotsInfinite() == RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL
+        return getRollenceValueHPBDotsInfinite() == RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT
     }
 }
