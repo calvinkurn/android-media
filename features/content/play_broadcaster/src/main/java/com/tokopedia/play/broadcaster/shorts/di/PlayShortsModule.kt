@@ -1,6 +1,11 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -15,4 +20,15 @@ class PlayShortsModule(
     @Provides
     @PlayShortsScope
     fun provideActivityContext() = activityContext
+
+    @Provides
+    fun provideGraphQLRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @Provides
+    @PlayShortsScope
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 }

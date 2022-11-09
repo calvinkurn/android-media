@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -18,6 +19,7 @@ import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collectLatest
@@ -32,9 +34,12 @@ class PlayShortsActivity : BaseActivity() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private lateinit var binding: ActivityPlayShortsBinding
 
-    private val viewModel by viewModels<PlayShortsViewModel>()
+    private val viewModel by viewModels<PlayShortsViewModel> { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -47,6 +52,9 @@ class PlayShortsActivity : BaseActivity() {
 
         val preferredAccountType = intent.getStringExtra(ContentCommonUserType.KEY_AUTHOR_TYPE).orEmpty()
         viewModel.submitAction(PlayShortsAction.PreparePage(preferredAccountType))
+
+        /** For mocking purpose */
+        openPreparation()
     }
 
     private fun inject() {
@@ -114,6 +122,15 @@ class PlayShortsActivity : BaseActivity() {
     }
 
     private fun openPreparation() {
+        supportFragmentManager.beginTransaction()
+            .replace(
+                binding.container.id,
+                PlayShortsPreparationFragment.getFragment(
+                    supportFragmentManager,
+                    classLoader
+                )
+            )
+            .commit()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

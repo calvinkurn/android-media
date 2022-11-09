@@ -9,7 +9,6 @@ import javax.inject.Inject
 /**
  * Created by jegul on 09/07/20
  */
-@ActivityRetainedScope
 class HydraSharedPreferences @Inject constructor(
         @ApplicationContext context: Context,
         private val userSession: UserSessionInterface
