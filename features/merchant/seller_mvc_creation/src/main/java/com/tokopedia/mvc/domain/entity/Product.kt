@@ -1,10 +1,12 @@
 package com.tokopedia.mvc.domain.entity
 
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
+
 data class Product(
     val id: Long,
     val isVariant: Boolean,
     val name: String,
-    val pictures: List<Picture>,
+    val picture: String,
     val preorder: Preorder,
     val price: Price,
     val sku: String,
@@ -14,8 +16,7 @@ data class Product(
     val txStats: TxStats,
     val warehouse: List<Warehouse>,
     val warehouseCount: Int
-) {
-    data class Picture(val urlThumbnail: String)
+) : DelegateAdapterItem {
 
     data class Preorder(val durationDays: Int)
 
@@ -30,4 +31,6 @@ data class Product(
     data class TxStats(val sold: Int)
 
     data class Warehouse(val id: Long)
+
+    override fun id() = id
 }

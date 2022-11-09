@@ -13,7 +13,7 @@ class ProductListMapper @Inject constructor() {
                 product.id.toLongOrZero(),
                 product.isVariant,
                 product.name,
-                product.pictures.map { Product.Picture(it.urlThumbnail) },
+                product.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                 Product.Preorder(product.preorder.durationDays),
                 Product.Price(product.price.min, product.price.max),
                 product.sku,
