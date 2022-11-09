@@ -31,26 +31,13 @@ class TokoChatConfigMutationProfileUseCase @Inject constructor(
     fun initGroupBooking(
         orderId: String,
         serviceType: Int = TOKOFOOD_SERVICE_TYPE,
-        onSuccess: (String) -> Unit,
-        onError: () -> Unit
+        conversationsGroupBookingListener: ConversationsGroupBookingListener
     ) {
         repository.getConversationRepository().initGroupBookingChat(
-            orderId, serviceType, object : ConversationsGroupBookingListener {
-                override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-                    onError()
-                }
-
-                override fun onGroupBookingChannelCreationStarted() {
-                    // no-op
-                }
-
-                override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-                    onSuccess(channelUrl)
-                }
-            })
+            orderId, serviceType, conversationsGroupBookingListener)
     }
 
     companion object {
-        private const val TOKOFOOD_SERVICE_TYPE = 5
+        const val TOKOFOOD_SERVICE_TYPE = 5
     }
 }

@@ -5,10 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
@@ -154,7 +156,11 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     fun getUnReadChatCount(channelId: String): LiveData<Result<Int>> {
         return try {
             Transformations.map(getUnReadChatCountUseCase.get().unReadCount(channelId)) {
-                Success(it)
+                if (it != null) {
+                    Success(it)
+                } else {
+                    Success(Int.ZERO)
+                }
             }
         } catch (t: Throwable) {
             MutableLiveData(Fail(t))
@@ -172,12 +178,12 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun initGroupBooking(
         orderId: String,
-        onSuccess: (String) -> Unit,
-        onError: () -> Unit
+        conversationsGroupBookingListener: ConversationsGroupBookingListener
     ) {
         try {
             tokoChatConfigMutationProfileUseCase.get().initGroupBooking(
-                orderId = orderId, onSuccess = onSuccess, onError = onError)
+                orderId = orderId, conversationsGroupBookingListener = conversationsGroupBookingListener
+            )
         } catch (t: Throwable) {
             _mutationProfile.value = Fail(t)
         }

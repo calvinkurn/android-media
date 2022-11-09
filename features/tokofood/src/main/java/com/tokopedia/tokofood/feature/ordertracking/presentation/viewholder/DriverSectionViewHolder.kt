@@ -32,6 +32,9 @@ class DriverSectionViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_driver_section
+
+        private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1.5f
+        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.6f
     }
 
     private val binding = ItemTokofoodOrderTrackingDriverSectionBinding.bind(itemView)
@@ -118,6 +121,10 @@ class DriverSectionViewHolder(
                     notificationRef.hide()
                 } else {
                     notificationRef.show()
+                    setNotifXY(
+                        ICON_DEFAULT_PERCENTAGE_X_POSITION,
+                        ICON_DEFAULT_PERCENTAGE_Y_POSITION
+                    )
 
                     notificationRef.setNotification(
                         notif = badgeCounter.toString(),

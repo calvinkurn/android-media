@@ -233,15 +233,17 @@ class BaseTokoFoodOrderTrackingFragment :
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-        initializeUnreadCounter(goFoodOrderNumber)
+        //No op
+        updateUnreadChatCounter(Int.ZERO)
     }
 
     override fun onGroupBookingChannelCreationStarted() {
-        // No op
+        //No op
     }
 
     override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
         this.channelId = channelUrl
+        observeUnreadChatCount(channelId)
     }
 
     private fun initializeChatProfile() {
@@ -260,12 +262,7 @@ class BaseTokoFoodOrderTrackingFragment :
     private fun initializeUnreadCounter(goFoodOrderNumber: String) {
         this.goFoodOrderNumber = goFoodOrderNumber
         if (channelId.isBlank()) {
-            viewModel.initGroupBooking(goFoodOrderNumber, onSuccess = { channelId ->
-                this.channelId = channelId
-                observeUnreadChatCount(channelId)
-            }, onError = {
-                updateUnreadChatCounter(Int.ZERO)
-            })
+            viewModel.initGroupBooking(goFoodOrderNumber,this)
         } else {
             observeUnreadChatCount(channelId)
         }
