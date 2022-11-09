@@ -506,6 +506,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 infoObatKerasMap?.apply {
                     subtitle = it.obatKeras.subtitle
                     applink = it.obatKeras.applink
+                    isPlaceholder = false
                 }
             }
         }
