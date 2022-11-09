@@ -150,9 +150,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
 
     private fun scheduleRemoveTokoChatMedia() {
         context?.let {
-            TokoChatMediaCleanupStorageWorker.scheduleWorker(
-                it, TokoChatViewUtil.getInternalCacheDirectory().absolutePath
-            )
+            TokoChatMediaCleanupStorageWorker.scheduleWorker(it)
         }
     }
 
