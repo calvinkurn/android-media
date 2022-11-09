@@ -13,7 +13,6 @@ class AddToWishlistUseCase @Inject constructor(graphqlRepository: GraphqlReposit
     companion object {
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_USER_ID = "userID"
-        private const val PARAM_SOURCE_COLLECTION_ID = "sourceCollectionId"
     }
 
     private val graphql by lazy { GraphqlUseCase<AddToWishListResponse>(graphqlRepository) }
