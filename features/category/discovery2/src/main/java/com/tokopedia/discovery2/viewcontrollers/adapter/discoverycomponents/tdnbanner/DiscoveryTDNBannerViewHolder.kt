@@ -5,6 +5,7 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.Constant.TopAdsSdk.TOP_ADS_GSLP_TDN
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -12,7 +13,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
@@ -33,6 +36,7 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
     private val adCount = 1
     private val dimenID = 3
     private var shouldHitService = true
+    private var isTopAdsGlsp = false
     private lateinit var topAdsModel: TopAdsImageViewModel
 
     init {
@@ -44,6 +48,7 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as DiscoveryTDNBannerViewModel
+        isTopAdsGlsp = discoveryBaseViewModel.components.design == TOP_ADS_GSLP_TDN
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -55,6 +60,14 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
                             addCardHeader(it)
                             tdnImageView?.getImageData(inventoryID, adCount, dimenID, depId = it.data?.firstOrNull()?.depID
                                     ?: "")
+                        }
+                        if (isTopAdsGlsp) {
+                            itemView.rootView.setMargin(
+                                itemView.getDimens(R.dimen.dp_12),
+                                itemView.getDimens(R.dimen.dp_12),
+                                itemView.getDimens(R.dimen.dp_12),
+                                itemView.getDimens(R.dimen.dp_12)
+                            )
                         }
                     })
                 } else {
@@ -98,7 +111,10 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
             shimmerView?.hide()
             tdnImageView?.show()
             topAdsModel = imageDataList[0]
-            tdnImageView?.loadImage(topAdsModel)
+            if (isTopAdsGlsp) tdnImageView?.loadImage(
+                topAdsModel,
+                itemView.rootView.getDimens(R.dimen.dp_8)
+            ) else tdnImageView?.loadImage(topAdsModel)
         } else {
             shouldHitService = false
             handleError()
