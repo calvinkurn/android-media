@@ -31,4 +31,7 @@
     <dimen name="tokopedianow_product_card_progress_bar_margin_end">8dp</dimen>
     <dimen name="tokopedianow_product_card_progress_bar_margin_bottom">26dp</dimen>
     <dimen name="tokopedianow_product_card_progress_bar_margin_start">8dp</dimen>
+    <dimen name="tokopedianow_product_card_margin_end">8dp</dimen>
+    <dimen name="tokopedianow_product_card_margin_end_corner">16dp</dimen>
+    <dimen name="tokopedianow_product_card_margin_start_corner">16dp</dimen>
 </resources>

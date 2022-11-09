@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.model.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
@@ -13,7 +12,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelM
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 
 object LeftCarouselMapper {
@@ -29,7 +28,7 @@ object LeftCarouselMapper {
         val productList = mutableListOf<Visitable<*>>()
 
         // Add mix left carousel products
-        channelModel.channelGrids.forEachIndexed { index, channelGrid ->
+        channelModel.channelGrids.forEach { channelGrid ->
             productList.add(
                 HomeLeftCarouselAtcProductCardUiModel(
                     id = channelGrid.id,
@@ -46,20 +45,18 @@ object LeftCarouselMapper {
                     recommendationType = channelGrid.recommendationType,
                     warehouseId = channelGrid.warehouseId,
                     campaignCode = channelGrid.campaignCode,
-                    position = index + ADDITIONAL_POSITION,
                     productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData),
                 )
             )
         }
 
-        // Add see more at the end of products
-        if(channelModel.channelGrids.size > 1 && channelModel.channelHeader.applink.isNotEmpty()) {
+        // Add see more at the end of the list
+        if(channelModel.channelHeader.applink.isNotEmpty()) {
             productList.add(
-                HomeLeftCarouselAtcProductCardSeeMoreUiModel(
+                TokoNowSeeMoreCardCarouselUiModel(
                     channelId = channelModel.id,
                     channelHeaderName = channelModel.channelHeader.name,
-                    appLink = channelModel.channelHeader.applink,
-                    backgroundImage = channelModel.channelHeader.backImage
+                    appLink = channelModel.channelHeader.applink
                 )
             )
         }

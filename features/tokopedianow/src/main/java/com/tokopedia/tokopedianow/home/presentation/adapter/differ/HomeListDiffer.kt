@@ -19,7 +19,7 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
         val newItem = newList[newItemPosition]
 
         return if (oldItem is HomeProductRecomUiModel && newItem is HomeProductRecomUiModel) {
-            oldItem.recomWidget == newItem.recomWidget
+            oldItem.id == newItem.id
         } else if (oldItem is HomeLeftCarouselAtcUiModel && newItem is HomeLeftCarouselAtcUiModel) {
             oldItem.id == newItem.id
         } else if (oldItem is HomeLayoutUiModel && newItem is HomeLayoutUiModel) {

@@ -6,7 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/cardunify_background">
 
-    <com.tokopedia.tokopedianow.common.view.TokoNowQuantityEditorView
+    <com.tokopedia.tokopedianow.common.view.productcard.TokoNowQuantityEditorView
         android:id="@+id/quantity_editor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/image_filter_view" />
 
-    <com.tokopedia.tokopedianow.common.view.TokoNowWishlistButtonView
+    <com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
         android:id="@+id/wishlist_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

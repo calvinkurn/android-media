@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.common.decroation
+package com.tokopedia.tokopedianow.common.decoration
 
 import android.graphics.Rect
 import android.view.View
