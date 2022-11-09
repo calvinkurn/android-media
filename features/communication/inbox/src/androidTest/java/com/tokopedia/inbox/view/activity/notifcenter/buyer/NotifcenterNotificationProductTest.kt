@@ -29,7 +29,7 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
 
     @Test
     fun should_open_bottomsheet_when_click_beli_in_attached_product_variants() {
-        //Given
+        // Given
         inboxNotifcenterDep.apply {
             val result = notifcenterDetailUseCase.productOnly
             notifcenterDetailUseCase.response = result
@@ -38,22 +38,28 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        //When
+        // When
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
                 .atPositionOnView(0, R.id.btn_checkout)
         ).perform(ViewActions.click())
 
-        //Then
-        val intent = RouteManager.getIntent(context,
+        // Then
+        val intent = RouteManager.getIntent(
+            context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1988298491", "10973651", "notifcenter", "false", "") //Product from JSON
+            "1988298491",
+            "10973651",
+            "notifcenter",
+            "false",
+            ""
+        ) // Product from JSON
         intended(IntentMatchers.hasData(intent.data))
     }
 
     @Test
     fun should_open_bottomsheet_when_click_keranjang_in_attached_product_variants() {
-        //Given
+        // Given
         inboxNotifcenterDep.apply {
             notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
         }
@@ -61,63 +67,28 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        //When
+        // When
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
                 .atPositionOnView(0, R.id.btn_atc)
         ).perform(ViewActions.click())
 
-        //Then
-        val intent = RouteManager.getIntent(context,
+        // Then
+        val intent = RouteManager.getIntent(
+            context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1988298491", "10973651", "notifcenter", "false", "") //Product from JSON
+            "1988298491",
+            "10973651",
+            "notifcenter",
+            "false",
+            ""
+        ) // Product from JSON
         intended(IntentMatchers.hasData(intent.data))
     }
 
     @Test
-    fun should_show_toaster_when_user_click_ingatkan_saya() {
-        // Given
-        inboxNotifcenterDep.apply {
-            notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
-        }
-        startInboxActivity()
-
-        //When
-        scrollToProductPosition(1)
-        onView(
-            RecyclerViewMatcher(R.id.rv_carousel_product)
-                .atPositionOnView(1, R.id.tv_add_to_wishlist)
-        ).perform(ViewActions.click())
-
-        // Then
-        onView(withText(context.getString(R.string.title_success_add_to_wishlist)))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-    }
-
-    @Test
-    fun should_show_error_toaster_when_user_click_ingatkan_saya_but_error() {
-        // Given
-        inboxNotifcenterDep.apply {
-            notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
-            addWishlistUseCase.isError = true
-        }
-        startInboxActivity()
-
-        //When
-        scrollToProductPosition(1)
-        onView(
-            RecyclerViewMatcher(R.id.rv_carousel_product)
-                .atPositionOnView(1, R.id.tv_add_to_wishlist)
-        ).perform(ViewActions.click())
-
-        // Then
-        onView(withSubstring("Oops!"))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-    }
-
-    @Test
     fun should_open_wishlist_when_user_click_cek_wishlist() {
-        //Given
+        // Given
         inboxNotifcenterDep.apply {
             notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
             setupTypeButton(
@@ -130,20 +101,20 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        //When
+        // When
         scrollToProductPosition(2)
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
                 .atPositionOnView(2, R.id.tv_check_wishlist)
         ).perform(ViewActions.click())
 
-        //Then
+        // Then
         intended(IntentMatchers.hasData(ApplinkConst.NEW_WISHLIST))
     }
 
     @Test
     fun should_show_variant_labels_if_product_variants() {
-        //Given
+        // Given
         inboxNotifcenterDep.apply {
             notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
         }
@@ -151,15 +122,17 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        //Then
-        onView(withRecyclerView(R.id.rv_carousel_product)
-            .atPositionOnView(0, R.id.pvl_variant))
+        // Then
+        onView(
+            withRecyclerView(R.id.rv_carousel_product)
+                .atPositionOnView(0, R.id.pvl_variant)
+        )
             .check(matches(isDisplayed()))
     }
 
     @Test
     fun should_not_show_variant_labels_if_product_is_parent_variant() {
-        //Given
+        // Given
         inboxNotifcenterDep.apply {
             val dataResponse = notifcenterDetailUseCase.productOnly.apply {
                 this.notifcenterDetail.newList[0].product?.variant = listOf()
@@ -170,18 +143,20 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        //When
+        // When
         scrollToProductPosition(1)
 
-        //Then
-        onView(withRecyclerView(R.id.rv_carousel_product)
-            .atPositionOnView(1, R.id.pvl_variant))
+        // Then
+        onView(
+            withRecyclerView(R.id.rv_carousel_product)
+                .atPositionOnView(1, R.id.pvl_variant)
+        )
             .check(matches(not(isDisplayed())))
     }
 
     @Test
     fun should_open_VBS_with_tokonow_if_product_is_parent_variant_when_click_ATC() {
-        //Given
+        // Given
         inboxNotifcenterDep.apply {
             val dataResponse = notifcenterDetailUseCase.productOnly.apply {
                 this.notifcenterDetail.newList[0].productData[1].variant = listOf()
@@ -192,22 +167,28 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        //When
+        // When
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
                 .atPositionOnView(0, R.id.btn_atc)
         ).perform(ViewActions.click())
 
-        //Then
-        val intent = RouteManager.getIntent(context,
+        // Then
+        val intent = RouteManager.getIntent(
+            context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1988298491", "10973651", "notifcenter", "false", "") //Product from JSON
+            "1988298491",
+            "10973651",
+            "notifcenter",
+            "false",
+            ""
+        ) // Product from JSON
         intended(IntentMatchers.hasData(intent.data))
     }
 
     @Test
     fun should_open_VBS_with_tokonow_if_product_is_parent_variant_when_click_buy() {
-        //Given
+        // Given
         inboxNotifcenterDep.apply {
             val dataResponse = notifcenterDetailUseCase.productOnly.apply {
                 this.notifcenterDetail.newList[0].productData[1].variant = listOf()
@@ -218,22 +199,28 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        //When
+        // When
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
                 .atPositionOnView(0, R.id.btn_atc)
         ).perform(ViewActions.click())
 
-        //Then
-        val intent = RouteManager.getIntent(context,
+        // Then
+        val intent = RouteManager.getIntent(
+            context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1988298491", "10973651", "notifcenter", "false", "") //Product from JSON
+            "1988298491",
+            "10973651",
+            "notifcenter",
+            "false",
+            ""
+        ) // Product from JSON
         intended(IntentMatchers.hasData(intent.data))
     }
 
     @Test
     fun should_open_VBS_with_tokonow_if_product_is_variants_and_tokonow() {
-        //Given
+        // Given
         inboxNotifcenterDep.apply {
             val dataResponse = notifcenterDetailUseCase.productOnly.apply {
                 this.notifcenterDetail.newList[0].productData[1].shop.isTokonow = true
@@ -244,22 +231,28 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        //When
+        // When
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
                 .atPositionOnView(0, R.id.btn_atc)
         ).perform(ViewActions.click())
 
-        //Then
-        val intent = RouteManager.getIntent(context,
+        // Then
+        val intent = RouteManager.getIntent(
+            context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1988298491", "10973651", "notifcenter", "true", "") //Product from JSON
+            "1988298491",
+            "10973651",
+            "notifcenter",
+            "true",
+            ""
+        ) // Product from JSON
         intended(IntentMatchers.hasData(intent.data))
     }
 
     @Test
     fun should_open_product_detail_page_with_applink_when_users_clicks_on_product() {
-        //Given
+        // Given
         inboxNotifcenterDep.apply {
             val dataResponse = notifcenterDetailUseCase.productOnly
             notifcenterDetailUseCase.response = dataResponse
@@ -268,15 +261,18 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        //When
+        // When
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
                 .atPositionOnView(0, R.id.cl_product)
         ).perform(ViewActions.click())
 
-        //Then
-        intended(IntentMatchers.hasData(
-            "tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter"))
+        // Then
+        intended(
+            IntentMatchers.hasData(
+                "tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter"
+            )
+        )
     }
 
     private fun scrollToProductPosition(position: Int) {

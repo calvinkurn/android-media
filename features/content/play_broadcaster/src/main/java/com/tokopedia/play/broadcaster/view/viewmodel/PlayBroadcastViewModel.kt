@@ -1520,7 +1520,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         })
     }
 
-    // TODO need to refactor this for entry point from user profile
     private fun getSelectedAccount(
         selectedType: String,
         cacheSelectedType: String,
