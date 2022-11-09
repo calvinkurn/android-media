@@ -18,7 +18,8 @@ data class Product(
     val warehouseCount: Int,
     val isEligible: Boolean,
     val ineligibleReason: String,
-    val variants: List<Variant>
+    val variants: List<Variant>,
+    val isSelected: Boolean
 ) : DelegateAdapterItem {
 
     data class Preorder(val durationDays: Int)

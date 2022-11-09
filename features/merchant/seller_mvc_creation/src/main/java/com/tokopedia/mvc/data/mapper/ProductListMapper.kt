@@ -25,7 +25,8 @@ class ProductListMapper @Inject constructor() {
                 product.warehouseCount,
                 isEligible = true,
                 ineligibleReason = "",
-                variants = emptyList()
+                variants = emptyList(),
+                isSelected = false
             )
         }
     }

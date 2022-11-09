@@ -49,23 +49,81 @@ class AddProductViewModel @Inject constructor(
         when(event) {
             is AddProductEvent.FetchRequiredData -> fetchRequiredData(event.action, event.promoType)
             is AddProductEvent.LoadPage -> getProducts(event.warehouseId, event.page, event.sortId, event.sortDirection)
-            is AddProductEvent.AddProductToSelection -> TODO()
-            AddProductEvent.ApplyCategoryFilter -> TODO()
-            AddProductEvent.ApplyLocationFilter -> TODO()
-            AddProductEvent.ApplyShowCaseFilter -> TODO()
-            AddProductEvent.ApplySortFilter -> TODO()
-            AddProductEvent.ClearFilter -> TODO()
-            AddProductEvent.ClearSearchBar -> TODO()
-            AddProductEvent.ConfirmAddProduct -> TODO()
-            AddProductEvent.DisableSelectAllCheckbox -> TODO()
-            AddProductEvent.EnableSelectAllCheckbox -> TODO()
-            is AddProductEvent.RemoveProductFromSelection -> TODO()
-            AddProductEvent.TapCategoryFilter -> TODO()
-            AddProductEvent.TapLocationFilter -> TODO()
-            AddProductEvent.TapShowCaseFilter -> TODO()
-            AddProductEvent.TapSortFilter -> TODO()
+            is AddProductEvent.AddProductToSelection -> {
+                val updatedProducts = currentState.parentProducts.map {
+                    if (it.id == event.productId) {
+                        it.copy(isSelected = true)
+                    } else {
+                        it
+                    }
+                }
+
+                val updatedSelectedProducts = currentState.selectedProducts.toMutableList()
+                updatedSelectedProducts.add(event.productId)
+
+
+                _uiState.update {
+                    it.copy(
+                        isSelectAllActive = false,
+                        selectedProducts = updatedSelectedProducts,
+                        parentProducts = updatedProducts
+                    )
+                }
+            }
+            AddProductEvent.ApplyCategoryFilter -> {}
+            AddProductEvent.ApplyLocationFilter -> {}
+            AddProductEvent.ApplyShowCaseFilter -> {}
+            AddProductEvent.ApplySortFilter -> {}
+            AddProductEvent.ClearFilter -> {}
+            AddProductEvent.ClearSearchBar -> {}
+            AddProductEvent.ConfirmAddProduct -> {}
+            AddProductEvent.DisableSelectAllCheckbox -> {
+                val disabledProducts = currentState.parentProducts.map { it.copy(isSelected = false) }
+                _uiState.update {
+                    it.copy(
+                        isSelectAllActive = false,
+                        selectedProducts = emptyList(),
+                        parentProducts = disabledProducts
+                    )
+                }
+            }
+            AddProductEvent.EnableSelectAllCheckbox -> {
+                val enabledProducts = currentState.parentProducts.map { it.copy(isSelected = true) }
+                _uiState.update {
+                    it.copy(
+                        isSelectAllActive = true,
+                        selectedProducts = enabledProducts.map { it.id },
+                        parentProducts = enabledProducts
+                    )
+                }
+            }
+            is AddProductEvent.RemoveProductFromSelection -> {
+                val updatedProducts = currentState.parentProducts.map {
+                    if (it.id == event.productId) {
+                        it.copy(isSelected = false)
+                    } else {
+                        it
+                    }
+                }
+
+                val updatedSelectedProducts = currentState.selectedProducts.toMutableList()
+                updatedSelectedProducts.remove(event.productId)
+
+                _uiState.update {
+                    it.copy(
+                        isSelectAllActive = false,
+                        selectedProducts = updatedSelectedProducts,
+                        parentProducts = updatedProducts
+                    )
+                }
+            }
+            AddProductEvent.TapCategoryFilter -> {}
+            AddProductEvent.TapLocationFilter -> {}
+            AddProductEvent.TapShowCaseFilter -> {}
+            AddProductEvent.TapSortFilter -> {}
         }
     }
+
 
     private fun fetchRequiredData(
         action: VoucherAction,
@@ -152,15 +210,16 @@ class AddProductViewModel @Inject constructor(
                     voucherValidationResponse.validationProduct
                 )
 
+
                 val allProducts = currentState.parentProducts + updatedProducts
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedProducts, allProducts))
                 _uiState.update {
-                    it.copy(parentProducts = allProducts)
+                    it.copy(parentProducts = allProducts, selectedProducts = allProducts.map { it.id })
                 }
 
             },
             onError = { error ->
-
+                _uiState.update { it.copy(error = error) }
             }
         )
 
@@ -175,7 +234,8 @@ class AddProductViewModel @Inject constructor(
             product.copy(
                 isEligible = matchedProduct?.isEligible.orTrue(),
                 ineligibleReason = matchedProduct?.reason.orEmpty(),
-                variants = variants.orEmpty()
+                variants = variants.orEmpty(),
+                isSelected = currentState.isSelectAllActive
             )
         }
 

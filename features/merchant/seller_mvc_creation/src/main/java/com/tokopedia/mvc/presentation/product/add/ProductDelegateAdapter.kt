@@ -18,6 +18,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ProductDelegateAdapter(
     private val onItemClick: (Int) -> Unit,
+    private val onCheckboxClick: (Int, Boolean) -> Unit
 ) : DelegateAdapter<Product, ProductDelegateAdapter.ViewHolder>(
     Product::class.java
 ) {
@@ -43,6 +44,7 @@ class ProductDelegateAdapter(
 
         fun bind(item: Product) {
             with(binding) {
+                checkbox.setOnCheckedChangeListener(null)
                 imgProduct.loadImage(item.picture)
                 tpgProductName.text = item.name
                 tpgSku.setSku(item)
@@ -51,6 +53,10 @@ class ProductDelegateAdapter(
                 tpgPrice.setPrice(item)
                 tpgIneligibleReason.setIneligibleReason(item)
                 layoutVariant.setVariantCount(item)
+                checkbox.isChecked = item.isSelected
+                checkbox.setOnCheckedChangeListener { _, isChecked ->
+                    onCheckboxClick(adapterPosition, isChecked)
+                }
             }
         }
 

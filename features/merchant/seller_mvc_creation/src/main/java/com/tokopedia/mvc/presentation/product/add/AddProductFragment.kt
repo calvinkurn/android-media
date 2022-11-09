@@ -54,7 +54,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private val productAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(ProductDelegateAdapter(onItemClick))
+            .add(ProductDelegateAdapter(onItemClick, onCheckboxClick))
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -175,6 +175,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             uiState.voucherCreationMetadata?.maxProduct.orZero()
         )
         binding?.btnAddProduct?.isEnabled = uiState.selectedProducts.isNotEmpty()
+
+        productAdapter.submit(uiState.parentProducts)
     }
 
     /*private fun renderSortFilter(uiState: FlashSaleListUiState) {
@@ -255,5 +257,17 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private val onItemClick: (Int) -> Unit = { selectedItemPosition ->
         val selectedItem = productAdapter.getItems()[selectedItemPosition]
         val selectedItemId = (selectedItem.id() as? Long).orZero()
+    }
+
+
+    private val onCheckboxClick: (Int, Boolean) -> Unit = { selectedItemPosition, isChecked ->
+        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedItemId = (selectedItem.id() as? Long).orZero()
+
+        if (isChecked) {
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItemId))
+        } else {
+            viewModel.processEvent(AddProductEvent.RemoveProductFromSelection(selectedItemId))
+        }
     }
 }
