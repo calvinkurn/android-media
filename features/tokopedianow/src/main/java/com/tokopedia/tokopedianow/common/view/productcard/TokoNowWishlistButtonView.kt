@@ -87,12 +87,13 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             when(it){
                 is Success ->{
                     if(it.data.wishlistAdd?.success == true){
-                        Toaster.build(rootView, "Barang berhasil disimpan di Wishist. Kamu akan dapat notifikasi saat stok kembali.", actionText = "Oke").show()
+                        Toaster.build(rootView, context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_add_success),
+                            actionText = context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_ok)).show()
                     }
                     else{
                         changeStateToAddWishlist()
-                        Toaster.build(rootView, "Oops, barang gagal disimpan di Wishlist.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                        "Coba Lagi",
+                        Toaster.build(rootView, context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_add_fail), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_retry),
                         clickListener = {
                             changeStateToRemoveWishlist()
                             viewModel.addToWishlist(productId)
@@ -101,8 +102,8 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                 }
                 is Fail ->{
                     changeStateToAddWishlist()
-                    Toaster.build(rootView, "Oops, barang gagal disimpan di Wishlist.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                        "Coba Lagi",
+                    Toaster.build(rootView, context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_add_fail), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_retry),
                         clickListener = {
                             changeStateToRemoveWishlist()
                             viewModel.addToWishlist(productId)
@@ -114,12 +115,13 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
             when(it){
                 is Success ->{
                     if(it.data.wishlistRemove?.success == true){
-                        Toaster.build(rootView, "Barang sudah dihapus dari Wishlist.", actionText = "Oke").show()
+                        Toaster.build(rootView, context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_remove_success),
+                            actionText = context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_ok)).show()
                     }
                     else{
                         changeStateToRemoveWishlist()
-                        Toaster.build(rootView, "Oops, barang gagal dihapus dari Wishlist.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                            "Coba Lagi",
+                        Toaster.build(rootView, context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_remove_fail), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_retry),
                             clickListener = {
                                 changeStateToAddWishlist()
                                 viewModel.removeFromWishlist(productId)
@@ -128,8 +130,8 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                 }
                 is Fail ->{
                     changeStateToRemoveWishlist()
-                    Toaster.build(rootView, "Oops, barang gagal dihapus dari Wishlist.", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                        "Coba Lagi",
+                    Toaster.build(rootView, context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_remove_fail), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        context.getString(com.tokopedia.tokopedianow.R.string.tokopedianow_product_card_wishlist_retry),
                         clickListener = {
                             changeStateToAddWishlist()
                             viewModel.removeFromWishlist(productId)

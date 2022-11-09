@@ -248,4 +248,10 @@
 
     <string name="tokopedianow_product_card_similar_product">Produk Serupa</string>
     <string name="tokopedianow_product_card_percentage">%d%%</string>
+    <string name="tokopedianow_product_card_wishlist_add_success">Barang berhasil disimpan di Wishist. Kamu akan dapat notifikasi saat stok kembali.</string>
+    <string name="tokopedianow_product_card_wishlist_add_fail">Oops, barang gagal disimpan di Wishlist.</string>
+    <string name="tokopedianow_product_card_wishlist_remove_success">Barang sudah dihapus dari Wishlist.</string>
+    <string name="tokopedianow_product_card_wishlist_remove_fail">Oops, barang gagal dihapus dari Wishlist.</string>
+    <string name="tokopedianow_product_card_wishlist_ok">Oke</string>
+    <string name="tokopedianow_product_card_wishlist_retry">Coba Lagi</string>
 </resources>
