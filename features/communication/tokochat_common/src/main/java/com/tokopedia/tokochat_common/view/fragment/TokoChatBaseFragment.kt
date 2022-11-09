@@ -9,13 +9,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.databinding.TokochatBaseFragmentBinding
+import com.tokopedia.tokochat_common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.FOUR_DP
 import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.adapter.viewholder.decoration.VerticalSpaceItemDecoration
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatErrorBottomSheet
 import com.tokopedia.tokochat_common.view.listener.TokoChatEndlessScrollListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatLoadingUiModel
 import com.tokopedia.unifycomponents.toPx
@@ -34,6 +39,8 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     private var endlessRecyclerViewScrollListener: TokoChatEndlessScrollListener? = null
     private val shimmerUiModel = TokoChatLoadingUiModel()
     private val itemDecoration = VerticalSpaceItemDecoration(FOUR_DP.toPx())
+
+    protected val errorBottomSheet = TokoChatErrorBottomSheet()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -107,6 +114,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     }
 
     private fun addInitialShimmering() {
+        adapter.clearAllItems()
         adapter.addItem(shimmerUiModel)
         adapter.notifyItemInserted(adapter.itemCount)
     }
@@ -144,5 +152,30 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         if (adapter.itemCount > 0) {
             baseBinding?.tokochatChatroomRv?.smoothScrollToPosition(Int.ZERO)
         }
+    }
+
+    protected fun showGlobalErrorLayout(onActionClick: () -> Unit) {
+        val errorType = getErrorType()
+        baseBinding?.tokochatGlobalError?.tokochatGlobalError?.setType(errorType)
+        baseBinding?.tokochatGlobalError?.tokochatGlobalError?.setActionClickListener {
+            baseBinding?.tokochatGlobalError?.tokochatLayoutGlobalError?.hide()
+            addInitialShimmering()
+            onActionClick()
+        }
+        baseBinding?.tokochatGlobalError?.tokochatLayoutGlobalError?.show()
+    }
+
+    protected fun getErrorType(): Int {
+        return if (isConnectedToNetwork()) {
+            GlobalError.SERVER_ERROR
+        } else {
+            GlobalError.NO_CONNECTION
+        }
+    }
+
+    protected fun isConnectedToNetwork(): Boolean {
+        return if (context != null) {
+            TokoChatNetworkUtil.isNetworkAvailable(requireContext())
+        } else false
     }
 }

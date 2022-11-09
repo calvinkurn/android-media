@@ -32,7 +32,7 @@ class TokoChatMessageTextWatcher(
         }
         message = typedMessage
         job = launch {
-            delay(2000)
+            delay(TYPING_DELAY)
             if (typedMessage != message) {
                 return@launch
             }
@@ -44,5 +44,9 @@ class TokoChatMessageTextWatcher(
     fun cancelJob() {
         typing = false
         job?.cancel()
+    }
+
+    companion object {
+        private const val TYPING_DELAY = 2000L
     }
 }

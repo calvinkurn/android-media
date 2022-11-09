@@ -10,11 +10,15 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_MESSAGE_IN_BUBBLE
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
@@ -29,7 +33,7 @@ class TokoChatMessageChatLayout : ViewGroup {
         private set
     var status: LinearLayout? = null
         private set
-    var info: Typography? = null
+    var readMore: Typography? = null
         private set
 
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
@@ -98,7 +102,7 @@ class TokoChatMessageChatLayout : ViewGroup {
             status = it.findViewById(R.id.tokochat_layout_msg_status)
             checkMark = it.findViewById(R.id.tokochat_iv_msg_check_mark)
             hourTime = it.findViewById(R.id.tokochat_tv_msg_time)
-            info = it.findViewById(R.id.tokochat_tv_msg_info)
+            readMore = it.findViewById(R.id.tokochat_tv_msg_read_more)
         }
         initCheckMarkVisibility()
     }
@@ -117,7 +121,12 @@ class TokoChatMessageChatLayout : ViewGroup {
     }
 
     fun setMessage(text: CharSequence?) {
-        message?.text = text
+        val textLength = text?.length?: Int.ZERO
+        if (textLength > MAX_MESSAGE_IN_BUBBLE) {
+            message?.text = text?.substring(Int.ZERO, MAX_MESSAGE_IN_BUBBLE)
+        } else {
+            message?.text = text
+        }
     }
 
     fun setMessageTypeFace(msg: TokoChatMessageBubbleUiModel) {
@@ -141,17 +150,15 @@ class TokoChatMessageChatLayout : ViewGroup {
         checkMark?.hide()
     }
 
-    fun bindInfo(msg: TokoChatMessageBubbleUiModel) {
-        if (msg.label.isNotEmpty()) {
-            bindInfoText(msg)
+    fun bindReadMore(msg: TokoChatMessageBubbleUiModel, onClickReadMore: () -> Unit) {
+        if (msg.messageText.length > MAX_MESSAGE_IN_BUBBLE) {
+            readMore?.show()
+            readMore?.setOnClickListener {
+                onClickReadMore()
+            }
         } else {
-            info?.hide()
+            readMore?.hide()
         }
-    }
-
-    private fun bindInfoText(msg: TokoChatMessageBubbleUiModel) {
-        info?.text = msg.label
-        info?.show()
     }
 
     fun bindTextColor(msg: TokoChatMessageBubbleUiModel) {
@@ -164,7 +171,7 @@ class TokoChatMessageChatLayout : ViewGroup {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        if (message == null || status == null || info == null) {
+        if (message == null || status == null || readMore == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
@@ -181,7 +188,7 @@ class TokoChatMessageChatLayout : ViewGroup {
             message, widthMeasureSpec, 0, heightMeasureSpec, 0
         )
         measureChildWithMargins(
-            info, widthMeasureSpec, 0, heightMeasureSpec, 0
+            readMore, widthMeasureSpec, 0, heightMeasureSpec, 0
         )
         measureChildWithMargins(
             status, widthMeasureSpec, 0, heightMeasureSpec, 0
@@ -193,9 +200,9 @@ class TokoChatMessageChatLayout : ViewGroup {
         // Message
         val messageWidth = getTotalVisibleWidth(message)
         var messageHeight = getTotalVisibleHeight(message)
-        // Info
-        val infoWidth = getTotalVisibleWidth(info)
-        var infoHeight = getTotalVisibleHeight(info)
+        // readMore
+        val readMoreWidth = getTotalVisibleWidth(readMore)
+        var readMoreHeight = getTotalVisibleHeight(readMore)
         // Status
         val statusWidth = getTotalVisibleWidth(status)
         val statusHeight = getTotalVisibleHeight(status)
@@ -220,44 +227,43 @@ class TokoChatMessageChatLayout : ViewGroup {
             messageHeight = getTotalVisibleHeight(message)
             totalHeight += messageHeight
         }
-        // Measure msg last line dimension
-        var isOverlapped = false
-        val msgLineCount = message?.lineCount ?: 0
-        val msgLastLineWidth: Float = if (msgLineCount > 0) {
-            message?.layout?.getLineWidth(msgLineCount - 1) ?: 0f
-        } else {
-            0f
-        }
-        val lastLineWidth = msgLastLineWidth + statusWidth - REPLY_WIDTH_OFFSET
-        if (lastLineWidth > maxAvailableWidth) {
-            totalHeight += statusHeight
-            isOverlapped = true
+
+        /**
+         * Measure third row dimension if any
+         */
+        if (readMore?.isVisible == true) {
+            val thirdRowWidth = readMoreWidth + statusWidth
+            val thirdRowWidthDiff = totalWidth - thirdRowWidth
+            if (thirdRowWidthDiff < 0) {
+                totalWidth += abs(thirdRowWidthDiff)
+            }
+            val thirdRowHeight = maxOf(readMoreHeight, statusHeight)
+            totalHeight += thirdRowHeight
+            // Set readMore width if overlap with [status] layout
+            val readMoreMaxWidth = maxAvailableWidth - statusWidth
+            if (readMoreWidth > readMoreMaxWidth) {
+                totalHeight -= readMoreHeight
+                val readMoreWidthSpec = MeasureSpec.makeMeasureSpec(
+                    readMoreMaxWidth, MeasureSpec.EXACTLY
+                )
+                readMore?.measure(readMoreWidthSpec, heightMeasureSpec)
+                readMoreHeight = getTotalVisibleHeight(readMore)
+                totalHeight += readMoreHeight
+            }
         }
 
         /**
-         * Measure third row dimension
+         * Measure forth row dimension
+         * Measure msg last line dimension
          */
-        val thirdRowWidth = infoWidth + statusWidth
-        val thirdRowWidthDiff = totalWidth - thirdRowWidth
-        if (thirdRowWidthDiff < 0) {
-            totalWidth += abs(thirdRowWidthDiff)
+        var msgLastLineWidth = 0f
+        val msgLineCount: Int = message?.lineCount ?: 0
+        if (msgLineCount > 0) {
+            msgLastLineWidth = message?.layout?.getLineWidth(msgLineCount - 1) ?: 0f
         }
-        val thirdRowHeight = if (isOverlapped && info?.isVisible == true) {
-            abs(infoHeight - statusHeight)
-        } else {
-            infoHeight
-        }
-        totalHeight += thirdRowHeight
-        // Set info width if overlap with [status] layout
-        val infoMaxWidth = maxAvailableWidth - statusWidth
-        if (infoWidth > infoMaxWidth) {
-            totalHeight -= infoHeight
-            val infoWidthSpec = MeasureSpec.makeMeasureSpec(
-                infoMaxWidth, MeasureSpec.EXACTLY
-            )
-            info?.measure(infoWidthSpec, heightMeasureSpec)
-            infoHeight = getTotalVisibleHeight(info)
-            totalHeight += infoHeight
+        val lastLineWidth = msgLastLineWidth + statusWidth - REPLY_WIDTH_OFFSET
+        if (lastLineWidth > maxAvailableWidth || readMore?.isVisible == true) {
+            totalHeight += statusHeight
         }
 
         totalWidth += (paddingLeft + paddingRight)
@@ -288,21 +294,22 @@ class TokoChatMessageChatLayout : ViewGroup {
         topOffset = bottomMsg
 
         /**
-         * Layout info
+         * Layout readMore
          */
-        info?.let {
+        readMore?.let {
             if (it.isVisible) {
-                val infoLp = it.layoutParams as MarginLayoutParams
-                val leftInfo = paddingStart
-                val topInfo = topOffset + infoLp.topMargin
-                val rightInfo = paddingStart + it.measuredWidth
-                val bottomInfo = topInfo + it.measuredHeight
+                val readMoreLp = it.layoutParams as MarginLayoutParams
+                val leftReadMore = paddingStart
+                val topReadMore = topOffset + readMoreLp.topMargin
+                val rightReadMore = paddingStart + it.measuredWidth
+                val bottomReadMore = topReadMore + it.measuredHeight
                 it.layout(
-                    leftInfo,
-                    topInfo,
-                    rightInfo,
-                    bottomInfo
+                    leftReadMore,
+                    topReadMore,
+                    rightReadMore,
+                    bottomReadMore
                 )
+                topOffset += bottomReadMore
             }
         }
 

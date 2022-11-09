@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemImageBubbleBinding
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatImageBubbleViewHolderBinder.generateLeftBg
@@ -34,9 +35,16 @@ class TokoChatImageBubbleViewHolder(
         bindOnClick(element)
     }
 
-    private fun bindImage(element: TokoChatImageBubbleUiModel) {
+    private fun bindImage(element: TokoChatImageBubbleUiModel, isFromRetry: Boolean = false) {
+        binding?.tokochatIconImageBubbleError?.hide()
         binding?.tokochatImageBubble?.let {
-            tokoChatImageAttachmentListener.loadImage(it, element, binding?.tokochatLoaderImageBubble)
+            tokoChatImageAttachmentListener.loadImage(
+                it,
+                element,
+                binding?.tokochatLoaderImageBubble,
+                binding?.tokochatIconImageBubbleError,
+                isFromRetry
+            )
         }
     }
 
@@ -48,6 +56,7 @@ class TokoChatImageBubbleViewHolder(
             bindLayoutGravity(Gravity.START)
             binding?.tokochatLayoutImageBubbleContainer?.background = bgLeft
         }
+        binding?.tokochatImageBubble?.loadImage(R.drawable.tokochat_bg_image_bubble)
     }
 
     private fun bindLayoutGravity(gravity: Int) {
@@ -58,9 +67,9 @@ class TokoChatImageBubbleViewHolder(
 
     private fun bindRetryButton(element: TokoChatImageBubbleUiModel) {
         if (element.shouldRetry) {
-            binding?.tokochatImageBubbleError?.show()
+            binding?.tokochatIconImageBubbleError?.show()
         } else {
-            binding?.tokochatImageBubbleError?.hide()
+            binding?.tokochatIconImageBubbleError?.hide()
         }
     }
 
@@ -75,6 +84,9 @@ class TokoChatImageBubbleViewHolder(
             if (element.isImageReady) {
                 tokoChatImageAttachmentListener.onClickImage(element)
             }
+        }
+        binding?.tokochatIconImageBubbleError?.setOnClickListener {
+            bindImage(element, isFromRetry = true)
         }
     }
 

@@ -3,7 +3,6 @@ package com.tokopedia.tokofood.feature.ordertracking.domain.usecase
 import com.gojek.courier.CourierConnection
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokochat.tokochat_config_common.repository.courier.TokoChatBabbleCourierImpl.Companion.SOURCE_APP_INIT
-import dagger.Lazy
 import javax.inject.Inject
 
 class TokoChatConfigMutationProfileUseCase @Inject constructor(

@@ -17,6 +17,7 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import dagger.Module
 import dagger.Provides
 
@@ -72,7 +73,7 @@ object TokoChatUseCaseModule {
     @TokoChatScope
     @Provides
     internal fun provideTopchatCacheManager(@TokoChatContext context: Context): TokoChatCacheManager {
-        val topchatCachePref = context.getSharedPreferences("tokoChatCache", Context.MODE_PRIVATE)
+        val topchatCachePref = context.getSharedPreferences(TokoChatValueUtil.TOKOCHAT_CACHE, Context.MODE_PRIVATE)
         return TokoChatCacheManagerImpl(topchatCachePref)
     }
 
