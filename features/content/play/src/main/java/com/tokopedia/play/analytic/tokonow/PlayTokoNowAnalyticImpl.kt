@@ -208,22 +208,18 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         products: Map<ProductSheetAdapter.Item.Product, Int>
     ) {
 
-        val impressedProducts = products.toList().distinctBy {
-            it.first.product.id
-        }.toMap()
-
         trackingQueue.putEETracking(
             event = EventModel(
                 "productView",
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "view - now product bottomsheet",
-                "$channelId - ${impressedProducts.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value}"
+                "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value}"
             ),
             enhanceECommerceMap = hashMapOf(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        impressedProducts.forEach {
+                        products.forEach {
                             add(convertProductToHashMapWithList(it.key.product, it.value, "bottom sheet"))
                         }
                     }

@@ -189,10 +189,6 @@ class PlayAnalytic(
             else -> Pair("view product", "$mChannelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${mChannelType.value} - product in bottom sheet - is pinned product ${products.keys.firstOrNull()?.product?.isPinned.orFalse()}")
         }
 
-        val impressedProducts = products.toList().distinctBy {
-            it.first.product.id
-        }.toMap()
-
         trackingQueue.putEETracking(
             event = EventModel(
                 "productView",
@@ -204,7 +200,7 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        impressedProducts.forEach {
+                        products.forEach {
                             add(convertProductToHashMapWithList(it.key.product, it.value, "bottom sheet"))
                         }
                     }
