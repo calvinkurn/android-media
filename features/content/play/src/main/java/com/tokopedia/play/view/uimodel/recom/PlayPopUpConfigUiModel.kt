@@ -5,14 +5,14 @@ package com.tokopedia.play.view.uimodel.recom
  */
 data class PlayPopUpConfigUiModel(
     val isEnabled: Boolean = false,
-    val duration: Long = 0,
+    val duration: Long = 0L,
     val text: String = "",
 ){
     companion object {
         val Empty: PlayPopUpConfigUiModel
             get() = PlayPopUpConfigUiModel(
                 isEnabled = false,
-                duration = 0,
+                duration = 0L,
                 text = "",
             )
     }
