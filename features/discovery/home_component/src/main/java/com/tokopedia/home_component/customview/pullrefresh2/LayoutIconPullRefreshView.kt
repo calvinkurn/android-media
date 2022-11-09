@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.util.toDpInt
@@ -28,6 +29,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     private var maxOffset : Int = 0
     private var progressRefresh : Float = 0.0f
     private var offsetY : Float = 0.0f
+    private var pullRefreshIcon: ProgressBar? = null
     companion object {
         private const val MAXIMUM_HEIGHT_SCROLL = 89
     }
@@ -35,6 +37,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     init {
         val view = View.inflate(context, R.layout.layout_icon_pull_refresh_view, this)
         containerIconPullRefresh = view.findViewById(R.id.container_icon_pull_refresh)
+        pullRefreshIcon = view.findViewById(R.id.progress_pull_refresh)
         containerIconPullRefresh?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         contentChildView = SimpleSwipeRefreshLayout.ChildView(getChildAt(0))
 
@@ -70,7 +73,9 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     override fun progressRefresh(progress: Float) {
         progressRefresh = progress
-        Log.d("dhabalog", "progress $progress")
+        val p = (progress * 100).roundToInt()
+        pullRefreshIcon?.progress = p
+        Log.d("dhabalog", "progress $p")
     }
 
     private fun positionChildren() {
