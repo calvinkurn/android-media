@@ -45,7 +45,7 @@ class DynamicPreparationMenuView : FrameLayout {
     }
 
     fun submitMenu(menuList: List<DynamicPreparationMenu>) {
-        adapter.addItemsAndAnimateChanges(menuList)
+        adapter.setItemsAndAnimateChanges(menuList)
     }
 
     fun setOnMenuClickListener(onClick: (DynamicPreparationMenu) -> Unit) {

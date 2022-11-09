@@ -8,4 +8,8 @@ sealed interface PlayShortsAction {
     data class PreparePage(
         val preferredAccountType: String
     ) : PlayShortsAction
+
+    data class SubmitTitle(
+        val title: String,
+    ) : PlayShortsAction
 }

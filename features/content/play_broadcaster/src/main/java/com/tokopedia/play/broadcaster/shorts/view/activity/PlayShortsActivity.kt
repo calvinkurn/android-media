@@ -14,12 +14,14 @@ import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
+import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collectLatest
@@ -55,6 +57,11 @@ class PlayShortsActivity : BaseActivity() {
 
         /** For mocking purpose */
         openPreparation()
+    }
+
+    override fun onBackPressed() {
+        if(isBackPressedOverridden()) return
+        super.onBackPressed()
     }
 
     private fun inject() {
@@ -144,6 +151,16 @@ class PlayShortsActivity : BaseActivity() {
             }
         }
     }
+
+    private fun isBackPressedOverridden(): Boolean {
+        val currentVisibleFragment = getCurrentFragment()
+        if (currentVisibleFragment != null && currentVisibleFragment is PlayShortsBaseFragment) {
+            return currentVisibleFragment.onBackPressed()
+        }
+        return false
+    }
+
+    private fun getCurrentFragment() = supportFragmentManager.findFragmentById(R.id.container)
 
     companion object {
         private const val MEDIA_PICKER_REQ = 123

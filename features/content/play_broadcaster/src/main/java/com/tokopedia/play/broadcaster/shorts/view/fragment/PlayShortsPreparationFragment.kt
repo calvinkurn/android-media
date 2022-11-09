@@ -12,9 +12,14 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.producttag.view.fragment.LastTaggedProductFragment
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
+import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -24,7 +29,7 @@ import javax.inject.Inject
  */
 class PlayShortsPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-) : TkpdBaseV4Fragment() {
+) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
 
@@ -47,7 +52,20 @@ class PlayShortsPreparationFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        setupListener()
         setupObserver()
+    }
+
+    override fun onBackPressed(): Boolean {
+        return when {
+            binding.formTitle.visibility == View.VISIBLE -> {
+                showTitleForm(false)
+                true
+            }
+            else -> {
+                super.onBackPressed()
+            }
+        }
     }
 
     private fun setupView() {
@@ -60,8 +78,26 @@ class PlayShortsPreparationFragment @Inject constructor(
             }
         }
 
-        binding.preparationMenu.setOnClickListener {
+        binding.preparationMenu.setOnMenuClickListener {
+            when(it.menuId) {
+                DynamicPreparationMenu.TITLE -> {
+                    showTitleForm(true)
+                }
+            }
+        }
+    }
 
+    private fun setupListener() {
+        with(binding) {
+            formTitle.setListener(object : TitleFormView.Listener {
+                override fun onCloseTitleForm(view: TitleFormView) {
+                    activity?.onBackPressed()
+                }
+
+                override fun onTitleSaved(view: TitleFormView, title: String) {
+                    viewModel.submitAction(PlayShortsAction.SubmitTitle(title))
+                }
+            })
         }
     }
 
@@ -80,6 +116,20 @@ class PlayShortsPreparationFragment @Inject constructor(
         if(prev?.menuList == curr.menuList) return
 
         binding.preparationMenu.submitMenu(curr.menuList)
+    }
+
+    private fun showMainComponent(isShow: Boolean) {
+        binding.groupPreparationMain.showWithCondition(isShow)
+    }
+
+    private fun showTitleForm(isShow: Boolean) {
+        showMainComponent(!isShow)
+        binding.formTitle.showWithCondition(isShow)
+
+        if(isShow) {
+            binding.formTitle.setTitle(viewModel.title)
+            binding.formTitle.setLoading(false)
+        }
     }
 
     companion object {

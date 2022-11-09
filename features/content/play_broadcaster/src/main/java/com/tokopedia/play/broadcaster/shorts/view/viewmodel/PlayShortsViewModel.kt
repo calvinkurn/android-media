@@ -24,6 +24,10 @@ class PlayShortsViewModel @Inject constructor(
     private val sharedPref: HydraSharedPreferences
 ) : ViewModel() {
 
+    /** Public Getter */
+    val title: String
+        get() = _title.value
+
     private val _mediaUri = MutableStateFlow("")
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
     private val _selectedAccount = MutableStateFlow<ContentAccountUiModel>(ContentAccountUiModel.Empty)
@@ -35,6 +39,9 @@ class PlayShortsViewModel @Inject constructor(
         _menuList,
         _title,
     ) { menuList, title ->
+        /** Will update this validation with product checking as well */
+        val isAllMandatoryChecked = title.isNotEmpty()
+
         menuList.map {
             when(it.menuId) {
                 DynamicPreparationMenu.TITLE -> {
@@ -45,8 +52,8 @@ class PlayShortsViewModel @Inject constructor(
                     it
                 }
                 DynamicPreparationMenu.COVER -> {
-                    /** Will handle this later */
-                    it
+                    /** Will handle isChecked later */
+                    it.copy(isEnabled = isAllMandatoryChecked)
                 }
                 else -> {
                     it
@@ -71,15 +78,19 @@ class PlayShortsViewModel @Inject constructor(
         )
     }
 
+    init {
+        setupPreparationMenu()
+    }
+
     fun submitAction(action: PlayShortsAction) {
         when (action) {
             is PlayShortsAction.PreparePage -> handlePreparePage(action.preferredAccountType)
+
+            is PlayShortsAction.SubmitTitle -> handleSubmitTitle(action.title)
         }
     }
 
     private fun handlePreparePage(preferredAccountType: String) {
-        setupPreparationMenu()
-
         viewModelScope.launchCatchError(block = {
             val lastSelectedAccount = sharedPref.getLastSelectedAccount()
 
@@ -95,12 +106,16 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
+    private fun handleSubmitTitle(title: String) {
+        _title.update { title }
+    }
+
     private fun setupPreparationMenu() {
         viewModelScope.launchCatchError(block = {
             val menuList = mutableListOf<DynamicPreparationMenu>().apply {
                 add(DynamicPreparationMenu.createTitle(true))
                 add(DynamicPreparationMenu.createProduct(true))
-                add(DynamicPreparationMenu.createSchedule(false))
+                add(DynamicPreparationMenu.createCover(false))
             }
 
             _menuList.update { menuList }
