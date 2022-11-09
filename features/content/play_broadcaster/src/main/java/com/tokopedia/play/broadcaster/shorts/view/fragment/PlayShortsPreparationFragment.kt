@@ -28,7 +28,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on November 08, 2022
  */
 class PlayShortsPreparationFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    private val viewModelFactory: ViewModelProvider.Factory
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
@@ -44,7 +44,9 @@ class PlayShortsPreparationFragment @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPlayShortsPreparationBinding.inflate(
-            inflater, container, false
+            inflater,
+            container,
+            false
         )
         return _binding?.root
     }
@@ -82,7 +84,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun setupListener() {
         with(binding) {
             preparationMenu.setOnMenuClickListener {
-                when(it.menuId) {
+                when (it.menuId) {
                     DynamicPreparationMenu.TITLE -> {
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
                     }
@@ -92,7 +94,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             formTitle.setListener(object : TitleFormView.Listener {
                 override fun onCloseTitleForm(view: TitleFormView) {
                     viewModel.submitAction(PlayShortsAction.CloseTitleForm)
-//                    activity?.onBackPressed()
                 }
 
                 override fun onTitleSaved(view: TitleFormView, title: String) {
@@ -115,7 +116,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(prev?.menuList == curr.menuList) return
+        if (prev?.menuList == curr.menuList) return
 
         binding.preparationMenu.submitMenu(curr.menuList)
     }
@@ -124,9 +125,9 @@ class PlayShortsPreparationFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(prev?.titleForm == curr.titleForm) return
+        if (prev?.titleForm == curr.titleForm) return
 
-        when(curr.titleForm.state) {
+        when (curr.titleForm.state) {
             PlayShortsTitleFormUiState.State.Unknown -> {
                 showTitleForm(false)
 
@@ -135,10 +136,10 @@ class PlayShortsPreparationFragment @Inject constructor(
             PlayShortsTitleFormUiState.State.Editing -> {
                 showTitleForm(true)
 
-                if(prev?.titleForm?.state == PlayShortsTitleFormUiState.State.Unknown) {
+                if (prev?.titleForm?.state == PlayShortsTitleFormUiState.State.Unknown) {
                     binding.formTitle.setTitle(viewModel.title)
-                    binding.formTitle.setLoading(false)
                 }
+                binding.formTitle.setLoading(false)
             }
             PlayShortsTitleFormUiState.State.Loading -> {
                 hideKeyboard()
@@ -161,7 +162,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): PlayShortsPreparationFragment {
             val oldInstance = fragmentManager.findFragmentByTag(PlayShortsPreparationFragment.TAG) as? PlayShortsPreparationFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(

@@ -15,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -31,6 +30,9 @@ class PlayShortsViewModel @Inject constructor(
     val title: String
         get() = _titleForm.value.title
 
+    val titleFormState: PlayShortsTitleFormUiState.State
+        get() = _titleForm.value.state
+
     private val _mediaUri = MutableStateFlow("")
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
     private val _selectedAccount = MutableStateFlow<ContentAccountUiModel>(ContentAccountUiModel.Empty)
@@ -41,13 +43,13 @@ class PlayShortsViewModel @Inject constructor(
 
     private val _menuListUiState = kotlinx.coroutines.flow.combine(
         _menuList,
-        _titleForm,
+        _titleForm
     ) { menuList, titleForm ->
         /** Will update this validation with product checking as well */
         val isAllMandatoryChecked = titleForm.title.isNotEmpty()
 
         menuList.map {
-            when(it.menuId) {
+            when (it.menuId) {
                 DynamicPreparationMenu.TITLE -> {
                     it.copy(isChecked = titleForm.title.isNotEmpty())
                 }
@@ -72,7 +74,7 @@ class PlayShortsViewModel @Inject constructor(
         _accountList,
         _selectedAccount,
         _menuListUiState,
-        _titleForm,
+        _titleForm
     ) { shortsId, mediaUri, accountList, selectedAccount, menuListUiState, titleForm ->
         PlayShortsUiState(
             shortsId = shortsId,
@@ -80,7 +82,7 @@ class PlayShortsViewModel @Inject constructor(
             accountList = accountList,
             selectedAccount = selectedAccount,
             menuList = menuListUiState,
-            titleForm = titleForm,
+            titleForm = titleForm
         )
     }
 
@@ -110,7 +112,6 @@ class PlayShortsViewModel @Inject constructor(
             }
 
             val accountList = repo.getAccountList()
-
         }) {
         }
     }
@@ -121,7 +122,7 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleSubmitTitle(title: String) {
         viewModelScope.launchCatchError(block = {
-            if(_titleForm.value.state == PlayShortsTitleFormUiState.State.Loading) return@launchCatchError
+            if (_titleForm.value.state == PlayShortsTitleFormUiState.State.Loading) return@launchCatchError
 
             _titleForm.update {
                 it.copy(
@@ -131,6 +132,8 @@ class PlayShortsViewModel @Inject constructor(
 
             /** Will call real GQL here */
             delay(2000)
+
+            throw Exception("test")
 
             _titleForm.update {
                 it.copy(
@@ -150,7 +153,9 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleCloseTitleForm() {
-        _titleForm.update { it.copy(state = PlayShortsTitleFormUiState.State.Unknown) }
+        if (_titleForm.value.state != PlayShortsTitleFormUiState.State.Loading) {
+            _titleForm.update { it.copy(state = PlayShortsTitleFormUiState.State.Unknown) }
+        }
     }
 
     private fun setupPreparationMenu() {
