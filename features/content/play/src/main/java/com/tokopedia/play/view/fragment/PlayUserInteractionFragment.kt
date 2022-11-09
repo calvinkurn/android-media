@@ -1883,10 +1883,9 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
                 //TODO("Temporary, maybe best to combine bottom sheet into this fragment")
-                val action = event.product.buttons.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
                 if (event.product.isVariantAvailable) {
                     playFragment.openVariantBottomSheet(
-                        action.type.toAction,
+                        event.action,
                         event.product
                     )
                 }
