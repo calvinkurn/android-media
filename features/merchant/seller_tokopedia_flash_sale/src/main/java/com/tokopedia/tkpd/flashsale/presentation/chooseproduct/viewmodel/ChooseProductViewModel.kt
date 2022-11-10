@@ -110,7 +110,6 @@ class ChooseProductViewModel @Inject constructor(
                 if (_selectedProductCount.value == null) _selectedProductCount.postValue(result.selectedProductCount)
                 submittedProductIds = result.selectedProductIds
                 getMaxProductSubmission()
-
             },
             onError = { error ->
                 _error.postValue(error)
@@ -190,13 +189,14 @@ class ChooseProductViewModel @Inject constructor(
     }
 
     fun getMaxProductSubmission() {
+        if (maxProductSubmission.value != null) return // only call GQL when has no maximum data
         launchCatchError(
             dispatchers.io,
             block = {
                 val response = getFlashSaleDetailForSellerUseCase.execute(campaignId)
-                maxProductSubmission.postValue(response.maxProductSubmission)
                 remainingQuota = response.remainingQuota
                 selectedProductList = emptyList()
+                maxProductSubmission.postValue(response.maxProductSubmission)
             },
             onError = { error ->
                 _error.postValue(error)
