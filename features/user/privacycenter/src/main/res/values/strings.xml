@@ -8,8 +8,8 @@
     <string name="error_network_detail">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu.</string>
 
     <!--Section | Consent Withdrawal -->
-    <string name="section_title_consentWithdrawal">Persetujuan kamu</string>
-    <string name="section_description_consentWithdrawal">Atur fitur apa aja yang boleh akses datamu</string>
+    <string name="consent_withdrawal_section_title">Persetujuan kamu</string>
+    <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
 
     <!--Section | Privacy Policy -->
     <string name="section_title_privacypolicy">Kebijakan Privasi Tokopedia</string>
@@ -22,7 +22,5 @@
     <string name="consent_withdrawal_dialog_body">Kalau dimatikan, kamu nggak bisa pakai fitur atau produk yang butuh data ini.</string>
     <string name="consent_withdrawal_dialog_primary_cta">Ya, Matikan</string>
     <string name="consent_withdrawal_dialog_secondary_cta">Batal</string>
-    <string name="consent_withdrawal_section_title">Penggunaan Data</string>
-    <string name="consent_withdrawal_section_description"><![CDATA[Atur penggunaan datamu di fitur & produk Tokopedia.]]></string>
 
 </resources>

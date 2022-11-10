@@ -5,6 +5,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
+import com.tokopedia.privacycenter.consentwithdrawal.data.SubmitConsentDataModel
 import com.tokopedia.privacycenter.consentwithdrawal.data.SubmitConsentPreferenceDataModel
 import com.tokopedia.privacycenter.consentwithdrawal.data.SubmitConsentPurposeReq
 import javax.inject.Inject
@@ -12,10 +15,18 @@ import javax.inject.Inject
 class SubmitConsentPreferenceUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<SubmitConsentPurposeReq, SubmitConsentPreferenceDataModel>(dispatcher.io) {
+) : CoroutineUseCase<SubmitConsentPurposeReq, PrivacyCenterStateResult<SubmitConsentDataModel>>(dispatcher.io) {
 
-    override suspend fun execute(params: SubmitConsentPurposeReq): SubmitConsentPreferenceDataModel {
-        return graphqlRepository.request(graphqlQuery(), params)
+    override suspend fun execute(params: SubmitConsentPurposeReq): PrivacyCenterStateResult<SubmitConsentDataModel> {
+        val response: SubmitConsentPreferenceDataModel = graphqlRepository.request(graphqlQuery(), params)
+
+        return if (response.data.isSuccess) {
+            PrivacyCenterStateResult.Success(response.data)
+        } else {
+            PrivacyCenterStateResult.Fail(
+                MessageErrorException(response.data.errorMessages.toString())
+            )
+        }
     }
 
     override fun graphqlQuery(): String = """

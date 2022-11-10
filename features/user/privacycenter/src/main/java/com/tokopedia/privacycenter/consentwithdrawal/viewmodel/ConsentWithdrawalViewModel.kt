@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.consentwithdrawal.common.TransactionType
 import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentPurposeGroupDataModel
@@ -33,32 +32,26 @@ class ConsentWithdrawalViewModel @Inject constructor(
         get() = _submitConsentPreference
 
     fun getConsentPurposeByGroup(groupId: Int) {
+        _consentPurpose.value = PrivacyCenterStateResult.Loading()
+
         launchCatchError(coroutineContext, {
-            val response = getConsentPurposeByGroupUseCase(
+            _consentPurpose.value = getConsentPurposeByGroupUseCase(
                 mapOf(
                     GetConsentPurposeByGroupUseCase.PARAM_GROUP_ID to groupId
                 )
             )
-
-            if (response.consentGroup.isSuccess) {
-                _consentPurpose.value = PrivacyCenterStateResult.Success(response.consentGroup)
-            } else {
-                _consentPurpose.value = PrivacyCenterStateResult.Fail(
-                    MessageErrorException(response.consentGroup.errorMessages.toString())
-                )
-            }
         }) {
             _consentPurpose.value = PrivacyCenterStateResult.Fail(it)
         }
     }
 
     fun submitConsentPreference(
-        position: Int,
         purposeID: String,
         transactionType: TransactionType
     ) {
+        _submitConsentPreference.value = PrivacyCenterStateResult.Loading()
         launchCatchError(coroutineContext, {
-            val response = submitConsentPreferenceUseCase(
+            _submitConsentPreference.value = submitConsentPreferenceUseCase(
                 SubmitConsentPurposeReq(
                     PurposesParam(
                         purposeID = purposeID,
@@ -66,17 +59,7 @@ class ConsentWithdrawalViewModel @Inject constructor(
                         version = "1"
                     )
                 )
-            ).also {
-                it.data.position = position
-            }
-
-            if (response.data.isSuccess) {
-                _submitConsentPreference.value = PrivacyCenterStateResult.Success(response.data)
-            } else {
-                _submitConsentPreference.value = PrivacyCenterStateResult.Fail(
-                    MessageErrorException(response.data.errorMessages.toString())
-                )
-            }
+            )
         }) {
             _submitConsentPreference.value = PrivacyCenterStateResult.Fail(it)
         }

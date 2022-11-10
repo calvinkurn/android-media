@@ -73,10 +73,14 @@ class PrivacyCenterItemView : FrameLayout {
         }
     }
 
-    fun onToggleClicked(onClicked: (View) -> Unit) {
-        viewBinding.itemSwitch.setOnClickListener {
-            onClicked.invoke(it)
+    fun onToggleClicked(onClicked: (buttonView: View, isChecked: Boolean) -> Unit) {
+        viewBinding.itemSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            onClicked.invoke(buttonView, isChecked)
         }
+    }
+
+    fun forceToggleState(isActive: Boolean) {
+        viewBinding.itemSwitch.isChecked = isActive
     }
 
     fun onNavigationButtonClicked(onClicked: (View) -> Unit) {

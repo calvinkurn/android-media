@@ -5,16 +5,27 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
+import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentPurposeGroupDataModel
 import com.tokopedia.privacycenter.consentwithdrawal.data.GetConsentPurposeDataModel
 import javax.inject.Inject
 
 class GetConsentPurposeByGroupUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, Int>, GetConsentPurposeDataModel>(dispatcher.io) {
+) : CoroutineUseCase<Map<String, Int>, PrivacyCenterStateResult<ConsentPurposeGroupDataModel>>(dispatcher.io) {
 
-    override suspend fun execute(params: Map<String, Int>): GetConsentPurposeDataModel {
-        return graphqlRepository.request(graphqlQuery(), params)
+    override suspend fun execute(params: Map<String, Int>): PrivacyCenterStateResult<ConsentPurposeGroupDataModel> {
+        val response: GetConsentPurposeDataModel = graphqlRepository.request(graphqlQuery(), params)
+
+        return if (response.consentGroup.isSuccess) {
+            PrivacyCenterStateResult.Success(response.consentGroup)
+        } else {
+            PrivacyCenterStateResult.Fail(
+                MessageErrorException(response.consentGroup.errorMessages.toString())
+            )
+        }
     }
 
     override fun graphqlQuery(): String = """
