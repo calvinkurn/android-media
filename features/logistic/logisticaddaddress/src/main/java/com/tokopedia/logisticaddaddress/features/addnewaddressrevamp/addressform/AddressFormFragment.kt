@@ -8,7 +8,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.text.*
+import android.text.Editable
+import android.text.InputFilter
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -66,21 +69,18 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
-class AddressFormFragment :
-    BaseDaggerFragment(),
-    LabelAlamatChipsAdapter.ActionListener,
-    DiscomBottomSheetRevamp.DiscomRevampListener {
+class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener,
+        DiscomBottomSheetRevamp.DiscomRevampListener {
 
     private var bottomSheetInfoPenerima: BottomSheetUnify? = null
     private var saveDataModel: SaveAddressDataModel? = null
     private var formattedAddress: String = ""
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
-    private var currentDistrictName: String? = ""
+    private var currentDistrictName: String?  = ""
     private var labelAlamatList: Array<Pair<String, Boolean>> = emptyArray()
     private var staticDimen8dp: Int? = 0
     private var isPositiveFlow: Boolean = true
-
     /*To differentiate user pinpoint on ANA Negative*/
     private var isPinpoint: Boolean = false
     private var validated: Boolean = true
@@ -113,7 +113,7 @@ class AddressFormFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String  = ""
 
     override fun initInjector() {
         getComponent(AddNewAddressRevampComponent::class.java).inject(this)
@@ -200,21 +200,15 @@ class AddressFormFragment :
                     currentLat = it.latitude.toDouble()
                     currentLong = it.longitude.toDouble()
                     binding?.cardAddressNegative?.icLocation?.setImage(IconUnify.LOCATION)
-                    binding?.cardAddressNegative?.addressDistrict?.text = if (isEdit) {
-                        getString(R.string.tv_pinpoint_defined_edit)
-                    } else {
-                        context?.let {
-                            HtmlLinkHelper(
-                                it,
-                                getString(R.string.tv_pinpoint_defined)
-                            ).spannedString
-                        }
+                    binding?.cardAddressNegative?.addressDistrict?.text = if (isEdit) getString(R.string.tv_pinpoint_defined_edit) else context?.let {
+                        HtmlLinkHelper(
+                            it,
+                            getString(R.string.tv_pinpoint_defined)
+                        ).spannedString
                     }
                     binding?.cardAddressNegative?.btnChangeNegative?.text = getString(R.string.change_pinpoint_positive_text)
-                    if (saveDataModel?.postalCode?.isEmpty() == true) {
-                        saveDataModel?.postalCode =
-                            currentPostalCode
-                    }
+                    if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode =
+                        currentPostalCode
                 }
             }
         }
@@ -244,7 +238,7 @@ class AddressFormFragment :
     }
 
     private fun removeSpecialChars(s: String): String {
-        return s.replace("[^A-Za-z0-9 ]".toRegex(), "").replace(" ", "")
+        return s.replace("[^A-Za-z0-9 ]".toRegex(), "").replace(" ","")
     }
 
     private fun isPhoneNumberValid(phone: String): Boolean {
@@ -267,142 +261,123 @@ class AddressFormFragment :
     }
 
     private fun initObserver() {
-        viewModel.districtDetail.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        prepareLayout(it.data.district[0])
-                    }
+        viewModel.districtDetail.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    prepareLayout(it.data.district[0])
+                }
 
-                    is Fail -> {
-                        it.throwable.printStackTrace()
-                    }
+                is Fail -> {
+                    it.throwable.printStackTrace()
                 }
             }
-        )
+        })
 
-        viewModel.saveAddress.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        if (it.data.isSuccess == 1) {
-                            saveDataModel?.id = it.data.addrId
-                            saveDataModel?.warehouseId = it.data.tokonow.warehouseId
-                            saveDataModel?.shopId = it.data.tokonow.shopId
-                            saveDataModel?.warehouses = AddAddressMapper.mapWarehouses(it.data.tokonow.warehouses)
-                            saveDataModel?.serviceType = it.data.tokonow.serviceType
-                            if (isPositiveFlow) {
-                                AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, SUCCESS)
-                            } else {
-                                AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, SUCCESS)
-                            }
-                            onSuccessAddAddress()
-                        }
-                    }
-
-                    is Fail -> {
-                        if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, "")
-                            AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, NOT_SUCCESS)
-                        } else {
-                            AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, "")
-                            AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, NOT_SUCCESS)
-                        }
-                        val msg = it.throwable.message.toString()
-                        view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+        viewModel.saveAddress.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.isSuccess == 1) {
+                        saveDataModel?.id = it.data.addrId
+                        saveDataModel?.warehouseId = it.data.tokonow.warehouseId
+                        saveDataModel?.shopId = it.data.tokonow.shopId
+                        saveDataModel?.warehouses = AddAddressMapper.mapWarehouses(it.data.tokonow.warehouses)
+                        saveDataModel?.serviceType = it.data.tokonow.serviceType
+                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, SUCCESS)
+                        else AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, SUCCESS)
+                        onSuccessAddAddress()
                     }
                 }
-            }
-        )
 
-        viewModel.editAddress.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        if (it.data.isSuccess == 1) {
-                            onSuccessEditAddress(it.data.isStateChosenAddressChanged)
-                            EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, true)
-                        } else {
-                            EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                        }
+                is Fail -> {
+                    if (isPositiveFlow) {
+                        AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, "")
+                        AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, NOT_SUCCESS)
                     }
+                    else {
+                        AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, "")
+                        AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, NOT_SUCCESS)
+                    }
+                    val msg = it.throwable.message.toString()
+                    view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+            }
+        })
 
-                    is Fail -> {
+        viewModel.editAddress.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.isSuccess == 1) {
+                        onSuccessEditAddress(it.data.isStateChosenAddressChanged)
+                        EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, true)
+                    } else {
                         EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                        val msg = it.throwable.message.toString()
-                        view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                    }
+                }
+
+                is Fail -> {
+                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    val msg = it.throwable.message.toString()
+                    view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+            }
+        })
+
+        viewModel.defaultAddress.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.addressId != 0L) {
+                        binding?.layoutCbDefaultLoc?.visibility = View.VISIBLE
+                    } else {
+                        binding?.layoutCbDefaultLoc?.visibility = View.GONE
                     }
                 }
             }
-        )
+        })
 
-        viewModel.defaultAddress.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        if (it.data.addressId != 0L) {
-                            binding?.layoutCbDefaultLoc?.visibility = View.VISIBLE
-                        } else {
-                            binding?.layoutCbDefaultLoc?.visibility = View.GONE
+        viewModel.addressDetail.observe(viewLifecycleOwner, Observer {
+            binding?.loaderAddressForm?.visibility = View.GONE
+            when (it) {
+                is Success -> {
+                    it.data.keroGetAddress.data.firstOrNull()?.let { detailAddress ->
+                        saveDataModel = AddAddressMapper.mapAddressDetailToSaveAddressDataModel(detailAddress)
+                        isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
+                        isLatitudeNotEmpty?.let { notEmpty ->
+                            if (notEmpty) currentLat = saveDataModel?.latitude?.toDouble() ?: 0.0
                         }
+
+                        isLongitudeNotEmpty = saveDataModel?.longitude?.isNotEmpty()
+                        isLongitudeNotEmpty?.let { notEmpty ->
+                            if (notEmpty) currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
+                        }
+                        isPositiveFlow = isLatitudeNotEmpty == true && isLongitudeNotEmpty == true
+                        currentKotaKecamatan = "${detailAddress.districtName}, ${detailAddress.cityName}, ${detailAddress.provinceName}"
+                        prepareEditLayout(detailAddress)
                     }
                 }
             }
-        )
+        })
 
-        viewModel.addressDetail.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding?.loaderAddressForm?.visibility = View.GONE
-                when (it) {
-                    is Success -> {
-                        it.data.keroGetAddress.data.firstOrNull()?.let { detailAddress ->
-                            saveDataModel = AddAddressMapper.mapAddressDetailToSaveAddressDataModel(detailAddress)
-                            isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
-                            isLatitudeNotEmpty?.let { notEmpty ->
-                                if (notEmpty) currentLat = saveDataModel?.latitude?.toDouble() ?: 0.0
-                            }
-
-                            isLongitudeNotEmpty = saveDataModel?.longitude?.isNotEmpty()
-                            isLongitudeNotEmpty?.let { notEmpty ->
-                                if (notEmpty) currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
-                            }
-                            isPositiveFlow = isLatitudeNotEmpty == true && isLongitudeNotEmpty == true
-                            currentKotaKecamatan = "${detailAddress.districtName}, ${detailAddress.cityName}, ${detailAddress.provinceName}"
-                            prepareEditLayout(detailAddress)
+        viewModel.pinpointValidation.observe(viewLifecycleOwner, Observer {
+            binding?.loaderAddressForm?.visibility = View.GONE
+            when (it) {
+                is Success -> {
+                    if (it.data.result) {
+                        saveDataModel?.let { addressData -> viewModel.saveEditAddress(addressData) }
+                    } else {
+                        view?.let { v ->
+                            Toaster.build(v, getString(R.string.error_district_pinpoint_mismatch), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
                         }
-                    }
-                }
-            }
-        )
-
-        viewModel.pinpointValidation.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding?.loaderAddressForm?.visibility = View.GONE
-                when (it) {
-                    is Success -> {
-                        if (it.data.result) {
-                            saveDataModel?.let { addressData -> viewModel.saveEditAddress(addressData) }
-                        } else {
-                            view?.let { v ->
-                                Toaster.build(v, getString(R.string.error_district_pinpoint_mismatch), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
-                            }
-                            EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                        }
-                    }
-                    is Fail -> {
                         EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                        val msg = it.throwable.message.toString()
-                        view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                     }
                 }
+                is Fail -> {
+                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    val msg = it.throwable.message.toString()
+                    view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
             }
-        )
+        })
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -418,19 +393,13 @@ class AddressFormFragment :
             setupFormAccount()
             formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
             formAccount.etNomorHp.getFirstIcon().setOnClickListener {
-                if (isPositiveFlow) {
-                    AddNewAddressRevampAnalytics.onClickIconPhoneBookPositive(userSession.userId)
-                } else {
-                    AddNewAddressRevampAnalytics.onClickIconPhoneBookNegative(userSession.userId)
-                }
+                if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickIconPhoneBookPositive(userSession.userId)
+                else AddNewAddressRevampAnalytics.onClickIconPhoneBookNegative(userSession.userId)
                 onNavigateToContact()
             }
             formAccount.btnInfo.setOnClickListener {
-                if (isPositiveFlow) {
-                    AddNewAddressRevampAnalytics.onClickIconNamaPenerimaPositive(userSession.userId)
-                } else {
-                    AddNewAddressRevampAnalytics.onClickIconNamaPenerimaNegative(userSession.userId)
-                }
+                if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickIconNamaPenerimaPositive(userSession.userId)
+                else AddNewAddressRevampAnalytics.onClickIconNamaPenerimaNegative(userSession.userId)
                 showBottomSheetInfoPenerima()
             }
         }
@@ -479,7 +448,7 @@ class AddressFormFragment :
             }
         }
 
-        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, binding?.userConsent, getString(R.string.btn_simpan), if (isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE)
+        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, binding?.userConsent, getString(R.string.btn_simpan), if(isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE)
 
         binding?.btnSaveAddressNew?.setOnClickListener {
             if (validateForm()) {
@@ -489,7 +458,7 @@ class AddressFormFragment :
     }
 
     private fun setupLabelChips(currentLabel: String) {
-        labelAlamatList = context?.resources?.getStringArray(R.array.labelAlamatList)?.map { Pair(it, it.equals(currentLabel, ignoreCase = true)) }?.toTypedArray() ?: emptyArray()
+        labelAlamatList =  context?.resources?.getStringArray(R.array.labelAlamatList)?.map { Pair(it, it.equals(currentLabel, ignoreCase = true)) }?.toTypedArray() ?: emptyArray()
         labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
         labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
             .setOrientation(ChipsLayoutManager.HORIZONTAL)
@@ -731,20 +700,20 @@ class AddressFormFragment :
 
         if (!isEdit) {
             if (!validated && isPositiveFlow) {
-                AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field.joinToString(","))
+                AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field.joinToString ("," ))
             } else if (!validated && !isPositiveFlow) {
-                AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, field.joinToString(","))
+                AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, field.joinToString ("," ))
             }
         } else {
             if (!validated) {
                 EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                EditAddressRevampAnalytics.onClickSimpanError(userSession.userId, field.joinToString(","))
+                EditAddressRevampAnalytics.onClickSimpanError(userSession.userId, field.joinToString ("," ))
             }
         }
         return validated
     }
 
-    private fun validateReceiverName(): Boolean {
+    private fun validateReceiverName() : Boolean {
         binding?.formAccount?.etNamaPenerima?.let { field ->
             val receiverName = field.textFieldInput.text.toString()
             return if (receiverName.length < MIN_CHAR_RECEIVER_NAME) {
@@ -760,17 +729,31 @@ class AddressFormFragment :
         return false
     }
 
-    private fun validatePhoneNumber(): Boolean {
+    private fun validatePhoneNumber() : Boolean {
         binding?.formAccount?.etNomorHp?.let { field ->
             val phoneNumber = field.textFieldInput.text.toString()
             return if (phoneNumber.length < MIN_CHAR_PHONE_NUMBER) {
                 if (phoneNumber.isEmpty() || phoneNumber == " ") {
                     setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
                 }
-                view?.let { Toaster.build(it, getString(R.string.error_min_char_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(R.string.error_min_char_phone_number),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                }
                 false
             } else if (!isPhoneNumberValid(phoneNumber)) {
-                view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(R.string.error_invalid_format_phone_number),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                }
                 false
             } else {
                 true
@@ -800,9 +783,7 @@ class AddressFormFragment :
                 }
                 view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 false
-            } else {
-                field.textFieldWrapper.error == null
-            }
+            } else field.textFieldWrapper.error == null
         }
         return false
     }
@@ -827,6 +808,7 @@ class AddressFormFragment :
     private fun setWrapperWatcher(wrapper: TextInputLayout, text: String?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -848,6 +830,7 @@ class AddressFormFragment :
     private fun setNotesWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -865,6 +848,7 @@ class AddressFormFragment :
     private fun setWrapperWatcherPhone(wrapper: TextInputLayout, textWatcher: String?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -897,7 +881,7 @@ class AddressFormFragment :
         dismissDistrictRecommendationBottomSheet()
     }
 
-    private fun dismissDistrictRecommendationBottomSheet() {
+    private fun dismissDistrictRecommendationBottomSheet(){
         if (districtBottomSheet != null) {
             districtBottomSheet?.dismiss()
             districtBottomSheet = null
@@ -935,38 +919,33 @@ class AddressFormFragment :
 
     private fun onNavigateToContact() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper?.checkPermissions(
-                this,
-                getPermissions(),
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onPermissionDenied(permissionText: String) {
-                        // no-op
-                    }
+            permissionCheckerHelper?.checkPermissions(this,
+                    getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            //no-op
+                        }
 
-                    override fun onNeverAskAgain(permissionText: String) {
-                        // no-op
-                    }
+                        override fun onNeverAskAgain(permissionText: String) {
+                            //no-op
+                        }
 
-                    override fun onPermissionGranted() {
-                        openContactPicker()
-                    }
-                },
-                this.getString(R.string.rationale_need_contact)
-            )
+                        override fun onPermissionGranted() {
+                            openContactPicker()
+                        }
+                    }, this.getString(R.string.rationale_need_contact))
         }
     }
 
     private fun getPermissions(): Array<String> {
         return arrayOf(
-            PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
         )
     }
 
     private fun openContactPicker() {
         val contactPickerIntent = Intent(
-            Intent.ACTION_PICK,
-            ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-        )
+                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
         try {
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
@@ -978,7 +957,7 @@ class AddressFormFragment :
 
     private fun setupRvLabelAlamatChips() {
         binding?.run {
-            val field = if (isPositiveFlow) formAddress.rvLabelAlamatChips else formAddressNegative.rvLabelAlamatChips
+            val field =  if (isPositiveFlow) formAddress.rvLabelAlamatChips else formAddressNegative.rvLabelAlamatChips
             field.apply {
                 staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
                 layoutManager = labelAlamatChipsLayoutManager
@@ -999,8 +978,9 @@ class AddressFormFragment :
         binding?.run {
             if (!isPinpoint) {
                 cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
-                cardAddressNegative.addressDistrict.text = if (isEdit) getString(R.string.tv_pinpoint_not_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
-            } else {
+                cardAddressNegative.addressDistrict.text =  if (isEdit) getString(R.string.tv_pinpoint_not_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+            }
+            else {
                 cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
                 cardAddressNegative.addressDistrict.text = if (isEdit) getString(R.string.tv_pinpoint_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
                 cardAddressNegative.btnChangeNegative.text = getString(R.string.change_pinpoint_positive_text)
@@ -1011,7 +991,7 @@ class AddressFormFragment :
     private fun setTextListener() {
         binding?.run {
             formAccount.etNomorHp.textFieldInput.apply {
-                addTextChangedListener(object : TextWatcher {
+                addTextChangedListener(object: TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
                         //
                     }
@@ -1023,32 +1003,25 @@ class AddressFormFragment :
                     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                         filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR_PHONE_NUMBER))
                     }
+
                 })
             }
 
             cbDefaultLoc.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
                     if (!isEdit) {
-                        if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaPositive(userSession.userId)
-                        } else {
-                            AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaNegative(userSession.userId)
-                        }
+                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaPositive(userSession.userId)
+                        else AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaNegative(userSession.userId)
                     }
                     saveDataModel?.setAsPrimaryAddresss = true
-                } else {
-                    saveDataModel?.setAsPrimaryAddresss = false
-                }
+                } else saveDataModel?.setAsPrimaryAddresss = false
             }
 
             formAccount.etNamaPenerima.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     if (!isEdit) {
-                        if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaPositive(userSession.userId)
-                        } else {
-                            AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaNegative(userSession.userId)
-                        }
+                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaPositive(userSession.userId)
+                        else  AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaNegative(userSession.userId)
                     } else {
                         EditAddressRevampAnalytics.onClickFieldNamaPenerima(userSession.userId)
                     }
@@ -1058,11 +1031,8 @@ class AddressFormFragment :
             formAccount.etNomorHp.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     if (!isEdit) {
-                        if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickFieldNomorHpPositive(userSession.userId)
-                        } else {
-                            AddNewAddressRevampAnalytics.onClickFieldNomorHpNegative(userSession.userId)
-                        }
+                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickFieldNomorHpPositive(userSession.userId)
+                        else  AddNewAddressRevampAnalytics.onClickFieldNomorHpNegative(userSession.userId)
                     } else {
                         EditAddressRevampAnalytics.onClickFieldNomorHp(userSession.userId)
                     }
@@ -1077,6 +1047,7 @@ class AddressFormFragment :
                     } else {
                         EditAddressRevampAnalytics.onClickFieldLabelAlamat(userSession.userId)
                     }
+
                 }
             }
 
@@ -1108,6 +1079,7 @@ class AddressFormFragment :
                     } else {
                         EditAddressRevampAnalytics.onClickFieldLabelAlamat(userSession.userId)
                     }
+
                 }
             }
 
@@ -1131,6 +1103,7 @@ class AddressFormFragment :
                 }
             }
         }
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1151,20 +1124,12 @@ class AddressFormFragment :
                     eventShowListLabelAlamat()
                 }
                 addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(
-                        s: CharSequence,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                    ) {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                                   after: Int) {
                     }
 
-                    override fun onTextChanged(
-                        s: CharSequence,
-                        start: Int,
-                        before: Int,
-                        count: Int
-                    ) {
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                               count: Int) {
                     }
 
                     override fun afterTextChanged(s: Editable) {
@@ -1175,7 +1140,8 @@ class AddressFormFragment :
                         }
                         if (!isEdit) {
                             labelAlamatChipsAdapter.submitList(filterList)
-                        } else {
+                        }
+                        else {
                             if (s.toString().isNotEmpty() && filterList.isEmpty()) {
                                 rvChips.visibility = View.GONE
                             } else {
@@ -1254,6 +1220,7 @@ class AddressFormFragment :
             }
         }
 
+
         if (userSession.name.isNotEmpty() && userSession.name.contains(toppers, ignoreCase = true)) {
             saveDataModel?.applyNameAsNewUserFullname = true
         }
@@ -1261,25 +1228,19 @@ class AddressFormFragment :
 
     private fun onSuccessAddAddress() {
         activity?.run {
-            setResult(
-                Activity.RESULT_OK,
-                Intent().apply {
-                    putExtra(EXTRA_ADDRESS_NEW, saveDataModel)
-                }
-            )
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_ADDRESS_NEW, saveDataModel)
+            })
             finish()
         }
     }
 
     private fun onSuccessEditAddress(isEditChosenAddress: Boolean) {
         activity?.run {
-            setResult(
-                Activity.RESULT_OK,
-                Intent().apply {
-                    putExtra(EXTRA_EDIT_ADDRESS, saveDataModel?.id?.toString())
-                    putExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, isEditChosenAddress)
-                }
-            )
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_EDIT_ADDRESS, saveDataModel?.id?.toString())
+                putExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, isEditChosenAddress)
+            })
             finish()
         }
     }
@@ -1330,6 +1291,7 @@ class AddressFormFragment :
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"
 
+
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {
                 arguments = Bundle().apply {
@@ -1337,7 +1299,7 @@ class AddressFormFragment :
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
                     putBoolean(EXTRA_IS_EDIT, false)
-                    putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, ""))
+                    putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
                 }
             }
         }
@@ -1349,7 +1311,7 @@ class AddressFormFragment :
                     putBoolean(EXTRA_IS_EDIT, true)
 
                     if (extra != null) {
-                        putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, ""))
+                        putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
                     }
                 }
             }
@@ -1415,4 +1377,5 @@ class AddressFormFragment :
 
         if (isPinpoint) goToPinpointPage()
     }
+
 }
