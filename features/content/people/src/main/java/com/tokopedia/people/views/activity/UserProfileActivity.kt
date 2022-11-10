@@ -35,14 +35,14 @@ class UserProfileActivity : BaseSimpleActivity() {
         return UserProfileFragment.getFragment(
             supportFragmentManager,
             classLoader,
-            bundle ?: Bundle()
+            bundle ?: Bundle(),
         )
     }
 
     private fun inject() {
         DaggerUserProfileComponent.builder()
             .baseAppComponent(
-                (applicationContext as BaseMainApplication).baseAppComponent
+                (applicationContext as BaseMainApplication).baseAppComponent,
             )
             .build()
             .inject(this)
@@ -58,7 +58,7 @@ class UserProfileActivity : BaseSimpleActivity() {
             bundle = UriUtil.destructiveUriBundle(
                 ApplinkConstInternalGlobal.USER_PROFILE_LANDING,
                 intent.data,
-                bundle
+                bundle,
             )
         }
 
