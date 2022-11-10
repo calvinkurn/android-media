@@ -25,6 +25,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.hideKeyboard
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
@@ -45,7 +46,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomS
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
-import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.unifycomponents.Toaster
@@ -73,6 +73,8 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
+
+    private var exitConfirmationDialog: DialogUnify? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -186,7 +188,9 @@ class PlayShortsPreparationFragment @Inject constructor(
                 true
             }
             else -> {
-                super.onBackPressed()
+                showExitConfirmationDialog()
+                true
+//                super.onBackPressed()
             }
         }
     }
@@ -195,10 +199,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         binding.toolbar.apply {
             navIcon = IconUnify.CLOSE
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
-
-            setOnBackClickListener {
-                activity?.onBackPressed()
-            }
         }
 
         /** TODO: setup title max character after getConfig */
@@ -206,6 +206,10 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun setupListener() {
         with(binding) {
+            toolbar.setOnBackClickListener {
+                activity?.onBackPressed()
+            }
+
             preparationMenu.setOnMenuClickListener {
                 coachMarkManager.hasBeenShown(binding.preparationMenu)
 
@@ -395,6 +399,27 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun showCoverForm(isShow: Boolean) {
         showMainComponent(!isShow)
         binding.formCover.showWithCondition(isShow)
+    }
+
+    private fun showExitConfirmationDialog() {
+        if(exitConfirmationDialog == null) {
+            exitConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.play_shorts_exit_confirmation_title))
+                setDescription(getString(R.string.play_shorts_exit_confirmation_description))
+                setPrimaryCTAText(getString(R.string.play_shorts_exit_confirmation_continue))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.play_shorts_exit_confirmation_exit))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                    activity?.finish()
+                }
+            }
+        }
+
+        if(exitConfirmationDialog?.isShowing == false)
+            exitConfirmationDialog?.show()
     }
 
     private fun openProductPicker() {

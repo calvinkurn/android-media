@@ -276,4 +276,9 @@
     <!-- Shorts -->
     <string name="play_shorts_preparation_coachmark_title">Mau ceritain pengalaman belanjamu?</string>
     <string name="play_shorts_preparation_coachmark_description">Bikin judul yang menarik dan tambahkan produk terkait supaya videomu ramai ditonton!</string>
+
+    <string name="play_shorts_exit_confirmation_title">Yakin mau keluar?</string>
+    <string name="play_shorts_exit_confirmation_description">Persiapan yang sudah kamu buat akan hilang.</string>
+    <string name="play_shorts_exit_confirmation_continue">Lanjut Persiapan</string>
+    <string name="play_shorts_exit_confirmation_exit">Keluar</string>
 </resources>
