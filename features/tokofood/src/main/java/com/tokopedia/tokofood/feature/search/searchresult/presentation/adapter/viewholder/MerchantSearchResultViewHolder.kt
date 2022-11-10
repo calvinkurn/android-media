@@ -16,9 +16,11 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.domain.response.AdditionalData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.clickWithDebounce
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchSrpCardBinding
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -39,7 +41,7 @@ class MerchantSearchResultViewHolder(
     private fun setMerchantLayout(merchant: Merchant) {
         setImageMerchant(merchant.imageURL)
         setTitleMerchant(merchant.name)
-        setLabelDiscount(merchant.promo, merchant.priceLevel)
+        setPromoInfo(merchant.promo, merchant.additionalData)
         setMerchantDistance(merchant.distanceFmt, merchant.etaFmt)
         setMerchantRating(merchant.ratingFmt, merchant.rating)
         setMerchantCategory(merchant.merchantCategories, merchant.priceLevel)
@@ -64,26 +66,36 @@ class MerchantSearchResultViewHolder(
         }
     }
 
-    private fun setLabelDiscount(label: String, priceLevel: PriceLevel) {
-        if (label.isBlank()) {
-            binding?.labelItemSrpMerchantDiskon?.hide()
-        } else {
-            binding?.labelItemSrpMerchantDiskon?.show()
-            binding?.labelItemSrpMerchantDiskon?.text = label
-        }
-
-        binding?.labelItemSrpMerchantDiskon?.run {
-            val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-            if (priceLevel.fareCount <= Int.ZERO) {
-                labelParams.topToBottom =
-                    binding?.tgTokofoodItemSrpMerchantCategory?.id ?: ConstraintLayout.LayoutParams.UNSET
+    private fun setPromoInfo(promo: String, additionalData: AdditionalData) {
+        setPromoRibbonLabel(additionalData.topTextBanner)
+        binding?.run {
+            if (promo.isBlank()) {
+                ivItemSrpMerchantDiscount.hide()
+                tvItemSrpMerchantPromoDetail.hide()
             } else {
-                labelParams.topToBottom =
-                    binding?.tgTokofoodItemSrpMerchantPriceScale?.id ?: ConstraintLayout.LayoutParams.UNSET
+                ivItemSrpMerchantDiscount.run {
+                    show()
+                    setImageUrl(additionalData.discountIcon)
+                }
+                tvItemSrpMerchantPromoDetail.run {
+                    show()
+                    text = promo
+                }
             }
-            layoutParams = labelParams
         }
+    }
 
+    private fun setPromoRibbonLabel(topTextBanner: String) {
+        binding?.run {
+            if (topTextBanner.isBlank()) {
+                ribbonTokofoodPromo.hide()
+            } else {
+                ribbonTokofoodPromo.run {
+                    show()
+                    setRibbonText(topTextBanner)
+                }
+            }
+        }
     }
 
     private fun setMerchantDistance(distance: String, eta: String) {
@@ -214,7 +226,7 @@ class MerchantSearchResultViewHolder(
     private fun setOtherBranchButton(merchant: Merchant) {
         binding?.btnTokofoodItemSrpBranch?.run {
             showWithCondition(merchant.hasBranch)
-            setOnClickListener {
+            clickWithDebounce {
                 listener?.onBranchButtonClicked(merchant)
             }
         }
@@ -229,7 +241,7 @@ class MerchantSearchResultViewHolder(
     }
 
     private fun setOnClickListener(merchant: Merchant) {
-        binding?.root?.setOnClickListener {
+        binding?.root?.clickWithDebounce {
             listener?.onClickMerchant(merchant, bindingAdapterPosition)
         }
     }

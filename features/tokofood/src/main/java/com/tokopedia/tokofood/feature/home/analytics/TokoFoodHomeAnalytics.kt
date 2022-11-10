@@ -155,7 +155,8 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
     fun clickMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_MERCHANT_LIST)
-            putString(TrackAppUtils.EVENT_LABEL, "")
+            putString(TrackAppUtils.EVENT_LABEL, "${merchant.additionalData.topTextBanner} - ${merchant.promo}")
+            putString(TRACKER_ID, TokoFoodAnalyticsConstants.TRACKER_ID_31288)
         }
         eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
         eventDataLayer.selectContent(userId, destinationId)

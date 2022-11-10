@@ -37,6 +37,11 @@ class GetProductListMetaDataUseCase @Inject constructor(@ApplicationContext repo
                   errorCode
                 }
                 data {
+                  tab {
+                    id
+                    name
+                    value
+                  }                
                   sort {
                     id
                     name

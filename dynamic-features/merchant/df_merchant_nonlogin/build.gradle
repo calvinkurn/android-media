@@ -57,5 +57,4 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
     implementation projectOrAar(rootProject.ext.features.review)
-    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
 }

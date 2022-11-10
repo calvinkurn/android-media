@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.RemoteViews
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -51,7 +52,11 @@ object ChatWidgetSuccessState {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
-            val itemPendingIntent = PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val itemPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+            } else {
+                PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
             setPendingIntentTemplate(R.id.lvSawChatList, itemPendingIntent)
 
             //load app icon

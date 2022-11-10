@@ -55,6 +55,10 @@ class BigGridProductItemViewHolder(
             productListener.onItemClicked(productItemData, adapterPosition)
         }
 
+        productCardView.setAddToCartOnClickListener {
+            productListener.onAddToCartClick(productItemData)
+        }
+
         productCardView.setImageProductViewHintListener(
             productItemData,
             createImageProductViewHintListener(productItemData)

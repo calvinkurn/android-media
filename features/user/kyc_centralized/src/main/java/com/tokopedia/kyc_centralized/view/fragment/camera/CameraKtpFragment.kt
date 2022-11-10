@@ -13,6 +13,7 @@ import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -70,7 +71,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
         arguments?.let {
             isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
             isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
-            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
+            projectId = it.getInt(PARAM_PROJECT_ID).orZero()
         }
 
         analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
