@@ -108,7 +108,7 @@ class ManageProductNonVariantMultilocFragment :
                         price = discountSetup.price
                         discount = discountSetup.discount
                     }
-                    inputAdapter.notifyItemChanged(indexEdited)
+                    view?.post { inputAdapter.notifyItemChanged(indexEdited) }
                 }
             }
             val newProduct = it.copy(warehouses = warehouses)
