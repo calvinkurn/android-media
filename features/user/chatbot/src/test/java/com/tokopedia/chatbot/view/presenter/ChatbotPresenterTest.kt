@@ -978,21 +978,6 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `checkUploadSecure is false run uploadUsingOldMechanism`() {
-        val response = mockk<CheckUploadSecureResponse>(relaxed = true)
-
-        coEvery {
-            checkUploadSecureUseCase.checkUploadSecure(any())
-        } returns response
-
-        presenter.checkUploadSecure("123", Intent())
-
-        verify {
-            view.uploadUsingSecureUpload(any())
-        }
-    }
-
-    @Test
     fun `checkUploadSecure returns exception`() {
         coEvery {
             checkUploadSecureUseCase.checkUploadSecure(any())
