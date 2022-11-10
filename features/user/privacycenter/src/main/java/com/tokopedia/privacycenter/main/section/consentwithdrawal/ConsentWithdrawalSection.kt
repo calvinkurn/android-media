@@ -53,6 +53,7 @@ class ConsentWithdrawalSection constructor(
                         showShimmering(true)
                     }
                     is PrivacyCenterStateResult.Success -> {
+                        hideLocalLoad()
                         showShimmering(false)
                         onSuccessGetConsentGroup(it.data)
                     }
