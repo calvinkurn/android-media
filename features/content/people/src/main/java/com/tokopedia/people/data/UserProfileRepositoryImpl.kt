@@ -16,12 +16,12 @@ import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
-import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 import kotlinx.coroutines.withContext
@@ -46,6 +46,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val shopFollowUseCase: ShopFollowUseCase,
     private val getFollowerListUseCase: GetFollowerListUseCase,
     private val getFollowingListUseCase: GetFollowingListUseCase,
+    private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -151,6 +152,15 @@ class UserProfileRepositoryImpl @Inject constructor(
             cursor = cursor,
             limit = limit,
         )
+    }
+
+    override suspend fun getUserProfileTab(userID: String): ProfileTabUiModel {
+        return withContext(dispatcher.io) {
+            val result = getUserProfileTabUseCase.executeOnBackground(
+                userID = userID,
+            )
+            return@withContext mapper.mapProfileTab(result)
+        }
     }
 
     companion object {

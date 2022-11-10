@@ -58,6 +58,7 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
@@ -302,6 +303,7 @@ class UserProfileFragment @Inject constructor(
                 renderCreateContentButton(it.prevValue, it.value)
                 renderProfileReminder(it.prevValue, it.value)
                 renderShopRecom(it.prevValue, it.value)
+                renderProfileTab(it.prevValue?.profileTab, it.value.profileTab)
             }
         }
     }
@@ -484,6 +486,12 @@ class UserProfileFragment @Inject constructor(
 
         if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
         else mainBinding.shopRecommendation.showContentShopRecom()
+    }
+
+    private fun renderProfileTab(prev: ProfileTabUiModel?, value: ProfileTabUiModel) {
+        if (prev == value) return
+
+        // TODO initiate profile tab
     }
 
     private fun createLiveFab(): FloatingButtonItem {

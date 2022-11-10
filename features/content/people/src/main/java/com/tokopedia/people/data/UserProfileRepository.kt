@@ -1,4 +1,4 @@
-package com.tokopedia.people.domains.repository
+package com.tokopedia.people.data
 
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
@@ -7,6 +7,7 @@ import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 
@@ -53,4 +54,7 @@ interface UserProfileRepository {
         cursor: String,
         limit: Int,
     ): ProfileFollowingListBase
+
+    suspend fun getUserProfileTab(userID: String): ProfileTabUiModel
+
 }

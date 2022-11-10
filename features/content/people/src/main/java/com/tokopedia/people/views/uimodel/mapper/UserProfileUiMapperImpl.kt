@@ -66,8 +66,25 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
         }
     }
 
+    override fun mapProfileTab(response: UserProfileTabModel): ProfileTabUiModel {
+        return with(response.feedXProfileTabs) {
+            ProfileTabUiModel(
+                showTabs = tabs.size > 1,
+                tabs = if (tabs.isNotEmpty()) {
+                    tabs.map {
+                        ProfileTabUiModel.Tab(
+                            title = it.title,
+                            key = it.key,
+                            position = it.position,
+                            isActive = it.isActive
+                        )
+                    }.sortedBy { it.position }
+                } else listOf()
+            )
+        }
+    }
+
     companion object {
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
-        private const val SUCCESS_UNFOLLOW_CODE = "1"
     }
 }

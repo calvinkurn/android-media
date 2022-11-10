@@ -4,6 +4,7 @@ import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
+import com.tokopedia.people.model.UserProfileTabModel
 import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.views.uimodel.profile.*
 
@@ -18,4 +19,6 @@ interface UserProfileUiMapper {
     fun mapUserWhitelist(response: WhitelistQuery): ProfileWhitelistUiModel
 
     fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel
+
+    fun mapProfileTab(response: UserProfileTabModel): ProfileTabUiModel
 }

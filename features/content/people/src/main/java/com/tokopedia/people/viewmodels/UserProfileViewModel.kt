@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
@@ -16,7 +17,7 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
@@ -31,7 +32,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 
 class UserProfileViewModel @AssistedInject constructor(
@@ -99,6 +99,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
+    private val _profileTab = MutableStateFlow(ProfileTabUiModel())
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -111,13 +112,15 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileType,
         _profileWhitelist,
         _shopRecom,
-    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom ->
+        _profileTab
+    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
             profileType = profileType,
             profileWhitelist = profileWhitelist,
             shopRecom = shopRecom,
+            profileTab = profileTab
         )
     }
 
@@ -308,6 +311,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileType.update { profileType }
 
         // TODO load feedTab here
+        loadProfileTab(profileInfo.userID)
 
         if (profileType == ProfileType.Self) {
             _profileWhitelist.update { repo.getWhitelist() }
@@ -318,6 +322,11 @@ class UserProfileViewModel @AssistedInject constructor(
         //  emit this event or need state to letting the ui know then we don't need to initiate
         //  the viewpager instead just showing the empty content state
         if (isRefresh) _uiEvent.emit(UserProfileUiEvent.LoadContent)
+    }
+
+    private suspend fun loadProfileTab(userID: String) {
+        val result = repo.getUserProfileTab(userID)
+        _profileTab.emit(result)
     }
 
     private suspend fun loadShopRecom() {
