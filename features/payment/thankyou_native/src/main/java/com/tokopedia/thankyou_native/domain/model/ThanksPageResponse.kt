@@ -101,15 +101,7 @@ data class ThanksPageData(
     var configFlagData: ConfigFlag? = null,
     // parse gyro data json
     var gyroData: @RawValue MutableMap<String, Any?>? = null,
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-
-    }
-}
+) : Parcelable
 
 
 @Parcelize
@@ -122,14 +114,7 @@ data class CustomAppLinkData(
     val order: String?,
     @SerializedName("pms")
     val pms: String?,
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 @Parcelize
 data class CustomDataMessage(
@@ -145,14 +130,7 @@ data class CustomDataMessage(
     val titleOrderButton: String?,
     @SerializedName("wtv_text")
     val wtvText: String?
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 @Parcelize
 data class CustomDataOther(
@@ -168,14 +146,7 @@ data class CustomDataOther(
     val customIllustration: String?,
     @SerializedName("validate_engine_data")
     val gyroData: String?
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 @Parcelize
 data class ThanksSummaryInfo(
@@ -194,14 +165,7 @@ data class ThanksSummaryInfo(
     @SerializedName("cta_text")
     val ctaText: String?,
 
-    ) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+    ) : Parcelable
 
 @Parcelize
 data class FeeDetail(
@@ -215,14 +179,7 @@ data class FeeDetail(
     val tooltipTitle: String?,
     @SerializedName("tooltip_desc")
     val tooltipDesc: String?,
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 @Parcelize
 data class GatewayAdditionalData(
@@ -230,14 +187,7 @@ data class GatewayAdditionalData(
     val key: String?,
     @SerializedName("value")
     val value: String?
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 
 data class PaymentDetail(
@@ -307,14 +257,7 @@ data class AdditionalInfo(
     val interest: Float,
     @SerializedName("revenue")
     val revenue: Float
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 @Parcelize
 data class ShopOrder(
@@ -362,14 +305,7 @@ data class ShopOrder(
     val logisticETA: String?
 
 
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 data class PromoData(
     @SerializedName("promo_code")
@@ -461,14 +397,7 @@ data class PurchaseItem(
     val bundleGroupId: String,
     @SerializedName("addon_item")
     val addOnList: ArrayList<AddOnItem>
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 @Parcelize
 data class AddOnItem(
@@ -478,14 +407,7 @@ data class AddOnItem(
     val quantity: Int,
     @SerializedName("price_str")
     val addOnPrice: String
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 data class BundleGroupItem(
     @SerializedName("group_id")
@@ -585,14 +507,7 @@ data class ConfigFlag(
     val shouldHideProductRecom: Boolean?,
     @SerializedName("hide_dg_recom")
     val shouldHideDigitalRecom: Boolean?
-) : Parcelable {
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-    }
-}
+) : Parcelable
 
 data class Tickers(
     @SerializedName("tickers")
