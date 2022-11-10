@@ -1038,15 +1038,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             this.platform = shareModel.platform
         }
 
-        lifecycleScope.launch {
-            try {
-                val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
-                val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-                executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
-            } catch (e: Exception) {
-                executeSharingFlow(shareModel)
-            }
-        }
+        lifecycleScope.launchCatchError(block = {
+            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
+            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+        }, onError =  {
+            executeSharingFlow(shareModel)
+        })
     }
 
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String) {
