@@ -42,10 +42,6 @@ class AddProductViewModel @Inject constructor(
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    companion object {
-        private const val INITIAL_WAREHOUSE_ID = 0
-    }
-
     private val _uiState = MutableStateFlow(AddProductUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -76,7 +72,7 @@ class AddProductViewModel @Inject constructor(
             AddProductEvent.TapSortFilter -> _uiEffect.tryEmit(AddProductEffect.ShowSortBottomSheet(currentState.sortOptions, currentState.selectedSort))
             is AddProductEvent.ApplyCategoryFilter -> handleApplyCategoryFilter(event.selectedCategories)
             is AddProductEvent.ApplyWarehouseLocationFilter -> handleApplyWarehouseLocationFilter(event.selectedWarehouseLocation)
-            is AddProductEvent.ApplyShowCaseFilter -> handleApplyShopShowcasesFilter(event.selectedShowCase)
+            is AddProductEvent.ApplyShowCaseFilter -> handleApplyShopShowcasesFilter(event.selectedShowCases)
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
         }
     }
@@ -322,7 +318,7 @@ class AddProductViewModel @Inject constructor(
                 products = emptyList(),
                 selectedCategories = emptyList(),
                 selectedWarehouseLocation = Warehouse(0, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
-                selectedShopShowcase = ShopShowcase(0, "", "", 1),
+                selectedShopShowcase = emptyList(),
                 selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
             )
         }
@@ -354,12 +350,12 @@ class AddProductViewModel @Inject constructor(
         getProducts()
     }
 
-    private fun handleApplyShopShowcasesFilter(selectedShopShowcase: ShopShowcase) {
+    private fun handleApplyShopShowcasesFilter(selectedShopShowcases: List<ShopShowcase>) {
         _uiState.update {
             it.copy(
                 isLoading = true,
                 products = emptyList(),
-                selectedShopShowcase = selectedShopShowcase
+                selectedShopShowcase = selectedShopShowcases
             )
         }
 
@@ -404,7 +400,8 @@ class AddProductViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val shopShowcases = getShopShowcasesByShopIDUseCase.execute()
-                _uiState.update { it.copy(shopShowcases = shopShowcases) }
+                val sellerCreatedShowcasesOnly = shopShowcases.filter { shopShowcase -> shopShowcase.type != NumberConstant.ID_TOKOPEDIA_CREATED_SHOWCASE_TYPE }
+                _uiState.update { it.copy(shopShowcases = sellerCreatedShowcasesOnly) }
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false, error = error) }

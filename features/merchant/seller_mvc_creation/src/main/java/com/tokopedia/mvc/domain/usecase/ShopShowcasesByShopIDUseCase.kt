@@ -28,6 +28,7 @@ class ShopShowcasesByShopIDUseCase @Inject constructor(
         private const val REQUEST_PARAM_SHOP_ID = "shopId"
         private const val REQUEST_PARAM_HIDE_NO_COUNT = "hideNoCount"
         private const val REQUEST_PARAM_HIDE_SHOWCASE_GROUP = "hideShowcaseGroup"
+        private const val REQUEST_PARAM_IS_OWNER = "isOwner"
     }
 
     private val query = object : GqlQueryInterface {
@@ -65,7 +66,8 @@ class ShopShowcasesByShopIDUseCase @Inject constructor(
         val params = mapOf(
             REQUEST_PARAM_SHOP_ID to shopId,
             REQUEST_PARAM_HIDE_NO_COUNT to true,
-            REQUEST_PARAM_HIDE_SHOWCASE_GROUP to true
+            REQUEST_PARAM_HIDE_SHOWCASE_GROUP to true,
+            REQUEST_PARAM_IS_OWNER to true
         )
 
         return GraphqlRequest(

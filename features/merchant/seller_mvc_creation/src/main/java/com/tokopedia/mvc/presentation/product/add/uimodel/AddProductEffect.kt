@@ -24,7 +24,7 @@ sealed class AddProductEffect {
 
     data class ShowShowcasesBottomSheet(
         val showcases: List<ShopShowcase>,
-        val selectedShowcases: ShopShowcase
+        val selectedShowcases: List<ShopShowcase>
     ) : AddProductEffect()
 
     data class ShowWarehouseLocationBottomSheet(

@@ -16,6 +16,7 @@
     <string name="smvc_placeholder_product_price">Rp%s</string>
     <string name="smvc_placeholder_total_stock">Total stok: %s</string>
     <string name="smvc_placeholder_selected_category_count">%d Kategori</string>
+    <string name="smvc_placeholder_selected_showcase_count">%d Etalase</string>
 
     <string name="smvc_empty_state_no_product_title">Oops, produk nggak ditemukan</string>
     <string name="smvc_empty_state_no_product_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>

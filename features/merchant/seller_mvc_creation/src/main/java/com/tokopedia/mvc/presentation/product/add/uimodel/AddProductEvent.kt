@@ -9,9 +9,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 
 sealed class AddProductEvent {
     data class FetchRequiredData(val action: VoucherAction, val promoType: PromoType) : AddProductEvent()
-
     data class LoadPage(val page: Int) : AddProductEvent()
-
     object ClearSearchBar : AddProductEvent()
     object ClearFilter : AddProductEvent()
     object EnableSelectAllCheckbox : AddProductEvent()
@@ -24,7 +22,7 @@ sealed class AddProductEvent {
     object TapSortFilter : AddProductEvent()
     data class ApplyWarehouseLocationFilter(val selectedWarehouseLocation: Warehouse) : AddProductEvent()
     data class ApplyCategoryFilter(val selectedCategories: List<ProductCategoryOption>) : AddProductEvent()
-    data class ApplyShowCaseFilter(val selectedShowCase: ShopShowcase) : AddProductEvent()
+    data class ApplyShowCaseFilter(val selectedShowCases: List<ShopShowcase>) : AddProductEvent()
     data class ApplySortFilter(val selectedSort: ProductSortOptions) : AddProductEvent()
     object ConfirmAddProduct : AddProductEvent()
 }
