@@ -37,12 +37,6 @@ class GetChannelStatusUseCase @Inject constructor(
                   status
                 }
                 waiting_duration
-                archivedConfig {
-                    title
-                    description
-                    button_text
-                    button_app_link
-                }
               }
             }
         """

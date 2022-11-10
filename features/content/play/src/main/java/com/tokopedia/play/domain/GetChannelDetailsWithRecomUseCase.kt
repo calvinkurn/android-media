@@ -134,11 +134,17 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       background_color
                     }
                     has_follow_button
-                    empty_bottom_sheet{
+                    empty_bottom_sheet {
                         copy_text_header
                         copy_text_body
                         copy_text_redirect_button
                         image_url
+                    }
+                    channel_archived_screen {
+                      title
+                      description
+                      button_text
+                      button_app_link
                     }
                   }
                   app_link

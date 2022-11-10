@@ -176,7 +176,10 @@ data class ChannelDetailsWithRecomResponse(
         val hasFollowButton: Boolean = false,
 
         @SerializedName("empty_bottom_sheet")
-        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet()
+        val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet(),
+
+        @SerializedName("channel_archived_screen")
+        val archiveConfig: ArchivedData = ArchivedData(),
     )
 
     data class FreezeData(
@@ -267,5 +270,19 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("image_url")
         val imageUrl: String = "",
+    )
+
+    data class ArchivedData(
+        @SerializedName("title")
+        val title: String = "",
+
+        @SerializedName("description")
+        val description: String = "",
+
+        @SerializedName("button_text")
+        val buttonText: String = "",
+
+        @SerializedName("button_app_link")
+        val appLink: String = "",
     )
 }

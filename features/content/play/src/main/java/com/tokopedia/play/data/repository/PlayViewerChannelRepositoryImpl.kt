@@ -51,7 +51,6 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
             statusType = statusType,
             statusSource = PlayStatusSource.Network,
             waitingDuration = response.playGetChannelsStatus.waitingDuration,
-            config = uiMapper.mapChannelStatusConfig(response)
         )
     }
 

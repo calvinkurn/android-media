@@ -17,9 +17,6 @@ data class ChannelStatusResponse(
 
             @SerializedName("waiting_duration")
             val waitingDuration: Int = 0,
-
-            @SerializedName("archivedConfig")
-            val archivedConfig: ArchivedData = ArchivedData(),
     )
 
     data class ChannelStatus(
@@ -27,19 +24,5 @@ data class ChannelStatusResponse(
             val channelId: String = "",
             @SerializedName("status")
             val status: String = "",
-    )
-
-    data class ArchivedData(
-        @SerializedName("title")
-        val title: String = "",
-
-        @SerializedName("description")
-        val description: String = "",
-
-        @SerializedName("button_text")
-        val buttonText: String = "",
-
-        @SerializedName("button_app_link")
-        val appLink: String = "",
     )
 }

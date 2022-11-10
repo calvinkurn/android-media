@@ -262,14 +262,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 statusType = statusType,
                 statusSource = PlayStatusSource.Network,
                 waitingDuration = 0,
-                config = PlayStatusConfig(
-                    bannedModel = mapBannedModel(configResponse.bannedData),
-                    freezeModel = mapFreezeUiModel(configResponse.freezeData, title),
-                ),
             ),
             config = PlayStatusConfig(
                 bannedModel = mapBannedModel(configResponse.bannedData),
                 freezeModel = mapFreezeUiModel(configResponse.freezeData, title),
+                archivedModel = mapArchived(configResponse.archiveConfig),
             ),
         )
     }
@@ -283,6 +280,15 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
         PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink, imageUrl = imageUrl)
+    }
+
+    private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData){
+        ArchivedUiModel(
+            title = title,
+            description = description,
+            btnTitle = buttonText,
+            appLink = appLink,
+        )
     }
 
     companion object {

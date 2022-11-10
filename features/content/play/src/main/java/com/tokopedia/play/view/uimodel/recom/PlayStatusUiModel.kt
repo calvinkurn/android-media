@@ -19,13 +19,14 @@ data class PlayStatusUiModel(
 data class PlayStatusConfig(
     val bannedModel: BannedUiModel,
     val freezeModel: FreezeUiModel,
-    val archivedModel: ArchivedUiModel = ArchivedUiModel.Empty,
+    val archivedModel: ArchivedUiModel,
 ) {
     companion object {
         val Empty: PlayStatusConfig
             get() = PlayStatusConfig(
                 bannedModel = BannedUiModel.Empty,
                 freezeModel = FreezeUiModel.Empty,
+                archivedModel = ArchivedUiModel.Empty,
             )
     }
 }
@@ -34,7 +35,6 @@ data class PlayChannelStatus(
     val statusType: PlayStatusType,
     val statusSource: PlayStatusSource,
     val waitingDuration: Int,
-    val config: PlayStatusConfig,
 ) {
     companion object {
         val Empty: PlayChannelStatus
@@ -42,7 +42,6 @@ data class PlayChannelStatus(
                 statusType = PlayStatusType.Active,
                 statusSource = PlayStatusSource.Network,
                 waitingDuration = 0,
-                config = PlayStatusConfig.Empty,
             )
     }
 }

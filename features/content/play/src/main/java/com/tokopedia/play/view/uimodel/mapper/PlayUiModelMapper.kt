@@ -145,10 +145,4 @@ class PlayUiModelMapper @Inject constructor(
             isRilisanSpesial = prevDetail.isRilisanSpesial,
         )
     }
-
-    fun mapChannelStatusConfig(channelStatusResponse: ChannelStatusResponse) = PlayStatusConfig(
-        archivedModel = channelStatusMapper.mapArchived(channelStatusResponse),
-        bannedModel = BannedUiModel.Empty,
-        freezeModel = FreezeUiModel.Empty,
-    )
 }
