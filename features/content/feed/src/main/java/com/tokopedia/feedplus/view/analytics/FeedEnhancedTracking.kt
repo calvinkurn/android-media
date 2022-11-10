@@ -1,7 +1,8 @@
 package com.tokopedia.feedplus.view.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author by astidhiyaa on 30/08/22
@@ -68,7 +69,7 @@ object FeedEnhancedTracking {
                 val map = createPromotionMap(promo)
                 list.add(map)
             }
-            return DataLayer.listOf(*list.toTypedArray<Any>())
+            return list
         }
 
         private fun createPromotionMap(promo: Promotion): Map<String, Any> {
@@ -104,11 +105,11 @@ object FeedEnhancedTracking {
             const val TRACKING_NONE = "none"
             const val TRACKING_EMPTY = "-"
             fun createContentNameTopadsProduct(): String {
-                return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, PRODUCT)
+                return String.format(Locale.getDefault(),"/%s - %s - %s", CONTENT_FEED, TOPADS, PRODUCT)
             }
 
             fun createContentNameTopadsShop(): String {
-                return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, SHOP)
+                return String.format(Locale.getDefault(),"/%s - %s - %s", CONTENT_FEED, TOPADS, SHOP)
             }
         }
     }

@@ -75,7 +75,7 @@ class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>,
     fun getContentExplore(): ContentExploreFragment? {
         val index = getContentExploreIndex()
         return if (getRegisteredFragment(index) is ContentExploreFragment) {
-            getRegisteredFragment(index) as ContentExploreFragment?
+            getRegisteredFragment(index) as? ContentExploreFragment?
         } else null
     }
 
