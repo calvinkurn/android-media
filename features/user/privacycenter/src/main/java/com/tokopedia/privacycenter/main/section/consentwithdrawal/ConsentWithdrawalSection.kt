@@ -24,11 +24,11 @@ class ConsentWithdrawalSection constructor(
     )
 
     override val sectionTextTitle: String? = context?.resources?.getString(
-        R.string.section_title_consentWithdrawal
+        R.string.consent_withdrawal_section_title
     )
 
     override val sectionTextDescription: String? = context?.resources?.getString(
-        R.string.section_description_consentWithdrawal
+        R.string.consent_withdrawal_section_description
     )
 
     override val isShowDirectionButton: Boolean = false
