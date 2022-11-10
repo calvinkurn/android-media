@@ -121,8 +121,9 @@ object OfficialHomeMapper {
         action: (updatedList: MutableList<Visitable<*>>) -> Unit
     ) {
         val newList = mutableListOf<Visitable<*>>()
-        val atfList = currentList.subList(0, atfSize).filter { it is OfficialBannerDataModel ||
-            it is OfficialBenefitDataModel || it is OfficialFeaturedShopDataModel }
+        val atfList = currentList.subList(0, atfSize.coerceAtMost(currentList.size)).filter {
+            it is OfficialBannerDataModel || it is OfficialBenefitDataModel || it is OfficialFeaturedShopDataModel
+        }
         newList.addAll(atfList)
         officialStoreChannels.forEachIndexed { pos, officialStore ->
             val position = pos + atfList.size + 1
