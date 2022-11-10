@@ -72,6 +72,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
             RealTimeRecomWidgetState.LOADING -> renderLoadingState()
             RealTimeRecomWidgetState.READY -> renderRealTimeRecom(data)
             RealTimeRecomWidgetState.REFRESH -> {
+                renderRecommendationCarousel(data)
                 renderRefreshRecommendation(data)
                 trackRefreshImpression(data)
             }
@@ -158,10 +159,12 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     private fun setBackgroundColor() {
         container?.setBackgroundColor(
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+        container?.show()
     }
 
     private fun resetBackgroundColor() {
         container?.setBackgroundColor(Color.TRANSPARENT)
+        container?.show()
     }
 
     private fun hideContent() {
@@ -171,6 +174,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         imageClose?.hide()
         recommendationCarousel?.hide()
         progressBar?.hide()
+        container?.hide()
     }
 
     private fun showProgressBar() {
