@@ -5,7 +5,7 @@ package com.tokopedia.people.views.uimodel.event
  */
 sealed interface UserProfileUiEvent {
 
-    object LoadPlayVideo : UserProfileUiEvent
+    object LoadContent : UserProfileUiEvent
 
     data class ErrorLoadProfile(val throwable: Throwable) : UserProfileUiEvent
 

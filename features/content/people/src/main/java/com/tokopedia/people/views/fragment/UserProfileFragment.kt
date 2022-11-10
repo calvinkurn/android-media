@@ -1,6 +1,5 @@
 package com.tokopedia.people.views.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -12,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
@@ -46,15 +44,11 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
-import com.tokopedia.people.ErrorMessage
-import com.tokopedia.people.Loading
 import com.tokopedia.people.R
-import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
 import com.tokopedia.people.utils.showErrorToast
-import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_LIVE
@@ -62,8 +56,6 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOAR
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
-import com.tokopedia.people.views.adapter.UserPostBaseAdapter
-import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
@@ -87,7 +79,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.unifyprinciples.R as unifyR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -100,13 +91,8 @@ class UserProfileFragment @Inject constructor(
     ShareBottomsheetListener,
     ScreenShotListener,
     PermissionListener,
-    UserPostBaseAdapter.PlayWidgetCallback,
     ShopRecomWidgetCallback,
     FeedPlusContainerListener {
-
-    private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(activity, 2)
-    }
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenShotDetector: ScreenshotDetector? = null
@@ -124,12 +110,6 @@ class UserProfileFragment @Inject constructor(
         get() = _binding!!.mainLayout
 
     private lateinit var viewModel: UserProfileViewModel
-
-    private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        UserPostBaseAdapter(this, this) { cursor ->
-            submitAction(UserProfileAction.LoadPlayVideo(cursor))
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,7 +138,6 @@ class UserProfileFragment @Inject constructor(
         initObserver()
         initListener()
         setHeader()
-        setupPlayVideo()
 
         if (arguments == null || requireArguments().getString(EXTRA_USERNAME).isNullOrBlank()) {
             // TODO show error page
@@ -180,11 +159,6 @@ class UserProfileFragment @Inject constructor(
                 shouldRefreshRecyclerView = verticalOffset == 0
             },
         )
-
-        binding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
-            mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
-        }
-
         mainBinding.cardUserReminder.clContainer.setBackgroundResource(
             R.drawable.bg_card_profile_reminder,
         )
@@ -230,7 +204,7 @@ class UserProfileFragment @Inject constructor(
             is UGCOnboardingParentFragment -> {
                 childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
-                        submitAction(UserProfileAction.LoadProfile())
+                        viewModel.submitAction(UserProfileAction.LoadProfile())
                         when (viewModel.ugcOnboardingOpenFrom) {
                             UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
                             UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
@@ -266,10 +240,6 @@ class UserProfileFragment @Inject constructor(
                 },)
             }
         }
-    }
-
-    private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
-        submitAction(UserProfileAction.LoadProfile(isRefreshPost))
     }
 
     private fun initListener() {
@@ -319,29 +289,9 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun initUserPost(userId: String) {
-        mAdapter.resetAdapter()
-        mAdapter.cursor = ""
-        mAdapter.startDataLoading(userId)
-    }
-
-    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
-        return object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return when (mAdapter.getItemViewType(position)) {
-                    LOADING -> 2
-                    else -> 1
-                }
-            }
-        }
-    }
-
     private fun initObserver() {
         observeUiState()
         observeUiEvent()
-
-        addListObserver()
-        adduserPostErrorObserver()
     }
 
     private fun observeUiState() {
@@ -360,16 +310,14 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is UserProfileUiEvent.LoadPlayVideo -> {
-                        initUserPost(viewModel.profileUserID)
+                    is UserProfileUiEvent.LoadContent -> {
+                        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+
+                        // TODO maybe initiate the viewpager in here
                     }
                     is UserProfileUiEvent.ErrorFollowUnfollow -> {
                         val message = if (event.message.isNotEmpty()) event.message else getDefaultErrorMessage()
                         view?.showErrorToast(message)
-                    }
-                    is UserProfileUiEvent.SuccessUpdateReminder -> {
-                        mAdapter.notifyItemChanged(event.position)
-                        view?.showToast(event.message)
                     }
                     is UserProfileUiEvent.ErrorUpdateReminder -> {
                         val message = when (event.throwable) {
@@ -407,37 +355,8 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun addListObserver() {
-        viewModel.playPostContentLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-                        mAdapter.resetAdapter()
-                        mAdapter.notifyDataSetChanged()
-                    }
-                    is Success -> {
-                        mAdapter.onSuccess(it.data)
-                    }
-                    is ErrorMessage -> {
-                        mAdapter.onError()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun adduserPostErrorObserver() {
-        viewModel.userPostErrorLiveData.observe(viewLifecycleOwner) {
-            with(mainBinding) {
-                userPostContainer.displayedChild = PAGE_ERROR
-
-                globalErrorPost.refreshBtn?.setOnClickListener {
-                    userPostContainer.displayedChild = PAGE_LOADING
-                    initUserPost(viewModel.profileUserID)
-                }
-            }
-        }
+    private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
+        viewModel.submitAction(UserProfileAction.LoadProfile(isRefreshPost))
     }
 
     private fun addLiveClickListener(appLink: String) {
@@ -534,39 +453,6 @@ class UserProfileFragment @Inject constructor(
         } else mainBinding.fabUserProfile.hide()
     }
 
-    private fun createLiveFab(): FloatingButtonItem {
-        return FloatingButtonItem(
-            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
-            title = getString(feedComponentR.string.feed_fab_create_live),
-            listener = {
-                mainBinding.fabUp.menuOpen = false
-
-                // TODO onboarding for `Buat Live` will be in the next phase
-//                if (viewModel.needOnboarding) {
-//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
-//                    openUGCOnboardingBottomSheet()
-//                } else goToCreateLiveStream()
-
-                goToCreateLiveStream()
-            },
-        )
-    }
-
-    private fun createPostFab(): FloatingButtonItem {
-        return FloatingButtonItem(
-            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-            title = getString(feedComponentR.string.feed_fab_create_post),
-            listener = {
-                mainBinding.fabUp.menuOpen = false
-                userProfileTracker.clickCreatePost(viewModel.profileUserID)
-                if (viewModel.needOnboarding) {
-                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
-                    openUGCOnboardingBottomSheet()
-                } else goToCreatePostPage()
-            },
-        )
-    }
-
     private fun renderProfileReminder(
         prev: UserProfileUiState?,
         value: UserProfileUiState,
@@ -598,6 +484,39 @@ class UserProfileFragment @Inject constructor(
 
         if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
         else mainBinding.shopRecommendation.showContentShopRecom()
+    }
+
+    private fun createLiveFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            title = getString(feedComponentR.string.feed_fab_create_live),
+            listener = {
+                mainBinding.fabUp.menuOpen = false
+
+                // TODO onboarding for `Buat Live` will be in the next phase
+//                if (viewModel.needOnboarding) {
+//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
+//                    openUGCOnboardingBottomSheet()
+//                } else goToCreateLiveStream()
+
+                goToCreateLiveStream()
+            },
+        )
+    }
+
+    private fun createPostFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
+            title = getString(feedComponentR.string.feed_fab_create_post),
+            listener = {
+                mainBinding.fabUp.menuOpen = false
+                userProfileTracker.clickCreatePost(viewModel.profileUserID)
+                if (viewModel.needOnboarding) {
+                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
+                    openUGCOnboardingBottomSheet()
+                } else goToCreatePostPage()
+            },
+        )
     }
 
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
@@ -695,17 +614,6 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun setupPlayVideo() {
-        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
-
-        mainBinding.rvPost.layoutManager = gridLayoutManager
-        if (mainBinding.rvPost.itemDecorationCount == 0) {
-            val spacing = requireContext().resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl1)
-            mainBinding.rvPost.addItemDecoration(GridSpacingItemDecoration(2, spacing, false))
-        }
-        mainBinding.rvPost.adapter = mAdapter
-    }
-
     private fun navigateToEditProfile() {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
         startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE)
@@ -716,7 +624,7 @@ class UserProfileFragment @Inject constructor(
             userProfileTracker.clickFollow(userSession.userId, viewModel.isSelfProfile)
         else userProfileTracker.clickUnfollow(userSession.userId, viewModel.isSelfProfile)
 
-        submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
+        viewModel.submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
     }
 
     private fun showGlobalError(type: Int) {
@@ -738,10 +646,6 @@ class UserProfileFragment @Inject constructor(
 
     override fun getScreenName(): String {
         return ""
-    }
-
-    private fun submitAction(action: UserProfileAction) {
-        viewModel.submitAction(action)
     }
 
     private fun goToFollowingFollowerPage(isFollowers: Boolean) {
@@ -817,7 +721,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomCloseClicked(itemID: Long) {
-        submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
+        viewModel.submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
     }
 
     override fun onShopRecomFollowClicked(itemID: Long) {
@@ -825,7 +729,7 @@ class UserProfileFragment @Inject constructor(
             viewModel.profileUserID,
             itemID.toString(),
         )
-        submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
+        viewModel.submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
 
     override fun onShopRecomItemClicked(
@@ -894,14 +798,7 @@ class UserProfileFragment @Inject constructor(
 
         when (requestCode) {
             REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)
-            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
-            REQUEST_CODE_PLAY_ROOM -> {
-                val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
-                val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW)
-                val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false)
-
-                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
-            }
+            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
         }
     }
 
@@ -1024,24 +921,6 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int) {
-        submitAction(UserProfileAction.SaveReminderActivityResult(channelId, pos, isActive))
-
-        if (userSession.isLoggedIn.not()) {
-            startActivityForResult(
-                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_TO_SET_REMINDER,
-            )
-        } else {
-            submitAction(UserProfileAction.ClickUpdateReminder(false))
-        }
-    }
-
-    override fun onPlayWidgetLargeClick(appLink: String) {
-        val intent = RouteManager.getIntent(context, appLink)
-        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
-    }
-
     override fun expandFab() {
         if (!mainBinding.fabUp.menuOpen) mainBinding.fabUserProfile.expand()
     }
@@ -1057,8 +936,6 @@ class UserProfileFragment @Inject constructor(
     companion object {
         const val PAGE_NAME_PROFILE = "UserProfile"
         const val FEATURE_SHARE = "share"
-        const val VAL_FEEDS_PROFILE = "feeds-profile"
-        const val VAL_SOURCE_BUYER = "buyer"
         const val EXTRA_DISPLAY_NAME = "display_name"
         const val EXTRA_TOTAL_FOLLOWERS = "total_followers"
         const val EXTRA_TOTAL_FOLLOWINGS = "total_following"
@@ -1067,8 +944,6 @@ class UserProfileFragment @Inject constructor(
         const val EXTRA_PROFILE_USER_ID = "profileUserid"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
         const val APPLINK_MENU = "tokopedia://navigation/main"
-        const val APPLINK_PROFILE = "tokopedia://setting/profile"
-        const val OFFSET_USERINFO = 136F
         const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
         const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
         const val REQUEST_CODE_EDIT_PROFILE = 2423
@@ -1077,7 +952,6 @@ class UserProfileFragment @Inject constructor(
         const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
         const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
         const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
-        private const val LOADING = -94567
 
         const val PAGE_CONTENT = 0
         const val PAGE_ERROR = 2
@@ -1085,12 +959,6 @@ class UserProfileFragment @Inject constructor(
         const val PAGE_EMPTY = 3
         const val SEE_ALL_LINE = 3
         const val MAX_LINE = 20
-        const val SUCCESS_STATUS = 200
-
-        private const val REQUEST_CODE_PLAY_ROOM = 123
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
         private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
         private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"

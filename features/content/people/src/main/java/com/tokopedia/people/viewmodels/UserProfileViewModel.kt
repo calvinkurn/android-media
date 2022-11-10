@@ -296,26 +296,28 @@ class UserProfileViewModel @AssistedInject constructor(
         val profileInfo = repo.getProfile(username)
 
         val profileType = if (userSession.isLoggedIn) {
-            if (userSession.userId == profileInfo.userID)
-                ProfileType.Self
+            if (userSession.userId == profileInfo.userID) ProfileType.Self
             else ProfileType.OtherUser
         } else ProfileType.NotLoggedIn
 
-        val followInfo = if (userSession.isLoggedIn)
-            repo.getFollowInfo(listOf(profileInfo.userID))
+        val followInfo = if (userSession.isLoggedIn) repo.getFollowInfo(listOf(profileInfo.userID))
         else FollowInfoUiModel.Empty
 
         _profileInfo.update { profileInfo }
         _followInfo.update { followInfo }
         _profileType.update { profileType }
 
+        // TODO load feedTab here
+
         if (profileType == ProfileType.Self) {
             _profileWhitelist.update { repo.getWhitelist() }
             loadShopRecom()
         }
 
-        if (isRefresh)
-            _uiEvent.emit(UserProfileUiEvent.LoadPlayVideo)
+        // TODO need to check feedTab is success or not because when not we don't need to
+        //  emit this event or need state to letting the ui know then we don't need to initiate
+        //  the viewpager instead just showing the empty content state
+        if (isRefresh) _uiEvent.emit(UserProfileUiEvent.LoadContent)
     }
 
     private suspend fun loadShopRecom() {
