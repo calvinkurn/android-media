@@ -25,15 +25,23 @@ object HomeComponentRollenceController {
         return rollenceHPBDotsInfiniteValue.ifEmpty { RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL }
     }
 
+    private fun getHPBDurationRollenceValue(): String {
+        return rollenceHPBDurationValue.ifEmpty { RollenceKey.HOME_COMPONENT_HPB_DURATION_CONTROL }
+    }
+
     fun isHomeComponentLego24BannerUsingRollenceVariant(): Boolean {
         return getRollenceValueLego24Banner() == RollenceKey.HOME_COMPONENT_LEGO24BANNER_VARIANT
     }
 
-    fun getHPBDurationRollenceValue(): String {
-        return rollenceHPBDurationValue.ifEmpty { RollenceKey.HOME_COMPONENT_HPB_DURATION_CONTROL }
-    }
-
     fun isHPBUsingDotsAndInfiniteScroll(): Boolean {
         return getRollenceValueHPBDotsInfinite() == RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT
+    }
+
+    fun getHPBDuration(): Long {
+        return when(getHPBDurationRollenceValue()) {
+            RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_4S -> 4000L
+            RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_6S -> 6000L
+            else -> 5000L
+        }
     }
 }

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
 import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.home_component.customview.HeaderListener
@@ -35,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -99,12 +97,8 @@ class BannerComponentViewHolder(itemView: View,
 
     override fun bind(element: BannerDataModel) {
         try {
-            isUsingDotsAndInfiniteScroll = HomeComponentRollenceController.isHPBUsingDotsAndInfiniteScroll()
-            scrollTransitionDuration = when(HomeComponentRollenceController.getHPBDurationRollenceValue()) {
-                RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_4S -> 4000L
-                RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_6S -> 6000L
-                else -> 5000L
-            }
+            isUsingDotsAndInfiniteScroll = element.enableDotsAndInfiniteScroll
+            scrollTransitionDuration = element.scrollTransitionDuration
             setHeaderComponent(element)
             setViewPortImpression(element)
             channelModel = element.channelModel
