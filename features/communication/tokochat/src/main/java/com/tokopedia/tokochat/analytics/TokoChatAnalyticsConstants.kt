@@ -8,7 +8,6 @@ object TokoChatAnalyticsConstants {
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
 
     const val BUYER = "buyer"
-    const val TOKOFOOD_SOURCE = "Tokofood"
     const val TRACKER_ID = "trackerId"
 
     const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
@@ -32,12 +31,5 @@ object TokoChatAnalyticsConstants {
 
     const val CLICK_CLOSE_BOTTOM_SHEET_CALL_DRIVER = "click close bottomsheet call driver"
     const val TRACKER_ID_39075 = "39075"
-
-    const val IMPRESSION_ON_CHAT_DRIVER_TICKER = "impression on chat driver ticker"
-    const val INBOX_PAGE = "inbox page"
-    const val TRACKER_ID_39092 = "39092"
-
-    const val CLICK_CHAT_DRIVER_TICKER = "click chat driver ticker"
-    const val TRACKER_ID_39093 = "39093"
 
 }
