@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.common.di.DaggerTokoFoodComponent
