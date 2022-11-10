@@ -13,7 +13,7 @@ import com.tokopedia.privacycenter.databinding.SectionBaseBinding
 
 abstract class BasePrivacyCenterSection(context: Context?) {
 
-    protected abstract val sectionViewBinding: ViewBinding
+    protected abstract val sectionViewBinding: ViewBinding?
     protected abstract val sectionTextTitle: String?
     protected abstract val sectionTextDescription: String?
     protected abstract val isShowDirectionButton: Boolean
@@ -32,16 +32,20 @@ abstract class BasePrivacyCenterSection(context: Context?) {
 
         sectionBaseViewBinding.apply {
             sectionTitle.text = sectionTextTitle.orEmpty()
-            sectionSubtitle.text = sectionTextDescription.orEmpty()
-            sectionContent.addView(sectionViewBinding.root)
+            sectionSubtitle.apply {
+                text = sectionTextDescription
+            }.showWithCondition(sectionTextDescription?.isNotEmpty() == true)
+
+            if (sectionViewBinding != null) {
+                sectionContent.addView(sectionViewBinding?.root)
+            }
         }
     }
 
     private fun initDirectionButton() {
-        sectionBaseViewBinding.sectionButtonDirection.apply {
-            if (isShowDirectionButton) show() else hide()
-
-            setOnClickListener {
+        sectionBaseViewBinding.sectionButtonDirection.showWithCondition(isShowDirectionButton)
+        sectionBaseViewBinding.sectionHeader.setOnClickListener {
+            if (isShowDirectionButton) {
                 onButtonDirectionClick(it)
             }
         }
@@ -56,7 +60,7 @@ abstract class BasePrivacyCenterSection(context: Context?) {
     }
 
     fun showShimmering(isLoading: Boolean) {
-        sectionViewBinding.root.showWithCondition(!isLoading)
+        sectionViewBinding?.root?.showWithCondition(!isLoading)
         sectionBaseViewBinding.apply {
             baseSection.showWithCondition(!isLoading)
             loadingView.root.showWithCondition(isLoading)
@@ -64,7 +68,7 @@ abstract class BasePrivacyCenterSection(context: Context?) {
     }
 
     fun showLocalLoad(title: String = "", description: String = "", onRetryClick: (View) -> Unit) {
-        sectionViewBinding.root.hide()
+        sectionViewBinding?.root?.hide()
         showShimmering(false)
 
         sectionBaseViewBinding.sectionLocalLoad.apply {
@@ -79,6 +83,10 @@ abstract class BasePrivacyCenterSection(context: Context?) {
                 onRetryClick.invoke(it)
             }
         }.show()
+    }
+
+    fun hideLocalLoad() {
+        sectionBaseViewBinding.sectionLocalLoad.hide()
     }
 }
 
