@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -49,6 +50,7 @@ class TopAdsInfoBottomSheet {
         private const val ADS_URL =
             "https://seller.tokopedia.com/edu/about-topads/iklan/?source=tooltip&medium=android"
 
+        @SuppressLint("UnifyComponentUsage")
         fun newInstance(context: Context): TopAdsInfoBottomSheet {
             val frag = TopAdsInfoBottomSheet()
             frag.dialog = BottomSheetDialog(context)
