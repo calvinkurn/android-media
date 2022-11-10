@@ -81,7 +81,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/tokochat_iv_source_logo"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_1"
+            app:typographyType="display_2"
             app:typographyWeight="bold"
             tools:text="@tools:sample/lorem/random" />
 
