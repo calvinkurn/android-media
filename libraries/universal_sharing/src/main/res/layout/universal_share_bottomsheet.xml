@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -106,8 +107,92 @@
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/thumb_nail_image"
-        android:background="@color/Unify_N75"
-        />
+        android:background="@color/Unify_N75" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_register_affiliate"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/rv_social_media_list"
+        android:layout_marginHorizontal="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/unify_space_16"
+            android:paddingVertical="@dimen/unify_space_8">
+
+            <ImageView
+                android:id="@+id/iv_affiliate"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="@dimen/unify_space_24"
+                android:layout_height="@dimen/unify_space_24"
+                android:contentDescription="@string/content_description_icon_affiliate"
+                app:layout_constraintEnd_toStartOf="@id/tv_title_affiliate"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title_affiliate"
+                app:layout_constraintTop_toTopOf="@id/iv_affiliate"
+                app:layout_constraintBottom_toBottomOf="@id/iv_affiliate"
+                app:layout_constraintStart_toEndOf="@id/iv_affiliate"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_N700"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Tokopedia Affiliate"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_new"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/tv_title_affiliate"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center"
+                app:typographyType="small"
+                android:textColor="@color/Unify_Static_White"
+                android:paddingHorizontal="@dimen/unify_space_4"
+                android:paddingVertical="@dimen/unify_space_2"
+                android:background="@drawable/background_ticker_new"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:layout_constraintBottom_toBottomOf="@id/tv_title_affiliate"
+                app:layout_constraintTop_toTopOf="@id/tv_title_affiliate"
+                android:text="@string/ticker_new"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_description_affiliate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_affiliate"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_right_arrow"
+                android:layout_marginTop="@dimen/unify_space_4"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:typographyType="body_2"
+                android:ellipsize="end"
+                tools:text="Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini."/>
+
+            <ImageView
+                android:id="@+id/iv_right_arrow"
+                app:layout_constraintTop_toTopOf="@id/tv_title_affiliate"
+                app:layout_constraintBottom_toBottomOf="@id/tv_description_affiliate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_description_affiliate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chevron_right"
+                android:contentDescription="@string/content_description_icon_redirection"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="16dp"
@@ -119,7 +204,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator" />
+        app:layout_constraintTop_toBottomOf="@id/card_register_affiliate" />
 
     <ImageView
         android:id="@+id/copy_link_img"
@@ -255,9 +340,11 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/universal_share_bottomsheet_image_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/card_register_affiliate"
+        app:layout_constraintVertical_bias="0.0" />
+
     <androidx.constraintlayout.widget.Group
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

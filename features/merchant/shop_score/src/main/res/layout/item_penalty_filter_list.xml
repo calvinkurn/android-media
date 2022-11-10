@@ -15,7 +15,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700"
-        app:typographyType="heading_4"
+        app:typographyType="display_1"
         app:typographyWeight="bold" />
 
     <androidx.recyclerview.widget.RecyclerView

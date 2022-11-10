@@ -10,7 +10,9 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
+import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.stub.domain.FakeUserSession
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
@@ -19,7 +21,9 @@ import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -47,8 +51,8 @@ class FakeHomeAccountUserModules(val context: Context) {
     }
 
     @Provides
-    fun provideDataViewMapper(userSession: UserSessionInterface): DataViewMapper {
-        return DataViewMapper(userSession)
+    fun provideDataViewMapper(userSession: UserSessionInterface, userSessionDataStore: Lazy<UserSessionDataStore>): DataViewMapper {
+        return DataViewMapper(userSession, userSessionDataStore)
     }
 
     @Provides
@@ -92,4 +96,16 @@ class FakeHomeAccountUserModules(val context: Context) {
     @Provides
     @ActivityScope
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Provides
+    @ActivityScope
+    fun provideTokopediaPlusAnalytics(): TokopediaPlusAnalytics {
+        return TokopediaPlusAnalytics()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideAddVerifyPhoneAnalytics(): AddVerifyPhoneAnalytics {
+        return AddVerifyPhoneAnalytics()
+    }
 }

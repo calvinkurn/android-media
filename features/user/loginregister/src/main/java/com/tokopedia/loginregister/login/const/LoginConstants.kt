@@ -57,6 +57,7 @@ object LoginConstants {
 
     object DiscoverLoginId {
         const val GPLUS = "gplus"
+        const val EMAIL = "local-email"
     }
 
     object RollenceKey {

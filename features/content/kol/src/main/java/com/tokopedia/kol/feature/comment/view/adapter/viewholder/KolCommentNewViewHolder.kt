@@ -21,7 +21,7 @@ class KolCommentNewViewHolder(
                 viewListener.onMenuClicked(id, canDeleteComment, adapterPosition)
             }
 
-            override fun onHashtagClicked(hashtag: String, id: String) {
+            override fun onHashtagClicked(hashtag: String) {
             }
 
             override fun onAvatarClicked(profileUrl: String, userId: String?) {

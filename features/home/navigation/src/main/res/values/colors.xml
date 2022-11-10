@@ -6,4 +6,8 @@
     <color name="navigation_dms_color_active_bottom_nav">#00AA5B</color>
     <color name="navigation_dms_color_active_bottom_nav_os">#7F37D7</color>
     <color name="navigation_dms_footer_color">#42b549</color>
+
+    <color name="navigation_dms_tkpd_main_green">#42b549</color>
+    <color name="navigation_dms_tkpd_dark_green">#5eba46</color>
+    <color name="navigation_dms_green_600">#0a8f08</color>
 </resources>

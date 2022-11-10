@@ -11,7 +11,7 @@ object WidgetHeight {
     private const val CAROUSEL = 300f
     private const val DESCRIPTION = 212f
     private const val LINE_GRAPH = 320f
-    private const val POST_LIST = 352f
+    private const val POST_LIST = 320f
     private const val PROGRESS = 212f
     private const val TABLE = 369f
     private const val PIE_CHART = 320f
@@ -22,6 +22,7 @@ object WidgetHeight {
     private const val SECTION = 42f
     private const val MILESTONE = 320f
     private const val CALENDAR = 320f
+    private const val UNIFICATION = 320f
 
     fun getWidgetHeight(widgetType: String): Float {
         return when (widgetType) {
@@ -40,6 +41,7 @@ object WidgetHeight {
             WidgetType.RECOMMENDATION -> RECOMMENDATION
             WidgetType.MILESTONE -> MILESTONE
             WidgetType.CALENDAR -> CALENDAR
+            WidgetType.UNIFICATION -> UNIFICATION
             else -> 0f
         }
     }

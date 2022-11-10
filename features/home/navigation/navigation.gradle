@@ -13,10 +13,8 @@ include "features:user:user_identification_common"
 include "features:discovery:recommendation_widget_common"
 include "features:discovery:productcard"
 include "features:discovery:topadssdk"
-include "features:discovery:wishlist_common"
 include "features:discovery:discovery_common"
 
-include "features:discovery:home_wishlist"
 include "features:transaction:buyerorder"
 
 include "tkpdabstraction"

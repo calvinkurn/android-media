@@ -132,7 +132,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
         notifyItemRangeRemoved(0, itemSizeBeforeCleared)
     }
 
-    fun updateWishlistStatus(productId: Int, isWishlisted: Boolean) {
+    fun updateWishlistStatus(productId: String, isWishlisted: Boolean) {
         for (i in visitables.indices) {
             if (visitables[i] is ProductsItem) {
                 val model = visitables[i] as ProductsItem
@@ -145,7 +145,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
         }
     }
 
-    fun setWishlistButtonEnabled(productId: Int, isEnabled: Boolean) {
+    fun setWishlistButtonEnabled(productId: String, isEnabled: Boolean) {
         for (i in visitables.indices) {
             if (visitables[i] is ProductsItem) {
                 val model = visitables[i] as ProductsItem

@@ -13,6 +13,8 @@
     <string name="cc_bank_is_not_supported">Maaf, bank kamu belum didukung Tokopedia.</string>
     <string name="cc_bank_list_title">Daftar Bank</string>
     <string name="cc_desc_bank_list">Kamu bisa bayar kartu kredit dari bank-bank yang terdaftar di bawah. Cukup masukkan nomor kartu kreditmu dan bank akan terpilih otomatis.</string>
+    <string name="cc_ticker_title">Pembayaran Butuh maks. 3 hari kerja</string>
     <string name="cc_ticker_desc">Sebelum bayar, pastikan masih ada waktu minimal 3 hari kerja sebelum kartu kredit kamu jatuh tempo, ya.</string>
+    <string name="cc_ticker_2_desc">Bayar tagihan Tokopedia Card dengan pengalaman lebih baik melalui halaman Tokopedia Card atau klik &lt;a href="https://www.tokopedia.com/tokopedia-cobrand/dashboard"&gt;di sini&lt;/a&gt;.</string>
     <string name="cc_widget_operator_icon_content_desc">logo operator</string>
 </resources>

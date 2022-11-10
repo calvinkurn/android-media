@@ -28,16 +28,12 @@ class RsaSignatureUtils {
 
     /* Check if we already have keypair within keystore with given alias */
     private fun hasKey(): Boolean {
-        try {
+        return try {
             val ks = getKeystore()
-            val entry: KeyStore.Entry = ks.getEntry(BiometricConstant.FINGERPRINT, null)
-            if (entry !is KeyStore.PrivateKeyEntry) {
-                return false
-            }
-            return true
+            ks.containsAlias(BiometricConstant.FINGERPRINT)
         } catch (e: Exception) {
             log("hasKey", e)
-            return false
+            false
         }
     }
 
@@ -51,6 +47,7 @@ class RsaSignatureUtils {
                     KeyGenParameterSpec.Builder(BiometricConstant.FINGERPRINT, KeyProperties.PURPOSE_SIGN)
                         .setDigests(KeyProperties.DIGEST_SHA256)
                         .setKeySize(KEY_SIZE)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
                         .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
                         .build()
 
@@ -133,7 +130,8 @@ class RsaSignatureUtils {
     private fun log(type: String, throwable: Exception) {
         val msg = mapOf(
             "method" to type,
-            "exception" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH)
+            "exception" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH),
+            "caused" to Log.getStackTraceString(throwable.cause).take(Const.GQL_ERROR_MAX_LENGTH)
         )
 
         ServerLogger.log(

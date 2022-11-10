@@ -17,6 +17,11 @@ object TrackingProfileSection: BaseTrackerConst() {
     const val CLICK_OPEN_SHOP = "open shop"
     const val CREATE_AFFILIATE = "create affiliate"
     const val AFFILIATE_ACCOUNT = "affiliate account"
+    private const val KEY_TRACKER_ID = "trackerId"
+    private const val CLICK_GOTOPLUS_NON_SUBSCRIBER = "click on gotoplus - non subscriber"
+    private const val CLICK_GOTOPLUS_NON_SUBSCRIBER_ID = "33341"
+    private const val CLICK_GOTOPLUS_SUBSCRIBER = "click on gotoplus - subscriber"
+    private const val CLICK_GOTOPLUS_SUBSCRIBER_ID = "33342"
 
     fun onClickLoginButton(userId: String){
         getTracker().sendGeneralEvent(
@@ -123,5 +128,35 @@ object TrackingProfileSection: BaseTrackerConst() {
                         .appendCurrentSite(CurrentSite.DEFAULT)
                         .appendBusinessUnit(BusinessUnit.DEFAULT)
                         .build())
+    }
+
+    fun onClickTokopediaPlus(isSubscriber: Boolean){
+        val bundle = Bundle().apply {
+            putString(Event.KEY, Event.CLICK_HOMEPAGE)
+            putString(Category.KEY, GLOBAL_MENU)
+            putString(
+                Label.KEY,
+                Value.EMPTY
+            )
+
+            if(isSubscriber){
+                putString(
+                    Action.KEY,
+                    CLICK_GOTOPLUS_SUBSCRIBER
+                )
+                putString(KEY_TRACKER_ID, CLICK_GOTOPLUS_SUBSCRIBER_ID)
+            } else {
+                putString(
+                    Action.KEY,
+                    CLICK_GOTOPLUS_NON_SUBSCRIBER
+                )
+                putString(KEY_TRACKER_ID, CLICK_GOTOPLUS_NON_SUBSCRIBER_ID)
+            }
+
+            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 }

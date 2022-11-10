@@ -11,11 +11,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.data.OtpConstant
-import com.tokopedia.otp.verification.data.ROLLANCE_KEY_MISCALL_OTP
-import com.tokopedia.otp.verification.data.TAG_AUTO_READ
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -29,9 +25,6 @@ import javax.inject.Inject
  */
 
 class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface) {
-
-    private val remoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
-    private val isNewOtpMiscall = remoteConfig?.getString(ROLLANCE_KEY_MISCALL_OTP)?.contains(ROLLANCE_KEY_MISCALL_OTP) == true
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
@@ -819,16 +812,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
             labelType.toString()
         }
 
-        val tag = when(otpModeListData.modeText) {
-            OtpConstant.OtpMode.MISCALL -> {
-                if (isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
-            }
-            else -> {
-                ""
-            }
-        }
-
-        return "$label - ${otpData.otpType} - ${otpModeListData.modeText}$tag"
+        return "$label - ${otpData.otpType} - ${otpModeListData.modeText}"
     }
 
     private enum class TrackerLabelType {

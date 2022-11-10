@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.data.util
 import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -53,8 +55,8 @@ object VariantMapper {
                 stock = newData?.campaign?.stock ?: 0,
                 isAppsOnly = newData?.campaign?.isAppsOnly ?: false,
                 appLinks = newData?.campaign?.applinks ?: "",
-                percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0,
-                stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0,
+                percentageAmount = newData?.campaign?.discountedPercentage.orZero(),
+                stockSoldPercentage = newData?.campaign?.stockSoldPercentage.toIntSafely(),
                 isCheckImei = newData?.campaign?.isCheckImei ?: false,
                 isUsingOvo = newData?.campaign?.isUsingOvo ?: false,
                 hideGimmick = newData?.campaign?.hideGimmick ?: false,

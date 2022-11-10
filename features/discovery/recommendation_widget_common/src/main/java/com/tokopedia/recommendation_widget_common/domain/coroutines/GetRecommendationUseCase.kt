@@ -6,8 +6,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
+import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQuery
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationUseCaseRequest
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -25,7 +25,7 @@ constructor(private val context: Context, private val graphqlRepository: Graphql
     private val graphqlUseCase = GraphqlUseCase<RecommendationEntity>(graphqlRepository)
     init {
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)
-        graphqlUseCase.setGraphqlQuery(GetRecommendationUseCaseRequest.widgetListQuery)
+        graphqlUseCase.setGraphqlQuery(ListProductRecommendationQuery())
     }
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
         val userSession = UserSession(context)

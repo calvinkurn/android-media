@@ -1,7 +1,7 @@
 package com.tokopedia.play.domain.repository
 
-import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -10,7 +10,14 @@ interface PlayViewerTagItemRepository {
 
     suspend fun getTagItem(channelId: String, warehouseId: String): TagItemUiModel
 
-    suspend fun getVariant(product: PlayProductUiModel.Product): VariantUiModel
+    suspend fun updateCampaignReminderStatus(
+        productSections: List<ProductSectionUiModel.Section>,
+    ): List<ProductSectionUiModel.Section>
+
+    suspend fun getVariant(
+        product: PlayProductUiModel.Product,
+        isProductFeatured: Boolean,
+    ): VariantUiModel
 
     suspend fun selectVariantOption(
         variant: VariantUiModel,
@@ -25,7 +32,15 @@ interface PlayViewerTagItemRepository {
         price: Double,
     ): String
 
-    suspend fun checkUpcomingCampaign(campaignId: Long): Boolean
+    suspend fun checkUpcomingCampaign(campaignId: String): Boolean
 
-    suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: PlayUpcomingBellStatus): Pair<Boolean, String>
+    suspend fun subscribeUpcomingCampaign(
+        campaignId: String,
+        shouldRemind: Boolean,
+    ): CampaignReminder
+
+    data class CampaignReminder(
+        val isReminded: Boolean,
+        val message: String,
+    )
 }

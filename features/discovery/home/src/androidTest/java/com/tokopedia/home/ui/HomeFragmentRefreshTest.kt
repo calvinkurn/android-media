@@ -11,7 +11,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeEmptyActivity
@@ -22,6 +21,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.setupDynamicChannelQueryRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
@@ -39,7 +39,6 @@ import org.junit.*
 class HomeFragmentRefreshTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val totalData =
         MOCK_HEADER_COUNT + MOCK_ATF_COUNT + MOCK_DYNAMIC_CHANNEL_COUNT + MOCK_RECOMMENDATION_TAB_COUNT
     private var mDevice: UiDevice? = null
@@ -47,12 +46,13 @@ class HomeFragmentRefreshTest {
     companion object {
         /**
          * Header will be refreshed exactly 2 times on Resume with 3 minutes rule not reached
+         * 1 For get home balance widget
          * 1 For wallet data refresh
          * 1 For Membership data refresh
          *
          * But if 3 minutes rule reached, total refresh will be above 2
          */
-        private const val TOTAL_PARTIAL_HEADER_REFRESH_COUNT = 2
+        private const val TOTAL_PARTIAL_HEADER_REFRESH_COUNT = 3
 
         private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 5000L
         private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 180001L
@@ -91,11 +91,11 @@ class HomeFragmentRefreshTest {
         override fun beforeActivityLaunched() {
             InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
             InstrumentationAuthHelper.clearUserSession()
-            gtmLogDBSource.deleteAll().subscribe()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
             setupGraphqlMockResponse(HomeMockResponseConfig())
             disableCoachMark(context)
             setupAbTestRemoteConfig()
+            setupDynamicChannelQueryRemoteConfig()
             dataChangedCount = 0
             setToLocation1()
             super.beforeActivityLaunched()
@@ -138,11 +138,12 @@ class HomeFragmentRefreshTest {
         /**
          * Assert data changes count
          * Partial refresh will only trigger 2 data changes
+         * - Home Balance Widget
          * - Wallet data changes
          * - Membership data changes
          */
         Thread.sleep(DELAY_PROCESS)
-        Assert.assertEquals(TOTAL_PARTIAL_HEADER_REFRESH_COUNT, dataChangedCount)
+        Assert.assertTrue(dataChangedCount >= TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         Thread.sleep(DELAY_PROCESS)
     }
 

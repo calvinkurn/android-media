@@ -5,12 +5,16 @@ import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
+import com.tokopedia.logisticCommon.data.response.customproductlogistic.CPLProduct
+import com.tokopedia.logisticCommon.data.response.customproductlogistic.GetCPLData
 import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGetCPLQGLResponse
+import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGetCPLResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -52,15 +56,21 @@ class CustomProductLogisticViewModelTest {
 
     @Test
     fun `Get CPL List success`() {
-        coEvery { repo.getCPLList(any(), any()) } returns OngkirGetCPLQGLResponse()
-        customProductLogisticViewModel.getCPLList(1234, "9876")
+        val shipperServicesId = 1L
+        val mockCPLProduct = arrayListOf(spyk(CPLProduct(shipperServices = arrayListOf(shipperServicesId))))
+        val mockGetCPLData = spyk(GetCPLData(cplProduct = mockCPLProduct))
+        val mockOngkirGetCPLResponse = spyk(OngkirGetCPLResponse(data = mockGetCPLData))
+        val mockResponse = spyk(OngkirGetCPLQGLResponse(response = mockOngkirGetCPLResponse))
+
+        coEvery { repo.getCPLList(any(), any()) } returns mockResponse
+        customProductLogisticViewModel.getCPLList(1234, "9876", arrayListOf(shipperServicesId))
         verify { cplListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get CPL List failed`() {
         coEvery { repo.getCPLList(any(), any()) } throws defaultThrowable
-        customProductLogisticViewModel.getCPLList(1234, "9876")
+        customProductLogisticViewModel.getCPLList(1234, "9876", null)
         verify { cplListObserver.onChanged(match { it is Fail }) }
     }
 }

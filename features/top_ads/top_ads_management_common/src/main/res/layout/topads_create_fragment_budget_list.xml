@@ -50,7 +50,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:text="@string/topads_common_basic_budget"
-                        android:textColor="@color/topads_heading_color"
+                        android:textColor="@color/Unify_N700_96"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="heading_5" />
@@ -71,7 +71,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginStart="16dp"
                         android:text="@string/topads_group_detail_budget_pancarian"
-                        android:textColor="@color/topads_clr_7031353b"
+                        android:textColor="@color/Unify_N700_44"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/txtInfo"
                         app:typographyType="body_3" />
@@ -102,7 +102,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/budget"
                         app:layout_constraintBottom_toTopOf="@+id/divider"
                         app:typographyType="body_3"
-                        android:textColor="@color/unify_Y500"
+                        android:textColor="@color/Unify_Y500"
                         android:visibility="gone"/>
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -113,7 +113,7 @@
                         android:layout_marginEnd="@dimen/dp_50"
                         android:text="@string/topads_group_detail_budget_rekomendasi"
                         android:visibility="gone"
-                        android:textColor="@color/topads_clr_7031353b"
+                        android:textColor="@color/Unify_N700_44"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/budgetRekomendasi"
                         app:layout_constraintTop_toBottomOf="@id/txtInfo"
@@ -147,7 +147,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/budgetRekomendasi"
                         app:layout_constraintBottom_toTopOf="@+id/divider"
                         app:typographyType="body_3"
-                        android:textColor="@color/unify_Y500"
+                        android:textColor="@color/Unify_Y500"
                         android:visibility="gone"/>
 
                     <com.tokopedia.unifycomponents.DividerUnify

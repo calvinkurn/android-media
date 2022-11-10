@@ -33,7 +33,6 @@ import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageMapper
-import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -309,6 +308,7 @@ class ShopPageProductListViewModel @Inject constructor(
             pmax: Int = 0,
             pmin: Int = 0,
             fcategory: Int? = null,
+            extraParam: String = "",
             isEnableDirectPurchase: Boolean
     ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
@@ -324,7 +324,8 @@ class ShopPageProductListViewModel @Inject constructor(
                 userDistrictId = widgetUserAddressLocalData.district_id,
                 userCityId = widgetUserAddressLocalData.city_id,
                 userLat = widgetUserAddressLocalData.lat,
-                userLong = widgetUserAddressLocalData.long
+                userLong = widgetUserAddressLocalData.long,
+                extraParam = extraParam
         ))
         val productListResponse = useCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(page, perPage, productListResponse.totalData)
@@ -337,9 +338,10 @@ class ShopPageProductListViewModel @Inject constructor(
                     etalaseId,
                     isEnableDirectPurchase = isEnableDirectPurchase
                 )},
-                totalProductData
+                totalProductData,
+                page
         ).apply {
-            updateProductCardQuantity(miniCartData, listShopProductUiModel.toMutableList())
+            updateProductCardQuantity(listShopProductUiModel.toMutableList())
         }
     }
 
@@ -378,6 +380,7 @@ class ShopPageProductListViewModel @Inject constructor(
                         shopProductFilterParameter.getPmax(),
                         shopProductFilterParameter.getPmin(),
                         shopProductFilterParameter.getCategory(),
+                        shopProductFilterParameter.getExtraParam(),
                         isEnableDirectPurchase
                 )
             }
@@ -477,9 +480,10 @@ class ShopPageProductListViewModel @Inject constructor(
                                 isEnableDirectPurchase = isEnableDirectPurchase
                             )
                         },
-                        initialProductListData.totalData
+                        initialProductListData.totalData,
+                        START_PAGE // current page is 1 since its initial product list
                 ).apply {
-                    updateProductCardQuantity(miniCartData, listShopProductUiModel.toMutableList())
+                    updateProductCardQuantity(listShopProductUiModel.toMutableList())
                 }
         ))
     }
@@ -534,7 +538,8 @@ class ShopPageProductListViewModel @Inject constructor(
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,
-                widgetUserAddressLocalData.long
+                widgetUserAddressLocalData.long,
+                tempShopProductFilterParameter.getExtraParam()
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,
@@ -550,15 +555,14 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     fun handleAtcFlow(
-        productId: String,
         quantity: Int,
         shopId: String,
         componentName: String,
         shopProductUiModel: ShopProductUiModel
     ) {
-        val miniCartItem = getMiniCartItem(miniCartData, productId)
+        val miniCartItem = getMiniCartItem(miniCartData, shopProductUiModel.id)
         when {
-            miniCartItem == null -> addItemToCart(productId, shopId, quantity, componentName, shopProductUiModel)
+            miniCartItem == null -> addItemToCart(shopProductUiModel.id, shopId, quantity, componentName, shopProductUiModel)
             quantity.isZero() -> removeItemCart(miniCartItem, componentName, shopProductUiModel)
             else -> updateItemCart(miniCartItem, quantity, componentName, shopProductUiModel)
         }
@@ -582,8 +586,8 @@ class ShopPageProductListViewModel @Inject constructor(
             trackAddToCart(
                 it.data.cartId,
                 it.data.productId.toString(),
-                shopProductUiModel.name.orEmpty(),
-                shopProductUiModel.displayedPrice.orEmpty(),
+                shopProductUiModel.name,
+                shopProductUiModel.displayedPrice,
                 shopProductUiModel.isVariant,
                 it.data.quantity,
                 ShopPageAtcTracker.AtcType.ADD,
@@ -622,8 +626,8 @@ class ShopPageProductListViewModel @Inject constructor(
             trackAddToCart(
                 miniCartItem.cartId,
                 miniCartItem.productId,
-                shopProductUiModel.name.orEmpty(),
-                shopProductUiModel.displayedPrice.orEmpty(),
+                shopProductUiModel.name,
+                shopProductUiModel.displayedPrice,
                 shopProductUiModel.isVariant,
                 miniCartItem.quantity,
                 atcType,
@@ -649,8 +653,8 @@ class ShopPageProductListViewModel @Inject constructor(
             trackAddToCart(
                 miniCartItem.cartId,
                 miniCartItem.productId,
-                shopProductUiModel.name.orEmpty(),
-                shopProductUiModel.displayedPrice.orEmpty(),
+                shopProductUiModel.name,
+                shopProductUiModel.displayedPrice,
                 shopProductUiModel.isVariant,
                 miniCartItem.quantity,
                 ShopPageAtcTracker.AtcType.REMOVE,
@@ -674,22 +678,16 @@ class ShopPageProductListViewModel @Inject constructor(
         miniCartData = miniCartSimplifiedData
     }
 
-    fun getShopProductDataWithUpdatedQuantity(
-        miniCartSimplifiedData: MiniCartSimplifiedData?,
-        listProductTabWidget: MutableList<Visitable<*>>
-    ) {
-        updateProductCardQuantity(miniCartSimplifiedData, listProductTabWidget)
+    fun getShopProductDataWithUpdatedQuantity(listProductTabWidget: MutableList<Visitable<*>>) {
+        updateProductCardQuantity(listProductTabWidget)
         _updatedShopProductListQuantityData.postValue(listProductTabWidget)
     }
 
-    private fun updateProductCardQuantity(
-        miniCartSimplifiedData: MiniCartSimplifiedData?,
-        listProductTabWidget: MutableList<Visitable<*>>
-    ) {
+    private fun updateProductCardQuantity(listProductTabWidget: MutableList<Visitable<*>>) {
         listProductTabWidget.forEachIndexed { index, productTabWidget ->
             when(productTabWidget){
                 is ShopProductUiModel -> {
-                    updateShopProductUiModelQuantity(productTabWidget, miniCartSimplifiedData).let {
+                    updateShopProductUiModelQuantity(productTabWidget).let {
                         listProductTabWidget.setElement(index, it)
                     }
                 }
@@ -697,17 +695,11 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    private fun updateShopProductUiModelQuantity(
-        productModel: ShopProductUiModel,
-        miniCartSimplifiedData: MiniCartSimplifiedData?
-    ): ShopProductUiModel {
-        val matchedMiniCartItem = getMatchedMiniCartItem(
-            productModel,
-            miniCartSimplifiedData
-        )
-        if (matchedMiniCartItem != null && !matchedMiniCartItem.all { it?.isError == true } && matchedMiniCartItem.isNotEmpty()) {
+    private fun updateShopProductUiModelQuantity(productModel: ShopProductUiModel): ShopProductUiModel {
+        val matchedMiniCartItem = getMatchedMiniCartItem(productModel)
+        if (matchedMiniCartItem.isNotEmpty()) {
             val cartQuantity = matchedMiniCartItem.sumOf {
-                it?.quantity.orZero()
+                it.quantity.orZero()
             }
             if(cartQuantity != productModel.productInCart) {
                 productModel.productInCart = cartQuantity
@@ -728,30 +720,21 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     private fun getMatchedMiniCartItem(
-        shopProductUiModel: ShopProductUiModel,
-        miniCartData: MiniCartSimplifiedData?
-    ): List<MiniCartItem.MiniCartItemProduct?>? {
-        val isVariant = shopProductUiModel.isVariant
-        return if (isVariant) {
-            return miniCartData?.miniCartItems?.values?.filter {
-                it is MiniCartItem.MiniCartItemProduct && (it.productParentId == shopProductUiModel.parentId)
-            }?.map {
-                it as? MiniCartItem.MiniCartItemProduct
+        shopProductUiModel: ShopProductUiModel
+    ): List<MiniCartItem.MiniCartItemProduct> {
+        return miniCartData?.let { miniCartSimplifiedData ->
+            val isVariant = shopProductUiModel.isVariant
+            val listMatchedMiniCartItemProduct = if (isVariant) {
+                miniCartSimplifiedData.miniCartItems.values.filterIsInstance<MiniCartItem.MiniCartItemProduct>()
+                    .filter { it.productParentId == shopProductUiModel.parentId}
+            } else {
+                val childProductId = shopProductUiModel.id
+                miniCartSimplifiedData.miniCartItems.getMiniCartItemProduct(childProductId)?.let {
+                    listOf(it)
+                }.orEmpty()
             }
-        } else {
-            val childProductId = shopProductUiModel.id.orEmpty()
-            listOf(miniCartData?.miniCartItems?.getMiniCartItemProduct(childProductId))
-        }
-    }
-
-    private fun getParentProductOnMiniCart(
-        childProductId: String,
-        miniCartData: MiniCartSimplifiedData?
-    ): String {
-        val miniCartItemValues = miniCartData?.miniCartItems?.values
-        return miniCartItemValues?.filterIsInstance<MiniCartItem.MiniCartItemProduct>()?.firstOrNull {
-            it.productId == childProductId
-        }?.productParentId.orEmpty()
+            listMatchedMiniCartItemProduct.filter { !it.isError }
+        }.orEmpty()
     }
 
     private fun trackAddToCart(

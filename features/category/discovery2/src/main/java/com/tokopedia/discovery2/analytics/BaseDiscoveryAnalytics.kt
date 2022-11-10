@@ -5,6 +5,9 @@ import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
+import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -65,11 +68,11 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackQuickCouponApply(clickCouponData: ClickCouponData) {}
     open fun trackQuickCouponPhoneVerified() {}
     open fun trackQuickCouponPhoneVerifyCancel() {}
-    open fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean) {}
+    open fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean, campaignId: String = "", variantId: String = "", shopID: String = "") {}
     open fun trackTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int,eventAction: String = "") {}
     open fun trackUnifyTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int,eventAction: String = "") {}
-    open fun trackCarouselBannerImpression(banners: List<DataItem>) {}
-    open fun trackCarouselBannerClick(banner: DataItem, bannerPosition: Int) {}
+    open fun trackCarouselBannerImpression(banners: List<DataItem>,componentType: String) {}
+    open fun trackCarouselBannerClick(banner: DataItem, bannerPosition: Int,componentType: String) {}
     open fun trackBannerCarouselLihat() {}
     open fun trackEventImpressionTopAdsShop(componentDataItem: ComponentsItem, cpmData: CpmData) {}
     open fun trackClickTopAdsShop(componentDataItem: ComponentsItem, cpmData: CpmData) {}
@@ -104,7 +107,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackUnifyShare(event: String = "", eventAction: String = "", userID: String?, eventLabel : String = "") {}
     open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?, isManualScroll : Boolean) {}
     open fun trackScreenshotAccess(eventAction : String = "", eventLabel : String = "", userID: String?, ) {}
-    open fun trackEventProductATCTokonow(componentsItems: ComponentsItem, userID: String?) {}
+    open fun trackEventProductATCTokonow(componentsItems: ComponentsItem, cartId: String) {}
     open fun trackEventProductATC(componentsItems: ComponentsItem, cartID:String) {}
     open fun trackEventViewMyCouponList(componentsItems: ComponentsItem, userID: String) {}
     open fun trackEventClickMyCouponList(componentsItems: ComponentsItem, userID: String) {}
@@ -156,4 +159,8 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun track3DotsOptionsClickedShareProduct() {}
     open fun trackShopBannerInfiniteImpression(componentsItems: ComponentsItem) {}
     open fun trackShopBannerInfiniteClick(componentsItems: ComponentsItem) {}
+    open fun trackEventClickProductBundlingChipSelection(componentsItems: ComponentsItem, selectedProduct: BundleProductUiModel, selectedSingleBundle: BundleDetailUiModel) {}
+    open fun trackEventProductBundlingAtcClick(componentsItems: ComponentsItem, selectedMultipleBundle: BundleDetailUiModel) {}
+    open fun trackEventProductBundlingViewImpression(componentsItems: ComponentsItem, selectedBundle: BundleDetailUiModel, bundlePosition: Int) {}
+    open fun trackEventProductBundlingCarouselImpression(componentsItems: ComponentsItem, bundledProductList: List<BundleUiModel>,totalBundlings: Int, totalBundleSeenPosition: Int, lastVisibleItemPosition: Int) {}
 }

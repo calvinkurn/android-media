@@ -7,7 +7,6 @@ import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.ITEM_CATEGORY_BUILDER
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.KEY_UNDEFINED
@@ -26,25 +25,26 @@ object TrackingUtil {
 
     fun sendTrackingBundle(key: String, bundle: Bundle) {
         TrackApp
-                .getInstance()
-                .gtm
-                .sendEnhanceEcommerceEvent(
-                        key, bundle
-                )
+            .getInstance()
+            .gtm
+            .sendEnhanceEcommerceEvent(
+                key,
+                bundle
+            )
     }
 
     @SuppressLint("VisibleForTests")
     fun createCommonImpressionTracker(
-            productInfo: DynamicProductInfoP1?,
-            componentTrackDataModel: ComponentTrackDataModel,
-            userId: String,
-            lcaWarehouseId: String,
-            customAction: String = "",
-            customCreativeName: String = "",
-            customItemName: String = "",
-            customLabel: String = "",
-            customPromoCode: String = "",
-            customItemId: String = ""
+        productInfo: DynamicProductInfoP1?,
+        componentTrackDataModel: ComponentTrackDataModel,
+        userId: String,
+        lcaWarehouseId: String,
+        customAction: String = "",
+        customCreativeName: String = "",
+        customItemName: String = "",
+        customLabel: String = "",
+        customPromoCode: String = "",
+        customItemId: String = ""
     ): HashMap<String, Any>? {
         val productId = productInfo?.basic?.productID ?: ""
         val shopId = productInfo?.basic?.shopID ?: ""
@@ -54,30 +54,36 @@ object TrackingUtil {
         val categoryString = "${listOfCategoryId?.getOrNull(0)?.id.orEmpty()} / ${listOfCategoryId?.getOrNull(1)?.id.orEmpty()} / ${listOfCategoryId?.getOrNull(2)?.id.orEmpty()} / $categoryName "
 
         val mapEvent = DataLayer.mapOf(
-                ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
-                ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Tracking.KEY_ACTION, customAction,
-                ProductTrackingConstant.Tracking.KEY_LABEL, customLabel,
-                ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
-                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
-                ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
-                "categoryId", "productId : $productId",
-                ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
-                "promoView", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(
+            ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
+            ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+            ProductTrackingConstant.Tracking.KEY_ACTION, customAction,
+            ProductTrackingConstant.Tracking.KEY_LABEL, customLabel,
+            ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+            ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
+            ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
+            "categoryId", "productId : $productId",
+            ProductTrackingConstant.Tracking.KEY_ECOMMERCE,
+            DataLayer.mapOf(
+                "promoView",
                 DataLayer.mapOf(
-                        "id", customItemId, //item_id
-                        "name", customItemName, //item_name
-                        "creative", customCreativeName, //creative_name
-                        "creative_url", "",
-                        "position", componentTrackDataModel.adapterPosition, //creative_slot
-                        "category", categoryString,
-                        "promo_id", "",
-                        "promo_code", customPromoCode
+                    "promotions",
+                    DataLayer.listOf(
+                        DataLayer.mapOf(
+                            "id", customItemId, // item_id
+                            "name", customItemName, // item_name
+                            "creative", customCreativeName, // creative_name
+                            "creative_url", "",
+                            "position", componentTrackDataModel.adapterPosition, // creative_slot
+                            "category", categoryString,
+                            "promo_id", "",
+                            "promo_code", customPromoCode
+                        )
+                    )
                 )
-        ))))
+            )
+        )
         mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID
-                ?: ""
+            ?: ""
         mapEvent[ProductTrackingConstant.Tracking.KEY_WAREHOUSE_ID] = lcaWarehouseId
         mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
         mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
@@ -87,21 +93,14 @@ object TrackingUtil {
         return mapEvent as HashMap<String, Any>?
     }
 
-    fun getBoTypeString(boType: Int): String {
-        return when (boType) {
-            ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
-            ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
-            else -> ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
-        }
-    }
-
     fun getTradeInString(isTradein: Boolean, isDiagnosed: Boolean): String {
-        return if (isTradein && isDiagnosed)
+        return if (isTradein && isDiagnosed) {
             ProductTrackingConstant.Tracking.TRADEIN_TRUE_DIAGNOSTIC
-        else if (isTradein && !isDiagnosed)
+        } else if (isTradein && !isDiagnosed) {
             ProductTrackingConstant.Tracking.TRADEIN_TRUE_NON_DIAGNOSTIC
-        else
+        } else {
             ProductTrackingConstant.Tracking.VALUE_FALSE
+        }
     }
 
     fun getProductFirstImageUrl(productInfo: DynamicProductInfoP1?): String {
@@ -147,10 +146,11 @@ object TrackingUtil {
         }
         linkerData.userId = userId ?: ""
         linkerData.content = JSONArray().put(
-                JSONObject().apply {
-                    put(ProductTrackingConstant.Tracking.ID, productInfo.basic.productID)
-                    put(ProductTrackingConstant.Tracking.QUANTITY, productInfo.data.stock.value.toString())
-                }).toString()
+            JSONObject().apply {
+                put(ProductTrackingConstant.Tracking.ID, productInfo.basic.productID)
+                put(ProductTrackingConstant.Tracking.QUANTITY, productInfo.data.stock.value.toString())
+            }
+        ).toString()
         productInfo.basic.category.detail.getOrNull(1)?.let {
             linkerData.level2Name = it.name
             linkerData.level2Id = it.id
@@ -166,18 +166,21 @@ object TrackingUtil {
         return linkerData
     }
 
-    fun addComponentTracker(mapEvent: MutableMap<String, Any>,
-                            productInfo: DynamicProductInfoP1?,
-                            componentTrackDataModel: ComponentTrackDataModel?,
-                            elementName: String) {
+    fun addComponentTracker(
+        mapEvent: MutableMap<String, Any>,
+        productInfo: DynamicProductInfoP1?,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        elementName: String
+    ) {
         mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID
-                ?: ""
+            ?: ""
         mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
 
-        if (componentTrackDataModel != null)
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${elementName};cpos:${componentTrackDataModel.adapterPosition};"
-        else
+        if (componentTrackDataModel != null) {
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:$elementName;cpos:${componentTrackDataModel.adapterPosition};"
+        } else {
             mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = ""
+        }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
@@ -224,12 +227,12 @@ object TrackingUtil {
     fun addDiscussionParams(mapEvent: MutableMap<String, Any>, userId: String): MutableMap<String, Any> {
         with(ProductTrackingConstant.Tracking) {
             mapEvent.putAll(
-                    mapOf(
-                            KEY_BUSINESS_UNIT to BUSINESS_UNIT,
-                            KEY_CURRENT_SITE to CURRENT_SITE,
-                            KEY_DISCUSSION_USER_ID to userId,
-                            KEY_SCREEN_NAME to PRODUCT_DETAIL_SCREEN_NAME
-                    )
+                mapOf(
+                    KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to CURRENT_SITE,
+                    KEY_DISCUSSION_USER_ID to userId,
+                    KEY_SCREEN_NAME to PRODUCT_DETAIL_SCREEN_NAME
+                )
             )
         }
         return mapEvent

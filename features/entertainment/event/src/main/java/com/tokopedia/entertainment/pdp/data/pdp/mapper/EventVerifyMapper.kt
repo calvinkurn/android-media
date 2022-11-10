@@ -4,6 +4,7 @@ import android.content.ClipData
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.pdp.*
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 object EventVerifyMapper {
     fun getInitialVerify(pdpData: ProductDetailData): VerifyRequest {
@@ -36,9 +37,9 @@ object EventVerifyMapper {
                     categoryId = pdpData.categoryId,
                     startTime = pdpData.saleStartTime,
                     endTime = pdpData.saleEndDate,
-                    price = salesPrice.toInt(),
+                    price = salesPrice.toIntSafely().toLong(),
                     quantity = quantiy,
-                    totalPrice = totalPrice,
+                    totalPrice = totalPrice.toLong(),
                     locationName = locationName,
                     locationDesc = locationDesc,
                     packageName = packageName,
@@ -50,8 +51,8 @@ object EventVerifyMapper {
         }
     }
 
-    fun getTotalPrice(hashMap: HashMap<String, ItemMap>): Int{
-        var totalPrice = 0
+    fun getTotalPrice(hashMap: HashMap<String, ItemMap>): Long {
+        var totalPrice = 0L
         for (item in hashMap){
             totalPrice += item.value.totalPrice
         }

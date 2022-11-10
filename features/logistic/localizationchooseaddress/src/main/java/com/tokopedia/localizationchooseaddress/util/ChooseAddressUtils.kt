@@ -20,8 +20,6 @@ import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressShareP
 import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.DEFAULT_LCA_VERSION
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
@@ -105,7 +103,6 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.warehouses != localizingAddressStateData.warehouses) validate = true
             if (latestChooseAddressData.service_type != localizingAddressStateData.service_type) validate = true
             if (latestChooseAddressData.version != localizingAddressStateData.version) validate = true
-            if (latestChooseAddressData.tokonow_last_update != localizingAddressStateData.tokonow_last_update) validate = true
         }
         return validate
     }
@@ -153,7 +150,7 @@ object ChooseAddressUtils {
                 chooseAddressPref.setLocalCache(localData)
             }
         } else {
-            chooseAddressPref.setLocalCache(localData)
+            chooseAddressPref.setLocalCache(localData.copy(tokonow_last_update = lastUpdate))
         }
     }
 
@@ -259,12 +256,6 @@ object ChooseAddressUtils {
             isGpsOn = isLocationEnabled(it) && isGpsOn
         }
         return isGpsOn
-    }
-
-
-    fun isRefreshTokonowRollenceActive() : Boolean {
-        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.LCA_REFRESH, "")
-        return rollenceValue == RollenceKey.LCA_REFRESH
     }
 
     @JvmStatic

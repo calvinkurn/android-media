@@ -7,8 +7,8 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
+import com.tokopedia.recommendation_widget_common.domain.query.ProductRecommendationSingleQuery
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationUseCaseRequest
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.toRecommendationWidget
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -26,7 +26,7 @@ constructor(private val context: Context, private val graphqlRepository: Graphql
         val queryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(inputParameter.queryParam) ?: inputParameter.queryParam
         graphqlUseCase.setTypeClass(SingleProductRecommendationEntity::class.java)
         graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
-        graphqlUseCase.setGraphqlQuery(GetRecommendationUseCaseRequest.singleQuery)
+        graphqlUseCase.setGraphqlQuery(ProductRecommendationSingleQuery())
         return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.toRecommendationWidget()
     }
 }

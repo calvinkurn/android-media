@@ -1,5 +1,5 @@
-mutation user_profile_completion_validate($phone: String!){
-  userProfileValidate(phone: $phone){
+mutation user_profile_completion_validate($phone: String!, $validateToken: String){
+  userProfileValidate(phone: $phone, validateToken: $validateToken){
     isValid
     message
   }

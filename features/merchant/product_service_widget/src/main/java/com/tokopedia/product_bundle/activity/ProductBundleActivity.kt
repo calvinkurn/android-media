@@ -1,14 +1,12 @@
 package com.tokopedia.product_bundle.activity
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.oldproductbundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.bottomsheet.ProductBundleBottomSheet
 import com.tokopedia.product_bundle.common.data.mapper.ProductBundleApplinkMapper
 import com.tokopedia.product_bundle.common.data.mapper.ViewType.BOTTOMSHEET
@@ -16,19 +14,17 @@ import com.tokopedia.product_bundle.common.data.mapper.ViewType.PAGE
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.newInstance
 import com.tokopedia.product_service_widget.R
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class ProductBundleActivity : BaseSimpleActivity() {
 
-    private var entrypointFragment: EntrypointFragment = EntrypointFragment()
+    private var _entrypointFragment: EntrypointFragment = EntrypointFragment()
+    val entrypointFragment get() = _entrypointFragment
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
 
     override fun getLayoutRes() = R.layout.activity_product_bundle
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        checkRemoteConfig()
         setOrientation()
 
         intent?.data?.let { data ->
@@ -40,7 +36,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun getNewFragment(): Fragment = entrypointFragment
+    override fun getNewFragment(): Fragment = _entrypointFragment
 
     private fun directToBundleSelectionBottomSheet(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +56,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
         val source = ProductBundleApplinkMapper.getPageSourceFromUri(data)
         val warehouseId = ProductBundleApplinkMapper.getWarehouseIdFromUri(data)
 
-        entrypointFragment = newInstance(
+        _entrypointFragment = newInstance(
             bundleId = bundleId,
             selectedProductsId = ArrayList(selectedProductIds),
             source = source,
@@ -72,25 +68,10 @@ class ProductBundleActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
     }
 
-    private fun checkRemoteConfig() {
-        if (getRemoteConfigEnableOldBundleSelectionPage()) {
-            val newIntent = Intent(this, ProductBundleActivity::class.java)
-            newIntent.data = intent.data
-            startActivity(newIntent)
-            finish()
-        }
-    }
-
-    private fun getRemoteConfigEnableOldBundleSelectionPage(): Boolean {
-        val remoteConfig = FirebaseRemoteConfigImpl(this)
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_OLD_BUNDLE_SELECTION_PAGE, false)
-    }
-
     @SuppressLint("SourceLockedOrientationActivity")
     private fun setOrientation() {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
-
 }

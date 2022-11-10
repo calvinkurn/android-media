@@ -3,8 +3,9 @@ package com.tokopedia.play.broadcaster.util.logger
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
-import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import javax.inject.Inject
 
 
@@ -18,19 +19,23 @@ class PlayLoggerImpl @Inject constructor(
     companion object {
         const val LIMIT_LOG = 20
         private const val TAG_SCALYR = "PLAY_BROADCASTER"
+        private const val TAG_PLAY_BROADCASTER_MONITORING = "PLAY_BROADCASTER_MONITORING"
     }
 
+    /***
+     * Send logs to PLAY_BROADCASTER
+     */
     private fun sendLog(messages: Map<String, String>) {
         ServerLogger.log(Priority.P2, TAG_SCALYR, messages)
     }
 
-    override fun logChannelStatus(channelStatus: PlayChannelStatusType) {
+    override fun logChannelStatus(channelStatus: ChannelStatus) {
         collector.collect(
             Pair("channel", channelStatus.value)
         )
     }
 
-    override fun logPusherState(pusherState: PlayLivePusherMediatorState) {
+    override fun logPusherState(pusherState: PlayBroadcasterState) {
         collector.collect(
             Pair("pusher", pusherState.tag)
         )
@@ -52,5 +57,23 @@ class PlayLoggerImpl @Inject constructor(
             )
             collector.getAll().removeAll(it)
         }
+    }
+
+    /***
+     * Send logs to PLAY_BROADCASTER_MONITORING
+     */
+    override fun sendBroadcasterLog(metric: PlayBroadcasterMetric) {
+        val metrics = mapOf(
+            "videoBitrate" to "${metric.videoBitrate}",
+            "audioBitrate" to "${metric.audioBitrate}",
+            "resolution" to metric.resolution,
+            "bandwidth" to "${metric.bandwidth}",
+            "fps" to "${metric.fps}",
+            "traffic" to "${metric.traffic}",
+            "videoBufferTimestamp" to "${metric.videoBufferTimestamp}",
+            "channelID" to metric.channelId,
+            "authorID" to metric.authorId,
+        )
+        ServerLogger.log(Priority.P2, TAG_PLAY_BROADCASTER_MONITORING, metrics)
     }
 }

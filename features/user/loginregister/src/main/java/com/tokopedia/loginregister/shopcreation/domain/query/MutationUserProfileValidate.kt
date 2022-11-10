@@ -9,10 +9,11 @@ object MutationUserProfileValidate {
 
     private const val phone = "\$phone"
     private const val email = "\$email"
+    private const val validateToken = "\$validateToken"
 
     fun getQuery(): String = """
-        mutation userProfileValidate($phone: String, $email: String) {
-            userProfileValidate(phone: $phone, email: $email) {
+        mutation userProfileValidate($phone: String, $email: String, $validateToken: String) {
+            userProfileValidate(phone: $phone, email: $email, validateToken: $validateToken) {
                 isValid,
                 message
             }

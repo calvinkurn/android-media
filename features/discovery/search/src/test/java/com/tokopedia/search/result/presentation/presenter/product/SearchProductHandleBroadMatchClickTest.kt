@@ -5,11 +5,16 @@ import com.tokopedia.discovery.common.constants.SearchConstant.TopAdsComponent.B
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
-import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import io.mockk.*
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
+import com.tokopedia.search.result.product.broadmatch.DynamicCarouselOption
+import com.tokopedia.search.result.product.broadmatch.DynamicCarouselProduct
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
@@ -20,7 +25,6 @@ private const val dealsCarouselWithCardButton = "searchproduct/inspirationcarous
 internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
-    private val className = "SearchClassName"
 
     @Test
     fun `Click broad match item`() {
@@ -36,7 +40,6 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
 
     private fun `Given View already load data with broad match`(searchProductModel: SearchProductModel) {
         `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given class name`()
         `Given view already load data`()
     }
 
@@ -44,10 +47,6 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
         every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
-    }
-
-    private fun `Given class name`() {
-        every { productListView.className } returns className
     }
 
     private fun `Given view already load data`() {
@@ -70,8 +69,8 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
 
     private fun `Then verify view interaction for click broad match`(broadMatchItemData: BroadMatchItemDataView) {
         verify {
-            productListView.trackEventClickBroadMatchItem(broadMatchItemData)
-            productListView.redirectionStartActivity(broadMatchItemData.applink, broadMatchItemData.url)
+            broadMatchView.trackEventClickBroadMatchItem(broadMatchItemData)
+            broadMatchView.openLink(broadMatchItemData.applink, broadMatchItemData.url)
         }
     }
 
@@ -90,15 +89,13 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
 
     private fun `Then verify broad match top ads clicked`(broadMatchItemData: BroadMatchItemDataView) {
         verify {
-            productListView.className
-
             topAdsUrlHitter.hitClickUrl(
-                    className,
-                    broadMatchItemData.topAdsClickUrl,
-                    broadMatchItemData.id,
-                    broadMatchItemData.name,
-                    broadMatchItemData.imageUrl,
-                    BROAD_MATCH_ADS
+                className,
+                broadMatchItemData.topAdsClickUrl,
+                broadMatchItemData.id,
+                broadMatchItemData.name,
+                broadMatchItemData.imageUrl,
+                BROAD_MATCH_ADS
             )
         }
     }
@@ -127,9 +124,9 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
 
     private fun `Then verify view interaction for click see more broad match`(broadMatchDataView: BroadMatchDataView) {
         verify {
-            productListView.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
-            productListView.modifyApplinkToSearchResult(broadMatchDataView.applink)
-            productListView.redirectionStartActivity(any(), broadMatchDataView.url)
+            broadMatchView.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
+            applinkModifier.modifyApplink(broadMatchDataView.applink)
+            broadMatchView.openLink(any(), broadMatchDataView.url)
         }
     }
 
@@ -148,16 +145,16 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
     private fun `Then verify view interaction for click dynamic product carousel`(dynamicProductCarousel: BroadMatchItemDataView) {
         verify {
             val carouselProductType = dynamicProductCarousel.carouselProductType as DynamicCarouselProduct
-            productListView.trackDynamicProductCarouselClick(
+            inspirationCarouselDynamicProductView.trackDynamicProductCarouselClick(
                 dynamicProductCarousel,
                 carouselProductType.type,
                 carouselProductType.inspirationCarouselProduct,
             )
-            productListView.redirectionStartActivity(dynamicProductCarousel.applink, dynamicProductCarousel.url)
+            broadMatchView.openLink(dynamicProductCarousel.applink, dynamicProductCarousel.url)
         }
 
         verify(exactly = 0) {
-            productListView.trackEventClickBroadMatchItem(any())
+            broadMatchView.trackEventClickBroadMatchItem(any())
         }
     }
 
@@ -176,55 +173,17 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
     private fun `Then verify view interaction for click see more dynamic product carousel`(dynamicProductCarousel: BroadMatchDataView) {
         verify {
             val carouselOptionType = dynamicProductCarousel.carouselOptionType as DynamicCarouselOption
-            productListView.trackEventClickSeeMoreDynamicProductCarousel(
+            inspirationCarouselDynamicProductView.trackEventClickSeeMoreDynamicProductCarousel(
                 dynamicProductCarousel,
                 carouselOptionType.option.inspirationCarouselType,
                 carouselOptionType.option,
             )
-            productListView.redirectionStartActivity(any(), dynamicProductCarousel.url)
+            applinkModifier.modifyApplink(dynamicProductCarousel.applink)
+            broadMatchView.openLink(any(), dynamicProductCarousel.url)
         }
 
         verify(exactly = 0) {
-            productListView.modifyApplinkToSearchResult(any())
-            productListView.trackEventClickSeeMoreBroadMatch(any())
-        }
-    }
-
-    @Test
-    fun `impression broad match`() {
-        val searchProductModel = broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
-        `Given View already load data with broad match`(searchProductModel)
-
-        val broadMatchDataView = findBroadMatchDataViewFromVisitableList()
-        `When broad match impressed`(broadMatchDataView)
-
-        `Then verify impression broad match`(broadMatchDataView)
-    }
-
-    private fun `When broad match impressed`(broadMatchDataView: BroadMatchDataView) {
-        productListPresenter.onBroadMatchImpressed(broadMatchDataView)
-    }
-
-    private fun `Then verify impression broad match`(broadMatchDataView: BroadMatchDataView) {
-        verify {
-            productListView.trackEventImpressionBroadMatch(broadMatchDataView)
-        }
-    }
-
-    @Test
-    fun `impression dynamic carousel as broad match`() {
-        val searchProductModel = dynamicProductCarousel.jsonToObject<SearchProductModel>()
-        `Given View already load data with broad match`(searchProductModel)
-
-        val broadMatchDataView = findBroadMatchDataViewFromVisitableList()
-        `When broad match impressed`(broadMatchDataView)
-
-        `Then verify broad match impression is not called`()
-    }
-
-    private fun `Then verify broad match impression is not called`() {
-        verify(exactly = 0) {
-            productListView.trackEventImpressionBroadMatch(any())
+            broadMatchView.trackEventClickSeeMoreBroadMatch(any())
         }
     }
 
@@ -243,20 +202,22 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
         productListPresenter.onBroadMatchViewAllCardClicked(broadMatchDataView)
     }
 
-    private fun `Then verify view interaction for click view all card dynamic carousel`(dynamicProductCarousel: BroadMatchDataView) {
+    private fun `Then verify view interaction for click view all card dynamic carousel`(
+        dynamicProductCarousel: BroadMatchDataView,
+    ) {
         verify {
             val carouselOptionType = dynamicProductCarousel.carouselOptionType as DynamicCarouselOption
-            productListView.trackEventClickSeeMoreDynamicProductCarousel(
+            inspirationCarouselDynamicProductView.trackEventClickSeeMoreDynamicProductCarousel(
                 dynamicProductCarousel,
                 carouselOptionType.option.inspirationCarouselType,
                 carouselOptionType.option,
             )
-            productListView.modifyApplinkToSearchResult(any())
-            productListView.redirectionStartActivity(any(), null)
+            applinkModifier.modifyApplink(any())
+            broadMatchView.openLink(any(), dynamicProductCarousel.url)
         }
 
         verify(exactly = 0) {
-            productListView.trackEventClickSeeMoreBroadMatch(any())
+            broadMatchView.trackEventClickSeeMoreBroadMatch(any())
         }
     }
 }

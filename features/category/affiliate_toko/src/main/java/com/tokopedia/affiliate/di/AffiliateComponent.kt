@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
+import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePortfolioSocialMediaBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
@@ -15,10 +16,13 @@ import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
 import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetInfo
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliatePromoSearchFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromotionHistoryFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateTransactionDetailFragment
 import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
@@ -68,5 +72,13 @@ interface AffiliateComponent {
     fun injectWithdrawalInfoFragment(affiliateTransactionDetailFragment: AffiliateTransactionDetailFragment)
 
     fun injectDateFilterBottomSheet(affiliateDateFilterBottomSheet: AffiliateBottomDatePicker)
+
+    fun injectHomeBottomSheetCommunication(affiliateBottomSheetInfo: AffiliateBottomSheetInfo)
+
+    fun injectPromoCopyPasteInfoBottomSheet(affiliateBottomSheetPromoCopyPasteInfo: AffiliateBottomSheetPromoCopyPasteInfo)
+
+    fun injectPromoSearchActivity(affiliatePromoSearchActivity: AffiliatePromoSearchActivity)
+
+    fun injectPromoSearchFragment(affiliatePromoSearchFragment: AffiliatePromoSearchFragment)
 
 }

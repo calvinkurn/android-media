@@ -23,7 +23,7 @@ class CpmModelMapper @Inject constructor(@ApplicationContext private val context
                     applinks = "tokopedia://shop/${userSession.shopId}"
                     name = userSession.shopName
                     promotedText = context.getString(R.string.topads_headline_promoted_by)
-                    badges = listOf(Badge(SHOP_BADGE))
+                    badges = mutableListOf(Badge(SHOP_BADGE))
                     cpmShop = mapCpmShop(response, promotionalMessage)
                     cpmImage = CpmImage().apply { fullEcs = userSession.profilePicture }
                 }
@@ -39,7 +39,7 @@ class CpmModelMapper @Inject constructor(@ApplicationContext private val context
             isPowerMerchant = userSession.isPowerMerchantIdle
             isOfficial = userSession.isShopOfficialStore
             imageShop = ImageShop().apply {
-                setsEcs(userSession.profilePicture)
+                sEcs = userSession.profilePicture
             }
             if(response.isNotEmpty()){
                 val productsList = ArrayList<Product>()
@@ -65,7 +65,7 @@ class CpmModelMapper @Inject constructor(@ApplicationContext private val context
                 name = it.productName
                 priceFormat = it.productPrice
                 applinks = it.productUri
-                countReviewFormat = it.productReviewCount.toString()
+                countReviewFormat = it.productReviewCount
                 productRating = it.productRating
                 imageProduct = ImageProduct().apply {
                     id = it.productID

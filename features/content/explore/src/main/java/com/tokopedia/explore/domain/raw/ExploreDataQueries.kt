@@ -47,7 +47,7 @@ object ExploreDataQueries {
 }
 """
 
-    const val DEFAULT_CATEGORY_ID = 0
+    const val DEFAULT_CATEGORY_ID : Long = 0
     const val PARAM_CATEGORY_ID = "idcategory"
     const val PARAM_CURSOR = "cursor"
     const val PARAM_SEARCH = "search"

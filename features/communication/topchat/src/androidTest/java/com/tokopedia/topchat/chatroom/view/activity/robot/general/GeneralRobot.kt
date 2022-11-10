@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
 
@@ -23,7 +23,7 @@ object GeneralRobot {
     }
 
     fun doScrollChatToPosition(position: Int) {
-        onView(ViewMatchers.withId(R.id.recycler_view_chatroom)).perform(
+        onView(withId(R.id.recycler_view_chatroom)).perform(
             RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
         )
     }

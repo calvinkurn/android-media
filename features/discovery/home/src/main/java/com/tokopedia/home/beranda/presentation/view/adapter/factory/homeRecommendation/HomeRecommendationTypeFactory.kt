@@ -11,4 +11,5 @@ interface HomeRecommendationTypeFactory: SmartTypeFactory{
     fun type(dataModel: HomeRecommendationItemDataModel): Int
     fun type(dataModel: BannerRecommendationDataModel): Int
     fun type(dataModel: HomeRecommendationBannerTopAdsDataModel): Int
+    fun type(dataModel: HomeRecommendationHeadlineTopAdsDataModel): Int
 }

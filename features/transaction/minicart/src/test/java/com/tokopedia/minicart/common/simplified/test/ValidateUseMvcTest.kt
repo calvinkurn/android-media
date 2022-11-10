@@ -40,7 +40,7 @@ class ValidateUseMvcTest {
         val promoId = "promoId"
         val promoCode = "promoCode"
         val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAvailableAndUnavailable()
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
         }

@@ -3,6 +3,7 @@ package com.tokopedia.search.utils
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.search.analytics.SearchTrackingConstant
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import timber.log.Timber
@@ -71,3 +72,5 @@ internal fun LocalCacheModel.toSearchParams(): Map<String, String> {
 
 fun List<LabelGroupDataView>?.getFormattedPositionName(): String =
     this?.joinToString(transform = LabelGroupDataView::getPositionTitle) ?: ""
+
+internal fun String.orNone() = this.ifEmpty { SearchTrackingConstant.NONE }

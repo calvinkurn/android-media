@@ -16,15 +16,12 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
-import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
-import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.DailyBudgetRecommendationModel
 import com.tokopedia.topads.dashboard.data.model.DataBudget
-import com.tokopedia.topads.dashboard.data.model.TopadsGetDailyBudgetRecommendation
+import com.tokopedia.topads.dashboard.data.model.TopadsGetDailyBudgetRecommendationV2
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsDailyBudgetRecomAdapter
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment.Companion.BUDGET_RECOM
@@ -50,7 +47,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     private var dailyBudgetDesc: Typography? = null
     private var rvDailyBudget: RecyclerView? = null
 
-    private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
+    private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendationV2? = null
     private lateinit var adapter: TopadsDailyBudgetRecomAdapter
     private var currentPosition = 0
 
@@ -141,7 +138,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
         setAdapterData(dailyBudgetRecommendationModel.topadsGetDailyBudgetRecommendation)
     }
 
-    private fun setAdapterData(topadsGetDailyBudgetRecommendation: TopadsGetDailyBudgetRecommendation) {
+    private fun setAdapterData(topadsGetDailyBudgetRecommendation: TopadsGetDailyBudgetRecommendationV2) {
         adapter.items.clear()
         topadsGetDailyBudgetRecommendation.data.forEach {
             adapter.items.add(it)

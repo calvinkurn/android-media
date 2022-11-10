@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.recharge_component.model.WidgetSource
@@ -63,9 +64,9 @@ interface HomeCategoryListener {
 
     fun onDynamicChannelClicked(applink: String)
 
-    fun onRetryMembership()
+    fun onRetryMembership(position: Int, headerTitle: String)
 
-    fun onRetryWalletApp()
+    fun onRetryWalletApp(position: Int, headerTitle: String)
 
     fun onLegoBannerClicked(actionLink: String, trackingAttribution: String)
 
@@ -134,4 +135,8 @@ interface HomeCategoryListener {
     fun onTokonowViewCaptured(view: View?, parentPosition: Int)
 
     fun dismissTokonowCoachmark(parentPosition: Int)
+
+    fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel)
+
+    fun refreshBalanceWidget()
 }

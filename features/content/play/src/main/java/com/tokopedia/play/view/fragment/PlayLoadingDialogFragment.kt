@@ -22,8 +22,15 @@ class PlayLoadingDialogFragment @Inject constructor() : DialogFragment() {
     companion object {
         private const val TAG = "PlayLoadingDialogFragment"
 
-        fun get(fragmentManager: FragmentManager, classLoader: ClassLoader): PlayLoadingDialogFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayLoadingDialogFragment
+        fun get(fragmentManager: FragmentManager): PlayLoadingDialogFragment? {
+            return fragmentManager.findFragmentByTag(TAG) as? PlayLoadingDialogFragment
+        }
+
+        fun getOrCreate(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader
+        ): PlayLoadingDialogFragment {
+            val oldInstance = get(fragmentManager)
             return if (oldInstance != null) oldInstance
             else {
                 val fragmentFactory = fragmentManager.fragmentFactory

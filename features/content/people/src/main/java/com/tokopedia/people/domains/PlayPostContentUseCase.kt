@@ -1,14 +1,64 @@
 package com.tokopedia.people.domains
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.people.model.UserPostModel
 import javax.inject.Inject
 
-const val PLAY_VIDEO_QUERY = """
-    query playGetContentSlot(${'$'}group: String, ${'$'}cursor: String, ${'$'}source_type: String, ${'$'}source_id: String) {
-                playGetContentSlot(req: {group:${'$'}group, cursor: ${'$'}cursor, source_type: ${'$'}source_type, source_id: \${'$'}source_id}) {
+/**
+ * Duplicate with: com.tokopedia.videoTabComponent.domain.usecase.GetPlayContentUseCase
+ */
+@GqlQuery(PlayPostContentUseCase.QUERY_NAME, PlayPostContentUseCase.QUERY)
+class PlayPostContentUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+) : GraphqlUseCase<UserPostModel>(graphqlRepository) {
+
+    init {
+        setGraphqlQuery(PlayPostContentUseCaseQuery())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(UserPostModel::class.java)
+    }
+
+    suspend fun executeOnBackground(
+        group: String,
+        cursor: String,
+        sourceType: String,
+        sourceId: String,
+    ): UserPostModel {
+        val request = mapOf(
+            KEY_GROUP to group,
+            KEY_CURSOR to cursor,
+            KEY_SOURCE_TYPE to sourceType,
+            KEY_SOURCE_ID to sourceId,
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
+    companion object {
+        private const val KEY_GROUP = "group"
+        private const val KEY_CURSOR = "cursor"
+        private const val KEY_SOURCE_TYPE = "source_type"
+        private const val KEY_SOURCE_ID = "source_id"
+
+        const val QUERY_NAME = "PlayPostContentUseCaseQuery"
+        const val QUERY = """
+            query playGetContentSlot(
+                ${"$$KEY_GROUP"}: String, 
+                ${"$$KEY_CURSOR"}: String, 
+                ${"$$KEY_SOURCE_TYPE"}: String, 
+                ${"$$KEY_SOURCE_ID"}: String
+            ) {
+                playGetContentSlot(req: {
+                    $KEY_GROUP: ${"$$KEY_GROUP"}, 
+                    $KEY_CURSOR: ${"$$KEY_CURSOR"}, 
+                    $KEY_SOURCE_TYPE: ${"$$KEY_SOURCE_TYPE"}, 
+                    $KEY_SOURCE_ID: ${"$$KEY_SOURCE_ID"}
+                }) {
                   data {
                     id
                     title
@@ -45,6 +95,10 @@ const val PLAY_VIDEO_QUERY = """
                             type
                           }
                         }
+                        partner {
+                          id
+                          name
+                        }
                         app_link
                         web_link
                         display_type
@@ -58,39 +112,7 @@ const val PLAY_VIDEO_QUERY = """
                     max_autoplay_in_cell
                   }
                 }
-                }
-                
-"""
-
-@GqlQuery("PlayVOD", PLAY_VIDEO_QUERY)
-class PlayPostContentUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
-
-    suspend fun getPlayPost(group: String, cursor: String, sourceType: String, sourceId: String): UserPostModel {
-        val request = GraphqlRequest(
-            PlayVOD.GQL_QUERY,
-            UserPostModel::class.java,
-            getRequestParams(group,cursor,sourceType,sourceId)
-        )
-
-        useCase.clearRequest()
-        useCase.addRequest(request)
-        val response = useCase.executeOnBackground()
-        return response.getData(UserPostModel::class.java)
-    }
-
-    private fun getRequestParams(group: String, cursor: String, sourceType: String, sourceId: String): MutableMap<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap[KEY_GROUP] = group
-        requestMap[KEY_CURSOR] = cursor
-        requestMap[KEY_SOURCE_TYPE] = sourceType
-        requestMap[KEY_SOURCE_ID] = sourceId
-        return requestMap
-    }
-
-    companion object {
-        const val KEY_GROUP = "group"
-        const val KEY_CURSOR = "cursor"
-        const val KEY_SOURCE_TYPE = "source_type"
-        const val KEY_SOURCE_ID = "source_id"
+            }
+        """
     }
 }

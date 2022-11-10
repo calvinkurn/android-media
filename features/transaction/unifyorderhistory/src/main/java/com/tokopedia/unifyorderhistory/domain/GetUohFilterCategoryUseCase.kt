@@ -34,6 +34,8 @@ class GetUohFilterCategoryUseCase  @Inject constructor(@ApplicationContext priva
                     categories {
                       value
                       label
+                      description
+                      category_group
                     }
                 }
             }

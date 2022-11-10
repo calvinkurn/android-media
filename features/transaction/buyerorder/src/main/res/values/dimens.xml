@@ -18,4 +18,13 @@
     <dimen name="deals_voucher_right_line_width">6dp</dimen>
     <dimen name="deals_voucher_divider_size">3dp</dimen>
     <dimen name="deals_voucher_qr_code_size">200dp</dimen>
+    <dimen name="deals_voucher_card_elevation_size">3dp</dimen>
+    <dimen name="deals_voucher_card_padding">10dp</dimen>
+    <dimen name="deals_voucher_quantity_margin">5dp</dimen>
+    <dimen name="deals_voucher_border_width">1dp</dimen>
+    <dimen name="deals_voucher_green_side_line_width">3dp</dimen>
+    <dimen name="deals_voucher_green_side_margin_horizontal">1dp</dimen>
+    <dimen name="deals_voucher_green_side_margin_top">1.5dp</dimen>
+    <dimen name="deals_voucher_green_side_margin_bottom">7dp</dimen>
+    <dimen name="deals_voucher_image_brand">60dp</dimen>
 </resources>

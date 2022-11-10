@@ -33,6 +33,8 @@ import com.tokopedia.sessioncommon.domain.usecase.RefreshShopBasicDataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusResponseDataModel
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -128,7 +130,7 @@ class TestMainNavViewModel {
     @Test
     fun `test when nav page launched from wishlist page then do not show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
+        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
@@ -142,6 +144,34 @@ class TestMainNavViewModel {
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
+
+        Assert.assertNull(backToHomeMenu)
+    }
+
+    @Test
+    fun `test when nav page launched from wishlist collection page then do not show back to home icon`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+            .answers {
+                HomeNavMenuDataModel(
+                    id = firstArg(),
+                    notifCount = secondArg(),
+                    sectionId = thirdArg()
+                )
+            }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+            .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
+
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource(pageSource)
+        Assert.assertEquals(pageSource, viewModel.getPageSource())
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
+        val backToHomeMenu =
+            visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME }
 
         Assert.assertNull(backToHomeMenu)
     }
@@ -1593,5 +1623,97 @@ class TestMainNavViewModel {
 
         Assert.assertEquals(1, favoriteShopListDataModel.favoriteShops.size)
         Assert.assertTrue(favoriteShopListDataModel.favoriteShops[0].fullWidth)
+    }
+
+    @Test
+    fun `given success when refresh tokopedia plus data then tokopedia plus should be in account header`() {
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        val getTokopediaPlusUseCase = mockk<TokopediaPlusUseCase>()
+        val tokopediaPlusResponseDataModel = TokopediaPlusResponseDataModel()
+        coEvery {
+            getTokopediaPlusUseCase.invoke(any())
+        } returns tokopediaPlusResponseDataModel
+
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+            profileDataModel = ProfileDataModel(
+                userName = "Joko",
+                userImage = "Tingkir"
+            ),
+            profileMembershipDataModel = ProfileMembershipDataModel(
+                badge = "kucing"
+            ),
+            profileSellerDataModel = ProfileSellerDataModel(
+                shopName = "binatang",
+                hasShop = true,
+                shopId = "1234"
+            ),
+            tokopediaPlusDataModel = TokopediaPlusDataModel(
+                tokopediaPlusError = MessageErrorException()
+            )
+        )
+
+        viewModel = createViewModel(
+            getProfileDataUseCase = getProfileDataUseCase,
+            getTokopediaPlusUseCase = getTokopediaPlusUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+        val visitableListBefore = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val accountHeaderBefore = visitableListBefore.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertNotNull(accountHeaderBefore.tokopediaPlusDataModel.tokopediaPlusError)
+
+        viewModel.refreshTokopediaPlusData()
+        val visitableListAfter = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val accountHeaderAfter = visitableListAfter.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertNull(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusError)
+        Assert.assertNotNull(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusParam)
+    }
+
+    @Test
+    fun `given failed when refresh tokopedia plus data then tokopedia plus error should be in account header`() {
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        val getTokopediaPlusUseCase = mockk<TokopediaPlusUseCase>()
+        val error = MessageErrorException("error")
+        coEvery {
+            getTokopediaPlusUseCase.invoke(any())
+        } throws error
+
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+            profileDataModel = ProfileDataModel(
+                userName = "Joko",
+                userImage = "Tingkir"
+            ),
+            profileMembershipDataModel = ProfileMembershipDataModel(
+                badge = "kucing"
+            ),
+            profileSellerDataModel = ProfileSellerDataModel(
+                shopName = "binatang",
+                hasShop = true,
+                shopId = "1234"
+            ),
+            tokopediaPlusDataModel = TokopediaPlusDataModel(
+                tokopediaPlusError = MessageErrorException()
+            )
+        )
+
+        viewModel = createViewModel(
+            getProfileDataUseCase = getProfileDataUseCase,
+            getTokopediaPlusUseCase = getTokopediaPlusUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+        val visitableListBefore = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val accountHeaderBefore = visitableListBefore.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertNotNull(accountHeaderBefore.tokopediaPlusDataModel.tokopediaPlusError)
+
+        viewModel.refreshTokopediaPlusData()
+        val visitableListAfter = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val accountHeaderAfter = visitableListAfter.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        Assert.assertNotNull(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusError)
+        Assert.assertTrue(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusError?.message == error.message)
     }
 }

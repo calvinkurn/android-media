@@ -13,12 +13,13 @@ class PostProcessingFilter {
     }
 
     fun checkPostProcessingFilter(
+        isPostProcessing: Boolean,
         searchParameter: Map<String, Any>,
         totalData: Int,
         callbackLoadData: (Map<String, Any>) -> Unit,
         handleEmptyState: () -> Unit,
     ) {
-        if (isPostProcessingFilter(searchParameter))
+        if (isPostProcessing || isPostProcessingFilter(searchParameter))
             handlePostProcessingFilter(
                 searchParameter,
                 totalData,
@@ -38,8 +39,9 @@ class PostProcessingFilter {
         consecutiveEmptyProductCount++
 
         val isNotEmpty = totalData > 0
+        val hasNextPage = getNextStartParam(searchParameter) < totalData
         val isBelowThreshold = consecutiveEmptyProductCount < LOAD_EMPTY_PRODUCT_THRESHOLD
-        val willLoadNextPage = isNotEmpty && isBelowThreshold
+        val willLoadNextPage = isNotEmpty && hasNextPage && isBelowThreshold
 
         if (willLoadNextPage)
             loadNextPage(searchParameter, callbackLoad)
@@ -67,6 +69,6 @@ class PostProcessingFilter {
     }
 
     companion object {
-        const val LOAD_EMPTY_PRODUCT_THRESHOLD = 2
+        const val LOAD_EMPTY_PRODUCT_THRESHOLD = 3
     }
 }

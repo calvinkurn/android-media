@@ -9,6 +9,7 @@ import com.tokopedia.developer_options.presentation.model.*
  */
 
 interface DeveloperOptionTypeFactory {
+    fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int
     fun type(uiModel: PdpDevUiModel): Int
     fun type(uiModel: AccessTokenUiModel): Int
     fun type(uiModel: SystemNonSystemAppsUiModel): Int
@@ -25,6 +26,8 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ViewTopAdsLogUiModel): Int
     fun type(uiModel: ApplinkLogOnNotificationUiModel): Int
     fun type(uiModel: ViewApplinkLogUiModel): Int
+    fun type(uiModel: JourneyLogOnNotificationUiModel): Int
+    fun type(uiModel: ViewJourneyLogUiModel): Int
     fun type(uiModel: FpmLogOnFileUiModel): Int
     fun type(uiModel: FpmLogOnNotificationUiModel): Int
     fun type(uiModel: ViewFpmLogUiModel): Int
@@ -51,4 +54,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ShowApplinkOnToastUiModel): Int
     fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int
     fun type(uiModel: TypographySwitchUiModel): Int
+    fun type(uiModel: ConvertResourceIdUiModel): Int
+    fun type(uiModel: ViewHanselPatchUiModel): Int
 }

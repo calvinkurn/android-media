@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -64,6 +63,7 @@ class GiveawayFormView : ConstraintLayout {
 
     private var mEligibleDurations = emptyList<Long>()
     private var mRemainingTimeInMillis: Long = Long.MAX_VALUE
+    private var mSelectedDurationIdx = -1
 
     private var mStep = Step.AddTitle
         set(value) {
@@ -96,11 +96,8 @@ class GiveawayFormView : ConstraintLayout {
         timePickerBinding.puTimer.stringData = durationsInMs.map { formatTime(it) }.toMutableList()
 
         if (durationsInMs.isEmpty()) return
-        val defaultIndex = durationsInMs.indexOf(
-            TimeUnit.MINUTES.toMillis(DEFAULT_ACTIVE_MINUTE)
-        ).coerceAtLeast(0)
 
-        timePickerBinding.puTimer.goToPosition(defaultIndex)
+        timePickerBinding.puTimer.goToPosition(getSelectedDurationIndex())
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -142,13 +139,23 @@ class GiveawayFormView : ConstraintLayout {
             mRemainingTimeInMillis = mListener?.getRemainingTimeInMillis() ?: Long.MAX_VALUE
             mStep = nextStep
         }
-        else mListener?.onDone(
-            this,
-            Data(
-                title = binding.viewGiveaway.getHeader().title,
-                durationInMs = mEligibleDurations[timePickerBinding.puTimer.activeIndex],
-            ),
-        )
+        else {
+            mSelectedDurationIdx = timePickerBinding.puTimer.activeIndex
+            mListener?.onDone(
+                this,
+                Data(
+                    title = binding.viewGiveaway.getHeader().title,
+                    durationInMs = mEligibleDurations.getOrNull(mSelectedDurationIdx) ?: DEFAULT_DURATION,
+                ),
+            )
+        }
+    }
+
+    private fun getSelectedDurationIndex(): Int {
+        return if(mSelectedDurationIdx != -1) mSelectedDurationIdx
+        else mEligibleDurations.indexOf(
+            TimeUnit.MINUTES.toMillis(DEFAULT_ACTIVE_MINUTE)
+        ).coerceAtLeast(0)
     }
 
     private fun setHeaderFocusDelayed() {
@@ -157,6 +164,12 @@ class GiveawayFormView : ConstraintLayout {
             if (binding.viewGiveaway.getHeader().isEditable) {
                 binding.viewGiveaway.getHeader().setFocus(true)
             }
+        }
+    }
+
+    private fun trimGiveawayTitle() {
+        binding.viewGiveaway.getHeader().apply {
+            title = title.trim()
         }
     }
 
@@ -170,6 +183,8 @@ class GiveawayFormView : ConstraintLayout {
                 binding.groupActionBar.show()
             }
             Step.SetDuration -> {
+                trimGiveawayTitle()
+
                 setEligibleDurations(mEligibleDurations.filter { it < mRemainingTimeInMillis })
                 binding.viewGiveaway.getHeader().isEditable = false
                 showDurationPicker(true)
@@ -266,6 +281,7 @@ class GiveawayFormView : ConstraintLayout {
 
     companion object {
         private const val SHOW_KEYBOARD_DELAY = 500L
+        private const val DEFAULT_DURATION = 180000L
 
         private const val CONTINUE_DISABLED_ALPHA = 0.5f
         private const val CONTINUE_ENABLED_ALPHA = 1f

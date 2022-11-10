@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class ReviewDetailViewModel @Inject constructor(
@@ -30,11 +29,9 @@ class ReviewDetailViewModel @Inject constructor(
     companion object {
         private const val STATE_FLOW_STOP_TIMEOUT_MILLIS = 5000L
 
-        const val SAVED_STATE_EXPANDED = "savedStateExpanded"
         const val SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET = "savedStateShowExpandedReviewDetailBottomSheet"
     }
 
-    private val _expanded = MutableStateFlow(false)
     private val _showExpandedReviewDetailBottomSheet = MutableStateFlow(false)
     private val _currentMediaItem = MutableStateFlow<MediaItemUiModel?>(null)
     private val _getDetailedReviewMediaResult = MutableStateFlow<ProductrevGetReviewMedia?>(null)
@@ -42,7 +39,7 @@ class ReviewDetailViewModel @Inject constructor(
     private val _overlayVisibility = MutableStateFlow(true)
 
     val currentReviewDetail: StateFlow<ReviewDetailUiModel?> = combine(
-        _expanded, _currentMediaItem, _getDetailedReviewMediaResult, ::mapCurrentReviewDetail
+        _currentMediaItem, _getDetailedReviewMediaResult, ::mapCurrentReviewDetail
     ).stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
@@ -56,14 +53,14 @@ class ReviewDetailViewModel @Inject constructor(
         initialValue = ReviewDetailBasicInfoUiState.Hidden
     )
     private val _supplementaryInfoUiState = combine(
-        _expanded, _orientationUiState, _overlayVisibility, _currentMediaItem, currentReviewDetail, ::mapSupplementaryUiState
+        _orientationUiState, _overlayVisibility, _currentMediaItem, currentReviewDetail, ::mapSupplementaryUiState
     ).stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
         initialValue = ReviewDetailSupplementaryUiState.Hidden
     )
     val reviewDetailFragmentUiState = combine(
-        _expanded, _basicInfoUiState, _supplementaryInfoUiState, ::mapReviewDetailFragmentUiState
+        _basicInfoUiState, _supplementaryInfoUiState, ::mapReviewDetailFragmentUiState
     ).stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
@@ -87,13 +84,12 @@ class ReviewDetailViewModel @Inject constructor(
     )
 
     private fun mapCurrentReviewDetail(
-        expanded: Boolean,
         currentMediaItem: MediaItemUiModel?,
         getDetailedReviewMediaResult: ProductrevGetReviewMedia?
     ): ReviewDetailUiModel? {
         return getDetailedReviewMediaResult?.let { resultData ->
             currentMediaItem?.let {
-                resultData.getReviewDetailWithID(it.feedbackId, expanded)
+                resultData.getReviewDetailWithID(it.feedbackId)
             }
         }
     }
@@ -118,7 +114,6 @@ class ReviewDetailViewModel @Inject constructor(
     }
 
     private fun mapSupplementaryUiState(
-        expanded: Boolean,
         orientationUiState: OrientationUiState,
         overlayVisibility: Boolean,
         currentMediaItem: MediaItemUiModel?,
@@ -128,13 +123,9 @@ class ReviewDetailViewModel @Inject constructor(
         return if (isInPortraitMode && overlayVisibility) {
             val showingLoading = currentMediaItem is LoadingStateItemUiModel
             if (!showingLoading) {
-                if (expanded) {
-                    currentReviewDetail?.supplementaryInfoUiModel?.let { supplementaryInfoUiModel ->
-                        ReviewDetailSupplementaryUiState.Showing(supplementaryInfoUiModel)
-                    } ?: ReviewDetailSupplementaryUiState.Hidden
-                } else {
-                    ReviewDetailSupplementaryUiState.Hidden
-                }
+                currentReviewDetail?.supplementaryInfoUiModel?.let { supplementaryInfoUiModel ->
+                    ReviewDetailSupplementaryUiState.Showing(supplementaryInfoUiModel)
+                } ?: ReviewDetailSupplementaryUiState.Hidden
             } else ReviewDetailSupplementaryUiState.Loading
         } else {
             ReviewDetailSupplementaryUiState.Hidden
@@ -142,7 +133,6 @@ class ReviewDetailViewModel @Inject constructor(
     }
 
     private fun mapReviewDetailFragmentUiState(
-        expanded: Boolean,
         basicInfoUiState: ReviewDetailBasicInfoUiState,
         supplementaryUiState: ReviewDetailSupplementaryUiState
     ): ReviewDetailFragmentUiState {
@@ -151,7 +141,7 @@ class ReviewDetailViewModel @Inject constructor(
         } else if (
             (basicInfoUiState is ReviewDetailBasicInfoUiState.Loading && supplementaryUiState is ReviewDetailSupplementaryUiState.Loading) ||
             (basicInfoUiState is ReviewDetailBasicInfoUiState.Showing && supplementaryUiState is ReviewDetailSupplementaryUiState.Showing) ||
-            (basicInfoUiState is ReviewDetailBasicInfoUiState.Showing && supplementaryUiState is ReviewDetailSupplementaryUiState.Hidden && !expanded)
+            (basicInfoUiState is ReviewDetailBasicInfoUiState.Showing && supplementaryUiState is ReviewDetailSupplementaryUiState.Hidden)
         ) {
             ReviewDetailFragmentUiState.Showing(basicInfoUiState, supplementaryUiState)
         } else {
@@ -172,8 +162,7 @@ class ReviewDetailViewModel @Inject constructor(
     }
 
     private fun ProductrevGetReviewMedia.getReviewDetailWithID(
-        feedbackId: String,
-        expanded: Boolean
+        feedbackId: String
     ): ReviewDetailUiModel? {
         return detail.reviewDetail.find { it.feedbackId == feedbackId }?.let {
             ReviewDetailUiModel(
@@ -187,13 +176,13 @@ class ReviewDetailViewModel @Inject constructor(
                     anonymous = it.isAnonymous,
                     profilePicture = it.user.image,
                     reviewerName = it.user.fullName,
+                    reviewerLabel = it.user.label,
                     reviewerStatsSummary = it.userStats.joinToString(separator = " • ") {
                         it.formatted
-                    }.let { if (it.isNotBlank()) " • $it" else it },
-                    expanded = expanded
+                    },
+                    variant = it.variantName,
                 ),
                 supplementaryInfoUiModel = ReviewDetailSupplementaryInfoUiModel(
-                    variant = it.variantName,
                     review = it.review,
                     complaint = it.badRatingReasonFmt
                 ),
@@ -202,10 +191,6 @@ class ReviewDetailViewModel @Inject constructor(
                 shopID = it.shopId
             )
         }
-    }
-
-    fun toggleExpand() {
-        _expanded.update { !it }
     }
 
     fun updateGetDetailedReviewMediaResult(response: ProductrevGetReviewMedia?) {
@@ -217,7 +202,6 @@ class ReviewDetailViewModel @Inject constructor(
     }
 
     fun saveState(outState: Bundle) {
-        outState.putBoolean(SAVED_STATE_EXPANDED, _expanded.value)
         outState.putBoolean(
             SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET,
             _showExpandedReviewDetailBottomSheet.value
@@ -225,9 +209,6 @@ class ReviewDetailViewModel @Inject constructor(
     }
 
     fun restoreSavedState(savedState: Bundle) {
-        _expanded.value = savedState.getSavedState(
-            SAVED_STATE_EXPANDED, _expanded.value
-        )!!
         _showExpandedReviewDetailBottomSheet.value = savedState.getSavedState(
             SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET,
             _showExpandedReviewDetailBottomSheet.value

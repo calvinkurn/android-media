@@ -16,6 +16,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESULT
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.showImmediately
 import timber.log.Timber
 
 /**
@@ -85,7 +86,10 @@ class AtcVariantActivity : BaseSimpleActivity() {
         observeData()
 
         sharedViewModel.setAtcBottomSheetParams(paramsData)
-        AtcVariantBottomSheet().show(supportFragmentManager, KEY_BS_VARIANT)
+
+        showImmediately(supportFragmentManager, KEY_BS_VARIANT) {
+            AtcVariantBottomSheet()
+        }
     }
 
     private fun observeData() {

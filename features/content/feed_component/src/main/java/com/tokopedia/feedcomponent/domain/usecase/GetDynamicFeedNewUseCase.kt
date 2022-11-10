@@ -314,9 +314,34 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           webLink
           appLink
         }
+        cta {
+          text
+          subtitle
+          color
+          colorGradient {
+          color
+          position
+          }
+        __typename
+        }
+        ribbonImageURL
+        campaign {
+            id
+            status
+            name
+            shortName
+            startTime
+            endTime
+            restrictions {
+            label
+            isActive
+            __typename
+          }
+          }
         title
         subTitle
         text
+        webLink
         appLink
         appLinkProductList
         webLinkProductList
@@ -332,6 +357,11 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           star
           price
           priceFmt
+          priceMasked
+          priceMaskedFmt
+          stockWording
+          stockSoldPercentage
+          cartable
           isDiscount
           discount
           discountFmt
@@ -410,6 +440,8 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
 
 private const val CURSOR: String = "cursor"
 private const val LIMIT = "limit"
+private const val SCREEN_NAME = "screenName"
+const val SCREEN_NAME_UPDATE_TAB = "update_tab"
 val DETAIL_ID = "sourceID"
 val SOURCE = "source"
 
@@ -426,10 +458,11 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
         setGraphqlQuery(GetFeedXHomeQuery.GQL_QUERY)
     }
 
-    fun setParams(cursor: String, limit: Int, detailId: String = "") {
+    fun setParams(cursor: String, limit: Int, detailId: String = "", screenName: String = "") {
         val queryMap = mutableMapOf(
                 CURSOR to cursor,
-                LIMIT to limit
+                LIMIT to limit,
+                SCREEN_NAME to screenName,
         )
         if (!TextUtils.isEmpty(detailId)) {
             queryMap[DETAIL_ID] = detailId
@@ -439,12 +472,17 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
         setRequestParams(map)
     }
 
-    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = ""):
+    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "", screenName: String = ""):
             DynamicFeedDomainModel {
-        this.setParams(cursor, limit, detailId)
+        this.setParams(cursor, limit, detailId, screenName)
         val dynamicFeedResponse = executeOnBackground()
         val shouldShowNewTopadsOnly = context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) }?:true
         return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
+    }
+    suspend fun executeForCDP(cursor: String = "", limit: Int = 5, detailId: String = ""):
+            FeedXData {
+        this.setParams(cursor, limit, detailId)
+        return executeOnBackground()
     }
 
 }

@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -34,12 +35,10 @@ import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getErrorMessage
-import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.review.feature.reading.data.LikeDislike
@@ -75,6 +74,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMedi
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -105,7 +105,6 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         const val GALLERY_ACTIVITY_CODE = 420
         const val REPORT_REVIEW_ACTIVITY_CODE = 421
         const val PRODUCT_SATISFACTION_RATE = "% pembeli puas belanja barang ini"
-        const val READING_SOURCE = "reading"
         fun createNewInstance(
             productId: String = "",
             shopId: String = "",
@@ -750,18 +749,22 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         )
     }
 
-    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        ReadReviewTracking.trackOnGoToCredibility(
-            feedbackId,
-            userId,
-            statistics,
-            viewModel.getProductId(),
-            viewModel.userId
-        )
-    }
-
-    override fun onUserNameClicked(userId: String) {
-        goToReviewCredibility(userId)
+    override fun onUserNameClicked(
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        label: String
+    ) {
+        if (goToReviewCredibility(userId)) {
+            ReadReviewTracking.trackOnGoToCredibility(
+                feedbackId,
+                userId,
+                statistics,
+                viewModel.getProductId(),
+                viewModel.userId,
+                label
+            )
+        }
     }
 
     protected fun showShopPageReviewHeader() {
@@ -776,7 +779,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         }
     }
 
-    private fun redirectToPDP(productId: String) {
+    open fun redirectToPDP(productId: String) {
         context?.let {
             val intent = RouteManager.getIntent(
                     context,
@@ -1142,18 +1145,18 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         return likeStatus == LikeDislike.LIKED
     }
 
-    private fun goToReviewCredibility(userId: String) {
-        RouteManager.route(
+    private fun goToReviewCredibility(userId: String): Boolean {
+        return RouteManager.route(
             context,
             Uri.parse(
                 UriUtil.buildUri(
                     ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
                     userId,
-                    READING_SOURCE
+                    ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING
                 )
             ).buildUpon()
                 .appendQueryParameter(
-                    ReviewCredibilityActivity.PARAM_PRODUCT_ID,
+                    ReviewApplinkConst.PARAM_PRODUCT_ID,
                     viewModel.getProductId()
                 ).build()
                 .toString()

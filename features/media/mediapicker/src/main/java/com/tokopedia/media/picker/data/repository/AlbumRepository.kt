@@ -14,8 +14,8 @@ open class AlbumRepository constructor(
     , LoaderDataSource by loaderDataSource {
 
     override fun execute(param: Unit): List<Album> {
-        val cursor = query( -1) ?: error("cannot find the query")
-        val albumMap = mutableMapOf<String, Album>()
+        val cursor = query(-1) ?: return emptyList()
+        val albumMap = mutableMapOf<Long, Album>()
 
         var recentPreviewUri: Uri? = null
 
@@ -35,13 +35,14 @@ open class AlbumRepository constructor(
                     }?: DEFAULT_ALBUM_NAME
                 }
 
-                val album = albumMap[bucketName]
+                val album = albumMap[bucketId]
 
                 if (album == null) {
-                    albumMap[bucketName] = Album(
+                    albumMap[bucketId] = Album(
                         bucketId,
                         bucketName,
-                        media.uri
+                        media.uri,
+                        1
                     )
                 }
 
@@ -61,26 +62,26 @@ open class AlbumRepository constructor(
     private fun List<Album>.addRecentAlbumAtFirst(
         firstMediaPreviewUri: Uri?
     ): List<Album> {
-        var recentMediaSize = 0
+        var recentMediaSize = 1
 
         return this.map {
             val totalInAlbum = it.count
             recentMediaSize += totalInAlbum
 
             it
-        }
-            .toMutableList()
-            .also {
-                val firstItemIndex = 0
+        }.toMutableList().also {
+            val firstItemIndex = 0
 
-                // add the recent album at the first of item
-                it.add(firstItemIndex, Album(
+            // add the recent album at the first of item
+            it.add(
+                firstItemIndex, Album(
                     id = RECENT_ALBUM_ID,
                     name = RECENT_ALBUM_NAME,
                     preview = firstMediaPreviewUri,
-                    count = recentMediaSize + 1
-                ))
-            }
+                    count = recentMediaSize
+                )
+            )
+        }
     }
 
     companion object {

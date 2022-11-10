@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="120dp"
         android:layout_height="104dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/bg_card_recharge_widget"
@@ -15,7 +15,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/categoryName"
-            android:layout_width="@dimen/dp_50"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
@@ -61,7 +61,7 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 app:typographyType="body_3"
-                android:lineSpacingExtra="@dimen/sp_6"
+                android:lineSpacingExtra="6sp"
                 android:visibility="gone"
                 tools:text="081234567890"
                 tools:visibility="visible"

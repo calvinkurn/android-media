@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,8 +38,8 @@ fun NestSearchBar(
     onSearchBarCleared: () -> Unit = {},
     onKeyboardSearchAction: (String) -> Unit
 ) {
-    val borderColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN200)
-    val searchIconColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+    val borderColor = NestTheme.colors.NN._200
+    val searchIconColor = NestTheme.colors.NN._500
 
     var text by remember { mutableStateOf("") }
 
@@ -78,7 +77,7 @@ fun NestSearchBar(
                     if (text.isEmpty()) {
                         NestTypography(
                             text = placeholderText,
-                            textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN600)
+                            textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._600)
                         )
                     }
 

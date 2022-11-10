@@ -13,6 +13,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/image_coupon_content_description"
         tools:src="@drawable/img_mvc_cashback_khusus" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -45,6 +46,7 @@
 
     <ImageView
         android:id="@+id/imgTips"
+        android:contentDescription="@string/image_coupon_quota_info_content_description"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"

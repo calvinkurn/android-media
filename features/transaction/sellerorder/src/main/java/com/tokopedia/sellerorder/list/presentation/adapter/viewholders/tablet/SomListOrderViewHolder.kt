@@ -3,9 +3,12 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders.tablet
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import com.tokopedia.unifycomponents.toPx
 
 class SomListOrderViewHolder(
         itemView: View,
@@ -14,7 +17,7 @@ class SomListOrderViewHolder(
 
     companion object {
         const val TOGGLE_OPEN = "toggle_open"
-        const val ANIMATION_DURATION = 300L
+        const val FADE_DURATION = 300L
     }
 
     private var fadeOutAnimation: ValueAnimator? = null
@@ -58,6 +61,12 @@ class SomListOrderViewHolder(
                 if (element.multiSelectEnabled) touchCheckBox(element)
                 else listener.onOrderClicked(element)
             }
+            binding?.cardSomOrder?.setMargin(
+                Int.ZERO,
+                if (element.orderPlusData != null) CARD_MARGIN_TOP_ORDER_PLUS.toPx() else CARD_MARGIN_TOP_ORDER_REGULAR.toPx(),
+                Int.ZERO,
+                Int.ZERO
+            )
         }
     }
 
@@ -71,7 +80,7 @@ class SomListOrderViewHolder(
 
     private fun View?.animateFade(start: Float, end: Float): ValueAnimator {
         return ValueAnimator.ofFloat(start, end).apply {
-            duration = ANIMATION_DURATION
+            duration = FADE_DURATION
             addUpdateListener { value ->
                 this@animateFade?.alpha = value.animatedValue as Float
             }
@@ -82,12 +91,12 @@ class SomListOrderViewHolder(
     private fun View.animateFadeOut() {
         if (fadeOutAnimation?.isRunning == true) return
         fadeInAnimation?.cancel()
-        fadeOutAnimation = animateFade(alpha, CARD_ALPHA_DISABLED)
+        fadeOutAnimation = animateFade(alpha, CARD_ALPHA_NOT_SELECTABLE)
     }
 
     private fun View.animateFadeIn() {
         if (fadeInAnimation?.isRunning == true) return
         fadeOutAnimation?.cancel()
-        fadeInAnimation = animateFade(alpha, CARD_ALPHA_ENABLED)
+        fadeInAnimation = animateFade(alpha, CARD_ALPHA_SELECTABLE)
     }
 }

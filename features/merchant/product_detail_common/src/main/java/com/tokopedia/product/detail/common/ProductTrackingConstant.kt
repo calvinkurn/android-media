@@ -152,6 +152,7 @@ object ProductTrackingConstant {
         const val CLICK_ANNOTATION_RECOM_CHIP = "click annotation chips"
         const val CLICK_SHARE_PDP = "click - share button"
         const val CLICK_READ_MORE = "click - baca selengkapnya"
+        const val CLICK_SPECIFICATION_READ_MORE = "click - selengkapnya on spesifikasi produk  - product detail bottomsheet"
         const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
@@ -299,6 +300,12 @@ object ProductTrackingConstant {
         const val ACTION_SEE_ALL = "click - lihat semua review gallery"
     }
 
+    object MostHelpfulReview {
+        const val TRACKER_ID_CLICK_REVIEWER_NAME = "33836"
+        const val ACTON_CLICK_REVIEWER_NAME = "click - reviewer name"
+        const val LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;label:%s;"
+    }
+
     object MerchantVoucher {
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
@@ -341,5 +348,7 @@ object ProductTrackingConstant {
     object TrackerId {
         const val TRACKER_ID_CLICK_THUMBNAIL = "31790"
         const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
+        const val TRACKER_ID_CLICK_SPECIFICATION = "36325"
+        const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
+import android.accounts.NetworkErrorException
 import android.content.Context
 import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -73,7 +74,6 @@ fun createHomeViewModel(
         homeSalamRecommendationUseCase: HomeSalamRecommendationUseCase = mockk(relaxed = true),
         homeSearchUseCase: HomeSearchUseCase = mockk(relaxed = true),
         homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
-        homeBeautyFestUseCase: HomeBeautyFestUseCase = mockk(relaxed = true),
         getCMHomeWidgetDataUseCase : GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
         deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true),
         deletePayLaterWidgetUseCase: ClosePayLaterWidgetUseCase = mockk(relaxed = true),
@@ -96,7 +96,6 @@ fun createHomeViewModel(
             homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
             homeSearchUseCase = Lazy { homeSearchUseCase },
             homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
-            homeBeautyFestUseCase = Lazy { homeBeautyFestUseCase },
             getCMHomeWidgetDataUseCase = Lazy{ getCMHomeWidgetDataUseCase },
             deleteCMHomeWidgetUseCase = Lazy{ deleteCMHomeWidgetUseCase },
             deletePayLaterWidgetUseCase = Lazy {deletePayLaterWidgetUseCase  },
@@ -292,7 +291,7 @@ fun HomeRechargeBuWidgetUseCase.givenOnGetRechargeBuWidgetFromHolderError() {
 }
 
 fun HomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(homeHeaderDataModel: HomeHeaderDataModel) {
-    coEvery { onGetBalanceWidgetData(any()) } returns homeHeaderDataModel
+    coEvery { onGetBalanceWidgetData() } returns homeHeaderDataModel
 }
 
 fun HomeSearchUseCase.givenSearchPlaceHolderReturn(isFirstInstall: Boolean) {
@@ -302,11 +301,19 @@ fun HomeSearchUseCase.givenSearchPlaceHolderReturn(isFirstInstall: Boolean) {
 }
 
 fun HomeBalanceWidgetUseCase.givenGetTokopointDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
-    coEvery { onGetTokopointData(any()) } returns homeHeaderDataModel
+    coEvery { onGetTokopointData(any(), any(), any()) } returns homeHeaderDataModel
+}
+
+fun HomeBalanceWidgetUseCase.givenGetWalletDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
+    coEvery { onGetWalletAppData(any(), any(), any()) } returns homeHeaderDataModel
 }
 
 fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
-    coEvery { onGetWalletAppData(any()) } returns homeHeaderDataModel
+    coEvery { onGetBalanceWidgetData() } returns homeHeaderDataModel
+}
+
+fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetFailed() {
+    coEvery { onGetBalanceWidgetData() } throws NetworkErrorException()
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel, newHomeDynamicChannelModel: HomeDynamicChannelModel) {
@@ -363,24 +370,6 @@ fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
     tabName: String
 ) {
     coEvery { getBusinessUnitData(tabId, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
-}
-
-fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(
-    data: HomeDynamicChannelModel
-) {
-    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_TRUE
-}
-
-fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnFalse(
-    data: HomeDynamicChannelModel
-) {
-    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_FALSE
-}
-
-fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnNotSet(
-    data: HomeDynamicChannelModel
-) {
-    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_NOT_SET
 }
 
 fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){

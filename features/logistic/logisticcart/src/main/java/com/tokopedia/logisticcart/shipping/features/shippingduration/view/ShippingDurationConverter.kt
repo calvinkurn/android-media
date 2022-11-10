@@ -61,7 +61,6 @@ class ShippingDurationConverter @Inject constructor() {
     private fun convertShippingDuration(ratesDetailData: RatesDetailData): List<ShippingDurationUiModel> {
         val serviceDataList = ratesDetailData.services
         val ratesId = ratesDetailData.ratesId
-        val isPromoStackingApplied = isPromoStackingApplied(ratesDetailData)
         // Check if has blackbox info
         var blackboxInfo = ""
         if (ratesDetailData.info != null && ratesDetailData.info.blackboxInfo != null &&
@@ -76,6 +75,7 @@ class ShippingDurationConverter @Inject constructor() {
             shippingDurationUiModel.etaErrorCode = serviceData.texts.errorCode
             val shippingCourierUiModels = convertToShippingCourierViewModel(shippingDurationUiModel,
                     serviceData.products, ratesId, blackboxInfo, convertToPreOrderModel(ratesDetailData.preOrder))
+            shippingDurationUiModel.serviceData.isUiRatesHidden = shippingDurationUiModel.serviceData.isUiRatesHidden || (shippingDurationUiModel.serviceData.selectedShipperProductId == 0 && shippingCourierUiModels.all { it.productData.isUiRatesHidden })
             shippingDurationUiModel.shippingCourierViewModelList = shippingCourierUiModels
             if (shippingCourierUiModels.isNotEmpty()) {
                 shippingDurationUiModels.add(shippingDurationUiModel)
@@ -146,7 +146,7 @@ class ShippingDurationConverter @Inject constructor() {
         shippingCourierUiModel.preOrderModel = preOrderModel
         shippingCourierUiModels.add(shippingCourierUiModel)
     }
-    
+
     private fun convertToPromoModel(promo: PromoStacking?, showPromoBadge: Boolean): LogisticPromoUiModel? {
         if (promo == null || promo.isPromo != 1) return null
         val applied = promo.isApplied == 1
@@ -159,7 +159,11 @@ class ShippingDurationConverter @Inject constructor() {
                 promo.promoTncHtml, applied, promoBadge, promo.discontedRate,
                 promo.shippingRate, promo.benefitAmount, promo.isDisabled, promo.isHideShipperName,
                 promo.cod, promo.eta, promo.texts.bottomSheet, promo.texts.chosenCourier,
-                promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription, gson.toJson(promo.freeShippingMetadata))
+                promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription,
+                promo.texts.promoMessage, promo.texts.titlePromoMessage,
+                gson.toJson(promo.freeShippingMetadata), promo.freeShippingMetadata.benefitClass, promo.freeShippingMetadata.shippingSubsidy,
+                promo.boCampaignId
+        )
     }
 
     private fun convertToPreOrderModel(preOrder: PreOrder?): PreOrderModel? {
@@ -168,9 +172,5 @@ class ShippingDurationConverter @Inject constructor() {
                 preOrder.label,
                 preOrder.display
         )
-    }
-
-    private fun isPromoStackingApplied(ratesDetailData: RatesDetailData): Boolean {
-        return if (ratesDetailData.promoStacking == null) false else ratesDetailData.promoStacking.isApplied == 1
     }
 }

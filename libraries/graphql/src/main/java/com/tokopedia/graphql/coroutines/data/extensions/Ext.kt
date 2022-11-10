@@ -3,6 +3,8 @@ package com.tokopedia.graphql.coroutines.data.extensions
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GqlParam
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.util.LoggingUtils
@@ -13,7 +15,8 @@ import kotlinx.coroutines.flow.flow
 @Suppress("UNCHECKED_CAST")
 suspend inline fun <P, reified R> GraphqlRepository.request(
     query: String,
-    params: P
+    params: P,
+    cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
 ): R {
     val variables = when (params) {
         is Map<*, *> -> params as Map<String, Any>
@@ -25,7 +28,7 @@ suspend inline fun <P, reified R> GraphqlRepository.request(
 
     }
     val request = GraphqlRequest(query, R::class.java, variables)
-    val response = response(listOf(request))
+    val response = response(listOf(request), cacheStrategy)
 
     return response.getSuccessData()
 }
@@ -33,7 +36,8 @@ suspend inline fun <P, reified R> GraphqlRepository.request(
 @Suppress("UNCHECKED_CAST")
 suspend inline fun <P, reified R> GraphqlRepository.request(
     query: GqlQueryInterface,
-    params: P
+    params: P,
+    cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
 ): R {
     val variables = when (params) {
         is Map<*, *> -> params as Map<String, Any>
@@ -45,7 +49,7 @@ suspend inline fun <P, reified R> GraphqlRepository.request(
 
     }
     val request = GraphqlRequest(query, R::class.java, variables)
-    val response = response(listOf(request))
+    val response = response(listOf(request), cacheStrategy)
 
     return response.getSuccessData()
 }

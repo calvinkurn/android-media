@@ -31,6 +31,7 @@ import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
+import com.tokopedia.shopdiscount.utils.layoutmanager.NonPredictiveLinearLayoutManager
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -387,9 +388,14 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     }
 
     override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerView
+        return if (activity == null) {
+            binding?.recyclerView
+        } else {
+            binding?.recyclerView?.apply {
+                layoutManager = NonPredictiveLinearLayoutManager(requireActivity())
+            }
+        }
     }
-
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
         return null
     }

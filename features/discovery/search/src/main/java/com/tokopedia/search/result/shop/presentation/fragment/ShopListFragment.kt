@@ -27,9 +27,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.R
@@ -52,7 +49,6 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import timber.log.Timber
 import java.util.ArrayList
 
 internal class ShopListFragment:
@@ -581,14 +577,14 @@ internal class ShopListFragment:
 
     private fun trackBannerAdsClick(position: Int, applink: String, data: CpmData?) {
         if (applink.contains(SHOP)) {
-            TopAdsGtmTracker.eventSearchResultPromoShopClick(activity, data, position)
+            TopAdsGtmTracker.eventSearchResultPromoShopClick(data, position)
         } else {
-            TopAdsGtmTracker.eventSearchResultPromoProductClick(activity, data, position)
+            TopAdsGtmTracker.eventSearchResultPromoProductClick(data, position)
         }
     }
 
     override fun onBannerAdsImpressionListener(position: Int, data: CpmData?) {
-        TopAdsGtmTracker.eventSearchResultPromoView(activity, data, position)
+        TopAdsGtmTracker.eventSearchResultPromoView(data, position)
     }
 
     override fun onEmptyButtonClicked() {

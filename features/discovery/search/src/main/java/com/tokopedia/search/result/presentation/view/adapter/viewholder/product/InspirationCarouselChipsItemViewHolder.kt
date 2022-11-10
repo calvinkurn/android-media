@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselChipsItemBinding
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
@@ -30,9 +30,9 @@ class InspirationCarouselChipsItemViewHolder(
     private var binding: SearchInspirationCarouselChipsItemBinding? by viewBinding()
 
     fun bind(
-            inspirationCarouselAdapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            inspirationCarouselOption: Option,
+        inspirationCarouselAdapterPosition: Int,
+        inspirationCarouselViewModel: InspirationCarouselDataView,
+        inspirationCarouselOption: Option,
     ) {
         val binding = binding ?: return
         val chipsUnify = binding.inspirationCarouselChipsUnify
@@ -93,9 +93,9 @@ class InspirationCarouselChipsItemViewHolder(
     }
 
     private fun onChipsClicked(
-            inspirationCarouselAdapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            inspirationCarouselOption: Option,
+        inspirationCarouselAdapterPosition: Int,
+        inspirationCarouselViewModel: InspirationCarouselDataView,
+        inspirationCarouselOption: Option,
     ) {
         if (inspirationCarouselOption.isChipsActive) return
 

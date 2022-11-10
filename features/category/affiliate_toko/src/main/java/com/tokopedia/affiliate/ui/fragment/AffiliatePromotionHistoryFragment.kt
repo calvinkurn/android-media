@@ -239,11 +239,11 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
         affiliatePromotionViewModel = viewModel as AffiliatePromotionHistoryViewModel
     }
 
-    override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
+    override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?, type:String?) {
         if(status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE){
             AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                     null,null,productId , productName , productImage, productUrl,productIdentifier,
-                    AffiliatePromotionBottomSheet.ORIGIN_HOME_GENERATED,!isUserBlackListed).show(childFragmentManager, "")
+                    AffiliatePromotionBottomSheet.ORIGIN_HOME_GENERATED,!isUserBlackListed, type = type).show(childFragmentManager, "")
         }else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")
         }

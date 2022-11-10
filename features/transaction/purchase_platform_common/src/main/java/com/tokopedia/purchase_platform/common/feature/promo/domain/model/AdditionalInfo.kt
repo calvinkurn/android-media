@@ -17,4 +17,6 @@ data class AdditionalInfo(
         val promoSpIds: List<PromoSpId> = emptyList(),
         @field:SerializedName("poml_auto_applied")
         val pomlAutoApplied: Boolean = false,
+        @field:SerializedName("bebas_ongkir_info")
+        val bebasOngkirInfo: BebasOngkirInfo = BebasOngkirInfo(),
 )

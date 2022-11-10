@@ -21,6 +21,8 @@ data class CartShopHolderData(
         var incidentInfo: String = "",
         var isFreeShippingExtra: Boolean = false,
         var freeShippingBadgeUrl: String = "",
+        var isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
+        var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
         var maximumWeightWording: String = "",
         var maximumShippingWeight: Double = 0.0,
         var totalWeight: Double = 0.0,
@@ -41,7 +43,11 @@ data class CartShopHolderData(
         var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
         var addOnText: String = "",
         var addOnImgUrl: String = "",
-        var addOnId: String = ""
+        var addOnId: String = "",
+        var warehouseId: Long = 0,
+        var isPo: Boolean = false,
+        var poDuration: String = "",
+        var boCode: String = "",
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -87,7 +93,14 @@ data class CartShopHolderData(
             latitude = this.latitude,
             longitude = this.longitude,
             boMetadata = this.boMetadata,
-            boAffordability = this.boAffordability
+            boAffordability = this.boAffordability,
+            addOnText = this.addOnText,
+            addOnImgUrl = this.addOnImgUrl,
+            addOnId = this.addOnId,
+            warehouseId = this.warehouseId,
+            isPo = this.isPo,
+            poDuration = this.poDuration,
+            boCode = this.boCode,
         )
     }
 

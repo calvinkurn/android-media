@@ -16,6 +16,7 @@ interface CatalogDetailAdapterFactory {
     fun type(data : CatalogStaggeredProductModel) : Int
     fun type(data : CatalogForYouShimmerModel) : Int
     fun type(data : CatalogForYouModel) : Int
+    fun type(data : CatalogComparisonNewDataModel) : Int
 
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

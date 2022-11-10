@@ -11,19 +11,14 @@ class SuspendReasonMapper @Inject constructor() {
 
             SuspendReasonUiModel(
                 productID = this?.productID ?: "0",
-                infoImpact = (this?.infoImpact ?: listOf()).toString().replaceBracketArray(),
-                infoToPrevent = (this?.infoToPrevent ?: listOf()).toString().replaceBracketArray(),
-                infoReason = (this?.infoReason ?: listOf()).toString().replaceBracketArray(),
-                infoToResolve = (this?.infoToResolve ?: listOf()),
-                infoFootNote = (this?.infoFootNote ?: listOf()).toString().replaceBracketArray(),
+                infoImpact = (this?.infoImpact.orEmpty()).joinToString(separator = ","),
+                infoToPrevent = (this?.infoToPrevent.orEmpty()).joinToString(separator = ","),
+                infoReason = (this?.infoReason.orEmpty()).joinToString(separator = ","),
+                infoToResolve = (this?.infoToResolve.orEmpty()),
+                infoFootNote = (this?.infoFootNote.orEmpty()).joinToString(separator = ","),
                 buttonApplink = this?.urlHelpCenter ?: ""
             )
         }
-    }
-
-    private fun String.replaceBracketArray(): String {
-        val re = Regex("[^A-Za-z0-9, ]")
-        return re.replace(this, "")
     }
 
 }

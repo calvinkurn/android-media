@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:path="@string/path_payment_setting"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -38,7 +38,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:path="@string/path_account_setting"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -57,7 +57,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:path="@string/path_image_quality_setting"/>
             </intent-filter>
         </activity>
@@ -76,7 +76,7 @@
 
                 <data
                     android:host="@string/host_user"
-                    android:pathPattern="@string/new_home_account"
+                    android:pathPattern="@string/path_new_home_account"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -93,8 +93,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/funds_and_investment"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_funds_and_investment"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -110,8 +110,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/applink_link_account_webview"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_link_account_webview"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -127,8 +127,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/applink_link_account"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_link_account"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -148,7 +148,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_user"
-                    android:pathPattern="@string/applink_explicit_profile"/>
+                    android:pathPattern="@string/path_explicit_profile"/>
             </intent-filter>
         </activity>
 
@@ -166,9 +166,29 @@
 
                 <data
                     android:host="@string/host_user"
-                    android:pathPattern="@string/applink_privacy_account"
+                    android:pathPattern="@string/path_privacy_account"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".consentWithdrawal.ui.ConsentWithdrawalActivity"
+            android:label="Consent Withdrawal"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_consent_withdrawal"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
         </activity>
     </application>
 </manifest>

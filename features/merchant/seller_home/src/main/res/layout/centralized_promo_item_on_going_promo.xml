@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/centralized_promo_on_going_item_margin"
-    android:layout_marginBottom="@dimen/centralized_promo_on_going_item_margin"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
     app:card_type="shadow"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
@@ -14,20 +14,20 @@
     app:layout_constraintTop_toBottomOf="@id/tvOnGoingPromoTitle">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="@dimen/centralized_promo_on_going_promo_item_width"
+        android:layout_width="160dp"
         android:layout_height="wrap_content">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvOnGoingPromoTitle"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:padding="@dimen/layout_lvl1"
+            android:padding="8dp"
             android:singleLine="true"
             android:textAllCaps="true"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivCaret"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -35,10 +35,23 @@
             app:typographyType="heading_6"
             tools:text="Broadcast Chat" />
 
+        <ImageView
+            android:id="@+id/ivCaret"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/tvOnGoingPromoTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvOnGoingPromoTitle"
+            app:srcCompat="@drawable/ic_arrow_right_grey"
+            android:contentDescription="@string/centralized_promo_content_desc_button_lihat_detail_promo" />
+
         <View
             android:id="@+id/headerDivider"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/centralized_promo_on_going_divider_height"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
             android:background="@color/Unify_N75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -48,90 +61,40 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvOnGoingPromoStatus"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingStart="@dimen/layout_lvl1"
-            android:paddingLeft="@dimen/layout_lvl1"
-            android:paddingTop="@dimen/centralized_promo_dimen_4dp"
-            android:paddingEnd="@dimen/layout_lvl1"
-            android:paddingRight="@dimen/layout_lvl1"
+            android:paddingEnd="8dp"
             android:singleLine="true"
             android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toEndOf="@id/tvOnGoingPromoCount"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/headerDivider"
+            app:layout_constraintTop_toTopOf="@id/tvOnGoingPromoCount"
+            app:layout_constraintBottom_toBottomOf="@id/tvOnGoingPromoCount"
             app:typographyType="body_3"
             tools:text="On Going" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvOnGoingPromoCount"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingStart="@dimen/layout_lvl1"
-            android:paddingLeft="@dimen/layout_lvl1"
-            android:paddingEnd="@dimen/layout_lvl1"
-            android:paddingRight="@dimen/layout_lvl1"
-            android:paddingBottom="@dimen/centralized_promo_dimen_4dp"
-            android:singleLine="true"
-            android:textColor="@color/Unify_N700_96"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="@id/tvOnGoingPromoStatus"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tvOnGoingPromoStatus"
-            app:layout_constraintTop_toBottomOf="@id/tvOnGoingPromoStatus"
-            app:typographyType="heading_1"
-            tools:text="1" />
-
-        <View
-            android:id="@+id/footerDivider"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/centralized_promo_on_going_divider_height"
-            android:background="@color/Unify_N75"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvOnGoingPromoCount" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvSeePastPromotion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingStart="@dimen/layout_lvl1"
-            android:paddingTop="@dimen/layout_lvl1"
-            android:paddingEnd="@dimen/layout_lvl2"
-            android:paddingBottom="@dimen/layout_lvl1"
+            android:paddingStart="8dp"
+            android:paddingLeft="8dp"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
             android:singleLine="true"
-            android:textColor="@color/Unify_N700_68"
-            app:layout_constraintEnd_toStartOf="@id/ivCaret"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/ivCaret"
+            android:textColor="@color/Unify_N700_96"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintEnd_toStartOf="@id/tvOnGoingPromoStatus"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/footerDivider"
-            app:typographyType="body_3"
-            tools:text="See past promotion" />
-
-        <ImageView
-            android:id="@+id/ivCaret"
-            android:layout_width="@dimen/centralized_promo_on_going_caret_icon_size"
-            android:layout_height="@dimen/centralized_promo_on_going_caret_icon_size"
-            android:paddingStart="@dimen/centralized_promo_dimen_4dp"
-            android:paddingEnd="@dimen/layout_lvl1"
-            app:layout_constraintBottom_toBottomOf="@id/tvSeePastPromotion"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvSeePastPromotion"
-            app:srcCompat="@drawable/ic_arrow_right_grey"
-            android:contentDescription="@string/centralized_promo_content_desc_button_lihat_detail_promo" />
+            app:layout_constraintTop_toBottomOf="@id/headerDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="heading_4"
+            tools:text="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

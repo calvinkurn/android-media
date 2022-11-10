@@ -111,7 +111,7 @@ object ScreenShootPageHelper {
             "com.tokopedia.editshipping.ui.shopeditaddress.ShopEditAddressActivity",
             "com.tokopedia.editshipping.ui.shippingeditor.ShippingEditorActivity",
             "com.tokopedia.activation.ui.ActivationPageActivity",
-            "com.tokopedia.profilecompletion.settingprofile.view.activity.SettingProfileActivity",
+            "com.tokopedia.profilecompletion.profileinfo.view.activity.ProfileInfoActivity",
             "com.tokopedia.settingbank.view.activity.SettingBankActivity",
             "com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity",
         )

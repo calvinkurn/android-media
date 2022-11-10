@@ -51,7 +51,7 @@ class ManageNameViewModelTest {
         every { addNameUseCase.update(any(), any(), any()) } answers {
             secondArg<(UpdateNameModel) -> Unit>().invoke(mockUpdateModel)
         }
-        viewModel.updateName(name)
+        viewModel.updateName(name, "")
 
         /* Then */
         verify { addNameUseCase.update(any(), any(), any()) }
@@ -67,7 +67,7 @@ class ManageNameViewModelTest {
         every { addNameUseCase.update(any(), any(), any()) } answers {
             thirdArg<(Throwable) -> Unit>().invoke(mockError)
         }
-        viewModel.updateName(name)
+        viewModel.updateName(name, "")
 
         /* Then */
         verify { addNameUseCase.update(any(), any(), any()) }

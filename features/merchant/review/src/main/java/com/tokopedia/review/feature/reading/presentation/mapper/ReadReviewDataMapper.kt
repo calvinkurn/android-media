@@ -19,7 +19,8 @@ object ReadReviewDataMapper {
                 userId = productReview.user.userID,
                 fullName = productReview.user.fullName,
                 image = productReview.user.image,
-                url = productReview.user.url
+                url = productReview.user.url,
+                label = productReview.user.label
             ),
             feedbackId = productReview.feedbackID,
             variantName = productReview.variantName,

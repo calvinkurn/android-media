@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="heading_5"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_NN1000"
         tools:text="@tools:sample/lorem" />
 
 

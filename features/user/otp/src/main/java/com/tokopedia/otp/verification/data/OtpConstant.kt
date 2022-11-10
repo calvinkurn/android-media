@@ -1,14 +1,12 @@
 package com.tokopedia.otp.verification.data
 
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author rival
  * @created on 9/12/2019
  */
-
-const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
-const val TAG_AUTO_READ = "autoread"
 
 object OtpConstant {
 
@@ -19,7 +17,17 @@ object OtpConstant {
     const val OTP_WA_NOT_REGISTERED_SUBTITLE = "otp-wa-not-registered-subtitle"
     const val OTP_WA_NOT_REGISTERED_IMG_LINK = "otp-wa-not-registered-img-link"
 
-    val PIN_V2_SALT = if(GlobalConfig.DEBUG) "c456bbc2c9c746ffaf67787d7c59945d" else "b9f14c8ed04a41c7a5361b648a088b69"
+    private const val staging = "staging"
+
+    val PIN_V2_SALT = getSalt()
+
+    private fun getSalt(): String {
+        return if (GlobalConfig.DEBUG && TokopediaUrl.getInstance().TYPE.value.lowercase() == staging) {
+            "c456bbc2c9c746ffaf67787d7c59945d"
+        } else {
+            "b9f14c8ed04a41c7a5361b648a088b69"
+        }
+    }
 
     object OtpMode {
         const val SMS = "sms"
@@ -42,5 +50,12 @@ object OtpConstant {
         const val INACTIVE_PHONE_VERIFY_EMAIL = 160
         const val INACTIVE_PHONE_VERIFY_PIN = 161
         const val INACTIVE_PHONE_VERIFY_NEW_PHONE = 162
+
+        /* OTP Type: 168
+        * This is actually OTP with phone number
+        * this OTP type used when user register with email, and need OTP phone
+        * this OTP type was implemented in Redefine Register Email
+        * */
+        const val PHONE_REGISTER_MANDATORY = 168
     }
 }

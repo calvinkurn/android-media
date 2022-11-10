@@ -4,14 +4,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
-import com.tokopedia.product.manage.common.util.ProductManageAdapterLogger
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
 import com.tokopedia.product.manage.common.view.adapter.differ.ProductManageDiffer
 import com.tokopedia.product.manage.feature.list.extension.findIndex
@@ -33,7 +31,6 @@ class ProductManageListDiffutilAdapter(
     private val differ: ProductManageDiffer = ProductListDiffer()
 
     override fun showLoading() {
-        logUpdate(ProductManageAdapterLogger.MethodName.SHOW_LOADING)
         if (!isLoading) {
             val items = getItems()
             if (isShowLoadingMore) {
@@ -46,40 +43,37 @@ class ProductManageListDiffutilAdapter(
     }
 
     override fun hideLoading() {
-        logUpdate(ProductManageAdapterLogger.MethodName.HIDE_LOADING)
         if(isLoading) {
             val items = getItems()
-            items.removeAt(lastIndex)
-            submitList(items)
+            items.lastIndex.takeIf { it != RecyclerView.NO_POSITION }?.let { lastIndex ->
+                items.removeAt(lastIndex)
+                submitList(items)
+            }
         }
     }
 
     override fun removeErrorNetwork() {
-        logUpdate(ProductManageAdapterLogger.MethodName.REMOVE_ERROR_NETWORK)
         val items = getItems()
-        items.remove(errorNetworkModel)
-        submitList(items)
+        if (items.remove(errorNetworkModel)) {
+            submitList(items)
+        }
     }
 
     override fun addElement(itemList: MutableList<out Visitable<Any>>?) {
-        logUpdate(ProductManageAdapterLogger.MethodName.ADD_ELEMENT)
         val items = getItems()
         items.addAll(itemList?.toList().orEmpty())
         submitList(items)
     }
 
     override fun clearAllElements() {
-        logUpdate(ProductManageAdapterLogger.MethodName.CLEAR_ALL_ELEMENTS)
         submitList(emptyList())
     }
 
     override fun updateProduct(itemList: List<Visitable<*>>) {
-        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRODUCT)
         submitList(itemList)
     }
 
     override fun removeEmptyAndUpdateLayout(itemList: List<Visitable<*>>) {
-        logUpdate(ProductManageAdapterLogger.MethodName.REMOVE_AND_UPDATE_LAYOUT)
         val items = data.filter { it !is EmptyModel }.toMutableList().apply {
             addAll(itemList)
         }
@@ -90,7 +84,6 @@ class ProductManageListDiffutilAdapter(
         itemsChecked: MutableList<ProductUiModel>,
         onSetItemsChecked: (MutableList<ProductUiModel>) -> Unit
     ) {
-        logUpdate(ProductManageAdapterLogger.MethodName.CHECK_ALL_PRODUCTS)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         val newItems = items.map { product ->
             val checkedProduct = itemsChecked.firstOrNull { it.id == product.id }
@@ -108,7 +101,6 @@ class ProductManageListDiffutilAdapter(
         itemsChecked: MutableList<ProductUiModel>,
         onSetItemsUnchecked: (MutableList<ProductUiModel>) -> Unit
     ) {
-        logUpdate(ProductManageAdapterLogger.MethodName.UNCHECK_MULTIPLE_PRODUCTS)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         val productIdList =
             productIds ?: items.map {
@@ -129,21 +121,18 @@ class ProductManageListDiffutilAdapter(
     }
 
     override fun updateEmptyState(emptyModel: EmptyModel) {
-        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_EMPTY_STATE)
         submitList(listOf(emptyModel))
     }
 
     override fun updatePrice(productId: String, price: String) {
-        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRICE)
         submitList(productId) {
-            val formattedPrice = price.toIntOrZero().getCurrencyFormatted()
+            val formattedPrice = price.toDoubleOrZero().getCurrencyFormatted()
             val editedPrice = PriceUiModel(price, formattedPrice)
             it.copy(minPrice = editedPrice, maxPrice = editedPrice)
         }
     }
 
     override fun updatePrice(editResult: EditVariantResult) {
-        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRICE_VARIANT)
         submitList(editResult.productId) {
             val editedMinPrice = editResult.variants.minByOrNull { it.price }?.price.orZero()
             val editedMaxPrice = editResult.variants.maxByOrNull { it.price }?.price.orZero()
@@ -157,7 +146,6 @@ class ProductManageListDiffutilAdapter(
     }
 
     override fun updateStock(productId: String, stock: Int?, status: ProductStatus?) {
-        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_STOCK)
         submitList(productId) {
             var product = it
             stock?.let { product = product.copy(stock = stock) }
@@ -166,13 +154,7 @@ class ProductManageListDiffutilAdapter(
         }
     }
 
-    override fun updateCashBack(productId: String, cashback: Int) {
-        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_CASHBACK)
-        submitList(productId) { it.copy(cashBack = cashback) }
-    }
-
     override fun deleteProduct(productId: String) {
-        logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCT)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         items.findIndex(productId)?.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
             items.removeAt(index)
@@ -181,7 +163,6 @@ class ProductManageListDiffutilAdapter(
     }
 
     override fun deleteProducts(productIds: List<String>) {
-        logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCTS)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         productIds.forEach { id ->
             items.findIndex(id)?.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
@@ -192,12 +173,10 @@ class ProductManageListDiffutilAdapter(
     }
 
     override fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
-        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_FEATURED_PRODUCT)
         submitList(productId) { it.copy(isFeatured = isFeaturedProduct) }
     }
 
     override fun setProductsStatuses(productIds: List<String>, productStatus: ProductStatus) {
-        logUpdate(ProductManageAdapterLogger.MethodName.SET_PRODUCTS_STATUSES)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         productIds.forEach { id ->
             items.findIndex(id)?.let { index ->
@@ -208,7 +187,6 @@ class ProductManageListDiffutilAdapter(
     }
 
     override fun setMultiSelectEnabled(multiSelectEnabled: Boolean) {
-        logUpdate(ProductManageAdapterLogger.MethodName.SET_MULTI_SELECT_ENABLED)
         val items = data.filterIsInstance<ProductUiModel>().map {
             it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
         }
@@ -216,7 +194,6 @@ class ProductManageListDiffutilAdapter(
     }
 
     override fun filterProductList(predicate: (ProductUiModel) -> Boolean) {
-        logUpdate(ProductManageAdapterLogger.MethodName.FILTER_PRODUCT_LIST)
         val productList = data.filterIsInstance<ProductUiModel>().filter { predicate.invoke(it) }
         submitList(productList)
     }

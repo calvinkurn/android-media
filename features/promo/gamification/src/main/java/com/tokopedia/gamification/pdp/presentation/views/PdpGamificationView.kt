@@ -269,20 +269,6 @@ class PdpGamificationView : LinearLayout {
 
             }
 
-            override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-                if (viewModel.userSession.isLoggedIn) {
-
-                    if (isAddWishlist) {
-                        viewModel.addToWishlist(item, callback)
-                    } else {
-                        viewModel.removeFromWishlist(item, callback)
-                    }
-                } else {
-                    RouteManager.route(context, ApplinkConst.LOGIN)
-                }
-
-            }
-
             override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
                 if (viewModel.userSession.isLoggedIn) {
 

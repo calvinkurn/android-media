@@ -83,7 +83,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Inject ImageEditPreviewPresenter imageEditPreviewPresenter;
 
     private int imageIndex;
-    private int[] widthHeight;
+    private Pair<Integer, Integer> widthHeight;
     private Bitmap[] listOutputWatermark;
 
     private UserSessionInterface userSession;
@@ -564,7 +564,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         // set max scale so it cannnot be zoomed under min resolution
         // same logic with the calculateInSampleSize;
-        Pair<Integer, Integer> widthHeight = ImageProcessingUtil.getWidthAndHeight(edittedImagePath);
+        widthHeight = ImageProcessingUtil.getWidthAndHeight(edittedImagePath);
         int maxWidthHeight = Math.max(widthHeight.getFirst(), widthHeight.getSecond());
         while (maxWidthHeight > maxPreviewWidth) {
             maxWidthHeight = maxWidthHeight / 2;
@@ -635,7 +635,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         int ratioX = imageRatioTypeDef.getRatioX();
         int ratioY = imageRatioTypeDef.getRatioY();
         if (ratioX <= 0 || ratioY <= 0) { // original ratio
-            gestureCropImageView.setTargetAspectRatio((float) widthHeight[0] / widthHeight[1]);
+            gestureCropImageView.setTargetAspectRatio((float) widthHeight.getFirst() / widthHeight.getSecond());
         } else {
             gestureCropImageView.setTargetAspectRatio((float) ratioX / ratioY);
         }

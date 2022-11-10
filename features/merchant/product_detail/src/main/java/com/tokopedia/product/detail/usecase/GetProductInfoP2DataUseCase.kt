@@ -184,6 +184,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   buttonLink
                 }
               }
+              partnerLabel
             }
             nearestWarehouse {
               product_id
@@ -313,9 +314,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               hour
               speedFmt
             }
-            shopFeature{
-              IsGoApotik
-            }
             restrictionInfo{
                 message
                 restrictionData{
@@ -381,6 +379,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 chipsLabel
                 hasUsedBenefit
               }
+              boMetadata
             }
             merchantVoucherSummary{
                 animatedInfo{
@@ -460,6 +459,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 variant{
                   name
                 }
+                userLabel
+                userStat {
+                  formatted
+                }
               }
             }
             rating {
@@ -522,6 +525,15 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             shopFinishRate {
               finishRate
             }
+            shopAdditional {
+              icon
+              title
+              applink
+              link
+              linkText
+              subtitle
+              label
+            }
           }
     }""".trimIndent()
     }
@@ -573,7 +585,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.shopRating = shopRating.ratingScore
             p2UiData.productView = productView
             p2UiData.wishlistCount = wishlistCount
-            p2UiData.isGoApotik = shopFeature.isGoApotik
             p2UiData.shopBadge = shopBadge.badge
             p2UiData.shopCommitment = shopCommitment.shopCommitment
             p2UiData.productPurchaseProtectionInfo = productPurchaseProtectionInfo
@@ -596,6 +607,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.ticker = ticker
             p2UiData.navBar = navBar
             p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
+            p2UiData.shopAdditional = responseData.shopAdditional
         }
         return p2UiData
     }

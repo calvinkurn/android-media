@@ -12,7 +12,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemSellerBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
-import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -38,13 +37,16 @@ class SellerViewHolder(
     }
 
     private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {
+        if (profileSeller.isLocationAdmin &&
+            profileSeller.adminStatus == ProfileSellerDataModel.ADMIN_ACTIVE
+        ) {
+            LocationAdminDialog(itemView.context).show()
+            return
+        }
+
         if (profileSeller.hasShop) {
             TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.CLICK_SHOP_ACCOUNT)
-            if (profileSeller.canGoToSellerAccount) {
-                RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
-            } else {
-                LocationAdminDialog(itemView.context).show()
-            }
+            RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
         } else {
             TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.CLICK_OPEN_SHOP)
             RouteManager.route(context, ApplinkConst.CREATE_SHOP)
@@ -90,6 +92,7 @@ class SellerViewHolder(
                 shimmerBtnTryAgain.gone()
 
                 val shopInfo: CharSequence
+
                 if (!element.hasShop) {
                     shopInfo =
                         itemView.context?.getString(R.string.account_header_register_store)

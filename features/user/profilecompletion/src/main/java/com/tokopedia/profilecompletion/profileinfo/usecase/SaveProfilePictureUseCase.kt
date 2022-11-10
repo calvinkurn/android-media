@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.profilecompletion.settingprofile.data.SaveProfilePictureResponse
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureResponse
 
 class SaveProfilePictureUseCase(
     @ApplicationContext private val repository: GraphqlRepository,

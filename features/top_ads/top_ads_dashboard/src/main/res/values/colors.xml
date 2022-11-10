@@ -2,5 +2,5 @@
 <resources>
     <color name="green_indicator_off">#6187d58b</color>
     <color name="topads_dash_white">#ffffff</color>
-    <color name="topads_select_color">#3332AFFF</color>
+    <color name="green">#42b549</color>
 </resources>

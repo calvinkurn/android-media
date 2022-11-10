@@ -11,13 +11,14 @@
         android:layout_height="wrap_content"
         android:paddingBottom="12dp">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <ImageView
             android:id="@+id/iv_review_gallery_image_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_corner_radius="0" />
+            tools:ignore="ContentDescription" />
 
         <View
             android:id="@+id/review_media_gallery_image_thumbnail_broken_overlay"
@@ -66,6 +67,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_review_gallery_image_thumbnail_rating"
             app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_review_gallery_image_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

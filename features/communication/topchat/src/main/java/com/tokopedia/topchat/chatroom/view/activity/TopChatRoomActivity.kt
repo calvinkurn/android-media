@@ -88,6 +88,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private var chatTemplateSeparatedView: TopChatTemplateSeparatedView? = null
     private var toolbarChatList: Toolbar? = null
+    private var chatSavedInstance: Bundle? = null
 
     override fun getScreenName(): String {
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
@@ -302,6 +303,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private fun setupFragments(savedInstanceState: Bundle?) {
         if(isAllowedFlexMode()) {
+            chatSavedInstance = savedInstanceState
             setupFlexModeFragments(savedInstanceState)
         } else {
             setupChatRoomOnlyToolbar()
@@ -336,8 +338,11 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         frameLayoutChatList?.show()
     }
 
-    private fun attachChatRoomFragment() {
+    private fun attachChatRoomFragment(isFromAnotherChat: Boolean = false) {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+        if (isFromAnotherChat) {
+            chatRoomFragment.arguments?.putBoolean(IS_FROM_ANOTHER_CALL, isFromAnotherChat)
+        }
         ft.replace(R.id.chatroom_fragment, chatRoomFragment)
         ft.commitAllowingStateLoss()
         frameLayoutChatRoom?.show()
@@ -391,7 +396,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
             chatRoomFragment = newFragment as TopChatRoomFragment
             chatRoomFragment.chatRoomFlexModeListener = this
             chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
-            attachChatRoomFragment()
+            attachChatRoomFragment(isFromAnotherChat = true)
         }
     }
 
@@ -584,6 +589,8 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         private const val SIXTEEN_DP = 16
         private var role: Int? = null
         private var currentActiveChat: String? = null
+
+        const val IS_FROM_ANOTHER_CALL = "is_from_another_chat"
     }
 
 }

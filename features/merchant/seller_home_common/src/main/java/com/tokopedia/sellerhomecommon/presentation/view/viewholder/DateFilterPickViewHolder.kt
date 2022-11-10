@@ -70,12 +70,12 @@ class DateFilterPickViewHolder(
         datePicker = CalendarPicker.newInstance(element).apply {
             when (element.type) {
                 DateFilterItem.TYPE_PER_WEEK -> {
-                    val title = itemView.context?.getString(R.string.shc_per_week).orEmpty()
+                    val title = itemView.context?.getString(R.string.shc_per_date).orEmpty()
                     setMode(CalendarPickerView.SelectionMode.RANGE)
                     setTitle(title)
                 }
                 DateFilterItem.TYPE_PER_DAY -> {
-                    val title = itemView.context?.getString(R.string.shc_per_day).orEmpty()
+                    val title = itemView.context?.getString(R.string.shc_per_date).orEmpty()
                     setMode(CalendarPickerView.SelectionMode.SINGLE)
                     setTitle(title)
                 }

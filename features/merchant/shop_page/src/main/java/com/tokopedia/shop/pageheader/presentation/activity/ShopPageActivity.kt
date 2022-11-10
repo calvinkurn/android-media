@@ -30,6 +30,7 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
+import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -39,7 +40,8 @@ import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMo
 class ShopPageActivity : BaseSimpleActivity(),
         HasComponent<ShopComponent>,
         HasSharedViewModel,
-        ShopPagePerformanceMonitoringListener {
+        ShopPagePerformanceMonitoringListener,
+        ShopPageSharedListener {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -204,5 +206,9 @@ class ShopPageActivity : BaseSimpleActivity(),
 
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view
+    }
+
+    override fun createPdpAffiliateLink(basePdpAppLink: String): String {
+        return (fragment as? NewShopPageFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
 }

@@ -104,7 +104,7 @@ class GridPostAdapter(private val contentPosition: Int,
             setImageMargins(listSize)
         }
 
-        fun bindProduct(postId: Int, item: GridItemViewModel, type: String, isFollowed: Boolean, shopId: String) {
+        fun bindProduct(postId: String, item: GridItemViewModel, type: String, isFollowed: Boolean, shopId: String) {
             itemView.extraProduct.background = null
             itemView.extraProduct.hide()
 
@@ -172,7 +172,7 @@ class GridPostAdapter(private val contentPosition: Int,
         }
 
         fun bindOthers(numberOfExtraProduct: Int, actionText: String,
-                       actionLink: String, postId: Int, type: String, isFollowed: Boolean, shopId: String) {
+                       actionLink: String, postId: String, type: String, isFollowed: Boolean, shopId: String) {
             val extra = "+$numberOfExtraProduct $actionText"
             itemView.extraProduct.background = ColorDrawable(
                     MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
@@ -214,7 +214,7 @@ class GridPostAdapter(private val contentPosition: Int,
 
     interface GridItemListener {
         fun onGridItemClick(
-            positionInFeed: Int, activityId: Int, productId: String,
+            positionInFeed: Int, activityId: String, productId: String,
             redirectLink: String, type: String, isFollowed: Boolean,
             shopId: String,
             feedXProducts: List<FeedXProduct>,

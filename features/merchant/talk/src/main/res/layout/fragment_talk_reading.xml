@@ -61,17 +61,15 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/addFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl3"
-        app:backgroundTint="@color/Unify_G500"
-        app:elevation="@dimen/layout_lvl0"
-        app:maxImageSize="@dimen/layout_lvl3"
+        app:fbColor="green"
+        app:elevation="0dp"
+        app:fbType="basic"
+        app:maxImageSize="24dp"
         app:srcCompat="@drawable/talk_reading_ic_plus" />
 
     <include

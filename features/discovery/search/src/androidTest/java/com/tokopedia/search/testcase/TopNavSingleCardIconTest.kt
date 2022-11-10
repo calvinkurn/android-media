@@ -15,7 +15,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.search.*
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
@@ -36,12 +35,9 @@ internal class TopNavSingleCardIconTest {
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setUp() {
-        gtmLogDBSource.deleteAll().subscribe()
-
         setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_response_keyword_hotel_jakarta))
 
         disableOnBoarding(context)
@@ -76,8 +72,6 @@ internal class TopNavSingleCardIconTest {
 
     @After
     fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
-
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 }

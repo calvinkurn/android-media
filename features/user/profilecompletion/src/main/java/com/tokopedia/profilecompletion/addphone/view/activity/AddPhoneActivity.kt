@@ -16,7 +16,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 /**
  * @author by nisie on 22/04/19.
- * For navigate: use {@link ApplinkConstInternalGlobal.ADD_PHONE}
+ * For navigate: use {@link ApplinkConstInternalUserPlatform.ADD_PHONE}
  */
 class AddPhoneActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 

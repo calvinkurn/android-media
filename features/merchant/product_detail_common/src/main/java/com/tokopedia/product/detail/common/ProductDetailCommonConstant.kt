@@ -24,12 +24,7 @@ object ProductDetailCommonConstant {
 
     const val DEFAULT_NUM_IMAGE_REVIEW = 5
 
-    const val SHOP_ID_PARAM = "shopId"
     const val FIELDS_PARAM = "fields"
-    const val PRODUCT_ID_PARAM = "productId"
-    const val GIFTABLE_PARAM = "isGiftable"
-    const val PARENT_ID_PARAM = "parentId"
-
 
     //notify me (teaser campaign)
     const val PARAM_TEASER_CAMPAIGN_ID = "campaignId"
@@ -108,9 +103,12 @@ object ProductDetailCommonConstant {
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
     const val BO_TOKONOW_15 = 4
+    const val BO_PLUS = 5
+    const val BO_PLUS_DT = 6
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
     const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
+    const val VALUE_BOPLUS = "bebas ongkir plus"
     const val VALUE_NONE_OTHER= "none/other"
 
     const val KEY_PRODUCT_DETAIL = "product detail"

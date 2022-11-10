@@ -1,12 +1,14 @@
 package com.tokopedia.mediauploader.image
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
+import com.tokopedia.mediauploader.common.logger.DebugLog
+import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
@@ -62,7 +64,7 @@ class ImageUploaderManager @Inject constructor(
 
     private suspend fun upload(file: File, sourceId: String, policy: SourcePolicy): UploadResult {
         val upload = imageUploaderUseCase(ImageUploadParam(
-            timeOut = policy.timeOutString(),
+            timeOut = policy.timeOut.orZero().toString(),
             hostUrl = policy.host,
             sourceId = sourceId,
             file = file,
@@ -74,8 +76,14 @@ class ImageUploaderManager @Inject constructor(
             UNKNOWN_ERROR
         }
 
-        // clear the current policy
-        policyManager.clear()
+        onShowDebugLogcat(
+            DebugLog(
+                sourceId = sourceId,
+                sourceFile = file.path,
+                uploadId = upload.data?.uploadId.toString(),
+                sourcePolicy = policy
+            )
+        )
 
         return upload.data?.let {
             UploadResult.Success(uploadId = it.uploadId)

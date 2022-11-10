@@ -64,6 +64,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                     min_quantity: MinQuantity
                     is_free_shipping: IsFreeShipping
                     is_toko_now: IsTokoNow
+                    is_pinned: IsPinned
                   }
                 }
                 vouchers{

@@ -2,7 +2,7 @@ package com.tokopedia.digital_deals.view.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.common_entertainment.data.Brand;
 import com.tokopedia.digital_deals.view.model.FilterItem;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.ProductItem;

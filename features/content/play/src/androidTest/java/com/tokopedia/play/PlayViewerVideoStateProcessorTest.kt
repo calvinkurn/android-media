@@ -17,6 +17,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.test.application.annotations.UiTest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.*
@@ -29,12 +30,15 @@ import java.net.HttpURLConnection
 /**
  * Created by jegul on 15/09/20
  */
+@UiTest
 class PlayViewerVideoStateProcessorTest {
 
     private val appContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
     private val testExoPlayerCreator = TestExoPlayerCreator(appContext)
-    private val playVideoManager = PlayVideoManager.getInstance(appContext, testExoPlayerCreator)
+    private val playVideoManager = PlayVideoWrapper.Builder(appContext)
+        .setExoPlayerCreator(testExoPlayerCreator)
+        .build()
     private val playbackExceptionParser = ExoPlaybackExceptionParser()
     private val testDispatcher = TestCoroutineDispatcher()
     private val dispatcher = object : CoroutineDispatchers {
@@ -58,7 +62,7 @@ class PlayViewerVideoStateProcessorTest {
     ).create(
             scope = scope,
             channelTypeSource = { PlayChannelType.Live },
-            playVideoPlayer = PlayVideoWrapper.Builder(appContext).build()
+            playVideoPlayer = playVideoManager,
     )
 
     private var theState: PlayViewerVideoState = PlayViewerVideoState.Unknown

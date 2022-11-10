@@ -187,7 +187,7 @@
                     android:id="@+id/klikCount"
                     style="@style/CardView.CountView"
                     android:layout_marginTop="@dimen/unify_space_4"
-                    android:textColor="@color/topads_heading_color"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintEnd_toStartOf="@id/persentaseKlikCount"
                     app:layout_constraintStart_toEndOf="@id/tampilCount"
                     app:layout_constraintTop_toBottomOf="@id/klik"

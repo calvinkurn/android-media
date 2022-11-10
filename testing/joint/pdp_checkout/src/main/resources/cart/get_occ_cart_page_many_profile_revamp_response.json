@@ -144,6 +144,11 @@
                         "eligible": true,
                         "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
+                      "free_shipping_general": {
+                        "bo_name": "bebas ongkir",
+                        "bo_type": 1,
+                        "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
                       "booking_stock": 0,
                       "product_variant": {
                         "parent_id": 0,
@@ -164,6 +169,11 @@
                 },
                 "free_shipping_extra": {
                   "eligible": true,
+                  "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "free_shipping_general": {
+                  "bo_name": "bebas ongkir extra",
+                  "bo_type": 3,
                   "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
                 "preorder": {

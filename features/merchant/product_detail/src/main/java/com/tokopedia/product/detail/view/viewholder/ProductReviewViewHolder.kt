@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.review.UserStatistic
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -22,6 +23,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
@@ -29,11 +31,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        const val RATING_ONE = 1
-        const val RATING_TWO = 2
-        const val RATING_THREE = 3
-        const val RATING_FOUR = 4
-        const val RATING_FIVE = 5
         val LAYOUT = R.layout.item_dynamic_review
     }
 
@@ -53,7 +50,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 return
             }
             hideShimmering()
+            hideBasicInfoThreeDots()
             showTitle()
+            binding.dividerMostHelpfulReviewThumbnails.show()
             val componentData = getComponentTrackData(it)
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(componentData)
@@ -67,8 +66,14 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             )
             val reviewData = it.review
             reviewData?.let { review ->
+                setBasicInfoListener(review)
+                setCredibilityData(review)
                 setReviewStars(review)
-                setReviewAuthor(reviewData)
+                setReviewTimestamp(review)
+                setReviewAuthorProfilePicture(review)
+                setReviewAuthorName(reviewData)
+                setReviewAuthorLabel(review)
+                setReviewAuthorStats(review)
                 setReviewVariant(review)
                 setReviewDescription(review)
                 return
@@ -83,6 +88,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun hideShimmering() {
         binding.reviewShimmering.root.hide()
+    }
+
+    private fun hideBasicInfoThreeDots() {
+        binding.basicInfoMostHelpfulReview.hideThreeDots()
     }
 
     private fun showTitle() {
@@ -117,8 +126,11 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 }
                 show()
             }
+            icMostHelpfulReviewRatingStar.apply {
+                setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.reviewcommon.R.drawable.ic_rating_star_item))
+                show()
+            }
             reviewRating.apply {
-                setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_review_rating_star), null, null, null)
                 text = formattedRating
                 show()
             }
@@ -134,36 +146,57 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
     }
 
-    private fun setReviewStars(reviewData: Review) {
-        binding.ratingReviewPdp.apply {
-            if (reviewData.productRating == 0) {
-                hide()
-                return
-            }
-            setImageDrawable(MethodChecker.getDrawable(context, getRatingDrawable(reviewData.productRating)))
-            show()
-        }
+    private fun setBasicInfoListener(review: Review) {
+        binding.basicInfoMostHelpfulReview.setListeners(
+            reviewBasicInfoListener = object : ReviewBasicInfoListener {
+                override fun onUserNameClicked(
+                    feedbackId: String, userId: String, statistics: String, label: String
+                ) {
+                    element?.let {
+                        listener.onSeeReviewCredibility(
+                            feedbackId, userId, statistics, label, getComponentTrackData(it)
+                        )
+                    }
+                }
+            }, threeDotsListener = null
+        )
     }
 
-    private fun setReviewAuthor(reviewData: Review) {
-        binding.txtDateUserPdp.apply {
-            if (reviewData.user.fullName.isEmpty()) {
-                return
-            }
-            text = HtmlLinkHelper(context, context.getString(R.string.review_author, reviewData.user.fullName)).spannedString
-            show()
-        }
+    private fun setCredibilityData(review: Review) {
+        binding.basicInfoMostHelpfulReview.setCredibilityData(
+            isProductReview = true,
+            isAnonymous = false,
+            userId = review.user.userId.toString(),
+            feedbackId = review.reviewId.toString()
+        )
+    }
+
+    private fun setReviewStars(reviewData: Review) {
+        binding.basicInfoMostHelpfulReview.setRating(reviewData.productRating)
+    }
+
+    private fun setReviewTimestamp(review: Review) {
+        binding.basicInfoMostHelpfulReview.setCreateTime(review.reviewCreateTime)
+    }
+
+    private fun setReviewAuthorProfilePicture(review: Review) {
+        binding.basicInfoMostHelpfulReview.setReviewerImage(review.user.image)
+    }
+
+    private fun setReviewAuthorName(reviewData: Review) {
+        binding.basicInfoMostHelpfulReview.setReviewerName(reviewData.user.fullName)
+    }
+
+    private fun setReviewAuthorLabel(review: Review) {
+        binding.basicInfoMostHelpfulReview.setReviewerLabel(review.userLabel)
+    }
+
+    private fun setReviewAuthorStats(review: Review) {
+        binding.basicInfoMostHelpfulReview.setStatsString(composeUserStatistics(review.userStat.orEmpty()))
     }
 
     private fun setReviewVariant(review: Review) {
-        if (review.variant.variantTitle.isNotEmpty()) {
-            binding.txtVariantReviewPdp.apply {
-                show()
-                text = review.variant.variantTitle
-            }
-        } else {
-            binding.txtVariantReviewPdp.hide()
-        }
+        binding.basicInfoMostHelpfulReview.setVariantName(review.variant.variantTitle)
     }
 
     private fun setReviewDescription(reviewData: Review) {
@@ -188,37 +221,25 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     private fun getComponentTrackData(data: ProductMostHelpfulReviewDataModel): ComponentTrackDataModel =
             ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
 
-    private fun getRatingDrawable(param: Int): Int {
-        return when (param) {
-            RATING_ONE -> R.drawable.ic_rating_star_one
-            RATING_TWO -> R.drawable.ic_rating_star_two
-            RATING_THREE -> R.drawable.ic_rating_star_three
-            RATING_FOUR -> R.drawable.ic_rating_star_four
-            RATING_FIVE -> R.drawable.ic_rating_star_five
-            else -> R.drawable.ic_rating_star_zero
-        }
-    }
-
     private fun hideAllOtherElements() {
         binding.apply {
             txtReviewTitle.hide()
             txtSeeAllPartial.hide()
+            icMostHelpfulReviewRatingStar.hide()
             reviewRating.hide()
             reviewCount.hide()
             reviewMediaThumbnails.hide()
-            ratingReviewPdp.hide()
-            txtDateUserPdp.hide()
-            txtVariantReviewPdp.hide()
+            dividerMostHelpfulReviewThumbnails.hide()
+            basicInfoMostHelpfulReview.hide()
             txtDescReviewPdp.hide()
         }
     }
 
     private fun hideMostHelpfulElements() {
         binding.apply {
-            ratingReviewPdp.hide()
+            dividerMostHelpfulReviewThumbnails.hide()
+            basicInfoMostHelpfulReview.hide()
             txtDescReviewPdp.hide()
-            txtVariantReviewPdp.hide()
-            txtDateUserPdp.hide()
         }
     }
 
@@ -255,5 +276,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 return@let
             }
         }
+    }
+
+    private fun composeUserStatistics(userStatistics: List<UserStatistic>): String {
+        return userStatistics.joinToString(separator = " • ") { it.formatted }
     }
 }

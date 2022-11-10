@@ -1,59 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorTransparent">#D9000000</color>
-    <color name="colorBgCountdownTimer">#523b95</color>
 
-    <color name="yellow">#ffea4a</color>
-    <color name="lucky_egg_color">#c5f962</color>
-
-    <color name="default_text_reward_color">#FFFFFF</color>
-    <color name="default_reward_color">#FFD65C</color>
-    <color name="toolbar_color">#33ffffff</color>
-    <color name="egg_source_color">#ffd63b</color>
-    <color name="red_toast_bg_color">#e6d6001c</color>
-    <color name="gf_tint_close_color">#6C727C</color>
-    <color name="charcoal_gray_88">#e131353b</color>
-    <color name="gf_tooltip_transparent">#4c31353b</color>
-    <color name="gf_clr_31353b">#31353b</color>
-
-    <color name="gf_grad_btn_outer_start_blue">#b4d6dc</color>
-    <color name="gf_grad_btn_outer_end_blue">#c0d9dc</color>
-    <color name="gf_grad_btn_inner_start_blue">#ddeaf3</color>
-    <color name="gf_grad_btn_inner_end_blue">#f6f6f6</color>
-
-    <color name="gf_grad_btn_outer_start_green">#96c93d</color>
-    <color name="gf_grad_btn_outer_end_green">#26962d</color>
-    <color name="gf_grad_btn_inner_start_green">#96c93d</color>
-    <color name="gf_grad_btn_inner_end_green">#42b549</color>
-    <color name="gf_green_settings">#03AC0E</color>
-    <color name="gf_dim">#80000000</color>
-    <color name="gf_black_transparent">#00000000</color>
-
-    <color name="gf_box_hint_color">#12883D</color>
-    <color name="gf_box_prize_color">#52565E</color>
-    <color name="gf_orange_color">#FA591D</color>
-    <color name="gf_loader_message_color">#AD31353B</color>
-    <color name="gf_loader_title_color">#F531353B</color>
-    <color name="gf_grey68">#ae31353b</color>
-    <color name="gf_constraint_borderColor">#50000000</color>
-    <color name="gf_small_benefit_color">#29596A</color>
-    <color name="gf_box_orange_1">#FB8255</color>
-    <color name="gf_box_orange_2">#FA591D</color>
-    <color name="gf_box_black_shadow">#40000000</color>
-    <color name="gf_box_green_1">#41D19D</color>
-    <color name="gf_box_green_2">#06C17C</color>
-    <color name="gf_box_disabled_1">#C7CCD4</color>
-    <color name="gf_box_disabled_2">#B5BBC5</color>
-    <color name="gf_box_white_80">#80FFFFFF</color>
-    <color name="gf_box_text_shadow">#4A000000</color>
-    <color name="gf_n600">#40454C</color>
-    <color name="gf_tap_hint">#58595B</color>
-    <color name="gf_outline_btn">#9FA6B0</color>
-    <color name="gf_reward_green_1">#9BFA99</color>
-    <color name="gf_reward_green_2">#B7F49B</color>
-    <color name="gf_direct_gift_borderColor">#50000000</color>
-    <color name="gf_white_66">#66ffffff</color>
-    <color name="gf_glowing_green">#B3AAFE56</color>
-    <color name="gf_close_color">#6C727C</color>
+    <color name="gamification_dms_black_transparent">#00000000</color>
+    <color name="gamification_dms_box_orange_1">#FB8255</color>
+    <color name="gamification_dms_box_orange_2">#FA591D</color>
+    <color name="gamification_dms_box_green_1">#41D19D</color>
+    <color name="gamification_dms_box_green_2">#06C17C</color>
+    <color name="gamification_dms_n600">#40454C</color>
+    <color name="gamification_dms_tap_hint">#58595B</color>
+    <color name="gamification_dms_outline_btn">#9FA6B0</color>
+    <color name="gamification_dms_purple_dark">#693FC0</color>
+    <color name="gamification_dms_purple_light">#956BDE</color>
+    <color name="gamification_dms_glowing_green">#B3AAFE56</color>
+    <color name="gamification_dms_blue_start">#006683</color>
+    <color name="gamification_dms_blue_end">#1A8BAB</color>
 
 </resources>

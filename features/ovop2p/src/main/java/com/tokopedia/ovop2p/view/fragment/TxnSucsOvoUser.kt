@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
@@ -105,7 +106,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         updateHeader()
         if (!TextUtils.isEmpty(transferId)) {
             var dataMap: HashMap<String, Any> = HashMap()
-            dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toInt())
+            dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toIntOrZero())
             context?.let {
                 activity?.let {
                     (it as LoaderUiListener).showProgressDialog()
