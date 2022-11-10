@@ -69,6 +69,7 @@ class ProductGeneralInfoViewHolder(
         }
 
         view.setOnClickListener {
+            if (!element.isApplink) return@setOnClickListener
             listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
         }
     }
