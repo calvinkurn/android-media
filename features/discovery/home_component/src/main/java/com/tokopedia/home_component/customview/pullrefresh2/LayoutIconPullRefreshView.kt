@@ -5,7 +5,6 @@ import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -25,19 +24,26 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private var containerIconPullRefresh: ConstraintLayout? = null
-    private var contentChildView: SimpleSwipeRefreshLayout.ChildView? = null
     private var loaderPullRefresh: LoaderUnify? = null
-    private var maxOffset : Int = 0
-    private var progressRefresh : Float = 0.0f
-    private var offsetY : Float = 0.0f
+    private var maxOffset: Int = 0
+    private var progressRefresh: Float = 0.0f
+    private var offsetY: Float = 0.0f
     private var pullRefreshIcon: ImageUnify? = null
     private var heightLayoutScroll: Int = 0
+
     companion object {
         private const val MAXIMUM_HEIGHT_SCROLL = 120
+        private const val HEIGHT_LOADING = 64
+        private const val MAXIMUM_PROGRESS_REFRESH = 1
+        private const val TIME_DURATION_ANIMATION_HEIGHT : Long = 300
+        private const val HEIGHT_LAYOUT_GONE = 0
     }
 
     init {
@@ -45,7 +51,6 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         containerIconPullRefresh = view.findViewById(R.id.container_icon_pull_refresh)
         pullRefreshIcon = view.findViewById(R.id.progress_pull_refresh)
         containerIconPullRefresh?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-        contentChildView = SimpleSwipeRefreshLayout.ChildView(getChildAt(0))
         loaderPullRefresh = view.findViewById(R.id.loader_pull_refresh)
     }
 
@@ -62,24 +67,24 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     override fun startRefreshing() {
         containerIconPullRefresh?.visible()
-        setLayoutHeight(heightLayoutScroll, 64, {})
+        setLayoutHeight(heightLayoutScroll, HEIGHT_LOADING) {}
         loaderPullRefresh?.visible()
         pullRefreshIcon?.gone()
     }
 
     override fun stopRefreshing(isAfterRefresh: Boolean) {
-        if ((offsetY < maxOffset && progressRefresh < 1) || isAfterRefresh) {
-            setLayoutHeight(64, 0, {containerIconPullRefresh?.gone()})
+        if ((offsetY < maxOffset && progressRefresh < MAXIMUM_PROGRESS_REFRESH) || isAfterRefresh) {
+            setLayoutHeight(HEIGHT_LOADING, 0) { containerIconPullRefresh?.gone() }
         }
     }
 
     private fun setLayoutHeight(currentHeight: Int, targetHeight: Int, callback: () -> Unit) {
         val slideAnimator = ValueAnimator
             .ofInt(currentHeight, targetHeight)
-            .setDuration(300)
+            .setDuration(TIME_DURATION_ANIMATION_HEIGHT)
         slideAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
-            if (value == 0) {
+            if (value == HEIGHT_LAYOUT_GONE) {
                 callback.invoke()
             }
             containerIconPullRefresh?.layoutParams?.height = value
@@ -98,7 +103,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     }
 
     private fun positionChildren() {
-        if (offsetY > 0) {
+        if (offsetY > HEIGHT_LAYOUT_GONE) {
             heightLayoutScroll = ((offsetY / maxOffset) * MAXIMUM_HEIGHT_SCROLL).roundToInt()
             containerIconPullRefresh?.visible()
             val layoutParams = containerIconPullRefresh?.layoutParams
