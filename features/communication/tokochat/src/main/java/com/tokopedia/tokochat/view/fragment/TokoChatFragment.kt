@@ -268,7 +268,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             viewModel.updateOrderTransactionStatus.collect {
                 when (it) {
                     is Success -> {
-                        setShowTransactionWidget(it.data.tokochatOrderProgress)
+                        updateShowTransactionWidget(it.data.tokochatOrderProgress)
                         if (it.data.tokochatOrderProgress.state !in listOf(OrderStatusType.CANCELLED, OrderStatusType.COMPLETED)) {
                             viewModel.updateOrderStatusParam(Pair(tkpdOrderId, source))
                         }
@@ -393,6 +393,23 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     private fun loadTransactionWidget() {
         baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
         viewModel.loadOrderCompletedStatus(tkpdOrderId, source)
+    }
+
+    private fun updateShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
+        val orderProgressUiModel = TokoChatOrderProgressUiModel(
+            isEnable = tokoChatOrderProgress.enable,
+            state = tokoChatOrderProgress.state,
+            imageUrl = tokoChatOrderProgress.imageUrl,
+            invoiceId = tokoChatOrderProgress.invoiceId,
+            labelTitle = tokoChatOrderProgress.label.title,
+            labelValue = tokoChatOrderProgress.label.value,
+            name = tokoChatOrderProgress.name,
+            orderId = tokoChatOrderProgress.orderId,
+            status = tokoChatOrderProgress.status,
+            statusId = tokoChatOrderProgress.statusId,
+            appLink = tokoChatOrderProgress.uri
+        )
+        baseBinding?.tokochatTransactionOrder?.updateTransactionWidget(orderProgressUiModel)
     }
 
     private fun setShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
