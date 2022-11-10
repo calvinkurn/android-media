@@ -28,7 +28,7 @@ fun NestHeader(
     onToolbarBackIconPressed: () -> Unit = {}
 ) {
     Surface(
-        color = NestTheme.colors.NN0,
+        color = NestTheme.colors.NN._0,
         elevation = 1.dp,
         modifier = modifier
     ) {
@@ -59,7 +59,7 @@ fun NestHeader(
                 text = title,
                 textStyle = NestTheme.typography.display1.copy(
                     fontWeight = FontWeight.Bold,
-                    color = NestTheme.colors.NN950
+                    color = NestTheme.colors.NN._950
                 )
             )
         }

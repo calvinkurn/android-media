@@ -38,8 +38,8 @@ fun NestSearchBar(
     onSearchBarCleared: () -> Unit = {},
     onKeyboardSearchAction: (String) -> Unit
 ) {
-    val borderColor = NestTheme.colors.NN200
-    val searchIconColor = NestTheme.colors.NN500
+    val borderColor = NestTheme.colors.NN._200
+    val searchIconColor = NestTheme.colors.NN._500
 
     var text by remember { mutableStateOf("") }
 
@@ -77,7 +77,7 @@ fun NestSearchBar(
                     if (text.isEmpty()) {
                         NestTypography(
                             text = placeholderText,
-                            textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN600)
+                            textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._600)
                         )
                     }
 
