@@ -220,6 +220,9 @@ class ProductSheetViewComponent(
 
         val sections = sectionList.filterIsInstance<ProductSectionUiModel.Section>()
         val newProductList = buildProductList(sections)
+
+        if(newProductList == productAdapter.getItems()) return
+
         productAdapter.setItemsAndAnimateChanges(newProductList)
 
         scope.launch {
