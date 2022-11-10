@@ -34,6 +34,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 object LeftCarouselAtcMapper {
 
     private const val DEFAULT_PARENT_PRODUCT_ID = "0"
+    private const val CATEGORY_DIVIDER = "/"
     private const val DEFAULT_TITLE = ""
 
     fun mapToLeftCarouselAtc(
@@ -209,11 +210,12 @@ object LeftCarouselAtcMapper {
             recommendationItemList = recommendationItemList
         )
         val productCardModel = parentProduct.productCardModel
+        val categoryBreadcrumbs = parentProduct.categoryBreadcrumbs
 
         val realTimeRecom = item.realTimeRecom.copy(
             parentProductId = parentProduct.id.toString(),
             productImageUrl = productCardModel.productImageUrl,
-            category = parentProduct.categoryBreadcrumbs,
+            category = categoryBreadcrumbs.substringAfterLast(CATEGORY_DIVIDER),
             widget = realTimeRecomWidget,
             widgetState = RealTimeRecomWidgetState.READY,
             carouselState = RecommendationCarouselData.STATE_READY,

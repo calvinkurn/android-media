@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 
 object ProductRecomMapper {
 
+    private const val CATEGORY_DIVIDER = "/"
     private const val DEFAULT_TITLE = ""
 
     fun mapProductRecomDataModel(
@@ -67,11 +68,12 @@ object ProductRecomMapper {
             title = DEFAULT_TITLE,
             recommendationItemList = recommendationItemList
         )
+        val categoryBreadcrumbs = parentProduct.categoryBreadcrumbs
 
         val realTimeRecom = item.realTimeRecom.copy(
             parentProductId = parentProduct.productId.toString(),
             productImageUrl = parentProduct.imageUrl,
-            category = parentProduct.categoryBreadcrumbs,
+            category = categoryBreadcrumbs.substringAfterLast(CATEGORY_DIVIDER),
             widget = realTimeRecomWidget,
             widgetState = RealTimeRecomWidgetState.READY,
             carouselState = RecommendationCarouselData.STATE_READY
