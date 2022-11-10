@@ -35,6 +35,7 @@
       "event": "view_item_list",
       "eventAction": "view - now product carousel",
       "eventCategory": "groupchat room",
+      "clientId":".*",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
