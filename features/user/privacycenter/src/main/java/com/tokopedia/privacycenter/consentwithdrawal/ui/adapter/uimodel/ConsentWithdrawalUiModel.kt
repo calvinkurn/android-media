@@ -1,0 +1,3 @@
+package com.tokopedia.privacycenter.consentwithdrawal.ui.adapter.uimodel
+
+interface ConsentWithdrawalUiModel

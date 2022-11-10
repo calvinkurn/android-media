@@ -4,6 +4,8 @@
     <!--Main page-->
     <string name="title_privacy_center">Pengaturan Privasi</string>
     <string name="toolbar_desc">Penggunaan datamu bisa diatur di sini</string>
+    <string name="error_network_title">Koneksi internetmu terganggu</string>
+    <string name="error_network_detail">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu.</string>
 
     <!--Section | Consent Withdrawal -->
     <string name="section_title_consentWithdrawal">Persetujuan kamu</string>
