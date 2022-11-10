@@ -244,8 +244,6 @@ class ProductSheetViewComponent(
             impressionSet.clear()
             sendImpression()
         }
-
-        sendImpression()
     }
 
     fun showPlaceholder() {
