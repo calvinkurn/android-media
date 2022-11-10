@@ -70,10 +70,6 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         return getTokenFromPref()?: ""
     }
 
-    private fun updateTokenOnCMServer(token: String) {
-        sendTokenToCMUseCase.updateToken(token, true)
-    }
-
     private fun updateTokenOnServer(
             newToken: String,
             listener: FirebaseMessagingManager.SyncListener? = null
@@ -101,6 +97,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 
     private fun setDeviceId(newToken: String) {
         userSession.deviceId = newToken
+    }
+
+    private fun updateTokenOnCMServer(token: String) {
+        sendTokenToCMUseCase.updateToken(token, true)
     }
 
     private fun logFailUpdateFcmToken(error: Throwable, token: String, type: String) {
