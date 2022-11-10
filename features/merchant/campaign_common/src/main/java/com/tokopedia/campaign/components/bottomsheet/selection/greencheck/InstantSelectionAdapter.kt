@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.components.bottomsheet.selection.instant
+package com.tokopedia.campaign.components.bottomsheet.selection.greencheck
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -64,12 +64,12 @@ class InstantSelectionAdapter : RecyclerView.Adapter<InstantSelectionAdapter.Vie
         }
     }
 
-    fun submit(newItems: List<SingleSelectionItem>) {
-        differ.submitList(newItems)
-    }
+    fun submit(newItems: List<SingleSelectionItem>) { differ.submitList(newItems) }
 
-    fun snapshot(): List<SingleSelectionItem> {
-        return differ.currentList
+    fun updateSelectedItem(selectedItem: SingleSelectionItem) {
+        differ.submitList(differ.currentList.map {
+            if (it.id == selectedItem.id) it.copy(isSelected = true) else it.copy(isSelected = false)
+        })
     }
 
 }
