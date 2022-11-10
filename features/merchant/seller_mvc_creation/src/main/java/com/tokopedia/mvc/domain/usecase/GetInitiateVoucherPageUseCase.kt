@@ -8,24 +8,25 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
 import com.tokopedia.mvc.data.response.ProductListResponse
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class GetInitiateVoucherPage @Inject constructor(
+class GetInitiateVoucherPageUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val mapper: GetInitiateVoucherPageMapper,
-    private val userSession: UserSessionInterface
+    private val mapper: GetInitiateVoucherPageMapper
 ) : GraphqlUseCase<VoucherCreationMetadata>(repository) {
 
-  /*  init {
+    init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
     companion object {
+        private const val VOUCHER_TYPE_SHOP = 0
+        private const val VOUCHER_TYPE_PRODUCT = 1
         private const val REQUEST_PARAM_ACTION = "Action"
         private const val REQUEST_PARAM_TARGET_BUYER = "TargetBuyer"
         private const val REQUEST_PARAM_COUPON_TYPE = "CouponType"
@@ -35,13 +36,12 @@ class GetInitiateVoucherPage @Inject constructor(
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "getInitiateVoucherPage"
         private val QUERY = """
-              query $OPERATION_NAME($Action: String, $TargetBuyer: Int, $CouponType: String, $IsVoucherProduct: Int) {
-                  $OPERATION_NAME(Action: $Action, TargetBuyer: $TargetBuyer, CouponType: $CouponType, IsVoucherProduct: $IsVoucherProduct) {
+              query $OPERATION_NAME(${'$'}Action: String, ${'$'}TargetBuyer: Int, ${'$'}CouponType: String, ${'$'}IsVoucherProduct: Int) {
+                  $OPERATION_NAME(Action: ${'$'}Action, TargetBuyer: ${'$'}TargetBuyer, CouponType: ${'$'}CouponType, IsVoucherProduct: ${'$'}IsVoucherProduct) {
                     header {
                       messages
                       reason
                       error_code
-                      __typename
                     }
                     data {
                       access_token
@@ -51,9 +51,7 @@ class GetInitiateVoucherPage @Inject constructor(
                       shop_id
                       token
                       user_id
-                      __typename
                     }
-                    __typename
                   }
               }
 
@@ -73,19 +71,21 @@ class GetInitiateVoucherPage @Inject constructor(
     }
 
     private fun buildRequest(param: Param): GraphqlRequest {
-        val shopId = userSession.shopId
+        val voucherProduct = if (param.isVoucherProduct) VOUCHER_TYPE_PRODUCT else VOUCHER_TYPE_SHOP
 
+        val action = when(param.action) {
+            Param.Action.CREATE -> "create"
+            Param.Action.UPDATE -> "update"
+        }
 
-        val voucherProduct = if (param.isVoucherProduct) 1 else 0
-
-        val couponType = when(param.couponType) {
-            Param.CouponType.CASHBACK -> "cashback"
-            Param.CouponType.FREE_SHIPPING -> "shipping"
+        val promoType = when(param.promoType) {
+            Param.PromoType.CASHBACK -> "cashback"
+            Param.PromoType.FREE_SHIPPING -> "shipping"
         }
         val params = mapOf(
-            REQUEST_PARAM_ACTION to shopId,
-            REQUEST_PARAM_TARGET_BUYER to filter,
-            REQUEST_PARAM_COUPON_TYPE to sort,
+            REQUEST_PARAM_ACTION to action,
+            REQUEST_PARAM_TARGET_BUYER to Int.ZERO,
+            REQUEST_PARAM_COUPON_TYPE to promoType,
             REQUEST_PARAM_IS_VOUCHER_PRODUCT to voucherProduct
         )
 
@@ -99,24 +99,19 @@ class GetInitiateVoucherPage @Inject constructor(
 
     data class Param(
         val action: Action,
-        val targetBuyer: TargetBuyer,
-        val couponType: CouponType,
+        val promoType: PromoType,
         val isVoucherProduct: Boolean
     ) {
         enum class Action {
             CREATE,
             UPDATE
         }
-
-        enum class TargetBuyer {
-
-        },
-        enum class CouponType {
+        
+        enum class PromoType {
             CASHBACK,
             FREE_SHIPPING
         }
     }
-*/
 
 }
 
