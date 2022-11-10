@@ -23,7 +23,6 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         storeNewToken(newToken)
 
         if(isNewToken(newToken)){
-            updateTokenOnCMServer(newToken)
             if(userSession.isLoggedIn){
                 updateTokenOnServer(newToken)
             } else {
@@ -64,7 +63,6 @@ class FirebaseMessagingManagerImpl @Inject constructor(
             }
 
             updateTokenOnServer(currentFcmToken, listener)
-            updateTokenOnCMServer(currentFcmToken)
         }
     }
 
@@ -93,6 +91,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
                 listener?.onError(error)
                 logFailUpdateFcmToken(error, newToken, "Error")
             })
+            updateTokenOnCMServer(newToken)
         } catch (exception: Exception) {
             exception.printStackTrace()
             listener?.onError(exception)
