@@ -67,11 +67,6 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
 
     override fun navigateToNewFragment(fragment: Fragment, isFinishCurrent: Boolean) {
         val fragmentName = fragment.javaClass.name
-        if (getIsNavigatingToSameFragment(fragmentName)) {
-            return
-        } else {
-            currentFragmentName = fragmentName
-        }
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (existingFragment == null) {
             // Add new fragment if the same fragment is not found in the back stack
