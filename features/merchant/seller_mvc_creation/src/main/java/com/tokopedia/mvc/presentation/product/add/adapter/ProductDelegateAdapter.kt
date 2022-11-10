@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.add
+package com.tokopedia.mvc.presentation.product.add.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.add
+package com.tokopedia.mvc.presentation.product.add.uimodel
 
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption

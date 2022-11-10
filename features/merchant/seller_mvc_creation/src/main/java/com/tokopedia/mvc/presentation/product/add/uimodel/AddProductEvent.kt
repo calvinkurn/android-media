@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.add
+package com.tokopedia.mvc.presentation.product.add.uimodel
 
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
@@ -10,14 +10,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 sealed class AddProductEvent {
     data class FetchRequiredData(val action: VoucherAction, val promoType: PromoType) : AddProductEvent()
 
-    data class LoadPage(
-        val searchKeyword: String,
-        val warehouseId: Long,
-        val categoryId: String,
-        val page: Int,
-        val sortId: String,
-        val sortDirection: String
-    ) : AddProductEvent()
+    data class LoadPage(val page: Int) : AddProductEvent()
 
     object ClearSearchBar : AddProductEvent()
     object ClearFilter : AddProductEvent()

@@ -3,7 +3,6 @@ package com.tokopedia.mvc.presentation.product.add
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
@@ -17,9 +16,12 @@ import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
-import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
 import com.tokopedia.mvc.domain.usecase.ShopShowcasesByShopIDUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
+import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,9 +38,12 @@ class AddProductViewModel @Inject constructor(
     private val getProductListMetaUseCase: ProductListMetaUseCase,
     private val getProductsUseCase: ProductListUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
-    private val getProductVariant: ProductV3UseCase,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        private const val INITIAL_WAREHOUSE_ID = 0
+    }
 
     private val _uiState = MutableStateFlow(AddProductUiState())
     val uiState = _uiState.asStateFlow()
@@ -51,8 +56,12 @@ class AddProductViewModel @Inject constructor(
 
     fun processEvent(event: AddProductEvent) {
         when(event) {
-            is AddProductEvent.FetchRequiredData -> fetchRequiredData(event.action, event.promoType)
-            is AddProductEvent.LoadPage -> getProducts(event.searchKeyword, event.warehouseId, event.page, event.categoryId, event.sortId, event.sortDirection)
+            is AddProductEvent.FetchRequiredData -> {
+                getProductsAndProductsMetadata(event.action, event.promoType)
+                getSortAndCategoryFilter()
+                getShopShowcases()
+            }
+            is AddProductEvent.LoadPage -> handleLoadPage(event.page)
             is AddProductEvent.AddProductToSelection -> handleAddProductToSelection(event.productId)
             AddProductEvent.ClearFilter -> handleClearFilter()
             AddProductEvent.ClearSearchBar -> handleClearSearchbar()
@@ -72,10 +81,7 @@ class AddProductViewModel @Inject constructor(
     }
 
 
-    private fun fetchRequiredData(
-        action: VoucherAction,
-        promoType: PromoType,
-    ) {
+    private fun getProductsAndProductsMetadata(action: VoucherAction, promoType: PromoType, ) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -88,55 +94,38 @@ class AddProductViewModel @Inject constructor(
                 val sellerWarehouses = sellerWarehousesDeferred.await()
                 val metadata = metadataDeferred.await()
 
-                val defaultWarehouseId = sellerWarehouses.firstOrNull()?.warehouseId.orZero()
-
-                val param = ProductListMetaUseCase.Param(defaultWarehouseId)
-                val productsMetaDeferred = async { getProductListMetaUseCase.execute(param) }
-
-                val shopShowcasesDeferred = async { getShopShowcasesByShopIDUseCase.execute() }
-
-                val productListMeta = productsMetaDeferred.await()
-                val shopShowCases = shopShowcasesDeferred.await()
+                val defaultWarehouse = sellerWarehouses.firstOrNull() ?: return@launchCatchError
 
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         voucherCreationMetadata = metadata,
                         warehouses = sellerWarehouses,
-                        sortOptions = productListMeta.sortOptions,
-                        categoryOptions = productListMeta.categoryOptions,
-                        shopShowcases = shopShowCases
+                        selectedWarehouseLocation = defaultWarehouse
                     )
                 }
 
-                getProducts("", defaultWarehouseId, 1, "", "DEFAULT", "DESC")
+                getProducts()
 
             },
             onError = { error ->
-                _uiState.update { it.copy(error = error) }
+                _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
     }
 
-    private fun getProducts(
-        searchKeyword: String,
-        warehouseId: Long,
-        page: Int,
-        categoryId: String,
-        sortId: String,
-        sortDirection: String
-    ) {
+    private fun getProducts() {
         launchCatchError(
             dispatchers.io,
             block = {
                 val param = ProductListUseCase.Param(
-                    searchKeyword = searchKeyword,
-                    warehouseId = warehouseId,
-                    categoryId = categoryId,
-                    page = page,
+                    searchKeyword = currentState.searchKeyword,
+                    warehouseId = currentState.selectedWarehouseLocation.warehouseId,
+                    categoryId = currentState.selectedCategory.id,
+                    page = currentState.page,
                     pageSize = AddProductFragment.PAGE_SIZE,
-                    sortId = sortId,
-                    sortDirection = sortDirection
+                    sortId = currentState.selectedSort.id,
+                    sortDirection = currentState.selectedSort.value
                 )
 
                 val productsResponse = getProductsUseCase.execute(param)
@@ -223,6 +212,11 @@ class AddProductViewModel @Inject constructor(
     }
 
 
+    private fun handleLoadPage(nextPage : Int) {
+        _uiState.update { it.copy(page = nextPage) }
+        getProducts()
+    }
+
     private fun handleCheckAllProduct() {
         val enabledProducts = currentState.products.map { it.copy(isSelected = true) }
         _uiState.update {
@@ -307,61 +301,110 @@ class AddProductViewModel @Inject constructor(
 
 
     private fun handleClearSearchbar() {
-        _uiState.update { it.copy(isLoading = true, searchKeyword = "") }
-        getProducts(
-            "",
-            currentState.selectedWarehouseLocation.warehouseId,
-            1,
-            currentState.selectedCategory.id,
-            currentState.selectedSort.id,
-            currentState.selectedSort.value
-        )
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                searchKeyword = "",
+                page = NumberConstant.FIRST_PAGE,
+                products = emptyList()
+            )
+        }
+        getProducts()
     }
-
 
     private fun handleClearFilter() {
         _uiState.update {
             it.copy(
                 isLoading = true,
+                searchKeyword = currentState.searchKeyword,
+                page =NumberConstant.FIRST_PAGE,
                 products = emptyList(),
                 selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
             )
         }
-        getProducts(currentState.searchKeyword, 0L, 1, "","DEFAULT", "DESC")
+
+        getProducts()
     }
 
     private fun handleApplySortFilter(selectedSort: ProductSortOptions) {
-        _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedSort = selectedSort) }
-        getProducts(currentState.searchKeyword, currentState.selectedWarehouseLocation.warehouseId, 1, currentState.selectedCategory.id, selectedSort.id, selectedSort.value)
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                products = emptyList(),
+                selectedSort = selectedSort
+            )
+        }
+
+        getProducts()
     }
 
     private fun handleApplyWarehouseLocationFilter(selectedWarehouse: Warehouse) {
-        _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedWarehouseLocation = selectedWarehouse) }
-        getProducts(currentState.searchKeyword, selectedWarehouse.warehouseId, 1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                products = emptyList(),
+                selectedWarehouseLocation = selectedWarehouse
+            )
+        }
+
+        getProducts()
     }
 
     private fun handleApplyShopShowcasesFilter(selectedShopShowcase: ShopShowcase) {
-        _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedShopShowcase = selectedShopShowcase) }
-        getProducts(currentState.searchKeyword, currentState.selectedWarehouseLocation.warehouseId, 1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                products = emptyList(),
+                selectedShopShowcase = selectedShopShowcase
+            )
+        }
+
+        getProducts()
     }
 
     private fun handleApplyCategoryFilter(selectedCategory: ProductCategoryOption) {
-        _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedCategory = selectedCategory) }
-        getProducts(currentState.searchKeyword, currentState.selectedWarehouseLocation.warehouseId,1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                products = emptyList(),
+                selectedCategory = selectedCategory
+            )
+        }
+
+        getProducts()
     }
 
-    fun getProductVariants(productId:Long, warehouseId: String) {
+    private fun getSortAndCategoryFilter() {
         launchCatchError(
             dispatchers.io,
             block = {
-                val param = ProductV3UseCase.Param(productId, warehouseId)
-                val response = getProductVariant.execute(param)
-                println()
+
+                val param = ProductListMetaUseCase.Param(0)
+                val productListMeta = getProductListMetaUseCase.execute(param)
+
+                _uiState.update {
+                    it.copy(
+                        sortOptions = productListMeta.sortOptions,
+                        categoryOptions = productListMeta.categoryOptions,
+                    )
+                }
             },
             onError = { error ->
-
+                _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
+    }
 
+    private fun getShopShowcases() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val shopShowcases = getShopShowcasesByShopIDUseCase.execute()
+                _uiState.update { it.copy(shopShowcases = shopShowcases) }
+            },
+            onError = { error ->
+                _uiState.update { it.copy(isLoading = false, error = error) }
+            }
+        )
     }
 }

@@ -17,7 +17,7 @@
     <string name="smvc_placeholder_total_stock">Total stok: %s</string>
 
     <string name="smvc_product">Produk</string>
-
+    <string name="smvc_seller_location">Lokasi Seller</string>
     <string name="smvc_location">Lokasi</string>
     <string name="smvc_category">Kategori</string>
     <string name="smvc_showcase">Etalase</string>

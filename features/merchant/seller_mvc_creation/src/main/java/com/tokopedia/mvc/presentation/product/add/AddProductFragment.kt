@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,14 +20,25 @@ import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.entity.LoadingItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
-import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
+import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+import com.tokopedia.mvc.domain.entity.enums.WarehouseType
+import com.tokopedia.mvc.presentation.product.add.adapter.ProductDelegateAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.ProductSortAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.WarehouseFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
+import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.seller_mvc_creation.R
 import com.tokopedia.seller_mvc_creation.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.sortfilter.SortFilterItem
@@ -121,6 +133,14 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun setupSearchBar() {
+        binding?.searchBar?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                resetPaging()
+                viewModel.processEvent(AddProductEvent.LoadPage(NumberConstant.FIRST_PAGE))
+                return@setOnEditorActionListener false
+            }
+            return@setOnEditorActionListener false
+        }
         binding?.searchBar?.clearListener = { viewModel.processEvent(AddProductEvent.ClearSearchBar) }
         binding?.searchBar?.searchBarPlaceholder = getString(R.string.smvc_search_product)
     }
@@ -142,17 +162,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             adapter = productAdapter
 
             attachPaging(this, pagingConfig) { page, _ ->
-                val nextPage = page + 1
-                viewModel.processEvent(
-                    AddProductEvent.LoadPage(
-                        binding?.searchBar?.searchBarPlaceholder.orEmpty(),
-                        0L,
-                        "",
-                        nextPage,
-                        "DEFAULT",
-                        "DESC"
-                    )
-                )
+                val nextPage = page.inc()
+                viewModel.processEvent(AddProductEvent.LoadPage(nextPage))
             }
         }
     }
@@ -181,7 +192,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             }
             is AddProductEffect.ShowProductCategoryBottomSheet -> {}
             is AddProductEffect.ShowShowcasesBottomSheet -> {}
-            is AddProductEffect.ShowWarehouseLocationBottomSheet -> {}
+            is AddProductEffect.ShowWarehouseLocationBottomSheet -> {
+                showWarehouseBottomSheet(effect.selectedWarehouse, effect.warehouses)
+            }
         }
     }
 
@@ -200,7 +213,11 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
 
         productAdapter.submit(uiState.products)
+
         renderSortChips(uiState.selectedSort)
+        renderWarehouseLocationChips(uiState.selectedWarehouseLocation)
+        renderCategoryChips(uiState.selectedCategory)
+        renderShopShowcaseChips(uiState.selectedShopShowcase)
         renderCheckbox(uiState)
     }
 
@@ -224,6 +241,41 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         } else {
             sortChips.type = ChipsUnify.TYPE_SELECTED
             sortChips.selectedItem = arrayListOf(selectedSort.name)
+        }
+    }
+
+    private fun renderWarehouseLocationChips(selectedWarehouse: Warehouse) {
+        if (selectedWarehouse.warehouseName.isEmpty()) {
+            locationChips.type = ChipsUnify.TYPE_NORMAL
+            locationChips.selectedItem = arrayListOf(getString(R.string.smvc_sort))
+        } else {
+            locationChips.type = ChipsUnify.TYPE_SELECTED
+            val warehouseName = if (selectedWarehouse.warehouseType == WarehouseType.DEFAULT_WAREHOUSE_LOCATION) {
+                getString(R.string.smvc_location)
+            } else {
+                selectedWarehouse.warehouseName
+            }
+            locationChips.selectedItem = arrayListOf(warehouseName)
+        }
+    }
+
+    private fun renderShopShowcaseChips(selectedShowcase: ShopShowcase) {
+        if (selectedShowcase.name.isEmpty()) {
+            showcaseChips.type = ChipsUnify.TYPE_NORMAL
+            showcaseChips.selectedItem = arrayListOf(getString(R.string.smvc_showcase))
+        } else {
+            showcaseChips.type = ChipsUnify.TYPE_SELECTED
+            showcaseChips.selectedItem = arrayListOf(selectedShowcase.name)
+        }
+    }
+
+    private fun renderCategoryChips(selectedCategory: ProductCategoryOption) {
+        if (selectedCategory.name.isEmpty()) {
+            categoryChips.type = ChipsUnify.TYPE_NORMAL
+            categoryChips.selectedItem = arrayListOf(getString(R.string.smvc_category))
+        } else {
+            categoryChips.type = ChipsUnify.TYPE_SELECTED
+            categoryChips.selectedItem = arrayListOf(selectedCategory.name)
         }
     }
 
@@ -286,21 +338,71 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedSort.id, sortOptions)
 
         bottomSheet.setBottomSheetTitle(getString(R.string.smvc_sort))
-        bottomSheet.setOnApplyButtonClick {
-            val selectedItem = sortAdapter.getSelectedItem() ?: return@setOnApplyButtonClick
-            viewModel.processEvent(AddProductEvent.ApplySortFilter(ProductSortOptions(selectedItem.id, selectedItem.name, selectedItem.direction)))
-        }
 
         sortAdapter.setOnItemClicked { newItem ->
             sortAdapter.markAsSelected(newItem)
-            bottomSheet.getBottomsheetView()?.btnApply?.enable()
+
+            val selectedItem = sortAdapter.getSelectedItem() ?: return@setOnItemClicked
+            viewModel.processEvent(AddProductEvent.ApplySortFilter(ProductSortOptions(selectedItem.id, selectedItem.name, selectedItem.direction)))
+
+            bottomSheet.dismiss()
         }
 
         bottomSheet.setCustomAppearance {
             recyclerView.adapter = sortAdapter
+            button.gone()
             sortAdapter.submit(sortOptions)
         }
         
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showWarehouseBottomSheet(selectedWarehouse: Warehouse, remoteWarehouseOptions: List<Warehouse>) {
+        if (!isAdded) return
+
+        val warehouseFilterAdapter = WarehouseFilterAdapter()
+
+        val warehouseOptions = remoteWarehouseOptions.map { sort ->
+            val isSelected = sort.warehouseId == selectedWarehouse.warehouseId
+            val warehouseName = if (sort.warehouseType == WarehouseType.DEFAULT_WAREHOUSE_LOCATION) {
+                getString(R.string.smvc_seller_location)
+            } else {
+                sort.warehouseName
+            }
+
+            SingleSelectionItem(sort.warehouseId.toString(), warehouseName, isSelected, "")
+        }
+
+        val bottomSheet = SingleSelectionBottomSheet.newInstance(
+            selectedWarehouse.warehouseId.toString(),
+            warehouseOptions
+        )
+
+        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_location))
+
+        warehouseFilterAdapter.setOnItemClicked { newItem ->
+            warehouseFilterAdapter.markAsSelected(newItem)
+
+            val selectedItem = warehouseFilterAdapter.getSelectedItem() ?: return@setOnItemClicked
+            val warehouseType = if (selectedItem.name == "Shop Location") {
+                WarehouseType.DEFAULT_WAREHOUSE_LOCATION
+            } else {
+                WarehouseType.WAREHOUSE
+            }
+
+            val newlySelectedWarehouse = Warehouse(selectedItem.id.toLong(), selectedItem.name, warehouseType)
+            val event = AddProductEvent.ApplyWarehouseLocationFilter(newlySelectedWarehouse)
+            viewModel.processEvent(event)
+
+            bottomSheet.dismiss()
+        }
+
+        bottomSheet.setCustomAppearance {
+            recyclerView.adapter = warehouseFilterAdapter
+            button.gone()
+            warehouseFilterAdapter.submit(warehouseOptions)
+        }
+
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }
