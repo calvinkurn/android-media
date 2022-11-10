@@ -7,6 +7,8 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.usecase.CheckCookieUseCase
 import com.tokopedia.common_sdk_affiliate_toko.usecase.CreateCookieUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateSdkConstant.ATC_PDP_SOURCE
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateSdkConstant.ATC_SHOP_SOURCE
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,9 +25,6 @@ class AffiliateCookieHelper @Inject constructor(
     private val checkCookieUseCase: CheckCookieUseCase,
     private val userSession: UserSessionInterface
 ) {
-    companion object {
-        private const val ATC_SOURCE = "shop_page"
-    }
 
     private var affiliateUUID: String = ""
 
@@ -46,7 +45,7 @@ class AffiliateCookieHelper @Inject constructor(
         affiliatePageDetail: AffiliatePageDetail,
         uuid: String = "",
         isATC: Boolean = false,
-        additionalParam: List<AdditionalParam> = emptyList(),
+        additionalParam: List<AdditionalParam> = emptyList()
     ) {
         val params = AffiliateCookieParams(
             if (isATC) this.affiliateUUID else affiliateUUID,
@@ -57,11 +56,11 @@ class AffiliateCookieHelper @Inject constructor(
         )
         when (affiliatePageDetail.source) {
             is AffiliateSdkPageSource.PDP -> {
-                if (affiliateUUID.isNotEmpty()) {
+                if (params.affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
                         userSession.deviceId,
-                        if (isATC) ATC_SOURCE else ""
+                        if (isATC) ATC_PDP_SOURCE else ""
                     )
                 }
             }
@@ -71,7 +70,7 @@ class AffiliateCookieHelper @Inject constructor(
                     createCookieUseCase.createCookieRequest(
                         params,
                         userSession.deviceId,
-                        if (isATC) ATC_SOURCE else ""
+                        if (isATC) ATC_SHOP_SOURCE else ""
                     )
                 } else {
                     try {
@@ -103,5 +102,4 @@ class AffiliateCookieHelper @Inject constructor(
         }
         return productUrl
     }
-
 }
