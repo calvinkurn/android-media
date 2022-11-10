@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.listener
+package com.tokopedia.search.result.product.tdn
 
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 
