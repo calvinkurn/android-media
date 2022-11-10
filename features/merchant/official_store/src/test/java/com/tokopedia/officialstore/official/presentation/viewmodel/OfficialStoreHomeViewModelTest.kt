@@ -20,6 +20,7 @@ import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -190,13 +191,12 @@ class OfficialStoreHomeViewModelTest {
             val error = MessageErrorException()
             val prefixUrl = "prefix"
             val slug = "slug"
-            val category = createCategory(prefixUrl, slug)
             val channelType = "$prefixUrl$slug"
 
             onGetOfficialStoreData_thenReturn(error)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category)
+            viewModel.loadFirstData(null)
 
             assertEquals(viewModel.officialStoreError.value, error)
         }
@@ -513,11 +513,13 @@ class OfficialStoreHomeViewModelTest {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
+        val channelHeader = Header(123L, "channelHeader", "", "", "",
+            "", 0L, "", "", "")
 
         val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
         dynamicChannelResponse.addAll(
             listOf(
-                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL))
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL, header = channelHeader))
             )
         )
 
@@ -550,11 +552,13 @@ class OfficialStoreHomeViewModelTest {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
+        val channelHeader = Header(123L, "channelHeader", "", "", "",
+            "", 0L, "", "", "")
 
         val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
         dynamicChannelResponse.addAll(
             listOf(
-                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL))
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL, header = channelHeader))
             )
         )
 
@@ -633,7 +637,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun createCategory(prefixUrl: String, slug: String): Category {
-        return Category(prefixUrl = prefixUrl, slug = slug)
+        return Category(categoryId = "0", prefixUrl = prefixUrl, slug = slug, title = "Home")
     }
 
     private fun onGetOfficialStoreData_thenReturn(error: Throwable) {
