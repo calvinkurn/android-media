@@ -86,7 +86,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tokochat_iv_order_thumbnail"
             app:layout_constraintTop_toTopOf="@id/tokochat_iv_order_thumbnail"
-            app:typographyType="heading_5"
+            app:typographyType="display_2"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
