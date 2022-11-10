@@ -8,7 +8,6 @@ data class SubmitConsentPreferenceDataModel(
 )
 
 data class SubmitConsentDataModel(
-    var position: Int = 0,
     @SerializedName("refId")
     var refId: String = "",
     @SerializedName("isSuccess")

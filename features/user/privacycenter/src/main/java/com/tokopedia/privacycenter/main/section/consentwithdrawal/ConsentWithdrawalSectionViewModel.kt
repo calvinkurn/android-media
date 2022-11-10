@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentGroupListDataModel
 import com.tokopedia.privacycenter.consentwithdrawal.domain.GetConsentGroupListUseCase
@@ -21,19 +20,10 @@ class ConsentWithdrawalSectionViewModel @Inject constructor(
         get() = _getConsentGroupList
 
     fun getConsentGroupList() {
-        launchCatchError(coroutineContext, {
-            _getConsentGroupList.value = PrivacyCenterStateResult.Loading()
+        _getConsentGroupList.value = PrivacyCenterStateResult.Loading()
 
-            val response = getConsentGroupListUseCase(Unit)
-            if (response.consentGroupList.success) {
-                _getConsentGroupList.value = PrivacyCenterStateResult.Success(
-                    response.consentGroupList
-                )
-            } else {
-                _getConsentGroupList.value = PrivacyCenterStateResult.Fail(
-                    MessageErrorException(response.consentGroupList.errorMessages.toString())
-                )
-            }
+        launchCatchError(coroutineContext, {
+            _getConsentGroupList.value = getConsentGroupListUseCase(Unit)
         }) {
             _getConsentGroupList.value = PrivacyCenterStateResult.Fail(it)
         }

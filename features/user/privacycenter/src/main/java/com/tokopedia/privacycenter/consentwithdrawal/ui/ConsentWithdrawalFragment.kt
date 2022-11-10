@@ -235,14 +235,12 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
         if (isActive) {
             showDialog {
                 viewModel.submitConsentPreference(
-                    position,
                     data.purposeId,
                     transactionType
                 )
             }
         } else {
             viewModel.submitConsentPreference(
-                position,
                 data.purposeId,
                 transactionType
             )
