@@ -24,9 +24,6 @@ kapt {
     generateStubs = false
 }
 android {
-    testOptions {
-        unitTests.returnDefaultValues = true
-    }
     packagingOptions {
         exclude 'META-INF/**'
     }
