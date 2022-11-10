@@ -19,7 +19,7 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
 
     private var driverPhoneNumber: String? = null
 
-    private var listener: Listener? = null
+    private var analyticsListener: AnalyticsListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,13 +50,13 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
 
     private fun setCloseBottomSheet() {
         setCloseClickListener {
-            listener?.onCloseMaskingPhoneNumberBottomSheet()
+            analyticsListener?.onCloseMaskingPhoneNumberBottomSheet()
         }
     }
 
     private fun setDriverCallBtn() {
         binding?.tokochatBtnMaskingPhoneNumber?.setOnClickListener {
-            listener?.onConfirmCallOnBottomSheetCallDriver()
+            analyticsListener?.onConfirmCallOnBottomSheetCallDriver()
             driverPhoneNumber?.let { driverPhoneNumber ->
                 driverCallToIntent(driverPhoneNumber)
             }
@@ -83,11 +83,11 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun setTrackingListener(listener: Listener) {
-        this.listener = listener
+    fun setTrackingListener(analyticsListener: AnalyticsListener) {
+        this.analyticsListener = analyticsListener
     }
 
-    interface Listener {
+    interface AnalyticsListener {
         fun onCloseMaskingPhoneNumberBottomSheet()
         fun onConfirmCallOnBottomSheetCallDriver()
     }

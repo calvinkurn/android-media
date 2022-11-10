@@ -78,7 +78,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     TokoChatTransactionOrderWidget.Listener,
     TokoChatImageAttachmentListener,
     TokoChatMessageBubbleListener,
-    MaskingPhoneNumberBottomSheet.Listener {
+    MaskingPhoneNumberBottomSheet.AnalyticsListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
