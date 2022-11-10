@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -199,10 +200,14 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onClickDriverChat(goFoodOrderNumber: String, unReadChatCounter: String) {
-        tracking.clickChatIcon(viewModel.getOrderStatus(),
-                                viewModel.getOrderId(),
-                                channelId,
-            viewModel.getMerchantData()?.merchantId.orEmpty())
+        tracking.clickChatIcon(
+            orderStatus = viewModel.getOrderStatus(),
+            orderId = viewModel.getOrderId(),
+            channelId = channelId,
+            source = TokoFoodAnalyticsConstants.TOKOFOOD_SOURCE,
+            role = TokoFoodAnalyticsConstants.BUYER,
+            unReadChatCounter = unReadChatCounter,
+        )
 
         val tokoChatParams = mapOf(
             ApplinkConst.TokoChat.PARAM_SOURCE to TOKOFOOD_SOURCE,
