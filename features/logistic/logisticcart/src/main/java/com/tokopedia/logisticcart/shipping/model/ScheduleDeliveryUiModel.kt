@@ -15,6 +15,7 @@ data class ScheduleDeliveryUiModel(
     val title: String = "",
     val text: String = "",
     val notice: Notice = Notice(),
+    val ratesId: Long = 0L,
     val deliveryServices: List<DeliveryService> = arrayListOf(),
     // service id
     var scheduleDate: String = "",
