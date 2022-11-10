@@ -9,11 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.tokofood.R
@@ -143,7 +139,7 @@ class DriverSectionViewHolder(
 
                 if (isClickableCall) {
                     setOnClickListener {
-                        listener.onClickDriverChat(goFoodOrderNumber)
+                        listener.onClickDriverChat(goFoodOrderNumber, badgeCounter.orZero().toString())
                     }
                 }
             } else {
@@ -199,6 +195,6 @@ class DriverSectionViewHolder(
 
     interface Listener {
         fun onClickDriverCall()
-        fun onClickDriverChat(goFoodOrderNumber: String)
+        fun onClickDriverChat(goFoodOrderNumber: String, unReadChatCounter: String)
     }
 }

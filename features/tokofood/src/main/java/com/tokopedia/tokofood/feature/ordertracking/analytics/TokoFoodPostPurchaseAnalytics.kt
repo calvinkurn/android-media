@@ -77,6 +77,32 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
         tracking.sendGeneralEvent(mapData)
     }
 
+    fun clickCallDriverIcon(orderStatus: String, orderId: String, channelId: String, source: String, role: String) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoFoodAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoFoodAnalyticsConstants.CLICK_CALL_ON_ORDER_DETAIL_TOKOCHAT,
+            TrackAppUtils.EVENT_CATEGORY to TokoFoodAnalyticsConstants.TOKOCHAT_ORDER_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$orderStatus - $orderId - $channelId - $source - $role",
+            TokoFoodAnalyticsConstants.BUSSINESS_UNIT to TokoFoodAnalyticsConstants.COMMUNICATION,
+            TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
+            TokoFoodAnalyticsConstants.TRACKER_ID to TokoFoodAnalyticsConstants.TRACKER_ID_39064,
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickChatIcon(orderStatus: String, orderId: String, channelId: String, source: String, role: String, unReadChatCounter: String) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoFoodAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoFoodAnalyticsConstants.CLICK_CHAT_FROM_ORDER_DETAIL,
+            TrackAppUtils.EVENT_CATEGORY to TokoFoodAnalyticsConstants.TOKOCHAT_ORDER_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$orderStatus - $orderId - $channelId - $source - $role $unReadChatCounter",
+            TokoFoodAnalyticsConstants.BUSSINESS_UNIT to TokoFoodAnalyticsConstants.COMMUNICATION,
+            TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
+            TokoFoodAnalyticsConstants.TRACKER_ID to TokoFoodAnalyticsConstants.TRACKER_ID_39065,
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
     fun clickBuyAgainButton(orderId: String, merchantData: MerchantDataUiModel, foodItems: List<FoodItemUiModel>) {
         val bundleList = arrayListOf<Bundle>()
         foodItems.forEach {

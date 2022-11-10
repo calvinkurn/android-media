@@ -41,15 +41,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.bottomsheet.Dri
 import com.tokopedia.tokofood.feature.ordertracking.presentation.fragment.TokoFoodOrderLiveTrackingFragment
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TrackingWrapperUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -200,7 +192,12 @@ class BaseTokoFoodOrderTrackingFragment :
         viewModel.fetchDriverPhoneNumber(orderId)
     }
 
-    override fun onClickDriverChat(goFoodOrderNumber: String) {
+    override fun onClickDriverChat(goFoodOrderNumber: String, unReadChatCounter: String) {
+        tracking.clickChatIcon(viewModel.getOrderStatus(),
+                                viewModel.getOrderId(),
+                                channelId,
+            viewModel.getMerchantData()?.merchantId.orEmpty())
+
         val tokoChatParams = mapOf(
             ApplinkConst.TokoChat.PARAM_SOURCE to TOKOFOOD_SOURCE,
             ApplinkConst.TokoChat.ORDER_ID_TKPD to orderId,
