@@ -778,11 +778,7 @@ class OfficialHomeFragment :
         setLoadMoreListener()
         swipeRefreshLayout?.setOnRefreshListener {
             viewModel.counterTitleShouldBeRendered = 0
-            viewModel.removeRecommendation()
-            viewModel.removeRecomWidget()
-            viewModel.removeTopAdsHeadlineWidget()
-            viewModel.removeOfficialTopAdsBanner()
-            viewModel.removeOfficialFeaturedShop()
+            viewModel.removeWidgetsForRefresh()
             loadData(true)
             viewModel.resetShopWidgetImpressionCount()
             viewModel.resetIsFeatureShopAllowed()

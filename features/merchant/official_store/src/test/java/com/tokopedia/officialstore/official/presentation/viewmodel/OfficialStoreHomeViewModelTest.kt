@@ -919,9 +919,7 @@ class OfficialStoreHomeViewModelTest {
         viewModel.counterTitleShouldBeRendered += 1
         viewModel.loadMoreProducts(category.categoryId, page)
 
-        viewModel.removeRecomWidget()
-        viewModel.removeRecommendation()
-        viewModel.removeTopAdsHeadlineWidget()
+        viewModel.removeWidgetsForRefresh()
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel })
@@ -969,11 +967,7 @@ class OfficialStoreHomeViewModelTest {
         viewModel.counterTitleShouldBeRendered += 1
         viewModel.loadMoreProducts(category.categoryId, page)
 
-        viewModel.removeRecomWidget()
-        viewModel.removeRecommendation()
-        viewModel.removeTopAdsHeadlineWidget()
-        viewModel.removeOfficialTopAdsBanner()
-        viewModel.removeOfficialFeaturedShop()
+        viewModel.removeWidgetsForRefresh()
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialTopAdsBannerDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialFeaturedShopDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })

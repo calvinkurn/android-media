@@ -372,10 +372,15 @@ class OfficialStoreHomeViewModel @Inject constructor(
         _officialStoreLiveData.postValue()
     }
 
-    fun removeRecomWidget(){
+    fun removeWidgetsForRefresh(){
         _officialStoreListVisitable.run {
             removeAll {
-                it is BestSellerDataModel
+                it is BestSellerDataModel ||
+                    it is ProductRecommendationDataModel ||
+                    it is ProductRecommendationTitleDataModel ||
+                    it is OfficialTopAdsBannerDataModel ||
+                    it is OfficialFeaturedShopDataModel ||
+                    it is OfficialTopAdsHeadlineDataModel
             }
             _officialStoreLiveData.postValue(this)
         }
@@ -388,35 +393,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             }
             _officialStoreLiveData.postValue(this)
         }
-    }
-
-    fun removeRecommendation(){
-        _officialStoreListVisitable.run {
-            removeAll { it is ProductRecommendationDataModel || it is ProductRecommendationTitleDataModel }
-            _officialStoreLiveData.postValue(this)
-        }
-    }
-
-    fun removeOfficialTopAdsBanner(){
-        _officialStoreListVisitable.run {
-            removeAll { it is OfficialTopAdsBannerDataModel }
-            _officialStoreLiveData.postValue(this)
-        }
-    }
-
-    fun removeOfficialFeaturedShop(){
-        _officialStoreListVisitable.run {
-            removeAll { it is OfficialFeaturedShopDataModel }
-            _officialStoreLiveData.postValue(this)
-        }
-    }
-
-    fun removeTopAdsHeadlineWidget() {
-        _officialStoreListVisitable.run {
-            removeAll { it is OfficialTopAdsHeadlineDataModel }
-            _officialStoreLiveData.postValue(this)
-        }
-
     }
 
     fun resetState() {
