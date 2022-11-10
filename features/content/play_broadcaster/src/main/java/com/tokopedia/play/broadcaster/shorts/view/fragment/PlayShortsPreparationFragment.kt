@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.view.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.LoopingMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.util.Util
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -37,6 +45,7 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomS
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.unifycomponents.Toaster
@@ -76,6 +85,12 @@ class PlayShortsPreparationFragment @Inject constructor(
             false
         )
         return _binding?.root
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.exoPlayer.player?.stop()
+        binding.exoPlayer.player?.release()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -237,6 +252,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderMedia(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
                 renderTitleForm(it.prevValue, it.value)
                 renderCoverForm(it.prevValue, it.value)
@@ -272,6 +288,28 @@ class PlayShortsPreparationFragment @Inject constructor(
                 setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
             }
         )
+    }
+
+    private fun renderMedia(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if(prev?.mediaUri == curr.mediaUri) return
+
+        val player = SimpleExoPlayer.Builder(requireContext())
+            .build()
+            .also {
+                it.repeatMode = Player.REPEAT_MODE_ALL
+                it.playWhenReady = true
+
+                val mediaSource = ProgressiveMediaSource
+                    .Factory(DefaultDataSourceFactory(context, Util.getUserAgent(requireContext(), "Tokopedia Android")))
+                    .createMediaSource(Uri.parse(curr.mediaUri))
+
+                it.prepare(mediaSource)
+            }
+
+        binding.exoPlayer.player = player
     }
 
     private fun renderPreparationMenu(
