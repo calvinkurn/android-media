@@ -9,8 +9,8 @@ import androidx.appcompat.widget.AppCompatImageView
 
 class RoundedCornerImageView : AppCompatImageView {
     private val radius = 5.0f
-    private val path: Path = Path()
-    private val rect: RectF = RectF()
+    private var path: Path = Path()
+    private var rect: RectF = RectF()
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
