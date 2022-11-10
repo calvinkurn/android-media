@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormU
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.util.oneTimeUpdate
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import kotlinx.coroutines.delay
@@ -37,22 +38,26 @@ class PlayShortsViewModel @Inject constructor(
     val title: String
         get() = _titleForm.value.title
 
+    val productSectionList: List<ProductTagSectionUiModel>
+        get() = _productSectionList.value
+
     /** TODO: provide the correct max product here */
     val maxProduct: Int
         get() = 30
 
-    /** TODO: Will update this validation with product checking as well */
     val isAllMandatoryMenuChecked: Boolean
-        get() = _titleForm.value.title.isNotEmpty()
+        get() = _titleForm.value.title.isNotEmpty() &&
+            _productSectionList.value.any { it.products.isNotEmpty() }
 
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
 
     private val _mediaUri = MutableStateFlow("")
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
-    private val _selectedAccount = MutableStateFlow<ContentAccountUiModel>(ContentAccountUiModel.Empty)
-    private val _shortsId = MutableStateFlow<String>("")
+    private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
+    private val _shortsId = MutableStateFlow("")
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
+    private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
@@ -60,16 +65,16 @@ class PlayShortsViewModel @Inject constructor(
     private val _menuListUiState = kotlinx.coroutines.flow.combine(
         _menuList,
         _titleForm,
-        _coverForm
-    ) { menuList, titleForm, coverForm ->
+        _coverForm,
+        _productSectionList
+    ) { menuList, titleForm, coverForm, productSectionList ->
         menuList.map {
             when (it.menuId) {
                 DynamicPreparationMenu.TITLE -> {
                     it.copy(isChecked = titleForm.title.isNotEmpty())
                 }
                 DynamicPreparationMenu.PRODUCT -> {
-                    /** Will handle this later */
-                    it
+                    it.copy(isChecked = productSectionList.isNotEmpty())
                 }
                 DynamicPreparationMenu.COVER -> {
                     it.copy(
@@ -128,6 +133,9 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.OpenCoverForm -> handleOpenCoverForm()
             is PlayShortsAction.SetCover -> handleSetCover(action.cover)
             is PlayShortsAction.CloseCoverForm -> handleCloseCoverForm()
+
+            /** Product */
+            is PlayShortsAction.SetProduct -> handleSetProduct(action.productSectionList)
 
             is PlayShortsAction.ClickNext -> handleClickNext()
         }
@@ -211,6 +219,10 @@ class PlayShortsViewModel @Inject constructor(
         _coverForm.update {
             it.copy(state = PlayShortsCoverFormUiState.State.Unknown)
         }
+    }
+
+    private fun handleSetProduct(productSectionList: List<ProductTagSectionUiModel>) {
+        _productSectionList.update { productSectionList }
     }
 
     private fun handleClickNext() {

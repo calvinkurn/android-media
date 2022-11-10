@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.ui.model.action
 
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 
 /**
@@ -28,6 +29,11 @@ sealed interface PlayShortsAction {
     ) : PlayShortsAction
 
     object CloseCoverForm : PlayShortsAction
+
+    /** Product */
+    data class SetProduct(
+        val productSectionList: List<ProductTagSectionUiModel>
+    ) : PlayShortsAction
 
     object ClickNext : PlayShortsAction
 }

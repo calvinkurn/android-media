@@ -10,10 +10,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.LoopingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
@@ -110,15 +108,13 @@ class PlayShortsPreparationFragment @Inject constructor(
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                         // TODO("Use uiState directly when uiState already return StateFlow")
-
-                        /** TODO: handle this later */
-                        return emptyList()
-//                        return parentViewModel.productSectionList
+                        return viewModel.productSectionList
                     }
 
                     override fun isEligibleForPin(): Boolean = false
 
                     override fun getSelectedAccount(): ContentAccountUiModel {
+                        /** TODO: for mocking purpose, gonna delete this later */
                         return ContentAccountUiModel(
                             id = userSession.userId,
                             type = ContentCommonUserType.TYPE_USER,
@@ -142,7 +138,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
                     override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
-                        /** TODO: set to viewmodel */
+                        viewModel.submitAction(PlayShortsAction.SetProduct(productTagSectionList))
                     }
                 })
             }
@@ -154,9 +150,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
                     override fun getProductList(): List<ProductUiModel> {
-                        /** TODO: send product here */
-                        return emptyList()
-//                        return parentViewModel.productSectionList.flatMap { it.products }
+                        return viewModel.productSectionList.flatMap { it.products }
                     }
 
                     override fun getAuthorId(): String {
@@ -190,7 +184,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             else -> {
                 showExitConfirmationDialog()
                 true
-//                super.onBackPressed()
             }
         }
     }
@@ -298,7 +291,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(prev?.mediaUri == curr.mediaUri) return
+        if (prev?.mediaUri == curr.mediaUri) return
 
         val player = SimpleExoPlayer.Builder(requireContext())
             .build()
@@ -402,7 +395,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun showExitConfirmationDialog() {
-        if(exitConfirmationDialog == null) {
+        if (exitConfirmationDialog == null) {
             exitConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.play_shorts_exit_confirmation_title))
                 setDescription(getString(R.string.play_shorts_exit_confirmation_description))
@@ -418,8 +411,9 @@ class PlayShortsPreparationFragment @Inject constructor(
             }
         }
 
-        if(exitConfirmationDialog?.isShowing == false)
+        if (exitConfirmationDialog?.isShowing == false) {
             exitConfirmationDialog?.show()
+        }
     }
 
     private fun openProductPicker() {
