@@ -9,6 +9,7 @@ import dagger.Provides
 
 @Module
 object SameSessionRecommendationModule {
+    @JvmStatic
     @Provides
     @SearchScope
     fun provideSameSessionRecommendationPreference(
@@ -17,6 +18,7 @@ object SameSessionRecommendationModule {
         return SameSessionRecommendationPreferenceImpl(context)
     }
 
+    @JvmStatic
     @Provides
     @SearchScope
     fun provideSameSessionRecommendationListener(

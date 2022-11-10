@@ -18,5 +18,5 @@ interface CoverDataStore {
 
     fun updateCoverState(state: CoverSetupState)
 
-    suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit>
+    suspend fun uploadSelectedCover(authorId: String, channelId: String): NetworkResult<Unit>
 }

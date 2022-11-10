@@ -9,7 +9,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSobSliderStatisticTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sob_title_top_margin"
         android:gravity="center"
@@ -21,10 +21,10 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobStatistic"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="@dimen/sob_dimen_48"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/sob_dimen_48"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"

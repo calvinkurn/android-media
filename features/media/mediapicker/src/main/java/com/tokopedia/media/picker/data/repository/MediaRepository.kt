@@ -17,11 +17,10 @@ open class MediaRepository constructor(
 
         if (cursor.moveToFirst()) {
             do {
-                val image = medias(cursor)
+                val image = medias(cursor)?: continue
+                if (image.file.exists().not()) continue
 
-                if (image != null) {
-                    medias.add(image)
-                }
+                medias.add(image)
             } while (cursor.moveToNext())
         }
 
