@@ -67,29 +67,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sectionSubtitle">
 
-            <!--
-                Why Nested Here ?
-                To fix issue when child is used RecyclerView.
-                And also don't forget to put this in RecyclerView for showing all item and disable nested scroll
-
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-
-                If you not used RecyclerView in child, you can use ConstrainLayout or FrameLayout to wrap your child.
-            -->
-            <androidx.core.widget.NestedScrollView
+            <FrameLayout
+                android:id="@+id/sectionContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <FrameLayout
-                    android:id="@+id/sectionContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </androidx.core.widget.NestedScrollView>
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <com.tokopedia.unifycomponents.LocalLoad
                 android:id="@+id/sectionLocalLoad"

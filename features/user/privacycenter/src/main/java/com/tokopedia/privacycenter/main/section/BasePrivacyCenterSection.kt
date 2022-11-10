@@ -7,6 +7,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.databinding.SectionBaseBinding
 
 abstract class BasePrivacyCenterSection(context: Context?) {
@@ -54,28 +56,24 @@ abstract class BasePrivacyCenterSection(context: Context?) {
     }
 
     fun showShimmering(isLoading: Boolean) {
-        if (isLoading) {
-            sectionViewBinding.root.hide()
-            sectionBaseViewBinding.apply {
-                baseSection.hide()
-                loadingView.root.show()
-            }
-        } else {
-            sectionViewBinding.root.show()
-            sectionBaseViewBinding.apply {
-                baseSection.show()
-                loadingView.root.hide()
-            }
+        sectionViewBinding.root.showWithCondition(!isLoading)
+        sectionBaseViewBinding.apply {
+            baseSection.showWithCondition(!isLoading)
+            loadingView.root.showWithCondition(isLoading)
         }
     }
 
-    fun showLocalLoad(title: String, description: String, onRetryClick: (View) -> Unit) {
+    fun showLocalLoad(title: String = "", description: String = "", onRetryClick: (View) -> Unit) {
         sectionViewBinding.root.hide()
         showShimmering(false)
 
         sectionBaseViewBinding.sectionLocalLoad.apply {
-            localLoadTitle = title
-            localLoadDescription = description
+            localLoadTitle = title.ifEmpty {
+                context?.resources?.getString(R.string.error_network_title).orEmpty()
+            }
+            localLoadDescription = description.ifEmpty {
+                context?.resources?.getString(R.string.error_network_detail).orEmpty()
+            }
             refreshBtn?.setOnClickListener {
                 progressState = true
                 onRetryClick.invoke(it)
