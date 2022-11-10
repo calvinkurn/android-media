@@ -152,7 +152,7 @@ class PlayViewerIdGenerator {
                     castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
-                    analyticManagerFactory = mockk(relaxed = true),
+                    analyticManager = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {

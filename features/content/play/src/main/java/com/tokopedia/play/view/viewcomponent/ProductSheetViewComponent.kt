@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.getVisiblePercent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
@@ -219,6 +220,9 @@ class ProductSheetViewComponent(
 
         val sections = sectionList.filterIsInstance<ProductSectionUiModel.Section>()
         val newProductList = buildProductList(sections)
+
+        if(newProductList == productAdapter.getItems()) return
+
         productAdapter.setItemsAndAnimateChanges(newProductList)
 
         scope.launch {
@@ -227,8 +231,6 @@ class ProductSheetViewComponent(
                 rvProductList.invalidateItemDecorations()
             }
         }
-
-        impressionSet.clear()
 
         if (voucherList.isEmpty()) {
             clProductVoucher.hide()
@@ -242,9 +244,9 @@ class ProductSheetViewComponent(
                 tvVoucherHeaderDesc.text = getString(R.string.play_product_voucher_header_desc, it.size.toString())
             }
             clProductVoucher.show()
+            impressionSet.clear()
+            sendImpression()
         }
-
-        sendImpression()
     }
 
     fun showPlaceholder() {
@@ -369,27 +371,30 @@ class ProductSheetViewComponent(
         }
     }
 
-    private fun getVisibleProducts(): List<ProductSheetAdapter.Item.Product> {
-        val products = productAdapter.getItems().filterIsInstance<ProductSheetAdapter.Item.Product>()
+    private fun sendImpression() = synchronized(impressionSet) {
+        if (getVisiblePercent(rootView) == -1) return@synchronized
+
+        val products = getVisibleProducts().filterNot {
+            impressionSet.contains(it.key.product.id)
+        }
+        listener.onProductImpressed(this, products)
+        products.forEach {
+            impressionSet.add(it.key.product.id)
+        }
+    }
+
+    private fun getVisibleProducts(): Map<ProductSheetAdapter.Item.Product, Int> {
+        val products = productAdapter.getItems()
         if (products.isNotEmpty()) {
             val startPosition = linearLayoutManager.findFirstVisibleItemPosition()
             val endPosition = linearLayoutManager.findLastVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) {
-                return products.slice(startPosition..endPosition)
+                return (startPosition..endPosition)
+                    .filter { rvProductList.findViewHolderForAdapterPosition(it) is ProductLineViewHolder }
+                    .associateBy { products[it] as ProductSheetAdapter.Item.Product}
             }
         }
-        return emptyList()
-    }
-
-    private fun sendImpression() = synchronized(impressionSet) {
-        val products = getVisibleProducts()
-        val productsToBeImpressed = products.filterNot {
-            impressionSet.contains(it.product.id)
-        }
-        listener.onProductImpressed(this, productsToBeImpressed)
-        productsToBeImpressed.forEach {
-            impressionSet.add(it.product.id)
-        }
+        return emptyMap()
     }
 
     /**
@@ -419,7 +424,7 @@ class ProductSheetViewComponent(
         fun onEmptyButtonClicked(view: ProductSheetViewComponent)
         fun onProductImpressed(
             view: ProductSheetViewComponent,
-            products: List<ProductSheetAdapter.Item.Product>,
+            products: Map<ProductSheetAdapter.Item.Product, Int>,
         )
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
         fun onReminderClicked(view: ProductSheetViewComponent, productSectionUiModel: ProductSectionUiModel.Section)
