@@ -637,7 +637,8 @@ class NewShopPageViewModel @Inject constructor(
         }
     }
 
-    fun createAffiliateCookieShopAtcDirectPurchase(
+    fun createAffiliateCookieShopAtcProduct(
+        uuId: String,
         affiliateCookieHelper: AffiliateCookieHelper,
         affiliateChannel: String,
         shopId: String,
@@ -647,9 +648,9 @@ class NewShopPageViewModel @Inject constructor(
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             affiliateCookieHelper.initCookie(
-                "",
+                uuId,
                 affiliateChannel,
-                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId)),
+                AffiliatePageDetail(productId, AffiliateSdkPageSource.PDP(shopId,AffiliateSdkProductInfo("",isVariant,stockQty))),
                 isATC = true
             )
         }) {

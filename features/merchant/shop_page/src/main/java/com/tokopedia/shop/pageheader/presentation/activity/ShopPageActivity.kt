@@ -217,7 +217,7 @@ class ShopPageActivity : BaseSimpleActivity(),
         isVariant: Boolean,
         stockQty: Int
     ) {
-        (fragment as? NewShopPageFragment)?.createAffiliateCookieAtcDirectPurchase(
+        (fragment as? NewShopPageFragment)?.createAffiliateCookieAtcProduct(
             productId,
             isVariant,
             stockQty

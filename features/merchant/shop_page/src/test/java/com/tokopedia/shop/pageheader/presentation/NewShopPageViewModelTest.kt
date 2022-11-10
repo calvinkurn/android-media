@@ -761,7 +761,7 @@ class NewShopPageViewModelTest {
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
         } returns Unit
-        shopPageViewModel.createAffiliateCookieShopAtcDirectPurchase(
+        shopPageViewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
             mockAffiliateChannel,
             mockShopId,
@@ -779,7 +779,7 @@ class NewShopPageViewModelTest {
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
         } throws Exception()
-        shopPageViewModel.createAffiliateCookieShopAtcDirectPurchase(
+        shopPageViewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
             mockAffiliateChannel,
             mockShopId,
