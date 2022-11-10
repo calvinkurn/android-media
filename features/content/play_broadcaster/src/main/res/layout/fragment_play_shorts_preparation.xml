@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_bro_dms_preparation_overlay"
+    android:background="@color/Unify_Static_Black"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -11,6 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:use_controller="false"
+        />
+
+    <FrameLayout
+        android:id="@+id/fl_side_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_play_shorts_preparation_side_menu"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
@@ -34,16 +45,18 @@
         android:id="@+id/form_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:background="@color/Unify_NN900"
         android:visibility="gone"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
         android:id="@+id/form_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        />
+        android:alpha="0.7"
+        android:background="@color/Unify_NN900"
+        android:visibility="gone" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_next"
