@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class Relation(
     @SerializedName("isFollowed")
-    @Expose val isFollowed: Boolean? = false,
+    @Expose val isFollowed: Boolean = false,
 
     @SerializedName("isLiked")
     @Expose val isLiked: Boolean = false

@@ -10,8 +10,8 @@ data class FeedSource(
     @SerializedName("origin")
     @Expose val origin: Int = 0,
 
-    @com.google.gson.annotations.SerializedName("shop")
-    @Expose val shop: ShopDetail? = ShopDetail(),
+    @SerializedName("shop")
+    @Expose val shop: ShopDetail = ShopDetail(),
 
     @SerializedName("type")
     @Expose val type: Int = 0

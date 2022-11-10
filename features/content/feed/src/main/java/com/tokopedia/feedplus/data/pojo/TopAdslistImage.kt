@@ -7,7 +7,8 @@ import com.google.gson.annotations.SerializedName
  * @author by astidhiyaa on 29/08/22
  */
 data class TopAdslistImage(
-    @SerializedName("m_url") @Expose
+    @SerializedName("m_url")
+    @Expose
     val mUrl: String = "",
 
     @SerializedName("s_url")
@@ -17,6 +18,7 @@ data class TopAdslistImage(
     @SerializedName("xs_url")
     @Expose
     val xsUrl: String = "",
+
     @SerializedName("m_ecs")
     @Expose
     val mEcs: String = "",

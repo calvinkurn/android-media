@@ -10,7 +10,7 @@ data class TopAdsBadge(
     @SerializedName("title")
     @Expose val title: String = "",
 
-    @com.google.gson.annotations.SerializedName("image_url")
+    @SerializedName("image_url")
     @Expose
     val imageUrl: String = ""
 )

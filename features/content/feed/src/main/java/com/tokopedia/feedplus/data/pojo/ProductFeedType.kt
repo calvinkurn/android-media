@@ -46,7 +46,7 @@ data class ProductFeedType(
 
     @SerializedName("freereturns")
     @Expose
-    val freereturns: Boolean? = null,
+    val freereturns: Boolean = false,
 
     @SerializedName("preorder")
     @Expose

@@ -10,7 +10,7 @@ data class FeedsFavoriteCta(
     @SerializedName("title_en")
     @Expose val titleEn: String = "",
 
-    @com.google.gson.annotations.SerializedName("title_id")
+    @SerializedName("title_id")
     @Expose val titleId: String = "",
 
     @SerializedName("subtitle_en")

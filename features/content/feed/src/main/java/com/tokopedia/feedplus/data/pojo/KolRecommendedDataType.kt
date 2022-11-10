@@ -11,7 +11,7 @@ data class KolRecommendedDataType(
     @Expose
     val index: Int = 0,
 
-    @com.google.gson.annotations.SerializedName("kols")
+    @SerializedName("kols")
     @Expose
     val kols: List<FeedKolRecommendedType> = emptyList(),
 

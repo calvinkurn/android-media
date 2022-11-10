@@ -7,10 +7,11 @@ import com.google.gson.annotations.SerializedName
  * @author by astidhiyaa on 29/08/22
  */
 data class TopAdslistImageShop(
-    @SerializedName("cover_ecs") @Expose
+    @SerializedName("cover_ecs")
+    @Expose
     val coverEcs: String = "",
 
-    @com.google.gson.annotations.SerializedName("s_ecs")
+    @SerializedName("s_ecs")
     @Expose
     val sEcs: String = "",
 

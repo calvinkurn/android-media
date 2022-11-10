@@ -10,7 +10,7 @@ data class Feeds(
     @SerializedName("links")
     @Expose val links: Links = Links(),
 
-    @com.google.gson.annotations.SerializedName("meta")
+    @SerializedName("meta")
     @Expose val meta: FeedTotalData = FeedTotalData(),
 
     @SerializedName("data")

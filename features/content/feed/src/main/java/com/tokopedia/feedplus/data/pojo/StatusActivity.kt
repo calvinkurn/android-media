@@ -7,7 +7,8 @@ import com.google.gson.annotations.SerializedName
  * @author by astidhiyaa on 29/08/22
  */
 data class StatusActivity(
-    @SerializedName("source") @Expose
+    @SerializedName("source")
+    @Expose
     val source: String = "",
 
     @SerializedName("activity")

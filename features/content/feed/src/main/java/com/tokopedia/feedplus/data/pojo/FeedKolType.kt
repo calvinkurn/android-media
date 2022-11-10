@@ -53,7 +53,7 @@ data class FeedKolType(
 
     @SerializedName("userId")
     @Expose
-    val userId: String? = null,
+    val userId: String = "",
 
     @SerializedName("userInfo")
     @Expose

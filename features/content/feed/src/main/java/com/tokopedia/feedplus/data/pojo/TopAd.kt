@@ -7,10 +7,11 @@ import com.google.gson.annotations.SerializedName
  * @author by astidhiyaa on 29/08/22
  */
 data class TopAd(
-    @SerializedName("id") @Expose
+    @SerializedName("id")
+    @Expose
     val id: String = "",
 
-    @com.google.gson.annotations.SerializedName("ad_ref_key")
+    @SerializedName("ad_ref_key")
     @Expose val adRefKey: String = "",
 
     @SerializedName("redirect")

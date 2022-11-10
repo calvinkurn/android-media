@@ -8,7 +8,8 @@ import com.google.gson.annotations.SerializedName
  * @author by astidhiyaa on 29/08/22
  */
 data class TagsFeedKol(
-    @SerializedName("id") @Expose
+    @SerializedName("id")
+    @Expose
     val id: String = "",
 
     @SerializedName("type")

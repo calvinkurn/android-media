@@ -62,6 +62,7 @@ data class TopAdslistShop(
     @SerializedName("badges")
     @Expose
     val badges: List<TopAdsBadge> = emptyList(),
+
     @SerializedName("uri")
     @Expose
     val uri: String = "",
