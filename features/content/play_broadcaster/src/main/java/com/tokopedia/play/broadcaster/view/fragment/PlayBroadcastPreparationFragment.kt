@@ -215,6 +215,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
 
                     override fun isEligibleForPin(): Boolean = false
+
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return parentViewModel.uiState.value.selectedContentAccount
+                    }
+
+                    override fun creationId(): String {
+                        return parentViewModel.channelId
+                    }
+
+                    override fun maxProduct(): Int {
+                        return parentViewModel.maxProduct
+                    }
+                })
+
+                childFragment.setListener(object : ProductSetupFragment.Listener {
+                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetProduct(productTagSectionList)
+                        )
+                    }
                 })
             }
             is PlayBroadcastSetupBottomSheet -> {

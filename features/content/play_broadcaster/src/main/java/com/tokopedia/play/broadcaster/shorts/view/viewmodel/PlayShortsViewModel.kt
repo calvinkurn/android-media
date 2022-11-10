@@ -37,17 +37,16 @@ class PlayShortsViewModel @Inject constructor(
     val title: String
         get() = _titleForm.value.title
 
+    /** TODO: provide the correct max product here */
+    val maxProduct: Int
+        get() = 30
+
     /** TODO: Will update this validation with product checking as well */
     val isAllMandatoryMenuChecked: Boolean
         get() = _titleForm.value.title.isNotEmpty()
 
-    /** TODO: adjust authorName here */
-    val authorName: String
-        get() = "Test"
-
-    /** TODO: adjust authorId here */
-    val authorId: String
-        get() = "author_id"
+    val selectedAccount: ContentAccountUiModel
+        get() = _selectedAccount.value
 
     private val _mediaUri = MutableStateFlow("")
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
@@ -75,7 +74,7 @@ class PlayShortsViewModel @Inject constructor(
                 DynamicPreparationMenu.COVER -> {
                     it.copy(
                         isChecked = coverForm.coverUri.isNotEmpty(),
-                        isEnabled = isAllMandatoryMenuChecked,
+                        isEnabled = isAllMandatoryMenuChecked
                     )
                 }
                 else -> {

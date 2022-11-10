@@ -10,6 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
@@ -19,6 +21,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -28,6 +31,7 @@ import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
@@ -85,6 +89,46 @@ class PlayShortsPreparationFragment @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
+            is ProductSetupFragment -> {
+                childFragment.setDataSource(object : ProductSetupFragment.DataSource {
+                    override fun getProductSectionList(): List<ProductTagSectionUiModel> {
+                        // TODO("Use uiState directly when uiState already return StateFlow")
+
+                        /** TODO: handle this later */
+                        return emptyList()
+//                        return parentViewModel.productSectionList
+                    }
+
+                    override fun isEligibleForPin(): Boolean = false
+
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return ContentAccountUiModel(
+                            id = userSession.userId,
+                            type = ContentCommonUserType.TYPE_USER,
+                            name = "Jonathan Darwin",
+                            iconUrl = "",
+                            badge = "",
+                            hasUsername = true,
+                            hasAcceptTnc = true
+                        )
+//                        return viewModel.selectedAccount
+                    }
+
+                    override fun creationId(): String {
+                        return viewModel.shortsId
+                    }
+
+                    override fun maxProduct(): Int {
+                        return viewModel.maxProduct
+                    }
+                })
+
+                childFragment.setListener(object : ProductSetupFragment.Listener {
+                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+                        /** TODO: set to viewmodel */
+                    }
+                })
+            }
             is PlayBroadcastSetupBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
                     override fun onCoverChanged(cover: PlayCoverUiModel) {
@@ -99,7 +143,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
 
                     override fun getAuthorId(): String {
-                        return viewModel.authorId
+                        return viewModel.selectedAccount.id
                     }
 
                     override fun getChannelId(): String {
@@ -155,7 +199,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
                     }
                     DynamicPreparationMenu.PRODUCT -> {
-                        /** TODO: open product picker */
+                        openProductPicker()
                     }
                     DynamicPreparationMenu.COVER -> {
                         viewModel.submitAction(PlayShortsAction.OpenCoverForm)
@@ -280,7 +324,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 showCoverForm(true)
 
                 binding.formCover.setTitle(viewModel.title)
-                binding.formCover.setAuthorName(viewModel.authorName)
+                binding.formCover.setAuthorName(viewModel.selectedAccount.name)
 
                 val coverUri = curr.coverForm.coverUri
                 if (coverUri.isNotEmpty()) {
@@ -313,6 +357,12 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun showCoverForm(isShow: Boolean) {
         showMainComponent(!isShow)
         binding.formCover.showWithCondition(isShow)
+    }
+
+    private fun openProductPicker() {
+        childFragmentManager.beginTransaction()
+            .add(ProductSetupFragment::class.java, null, null)
+            .commit()
     }
 
     private fun openCoverSetupFragment() {

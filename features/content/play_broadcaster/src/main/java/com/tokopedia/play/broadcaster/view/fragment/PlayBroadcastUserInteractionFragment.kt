@@ -8,16 +8,15 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
@@ -82,14 +81,13 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by mzennis on 25/05/20.
  */
 class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-    private val analytic: PlayBroadcastAnalytic,
+    private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView {
 
@@ -105,81 +103,101 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
 
     private val actionBarLiveView by viewComponent {
-        ActionBarLiveViewComponent(it, object: ActionBarLiveViewComponent.Listener {
-            override fun onCameraIconClicked() {
-                analytic.clickSwitchCameraOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
-                broadcaster.flip()
-            }
+        ActionBarLiveViewComponent(
+            it,
+            object : ActionBarLiveViewComponent.Listener {
+                override fun onCameraIconClicked() {
+                    analytic.clickSwitchCameraOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+                    broadcaster.flip()
+                }
 
-            override fun onEndStreamClicked() {
-                activity?.onBackPressed()
+                override fun onEndStreamClicked() {
+                    activity?.onBackPressed()
+                }
             }
-        })
+        )
     }
 
     /**
      * Interactive
      */
     private val interactiveActiveView by viewComponentOrNull {
-        InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
-            override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
-                if (view.interactiveType == InteractiveActiveViewComponent.InteractiveType.QUIZ){
-                    analytic.onClickOngoingQuiz(
-                        parentViewModel.channelId,
-                        parentViewModel.channelTitle,
-                        parentViewModel.interactiveId,
-                        parentViewModel.activeInteractiveTitle,
-                    )
+        InteractiveActiveViewComponent(
+            it,
+            object : InteractiveActiveViewComponent.Listener {
+                override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
+                    if (view.interactiveType == InteractiveActiveViewComponent.InteractiveType.QUIZ) {
+                        analytic.onClickOngoingQuiz(
+                            parentViewModel.channelId,
+                            parentViewModel.channelTitle,
+                            parentViewModel.interactiveId,
+                            parentViewModel.activeInteractiveTitle
+                        )
+                    }
+                    parentViewModel.submitAction(PlayBroadcastAction.ClickOngoingWidget)
                 }
-                parentViewModel.submitAction(PlayBroadcastAction.ClickOngoingWidget)
             }
-    }) }
+        )
+    }
     private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
-    private val interactiveGameResultViewComponent by viewComponentOrNull { InteractiveGameResultViewComponent(it, object : InteractiveGameResultViewComponent.Listener {
-        override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
-            analytic.onClickGameResult(parentViewModel.channelId, parentViewModel.channelTitle)
-            parentViewModel.submitAction(PlayBroadcastAction.ClickGameResultWidget)
-            view.hideCoachMark()
-        }
-    }) }
+    private val interactiveGameResultViewComponent by viewComponentOrNull {
+        InteractiveGameResultViewComponent(
+            it,
+            object : InteractiveGameResultViewComponent.Listener {
+                override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
+                    analytic.onClickGameResult(parentViewModel.channelId, parentViewModel.channelTitle)
+                    parentViewModel.submitAction(PlayBroadcastAction.ClickGameResultWidget)
+                    view.hideCoachMark()
+                }
+            }
+        )
+    }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
     private val productTagView by viewComponent {
-        ProductTagViewComponent(it, object: ProductTagViewComponent.Listener {
-            override fun impressProductTag(view: ProductTagViewComponent) {
-                analytic.impressProductTag(parentViewModel.channelId)
-            }
+        ProductTagViewComponent(
+            it,
+            object : ProductTagViewComponent.Listener {
+                override fun impressProductTag(view: ProductTagViewComponent) {
+                    analytic.impressProductTag(parentViewModel.channelId)
+                }
 
-            override fun scrollProductTag(
-                view: ProductTagViewComponent,
-                product: ProductUiModel,
-                position: Int
-            ) {
-                productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
-            }
+                override fun scrollProductTag(
+                    view: ProductTagViewComponent,
+                    product: ProductUiModel,
+                    position: Int
+                ) {
+                    productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
+                }
 
-            override fun onPinClicked(product: ProductUiModel) {
-                analytic.onClickPinProductLiveRoom(product.id)
-                parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
-            }
+                override fun onPinClicked(product: ProductUiModel) {
+                    analytic.onClickPinProductLiveRoom(product.id)
+                    parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
+                }
 
-            override fun onImpressPinnedProduct(product: ProductUiModel) {
-                analytic.onImpressPinProductLiveRoom(product.id)
-            }
-        }, scope = this.lifecycleScope)
+                override fun onImpressPinnedProduct(product: ProductUiModel) {
+                    analytic.onImpressPinProductLiveRoom(product.id)
+                }
+            },
+            scope = this.lifecycleScope
+        )
     }
 
     /** Game */
-    private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
-            override fun onIconClicked() {
-                interactiveGameResultViewComponent?.hideCoachMark()
-                analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
-                analytic.onClickGameIconButton(channelId = parentViewModel.channelId, channelTitle = parentViewModel.channelTitle)
-                openSelectInteractiveSheet()
-                productTagView.hideCoachMark()
+    private val gameIconView by viewComponent {
+        GameIconViewComponent(
+            it,
+            object : GameIconViewComponent.Listener {
+                override fun onIconClicked() {
+                    interactiveGameResultViewComponent?.hideCoachMark()
+                    analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
+                    analytic.onClickGameIconButton(channelId = parentViewModel.channelId, channelTitle = parentViewModel.channelTitle)
+                    openSelectInteractiveSheet()
+                    productTagView.hideCoachMark()
+                }
             }
-        })
+        )
     }
     private val quizForm: QuizFormView by detachableView(R.id.view_quiz_form)
 
@@ -229,12 +247,35 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        //TODO("Revamp this")
-                        return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
-                        else emptyList()
+                        // TODO("Revamp this")
+                        return if (::parentViewModel.isInitialized) {
+                            parentViewModel.productSectionList
+                        } else {
+                            emptyList()
+                        }
                     }
 
                     override fun isEligibleForPin(): Boolean = true
+
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return parentViewModel.uiState.value.selectedContentAccount
+                    }
+
+                    override fun creationId(): String {
+                        return parentViewModel.channelId
+                    }
+
+                    override fun maxProduct(): Int {
+                        return parentViewModel.maxProduct
+                    }
+                })
+
+                childFragment.setListener(object : ProductSetupFragment.Listener {
+                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetProduct(productTagSectionList)
+                        )
+                    }
                 })
             }
             is InteractiveSetupDialogFragment -> {
@@ -250,7 +291,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun getViewModelProvider(): ViewModelProvider {
         return ViewModelProvider(
             requireActivity(),
-            parentViewModelFactoryCreator.create(requireActivity()),
+            parentViewModelFactoryCreator.create(requireActivity())
         )
     }
 
@@ -262,7 +303,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeTitle()
         actionBarLiveView.setShopIcon(parentViewModel.getShopIconUrl())
 
-        ivShareLink.setOnClickListener{
+        ivShareLink.setOnClickListener {
             doCopyShareLink()
             analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
@@ -281,12 +322,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             if (message.isBlank()) {
                 analytic.clickAddPinChatMessage(
                     channelId = parentViewModel.channelId,
-                    titleChannel = parentViewModel.channelTitle,
+                    titleChannel = parentViewModel.channelTitle
                 )
             } else {
                 analytic.clickEditPinChatMessage(
                     channelId = parentViewModel.channelId,
-                    titleChannel = parentViewModel.channelTitle,
+                    titleChannel = parentViewModel.channelTitle
                 )
             }
         }
@@ -295,7 +336,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             quizForm.listen().collect {
                 trackQuizFormEvent(it)
                 parentViewModel.submitAction(
-                    when(it) {
+                    when (it) {
                         QuizFormView.Event.Back -> PlayBroadcastAction.ClickBackOnQuiz
                         QuizFormView.Event.Next -> PlayBroadcastAction.ClickNextOnQuiz
                         is QuizFormView.Event.TitleChanged -> PlayBroadcastAction.InputQuizTitle(it.title)
@@ -316,7 +357,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             QuizFormView.Event.Submit ->
                 analytic.onClickStartQuiz(
                     parentViewModel.channelId,
-                    parentViewModel.channelTitle,
+                    parentViewModel.channelTitle
                 )
             QuizFormView.Event.Close ->
                 analytic.onClickBackQuiz(
@@ -326,12 +367,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             QuizFormView.Event.Next ->
                 analytic.onClickContinueQuiz(
                     parentViewModel.channelId,
-                    parentViewModel.channelTitle,
+                    parentViewModel.channelTitle
                 )
             QuizFormView.Event.BackSelectDuration ->
                 analytic.onClickBackQuizDuration(
                     parentViewModel.channelId,
-                    parentViewModel.channelTitle,
+                    parentViewModel.channelTitle
                 )
             else -> {}
         }
@@ -448,42 +489,44 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun getExitDialog(): DialogUnify {
         if (!::exitDialog.isInitialized) {
-           exitDialog = requireContext().getDialog(
-                   actionType = DialogUnify.HORIZONTAL_ACTION,
-                   title = getString(R.string.play_live_broadcast_dialog_end_title),
-                   desc = getString(R.string.play_live_broadcast_dialog_end_desc),
-                   primaryCta = getString(R.string.play_live_broadcast_dialog_end_primary),
-                   primaryListener = { dialog -> dialog.dismiss() },
-                   secondaryCta = getString(R.string.play_broadcast_exit),
-                   secondaryListener = { dialog ->
-                       analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
-                       stopBroadcast()
-                       navigateToSummary()
-                   }
-           )
+            exitDialog = requireContext().getDialog(
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                title = getString(R.string.play_live_broadcast_dialog_end_title),
+                desc = getString(R.string.play_live_broadcast_dialog_end_desc),
+                primaryCta = getString(R.string.play_live_broadcast_dialog_end_primary),
+                primaryListener = { dialog -> dialog.dismiss() },
+                secondaryCta = getString(R.string.play_broadcast_exit),
+                secondaryListener = { dialog ->
+                    analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+                    stopBroadcast()
+                    navigateToSummary()
+                }
+            )
         }
         return exitDialog
     }
 
     private fun showForceStopDialog(
-            title: String = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
-            message: String = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
-            buttonTitle: String = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
-            buttonListener: () -> Unit = {
-                analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId,
-                    parentViewModel.channelTitle)
-                navigateToSummary()
-            },
+        title: String = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
+        message: String = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
+        buttonTitle: String = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
+        buttonListener: () -> Unit = {
+            analytic.clickDialogSeeReportOnLivePage(
+                parentViewModel.channelId,
+                parentViewModel.channelTitle
+            )
+            navigateToSummary()
+        }
     ) {
         if (!::forceStopDialog.isInitialized) {
             forceStopDialog = requireContext().getDialog(
-                    title = title,
-                    desc = message,
-                    primaryCta = buttonTitle,
-                    primaryListener = { dialog ->
-                        dialog.dismiss()
-                        buttonListener()
-                    }
+                title = title,
+                desc = message,
+                primaryCta = buttonTitle,
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    buttonListener()
+                }
             )
         }
         if (!forceStopDialog.isShowing) {
@@ -532,39 +575,40 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         customErrMessage: String? = null,
         duration: Int = Toaster.LENGTH_LONG,
         actionLabel: String = "",
-        actionListener: View.OnClickListener = View.OnClickListener {  }
+        actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
         toasterManager.showErrorToaster(
             err = err,
             customErrMessage = customErrMessage,
             duration = duration,
             actionLabel = actionLabel,
-            actionListener = actionListener,
+            actionListener = actionListener
         )
     }
 
     @SuppressLint("ResourceFragmentDetector")
     private fun showToaster(
-            message: String,
-            type: Int = Toaster.TYPE_NORMAL,
-            duration: Int = Toaster.LENGTH_LONG,
-            actionLabel: String = "",
-            actionListener: View.OnClickListener = View.OnClickListener { }
+        message: String,
+        type: Int = Toaster.TYPE_NORMAL,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
         toasterManager.showToaster(
             message = message,
             type = type,
             duration = duration,
             actionLabel = actionLabel,
-            actionListener = actionListener,
+            actionListener = actionListener
         )
     }
 
     private fun doCopyShareLink() {
         PlayShareWrapper.copyToClipboard(requireContext(), parentViewModel.shareContents) {
             showToaster(
-                    message = getString(R.string.play_live_broadcast_share_link_copied),
-                    actionLabel = getString(R.string.play_ok))
+                message = getString(R.string.play_live_broadcast_share_link_copied),
+                actionLabel = getString(R.string.play_ok)
+            )
         }
     }
 
@@ -588,7 +632,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun handleBroadcastError(error: Throwable) {
         analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle, error.localizedMessage)
         if (error is BroadcasterException) {
-            when(error.errorType) {
+            when (error.errorType) {
                 BroadcasterErrorType.InternetUnavailable,
                 BroadcasterErrorType.StreamFailed -> {
                     errorLiveNetworkLossView.show()
@@ -596,30 +640,39 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 }
                 BroadcasterErrorType.AuthFailed,
                 BroadcasterErrorType.UrlEmpty -> {
-                    showErrorToaster(error, getString(R.string.play_live_broadcast_connect_fail),
+                    showErrorToaster(
+                        error,
+                        getString(R.string.play_live_broadcast_connect_fail),
                         duration = Toaster.LENGTH_INDEFINITE,
                         actionLabel = getString(R.string.play_broadcast_try_again),
                         actionListener = {
                             parentViewModel.doResumeBroadcaster(shouldContinue = true)
-                        })
+                        }
+                    )
                 }
                 BroadcasterErrorType.ServiceNotReady,
                 BroadcasterErrorType.StartFailed -> {
-                    showErrorToaster(error, getString(R.string.play_broadcaster_default_error),
+                    showErrorToaster(
+                        error,
+                        getString(R.string.play_broadcaster_default_error),
                         duration = Toaster.LENGTH_INDEFINITE,
                         actionLabel = getString(R.string.play_broadcast_try_again),
                         actionListener = {
                             showLoading(true)
                             reconnectLiveStreaming()
-                        })
+                        }
+                    )
                 }
                 else -> {
-                    showErrorToaster(error, getString(R.string.play_live_broadcast_unrecoverable_error),
+                    showErrorToaster(
+                        error,
+                        getString(R.string.play_live_broadcast_unrecoverable_error),
                         duration = Toaster.LENGTH_INDEFINITE,
                         actionLabel = getString(R.string.play_ok),
                         actionListener = {
                             activity?.finish()
-                        })
+                        }
+                    )
                 }
             }
         }
@@ -643,12 +696,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeChatList() {
-        parentViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
-            override fun onChanged(chatList: List<PlayChatUiModel>) {
-                setChatList(chatList)
-                parentViewModel.observableChatList.removeObserver(this)
+        parentViewModel.observableChatList.observe(
+            viewLifecycleOwner,
+            object : Observer<List<PlayChatUiModel>> {
+                override fun onChanged(chatList: List<PlayChatUiModel>) {
+                    setChatList(chatList)
+                    parentViewModel.observableChatList.removeObserver(this)
+                }
             }
-        })
+        )
 
         parentViewModel.observableNewChat.observe(viewLifecycleOwner, EventObserver(::setNewChat))
     }
@@ -664,7 +720,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 it.banned -> showForceStopDialog(
                     title = it.title,
                     message = it.message,
-                    buttonTitle = it.buttonTitle,
+                    buttonTitle = it.buttonTitle
                 ) {
                     navigateToSummary()
                 }
@@ -691,7 +747,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     prevState?.interactiveConfig,
                     state.interactiveConfig,
                     prevState?.onBoarding,
-                    state.onBoarding,
+                    state.onBoarding
                 )
 
                 renderInteractionView(state.interactiveSetup, state.quizForm, state.pinnedMessage)
@@ -700,7 +756,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     prevState?.interactiveSetup,
                     state.interactiveSetup,
                     prevState?.interactive,
-                    state.interactive,
+                    state.interactive
                 )
 
                 if (::exitDialog.isInitialized) {
@@ -726,23 +782,27 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                             channelId = parentViewModel.channelId,
                             interactiveId = parentViewModel.interactiveId,
                             interactiveTitle = parentViewModel.activeInteractiveTitle,
-                            durationInMs = event.durationInMs,
+                            durationInMs = event.durationInMs
                         )
                     }
                     is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget(event.showCoachMark)
                     PlayBroadcastEvent.DismissGameResultCoachMark -> dismissGameResultCoachMark()
                     is PlayBroadcastEvent.FailPinUnPinProduct -> {
-                        if (event.isPinned) analytic.onImpressFailUnPinProductLiveRoom()
-                        else analytic.onImpressFailPinProductLiveRoom()
+                        if (event.isPinned) {
+                            analytic.onImpressFailUnPinProductLiveRoom()
+                        } else {
+                            analytic.onImpressFailPinProductLiveRoom()
+                        }
 
-                        if(event.throwable is PinnedProductException) {
+                        if (event.throwable is PinnedProductException) {
                             analytic.onImpressColdDownPinProductSecondEvent(true)
                             showToaster(
                                 message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR
                             )
+                        } else {
+                            showErrorToaster(event.throwable)
                         }
-                        else showErrorToaster(event.throwable)
                     }
                     PlayBroadcastEvent.ShowLoading -> showLoading(true)
                     PlayBroadcastEvent.ShowLiveEndedDialog -> {
@@ -751,14 +811,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     PlayBroadcastEvent.ShowResumeLiveDialog -> showDialogContinueLive()
                     is PlayBroadcastEvent.ShowError -> {
-                        if (event.onRetry == null) showErrorToaster(event.error)
-                        else {
-                            showErrorToaster(event.error,
-                            duration = Toaster.LENGTH_INDEFINITE,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = {
-                                event.onRetry.invoke()
-                            })
+                        if (event.onRetry == null) {
+                            showErrorToaster(event.error)
+                        } else {
+                            showErrorToaster(
+                                event.error,
+                                duration = Toaster.LENGTH_INDEFINITE,
+                                actionLabel = getString(R.string.play_broadcast_try_again),
+                                actionListener = {
+                                    event.onRetry.invoke()
+                                }
+                            )
                         }
                     }
                     is PlayBroadcastEvent.BroadcastReady -> {
@@ -776,7 +839,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeBroadcastTimerState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.broadcastTimerStateChanged.collectLatest { state ->
-                when(state) {
+                when (state) {
                     is PlayBroadcastTimerState.Active -> showCounterDuration(state.duration)
                     PlayBroadcastTimerState.Finish -> {
                         stopBroadcast()
@@ -800,24 +863,29 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
          * Pinned Message success uploading
          */
         if (prevState?.editStatus?.isUploading == true && state.editStatus.isNothing) {
-
             analytic.clickSavePinChatMessage(
                 channelId = parentViewModel.channelId,
-                titleChannel = parentViewModel.channelTitle,
+                titleChannel = parentViewModel.channelTitle
             )
         }
 
         pinnedMessageView.setMode(
-            if (state.message.isEmpty()) PinnedMessageView.Mode.Empty
-            else PinnedMessageView.Mode.Filled(state.message)
+            if (state.message.isEmpty()) {
+                PinnedMessageView.Mode.Empty
+            } else {
+                PinnedMessageView.Mode.Filled(state.message)
+            }
         )
 
-        when(state.editStatus) {
+        when (state.editStatus) {
             PinnedMessageEditStatus.Editing,
             PinnedMessageEditStatus.Uploading -> {
                 val formView = getPinnedFormView()
-                if (formView.visibility != View.VISIBLE) formView.setPinnedMessage(state.message)
-                else gameIconView.cancelCoachMark()
+                if (formView.visibility != View.VISIBLE) {
+                    formView.setPinnedMessage(state.message)
+                } else {
+                    gameIconView.cancelCoachMark()
+                }
                 formView.setLoading(state.editStatus == PinnedMessageEditStatus.Uploading)
                 formView.visibility = View.VISIBLE
             }
@@ -837,7 +905,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         val sortedList = mutableListOf<ProductUiModel>()
         val newList = state.flatMap { tagSectionUiModel ->
-                tagSectionUiModel.products
+            tagSectionUiModel.products
         }
 
         val pinnedProduct = newList.filter { it.pinStatus.isPinned }
@@ -853,7 +921,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun renderInteractiveView(
         prevState: InteractiveUiModel?,
-        state: InteractiveUiModel,
+        state: InteractiveUiModel
     ) {
         /**
          * Render:
@@ -878,39 +946,45 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         prevConfig: InteractiveConfigUiModel?,
         config: InteractiveConfigUiModel,
         prevOnboarding: OnboardingUiModel?,
-        onboarding: OnboardingUiModel,
+        onboarding: OnboardingUiModel
     ) {
         if (prevState == state &&
             prevConfig == config &&
-            prevOnboarding?.firstInteractive == onboarding.firstInteractive) return
+            prevOnboarding?.firstInteractive == onboarding.firstInteractive
+        ) {
+            return
+        }
 
         if (state !is InteractiveUiModel.Unknown || config.isNoGameActive() || config.availableGameList().isEmpty()) {
             gameIconView.hide()
-        }
-        else {
+        } else {
             gameIconView.show()
             if (prevState != state) {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
-                analytic.onImpressGameIconButton(parentViewModel.channelId,parentViewModel.channelTitle)
+                analytic.onImpressGameIconButton(parentViewModel.channelId, parentViewModel.channelTitle)
             }
             if (!hasPinnedFormView() && !isQuizFormVisible() && onboarding.firstInteractive) {
                 gameIconView.showCoachmark()
-            } else gameIconView.cancelCoachMark()
+            } else {
+                gameIconView.cancelCoachMark()
+            }
         }
     }
 
     private fun renderInteractionView(
         state: InteractiveSetupUiModel,
         quizFormState: QuizFormUiState,
-        pinnedState: PinnedMessageUiState,
+        pinnedState: PinnedMessageUiState
     ) {
-        //Have to be invisible because gone will resulting in not-rounded unify timer
+        // Have to be invisible because gone will resulting in not-rounded unify timer
         if (state.type == GameType.Unknown &&
             quizFormState.quizFormState == QuizFormStateUiModel.Nothing &&
             pinnedState.editStatus == PinnedMessageEditStatus.Nothing
         ) {
             clInteraction.visible()
-        } else clInteraction.invisible()
+        } else {
+            clInteraction.invisible()
+        }
     }
 
     private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
@@ -965,7 +1039,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                     state.id,
-                    state.title,
+                    state.title
                 )
                 interactiveFinishedView?.hide()
             }
@@ -986,15 +1060,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         prevSetup: InteractiveSetupUiModel?,
         setup: InteractiveSetupUiModel,
         prevInteractive: InteractiveUiModel?,
-        interactive: InteractiveUiModel,
+        interactive: InteractiveUiModel
     ) {
         if (prevSetup == setup && prevInteractive == interactive) return
 
-        //If seller is not going to setup or if there is active interactive
-        //then hide the setup dialog
+        // If seller is not going to setup or if there is active interactive
+        // then hide the setup dialog
         if (setup.type == GameType.Unknown ||
             setup.type == GameType.Quiz ||
-            interactive !is InteractiveUiModel.Unknown) {
+            interactive !is InteractiveUiModel.Unknown
+        ) {
             val dialog = InteractiveSetupDialogFragment.get(childFragmentManager)
             if (dialog?.isAdded == true) dialog.dismiss()
         } else {
@@ -1010,15 +1085,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         prevState: QuizFormUiState?,
         state: QuizFormUiState,
         prevConfigState: InteractiveConfigUiModel?,
-        configState: InteractiveConfigUiModel,
+        configState: InteractiveConfigUiModel
     ) {
-        if(prevConfigState != configState)
+        if (prevConfigState != configState) {
             quizForm.applyQuizConfig(configState.quizConfig)
+        }
 
         quizForm.setFormData(state.quizFormData, state.isNeedToUpdateUI)
 
-        if(prevState?.quizFormState != state.quizFormState) {
-            when(state.quizFormState) {
+        if (prevState?.quizFormState != state.quizFormState) {
+            when (state.quizFormState) {
                 QuizFormStateUiModel.Nothing -> {
                     hideKeyboard()
                     showQuizForm(false)
@@ -1038,7 +1114,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {
         interactiveGameResultViewComponent?.show()
         if (showCoachMark) {
-            interactiveGameResultViewComponent?.showCoachMark("", getString(R.string.play_bro_interactive_game_result_coachmark),)
+            interactiveGameResultViewComponent?.showCoachMark("", getString(R.string.play_bro_interactive_game_result_coachmark))
         }
     }
 
@@ -1085,7 +1161,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     /** Game Region */
     private fun showQuizForm(isShow: Boolean) {
-        if(isShow) gameIconView.cancelCoachMark()
+        if (isShow) gameIconView.cancelCoachMark()
 
         quizForm.showWithCondition(isShow)
     }
@@ -1146,5 +1222,4 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     companion object {
         private const val PINNED_MSG_FORM_TAG = "PINNED_MSG_FORM"
     }
-
 }

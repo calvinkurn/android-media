@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
 import com.tokopedia.play.broadcaster.shorts.view.activity.PlayShortsActivity
 import dagger.Component
 
@@ -12,7 +13,8 @@ import dagger.Component
         PlayShortsModule::class,
         PlayShortsBindModule::class,
         PlayShortsViewModelModule::class,
-        PlayShortsFragmentModule::class
+        PlayShortsFragmentModule::class,
+        ContentCreationProductTagBindModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )
