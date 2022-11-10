@@ -66,7 +66,7 @@ class ChooseProductViewModel @Inject constructor(
         it.isEmpty()
     }
     val maxSelectedProduct = Transformations.map(maxProductSubmission) {
-        ChooseProductUiMapper.getMaxSelectedProduct(it)
+        ChooseProductUiMapper.getMaxSelectedProduct(it, submittedProductIds)
     }
     val productList = Transformations.map(remoteProductList) {
         ChooseProductUiMapper.getSelectedProductList(selectedProductList, it)
@@ -109,6 +109,7 @@ class ChooseProductViewModel @Inject constructor(
                 remoteProductList.postValue(result.productList)
                 if (_selectedProductCount.value == null) _selectedProductCount.postValue(result.selectedProductCount)
                 submittedProductIds = result.selectedProductIds
+                getMaxProductSubmission()
 
             },
             onError = { error ->
