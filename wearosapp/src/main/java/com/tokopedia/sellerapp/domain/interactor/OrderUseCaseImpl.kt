@@ -14,7 +14,7 @@ import javax.inject.Inject
 class OrderUseCaseImpl @Inject constructor(
     private val orderRepository: OrderRepository,
     private val orderDetailRepository: OrderDetailRepository,
-    ) : OrderUseCase {
+) : OrderUseCase {
 
     override fun getOrderList(dataKey: String): Flow<List<OrderModel>> {
         return orderRepository.getCachedData(

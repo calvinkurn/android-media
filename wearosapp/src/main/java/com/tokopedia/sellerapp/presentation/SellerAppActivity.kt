@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageEvent
@@ -51,6 +52,9 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
     @Inject
     lateinit var clientMessageDatasource: ClientMessageDatasource
 
+    @Inject
+    lateinit var remoteActivityHelper: RemoteActivityHelper
+
     private val sharedViewModel: SharedViewModel by viewModels()
 
     private val phoneStateFlow = mutableStateOf(STATE.CONNECTED)
@@ -72,6 +76,7 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                     SetupNavigation(
                         navController = navController,
                         sharedViewModel = sharedViewModel,
+                        remoteActivityHelper = remoteActivityHelper
                     )
                     if (phoneStateStatus == STATE.CONNECTED) {
                         LaunchedEffect(Unit) {

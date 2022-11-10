@@ -6,6 +6,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply from: '../jacoco_task.gradle'
 
 buildscript {
     repositories {
@@ -23,6 +24,9 @@ kapt {
     generateStubs = false
 }
 android {
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -76,7 +80,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "1.0.4"
+        kotlinCompilerExtensionVersion "1.2.0-beta01"
     }
 }
 dependencies {
@@ -126,4 +130,12 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+
+    // Unit test
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
 }
