@@ -84,6 +84,6 @@ class PlayPreference @Inject constructor(
     fun isFollowPopup(streamerId: String) : Boolean {
         return if(!sharedPref.contains(String.format(FOLLOW_POP_UP, generateUserId, streamerId)))
             true
-        else (currentTime - sharedPref.getLong(String.format(SWIPE_ONBOARDING, generateUserId), 0)) >= A_DAY_IN_MILLIS
+        else (currentTime - sharedPref.getLong(String.format(FOLLOW_POP_UP, generateUserId, streamerId), 0)) >= A_DAY_IN_MILLIS
     }
 }
