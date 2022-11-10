@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.EditorParam
-import com.tokopedia.picker.common.types.EditorToolType
 import java.io.File
 import javax.inject.Inject
 
@@ -95,12 +95,24 @@ class EditorViewModel @Inject constructor(
     }
 
     fun saveToGallery(dataList: List<EditorUiModel>, onFinish: (result: List<String>) -> Unit) {
+        // store list image of camera picker that need to be saved
+        val cameraImageList = mutableListOf<String>()
+        val pickerCameraCacheDir = getTokopediaCacheDir()
+
         val filteredData = dataList.map {
             if (it.isImageEdited()) {
                 it.getImageUrl()
             } else {
+                if (it.getOriginalUrl().contains(pickerCameraCacheDir)) {
+                    cameraImageList.add(it.getImageUrl())
+                }
                 ""
             }
+        }
+
+        // save camera image that didn't have edit state
+        if (cameraImageList.isNotEmpty()) {
+            saveImageRepository.saveToGallery(cameraImageList) {}
         }
 
         saveImageRepository.saveToGallery(

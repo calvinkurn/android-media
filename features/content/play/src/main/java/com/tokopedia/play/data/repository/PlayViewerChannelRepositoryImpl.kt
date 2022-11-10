@@ -1,10 +1,13 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.view.type.PlaySource
+import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
 import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -13,7 +16,9 @@ import javax.inject.Inject
 
 class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val channelStorage: PlayChannelStateStorage,
+    private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
     private val getChannelStatusUseCase: GetChannelStatusUseCase,
+    private val mapper: PlayChannelDetailsWithRecomMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : PlayViewerChannelRepository {
 
@@ -40,6 +45,22 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
             statusType = statusType,
             statusSource = PlayStatusSource.Network,
             waitingDuration = response.playGetChannelsStatus.waitingDuration
+        )
+    }
+
+    override suspend fun getChannelList(
+        key: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey,
+        extraParams: PlayChannelDetailsWithRecomMapper.ExtraParams,
+    ): PlayViewerChannelRepository.ChannelListResponse = withContext(dispatchers.io) {
+        val response = getChannelDetailsWithRecomUseCase.apply {
+            setRequestParams(
+                GetChannelDetailsWithRecomUseCase.createParams(key)
+            )
+        }.executeOnBackground()
+
+        return@withContext PlayViewerChannelRepository.ChannelListResponse(
+            mapper.map(response, extraParams),
+            response.channelDetails.meta.cursor,
         )
     }
 }

@@ -304,6 +304,30 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
+                        HomeTopAdsVerticalBannerDataModel,
+                        ArrayList<TopAdsImageViewModel>>(
+                        widgetRepository = homeTopadsImageRepository,
+                        iterateList = true,
+                        bundleParam = {
+                            Bundle().apply {
+                                putString(
+                                    HomeTopadsImageRepository.Companion.TOP_ADS_BANNER_TYPE,
+                                    HomeTopadsImageRepository.Companion.VERTICAL
+                                )
+                            }
+                        },
+                        deleteWidgetWhen = {
+                            it?.isEmpty() == true
+                        }
+                    ) { visitableFound, data, _ ->
+                        var newTopAdsModel = visitableFound.copy()
+                        if (data.isNotEmpty()) {
+                            newTopAdsModel = visitableFound.copy(topAdsImageViewModelList = data)
+                        }
+                        newTopAdsModel
+                    }
+
+                    dynamicChannelPlainResponse.getWidgetDataIfExist<
                             ReminderWidgetModel,
                             RechargeRecommendation>(
                         widgetRepository = homeRechargeRecommendationRepository,
