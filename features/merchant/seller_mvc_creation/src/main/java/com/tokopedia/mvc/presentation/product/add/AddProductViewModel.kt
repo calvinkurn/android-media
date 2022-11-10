@@ -3,6 +3,7 @@ package com.tokopedia.mvc.presentation.product.add
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
@@ -129,7 +130,11 @@ class AddProductViewModel @Inject constructor(
                 val currentPageParentProductsResponse = productsResponse.products
                 val currentPageParentProductsIds = currentPageParentProductsResponse.map { product -> product.id }
 
-                val selectedProductIds = if (currentState.isSelectAllActive) {
+                val nextSelectedProductSize = currentState.selectedProductsIds.size + 10
+                val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.voucherCreationMetadata?.maxProduct.orZero()
+                val enableAutoSelect = currentState.isSelectAllActive && isBelowMaximumProductSelection
+
+                val selectedProductIds = if (enableAutoSelect) {
                     //If select all active, products from new page should be auto checked
                     currentState.selectedProductsIds + currentPageParentProductsIds
                 } else {
@@ -159,7 +164,8 @@ class AddProductViewModel @Inject constructor(
 
                 val updatedProducts = combineParentProductDataWithVariant(
                     currentPageParentProductsResponse,
-                    voucherValidationResponse.validationProduct
+                    voucherValidationResponse.validationProduct,
+                    isBelowMaximumProductSelection
                 )
 
 
@@ -178,23 +184,25 @@ class AddProductViewModel @Inject constructor(
 
     }
 
+
     private fun combineParentProductDataWithVariant(
         currentPageParentProduct: List<Product>,
-        validatedProducts: List<VoucherValidationResult.ValidationProduct>
+        validatedProducts: List<VoucherValidationResult.ValidationProduct>,
+        isBelowMaxSelection: Boolean
     ): List<Product> {
         val formattedProducts = currentPageParentProduct.map { product ->
 
             val matchedProduct = findValidatedProduct(product.id, validatedProducts)
             val variants = matchedProduct?.variant?.map { Product.Variant(it.productId) }
-            val isProductAlreadySelected = product.id in currentState.selectedProductsIds
-            val isSelected = isProductAlreadySelected || currentState.isSelectAllActive
+            val isProductAlreadyOnSelection = product.id in currentState.selectedProductsIds
 
             product.copy(
                 isEligible = matchedProduct?.isEligible.orTrue(),
                 ineligibleReason = matchedProduct?.reason.orEmpty(),
                 originalVariants = variants.orEmpty(),
                 modifiedVariants = variants.orEmpty(),
-                isSelected = isSelected
+                isSelected = isProductAlreadyOnSelection,
+                enableCheckbox = isBelowMaxSelection
             )
         }
 
@@ -237,6 +245,9 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleAddProductToSelection(productIdToAdd: Long) {
+        val newSelectedProductCountAfterSelection = currentState.selectedProductsIds.size.inc()
+        val allowedToAddProduct = newSelectedProductCountAfterSelection <= currentState.voucherCreationMetadata?.maxProduct.orZero()
+
         val updatedProducts = currentState.products.map {
             val hasVariants = it.originalVariants.isNotEmpty()
 
@@ -245,13 +256,14 @@ class AddProductViewModel @Inject constructor(
                 if (hasVariants) {
                     val modifiedVariants = it.originalVariants.toMutableList()
                     modifiedVariants.removeLast()
-                    it.copy(isSelected = true, originalVariants = it.originalVariants, modifiedVariants = modifiedVariants)
+                    it.copy(isSelected = true, enableCheckbox = allowedToAddProduct, originalVariants = it.originalVariants, modifiedVariants = modifiedVariants)
                 } else {
-                    it.copy(isSelected = true)
+                    it.copy(isSelected = true, enableCheckbox = allowedToAddProduct)
                 }
 
             } else {
-                it
+                //If the product is currently selected, then keep enable the checkbox, otherwise unselected product should have disabled checkbox
+                it.copy(enableCheckbox = it.isSelected)
             }
         }
 
@@ -274,13 +286,13 @@ class AddProductViewModel @Inject constructor(
 
                 val hasVariants = it.originalVariants.isNotEmpty()
                 if (hasVariants) {
-                    it.copy(isSelected = false, originalVariants = it.originalVariants, modifiedVariants = it.originalVariants)
+                    it.copy(isSelected = false, enableCheckbox = true, originalVariants = it.originalVariants, modifiedVariants = it.originalVariants)
                 } else {
-                    it.copy(isSelected = false)
+                    it.copy(isSelected = false, enableCheckbox = true)
                 }
 
             } else {
-                it
+                it.copy(enableCheckbox = true)
             }
         }
 

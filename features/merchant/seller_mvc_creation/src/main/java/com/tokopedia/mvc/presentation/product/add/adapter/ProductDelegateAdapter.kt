@@ -56,6 +56,7 @@ class ProductDelegateAdapter(
                 checkbox.setOnCheckedChangeListener { _, isChecked ->
                     onCheckboxClick(adapterPosition, isChecked)
                 }
+                checkbox.isEnabled = item.enableCheckbox
             }
         }
 

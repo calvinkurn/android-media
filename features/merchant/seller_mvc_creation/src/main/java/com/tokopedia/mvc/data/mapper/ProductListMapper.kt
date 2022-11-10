@@ -28,7 +28,8 @@ class ProductListMapper @Inject constructor() {
                 isEligible = true,
                 ineligibleReason = "",
                 originalVariants = emptyList(),
-                isSelected = false
+                isSelected = false,
+                enableCheckbox = true
             )
         }
         return ProductResult(response.productList.meta.totalHits, products)
