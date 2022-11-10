@@ -11,6 +11,7 @@ import com.tokopedia.mvc.domain.entity.enums.WarehouseType
 data class AddProductUiState(
     val isLoading: Boolean = true,
     val totalProducts: Int = 0,
+    val searchKeyword: String = "",
     val products: List<Product> = emptyList(),
     val voucherCreationMetadata: VoucherCreationMetadata? = null,
     val warehouses: List<Warehouse> = emptyList(),

@@ -11,6 +11,7 @@ sealed class AddProductEvent {
     data class FetchRequiredData(val action: VoucherAction, val promoType: PromoType) : AddProductEvent()
 
     data class LoadPage(
+        val searchKeyword: String,
         val warehouseId: Long,
         val categoryId: String,
         val page: Int,

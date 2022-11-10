@@ -143,7 +143,16 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
             attachPaging(this, pagingConfig) { page, _ ->
                 val nextPage = page + 1
-                viewModel.processEvent(AddProductEvent.LoadPage(0L, "", nextPage, "DEFAULT", "DESC"))
+                viewModel.processEvent(
+                    AddProductEvent.LoadPage(
+                        binding?.searchBar?.searchBarPlaceholder.orEmpty(),
+                        0L,
+                        "",
+                        nextPage,
+                        "DEFAULT",
+                        "DESC"
+                    )
+                )
             }
         }
     }

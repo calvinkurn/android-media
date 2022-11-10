@@ -52,10 +52,10 @@ class AddProductViewModel @Inject constructor(
     fun processEvent(event: AddProductEvent) {
         when(event) {
             is AddProductEvent.FetchRequiredData -> fetchRequiredData(event.action, event.promoType)
-            is AddProductEvent.LoadPage -> getProducts(event.warehouseId, event.page, event.categoryId, event.sortId, event.sortDirection)
+            is AddProductEvent.LoadPage -> getProducts(event.searchKeyword, event.warehouseId, event.page, event.categoryId, event.sortId, event.sortDirection)
             is AddProductEvent.AddProductToSelection -> handleAddProductToSelection(event.productId)
             AddProductEvent.ClearFilter -> handleClearFilter()
-            AddProductEvent.ClearSearchBar -> handleClearFilter()
+            AddProductEvent.ClearSearchBar -> handleClearSearchbar()
             AddProductEvent.ConfirmAddProduct -> {}
             AddProductEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
             AddProductEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
@@ -109,7 +109,7 @@ class AddProductViewModel @Inject constructor(
                     )
                 }
 
-                getProducts(defaultWarehouseId, 1, "", "DEFAULT", "DESC")
+                getProducts("", defaultWarehouseId, 1, "", "DEFAULT", "DESC")
 
             },
             onError = { error ->
@@ -119,6 +119,7 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun getProducts(
+        searchKeyword: String,
         warehouseId: Long,
         page: Int,
         categoryId: String,
@@ -129,6 +130,7 @@ class AddProductViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val param = ProductListUseCase.Param(
+                    searchKeyword = searchKeyword,
                     warehouseId = warehouseId,
                     categoryId = categoryId,
                     page = page,
@@ -303,6 +305,20 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+
+    private fun handleClearSearchbar() {
+        _uiState.update { it.copy(isLoading = true, searchKeyword = "") }
+        getProducts(
+            "",
+            currentState.selectedWarehouseLocation.warehouseId,
+            1,
+            currentState.selectedCategory.id,
+            currentState.selectedSort.id,
+            currentState.selectedSort.value
+        )
+    }
+
+
     private fun handleClearFilter() {
         _uiState.update {
             it.copy(
@@ -311,27 +327,27 @@ class AddProductViewModel @Inject constructor(
                 selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
             )
         }
-        getProducts(0L, 1, "","DEFAULT", "DESC")
+        getProducts(currentState.searchKeyword, 0L, 1, "","DEFAULT", "DESC")
     }
 
     private fun handleApplySortFilter(selectedSort: ProductSortOptions) {
         _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedSort = selectedSort) }
-        getProducts(currentState.selectedWarehouseLocation.warehouseId, 1, currentState.selectedCategory.id, selectedSort.id, selectedSort.value)
+        getProducts(currentState.searchKeyword, currentState.selectedWarehouseLocation.warehouseId, 1, currentState.selectedCategory.id, selectedSort.id, selectedSort.value)
     }
 
     private fun handleApplyWarehouseLocationFilter(selectedWarehouse: Warehouse) {
         _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedWarehouseLocation = selectedWarehouse) }
-        getProducts(selectedWarehouse.warehouseId, 1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
+        getProducts(currentState.searchKeyword, selectedWarehouse.warehouseId, 1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
     }
 
     private fun handleApplyShopShowcasesFilter(selectedShopShowcase: ShopShowcase) {
         _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedShopShowcase = selectedShopShowcase) }
-        getProducts(currentState.selectedWarehouseLocation.warehouseId, 1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
+        getProducts(currentState.searchKeyword, currentState.selectedWarehouseLocation.warehouseId, 1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
     }
 
     private fun handleApplyCategoryFilter(selectedCategory: ProductCategoryOption) {
         _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedCategory = selectedCategory) }
-        getProducts(currentState.selectedWarehouseLocation.warehouseId,1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
+        getProducts(currentState.searchKeyword, currentState.selectedWarehouseLocation.warehouseId,1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
     }
 
     fun getProductVariants(productId:Long, warehouseId: String) {
