@@ -142,12 +142,6 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("show_pinned_product")
         val showPinnedProduct: Boolean = false,
 
-        @SerializedName("active")
-        val active: Boolean = true,
-
-        @SerializedName("freezed")
-        val freezed: Boolean = false,
-
         @SerializedName("has_promo")
         val hasPromo: Boolean = false,
 
@@ -177,6 +171,9 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("empty_bottom_sheet")
         val emptyBottomSheet: EmptyBottomSheet = EmptyBottomSheet(),
+
+        @SerializedName("status")
+        val status: String = "",
 
         @SerializedName("channel_archived_screen")
         val archiveConfig: ArchivedData = ArchivedData(),

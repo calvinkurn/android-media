@@ -256,7 +256,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         configResponse: ChannelDetailsWithRecomResponse.Config,
         title: String
     ): PlayStatusUiModel {
-        val statusType = mapStatusType(!configResponse.active || configResponse.freezed)
+        val statusType = PlayStatusType.getByValue(
+            configResponse.status
+        )
         return PlayStatusUiModel(
             channelStatus = PlayChannelStatus(
                 statusType = statusType,
