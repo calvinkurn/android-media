@@ -448,6 +448,7 @@ class DiscoveryPageDataMapper(
                     )?.let {
                         if(it.name == ComponentNames.DiscoTDNBanner.componentName){
                             it.design = TOP_ADS_GSLP_TDN
+                            it.recomQueryProdId = component.recomQueryProdId
                         }
                         listComponents.add(component.properties?.index!! + Int.ONE, it)
                     }
