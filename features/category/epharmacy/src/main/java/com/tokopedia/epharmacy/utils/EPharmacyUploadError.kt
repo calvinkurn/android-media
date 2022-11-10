@@ -5,3 +5,4 @@ data class EPharmacyUploadEmptyImageError(val showErrorToast : Boolean) : EPharm
 data class EPharmacyUploadNoPrescriptionIdError(val showErrorToast : Boolean) : EPharmacyUploadError()
 data class EPharmacyUploadBackendError(val errMsg: String) : EPharmacyUploadError()
 data class EPharmacyNoInternetError(val showErrorToast : Boolean) : EPharmacyUploadError()
+data class EPharmacyNoDigitalPrescriptionError(val showErrorToast : Boolean) : EPharmacyUploadError()

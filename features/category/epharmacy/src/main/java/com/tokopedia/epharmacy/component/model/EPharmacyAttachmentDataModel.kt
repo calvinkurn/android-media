@@ -1,13 +1,10 @@
 package com.tokopedia.epharmacy.component.model
 
 import android.os.Bundle
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.common_epharmacy.network.response.EPharmacyItemButtonData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactory
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
-import com.tokopedia.epharmacy.network.response.EPharmacyProduct
-import com.tokopedia.epharmacy.network.response.PrescriptionImage
 
 data class EPharmacyAttachmentDataModel(val name : String = "", val type : String = "",
                                         val epharmacyGroupId : String?,
@@ -23,7 +20,8 @@ data class EPharmacyAttachmentDataModel(val name : String = "", val type : Strin
                                         val consultationSource: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource?,
                                         var productsIsExpanded : Boolean = false,
                                         var epharmacyButton : EPharmacyItemButtonData?,
-                                        val uploadWidget : Boolean = false
+                                        val showUploadWidget : Boolean = false,
+                                        val showDivider : Boolean  = true,
 )
     : BaseEPharmacyDataModel {
 

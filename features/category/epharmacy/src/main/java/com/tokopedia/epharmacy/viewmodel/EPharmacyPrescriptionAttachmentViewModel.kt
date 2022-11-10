@@ -3,11 +3,12 @@ package com.tokopedia.epharmacy.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.common_epharmacy.network.response.EPharmacyItemButtonData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.*
+import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,6 +27,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private val _buttonLiveData = MutableLiveData<Pair<String,String>>()
     val buttonLiveData: LiveData<Pair<String,String>> = _buttonLiveData
+
+    private val _uploadError = MutableLiveData<EPharmacyUploadError>()
+    val uploadError: LiveData<EPharmacyUploadError> = _uploadError
 
     fun getPrepareProductGroup() {
         ePharmacyPrepareProductsGroupUseCase.cancelJobs()
@@ -48,18 +52,59 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun mapButtonData(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
         var rejectedCount = 0
+        var activeCount = 0
+        var approvedCount = 0
         ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
             if(group?.consultationData?.consultationStatus == EPharmacyConsultationStatus.REJECTED.status
                 || group?.consultationData?.consultationStatus == EPharmacyConsultationStatus.EXPIRED.status){
                 rejectedCount += 1
             }
+            when (group?.consultationData?.consultationStatus ) {
+                EPharmacyConsultationStatus.REJECTED.status, EPharmacyConsultationStatus.EXPIRED.status -> {
+                    rejectedCount += 1
+                }
+                EPharmacyConsultationStatus.APPROVED.status -> {
+                    approvedCount += 1
+                }
+                EPharmacyConsultationStatus.ACTIVE.status -> {
+                    activeCount += 1
+                }
+            }
         }
+        renderButtonOnResult(rejectedCount, approvedCount, activeCount)
+    }
 
-        if(rejectedCount > 0){
+    private fun renderButtonOnResult(rejectedCount: Int, approvedCount : Int , activeCount : Int ) {
+        if(approvedCount > 0 || activeCount > 0){
             _buttonLiveData.postValue(Pair("Lanjut ke Pengiriman","tokopedia://checkout/"))
-        }else {
-            _buttonLiveData.postValue(Pair("Lanjut ke Beli Langsung","tokopedia://cart/"))
+        }else if(rejectedCount > 0){
+            _buttonLiveData.postValue(Pair("Lanjut ke Pengiriman",""))
+            _uploadError.postValue(EPharmacyNoDigitalPrescriptionError(true))
         }
+    }
+
+    fun validateButtonData(ePharmacyAttachmentUiUpdater : EPharmacyAttachmentUiUpdater){
+        var rejectedCount = 0
+        var activeCount = 0
+        var approvedCount = 0
+        ePharmacyAttachmentUiUpdater.mapOfData.forEach {
+            if(it.value is EPharmacyAttachmentDataModel){
+                (it.value as EPharmacyAttachmentDataModel).let { model ->
+                    when (model.consultationStatus) {
+                        EPharmacyConsultationStatus.REJECTED.status, EPharmacyConsultationStatus.EXPIRED.status -> {
+                            rejectedCount += 1
+                        }
+                        EPharmacyConsultationStatus.APPROVED.status -> {
+                            approvedCount += 1
+                        }
+                        EPharmacyConsultationStatus.ACTIVE.status -> {
+                            activeCount += 1
+                        }
+                    }
+                }
+            }
+        }
+        renderButtonOnResult(rejectedCount,approvedCount,activeCount)
     }
 
     private fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse) : EPharmacyDataModel{
@@ -70,11 +115,12 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                 data.detailData?.groupsData?.attachmentPageTickerText, EPHARMACY_TICKER_ICON,EPHARMACY_TICKER_BACKGROUND ))
         }
 
-        data.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
+        data.detailData?.groupsData?.epharmacyGroups?.forEachIndexed { indexGroup , group ->
             if(!group?.shopInfo.isNullOrEmpty()){
                 group?.shopInfo?.forEachIndexed { index, info ->
                     if(info?.products?.isEmpty() != true){
-                        listOfComponents.add(getGroupComponent(group,info,index))
+                        listOfComponents.add(getGroupComponent(group,info,index,
+                        EPharmacyMapper.isLastIndex(data.detailData?.groupsData?.epharmacyGroups,indexGroup)))
                     }
                 }
             }
@@ -84,25 +130,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun getGroupComponent(group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
                                   info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
-                                  index: Int): BaseEPharmacyDataModel {
-        return EPharmacyAttachmentDataModel(
-            "${group.epharmacyGroupId},${info?.shopId  ?: ""}",GROUP_COMPONENT,
-            group.epharmacyGroupId,
-            group.consultationSource?.enablerName,
-            group.consultationSource?.enablerLogoUrl,
-            info,
-            group.consultationData?.consultationStatus,
-            group.consultationData?.consultationString,
-            group.consultationData?.prescription,
-            group.consultationData?.partnerConsultationId,
-            group.consultationData?.tokoConsultationId,
-            group.prescriptionImages,
-            group.prescriptionSource,
-            group.consultationSource,
-            false,
-            prepareCtaData(group.prescriptionSource,group.consultationData?.prescription,group.prescriptionImages),
-            index == ((group.shopInfo?.size ?: 0) - 1)
-        )
+                                  index: Int, isLastGroup : Boolean): BaseEPharmacyDataModel {
+        return EPharmacyMapper.mapGroupsToAttachmentComponents(group,info,index,isLastGroup)
     }
 
     private fun onFailPrepareProductGroup(throwable: Throwable) {
@@ -112,39 +141,5 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     override fun onCleared() {
         ePharmacyPrepareProductsGroupUseCase.cancelJobs()
         super.onCleared()
-    }
-
-    private fun prepareCtaData(
-        prescriptionSource: List<String?>?,
-        prescription: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription?>?,
-        prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?
-    ) : EPharmacyItemButtonData {
-        var buttonText = "Chat Dokter Buat Dapat Resep"
-        var buttonSubText = ""
-        var buttonIconUrl = ""
-        prescriptionSource?.let {
-            if(it.size > 1){
-                buttonText = "Upload Resep atau Chat Dokter"
-            }else {
-                it.firstOrNull()?.let { source ->
-                    buttonText = when(source){
-                        PRESCRIPTION_SOURCE_TYPE.MINI_CONSULT.type ->{
-                            "Chat Dokter Buat Dapat Resep"
-                        }
-                        PRESCRIPTION_SOURCE_TYPE.UPLOAD.type ->{
-                            "Upload Resep"
-                        }
-                        else -> {
-                            ""
-                        }
-                    }
-                }
-            }
-        }
-        if(prescriptionImages?.size ?: 0 > 1 || prescription?.size ?:0 > 1){
-            buttonText = "Resep Digital Terlampir"
-            buttonSubText = "Resep dari dokter"
-        }
-        return EPharmacyItemButtonData(buttonIconUrl,buttonText,buttonSubText,"")
     }
 }

@@ -28,4 +28,6 @@
 
     <string name="epharmacy_toko_ini_adalah_partner_resmi">Toko ini adalah partner resmi</string>
     <string name="epharmacy_lanjut_ke_pengiriman">Lanjut ke Pengiriman</string>
+    <string name="epharmacy_ticker_rejected_error_description">Pesanan ini tidak bisa diproses karena pembelian obat kerasnya tidak disetujui dokter.</string>
+    <string name="epharmacy_no_digital_prescription">Yaah, dokter tidak memberikan resep digital.</string>
 </resources>

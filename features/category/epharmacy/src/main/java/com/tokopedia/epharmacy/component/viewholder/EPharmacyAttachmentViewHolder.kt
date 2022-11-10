@@ -11,6 +11,7 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAttachmentProductAccordionAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
+import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
@@ -18,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
 class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyAttachmentDataModel?>(view) {
@@ -37,6 +39,9 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val chatDokterUploadText = view.findViewById<Typography>(R.id.upload_prescription_text)
     private val chatDokterUploadSubText = view.findViewById<Typography>(R.id.upload_description_text)
     private val chatDokterUploadIcon = view.findViewById<ImageUnify>(R.id.upload_icon)
+    private val topView = view.findViewById<View>(R.id.transparent_view_top)
+    private val bottomView = view.findViewById<View>(R.id.transparent_view_bottom)
+    private val ticker = view.findViewById<Ticker>(R.id.ticker)
 
     companion object {
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
@@ -55,6 +60,20 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         renderProductsData()
         renderButton()
         renderDivider()
+        renderObstruction()
+    }
+
+    private fun renderObstruction() {
+        if(dataModel?.consultationStatus == EPharmacyConsultationStatus.REJECTED.status
+            ||dataModel?.consultationStatus == EPharmacyConsultationStatus.EXPIRED.status){
+            topView.show()
+            bottomView.show()
+            ticker.show()
+        }else {
+            topView.hide()
+            bottomView.hide()
+            ticker.hide()
+        }
     }
 
     private fun renderPartnerData() {
@@ -76,7 +95,8 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             productImageUnify.loadImage(firstProduct.productImage)
         }
 
-        if(!dataModel?.shopInfo?.products.isNullOrEmpty() && dataModel?.shopInfo?.products?.size ?: 0 > 1){
+        if(!dataModel?.shopInfo?.products.isNullOrEmpty() && (dataModel?.shopInfo?.products?.size
+                ?: 0) > 1){
             productAccordionView.show()
             if(productAccordionRV.adapter == null){
                 productAccordionRV.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
@@ -121,7 +141,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderButton() {
-        if(dataModel?.uploadWidget == true && !dataModel?.epharmacyButton?.text.isNullOrBlank()){
+        if(dataModel?.showUploadWidget == true && !dataModel?.epharmacyButton?.text.isNullOrBlank()){
             chatDokterUploadLayout.show()
             chatDokterUploadText.text = dataModel?.epharmacyButton?.text
             if(!dataModel?.epharmacyButton?.subText.isNullOrBlank()){
@@ -140,6 +160,6 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderDivider(){
-        divider.show()
+        if(dataModel?.showDivider == true) divider.show() else divider.hide()
     }
 }

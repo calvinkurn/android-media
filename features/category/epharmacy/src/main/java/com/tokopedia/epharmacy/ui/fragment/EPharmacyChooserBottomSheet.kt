@@ -23,7 +23,9 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private var enableImageURL = ""
     private var checkoutId = ""
     companion object {
-        fun newInstance( enableImageURL: String, checkoutId : String
+        fun newInstance(
+            enableImageURL: String,
+            checkoutId: String
         ): EPharmacyChooserBottomSheet {
             return EPharmacyChooserBottomSheet().apply {
                 showCloseIcon = false
@@ -46,7 +48,9 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         binding = EpharmacyChooserBottomSheetBinding.inflate(
-            inflater, container, false
+            inflater,
+            container,
+            false
         )
         setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -57,7 +61,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
         init()
     }
 
-    private fun init(){
+    private fun init() {
         extractArguments()
         binding?.let {
             with(it) {
@@ -90,10 +94,10 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 chooserMiniConsultation.stepIcon.let {
                     it.loadImage(MINI_CONS_CHOOSER_IMAGE_URL)
                 }
-                if(enableImageURL.isNotBlank()){
+                if (enableImageURL.isNotBlank()) {
                     bottomImageLogo.show()
                     bottomImageLogo.loadImage(enableImageURL)
-                }else {
+                } else {
                     bottomImageLogo.hide()
                 }
 
@@ -107,22 +111,22 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun closeBottomSheet(){
+    private fun closeBottomSheet() {
         dismiss()
         activity?.finish()
     }
 
-    private fun uploadResepAction(){
-        RouteManager.getIntent(activity,EPHARMACY_APPLINK).apply {
-            putExtra(EXTRA_CHECKOUT_ID_STRING,checkoutId)
+    private fun uploadResepAction() {
+        RouteManager.getIntent(activity, EPHARMACY_APPLINK).apply {
+            putExtra(EXTRA_CHECKOUT_ID_STRING, checkoutId)
         }.also {
             startActivityForResult(it, EPHARMACY_REQUEST_CODE)
         }
     }
 
-    private fun miniConsultationAction(){
-        RouteManager.getIntent(activity,EPHARMACY_ATTACH_PRESCRIPTION_APPLINK).apply {
-            putExtra(EXTRA_CHECKOUT_ID_STRING,checkoutId)
+    private fun miniConsultationAction() {
+        RouteManager.getIntent(activity, EPHARMACY_ATTACH_PRESCRIPTION_APPLINK).apply {
+            putExtra(EXTRA_CHECKOUT_ID_STRING, checkoutId)
         }.also {
             startActivityForResult(it, EPHARMACY_MINI_CONSULTATION__CODE)
         }

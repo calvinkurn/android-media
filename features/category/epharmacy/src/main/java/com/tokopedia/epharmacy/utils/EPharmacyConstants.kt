@@ -11,9 +11,9 @@ const val DEFAULT_ZERO_VALUE = 0L
 const val MAX_MEDIA_ITEM = 5
 
 const val MEDIA_PICKER_REQUEST_CODE = 10020
-const val EPHARMACY_REQUEST_CODE = 10021
+const val EPHARMACY_UPLOAD_REQUEST_CODE = 10021
 const val EPHARMACY_CHOOSER_REQUEST_CODE = 10022
-const val EPHARMACY_MINI_CONSULTATION__CODE = 10023
+const val EPHARMACY_MINI_CONSULTATION_REQUEST_CODE = 10023
 const val EPHARMACY_PRESCRIPTION_IDS = "epharmacy_prescription_ids"
 
 const val STATIC_INFO_COMPONENT = "static info component"
@@ -73,3 +73,5 @@ enum class EPharmacyConsultationStatus(val status: Int) {
     APPROVED(2),
     REJECTED(4)
 }
+
+const val EPHARMACY_RX_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_sucess_image_uploaded_count.png"

@@ -1,5 +1,6 @@
 package com.tokopedia.epharmacy.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_epharmacy.network.response.EPharmacyItemButtonData
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
@@ -90,6 +92,10 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         setUpObservers()
         initViews(view)
         initData()
+    }
+
+    override fun onResume() {
+        super.onResume()
         getData()
     }
 
@@ -102,6 +108,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
     private fun setUpObservers() {
         observerEPharmacyDetail()
         observerEPharmacyButtonData()
+        observerUploadPrescriptionError()
     }
 
     private fun initViews(view: View) {
@@ -142,8 +149,18 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         }
     }
 
+    private fun observerUploadPrescriptionError() {
+        ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
+            when (error) {
+                is EPharmacyNoDigitalPrescriptionError -> showToast(context?.resources?.getString(R.string.epharmacy_no_digital_prescription)
+                    ?: "")
+            }
+        }
+    }
+
     private fun observerEPharmacyButtonData() {
         ePharmacyPrescriptionAttachmentViewModel.buttonLiveData.observe(viewLifecycleOwner){
+            ePharmacyDoneButton?.show()
             if(it.second.isNotBlank()){
                 enableButton(it.first,it.second)
             }else {
@@ -226,25 +243,19 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
     override fun onCTACClick(adapterPosition: Int, modelKey: String?) {
         super.onCTACClick(adapterPosition, modelKey)
         val model = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel)
-        redirectAttachmentCTA(model.enablerLogo, model.tokoConsultationId,model.prescriptionSource, model.consultationSource?.pwaLink)
+        redirectAttachmentCTA(model.enablerLogo, model.epharmacyGroupId,model.epharmacyButton, model.consultationSource?.pwaLink)
     }
 
-    private fun redirectAttachmentCTA(enablerImage : String?, tokoConsultationId : String?,prescriptionSource: List<String?>?, miniConsultationWebLink : String?) {
-        prescriptionSource?.let {
-            if(it.size > 1){
-                startAttachmentChooser(enablerImage,tokoConsultationId)
-            }else {
-                it.firstOrNull()?.let { source ->
-                    when(source){
-                        PRESCRIPTION_SOURCE_TYPE.MINI_CONSULT.type ->{
-                            startMiniConsultation(miniConsultationWebLink)
-                        }
-
-                        PRESCRIPTION_SOURCE_TYPE.UPLOAD.type ->{
-                            startPhotoUpload(tokoConsultationId)
-                        }
-                    }
-                }
+    private fun redirectAttachmentCTA(enablerImage : String?, groupId : String?, epharmacyButton: EPharmacyItemButtonData?, miniConsultationWebLink : String?) {
+        when(epharmacyButton?.sourceType){
+            PrescriptionSourceType.MINI_CONSULT.type -> {
+                startMiniConsultation(miniConsultationWebLink)
+            }
+            PrescriptionSourceType.UPLOAD.type -> {
+                startPhotoUpload(groupId)
+            }
+            PrescriptionSourceType.MULTI.type -> {
+                startAttachmentChooser(enablerImage,groupId)
             }
         }
     }
@@ -262,13 +273,29 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         RouteManager.getIntent(activity,EPHARMACY_APPLINK).apply {
             putExtra(EXTRA_CHECKOUT_ID_STRING,tokoConsultationId)
         }.also {
-            startActivityForResult(it,EPHARMACY_REQUEST_CODE)
+            startActivityForResult(it,EPHARMACY_UPLOAD_REQUEST_CODE)
         }
     }
 
     private fun startMiniConsultation(miniConsultationLink : String?) {
         miniConsultationLink?.let { webLink ->
             RouteManager.route(activity,webLink)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        ePharmacyPrescriptionAttachmentViewModel.validateButtonData(ePharmacyAttachmentUiUpdater)
+        when(requestCode){
+            EPHARMACY_CHOOSER_REQUEST_CODE -> {
+                showToast("EPHARMACY_CHOOSER_REQUEST_CODE")
+            }
+            EPHARMACY_MINI_CONSULTATION_REQUEST_CODE -> {
+                showToast("EPHARMACY_MINI_CONSULTATION_REQUEST_CODE")
+            }
+            EPHARMACY_UPLOAD_REQUEST_CODE -> {
+                showToast("EPHARMACY_UPLOAD_REQUEST_CODE")
+            }
         }
     }
 
