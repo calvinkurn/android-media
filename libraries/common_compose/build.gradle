@@ -38,7 +38,7 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeCoil
 
     // need androidx.core for androidx.core.view.*
-    implementation rootProject.ext.miscDependencies.androidxCore
+    implementation rootProject.ext.supportLibDependencies.design
 }
 
 project.ext {
