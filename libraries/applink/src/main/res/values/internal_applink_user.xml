@@ -15,6 +15,7 @@
     <string name="path_privacy_account">/privacy-account</string>
     <string name="path_privacy_center">/privacy-center</string>
     <string name="path_consent_withdrawal">/consent/withdrawal</string>
+    <string name="path_new_consent_withdrawal">/consent/withdrawal/new</string>
 
     <!--Profile Completion-->
     <string name="path_add_name_register">/add-name-register</string>
