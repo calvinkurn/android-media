@@ -716,9 +716,14 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     override fun onChatListTickerClicked(appLink: String) {
         if (appLink.isNotBlank()) {
             context?.let {
+                chatListAnalytics.clickChatDriverTicker(getRoleStr())
                 RouteManager.route(it, appLink)
             }
         }
+    }
+
+    override fun onChatListTickerImpressed() {
+        chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
     }
 
     protected open fun generateChatListComponent() = DaggerChatListComponent.builder()
@@ -756,6 +761,10 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 handleChatRoomAndFlexMode(element, itemPosition, lastActiveChat)
             }
         }
+    }
+
+    private fun getRoleStr(): String {
+        return if (isTabSeller()) ChatListAnalytic.Other.SELLER else ChatListAnalytic.Other.BUYER
     }
 
     private fun handleChatRoomAndFlexMode(
