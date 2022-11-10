@@ -6,15 +6,19 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
+import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
-import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.scheduledelivery.view.bottomsheet.ScheduleSlotBottomSheet
+import com.tokopedia.logisticcart.scheduledelivery.mapper.ScheduleDeliveryBottomSheetMapper
 import com.tokopedia.logisticcart.scheduledelivery.preference.ScheduleDeliveryPreferences
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -35,6 +39,7 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     interface ShippingScheduleWidgetListener {
         fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel)
+        fun getFragmentManager(): FragmentManager?
     }
 
     init {
@@ -116,8 +121,8 @@ class ShippingScheduleWidget : ConstraintLayout {
         return ShippingScheduleWidgetModel(
             isEnable = available,
             title = getTitleOtherOption(),
-            description = if (available) deliveryProduct?.textEta else text,
-            label = deliveryProduct?.promoText,
+            description = if (available) deliveryProduct.textEta else text,
+            label = deliveryProduct.promoText,
             isSelected = isSelected,
             isShowCoachMark = scheduleDeliveryPreferences?.isDisplayedCoachmark?.not() ?: true,
             onSelectedWidgetListener = {
@@ -132,33 +137,39 @@ class ShippingScheduleWidget : ConstraintLayout {
         val text = StringBuilder().apply {
             appendHtmlBoldText(title)
             if (available) {
-                if (deliveryProduct?.realPrice != deliveryProduct?.finalPrice) {
-                    appendHtmlBoldText(" (${deliveryProduct?.textFinalPrice} ")
-                    appendHtmlStrikethroughText("${deliveryProduct?.textRealPrice}")
-                    appendHtmlBoldText(")")
-                } else {
-                    appendHtmlBoldText(" (${deliveryProduct?.textFinalPrice})")
-                }
+                append(deliveryProduct.getFormattedPrice())
             }
         }.toString()
 
         return HtmlLinkHelper(context, text).spannedString ?: ""
     }
 
-    private fun StringBuilder.appendHtmlBoldText(text: String) {
-        if (text.isNotBlank()) {
-            append(String.format(HTML_BOLD_FORMAT, text))
-        }
-    }
-
-    private fun StringBuilder.appendHtmlStrikethroughText(text: String) {
-        if (text.isNotBlank()) {
-            append(String.format(HTML_STRIKETHROUGH_FORMAT, text))
-        }
-    }
-
     private fun openScheduleDeliveryBottomSheet(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
-        // open schedule delivery bottom sheet
+        scheduleDeliveryUiModel?.let {
+            val bottomsheetUiModel = ScheduleDeliveryBottomSheetMapper.mapResponseToUiModel(
+                it.deliveryServices,
+                it.scheduleDate,
+                it.deliveryProduct,
+                it.notice
+            )
+            mListener?.getFragmentManager()?.let { fragmentManager ->
+
+                val bottomsheet =
+                    ScheduleSlotBottomSheet.show(fragmentManager, bottomsheetUiModel)
+                bottomsheet.setListener(object :
+                    ScheduleSlotBottomSheet.ScheduleSlotBottomSheetListener {
+                    override fun onChooseTimeListener(timeId: Long, dateId: String) {
+                        scheduleDeliveryUiModel.setScheduleDateAndTimeslotId(
+                            scheduleDate = dateId,
+                            timeslotId = timeId
+                        )
+                        mListener?.onChangeScheduleDelivery(it)
+                    }
+                })
+
+            }
+
+        }
     }
 
     private fun removeScheduleWidgetViews() {
@@ -293,8 +304,6 @@ class ShippingScheduleWidget : ConstraintLayout {
     }
 
     companion object {
-        const val HTML_BOLD_FORMAT = "<b>%s</b>"
-        private const val HTML_STRIKETHROUGH_FORMAT = "<s>%s</s>"
         private const val DELAY_SHOWING_COACHMARK: Long = 300
     }
 }
