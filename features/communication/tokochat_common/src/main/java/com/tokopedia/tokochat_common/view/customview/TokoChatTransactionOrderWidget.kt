@@ -47,6 +47,8 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         partialOrderStatusWidgetBinding = null
         shimmerOrderStatusWidgetBinding = null
         binding = null
+        listener = null
+        tokoChatOrderProgressUiModel = null
     }
 
     init {

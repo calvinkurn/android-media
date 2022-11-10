@@ -5,10 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
@@ -153,10 +155,14 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         })
     }
 
-    fun getUnReadChatCount(): LiveData<Result<Int>> {
+    fun getUnReadChatCount(channelId: String): LiveData<Result<Int>> {
         return try {
-            Transformations.map(getUnReadChatCountUseCase.get().unReadCount()) {
-                Success(it)
+            Transformations.map(getUnReadChatCountUseCase.get().unReadCount(channelId)) {
+                if (it != null) {
+                    Success(it)
+                } else {
+                    Success(Int.ZERO)
+                }
             }
         } catch (t: Throwable) {
             MutableLiveData(Fail(t))
@@ -167,6 +173,19 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         try {
             tokoChatConfigMutationProfileUseCase.get().initializeConversationProfile()
             _mutationProfile.value = Success(true)
+        } catch (t: Throwable) {
+            _mutationProfile.value = Fail(t)
+        }
+    }
+
+    fun initGroupBooking(
+        orderId: String,
+        conversationsGroupBookingListener: ConversationsGroupBookingListener
+    ) {
+        try {
+            tokoChatConfigMutationProfileUseCase.get().initGroupBooking(
+                orderId = orderId, conversationsGroupBookingListener = conversationsGroupBookingListener
+            )
         } catch (t: Throwable) {
             _mutationProfile.value = Fail(t)
         }
