@@ -19,6 +19,13 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliateCommisionThickDivderItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateCommissionDetailsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDataCardShimmerItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDateFilterVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleRVVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleTopicRVVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleTopicVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationBannerItemVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationEventRVVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationEventVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateHeaderItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateHomeUserDataVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateHomeUserListDataVH
@@ -46,6 +53,13 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDi
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
@@ -69,21 +83,20 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceL
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithdrawalTitleItemModel
 
-
 class AffiliateAdapterFactory(
-        private var shareButtonInterface: ShareButtonInterface? = null,
-        var productClickInterface : ProductClickInterface? = null,
-        private var promotionClickInterface : PromotionClickInterface? = null,
-        private var addSocialInterface  : AddSocialInterface? = null,
-        private var portfolioClickInterface: PortfolioClickInterface? = null,
-        private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface? = null,
-        private var onDateRangeClickInterface: AffiliateDatePickerRangeChangeInterface? = null,
-        private var onPerformaGridClick: AffiliatePerformaClickInterfaces? = null,
-        private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null,
-        private var affiliateInfoClickInterfaces: AffiliateInfoClickInterfaces? = null,
-        private var affiliatePerformanceChipClick: AffiliatePerformanceChipClick? = null
-        )
-    : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
+    private var shareButtonInterface: ShareButtonInterface? = null,
+    var productClickInterface: ProductClickInterface? = null,
+    private var promotionClickInterface: PromotionClickInterface? = null,
+    private var addSocialInterface: AddSocialInterface? = null,
+    private var portfolioClickInterface: PortfolioClickInterface? = null,
+    private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface? = null,
+    private var onDateRangeClickInterface: AffiliateDatePickerRangeChangeInterface? = null,
+    private var onPerformaGridClick: AffiliatePerformaClickInterfaces? = null,
+    private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null,
+    private var affiliateInfoClickInterfaces: AffiliateInfoClickInterfaces? = null,
+    private var affiliatePerformanceChipClick: AffiliatePerformanceChipClick? = null
+) :
+    BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -91,29 +104,36 @@ class AffiliateAdapterFactory(
             AffiliatePerformaSharedProductCardsItemVH.LAYOUT -> AffiliatePerformaSharedProductCardsItemVH(parent, productClickInterface)
             AffiliateDataCardShimmerItemVH.LAYOUT -> AffiliateDataCardShimmerItemVH(parent)
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
-            AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface,addSocialInterface)
-            AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
-            AffiliatePromotionShopItemVH.LAYOUT -> AffiliatePromotionShopItemVH(parent,promotionClickInterface)
-            AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
-            AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFocusChangeInterface)
+            AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface, addSocialInterface)
+            AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent, promotionClickInterface)
+            AffiliatePromotionShopItemVH.LAYOUT -> AffiliatePromotionShopItemVH(parent, promotionClickInterface)
+            AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent, promotionClickInterface)
+            AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent, onFocusChangeInterface)
             AffiliateHeaderItemVH.LAYOUT -> AffiliateHeaderItemVH(parent)
-            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent,portfolioClickInterface)
+            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent, portfolioClickInterface)
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
-            AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)
+            AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent, promotionClickInterface)
             AffiliateTransactionHistoryItemVH.LAYOUT -> AffiliateTransactionHistoryItemVH(parent)
-            AffiliateCommissionDetailsItemVH.LAYOUT -> AffiliateCommissionDetailsItemVH(parent,affiliateInfoClickInterfaces)
+            AffiliateCommissionDetailsItemVH.LAYOUT -> AffiliateCommissionDetailsItemVH(parent, affiliateInfoClickInterfaces)
             AffiliateCommisionDivderItemVH.LAYOUT -> AffiliateCommisionDivderItemVH(parent)
             AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent, onPerformaGridClick)
             AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent, onPerformaGridClick)
-            AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
-            AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent,bottomNavBarClickListener)
+            AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent, onDateRangeClickInterface)
+            AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent, bottomNavBarClickListener)
             AffiliateCommisionThickDivderItemVH.LAYOUT -> AffiliateCommisionThickDivderItemVH(parent)
             AffiliateWithdrawalTitleItemVH.LAYOUT -> AffiliateWithdrawalTitleItemVH(parent)
             AffiliateTrafficProductItemVH.LAYOUT -> AffiliateTrafficProductItemVH(parent)
             AffiliateProductMetricVH.LAYOUT -> AffiliateProductMetricVH(parent)
-            AffiliatePerformanceChipRVVH.LAYOUT -> AffiliatePerformanceChipRVVH(parent,affiliatePerformanceChipClick)
-            AffiliatePerformanceChipVH.LAYOUT -> AffiliatePerformanceChipVH(parent,affiliatePerformanceChipClick)
+            AffiliatePerformanceChipRVVH.LAYOUT -> AffiliatePerformanceChipRVVH(parent, affiliatePerformanceChipClick)
+            AffiliatePerformanceChipVH.LAYOUT -> AffiliatePerformanceChipVH(parent, affiliatePerformanceChipClick)
+            AffiliateEducationBannerItemVH.LAYOUT -> AffiliateEducationBannerItemVH(parent)
+            AffiliateEducationArticleTopicRVVH.LAYOUT -> AffiliateEducationArticleTopicRVVH(parent)
+            AffiliateEducationArticleTopicVH.LAYOUT -> AffiliateEducationArticleTopicVH(parent)
+            AffiliateEducationEventRVVH.LAYOUT -> AffiliateEducationEventRVVH(parent)
+            AffiliateEducationEventVH.LAYOUT -> AffiliateEducationEventVH(parent)
+            AffiliateEducationArticleRVVH.LAYOUT -> AffiliateEducationArticleRVVH(parent)
+            AffiliateEducationArticleVH.LAYOUT -> AffiliateEducationArticleVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -151,15 +171,15 @@ class AffiliateAdapterFactory(
     }
 
     override fun type(viewModel: AffiliatePortfolioButtonModel): Int {
-       return AffiliatePortfolioButtonItemVH.LAYOUT
+        return AffiliatePortfolioButtonItemVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateTermsAndConditionModel): Int {
-        return  AffiliateTermsAndConditionVH.LAYOUT
+        return AffiliateTermsAndConditionVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateUserPerformanceModel): Int {
-       return  AffiliateHomeUserDataVH.LAYOUT
+        return AffiliateHomeUserDataVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateUserPerformanceListModel): Int {
@@ -195,7 +215,7 @@ class AffiliateAdapterFactory(
     }
 
     override fun type(viewModel: AffiliateNoPromoItemFoundModel): Int {
-      return AffiliateNoPromoItemFoundVH.LAYOUT
+        return AffiliateNoPromoItemFoundVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateDataPlatformShimmerModel): Int {
@@ -206,14 +226,14 @@ class AffiliateAdapterFactory(
     }
 
     override fun type(viewModel: AffiliateTrafficCardModel): Int {
-       return AffiliateTrafficProductItemVH.LAYOUT
+        return AffiliateTrafficProductItemVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateProductCardMetricsModel): Int {
-       return AffiliateProductMetricVH.LAYOUT
+        return AffiliateProductMetricVH.LAYOUT
     }
     override fun type(viewModel: AffiliatePromotionShopModel): Int {
-        return  AffiliatePromotionShopItemVH.LAYOUT
+        return AffiliatePromotionShopItemVH.LAYOUT
     }
     override fun type(viewModel: AffiliatePerformanceChipRVModel): Int {
         return AffiliatePerformanceChipRVVH.LAYOUT
@@ -221,5 +241,33 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliatePerformanceChipModel): Int {
         return AffiliatePerformanceChipVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateEducationBannerUiModel): Int {
+        return AffiliateEducationBannerItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateEducationArticleTopicRVUiModel): Int {
+        return AffiliateEducationArticleTopicRVVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateEducationArticleTopicUiModel): Int {
+        return AffiliateEducationArticleTopicVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateEducationEventRVUiModel): Int {
+        return AffiliateEducationEventRVVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateEducationEventUiModel): Int {
+        return AffiliateEducationEventVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateEducationArticleRVUiModel): Int {
+        return AffiliateEducationArticleRVVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateEducationArticleUiModel): Int {
+        return AffiliateEducationArticleVH.LAYOUT
     }
 }
