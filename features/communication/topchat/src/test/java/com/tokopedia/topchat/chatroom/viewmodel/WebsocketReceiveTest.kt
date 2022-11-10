@@ -292,6 +292,66 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
     }
 
     @Test
+    fun should_render_msg_and_unread_msg_is_more_than_zero_when_receive_reply_event_and_from_bubble_and_onstop() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg(
+            isOpposite = true
+        )
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onStop()
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, 1)
+    }
+
+    @Test
+    fun should_render_msg_and_unread_msg_is_more_than_zero_when_receive_reply_event_and_not_from_bubble_and_onstop() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg(
+            isOpposite = true
+        )
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onResume()
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, 0)
+    }
+
+    @Test
+    fun should_render_msg_and_unread_msg_is_more_than_zero_when_receive_reply_event_and_from_bubble_and_not_onstop() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg(
+            isOpposite = true
+        )
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+        val isFromBubble = true
+        viewModel.isFromBubble = isFromBubble
+
+        // When
+        viewModel.onStop()
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, 1)
+    }
+
+    @Test
     fun should_render_msg_when_receive_reply_event_from_opposite() {
         // Given
         val responseText = WebsocketResponses.generateReplyMsg(
