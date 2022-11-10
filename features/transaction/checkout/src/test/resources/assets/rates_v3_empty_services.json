@@ -1,0 +1,89 @@
+{
+  "ratesV3": {
+    "ratesv3": {
+      "id": ":2275:2270:750",
+      "rates_id": "1606130185975715462",
+      "type": "rates",
+      "error": {
+        "error_id": "",
+        "error_message": ""
+      },
+      "services": [],
+      "promo_stacking": {
+        "is_promo": 1,
+        "promo_code": "WGOIN",
+        "title": "Bebas Ongkir",
+        "shipper_id": 10,
+        "shipper_product_id": 28,
+        "shipper_name": "Gojek",
+        "shipper_desc": "3 jam|1000",
+        "promo_detail": "",
+        "benefit_desc": "Kamu belum memenuhi min. pembelian Rp50.000",
+        "point_change": 0,
+        "user_point": 0,
+        "promo_tnc_html": "Anda akan menggunakan promo <b>Bebas Ongkir Tokopedia</b>",
+        "shipper_disable_text": "Tidak dapat <b>ubah kurir</b> karena promo hanya berlaku untuk kurir yang ditentukan",
+        "service_id": 1000,
+        "is_applied": 0,
+        "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+        "discounted_rate": 26000,
+        "shipping_rate": 26000,
+        "benefit_amount": 0,
+        "disabled": true,
+        "hide_shipper_name": true,
+        "cod": {
+          "is_cod_available": 0,
+          "cod_text": "",
+          "cod_price": 0,
+          "formatted_price": "",
+          "tnc_text": "",
+          "tnc_link": ""
+        },
+        "eta": {
+          "text_eta": "",
+          "error_code": 1
+        }
+      },
+      "promo_stackings": [{
+        "is_promo": 1,
+        "promo_code": "WGOIN",
+        "title": "Bebas Ongkir",
+        "shipper_id": 10,
+        "shipper_product_id": 28,
+        "shipper_name": "Gojek",
+        "shipper_desc": "3 jam|1000",
+        "promo_detail": "",
+        "benefit_desc": "Kamu belum memenuhi min. pembelian Rp50.000",
+        "point_change": 0,
+        "user_point": 0,
+        "promo_tnc_html": "Anda akan menggunakan promo <b>Bebas Ongkir Tokopedia</b>",
+        "shipper_disable_text": "Tidak dapat <b>ubah kurir</b> karena promo hanya berlaku untuk kurir yang ditentukan",
+        "service_id": 1000,
+        "is_applied": 0,
+        "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+        "discounted_rate": 26000,
+        "shipping_rate": 26000,
+        "benefit_amount": 0,
+        "disabled": true,
+        "hide_shipper_name": true,
+        "cod": {
+          "is_cod_available": 0,
+          "cod_text": "",
+          "cod_price": 0,
+          "formatted_price": "",
+          "tnc_text": "",
+          "tnc_link": ""
+        },
+        "eta": {
+          "text_eta": "",
+          "error_code": 1
+        }
+      }],
+      "info": {
+        "blackbox_info": {
+          "text_info": ""
+        }
+      }
+    }
+  }
+}

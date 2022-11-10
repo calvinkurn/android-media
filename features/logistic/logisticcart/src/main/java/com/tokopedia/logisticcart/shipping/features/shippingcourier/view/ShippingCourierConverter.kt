@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.ScheduleDeliveryData
 import com.tokopedia.logisticcart.shipping.model.*
 import javax.inject.Inject
 
@@ -18,9 +18,11 @@ class ShippingCourierConverter @Inject constructor() {
         }
     }
 
+    @JvmOverloads
     fun convertToCourierItemData(
         shippingCourierUiModel: ShippingCourierUiModel?,
-        shippingRecommendationData: ShippingRecommendationData? = null
+        shippingRecommendationData: ShippingRecommendationData? = null,
+        shipmentCartItemModel: ShipmentCartItemModel? = null
     ): CourierItemData {
         val courierItemData = CourierItemData()
         shippingCourierUiModel?.let {
@@ -113,8 +115,11 @@ class ShippingCourierConverter @Inject constructor() {
         }
 
         /*Schedule Delivery*/
-        shippingRecommendationData?.additionalDeliveryData?.takeIf { it.hidden.not() }?.apply {
-            courierItemData.scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel()
+        shippingRecommendationData?.scheduleDeliveryData?.takeIf { it.hidden.not() }?.apply {
+            courierItemData.scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
+                shipmentCartItemModel?.scheduleDate ?: "",
+                shipmentCartItemModel?.timeslotId ?: 0L,
+            )
         }
 
         return courierItemData
@@ -140,14 +145,15 @@ class ShippingCourierConverter @Inject constructor() {
         return courierData
     }
 
-    private fun AdditionalDeliveryData.convertToScheduleDeliveryUiModel(
-        scheduleDate: String? = null,
-        timeslotId: Long? = null
+    private fun ScheduleDeliveryData.convertToScheduleDeliveryUiModel(
+        scheduleDate: String,
+        timeslotId: Long
     ): ScheduleDeliveryUiModel {
 
         return ScheduleDeliveryUiModel(
-            isSelected = recommendAdditionalShipper,
+            isSelected = recommend,
             available = available,
+            ratesId = ratesId,
             hidden = hidden,
             title = title,
             text = text,

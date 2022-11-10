@@ -58,6 +58,7 @@ import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
+import com.tokopedia.checkout.view.subscriber.GetScheduleDeliveryCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber;
 import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
@@ -79,7 +80,7 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase;
-import com.tokopedia.logisticcart.scheduledelivery.model.ScheduleDeliveryParam;
+import com.tokopedia.logisticcart.scheduledelivery.usecase.GetRatesWithScheduleUseCase;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
@@ -185,6 +186,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase;
     private final GetRatesUseCase ratesUseCase;
     private final GetRatesApiUseCase ratesApiUseCase;
+    private final GetRatesWithScheduleUseCase ratesWithScheduleUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
     private final OldClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
@@ -253,7 +255,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
                              Gson gson,
                              ExecutorSchedulers executorSchedulers,
-                             EligibleForAddressUseCase eligibleForAddressUseCase) {
+                             EligibleForAddressUseCase eligibleForAddressUseCase,
+                             GetRatesWithScheduleUseCase ratesWithScheduleUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
@@ -262,6 +265,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.saveShipmentStateGqlUseCase = saveShipmentStateGqlUseCase;
         this.ratesUseCase = ratesUseCase;
         this.ratesApiUseCase = ratesApiUseCase;
+        this.ratesWithScheduleUseCase = ratesWithScheduleUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.stateConverter = stateConverter;
         this.shippingCourierConverter = shippingCourierConverter;
@@ -294,6 +298,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         if (ratesApiUseCase != null) {
             ratesApiUseCase.unsubscribe();
+        }
+        if (ratesWithScheduleUseCase != null) {
+            ratesWithScheduleUseCase.unsubscribe();
         }
     }
 
@@ -1766,8 +1773,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
 
             ShipmentStateShippingInfoData shipmentStateShippingInfoData = new ShipmentStateShippingInfoData();
-            shipmentStateShippingInfoData.setShippingId(courierData.getShipperId());
-            shipmentStateShippingInfoData.setSpId(courierData.getShipperProductId());
+            shipmentStateShippingInfoData.setShippingId(courierData.getSelectedShipper().getShipperId());
+            shipmentStateShippingInfoData.setSpId(courierData.getSelectedShipper().getShipperProductId());
             shipmentStateShippingInfoData.setRatesFeature(ratesFeature);
 
             ShipmentStateShopProductData shipmentStateShopProductData = new ShipmentStateShopProductData();
@@ -1783,6 +1790,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             shipmentStateShopProductData.setDropshipData(shipmentStateDropshipData);
             shipmentStateShopProductData.setShippingInfoData(shipmentStateShippingInfoData);
             shipmentStateShopProductData.setProductDataList(shipmentStateProductDataList);
+            shipmentStateShopProductData.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
+
             shipmentStateShopProductDataList.add(shipmentStateShopProductData);
         }
     }
@@ -2235,19 +2244,30 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         Observable<ShippingRecommendationData> observable;
         if (isTradeInDropOff) {
             observable = ratesApiUseCase.execute(param);
+        } else if (shipmentCartItemModel.getRatesValidationFlow()) {
+            observable = ratesWithScheduleUseCase.execute(param, String.valueOf(shipmentCartItemModel.getFulfillmentId()));
         } else {
             observable = ratesUseCase.execute(param);
         }
+
+        Subscriber<ShippingRecommendationData> subscriber = new GetCourierRecommendationSubscriber(
+                getView(), this, shipperId, spId, itemPosition,
+                shippingCourierConverter, shipmentCartItemModel,
+                isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
+        );
+        if (shipmentCartItemModel.getRatesValidationFlow()) {
+            subscriber = new GetScheduleDeliveryCourierRecommendationSubscriber(
+                    getView(), this, shipperId, spId, itemPosition,
+                    shippingCourierConverter, shipmentCartItemModel,
+                    isInitialLoad, isForceReload, isBoUnstackEnabled
+            );
+        }
+
         observable
                 .map(shippingRecommendationData ->
                         stateConverter.fillState(shippingRecommendationData, shopShipmentList,
                                 spId, 0))
-                .subscribe(
-                        new GetCourierRecommendationSubscriber(
-                                getView(), this, shipperId, spId, itemPosition,
-                                shippingCourierConverter, shipmentCartItemModel,
-                                isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
-                        ));
+                .subscribe(subscriber);
     }
 
     @Override
