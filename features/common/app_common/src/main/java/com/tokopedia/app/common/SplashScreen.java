@@ -1,7 +1,9 @@
 package com.tokopedia.app.common;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,9 +17,13 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
@@ -29,11 +35,13 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +57,9 @@ public class SplashScreen extends AppCompatActivity {
 
     public static final int DATABASE_VERSION = 7;
     public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
+    private Iris irisAnalytics;
+    public static final String IRIS_PRE_INSTALL_WEAVE = "android_async_preinstall_iris_event";
+    private boolean isAppFirstInstall;
 
     protected View decorView;
 
@@ -57,7 +68,11 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        isAppFirstInstall = isFirstInstall();
+        if(isAppFirstInstall) {
+            sendCampaignPreInstallTOGTM();
+        }
+        sendIrisPreInstallEvent(this);
         resetAllDatabaseFlag();
         WeaveInterface remoteConfigWeave = new WeaveInterface() {
             @NotNull
@@ -197,6 +212,80 @@ public class SplashScreen extends AppCompatActivity {
                     }
                 }, SplashScreen.this));
         return true;
+    }
+
+    private void sendIrisPreInstallEvent(Context context){
+        if(GlobalConfig.IS_PREINSTALL) {
+            WeaveInterface irisPreInstallWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    return executeSendIrisEvent(context);
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisPreInstallWeave, IRIS_PRE_INSTALL_WEAVE, getApplicationContext(), true);
+        }
+    }
+
+    private boolean executeSendIrisEvent(Context context){
+        HashMap<String, Object> value = new HashMap<>();
+        value.put("partner_source", "oppopreinstallof");
+        value.put("Partner_Referred", "source_appmarket/phonepreinstall");
+        value.put("eventaction", "appOpen");
+        value.put("eventcategory", "preInstall");
+        value.put("eventlabel", "oppo");
+        if(isAppFirstInstall) {
+            value.put("event", "first_open");
+        }
+        else {
+            value.put("event", "recurring_open");
+        }
+        getIrisAnalytics(context).sendEvent(value);
+        return true;
+    }
+
+    private Iris getIrisAnalytics(Context context){
+        if(irisAnalytics == null){
+            irisAnalytics = IrisAnalytics.getInstance(context);
+        }
+        return irisAnalytics;
+    }
+
+    private boolean isFirstInstall() {
+        SharedPreferences sharedPrefs = this.getSharedPreferences(
+                "KEY_FIRST_INSTALL_SEARCH", Context.MODE_PRIVATE);
+        long firstInstallCacheValue = sharedPrefs.getLong(
+                "KEY_IS_FIRST_INSTALL_TIME_PRE_INSTALL", 0);
+        if (firstInstallCacheValue == 0L) {
+            saveFirstInstallTime();
+            return true;
+        }
+        Date now = new Date();
+        Date firstInstallTime = new Date(firstInstallCacheValue);
+        if (now.compareTo(firstInstallTime) <= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void saveFirstInstallTime() {
+        Date date = new Date();
+        SharedPreferences sharedPrefs = this.getSharedPreferences(
+                "KEY_FIRST_INSTALL_SEARCH", Context.MODE_PRIVATE);
+        sharedPrefs.edit().putLong(
+                "KEY_IS_FIRST_INSTALL_TIME_PRE_INSTALL", date.getTime()).apply();
+    }
+
+    public void sendCampaignPreInstallTOGTM(){
+        if(GlobalConfig.IS_PREINSTALL) {
+            Map<String, Object> param = new HashMap<>();
+            param.put(AppEventTracking.GTM.UTM_SOURCE, "oppo_int");
+            param.put(AppEventTracking.GTM.UTM_MEDIUM, "notset");
+            param.put("screenName", "SplashScreen");
+            param.put(AppEventTracking.GTM.UTM_CAMPAIGN, "oppopreinstallof-dp_int-tp-10001511-0000-alon-alon");
+            TrackApp.getInstance().getGTM().sendCampaign(param);
+        }
     }
 
     @Override
