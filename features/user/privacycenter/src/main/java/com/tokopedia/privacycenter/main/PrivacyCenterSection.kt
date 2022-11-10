@@ -4,6 +4,7 @@ import android.widget.LinearLayout
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
+import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySection
 
 /**
  * ## Centralize Privacy Center Sections Initialize
@@ -12,6 +13,7 @@ import com.tokopedia.privacycenter.main.section.dummy.DummySection
 interface PrivacyCenterSectionDelegate {
     val dummySection: DummySection
     val consentWithdrawalSection: ConsentWithdrawalSection
+    val privacyPolicySection: PrivacyPolicySection
 }
 
 class PrivacyCenterSection constructor(
@@ -26,6 +28,7 @@ class PrivacyCenterSection constructor(
         return mutableMapOf(
             DummySection.TAG to delegate.dummySection,
             ConsentWithdrawalSection.TAG to delegate.consentWithdrawalSection,
+            PrivacyPolicySection.TAG to delegate.privacyPolicySection,
         )
     }
 

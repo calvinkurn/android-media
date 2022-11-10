@@ -15,6 +15,7 @@ import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
+import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySection
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -128,6 +129,7 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
             context,
             viewModelConsentWithdrawalSection
         )
+        override val privacyPolicySection: PrivacyPolicySection = PrivacyPolicySection(context)
     }
 
     companion object {

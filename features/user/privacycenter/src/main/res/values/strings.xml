@@ -11,6 +11,10 @@
     <string name="section_title_consentWithdrawal">Persetujuan kamu</string>
     <string name="section_description_consentWithdrawal">Atur fitur apa aja yang boleh akses datamu</string>
 
+    <!--Section | Privacy Policy -->
+    <string name="section_title_privacypolicy">Kebijakan Privasi Tokopedia</string>
+    <string name="section_description_privacypolicy">Kebijakan Privasi menjelaskan data pribadimu yang disimpan, bagaimana Tokopedia menggunakannya, dan kenapa Tokopedia memprosesnya.</string>
+
     <!--  CONSENT WITHDRAWAL  -->
     <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
     <string name="consent_withdrawal_secondary_data_usage">Penggunaan data tambahan</string>
