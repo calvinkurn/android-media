@@ -16,6 +16,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.analytics.common.CassavaTestFixture
 import com.tokopedia.review.analytics.common.actionTest
 import com.tokopedia.review.common.Utils
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationResponseWrapper
 import com.tokopedia.review.feature.reviewlist.data.ProductRatingOverallResponse
 import com.tokopedia.review.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
@@ -159,6 +160,10 @@ class SellerReviewListActivityTest: CassavaTestFixture() {
         graphqlRepositoryStub.createMapResult(
             ProductReviewListResponse::class.java,
             Utils.parseFromJson<ProductReviewListResponse>("mockresponse/reviewlist/get_product_rating_overall_usecase/product_review_list.json")
+        )
+        graphqlRepositoryStub.createMapResult(
+            InboxReputationResponseWrapper.Data::class.java,
+            Utils.parseFromJson<InboxReputationResponseWrapper.Data>("mockresponse/reviewlist/get_inbox_reputation_usecase/inbox_review_reputation_list_v2.json")
         )
     }
 

@@ -16,4 +16,12 @@ class InboxReputationActivityStub: InboxReputationActivity() {
     override fun createRatingProductFragment() {
         reviewSellerFragment = RatingProductFragmentStub.createInstance()
     }
+
+    override fun createInboxReviewFragment() {
+//        super.createInboxReviewFragment()
+    }
+
+    override fun createSellerReputationPenaltyFragment() {
+//        super.createSellerReputationPenaltyFragment()
+    }
 }

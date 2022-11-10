@@ -1,0 +1,447 @@
+{
+  "inboxReviewReputationListV2": {
+    "reputationList": [
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "825707",
+        "reputationIdStr": "1089480308",
+        "orderData": {
+          "invoiceRefNum": "INV/20221108/MPL/2801450389",
+          "createTimeFmt": "08 Nov 2022, 10:34"
+        },
+        "revieweeData": {
+          "name": "Buldozer",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/825707/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 47,
+            "neutral": 4,
+            "negative": 0,
+            "positivePercentage": "100%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": false,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": false,
+          "isAutoScored": false,
+          "isCompleted": false,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 14,
+          "showBookmark": true,
+          "actionMessage": "Beri Penilaian"
+        }
+      },
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "825707",
+        "reputationIdStr": "1089464814",
+        "orderData": {
+          "invoiceRefNum": "INV/20221108/MPL/2801597704",
+          "createTimeFmt": "08 Nov 2022, 10:12"
+        },
+        "revieweeData": {
+          "name": "Buldozer",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/825707/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 47,
+            "neutral": 4,
+            "negative": 0,
+            "positivePercentage": "100%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": false,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": false,
+          "isAutoScored": false,
+          "isCompleted": false,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 14,
+          "showBookmark": true,
+          "actionMessage": "Beri Penilaian"
+        }
+      },
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "201990854",
+        "reputationIdStr": "1073294127",
+        "orderData": {
+          "invoiceRefNum": "INV/20221018/MPL/2746830185",
+          "createTimeFmt": "20 Okt 2022, 15:21"
+        },
+        "revieweeData": {
+          "name": "Sindar",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/201990854/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 1,
+            "neutral": 0,
+            "negative": 0,
+            "positivePercentage": "100%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": true,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": true,
+          "isAutoScored": false,
+          "isCompleted": true,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 0,
+          "showBookmark": false,
+          "actionMessage": "Lihat Semua"
+        }
+      },
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "175118646",
+        "reputationIdStr": "1071665305",
+        "orderData": {
+          "invoiceRefNum": "INV/20221017/MPL/2744456886",
+          "createTimeFmt": "18 Okt 2022, 15:15"
+        },
+        "revieweeData": {
+          "name": "Tea",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/175118646/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 2,
+            "neutral": 0,
+            "negative": 1,
+            "positivePercentage": "80%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": true,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": true,
+          "isAutoScored": false,
+          "isCompleted": true,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 0,
+          "showBookmark": false,
+          "actionMessage": "Lihat Semua"
+        }
+      },
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "201990854",
+        "reputationIdStr": "1062106824",
+        "orderData": {
+          "invoiceRefNum": "INV/20220830/MPL/2614425386",
+          "createTimeFmt": "07 Okt 2022, 19:15"
+        },
+        "revieweeData": {
+          "name": "Sindar",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/201990854/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 1,
+            "neutral": 0,
+            "negative": 0,
+            "positivePercentage": "100%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": true,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": true,
+          "isAutoScored": false,
+          "isCompleted": true,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 0,
+          "showBookmark": false,
+          "actionMessage": "Lihat Semua"
+        }
+      },
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "201990854",
+        "reputationIdStr": "1041396588",
+        "orderData": {
+          "invoiceRefNum": "INV/20220912/MPL/2650137479",
+          "createTimeFmt": "14 Sep 2022, 12:20"
+        },
+        "revieweeData": {
+          "name": "Sindar",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/201990854/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 1,
+            "neutral": 0,
+            "negative": 0,
+            "positivePercentage": "100%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": true,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": true,
+          "isAutoScored": false,
+          "isCompleted": true,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 0,
+          "showBookmark": false,
+          "actionMessage": "Lihat Semua"
+        }
+      },
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "201990854",
+        "reputationIdStr": "1041387775",
+        "orderData": {
+          "invoiceRefNum": "INV/20220912/MPL/2650128478",
+          "createTimeFmt": "14 Sep 2022, 12:12"
+        },
+        "revieweeData": {
+          "name": "Sindar",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/201990854/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 1,
+            "neutral": 0,
+            "negative": 0,
+            "positivePercentage": "100%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": true,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": true,
+          "isAutoScored": false,
+          "isCompleted": true,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 0,
+          "showBookmark": false,
+          "actionMessage": "Lihat Semua"
+        }
+      },
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "201990854",
+        "reputationIdStr": "1041378393",
+        "orderData": {
+          "invoiceRefNum": "INV/20220912/MPL/2650084402",
+          "createTimeFmt": "14 Sep 2022, 12:04"
+        },
+        "revieweeData": {
+          "name": "Sindar",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/201990854/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 1,
+            "neutral": 0,
+            "negative": 0,
+            "positivePercentage": "100%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": true,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": true,
+          "isAutoScored": false,
+          "isCompleted": true,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 0,
+          "showBookmark": false,
+          "actionMessage": "Lihat Semua"
+        }
+      },
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "201990854",
+        "reputationIdStr": "1035690242",
+        "orderData": {
+          "invoiceRefNum": "INV/20220818/MPL/2583857589",
+          "createTimeFmt": "07 Sep 2022, 17:02"
+        },
+        "revieweeData": {
+          "name": "Sindar",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/201990854/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 1,
+            "neutral": 0,
+            "negative": 0,
+            "positivePercentage": "100%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": true,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": true,
+          "isAutoScored": false,
+          "isCompleted": true,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 0,
+          "showBookmark": false,
+          "actionMessage": "Lihat Semua"
+        }
+      },
+      {
+        "shopIdStr": "11302803",
+        "userIdStr": "175118646",
+        "reputationIdStr": "1032929013",
+        "orderData": {
+          "invoiceRefNum": "INV/20220902/MPL/2623767883",
+          "createTimeFmt": "04 Sep 2022, 13:41"
+        },
+        "revieweeData": {
+          "name": "Tea",
+          "roleId": 1,
+          "picture": "https://accounts.tokopedia.com/image/v1/u/175118646/user_thumbnail/desktop",
+          "buyerBadge": {
+            "positive": 2,
+            "neutral": 0,
+            "negative": 1,
+            "positivePercentage": "80%",
+            "noReputation": 0
+          },
+          "shopBadge": {
+            "tooltip": "",
+            "reputationScore": "",
+            "score": 0,
+            "minBadgeScore": 0,
+            "reputationBadgeUrl": ""
+          }
+        },
+        "reputationData": {
+          "revieweeScore": 0,
+          "revieweeScoreStatus": 0,
+          "showRevieweeScore": true,
+          "reviewerScore": 0,
+          "reviewerScoreStatus": 0,
+          "isEditable": false,
+          "isInserted": false,
+          "isLocked": true,
+          "isAutoScored": false,
+          "isCompleted": true,
+          "showLockingDeadline": false,
+          "lockingDeadlineDays": 0,
+          "showBookmark": false,
+          "actionMessage": "Lihat Semua"
+        }
+      }
+    ],
+    "hasNext": true
+  }
+}
