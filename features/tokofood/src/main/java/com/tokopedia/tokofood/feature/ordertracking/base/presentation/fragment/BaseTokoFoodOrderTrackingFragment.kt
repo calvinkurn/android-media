@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -42,15 +43,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.bottomsheet.Dri
 import com.tokopedia.tokofood.feature.ordertracking.presentation.fragment.TokoFoodOrderLiveTrackingFragment
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TrackingWrapperUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -206,7 +199,16 @@ class BaseTokoFoodOrderTrackingFragment :
         viewModel.fetchDriverPhoneNumber(orderId)
     }
 
-    override fun onClickDriverChat(goFoodOrderNumber: String) {
+    override fun onClickDriverChat(goFoodOrderNumber: String, unReadChatCounter: String) {
+        tracking.clickChatIcon(
+            orderStatus = viewModel.getOrderStatus(),
+            orderId = viewModel.getOrderId(),
+            channelId = channelId,
+            source = TokoFoodAnalyticsConstants.TOKOFOOD_SOURCE,
+            role = TokoFoodAnalyticsConstants.BUYER,
+            unReadChatCounter = unReadChatCounter,
+        )
+
         val tokoChatParams = mapOf(
             ApplinkConst.TokoChat.PARAM_SOURCE to TOKOFOOD_SOURCE,
             ApplinkConst.TokoChat.ORDER_ID_TKPD to orderId,

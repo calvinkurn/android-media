@@ -112,6 +112,8 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     fun getOrderId() = orderId
     fun getMerchantData() = merchantData
 
+    fun getOrderStatus() = orderStatusKey
+
     fun updateOrderId(orderId: String) {
         this.orderId = orderId
         orderIdFlow.tryEmit(this.orderId)

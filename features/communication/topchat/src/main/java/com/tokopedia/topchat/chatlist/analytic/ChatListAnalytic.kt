@@ -14,6 +14,8 @@ class ChatListAnalytic @Inject constructor(
             const val CLICK_INBOX_CHAT = "clickInboxChat"
             const val CLICK_CHAT_DETAIL = "clickChatDetail"
             const val VIEW_CHAT_DETAIL_IRIS = "viewChatDetailIris"
+            const val CLICK_COMMUNICATION = "clickCommunication"
+            const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
         }
     }
 
@@ -21,6 +23,7 @@ class ChatListAnalytic @Inject constructor(
         companion object {
             const val CATEGORY_INBOX_CHAT = "inbox-chat"
             const val CATEGORY_CHAT_DETAIL = "chat detail"
+            const val INBOX_PAGE = "inbox page"
         }
     }
 
@@ -37,6 +40,24 @@ class ChatListAnalytic @Inject constructor(
             const val DELETE_CHAT = "click on delete chat"
             const val VIEW_CTA_TOPADS = "view cta iklan promosi"
             const val CLICK_CTA_TOPADS = "click coba iklan promosi"
+            const val IMPRESSION_ON_CHAT_DRIVER_TICKER = "impression on chat driver ticker"
+            const val CLICK_CHAT_DRIVER_TICKER = "click chat driver ticker"
+        }
+    }
+
+    interface Other {
+        companion object {
+            const val BUYER = "buyer"
+            const val SELLER = "seller"
+            const val BUSSINESS_UNIT = "businessUnit"
+            const val CURRENT_SITE = "currentSite"
+            const val COMMUNICATION = "communication"
+            const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+            const val TRACKER_ID = "trackerId"
+
+            const val TRACKER_ID_39092 = "39092"
+
+            const val TRACKER_ID_39093 = "39093"
         }
     }
 
@@ -136,6 +157,36 @@ class ChatListAnalytic @Inject constructor(
                         Action.CLICK_CTA_TOPADS,
                         userSession.shopId
                 )
+        )
+    }
+
+    fun impressOnChatDriverTicker(role: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
+                Event.VIEW_COMMUNICATION_IRIS,
+                Category.INBOX_PAGE,
+                Action.IMPRESSION_ON_CHAT_DRIVER_TICKER,
+                role
+            ).apply {
+                put(Other.TRACKER_ID, Other.TRACKER_ID_39092)
+                put(Other.BUSSINESS_UNIT, Other.COMMUNICATION)
+                put(Other.CURRENT_SITE, Other.TOKOPEDIA_MARKETPLACE)
+            }
+        )
+    }
+
+    fun clickChatDriverTicker(role: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
+                Event.CLICK_COMMUNICATION,
+                Category.INBOX_PAGE,
+                Action.ACTION_CLICK_ON_CHATLIST,
+                role
+            ).apply {
+                put(Other.TRACKER_ID, Other.TRACKER_ID_39093)
+                put(Other.BUSSINESS_UNIT, Other.COMMUNICATION)
+                put(Other.CURRENT_SITE, Other.TOKOPEDIA_MARKETPLACE)
+            }
         )
     }
 }
