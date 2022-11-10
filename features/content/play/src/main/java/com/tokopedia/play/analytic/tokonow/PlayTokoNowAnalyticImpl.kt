@@ -391,7 +391,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         private const val KEY_PRODUCT_NAME = "productName"
         private const val KEY_PRODUCT_URL = "productUrl"
         private const val KEY_ITEM_LIST = "item_list"
-        private const val KEY_EVENT_ITEM_LIST = "item_list"
+        private const val KEY_EVENT_ITEM_LIST = "view_item_list"
         private const val KEY_TRACK_ADD_TO_CART = "addToCart"
     }
 }
