@@ -51,6 +51,8 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
+import com.tokopedia.search.result.product.bottomsheetfilter.BottomSheetFilterPresenter
+import com.tokopedia.search.result.product.bottomsheetfilter.BottomSheetFilterPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
@@ -95,7 +97,6 @@ import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.search.utils.getUserId
 import com.tokopedia.search.utils.getValueString
@@ -158,16 +159,18 @@ class ProductListPresenter @Inject constructor(
     private val tickerPresenter: TickerPresenter,
     private val safeSearchPresenter: SafeSearchPresenter,
     private val addToCartUseCase: AddToCartUseCase,
+    private val bottomSheetFilterPresenter: BottomSheetFilterPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
-    DynamicFilterModelProvider,
+    DynamicFilterModelProvider by bottomSheetFilterPresenter,
     LastFilterPresenter by lastFilterPresenterDelegate,
     InspirationListAtcPresenter by inspirationListAtcPresenterDelegate,
     BroadMatchPresenter by broadMatchDelegate,
     TickerPresenter by tickerPresenter,
-    SafeSearchPresenter by safeSearchPresenter {
+    SafeSearchPresenter by safeSearchPresenter,
+    BottomSheetFilterPresenter by bottomSheetFilterPresenter {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -220,8 +223,6 @@ class ProductListPresenter @Inject constructor(
     private var inspirationWidgetVisitable = mutableListOf<InspirationWidgetVisitable>()
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
     override val quickFilterList = mutableListOf<Filter>()
-    override var dynamicFilterModel: DynamicFilterModel? = null
-        private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
     private var suggestionKeyword = ""
@@ -1894,109 +1895,6 @@ class ProductListPresenter @Inject constructor(
     }
     //endregion
 
-    //region BottomSheet Filter
-    override fun getProductCount(mapParameter: Map<String, String>?) {
-        if (isViewNotAttached) return
-        if (mapParameter == null) {
-            view.setProductCount("0")
-            return
-        }
-
-        val getProductCountRequestParams = requestParamsGenerator.createGetProductCountRequestParams(
-            mapParameter,
-            chooseAddressDelegate.getChooseAddressParams(),
-        )
-        val getProductCountSubscriber = createGetProductCountSubscriber()
-        getProductCountUseCase.get().execute(getProductCountRequestParams, getProductCountSubscriber)
-    }
-
-    private fun createGetProductCountSubscriber(): Subscriber<String> {
-        return object : Subscriber<String>() {
-            override fun onCompleted() { }
-
-            override fun onError(e: Throwable) {
-                setProductCount("0")
-            }
-
-            override fun onNext(productCountText: String) {
-                setProductCount(productCountText)
-            }
-        }
-    }
-
-    private fun setProductCount(productCountText: String) {
-        if (isViewNotAttached) return
-
-        view.setProductCount(productCountText)
-    }
-
-    override fun openFilterPage(searchParameter: Map<String, Any>?) {
-        if (isViewNotAttached || searchParameter == null) return
-        if (!isBottomSheetFilterEnabled) return
-
-        isBottomSheetFilterEnabled = false
-
-        view.sendTrackingOpenFilterPage()
-        view.openBottomSheetFilter(dynamicFilterModel)
-
-        if (dynamicFilterModel == null) {
-            val getDynamicFilterRequestParams = requestParamsGenerator.createRequestDynamicFilterParams(
-                searchParameter,
-                chooseAddressDelegate.getChooseAddressParams(),
-            )
-            getDynamicFilterUseCase.get().execute(
-                    getDynamicFilterRequestParams,
-                    createGetDynamicFilterModelSubscriber()
-            )
-        }
-    }
-
-    private fun createGetDynamicFilterModelSubscriber(): Subscriber<DynamicFilterModel> {
-        return object : Subscriber<DynamicFilterModel>() {
-            override fun onCompleted() { }
-
-            override fun onNext(dynamicFilterModel: DynamicFilterModel) {
-                handleGetDynamicFilterSuccess(dynamicFilterModel)
-            }
-
-            override fun onError(e: Throwable) {
-                handleGetDynamicFilterFailed()
-            }
-        }
-    }
-
-    private fun handleGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
-        if (!dynamicFilterModel.isEmpty()) {
-            this.dynamicFilterModel = dynamicFilterModel
-            getViewToSetDynamicFilterModel(dynamicFilterModel)
-        } else {
-            handleGetDynamicFilterFailed()
-        }
-    }
-
-    private fun getViewToSetDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
-        if (isViewNotAttached) return
-
-        view.setDynamicFilter(dynamicFilterModel)
-    }
-
-    private fun handleGetDynamicFilterFailed() {
-        getViewToSetDynamicFilterModel(createSearchProductDefaultFilter())
-    }
-
-    override fun onBottomSheetFilterDismissed() {
-        isBottomSheetFilterEnabled = true
-    }
-
-    override fun onApplySortFilter(mapParameter: Map<String, Any>) {
-        val keywordFromFilter = mapParameter[SearchApiConst.Q] ?: ""
-        val currentKeyword = view?.queryKey ?: ""
-
-        if (currentKeyword != keywordFromFilter)
-            dynamicFilterModel = null
-    }
-    //endregion
-
     //region Inspiration Carousel
     override fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product) {
         if (isViewNotAttached) return
@@ -2062,7 +1960,7 @@ class ProductListPresenter @Inject constructor(
     private fun refreshData() {
         if (isViewNotAttached) return
 
-        dynamicFilterModel = null
+        clearDynamicFilter()
 
         view.reloadData()
     }

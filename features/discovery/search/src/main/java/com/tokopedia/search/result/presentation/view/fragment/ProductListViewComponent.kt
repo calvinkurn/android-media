@@ -22,6 +22,7 @@ import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUse
 import com.tokopedia.search.result.domain.usecase.searchsamesessionrecommendation.SearchSameSessionRecommendationUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
 import com.tokopedia.search.result.product.banned.BannedProductsViewModule
+import com.tokopedia.search.result.product.bottomsheetfilter.BottomSheetFilterModule
 import com.tokopedia.search.result.product.broadmatch.BroadMatchModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselModule
@@ -73,6 +74,7 @@ import dagger.Component
     VideoModule::class,
     TickerModule::class,
     SafeSearchModule::class,
+    BottomSheetFilterModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 
