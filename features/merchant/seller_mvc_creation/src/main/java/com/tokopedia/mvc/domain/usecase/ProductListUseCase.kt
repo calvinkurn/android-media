@@ -91,11 +91,16 @@ class ProductListUseCase @Inject constructor(
 
     private fun buildRequest(param: Param): GraphqlRequest {
         val shopId = userSession.shopId
-        val filter = listOf(
+        val filter = mutableListOf(
             GoodsFilterInput("page", listOf(param.page.toString())),
             GoodsFilterInput("pageSize", listOf(param.pageSize.toString())),
             GoodsFilterInput("status", listOf("ACTIVE"))
         )
+
+        if (param.categoryId.isNotEmpty()) {
+            filter.add(GoodsFilterInput("category", listOf(param.categoryId)))
+        }
+
         val sort = GoodsSortInput(param.sortId, param.sortDirection)
         val params = mapOf(
             REQUEST_PARAM_SHOP_ID to shopId,
@@ -117,6 +122,7 @@ class ProductListUseCase @Inject constructor(
         val warehouseId: Long,
         val page: Int,
         val pageSize: Int,
+        val categoryId: String,
         val sortId : String,
         val sortDirection:String,
         val extraInfo: List<String> = listOf("view")

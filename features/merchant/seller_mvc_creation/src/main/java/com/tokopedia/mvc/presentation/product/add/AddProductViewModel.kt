@@ -5,8 +5,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
+import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
+import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
@@ -49,39 +52,22 @@ class AddProductViewModel @Inject constructor(
     fun processEvent(event: AddProductEvent) {
         when(event) {
             is AddProductEvent.FetchRequiredData -> fetchRequiredData(event.action, event.promoType)
-            is AddProductEvent.LoadPage -> getProducts(event.warehouseId, event.page, event.sortId, event.sortDirection)
+            is AddProductEvent.LoadPage -> getProducts(event.warehouseId, event.page, event.categoryId, event.sortId, event.sortDirection)
             is AddProductEvent.AddProductToSelection -> handleAddProductToSelection(event.productId)
-            AddProductEvent.ApplyCategoryFilter -> {}
-            AddProductEvent.ApplyLocationFilter -> {}
-            AddProductEvent.ApplyShowCaseFilter -> {}
-            is AddProductEvent.ApplySortFilter -> {
-                _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedSort = event.selectedSort) }
-                getProducts(0L, 1, event.selectedSort.id, event.selectedSort.value)
-            }
-            AddProductEvent.ClearFilter -> {
-                _uiState.update {
-                    it.copy(
-                        isLoading = true,
-                        products = emptyList(),
-                        selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
-                    )
-                }
-                getProducts(0L, 1, "DEFAULT", "DESC")
-            }
-            AddProductEvent.ClearSearchBar -> {
-                _uiState.update { it.copy(isLoading = true, products = emptyList()) }
-                getProducts(0L, 1, "DEFAULT", "DESC")
-            }
+            AddProductEvent.ClearFilter -> handleClearFilter()
+            AddProductEvent.ClearSearchBar -> handleClearFilter()
             AddProductEvent.ConfirmAddProduct -> {}
             AddProductEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
             AddProductEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
             is AddProductEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.productId)
-            AddProductEvent.TapCategoryFilter -> {}
-            AddProductEvent.TapLocationFilter -> {}
-            AddProductEvent.TapShowCaseFilter -> {}
-            AddProductEvent.TapSortFilter -> {
-                _uiEffect.tryEmit(AddProductEffect.ShowSortBottomSheet(currentState.sortOptions, currentState.selectedSort))
-            }
+            AddProductEvent.TapCategoryFilter -> _uiEffect.tryEmit(AddProductEffect.ShowProductCategoryBottomSheet(currentState.categoryOptions, currentState.selectedCategory))
+            AddProductEvent.TapLocationFilter -> _uiEffect.tryEmit(AddProductEffect.ShowWarehouseLocationBottomSheet(currentState.warehouses, currentState.selectedWarehouseLocation))
+            AddProductEvent.TapShowCaseFilter -> _uiEffect.tryEmit(AddProductEffect.ShowShowcasesBottomSheet(currentState.shopShowcases, currentState.selectedShopShowcase))
+            AddProductEvent.TapSortFilter -> _uiEffect.tryEmit(AddProductEffect.ShowSortBottomSheet(currentState.sortOptions, currentState.selectedSort))
+            is AddProductEvent.ApplyCategoryFilter -> handleApplyCategoryFilter(event.selectedCategory)
+            is AddProductEvent.ApplyWarehouseLocationFilter -> handleApplyWarehouseLocationFilter(event.selectedWarehouseLocation)
+            is AddProductEvent.ApplyShowCaseFilter -> handleApplyShopShowcasesFilter(event.selectedShowCase)
+            is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
         }
     }
 
@@ -123,7 +109,7 @@ class AddProductViewModel @Inject constructor(
                     )
                 }
 
-                getProducts(defaultWarehouseId, 1, "DEFAULT", "DESC")
+                getProducts(defaultWarehouseId, 1, "", "DEFAULT", "DESC")
 
             },
             onError = { error ->
@@ -135,6 +121,7 @@ class AddProductViewModel @Inject constructor(
     private fun getProducts(
         warehouseId: Long,
         page: Int,
+        categoryId: String,
         sortId: String,
         sortDirection: String
     ) {
@@ -143,6 +130,7 @@ class AddProductViewModel @Inject constructor(
             block = {
                 val param = ProductListUseCase.Param(
                     warehouseId = warehouseId,
+                    categoryId = categoryId,
                     page = page,
                     pageSize = AddProductFragment.PAGE_SIZE,
                     sortId = sortId,
@@ -152,6 +140,20 @@ class AddProductViewModel @Inject constructor(
                 val productsResponse = getProductsUseCase.execute(param)
                 val currentPageParentProductsResponse = productsResponse.products
                 val currentPageParentProductsIds = currentPageParentProductsResponse.map { product -> product.id }
+
+                val selectedProductIds = if (currentState.isSelectAllActive) {
+                    //If select all active, products from new page should be auto checked
+                    currentState.selectedProductsIds + currentPageParentProductsIds
+                } else {
+                    currentState.selectedProductsIds
+                }
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        selectedProductsIds = selectedProductIds,
+                    )
+                }
 
                 val voucherValidationParam = VoucherValidationPartialUseCase.Param(
                     benefitIdr = 25_000,
@@ -176,20 +178,8 @@ class AddProductViewModel @Inject constructor(
                 val allProducts = currentState.products + updatedProducts
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedProducts, allProducts))
 
-                val selectedProducts = if (currentState.isSelectAllActive) {
-                    //If select all active, products from new page should be auto checked
-                    currentState.selectedProductsIds + currentPageParentProductsIds
-                } else {
-                    currentState.selectedProductsIds
-                }
-
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        products = allProducts,
-                        selectedProductsIds = selectedProducts,
-                        totalProducts = productsResponse.total
-                    )
+                    it.copy(products = allProducts, totalProducts = productsResponse.total)
                 }
 
             },
@@ -200,18 +190,23 @@ class AddProductViewModel @Inject constructor(
 
     }
 
-    private fun combineParentProductDataWithVariant(currentPageParentProduct: List<Product>, validatedProducts: List<VoucherValidationResult.ValidationProduct>): List<Product> {
+    private fun combineParentProductDataWithVariant(
+        currentPageParentProduct: List<Product>,
+        validatedProducts: List<VoucherValidationResult.ValidationProduct>
+    ): List<Product> {
         val formattedProducts = currentPageParentProduct.map { product ->
 
             val matchedProduct = findValidatedProduct(product.id, validatedProducts)
             val variants = matchedProduct?.variant?.map { Product.Variant(it.productId) }
+            val isProductAlreadySelected = product.id in currentState.selectedProductsIds
+            val isSelected = isProductAlreadySelected || currentState.isSelectAllActive
 
             product.copy(
                 isEligible = matchedProduct?.isEligible.orTrue(),
                 ineligibleReason = matchedProduct?.reason.orEmpty(),
                 originalVariants = variants.orEmpty(),
                 modifiedVariants = variants.orEmpty(),
-                isSelected = currentState.isSelectAllActive
+                isSelected = isSelected
             )
         }
 
@@ -283,7 +278,14 @@ class AddProductViewModel @Inject constructor(
     private fun handleRemoveProductFromSelection(productIdToDelete: Long) {
         val updatedProducts = currentState.products.map {
             if (it.id == productIdToDelete) {
-                it.copy(isSelected = false)
+
+                val hasVariants = it.originalVariants.isNotEmpty()
+                if (hasVariants) {
+                    it.copy(isSelected = false, originalVariants = it.originalVariants, modifiedVariants = it.originalVariants)
+                } else {
+                    it.copy(isSelected = false)
+                }
+
             } else {
                 it
             }
@@ -299,6 +301,37 @@ class AddProductViewModel @Inject constructor(
                 products = updatedProducts
             )
         }
+    }
+
+    private fun handleClearFilter() {
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                products = emptyList(),
+                selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
+            )
+        }
+        getProducts(0L, 1, "","DEFAULT", "DESC")
+    }
+
+    private fun handleApplySortFilter(selectedSort: ProductSortOptions) {
+        _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedSort = selectedSort) }
+        getProducts(currentState.selectedWarehouseLocation.warehouseId, 1, currentState.selectedCategory.id, selectedSort.id, selectedSort.value)
+    }
+
+    private fun handleApplyWarehouseLocationFilter(selectedWarehouse: Warehouse) {
+        _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedWarehouseLocation = selectedWarehouse) }
+        getProducts(selectedWarehouse.warehouseId, 1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
+    }
+
+    private fun handleApplyShopShowcasesFilter(selectedShopShowcase: ShopShowcase) {
+        _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedShopShowcase = selectedShopShowcase) }
+        getProducts(currentState.selectedWarehouseLocation.warehouseId, 1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
+    }
+
+    private fun handleApplyCategoryFilter(selectedCategory: ProductCategoryOption) {
+        _uiState.update { it.copy(isLoading = true, products = emptyList(), selectedCategory = selectedCategory) }
+        getProducts(currentState.selectedWarehouseLocation.warehouseId,1,  currentState.selectedCategory.id, currentState.selectedSort.id, currentState.selectedSort.value)
     }
 
     fun getProductVariants(productId:Long, warehouseId: String) {

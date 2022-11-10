@@ -143,7 +143,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
             attachPaging(this, pagingConfig) { page, _ ->
                 val nextPage = page + 1
-                viewModel.processEvent(AddProductEvent.LoadPage(0L, nextPage, "DEFAULT", "DESC"))
+                viewModel.processEvent(AddProductEvent.LoadPage(0L, "", nextPage, "DEFAULT", "DESC"))
             }
         }
     }
@@ -170,6 +170,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             is AddProductEffect.ShowSortBottomSheet -> {
                 showSortBottomSheet(effect.selectedSort, effect.sortOptions)
             }
+            is AddProductEffect.ShowProductCategoryBottomSheet -> {}
+            is AddProductEffect.ShowShowcasesBottomSheet -> {}
+            is AddProductEffect.ShowWarehouseLocationBottomSheet -> {}
         }
     }
 

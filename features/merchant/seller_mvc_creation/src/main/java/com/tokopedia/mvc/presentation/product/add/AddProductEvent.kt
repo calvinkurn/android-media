@@ -1,6 +1,9 @@
 package com.tokopedia.mvc.presentation.product.add
 
+import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
+import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 
@@ -9,6 +12,7 @@ sealed class AddProductEvent {
 
     data class LoadPage(
         val warehouseId: Long,
+        val categoryId: String,
         val page: Int,
         val sortId: String,
         val sortDirection: String
@@ -24,9 +28,9 @@ sealed class AddProductEvent {
     object TapCategoryFilter : AddProductEvent()
     object TapShowCaseFilter : AddProductEvent()
     object TapSortFilter : AddProductEvent()
-    object ApplyLocationFilter : AddProductEvent()
-    object ApplyCategoryFilter : AddProductEvent()
-    object ApplyShowCaseFilter : AddProductEvent()
+    data class ApplyWarehouseLocationFilter(val selectedWarehouseLocation: Warehouse) : AddProductEvent()
+    data class ApplyCategoryFilter(val selectedCategory: ProductCategoryOption) : AddProductEvent()
+    data class ApplyShowCaseFilter(val selectedShowCase: ShopShowcase) : AddProductEvent()
     data class ApplySortFilter(val selectedSort: ProductSortOptions) : AddProductEvent()
     object ConfirmAddProduct : AddProductEvent()
 }
