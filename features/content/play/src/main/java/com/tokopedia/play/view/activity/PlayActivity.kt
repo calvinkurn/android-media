@@ -268,6 +268,11 @@ class PlayActivity : BaseActivity(),
                     ivLoading.hide()
                     fragmentUpcomingView.safeInit((it.state as PageResultState.Upcoming).channelId)
                 }
+                is PageResultState.Custom -> {
+                    pageMonitoring.invalidate()
+                    ivLoading.hide()
+                    if (it.currentValue.isEmpty()) fragmentErrorViewOnStateChanged(shouldShow = true)
+                }
             }
 
             if(it.state !is PageResultState.Upcoming) {
