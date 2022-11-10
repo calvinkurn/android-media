@@ -6,15 +6,11 @@
     android:layout_height="0dp"
     android:visibility="gone">
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/progress_pull_refresh"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:indeterminate="false"
-        android:progress="0"
-        android:max="100"
-        android:progressDrawable="@drawable/unify_loader_decorative_white"
+        android:src="@drawable/ic_decorative_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,6 +19,7 @@
         android:id="@+id/loader_pull_refresh"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
