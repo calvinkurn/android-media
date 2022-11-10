@@ -34,11 +34,7 @@ object OfficialHomeMapper {
     const val FEATURE_SHOP_POSITION = 2
     const val RECOM_WIDGET_POSITION = 3
     const val WIDGET_NOT_FOUND = -1
-    private val atfOS = listOf(
-        OfficialBannerDataModel(mutableListOf(), ""), OfficialBenefitDataModel(
-            mutableListOf()
-        ), OfficialFeaturedShopDataModel(listOf(), HeaderShop(), "")
-    )
+    private val atfSize = 3
 
     fun mappingBanners(
         banner: OfficialStoreBanners,
@@ -125,9 +121,11 @@ object OfficialHomeMapper {
         action: (updatedList: MutableList<Visitable<*>>) -> Unit
     ) {
         val newList = mutableListOf<Visitable<*>>()
-        newList.addAll(currentList.subList(0,2))
+        val atfList = currentList.subList(0, atfSize).filter { it is OfficialBannerDataModel ||
+            it is OfficialBenefitDataModel || it is OfficialFeaturedShopDataModel }
+        newList.addAll(atfList)
         officialStoreChannels.forEachIndexed { pos, officialStore ->
-            val position = pos + atfOS.size
+            val position = pos + atfList.size + 1
             when (officialStore.channel.layout) {
                 DynamicChannelLayout.LAYOUT_MIX_LEFT -> {
                     newList.add(
