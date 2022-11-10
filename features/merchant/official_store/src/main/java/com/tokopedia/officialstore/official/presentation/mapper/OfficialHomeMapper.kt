@@ -210,8 +210,7 @@ object OfficialHomeMapper {
                         )
                     )
                 }
-                DynamicChannelLayout.LAYOUT_SPRINT_LEGO,
-                DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL -> dcList.add(
+                DynamicChannelLayout.LAYOUT_SPRINT_LEGO -> dcList.add(
                     DynamicChannelDataModel(
                         officialStore
                     )

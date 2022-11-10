@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:paddingRight="-16dp"
     android:paddingEnd="-16dp"
-    android:paddingLeft="@dimen/layout_lvl0"
-    android:paddingStart="@dimen/layout_lvl0">
+    android:paddingLeft="0dp"
+    android:paddingStart="0dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_condition_header"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/add_product_condition_header"
         android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -28,6 +28,7 @@ import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.*
@@ -244,9 +245,9 @@ class PlayViewerIdGenerator {
             resultState = ResultState.Success,
         )
 
-        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = listOf(
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = listOf(
                 uiModelBuilder.buildChannelData(
                     id = "12669",
                     partnerInfo = PlayPartnerInfo(name = "test"),
@@ -326,8 +327,8 @@ class PlayViewerIdGenerator {
 
     @Test
     fun youTubePlayer() {
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = listOf(
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = listOf(
                 PlayChannelData(
                     id = "12680",
                     channelDetail = PlayChannelDetailUiModel(),
