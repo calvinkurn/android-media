@@ -759,12 +759,6 @@ public interface ApplinkConst {
         String PARAM_SOURCE = "source";
         String ORDER_ID_GOJEK = "orderIdGojek";
         String ORDER_ID_TKPD = "orderIdTkpd";
-        String SERVICE_TYPE = "service_type";
-
-        String ORDER_CHAT_TYPE = "orderChatType";
-        String ORDER_CHAT_TYPE_DRIVER = "driver";
-        String ORDER_CHAT_TYPE_SHOP = "shopper";
-        String ORDER_CHAT_TYPE_MERCHANT = "merchant";
 
         //bundle params
         String IS_FROM_TOKOFOOD_POST_PURCHASE = "isFromTokoFoodPostPurchase";

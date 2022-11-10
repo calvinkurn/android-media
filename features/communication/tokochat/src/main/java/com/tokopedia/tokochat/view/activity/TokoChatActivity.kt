@@ -9,7 +9,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
-import com.tokopedia.tokochat.di.TokoChatContextModule
 import com.tokopedia.tokochat.view.fragment.TokoChatFragment
 import com.tokopedia.tokochat.view.fragment.factory.TokoChatFragmentFactory
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
@@ -22,13 +21,6 @@ import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
  * - [com.tokopedia.applink.ApplinkConst.TokoChat.PARAM_SOURCE]
  * - [com.tokopedia.applink.ApplinkConst.TokoChat.ORDER_ID_GOJEK]
  * - [com.tokopedia.applink.ApplinkConst.TokoChat.ORDER_ID_TKPD]
- * - [com.tokopedia.applink.ApplinkConst.TokoChat.SERVICE_TYPE]
- * - [com.tokopedia.applink.ApplinkConst.TokoChat.ORDER_CHAT_TYPE]
- *
- * For Order Chat Type, there are only 3 values
- * - [com.tokopedia.applink.ApplinkConst.TokoChat.ORDER_CHAT_TYPE_DRIVER]
- * - [com.tokopedia.applink.ApplinkConst.TokoChat.ORDER_CHAT_TYPE_SHOP]
- * - [com.tokopedia.applink.ApplinkConst.TokoChat.ORDER_CHAT_TYPE_MERCHANT]
  *
  * How to construct the applink with query parameters:
  * ```
@@ -60,7 +52,6 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
             .tokoChatConfigComponent(
                 (application as BaseMainApplication).tokoChatConnection.tokoChatConfigComponent
             )
-            .tokoChatContextModule(TokoChatContextModule(this))
             .build().also {
                 tokoChatComponent = it
             }

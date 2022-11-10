@@ -128,8 +128,8 @@ open class TokoChatMessageBubbleViewHolder(
     }
 
     private fun bindLayoutGravity(gravity: Int) {
-        val containerLp = binding?.tokochatLayoutBubbleContainer?.layoutParams as FrameLayout.LayoutParams
-        containerLp.gravity = gravity
+        val containerLp = binding?.tokochatLayoutBubbleContainer?.layoutParams as? FrameLayout.LayoutParams
+        containerLp?.gravity = gravity
         binding?.tokochatLayoutBubbleContainer?.layoutParams = containerLp
     }
 
