@@ -29,6 +29,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.tokochat.analytics.TokoChatAnalytics
+import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
@@ -75,7 +77,8 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     TokochatReminderTickerListener,
     TokoChatTransactionOrderWidget.Listener,
     TokoChatImageAttachmentListener,
-    TokoChatMessageBubbleListener {
+    TokoChatMessageBubbleListener,
+    MaskingPhoneNumberBottomSheet.AnalyticsListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -85,6 +88,9 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
 
     @Inject
     lateinit var mapper: TokoChatConversationUiMapper
+
+    @Inject
+    lateinit var tokoChatAnalytics: TokoChatAnalytics
 
     private var headerUiModel: TokoChatHeaderUiModel? = null
     private var selfUiModel: TokoChatHeaderUiModel? = null
@@ -208,6 +214,11 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             )
         }
         chatSendButton?.setOnClickListener {
+            tokoChatAnalytics.clickSendMessage(
+                channelId,
+                TokoChatAnalyticsConstants.BUYER,
+                source
+            )
             onSendButtonClicked()
         }
     }
@@ -505,6 +516,13 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
 
                 setOnClickListener {
                     if (headerUiModel.phoneNumber.isNotEmpty()) {
+                        tokoChatAnalytics.clickCallButtonFromChatRoom(
+                            baseBinding?.tokochatTransactionOrder?.getTokoChatOrderProgressUiModel()?.state.orEmpty(),
+                            tkpdOrderId,
+                            channelId,
+                            source,
+                            TokoChatAnalyticsConstants.BUYER
+                        )
                         showMaskingPhoneNumberBottomSheet(headerUiModel.phoneNumber)
                     }
                 }
@@ -514,6 +532,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
 
     private fun showMaskingPhoneNumberBottomSheet(driverPhoneNumber: String) {
         val bottomSheetMaskingPhoneNumber = MaskingPhoneNumberBottomSheet.newInstance(driverPhoneNumber)
+        bottomSheetMaskingPhoneNumber.setTrackingListener(this)
         bottomSheetMaskingPhoneNumber.show(childFragmentManager)
     }
 
@@ -524,6 +543,11 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             }
         }
         baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
+            tokoChatAnalytics.impressOnClosedChatroomTicker(
+                channelId,
+                TokoChatAnalyticsConstants.BUYER,
+                source
+            )
             baseBinding?.tokochatExpiredInfo?.setExpiredInfoDesc(expiredMessage)
         }
     }
@@ -651,6 +675,14 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
         }
     }
 
+    override fun onTransactionWidgetClosed() {
+        tokoChatAnalytics.clickCloseOrderWidget(
+            channelId,
+            TokoChatAnalyticsConstants.BUYER,
+            source
+        )
+    }
+
     override fun onClickLinkReminderTicker(
         element: TokoChatReminderTickerUiModel,
         linkUrl: String
@@ -698,6 +730,31 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
                 isFromRetry = isFromRetry
             )
         }
+    }
+
+
+    override fun onCloseMaskingPhoneNumberBottomSheet() {
+        val state =
+            baseBinding?.tokochatTransactionOrder?.getTokoChatOrderProgressUiModel()?.state.orEmpty()
+        tokoChatAnalytics.clickCloseBottomSheetCallDriver(
+            state,
+            tkpdOrderId,
+            channelId,
+            source,
+            TokoChatAnalyticsConstants.BUYER
+        )
+    }
+
+    override fun onConfirmCallOnBottomSheetCallDriver() {
+        val state =
+            baseBinding?.tokochatTransactionOrder?.getTokoChatOrderProgressUiModel()?.state.orEmpty()
+        tokoChatAnalytics.clickConfirmCallOnBottomSheetCallDriver(
+            state,
+            tkpdOrderId,
+            channelId,
+            source,
+            TokoChatAnalyticsConstants.BUYER
+        )
     }
 
     private fun onImageReadyToLoad(

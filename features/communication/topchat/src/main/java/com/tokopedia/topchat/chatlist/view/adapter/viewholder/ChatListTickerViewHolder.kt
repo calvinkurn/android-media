@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.view.listener.ChatListTickerListener
 import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
@@ -39,6 +40,9 @@ class ChatListTickerViewHolder(view: View,
                     //no op
                 }
             })
+            addOnImpressionListener(element.impressHolder) {
+                chatListTickerListener.onChatListTickerImpressed()
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactory
 
 data class ChatListTickerUiModel(
@@ -8,6 +9,8 @@ data class ChatListTickerUiModel(
     val tickerType: Int,
     val appLink: String
 ): Visitable<ChatListTypeFactory> {
+
+    val impressHolder = ImpressHolder()
 
     var showCloseButton = false
 

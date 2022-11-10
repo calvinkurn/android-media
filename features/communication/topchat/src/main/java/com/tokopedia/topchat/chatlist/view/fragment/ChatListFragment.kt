@@ -526,9 +526,18 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     override fun onChatListTickerClicked(appLink: String) {
         if (appLink.isNotBlank()) {
             context?.let {
+                chatListAnalytics.clickChatDriverTicker(getRoleStr())
                 RouteManager.route(it, appLink)
             }
         }
+    }
+
+    override fun onChatListTickerImpressed() {
+        chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+    }
+
+    private fun getRoleStr(): String {
+        return if (isTabSeller()) ChatListAnalytic.Other.SELLER else ChatListAnalytic.Other.BUYER
     }
 
     private fun showFilterDialog() {
