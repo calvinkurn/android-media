@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.epharmacy.databinding.EpharmacyItemMasterMiniConsultationBsBinding
 import com.tokopedia.epharmacy.network.response.EPharmacyMiniConsultationMasterResponse.*
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.media.loader.loadImage
 
@@ -38,7 +39,7 @@ class EpharmacyMiniConsultationStepsAdapter: RecyclerView.Adapter<EpharmacyMiniC
             with(binding){
                 stepIcon.loadImage(data?.imageUrl)
                 headingTitle.text = data?.title.toEmptyStringIfNull()
-                paraSubtitle.text = data?.subtitle.toEmptyStringIfNull()
+                paraSubtitle.text = data?.subtitle?.parseAsHtml()
             }
         }
     }

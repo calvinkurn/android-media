@@ -153,7 +153,7 @@ class MiniConsultationMasterBottomSheetInfo : BottomSheetUnify() {
                 parentShimmerView.hide()
                 bottomSheetParent.show()
                 headingTitle.text = bottomSheetData?.infoTitle.toEmptyStringIfNull()
-                paraSubtitle.text = bottomSheetData?.infoText.toEmptyStringIfNull()
+                paraSubtitle.text = bottomSheetData?.infoText?.parseAsHtml()
                 headingSubtitle.text = bottomSheetData?.stepTitle.toEmptyStringIfNull()
                 staticTitlePartner.text = bottomSheetData?.logoTitle
                 bottomSheetData?.logoUrl.let {
