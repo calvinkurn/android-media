@@ -17,8 +17,7 @@ class IneligibleAccessView @JvmOverloads constructor(
     private var binding: LayoutIneligibleAccessViewBinding
 
     init {
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        binding = LayoutIneligibleAccessViewBinding.inflate(inflater)
+        binding = LayoutIneligibleAccessViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     data class Param(
