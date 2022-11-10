@@ -411,10 +411,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @JvmOverloads
     fun goToExplore(shouldResetCategory: Boolean = false) {
         if (canGoToExplore()) {
-            viewPager?.currentItem = pagerAdapter.contentExploreIndex
+            viewPager?.currentItem = pagerAdapter.getContentExploreIndex()
 
             if (shouldResetCategory) {
-                pagerAdapter.contentExplore?.onCategoryReset()
+                pagerAdapter.getContentExplore()?.onCategoryReset()
             }
         }
     }
@@ -725,7 +725,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun canGoToExplore(): Boolean {
-        return pagerAdapter.isContextExploreExist
+        return pagerAdapter.isContextExploreExist()
     }
 
     fun hideAllFab() {
