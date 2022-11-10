@@ -778,7 +778,6 @@ class OfficialHomeFragment :
         setLoadMoreListener()
         swipeRefreshLayout?.setOnRefreshListener {
             viewModel.counterTitleShouldBeRendered = 0
-            viewModel.removeWidgetsForRefresh()
             loadData(true)
             viewModel.resetShopWidgetImpressionCount()
             viewModel.resetIsFeatureShopAllowed()

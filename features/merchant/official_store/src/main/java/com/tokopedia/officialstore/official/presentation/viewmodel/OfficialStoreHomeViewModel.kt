@@ -372,20 +372,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         _officialStoreLiveData.postValue()
     }
 
-    fun removeWidgetsForRefresh(){
-        _officialStoreListVisitable.run {
-            removeAll {
-                it is BestSellerDataModel ||
-                    it is ProductRecommendationDataModel ||
-                    it is ProductRecommendationTitleDataModel ||
-                    it is OfficialTopAdsBannerDataModel ||
-                    it is OfficialFeaturedShopDataModel ||
-                    it is OfficialTopAdsHeadlineDataModel
-            }
-            _officialStoreLiveData.postValue(this)
-        }
-    }
-
     fun removeFlashSale(){
         _officialStoreListVisitable.run {
             removeAll {
