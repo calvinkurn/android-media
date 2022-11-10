@@ -497,9 +497,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.INFO_OBAT_KERAS) {
                 infoObatKerasMap?.apply {
-                    isApplink = applink.isNotEmpty()
+                    val newAppLink = it.obatKeras.applink
+                    isApplink = newAppLink.isNotEmpty()
+                    applink = newAppLink
                     subtitle = it.obatKeras.subtitle
-                    applink = it.obatKeras.applink
                     isPlaceholder = false
                 }
             }
