@@ -13,17 +13,24 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.LoadingDelegateAdapter
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.entity.LoadingItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
+import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.getIntArgs
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
@@ -32,6 +39,7 @@ import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.WarehouseType
+import com.tokopedia.mvc.presentation.product.add.adapter.CategoryFilterAdapter
 import com.tokopedia.mvc.presentation.product.add.adapter.ProductDelegateAdapter
 import com.tokopedia.mvc.presentation.product.add.adapter.ProductSortAdapter
 import com.tokopedia.mvc.presentation.product.add.adapter.WarehouseFilterAdapter
@@ -190,7 +198,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             is AddProductEffect.ShowSortBottomSheet -> {
                 showSortBottomSheet(effect.selectedSort, effect.sortOptions)
             }
-            is AddProductEffect.ShowProductCategoryBottomSheet -> {}
+            is AddProductEffect.ShowProductCategoryBottomSheet -> {
+                showCategorySheet(effect.selectedCategories, effect.categories)
+            }
             is AddProductEffect.ShowShowcasesBottomSheet -> {}
             is AddProductEffect.ShowWarehouseLocationBottomSheet -> {
                 showWarehouseBottomSheet(effect.selectedWarehouse, effect.warehouses)
@@ -216,9 +226,19 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
         renderSortChips(uiState.selectedSort)
         renderWarehouseLocationChips(uiState.selectedWarehouseLocation)
-        renderCategoryChips(uiState.selectedCategory)
+        renderCategoryChips(uiState.selectedCategories)
         renderShopShowcaseChips(uiState.selectedShopShowcase)
         renderCheckbox(uiState)
+        renderEmptyState(uiState.totalProducts, uiState.isLoading)
+    }
+
+    private fun renderEmptyState(totalProducts: Int, isLoading : Boolean) {
+        binding?.recyclerView?.isVisible = totalProducts.isMoreThanZero()
+        binding?.cardUnify2?.isVisible = totalProducts.isMoreThanZero()
+        binding?.checkbox?.isVisible = totalProducts.isMoreThanZero()
+        binding?.tpgSelectAll?.isVisible = totalProducts.isMoreThanZero()
+        binding?.tpgMaxProductSelection?.isVisible = totalProducts.isMoreThanZero()
+        binding?.emptyStateAddProduct?.isVisible = totalProducts.isZero() && !isLoading
     }
 
     private fun renderCheckbox(uiState: AddProductUiState) {
@@ -269,13 +289,22 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         }
     }
 
-    private fun renderCategoryChips(selectedCategory: ProductCategoryOption) {
-        if (selectedCategory.name.isEmpty()) {
+    private fun renderCategoryChips(selectedCategories: List<ProductCategoryOption>) {
+        if (selectedCategories.isEmpty()) {
             categoryChips.type = ChipsUnify.TYPE_NORMAL
             categoryChips.selectedItem = arrayListOf(getString(R.string.smvc_category))
-        } else {
+        } else if (selectedCategories.size == 1) {
+            val selectedCategory = selectedCategories.first()
             categoryChips.type = ChipsUnify.TYPE_SELECTED
             categoryChips.selectedItem = arrayListOf(selectedCategory.name)
+        } else {
+            categoryChips.type = ChipsUnify.TYPE_SELECTED
+            categoryChips.selectedItem = arrayListOf(
+                getString(
+                    R.string.smvc_placeholder_selected_category_count,
+                    selectedCategories.size
+                )
+            )
         }
     }
 
@@ -401,6 +430,43 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             recyclerView.adapter = warehouseFilterAdapter
             button.gone()
             warehouseFilterAdapter.submit(warehouseOptions)
+        }
+
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showCategorySheet(
+        selectedCategories: List<ProductCategoryOption>,
+        remoteCategory: List<ProductCategoryOption>
+    ) {
+        if (!isAdded) return
+
+        val categoryFilterAdapter = CategoryFilterAdapter()
+
+        val selectedCategoryIds = selectedCategories.map { category -> category.id }
+        val categoriesOptions = remoteCategory.map { category ->
+            MultipleSelectionItem(category.id, category.name, category.id in selectedCategoryIds)
+        }
+
+        val bottomSheet = MultipleSelectionBottomSheet.newInstance(selectedCategoryIds, categoriesOptions)
+
+        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_category))
+
+        categoryFilterAdapter.setOnItemClicked { newItem ->
+            bottomSheet.getBottomsheetView()?.btnApply?.enable()
+            categoryFilterAdapter.markAsSelected(newItem)
+        }
+
+        bottomSheet.setOnApplyButtonClick {
+            val selectedItem = categoryFilterAdapter.getSelectedItems()
+            val newlySelectedCategories = selectedItem.map { ProductCategoryOption(it.id, it.name, it.name) }
+            val event = AddProductEvent.ApplyCategoryFilter(newlySelectedCategories)
+            viewModel.processEvent(event)
+        }
+
+        bottomSheet.setCustomAppearance {
+            recyclerView.adapter = categoryFilterAdapter
+            categoryFilterAdapter.submit(categoriesOptions)
         }
 
         bottomSheet.show(childFragmentManager, bottomSheet.tag)

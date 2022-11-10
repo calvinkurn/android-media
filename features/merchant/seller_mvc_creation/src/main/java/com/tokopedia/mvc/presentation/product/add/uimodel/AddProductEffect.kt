@@ -19,7 +19,7 @@ sealed class AddProductEffect {
 
     data class ShowProductCategoryBottomSheet(
         val categories: List<ProductCategoryOption>,
-        val selectedCategory: ProductCategoryOption
+        val selectedCategories: List<ProductCategoryOption>
     ) : AddProductEffect()
 
     data class ShowShowcasesBottomSheet(

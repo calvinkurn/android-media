@@ -12,6 +12,7 @@ import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+import com.tokopedia.mvc.domain.entity.enums.WarehouseType
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
@@ -69,11 +70,11 @@ class AddProductViewModel @Inject constructor(
             AddProductEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
             AddProductEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
             is AddProductEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.productId)
-            AddProductEvent.TapCategoryFilter -> _uiEffect.tryEmit(AddProductEffect.ShowProductCategoryBottomSheet(currentState.categoryOptions, currentState.selectedCategory))
+            AddProductEvent.TapCategoryFilter -> _uiEffect.tryEmit(AddProductEffect.ShowProductCategoryBottomSheet(currentState.categoryOptions, currentState.selectedCategories))
             AddProductEvent.TapLocationFilter -> _uiEffect.tryEmit(AddProductEffect.ShowWarehouseLocationBottomSheet(currentState.warehouses, currentState.selectedWarehouseLocation))
             AddProductEvent.TapShowCaseFilter -> _uiEffect.tryEmit(AddProductEffect.ShowShowcasesBottomSheet(currentState.shopShowcases, currentState.selectedShopShowcase))
             AddProductEvent.TapSortFilter -> _uiEffect.tryEmit(AddProductEffect.ShowSortBottomSheet(currentState.sortOptions, currentState.selectedSort))
-            is AddProductEvent.ApplyCategoryFilter -> handleApplyCategoryFilter(event.selectedCategory)
+            is AddProductEvent.ApplyCategoryFilter -> handleApplyCategoryFilter(event.selectedCategories)
             is AddProductEvent.ApplyWarehouseLocationFilter -> handleApplyWarehouseLocationFilter(event.selectedWarehouseLocation)
             is AddProductEvent.ApplyShowCaseFilter -> handleApplyShopShowcasesFilter(event.selectedShowCase)
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
@@ -121,7 +122,7 @@ class AddProductViewModel @Inject constructor(
                 val param = ProductListUseCase.Param(
                     searchKeyword = currentState.searchKeyword,
                     warehouseId = currentState.selectedWarehouseLocation.warehouseId,
-                    categoryId = currentState.selectedCategory.id,
+                    categoryIds = currentState.selectedCategories.map { it.id.toLong() },
                     page = currentState.page,
                     pageSize = AddProductFragment.PAGE_SIZE,
                     sortId = currentState.selectedSort.id,
@@ -317,8 +318,11 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 searchKeyword = currentState.searchKeyword,
-                page =NumberConstant.FIRST_PAGE,
+                page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
+                selectedCategories = emptyList(),
+                selectedWarehouseLocation = Warehouse(0, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
+                selectedShopShowcase = ShopShowcase(0, "", "", 1),
                 selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
             )
         }
@@ -362,12 +366,12 @@ class AddProductViewModel @Inject constructor(
         getProducts()
     }
 
-    private fun handleApplyCategoryFilter(selectedCategory: ProductCategoryOption) {
+    private fun handleApplyCategoryFilter(selectedCategories: List<ProductCategoryOption>) {
         _uiState.update {
             it.copy(
                 isLoading = true,
                 products = emptyList(),
-                selectedCategory = selectedCategory
+                selectedCategories = selectedCategories
             )
         }
 

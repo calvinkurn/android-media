@@ -23,7 +23,7 @@ sealed class AddProductEvent {
     object TapShowCaseFilter : AddProductEvent()
     object TapSortFilter : AddProductEvent()
     data class ApplyWarehouseLocationFilter(val selectedWarehouseLocation: Warehouse) : AddProductEvent()
-    data class ApplyCategoryFilter(val selectedCategory: ProductCategoryOption) : AddProductEvent()
+    data class ApplyCategoryFilter(val selectedCategories: List<ProductCategoryOption>) : AddProductEvent()
     data class ApplyShowCaseFilter(val selectedShowCase: ShopShowcase) : AddProductEvent()
     data class ApplySortFilter(val selectedSort: ProductSortOptions) : AddProductEvent()
     object ConfirmAddProduct : AddProductEvent()

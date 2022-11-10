@@ -97,8 +97,8 @@ class ProductListUseCase @Inject constructor(
             GoodsFilterInput("status", listOf("ACTIVE"))
         )
 
-        if (param.categoryId.isNotEmpty()) {
-            filter.add(GoodsFilterInput("category", listOf(param.categoryId)))
+        if (param.categoryIds.isNotEmpty()) {
+            filter.add(GoodsFilterInput("category", param.categoryIds.map { it.toString() }))
         }
 
         if (param.searchKeyword.isNotEmpty()) {
@@ -127,7 +127,7 @@ class ProductListUseCase @Inject constructor(
         val warehouseId: Long,
         val page: Int,
         val pageSize: Int,
-        val categoryId: String,
+        val categoryIds: List<Long>,
         val sortId : String,
         val sortDirection:String,
         val extraInfo: List<String> = listOf("view")

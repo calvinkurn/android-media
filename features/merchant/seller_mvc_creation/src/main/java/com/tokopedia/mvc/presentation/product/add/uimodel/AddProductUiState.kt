@@ -25,6 +25,6 @@ data class AddProductUiState(
     val selectedSort: ProductSortOptions = ProductSortOptions("DEFAULT", "", "DESC"),
     val selectedWarehouseLocation: Warehouse = Warehouse(0, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
     val selectedShopShowcase: ShopShowcase = ShopShowcase(0, "", "", 1),
-    val selectedCategory: ProductCategoryOption = ProductCategoryOption("", "", ""),
+    val selectedCategories: List<ProductCategoryOption> = emptyList(),
     val error: Throwable? = null
 )
