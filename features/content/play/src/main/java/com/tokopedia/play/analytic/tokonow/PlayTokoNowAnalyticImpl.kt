@@ -209,6 +209,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun impressProductBottomSheetNow(
         products: Map<ProductSheetAdapter.Item.Product, Int>
     ) {
+        if (products.isEmpty()) return
 
         val items = arrayListOf<Bundle>().apply {
             products.forEach {
