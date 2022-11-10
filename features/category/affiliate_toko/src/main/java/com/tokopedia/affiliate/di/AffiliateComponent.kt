@@ -25,6 +25,7 @@ import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoSearchFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromotionHistoryFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateTransactionDetailFragment
+import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationLandingPage
 import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
 import dagger.Component
 
@@ -80,5 +81,7 @@ interface AffiliateComponent {
     fun injectPromoSearchActivity(affiliatePromoSearchActivity: AffiliatePromoSearchActivity)
 
     fun injectPromoSearchFragment(affiliatePromoSearchFragment: AffiliatePromoSearchFragment)
+
+    fun injectEducationLandingPage(affiliateEducationLandingPage: AffiliateEducationLandingPage)
 
 }

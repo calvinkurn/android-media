@@ -162,5 +162,9 @@
     <string name="promo_share_link_info">Bagikan link dari halaman produk/toko</string>
     <string name="promo_info_title">Promosinya gampang, komisinya dapet!</string>
     <string name="promo_info_desc"><![CDATA[Punya produk & toko favoritmu? Kamu bisa promosikan link-nya dengan cara-cara mudah yang bisa dipilih!]]></string>
-
+    <string name="article_widget_detail">%s • %s • %s</string>
+    <string name="affiliate_education_article_topic_header">Pelajari topik pilihan untukmu</string>
+    <string name="affiliate_lihat_semua">Lihat Semua</string>
+    <string name="affiliate_education_event_header">Kalender event</string>
+    <string name="affiliate_education_article_widget_header">Baca artikel terbaru</string>
 </resources>
