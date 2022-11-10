@@ -31,8 +31,6 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
 
     var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
 
-    private var currentFragmentName: String? = null
-
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(newBase)
         SplitCompat.installActivity(this)
@@ -56,11 +54,6 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         viewModel.onSavedInstanceState()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        currentFragmentName = null
     }
 
     override fun viewModel(): MultipleFragmentsViewModel = viewModel
@@ -98,11 +91,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
      */
     fun navigateToNewFragment(fragment: Fragment, isSingleTask: Boolean = false, isFinishCurrent: Boolean = false) {
         val fragmentName = fragment.javaClass.name
-        if (getIsNavigatingToSameFragment(fragmentName)) {
-            return
-        } else {
-            currentFragmentName = fragmentName
-        }
+        if (getIsNavigatingToSameFragment(fragmentName)) return
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (isSingleTask && existingFragment != null) {
             popExistedFragment(fragmentName)
@@ -302,6 +291,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     }
 
     private fun getIsNavigatingToSameFragment(destinationFragmentName: String): Boolean {
+        val currentFragmentName = supportFragmentManager.fragments.lastOrNull()?.javaClass?.name
         return currentFragmentName == destinationFragmentName
     }
 
