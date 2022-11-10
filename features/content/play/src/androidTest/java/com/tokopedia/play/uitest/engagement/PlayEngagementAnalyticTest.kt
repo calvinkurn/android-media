@@ -132,15 +132,6 @@ class PlayEngagementAnalyticTest {
 
     private fun createRobot() = PlayActivityRobot(channelId, 5000, isYouTube = false)
 
-    private fun turnOffLoader() {
-        val robot = createRobot()
-        robot.scenario.onActivity {
-            it.findViewById<LoaderUnify>(playR.id.iv_loading).apply {
-                this.avd?.stop()
-            }
-        }
-    }
-
     @Test
     fun clickVoucher_openBottomSheetCoupon () {
         val tagItems = uiModelBuilder.buildTagItem(
@@ -204,7 +195,6 @@ class PlayEngagementAnalyticTest {
             assertCassavaByEventAction("view - voucher bottomsheet")
             clickVoucherInBottomSheet(1)
             assertCassavaByEventAction("view - toaster public voucher")
-            clickToasterAction()
             assertCassavaByEventAction("click - lihat toaster public voucher")
         }
     }
