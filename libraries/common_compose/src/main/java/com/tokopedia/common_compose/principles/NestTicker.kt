@@ -33,22 +33,22 @@ fun NestTicker(
 
    val style = when(type) {
        TickerType.WARNING -> TickerColor(
-           backgroundColor = NestTheme.colors.YN50,
-           strokeColor = NestTheme.colors.YN200,
-           iconColor = NestTheme.colors.YN400,
-           closeIconColor = NestTheme.colors.NN900
+           backgroundColor = NestTheme.colors.YN._50,
+           strokeColor = NestTheme.colors.YN._200,
+           iconColor = NestTheme.colors.YN._400,
+           closeIconColor = NestTheme.colors.NN._900
        )
        TickerType.ANNOUNCEMENT -> TickerColor(
-           backgroundColor = NestTheme.colors.BN50,
-           strokeColor = NestTheme.colors.BN200,
-           iconColor = NestTheme.colors.BN400,
-           closeIconColor = NestTheme.colors.NN900
+           backgroundColor = NestTheme.colors.BN._50,
+           strokeColor = NestTheme.colors.BN._200,
+           iconColor = NestTheme.colors.BN._400,
+           closeIconColor = NestTheme.colors.NN._900
        )
        TickerType.ERROR -> TickerColor(
-           backgroundColor = NestTheme.colors.RN50,
-           strokeColor = NestTheme.colors.RN200,
-           iconColor = NestTheme.colors.RN400,
-           closeIconColor = NestTheme.colors.NN900
+           backgroundColor = NestTheme.colors.RN._50,
+           strokeColor = NestTheme.colors.RN._200,
+           iconColor = NestTheme.colors.RN._400,
+           closeIconColor = NestTheme.colors.NN._900
        )
    }
 
@@ -80,14 +80,14 @@ fun NestTicker(
                 if (title.isNotEmpty()) {
                     NestTypography(
                         text = title.toString(),
-                        textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN950)
+                        textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
                     )
                 }
 
                 if (description.isNotEmpty()) {
                     NestTypography(
                         text = description.toString(),
-                        textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN950)
+                        textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._950)
                     )
                 }
             }
