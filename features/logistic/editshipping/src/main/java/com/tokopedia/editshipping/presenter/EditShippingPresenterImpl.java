@@ -894,7 +894,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private int getFirstNormalServiceIndex() {
         for (int i = 0; i < courierList.size(); i++) {
-            if (!courierList.get(i).isWhitelabelService() && courierList.get(i).id.equals(KURIR_REKOMENDASI_SHIPPER_ID)) {
+            if (!courierList.get(i).isWhitelabelService() && !courierList.get(i).id.equals(KURIR_REKOMENDASI_SHIPPER_ID)) {
                 return i;
             }
         }

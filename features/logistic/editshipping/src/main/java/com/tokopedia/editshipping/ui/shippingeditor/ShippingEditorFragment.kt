@@ -656,7 +656,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
     }
 
     private fun saveButtonShippingEditor() {
-        val activatedSpIds = getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds())
+        val activatedSpIds = getListActivatedSpIds(shippingEditorOnDemandAdapter.getActiveSpIds(), shippingEditorConventionalAdapter.getActiveSpIds())
         if (activatedSpIds.isEmpty()) {
             view?.let { Toaster.build(it, EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
         } else viewModel.validateShippingEditor(userSession.shopId.toLong(), activatedSpIds)
