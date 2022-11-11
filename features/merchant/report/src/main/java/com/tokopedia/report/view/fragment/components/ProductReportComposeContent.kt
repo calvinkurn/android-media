@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.tokopedia.common_compose.principles.NestTypography
@@ -32,7 +31,7 @@ fun ProductReportComposeContent(
             NestTypography(
                 text = "error: ${uiState.error.orEmpty()}",
                 textStyle = NestTheme.typography.body3.copy(
-                    color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                    color = NestTheme.colors.RN._500
                 )
             )
         } else {

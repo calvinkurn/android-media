@@ -1,11 +1,11 @@
 package com.tokopedia.report.view.activity
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,10 +20,10 @@ import com.tokopedia.report.view.fragment.ProductReportScreen
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.util.extensions.argsExtraString
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
-class ProductReportActivity : ComponentActivity(), ReportReasonAdapter.OnReasonClick {
+class ProductReportActivity : AppCompatActivity(), ReportReasonAdapter.OnReasonClick {
 
     private val tracking by lazy { MerchantReportTracking() }
 
@@ -81,16 +81,20 @@ class ProductReportActivity : ComponentActivity(), ReportReasonAdapter.OnReasonC
 
     override fun gotoForm(reason: ProductReportReason) {
         tracking.eventReportReason(reason.strLabel)
-        launcherGoToForm.launch(ProductReportFormActivity.createIntent(this, reason, productId))
+        val intent = ProductReportFormActivity.createIntent(this, reason, productId)
+        startActivityForResult(intent, REQ_CODE_GO_FORM)
     }
 
-    private val launcherGoToForm =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQ_CODE_GO_FORM) {
+            if (resultCode == Activity.RESULT_OK) {
                 setResult(Activity.RESULT_OK)
                 finish()
             }
         }
+    }
 
     override fun onBackPressed() {
         viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
@@ -98,5 +102,6 @@ class ProductReportActivity : ComponentActivity(), ReportReasonAdapter.OnReasonC
 
     companion object {
         private const val ARG_PRODUCT_ID = "arg_product_id"
+        private const val REQ_CODE_GO_FORM = 32
     }
 }

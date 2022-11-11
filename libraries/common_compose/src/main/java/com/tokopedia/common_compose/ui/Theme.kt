@@ -19,17 +19,19 @@ import androidx.core.view.WindowCompat
 
 private val NestThemeLight = lightColors(
     primary = NestNN.light._0,
-    onPrimary = NestNN.light._700,
+    onPrimary = NestNN.light._950,
     primaryVariant = NestNN.light._0,
     secondary = NestNN.light._0,
     surface = NestNN.light._0,
+    background = NestNN.light._0
 )
 
 private val NestThemeDark = darkColors(
     primary = NestNN.dark._0,
-    onPrimary = NestNN.dark._700,
+    onPrimary = NestNN.dark._950,
     secondary = NestNN.dark._0,
     surface = NestNN.dark._0,
+    background = NestNN.dark._0
 )
 
 private val LightElevation = Elevations()
