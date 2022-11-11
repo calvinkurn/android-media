@@ -40,7 +40,8 @@ object SearchBroadMatchMapper {
                                 )
                             },
                             minOrder = otherRelatedProduct.minOrder,
-                            maxOrder = otherRelatedProduct.stock,
+                            maxOrder = otherRelatedProduct.maxOrder,
+                            availableStock = otherRelatedProduct.stock,
                             orderQuantity = cartService.getProductQuantity(otherRelatedProduct.id),
                             needToShowQuantityEditor = true
                         ),

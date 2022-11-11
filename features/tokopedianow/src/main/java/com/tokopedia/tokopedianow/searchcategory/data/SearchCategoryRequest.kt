@@ -106,6 +106,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     ratingAverage
                     stock
                     minOrder
+                    maxOrder
                     labelGroups {
                         title
                         position
