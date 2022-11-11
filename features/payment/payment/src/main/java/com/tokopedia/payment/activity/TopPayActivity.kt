@@ -69,7 +69,8 @@ import com.tokopedia.user.session.Constants.GCM_ID
 import com.tokopedia.user.session.Constants.GCM_STORAGE
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.WebViewHelper
-import kotlinx.android.synthetic.main.activity_top_pay_payment_module.*
+import kotlinx.android.synthetic.main.activity_top_pay_payment_module.activity_topay_container
+import kotlinx.android.synthetic.main.activity_top_pay_payment_module.loaderCreditCardUnify
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -740,7 +741,7 @@ class TopPayActivity :
             } else {
                 ServerLogger.log(
                     Priority.P1,
-                    "WEBVIEW_ERROR",
+                    webviewError,
                     mapOf(
                         "type" to request?.url.toString(),
                         "error_code" to error?.errorCode.toString(),
@@ -924,6 +925,7 @@ class TopPayActivity :
         const val FORCE_TIMEOUT = 90000L
 
         const val LOG_TIMEOUT = 1000
+        const val webviewError = "WEBVIEW_ERROR"
 
         private const val IMAGE_COMPRESS_QUALITY = 60
 
