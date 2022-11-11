@@ -51,10 +51,10 @@ data class ModifaceProvider(
         val matteness: Float = 0.0F,
         @SerializedName("sparkleDensity")
         @Expose
-        val sparkleDensity: Float? = null,
+        val sparkleDensity: Float = 1F,
         @SerializedName("sparkleSize")
         @Expose
-        val sparkleSize: Float? = null,
+        val sparkleSize: Float = 1F,
         @SerializedName("sparkleColorVariation")
         @Expose
         val sparkleColorVariation: Float = 0.0F,
@@ -63,10 +63,10 @@ data class ModifaceProvider(
         val sparkleSizeVariation: Float = 0.0F,
         @SerializedName("sparkleBaseReflectivity")
         @Expose
-        val sparkleBaseReflectivity: Float? = null,
+        val sparkleBaseReflectivity: Float = 0.3F,
         @SerializedName("intensity")
         @Expose
-        val intensity: Float? = null,
+        val intensity: Float = 1F,
         @SerializedName("envMappingIntensity")
         @Expose
         val envMappingIntensity: Float = 0.0F,
@@ -81,10 +81,10 @@ data class ModifaceProvider(
         val envMappingB: Float = 0.0F,
         @SerializedName("envMappingBumpIntensity")
         @Expose
-        val envMappingBumpIntensity: Float? = null,
+        val envMappingBumpIntensity: Float = 0.6F,
         @SerializedName("envMappingCurve")
         @Expose
-        val envMappingCurve: Float? = null,
+        val envMappingCurve: Float = 2.3F,
         @SerializedName("envMappingRotationY")
         @Expose
         val envMappingRotationY: Float = 0.0F,
@@ -95,22 +95,6 @@ data class ModifaceProvider(
         @Expose
         val vinylIntensity: Float = 0.0F
 ) {
-    fun getGlossFormula(): Float = gamma * 100
-    fun getGlossDetailFormula(): Float = glossDetail * 100
-    fun getWetnessFormula(): Float = wetness * 100
-    fun getSparkleAFormula(): Float = sparkleA * 100
-    fun getGlitterDensityFormula(): Float = sparkleDensity?.let { it * 100 } ?: 1F
-    fun getGlitterSizeFormula(): Float = sparkleSize?.let { it * 100 } ?: 1F
-    fun getGlitterColorVariationFormula(): Float = sparkleColorVariation * 100
-    fun getGlitterSizeVariationFormula(): Float = sparkleSizeVariation * 100
-    fun getGlitterBaseReflectivityFormula(): Float = sparkleBaseReflectivity?.let { it * 100 }
-            ?: 0.3F
-
-    fun getAmountFormula(): Float = intensity?.let { it * 100 } ?: 1F
-    fun getEnvMappingtFormula(): Float = envMappingIntensity * 100
-    fun getEnvBumpDensityFormula(): Float = envMappingBumpIntensity?.let { it } ?: 0.6F
-    fun getEnvMappingCurveFormula(): Float = envMappingCurve?.let { it } ?: 2.3F
-
     fun getGlitterColor(): Int = Color.rgb(sparkleR.toIntSafely(),
             sparkleG.toIntSafely(),
             sparkleB.toIntSafely())
