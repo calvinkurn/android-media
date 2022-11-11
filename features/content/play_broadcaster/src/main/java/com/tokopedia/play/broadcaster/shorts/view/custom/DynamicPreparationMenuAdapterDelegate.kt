@@ -9,11 +9,11 @@ import com.tokopedia.play_common.R as commonR
  * Created By : Jonathan Darwin on November 09, 2022
  */
 internal class DynamicPreparationMenuAdapterDelegate(
-    private val onClick: (DynamicPreparationMenu) -> Unit,
+    private val onClick: (DynamicPreparationMenu) -> Unit
 ) : TypedAdapterDelegate<
-        DynamicPreparationMenu,
-        DynamicPreparationMenu,
-        DynamicPreparationMenuViewHolder
+    DynamicPreparationMenuAdapter.Item,
+    DynamicPreparationMenuAdapter.Item,
+    DynamicPreparationMenuViewHolder
     >(commonR.layout.view_play_empty) {
 
     override fun onCreateViewHolder(
@@ -22,12 +22,12 @@ internal class DynamicPreparationMenuAdapterDelegate(
     ): DynamicPreparationMenuViewHolder {
         return DynamicPreparationMenuViewHolder.create(
             parent,
-            onClick,
+            onClick
         )
     }
 
     override fun onBindViewHolder(
-        item: DynamicPreparationMenu,
+        item: DynamicPreparationMenuAdapter.Item,
         holder: DynamicPreparationMenuViewHolder
     ) {
         holder.bind(item)

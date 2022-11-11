@@ -21,6 +21,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
@@ -208,7 +209,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             }
 
             root.setOnClickListener {
-                Log.d("<LOG>", "root clicked")
                 idleManager.toggleState()
             }
 
@@ -287,12 +287,8 @@ class PlayShortsPreparationFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             idleManager.eventBus.subscribe().collectLatest {
                 when (it) {
-                    PlayShortsIdleManager.State.StandBy -> {
-                        Log.d("<LOG>", "Standby")
-                    }
-                    PlayShortsIdleManager.State.Idle -> {
-                        Log.d("<LOG>", "Idle")
-                    }
+                    PlayShortsIdleManager.State.StandBy -> setupUiStandby()
+                    PlayShortsIdleManager.State.Idle -> setupUiIdle()
                 }
             }
         }
@@ -307,6 +303,16 @@ class PlayShortsPreparationFragment @Inject constructor(
                 setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
             }
         )
+    }
+
+    private fun setupUiStandby() {
+        Log.d("<LOG>", "Standby")
+        binding.preparationMenu.showMenuText(true)
+    }
+
+    private fun setupUiIdle() {
+        Log.d("<LOG>", "Idle")
+        binding.preparationMenu.showMenuText(false)
     }
 
     private fun renderMedia(

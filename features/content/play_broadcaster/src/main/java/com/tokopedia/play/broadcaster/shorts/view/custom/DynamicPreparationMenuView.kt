@@ -45,7 +45,22 @@ class DynamicPreparationMenuView : FrameLayout {
     }
 
     fun submitMenu(menuList: List<DynamicPreparationMenu>) {
-        adapter.setItemsAndAnimateChanges(menuList)
+        val finalMenuList = menuList.map {
+            DynamicPreparationMenuAdapter.Item(
+                data = it,
+                isShow = true
+            )
+        }
+        adapter.setItemsAndAnimateChanges(finalMenuList)
+    }
+
+    fun showMenuText(isShow: Boolean) {
+        val finalMenuList = adapter.getItems().map {
+            it.copy(
+                isShow = isShow
+            )
+        }
+        adapter.setItemsAndAnimateChanges(finalMenuList)
     }
 
     fun setOnMenuClickListener(onClick: (DynamicPreparationMenu) -> Unit) {
