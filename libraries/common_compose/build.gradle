@@ -36,7 +36,9 @@ dependencies {
     api rootProject.ext.composeDependencies.composeUiTooling
     api rootProject.ext.composeDependencies.composePreview
     implementation rootProject.ext.composeDependencies.composeCoil
-    implementation rootProject.ext.supportLibDependencies.androidCore
+
+    // need androidx.core for androidx.core.view.*
+    implementation rootProject.ext.supportLibDependencies.design
 }
 
 project.ext {

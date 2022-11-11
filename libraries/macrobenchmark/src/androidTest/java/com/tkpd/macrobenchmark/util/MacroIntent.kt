@@ -213,4 +213,27 @@ object MacroIntent {
             return getCampaignListIntent().apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
         }
     }
+
+    object Play {
+        /**
+         * Target viewpager
+         * Capture view by resource id
+         */
+        const val VIEW_PAGER_RESOURCE_ID = "vp_fragment"
+
+        private const val DF_MODULE_NAME = "df_base"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+
+        fun getPlayVODIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://play/186068")
+            return intent
+        }
+
+        fun getPlayLiveIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://play/206778")
+            return intent
+        }
+    }
 }

@@ -18,23 +18,22 @@ import androidx.core.view.WindowCompat
 
 
 private val NestThemeLight = lightColors(
-    primary = NestNN0,
-    onPrimary = NestNN700,
-    primaryVariant = NestNN0,
-    secondary = NestNN0,
-    surface = NestNN0,
+    primary = NestNN.light._0,
+    onPrimary = NestNN.light._700,
+    primaryVariant = NestNN.light._0,
+    secondary = NestNN.light._0,
+    surface = NestNN.light._0,
 )
 
 private val NestThemeDark = darkColors(
-    primary = NestNN0Dark,
-    onPrimary = NestNN700Dark,
-    secondary = NestNN0Dark,
-    surface = NestNN0Dark
+    primary = NestNN.dark._0,
+    onPrimary = NestNN.dark._700,
+    secondary = NestNN.dark._0,
+    surface = NestNN.dark._0,
 )
 
 private val LightElevation = Elevations()
 private val DarkElevation = Elevations(card = 1.dp)
-
 
 @Composable
 fun NestTheme(
@@ -43,13 +42,15 @@ fun NestTheme(
 ) {
     val themeColors = if (darkTheme) NestThemeDark else NestThemeLight
     val elevation = if (darkTheme) DarkElevation else LightElevation
-    val colors = populateColor(darkTheme)
+    val colors: NestColor = if (darkTheme) NestDarkColor() else NestLightColor()
+
+    AdaptiveStatusBarColor(darkTheme = darkTheme, themeColors = themeColors)
 
     AdaptiveStatusBarColor(themeColors = themeColors)
 
     CompositionLocalProvider(
         LocalElevations provides elevation,
-        LocalColors provides colors,
+        LocalNestColor provides colors,
         LocalTypography provides NestTextStyle()
     ) {
         MaterialTheme(
@@ -78,10 +79,10 @@ private fun AdaptiveStatusBarColor(
 
 
 object NestTheme {
-    val colors: TokopediaColor
+    val colors: NestColor
         @Composable
         @ReadOnlyComposable
-        get() = LocalColors.current
+        get() = LocalNestColor.current
 
     val typography: NestTextStyle
         @Composable

@@ -827,7 +827,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check user identification form appLink then should return DF_USER_SETTINGS in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/user-identification-form?projectId=123456"
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/user-identification-form?projectId=123456"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 
@@ -905,7 +905,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check liveness detection appLink then should return DF_USER_LIVENESS in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/liveness-detection?projectId=0"
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/liveness-detection?projectId=0"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_LIVENESS)
     }
 
