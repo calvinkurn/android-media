@@ -46,7 +46,6 @@ import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
-import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
@@ -61,7 +60,6 @@ import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
-import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
@@ -113,8 +111,6 @@ import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
-import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -138,9 +134,6 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import rx.Subscriber
 import timber.log.Timber
 import java.io.File
@@ -161,7 +154,6 @@ class ChatbotPresenter @Inject constructor(
     private val tkpdAuthInterceptor: TkpdAuthInterceptor,
     private val fingerprintInterceptor: FingerprintInterceptor,
     private val sendChatRatingUseCase: SendChatRatingUseCase,
-    private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
     private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
     private val getTickerDataUseCase: GetTickerDataUseCase,
     private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
@@ -180,10 +172,7 @@ class ChatbotPresenter @Inject constructor(
 
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
-
     object companion{
-        const val ERROR_CODE ="400"
-        const val TEXT_HIDE = "hide"
         const val OPEN_CSAT = "13"
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER = "15"
@@ -424,12 +413,6 @@ class ChatbotPresenter @Inject constructor(
         return list
     }
 
-    private fun onError(): (Throwable) -> Unit {
-        return {
-            view.showErrorToast(it)
-        }
-    }
-
     override fun showErrorSnackbar(stringId: Int) {
         view.showSnackbarError(stringId)
     }
@@ -598,60 +581,6 @@ class ChatbotPresenter @Inject constructor(
             .build()
     }
 
-    override fun uploadImages(
-        it: ImageUploadUiModel,
-        messageId: String,
-        opponentId: String,
-        onError: (Throwable, ImageUploadUiModel) -> Unit
-    ) {
-        if (validateImageAttachment(it.imageUrl, MAX_FILE_SIZE)) {
-            isUploading = true
-            uploadImageUseCase.unsubscribe()
-
-            val reqParam = HashMap<String, RequestBody>()
-            reqParam.put("web_service", createRequestBody("1"))
-            reqParam.put(
-                "id",
-                createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
-            )
-            val params = uploadImageUseCase.createRequestParam(
-                it.imageUrl,
-                "/upload/attachment",
-                "fileToUpload\"; filename=\"image.jpg",
-                reqParam
-            )
-
-            uploadImageUseCase.execute(
-                params,
-                object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
-                    override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
-                        t.dataResultImageUpload.data?.run {
-                            sendUploadedImageToWebsocket(
-                                ChatbotSendableWebSocketParam
-                                    .generateParamSendImage(
-                                        messageId,
-                                        this.picSrc,
-                                        this.picObj,
-                                        it.startTime,
-                                        opponentId
-                                    )
-                            )
-                        }
-                        isUploading = false
-                    }
-
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable) {
-                        isUploading = false
-                        onError(e, it)
-                    }
-                }
-            )
-        }
-    }
-
     override fun uploadImageSecureUpload(
         imageUploadViewModel: ImageUploadUiModel,
         messageId: String,
@@ -768,8 +697,8 @@ class ChatbotPresenter @Inject constructor(
         return uri.getQueryParameter(key).toBlankOrString()
     }
 
-    override fun cancelImageUpload() {
-        uploadImageUseCase.unsubscribe()
+     override fun cancelImageUpload() {
+         chatBotSecureImageUploadUseCase.unsubscribe()
     }
 
     fun sendUploadedImageToWebsocket(json: JsonObject) {
@@ -777,10 +706,6 @@ class ChatbotPresenter @Inject constructor(
         interceptors.add(tkpdAuthInterceptor)
         interceptors.add(fingerprintInterceptor)
         chatbotWebSocket.send(json, interceptors)
-    }
-
-    private fun createRequestBody(content: String): RequestBody {
-        return content.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun validateImageAttachment(uri: String?, maxFileSize: Int): Boolean {
@@ -1010,12 +935,8 @@ class ChatbotPresenter @Inject constructor(
         val params = checkUploadSecureUseCase.createRequestParams(messageId)
         launchCatchError(
             block = {
-                val response = checkUploadSecureUseCase.checkUploadSecure(params)
-                val isSecureUpload =
-                    response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
-                if (isSecureUpload) view.uploadUsingSecureUpload(data) else view.uploadUsingOldMechanism(
-                    data
-                )
+                checkUploadSecureUseCase.checkUploadSecure(params)
+                view.uploadUsingSecureUpload(data)
             },
             onError = {
                 ChatbotNewRelicLogger.logNewRelic(
