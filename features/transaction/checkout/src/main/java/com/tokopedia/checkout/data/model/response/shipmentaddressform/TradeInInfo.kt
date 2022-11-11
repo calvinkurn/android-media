@@ -1,14 +1,17 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class TradeInInfo(
         @SerializedName("is_valid_trade_in")
         var isValidTradeIn: Boolean = false,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("new_device_price")
         var newDevicePrice: Int = 0,
         @SerializedName("new_device_price_fmt")
         var newDevicePriceFmt: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("old_device_price")
         var oldDevicePrice: Int = 0,
         @SerializedName("old_device_price_fmt")
