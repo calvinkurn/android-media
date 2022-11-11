@@ -34,7 +34,7 @@ class PlayShortsViewModel @Inject constructor(
     private val repo: PlayShortsRepository,
     private val sharedPref: HydraSharedPreferences,
     private val exoPlayer: ExoPlayer,
-    private val mediaSourceFactory: PlayShortsMediaSourceFactory,
+    private val mediaSourceFactory: PlayShortsMediaSourceFactory
 ) : ViewModel() {
 
     /** Public Getter */
@@ -167,7 +167,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleSetMedia(mediaUri: String) {
-        if(mediaUri == _media.value.mediaUri) return
+        if (mediaUri == _media.value.mediaUri) return
 
         _media.update {
             val mediaSource = mediaSourceFactory.create(mediaUri)
@@ -256,7 +256,6 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleClickNext() {
-        handleStopMedia()
         /** TODO: handle this */
     }
 
