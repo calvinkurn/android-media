@@ -2,23 +2,19 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.affiliate.model.response.AffiliateDateFilterResponse
-import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.spyk
+import com.tokopedia.affiliate.model.response.*
+import com.tokopedia.affiliate.usecase.*
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.ArrayList
 
 @ExperimentalCoroutinesApi
 class AffiliateDatePickerBottomSheetViewModelTest {
@@ -43,8 +39,8 @@ class AffiliateDatePickerBottomSheetViewModelTest {
 
     @Test
     fun getAffiliateFilterDataTest() {
-        val ticker: AffiliateDateFilterResponse.Data.Ticker?
-        val list: ArrayList<AffiliateDateFilterResponse.Data.GetAffiliateDateFilter>?
+        var ticker: AffiliateDateFilterResponse.Data.Ticker? = null
+        var list: ArrayList<AffiliateDateFilterResponse.Data.GetAffiliateDateFilter>? = null
         val filterResponse = AffiliateDateFilterResponse(null)
         coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() } returns filterResponse
         aff.getAffiliateFilterData()
