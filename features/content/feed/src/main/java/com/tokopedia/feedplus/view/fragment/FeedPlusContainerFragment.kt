@@ -53,6 +53,7 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
@@ -622,12 +623,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 if (viewModel.isShowShortsButton) {
                     showPlayShortsOnBoarding()
                 }
+                else {
+                    showCreatePostOnBoarding()
+                }
             } else {
                 feedFloatingButton.hide()
             }
-        } catch (e: Exception) {
-            feedFloatingButton.hide()
-        }
+        } catch (e: Exception) { }
     }
 
     private fun createLiveFab(): FloatingButtonItem {
@@ -770,6 +772,35 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             it.startActivityForResult(intent, FeedPlusFragment.REQUEST_LOGIN)
+        }
+    }
+
+    private fun showCreatePostOnBoarding() {
+        feedFloatingButton.addOneTimeGlobalLayoutListener {
+            val location = IntArray(2)
+            feedFloatingButton.getLocationOnScreen(location)
+
+            val x1 = location[0]
+            val y1 = location[1]
+            val x2 = x1 + feedFloatingButton.width
+            val y2 = y1 + feedFloatingButton.height
+
+            coachMarkItem = CoachMarkItem(
+                feedFloatingButton,
+                activity?.getString(R.string.feed_onboarding_create_post_title),
+                activity?.getString(R.string.feed_onboarding_create_post_detail) ?: ""
+            ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
+
+            showFabCoachMark()
+        }
+    }
+
+    private fun showFabCoachMark() {
+        if (::coachMarkItem.isInitialized
+            && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)
+            && feedFloatingButton.visibility == View.VISIBLE) {
+            coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
+            affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
     }
 
