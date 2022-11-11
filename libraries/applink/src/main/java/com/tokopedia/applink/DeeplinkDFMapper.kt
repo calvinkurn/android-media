@@ -167,6 +167,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_GE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CONSENT_WITHDRAWAL_NEW
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.FORGOT_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_ALA_CARTE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_FORM
@@ -563,7 +564,10 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
             add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_choose_account))
             add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
-            add(DFP({ it.startsWithPattern(PRIVACY_CENTER) }, DF_USER_PRIVACYCENTER, R.string.title_privacy_center))
+            add(DFP({
+                it.startsWithPattern(PRIVACY_CENTER) ||
+                it.startsWithPattern(CONSENT_WITHDRAWAL_NEW)
+            }, DF_USER_PRIVACYCENTER, R.string.title_privacy_center))
 
             // Media
             add(DFP({
