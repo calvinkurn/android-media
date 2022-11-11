@@ -30,7 +30,6 @@ data class PrivacyPolicyDataModel(
     val language: String = "",
     @SerializedName("last_update")
     val lastUpdate: String = "",
-    var isLoading: Boolean = false
 )
 
 data class PrivacyPolicyDetailDataModel(
