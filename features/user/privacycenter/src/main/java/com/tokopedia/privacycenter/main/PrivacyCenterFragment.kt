@@ -1,5 +1,7 @@
 package com.tokopedia.privacycenter.main
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,11 +17,16 @@ import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
+import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
+import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChangedListener {
+class PrivacyCenterFragment : BaseDaggerFragment(),
+    AppBarLayout.OnOffsetChangedListener,
+    RecommendationSection.Listener
+{
 
     private var binding by autoClearedNullable<FragmentPrivacyCenterBinding>()
     private var privacyCenterSection: PrivacyCenterSection? = null
@@ -35,6 +42,12 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
     private val viewModelConsentWithdrawalSection by lazy {
         ViewModelProvider(this, viewModelFactory).get(
             ConsentWithdrawalSectionViewModel::class.java
+        )
+    }
+
+    private val viewModelRecommendationSection by lazy {
+        ViewModelProvider(this, viewModelFactory).get(
+            RecommendationViewModel::class.java
         )
     }
 
@@ -97,6 +110,13 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         setUpCollapseToolbar(verticalOffset < OFFSET_CHANGE_COLOR_STATUS_BAR)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        //refresh toggle section recommendation and promo
+        viewModelRecommendationSection.refreshGeolocationPermission()
+    }
+
     private fun setUpCollapseToolbar(isCollapsed: Boolean) {
         val isExpand = if (isCollapsed) {
             isUsingNightModeResources()
@@ -122,7 +142,37 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            val isAllowed = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+
+            //change toggle geolocation
+            viewModelRecommendationSection.permissionGeolocationChange(isAllowed)
+        }
+    }
+
+    override fun onRequestLocationPermission() {
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            REQUEST_LOCATION_PERMISSION
+        )
+    }
+
     inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
+        override val recommendationSection: RecommendationSection = RecommendationSection(
+            context,
+            viewModelRecommendationSection,
+            this@PrivacyCenterFragment
+        )
         override val dummySection: DummySection = DummySection(context)
         override val consentWithdrawalSection: ConsentWithdrawalSection = ConsentWithdrawalSection(
             context,
@@ -132,6 +182,7 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
 
     companion object {
         fun newInstance() = PrivacyCenterFragment()
+        private const val REQUEST_LOCATION_PERMISSION = 100
         private const val OFFSET_CHANGE_COLOR_STATUS_BAR = -136
     }
 }
