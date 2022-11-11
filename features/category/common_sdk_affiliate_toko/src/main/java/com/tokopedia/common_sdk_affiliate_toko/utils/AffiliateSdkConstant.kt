@@ -7,6 +7,7 @@ internal object AffiliateSdkConstant {
     const val PAGE = "Page"
     const val PLATFORM = "android"
     const val AFFILIATE_UUID = "aff_unique_id"
+    const val AFFILIATE_TRACKER_ID = "aff_tracker_id"
     const val ATC_SHOP_SOURCE = "shop_page"
     const val ATC_PDP_SOURCE = ""
 }
