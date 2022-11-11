@@ -349,7 +349,7 @@ class MultipleFragmentsViewModel @Inject constructor(
             miniCartUiModelState.emit(Result.Loading())
             withContext(dispatchers.io) {
                 loadCartTokoFoodUseCase.get().execute(source)
-            }.let {
+            }?.let {
                 cartDataState.emit(it.data)
                 setMiniCartValue(it.data)
             }
