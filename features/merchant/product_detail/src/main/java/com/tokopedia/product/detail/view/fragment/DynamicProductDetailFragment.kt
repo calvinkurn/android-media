@@ -429,12 +429,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private val coachMarkArPref by lazy(LazyThreadSafetyMode.NONE) {
-        context?.let {
-            CoachMarkProductPref(it, CoachMarkProductPref.PRODUCT_DETAIL_AR_PAGE_COACHMARK)
-        }
-    }
-
     private val pdpCoachmarkHelper by lazy(LazyThreadSafetyMode.NONE) {
         context?.let {
             ProductDetailCoachMarkHelper(it)

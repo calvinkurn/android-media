@@ -1,7 +1,7 @@
 <resources>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="txt_bs_info_desc">Makeup yang kamu coba akan membantumu sebagai referensi sebelum belanja. Warna barang bisa berbeda tergantung cahaya, warna kulit, jarak, atau resolusi kamera HP.</string>
-    <string name="txt_bs_info_title">Tentang fitur ini</string>
+    <string name="txt_bs_info_title">Tentang fitur Coba Virtual</string>
 
     <string name="txt_image_picker_title">Pilih Media</string>
 
@@ -16,7 +16,7 @@
     <string name="message_face_not_detected">Oops, wajahmu nggak terdeteksi. Coba\n lagi &amp; pastikan wajahmu terlihat jelas, ya.</string>
     <string name="product_ar_oke_label">Oke</string>
     <string name="product_ar_see">Lihat</string>
-    <string name="product_ar_permission_rejected_message">Untuk dapat mengakses halaman ini, permissions harus diaktifkan di bagian pengaturan aplikasi</string>
+    <string name="product_ar_permission_rejected_message">Supaya bisa liat tampilan makeup ini, aktifkan akses ke Kamera di pengaturan HP kamu, ya.</string>
 
     <string name="coachmark_1_title_ar">Cobain pilihan varian yang ada, yuk!</string>
     <string name="coachmark_1_desc_ar">Tinggal klik varian yang tersedia di bawah sini dan lihat hasil makeup-nya.</string>

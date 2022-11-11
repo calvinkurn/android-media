@@ -30,8 +30,8 @@ object ArCoachMarkUtil {
         }
 
         icCompareAr?.run {
-            val title3 = context.getString(R.string.coachmark_2_title_ar)
-            val desc3 = context.getString(R.string.coachmark_2_desc_ar)
+            val title3 = context.getString(R.string.coachmark_3_title_ar)
+            val desc3 = context.getString(R.string.coachmark_3_desc_ar)
             coachMarkList.add(CoachMark2Item(this,
                     title3, position = CoachMark2.POSITION_TOP, description = desc3))
         }
