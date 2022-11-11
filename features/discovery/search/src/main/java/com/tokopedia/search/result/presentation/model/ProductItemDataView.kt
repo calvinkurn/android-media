@@ -133,7 +133,8 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
         )
     }
 
-    fun shouldOpenVariantBottomSheet(): Boolean = parentId != "" && parentId != DEFAULT_PARENT_ID
+    fun shouldOpenVariantBottomSheet(): Boolean =
+        parentId != "" && parentId != DEFAULT_PARENT_ID && parentId != productID
 
     private fun getDimension81(): String {
         val shopType = badgesList?.find { it.isShown && it.imageUrl.isNotEmpty() && it.title.isNotEmpty() }
