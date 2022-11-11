@@ -337,6 +337,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var  imageGeneratorParam: ImageGeneratorParamModel? = null
 
+    // parent fragment lifecycle observer
+    private val parentFragmentLifecycleObserver by lazy {
+        object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                removeFile(savedImagePath)
+                super.onDestroy(owner)
+            }
+        }
+    }
 
     @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
 
@@ -559,17 +568,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         affiliateListener = callback
     }
 
-
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment) {
         parentFragmentContainer = fragment
-        parentFragmentLifecycleObserver = object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                removeFile(savedImagePath)
-                parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
-                super.onDestroy(owner)
-            }
-        }
         parentFragmentContainer?.lifecycle?.addObserver(parentFragmentLifecycleObserver)
+    }
+
+    override fun onDestroy() {
+        parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
+        parentFragmentContainer = null
+        super.onDestroy()
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
