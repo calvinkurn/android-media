@@ -1,5 +1,6 @@
 package com.tokopedia.atc_common.data.model.response.atcexternal
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class AddToCartExternalGqlResponse(
@@ -30,6 +31,7 @@ data class AddToCartExternalDataResponse(
         val productName: String = "",
         @SerializedName("quantity")
         val quantity: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Int = 0,
         @SerializedName("category")

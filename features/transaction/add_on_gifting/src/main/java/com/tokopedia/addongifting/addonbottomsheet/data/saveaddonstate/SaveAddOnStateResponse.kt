@@ -1,5 +1,6 @@
 package com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class SaveAddOnStateResponse(
@@ -65,6 +66,7 @@ data class AddOnDataResponse(
         val addOnId: String = "",
         @SerializedName("add_on_metadata")
         val addOnMetadata: AddOnMetadataResponse = AddOnMetadataResponse(),
+        @SuppressLint("Invalid Data Type")
         @SerializedName("add_on_price")
         val addOnPrice: Long = 0,
         @SerializedName("add_on_qty")

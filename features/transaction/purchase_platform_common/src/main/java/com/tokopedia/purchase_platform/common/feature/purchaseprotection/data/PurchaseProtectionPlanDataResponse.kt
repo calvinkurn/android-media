@@ -11,6 +11,7 @@ data class PurchaseProtectionPlanDataResponse(
         var protectionTypeId: Int = 0,
         @SerializedName("protection_price_per_product")
         var protectionPricePerProduct: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("protection_price")
         var protectionPrice: Int = 0,
         @SerializedName("protection_title")

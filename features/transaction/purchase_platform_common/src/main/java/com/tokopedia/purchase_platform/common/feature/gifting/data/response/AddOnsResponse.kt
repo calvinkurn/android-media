@@ -73,6 +73,7 @@ data class AddOnsResponse(
 
 	data class AddOnDataItem(
 
+            @SuppressLint("Invalid Data Type")
 			@SerializedName("add_on_price")
 			val addOnPrice: Long = 0L,
 

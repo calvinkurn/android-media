@@ -1,5 +1,6 @@
 package com.tokopedia.atc_common.data.model.response.ocs
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -31,6 +32,7 @@ class OvoInsufficientBalance(
 )
 
 class OvoInsufficientDetails(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_price")
         @Expose
         val productPrice: Long = 0,
