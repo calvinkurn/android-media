@@ -5,11 +5,13 @@ package com.tokopedia.play.broadcaster.shorts.ui.model.event
  */
 data class PlayShortsUiEvent(
     val toaster: PlayShortsToaster,
+    val oneTimeEvent: PlayShortsOneTimeEvent,
 ) {
     companion object {
         val Empty: PlayShortsUiEvent
             get() = PlayShortsUiEvent(
                 toaster = PlayShortsToaster.Unknown,
+                oneTimeEvent = PlayShortsOneTimeEvent.Unknown,
             )
     }
 }
@@ -22,4 +24,11 @@ sealed interface PlayShortsToaster {
         val throwable: Throwable,
         val onRetry: () -> Unit,
     ) : PlayShortsToaster
+}
+
+sealed interface PlayShortsOneTimeEvent {
+
+    object Unknown : PlayShortsOneTimeEvent
+
+    object GoToSummary : PlayShortsOneTimeEvent
 }

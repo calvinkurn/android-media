@@ -19,11 +19,14 @@ import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
+import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsSummaryFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play_common.util.extension.withCache
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -91,6 +94,12 @@ class PlayShortsActivity : BaseActivity() {
                 renderPage(it.prevValue, it.value)
             }
         }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                renderOneTimeEvent(event.oneTimeEvent)
+            }
+        }
     }
 
     private fun renderPage(
@@ -112,6 +121,15 @@ class PlayShortsActivity : BaseActivity() {
             curr.shortsId.isNotEmpty() && curr.mediaUri.isNotEmpty() -> {
                 openPreparation()
             }
+        }
+    }
+
+    private fun renderOneTimeEvent(oneTimeEvent: PlayShortsOneTimeEvent) {
+        when(oneTimeEvent) {
+            PlayShortsOneTimeEvent.GoToSummary -> {
+                openSummaryFragment()
+            }
+            else -> {}
         }
     }
 
@@ -137,6 +155,19 @@ class PlayShortsActivity : BaseActivity() {
                     classLoader
                 )
             )
+            .commit()
+    }
+
+    private fun openSummaryFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(
+                binding.container.id,
+                PlayShortsSummaryFragment.getFragment(
+                    supportFragmentManager,
+                    classLoader
+                )
+            )
+            .addToBackStack(null)
             .commit()
     }
 

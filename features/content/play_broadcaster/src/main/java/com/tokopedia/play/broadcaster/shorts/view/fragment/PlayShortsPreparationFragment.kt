@@ -90,7 +90,6 @@ class PlayShortsPreparationFragment @Inject constructor(
     override fun onStop() {
         super.onStop()
         binding.exoPlayer.player?.stop()
-        binding.exoPlayer.player?.release()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -168,6 +167,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         coachMarkManager.dismissAllCoachMark()
+        binding.exoPlayer.player?.release()
         _binding = null
     }
 
@@ -260,19 +260,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                when (val toasterData = event.toaster) {
-                    is PlayShortsToaster.ErrorSubmitTitle -> {
-                        toaster.showError(
-                            toasterData.throwable,
-                            duration = Toaster.LENGTH_LONG,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = {
-                                toasterData.onRetry()
-                            }
-                        )
-                    }
-                    else -> {}
-                }
+                renderToaster(event.toaster)
             }
         }
     }
@@ -294,20 +282,25 @@ class PlayShortsPreparationFragment @Inject constructor(
     ) {
         if (prev?.mediaUri == curr.mediaUri) return
 
-        val player = SimpleExoPlayer.Builder(requireContext())
-            .build()
-            .also {
-                it.repeatMode = Player.REPEAT_MODE_ALL
-                it.playWhenReady = true
+        if(binding.exoPlayer.player != null) {
+            binding.exoPlayer.player?.playWhenReady = true
+        }
+        else {
+            val player = SimpleExoPlayer.Builder(requireContext())
+                .build()
+                .also {
+                    it.repeatMode = Player.REPEAT_MODE_ALL
+                    it.playWhenReady = true
 
-                val mediaSource = ProgressiveMediaSource
-                    .Factory(DefaultDataSourceFactory(context, Util.getUserAgent(requireContext(), "Tokopedia Android")))
-                    .createMediaSource(Uri.parse(curr.mediaUri))
+                    val mediaSource = ProgressiveMediaSource
+                        .Factory(DefaultDataSourceFactory(context, Util.getUserAgent(requireContext(), "Tokopedia Android")))
+                        .createMediaSource(Uri.parse(curr.mediaUri))
 
-                it.prepare(mediaSource)
-            }
+                    it.prepare(mediaSource)
+                }
 
-        binding.exoPlayer.player = player
+            binding.exoPlayer.player = player
+        }
     }
 
     private fun renderPreparationMenu(
@@ -378,7 +371,25 @@ class PlayShortsPreparationFragment @Inject constructor(
     ) {
         if (prev?.menuList == curr.menuList) return
 
-        binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
+        /** TODO: for mocking purpose */
+        binding.btnNext.isEnabled = true
+//        binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
+    }
+
+    private fun renderToaster(toasterData: PlayShortsToaster) {
+        when (toasterData) {
+            is PlayShortsToaster.ErrorSubmitTitle -> {
+                toaster.showError(
+                    toasterData.throwable,
+                    duration = Toaster.LENGTH_LONG,
+                    actionLabel = getString(R.string.play_broadcast_try_again),
+                    actionListener = {
+                        toasterData.onRetry()
+                    }
+                )
+            }
+            else -> {}
+        }
     }
 
     private fun showMainComponent(isShow: Boolean) {

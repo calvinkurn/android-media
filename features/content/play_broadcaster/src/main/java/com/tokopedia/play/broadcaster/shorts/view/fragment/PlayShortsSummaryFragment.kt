@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsSummaryBinding
+import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
@@ -68,7 +69,10 @@ class PlayShortsSummaryFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        setupListener()
         setupObserver()
+
+        viewModel.submitAction(PlayShortsAction.LoadTag)
     }
 
     override fun onDestroyView() {
@@ -80,12 +84,48 @@ class PlayShortsSummaryFragment @Inject constructor(
         /** TODO: setup cover, name, pict, title here */
     }
 
+    private fun setupListener() {
+        binding.icBack.setOnClickListener {
+            activity?.onBackPressed()
+        }
+    }
+
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderCover(it.prevValue, it.value)
+                renderSummaryInfo(it.prevValue, it.value)
                 renderTag(it.prevValue, it.value)
                 renderUploadButton(it.prevValue, it.value)
             }
+        }
+    }
+
+    private fun renderCover(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if(prev?.coverForm == curr.coverForm) return
+
+        if(curr.coverForm.coverUri.isEmpty()) {
+            binding.ivCover.setImageUrl(curr.mediaUri)
+        }
+        else {
+            binding.ivCover.setImageUrl(curr.coverForm.coverUri)
+        }
+    }
+
+    private fun renderSummaryInfo(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if(prev?.titleForm != curr.titleForm) {
+            binding.tvShortTitle.text = curr.titleForm.title
+        }
+
+        if(prev?.selectedAccount != curr.selectedAccount) {
+            binding.tvName.text = curr.selectedAccount.name
+            binding.ivProfile.setImageUrl(curr.selectedAccount.iconUrl)
         }
     }
 
@@ -119,7 +159,7 @@ class PlayShortsSummaryFragment @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "PlayShortsSummaryFragment"
+        const val TAG = "PlayShortsSummaryFragment"
 
         fun getFragment(
             fragmentManager: FragmentManager,

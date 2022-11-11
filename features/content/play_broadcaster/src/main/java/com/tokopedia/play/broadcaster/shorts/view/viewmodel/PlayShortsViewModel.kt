@@ -7,6 +7,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -235,7 +236,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleClickNext() {
-        /** TODO: handle this */
+        _uiEvent.oneTimeUpdate { it.copy(oneTimeEvent = PlayShortsOneTimeEvent.GoToSummary) }
     }
 
     private fun handleLoadTag() {
