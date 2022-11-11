@@ -35,6 +35,8 @@ import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatErrorLogger
+import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
+import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.bottomsheet.TokoChatGeneralUnavailableBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
@@ -141,6 +143,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     }
 
     override fun onDestroy() {
+        scheduleRemoveTokoChatMedia()
         removeObservers(viewModel.orderTransactionStatus)
         removeObservers(viewModel.chatRoomTicker)
         removeObservers(viewModel.chatBackground)
@@ -149,6 +152,12 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
         removeObservers(viewModel.error)
         viewModel.connectionCheckJob?.cancel()
         super.onDestroy()
+    }
+
+    private fun scheduleRemoveTokoChatMedia() {
+        context?.let {
+            TokoChatMediaCleanupStorageWorker.scheduleWorker(it)
+        }
     }
 
     private fun setDataFromArguments(savedInstanceState: Bundle?) {
