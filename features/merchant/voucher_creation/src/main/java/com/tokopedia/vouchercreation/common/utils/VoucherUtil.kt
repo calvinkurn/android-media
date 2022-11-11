@@ -348,7 +348,7 @@ private fun shareVoucherByType(context: Context,
     }
 }
 
-fun getShareMessage(context: Context, voucher: VoucherUiModel,shopName: String, shareUrl: String): String {
+fun getShareMessage(context: Context, voucher: VoucherUiModel, shopName: String, shareUrl: String): String {
     val formattedShopName = MethodChecker.fromHtml(shopName).toString()
     val shareMessage =
         if (voucher.isPublic) {
