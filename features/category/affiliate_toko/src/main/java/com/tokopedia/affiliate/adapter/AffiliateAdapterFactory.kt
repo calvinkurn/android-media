@@ -26,6 +26,8 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationBannerItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationEventRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationEventVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationTutorialRVVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationTutorialVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateHeaderItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateHomeUserDataVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateHomeUserListDataVH
@@ -60,6 +62,8 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticle
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
@@ -134,6 +138,8 @@ class AffiliateAdapterFactory(
             AffiliateEducationEventVH.LAYOUT -> AffiliateEducationEventVH(parent)
             AffiliateEducationArticleRVVH.LAYOUT -> AffiliateEducationArticleRVVH(parent)
             AffiliateEducationArticleVH.LAYOUT -> AffiliateEducationArticleVH(parent)
+            AffiliateEducationTutorialRVVH.LAYOUT -> AffiliateEducationTutorialRVVH(parent)
+            AffiliateEducationTutorialVH.LAYOUT -> AffiliateEducationTutorialVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -269,5 +275,13 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateEducationArticleUiModel): Int {
         return AffiliateEducationArticleVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateEducationTutorialRVUiModel): Int {
+        return AffiliateEducationTutorialRVVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateEducationTutorialUiModel): Int {
+       return AffiliateEducationTutorialVH.LAYOUT
     }
 }

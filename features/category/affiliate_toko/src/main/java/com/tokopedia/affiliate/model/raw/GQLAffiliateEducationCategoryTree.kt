@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_Education_Category_TREE: String = """query GetEducationCategoryTree(${"$"}source:String) {
+val GQL_Affiliate_Education_Category_TREE: String = """query categoryTree(${"$"}source:String) {
   categoryTree(source: ${"$"}source){
     data{
       status

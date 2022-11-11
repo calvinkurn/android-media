@@ -2,10 +2,10 @@ package com.tokopedia.affiliate.ui.viewholder.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
+import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
 
 class AffiliateEducationEventUiModel(
-    val event: AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem?
+    val event: AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article?
 ) : Visitable<AffiliateAdapterTypeFactory> {
 
     override fun type(typeFactory: AffiliateAdapterTypeFactory): Int {

@@ -20,7 +20,9 @@ class AffiliateEducationEventVH(
     }
 
     override fun bind(element: AffiliateEducationEventUiModel?) {
-        itemView.findViewById<ImageUnify>(R.id.image_event).loadImage(element?.event?.url)
-        itemView.findViewById<Typography>(R.id.event_shop_location).text = element?.event?.title
+        itemView.findViewById<ImageUnify>(R.id.image_event).loadImage(element?.event?.thumbnail?.android)
+        itemView.findViewById<Typography>(R.id.event_category).text = element?.event?.categories?.get(0)?.title
+        itemView.findViewById<Typography>(R.id.event_title).text = element?.event?.title
+        itemView.findViewById<Typography>(R.id.event_date).text = element?.event?.modifiedDate
     }
 }

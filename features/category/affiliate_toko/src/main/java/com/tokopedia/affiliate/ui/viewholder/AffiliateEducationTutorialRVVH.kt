@@ -7,26 +7,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialUiModel
 import com.tokopedia.affiliate_toko.R
 
-class AffiliateEducationArticleTopicRVVH(
+class AffiliateEducationTutorialRVVH(
     itemView: View
-) : AbstractViewHolder<AffiliateEducationArticleTopicRVUiModel>(itemView) {
+) : AbstractViewHolder<AffiliateEducationTutorialRVUiModel>(itemView) {
 
     private lateinit var articleTopicAdapter: AffiliateAdapter
 
     companion object {
         @JvmField
         @LayoutRes
-        var LAYOUT = R.layout.affiliate_education_article_topic_list
+        var LAYOUT = R.layout.affiliate_education_tutorial_list
     }
 
-    override fun bind(element: AffiliateEducationArticleTopicRVUiModel?) {
+    override fun bind(element: AffiliateEducationTutorialRVUiModel?) {
         articleTopicAdapter =
             AffiliateAdapter(AffiliateAdapterFactory())
-        val rvArticleTopic = itemView.findViewById<RecyclerView>(R.id.rv_education_article_topic)
+        val rvArticleTopic = itemView.findViewById<RecyclerView>(R.id.rv_education_tutorial)
         val rvLayoutManager =
             LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         rvArticleTopic?.apply {
@@ -34,7 +34,7 @@ class AffiliateEducationArticleTopicRVVH(
             adapter = articleTopicAdapter
         }
         articleTopicAdapter.addMoreData(
-            element?.articleTopicList?.map { AffiliateEducationArticleTopicUiModel(it) }
+            element?.articleTopicList?.map { AffiliateEducationTutorialUiModel(it) }
         )
     }
 }

@@ -12,6 +12,8 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticle
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
@@ -70,4 +72,6 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateEducationEventUiModel): Int
     fun type(viewModel: AffiliateEducationArticleRVUiModel): Int
     fun type(viewModel: AffiliateEducationArticleUiModel): Int
+    fun type(viewModel: AffiliateEducationTutorialRVUiModel): Int
+    fun type(viewModel: AffiliateEducationTutorialUiModel): Int
 }

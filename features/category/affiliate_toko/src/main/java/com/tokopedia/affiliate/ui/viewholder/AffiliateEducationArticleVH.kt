@@ -21,7 +21,15 @@ class AffiliateEducationArticleVH(
 
     override fun bind(element: AffiliateEducationArticleUiModel?) {
         itemView.findViewById<ImageUnify>(R.id.image_article_widget)
-            .loadImage(element?.article?.url)
-        itemView.findViewById<Typography>(R.id.article_widget_item_title).text = element?.article?.title
+            .loadImage(element?.article?.thumbnail?.android)
+        itemView.findViewById<Typography>(R.id.article_widget_item_title).text =
+            element?.article?.title
+        itemView.findViewById<Typography>(R.id.article_widget_item_detail).text =
+            itemView.context.getString(
+                R.string.article_widget_detail,
+                element?.article?.categories?.get(0)?.title,
+                element?.article?.modifiedDate,
+                element?.article?.attributes?.readTime
+            )
     }
 }

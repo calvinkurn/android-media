@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
 import com.tokopedia.affiliate.model.response.AffiliateEducationBannerResponse
 import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialRVUiModel
+import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationBannerUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -20,7 +23,8 @@ import javax.inject.Inject
 
 class AffiliateEducationLandingViewModel @Inject constructor(
     private val educationBannerUseCase: AffiliateEducationBannerUseCase,
-    private val educationCategoryUseCase: AffiliateEducationCategoryTreeUseCase
+    private val educationCategoryUseCase: AffiliateEducationCategoryTreeUseCase,
+    private val educationArticleCardsUseCase: AffiliateEducationArticleCardsUseCase
 ) : BaseViewModel() {
 
     companion object {
@@ -39,13 +43,16 @@ class AffiliateEducationLandingViewModel @Inject constructor(
         launchCatchError(block = {
             val educationBanners = educationBannerUseCase.getEducationBanners()
             val educationCategories = educationCategoryUseCase.getEducationCategoryTree()
-            convertToVisitable(educationBanners, educationCategories)
+//            val educationArticleCards = educationArticleCardsUseCase.getEducationArticleCards(0)
+            val educationArticleCards = AffiliateEducationArticleCardsResponse()
+            convertToVisitable(educationBanners, educationCategories, educationArticleCards)
         }, onError = { Timber.e(it) })
     }
 
     private fun convertToVisitable(
         educationBannerResponse: AffiliateEducationBannerResponse,
-        educationCategoryResponse: AffiliateEducationCategoryResponse
+        educationCategoryResponse: AffiliateEducationCategoryResponse,
+        educationArticleCards: AffiliateEducationArticleCardsResponse
     ) {
         val tempList = mutableListOf<Visitable<AffiliateAdapterTypeFactory>>()
         educationBannerResponse.dynamicBanner?.let { educationBanners ->
@@ -54,23 +61,23 @@ class AffiliateEducationLandingViewModel @Inject constructor(
         educationCategoryResponse.categoryTree?.let { educationCategories ->
             val categoryGroup =
                 educationCategories.data?.categories?.groupBy { it?.id.orZero() }
-            tempList.add(
-                AffiliateEducationArticleTopicRVUiModel(
-                    categoryGroup?.get(TYPE_ARTICLE)?.get(0)?.children
+            val articleTopics = categoryGroup?.get(TYPE_ARTICLE)?.get(0)?.children
+            val tutorial =  categoryGroup?.get(TYPE_TUTORIAL)?.get(0)?.children
+            if (articleTopics?.isNotEmpty() == true) {
+                tempList.add(
+                    AffiliateEducationArticleTopicRVUiModel(articleTopics)
                 )
-            )
-            tempList.add(
-                AffiliateEducationEventRVUiModel(
-                    categoryGroup?.get(TYPE_EVENT)?.get(0)?.children
+            }
+            if (tutorial?.isNotEmpty() == true) {
+                tempList.add(
+                    AffiliateEducationTutorialRVUiModel(tutorial)
                 )
-            )
-            tempList.add(
-                AffiliateEducationArticleRVUiModel(
-                    categoryGroup?.get(TYPE_ARTICLE)?.get(0)?.children
-                )
-            )
+            }
         }
-
+//        educationArticleCards.cardsArticle?.data?.cards?.let {
+//            tempList.add(AffiliateEducationEventRVUiModel(it[0]?.articles))
+//            tempList.add(AffiliateEducationArticleRVUiModel(it[0]?.articles))
+//        }
         educationPageData.value = tempList
     }
 
