@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.data.model.response.prescription
+package com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response
 
 
 import com.google.gson.annotations.SerializedName
