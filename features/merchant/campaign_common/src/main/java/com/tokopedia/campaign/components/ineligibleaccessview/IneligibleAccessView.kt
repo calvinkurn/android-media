@@ -17,8 +17,7 @@ class IneligibleAccessView @JvmOverloads constructor(
     private var binding: LayoutIneligibleAccessViewBinding
 
     init {
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        binding = LayoutIneligibleAccessViewBinding.inflate(inflater, this)
+        binding = LayoutIneligibleAccessViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     data class Param(
@@ -31,11 +30,11 @@ class IneligibleAccessView @JvmOverloads constructor(
 
 
     fun show(param: Param) {
-        binding.imageView.loadImage(param.imageUrl)
+        binding.imgIneligibleAccess.loadImage(param.imageUrl)
         binding.tpgTitle.text = param.ineligibleReasonTitle
         binding.tpgDescription.text = param.ineligibleReasonDescription
-        binding.button.text = param.buttonTitle
-        binding.button.setOnClickListener { param.onButtonClick() }
+        binding.btnReadFeatureArticle.text = param.buttonTitle
+        binding.btnReadFeatureArticle.setOnClickListener { param.onButtonClick() }
         visible()
     }
 

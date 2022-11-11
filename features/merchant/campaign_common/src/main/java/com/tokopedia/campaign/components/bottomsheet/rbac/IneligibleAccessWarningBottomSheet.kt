@@ -59,13 +59,13 @@ class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
 
     private fun setupView() {
         binding?.run {
-            imageView.loadImage(DEFAULT_IMAGE_URL)
-            button.setOnClickListener {
+            imageViewIneligibleAccess.loadImage(DEFAULT_IMAGE_URL)
+            btnReadEducationArticle.setOnClickListener {
                 onButtonClicked()
                 dismiss()
             }
 
-            val widget = Widget(imageView, tpgTitle, tpgDescription, button)
+            val widget = Widget(imageViewIneligibleAccess, tpgTitle, tpgDescription, btnReadEducationArticle)
             customAppearance.invoke(widget)
         }
     }
