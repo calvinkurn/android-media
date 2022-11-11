@@ -222,7 +222,7 @@ fun VoucherUiModel.addParamImageGenerator(universalShareBottomSheet: UniversalSh
         else -> this.discountAmt
     }
 
-    val formattedDiscountAmount : Int = when {
+    val formattedDiscountAmount: Int = when {
         amount < THOUSAND -> amount
         amount >= MILLION -> (amount / MILLION).toInt()
         amount >= THOUSAND -> (amount / THOUSAND).toInt()
