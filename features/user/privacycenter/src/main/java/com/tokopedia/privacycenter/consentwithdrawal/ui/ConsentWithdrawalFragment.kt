@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
@@ -25,6 +27,7 @@ import com.tokopedia.privacycenter.consentwithdrawal.ui.adapter.uimodel.PurposeU
 import com.tokopedia.privacycenter.consentwithdrawal.ui.adapter.uimodel.TitleDividerUiModel
 import com.tokopedia.privacycenter.consentwithdrawal.viewmodel.ConsentWithdrawalViewModel
 import com.tokopedia.privacycenter.databinding.FragmentConsentWithdrawalBinding
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -72,8 +75,10 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
     private fun initObserver() {
         viewModel.consentPurpose.observe(viewLifecycleOwner) {
             when (it) {
-                is PrivacyCenterStateResult.Fail -> onFailed(it.error)
-                is PrivacyCenterStateResult.Loading -> { }
+                is PrivacyCenterStateResult.Fail -> showErrorPage {
+                    viewModel.getConsentPurposeByGroup(groupId)
+                }
+                is PrivacyCenterStateResult.Loading -> showShimmering(true)
                 is PrivacyCenterStateResult.Success -> {
                     onSuccessGetConsentPurposes(it.data.consents)
                 }
@@ -82,7 +87,9 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
 
         viewModel.submitConsentPreference.observe(viewLifecycleOwner) {
             when (it) {
-                is PrivacyCenterStateResult.Fail -> onFailed(it.error)
+                is PrivacyCenterStateResult.Fail -> {
+                    view?.let { v -> Toaster.build(v, it.error.message.toString()).show() }
+                }
                 is PrivacyCenterStateResult.Loading -> { }
                 is PrivacyCenterStateResult.Success -> {
                     onSuccessSubmitConsentPreference(it.data)
@@ -99,30 +106,35 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
     }
 
     private fun onSuccessGetConsentPurposes(data: ConsentPurposeDataModel) {
-        viewBinding?.consentPurposeList?.show()
+        showShimmering(false)
         consentWithdrawalAdapter.clearAllItems()
 
-        if (data.mandatory.isNotEmpty()) {
-            renderMandatoryPurpose(data)
+        if (data.mandatory.isEmpty() && data.optional.isEmpty()) {
+            showErrorPage {
+                viewModel.getConsentPurposeByGroup(groupId)
+            }
+        } else {
+            if (data.mandatory.isNotEmpty()) {
+                renderMandatoryPurpose(data)
 
-            consentWithdrawalAdapter.addItem(
-                TitleDividerUiModel(
-                    isDivider = true,
-                    isSmallDivider = false,
+                consentWithdrawalAdapter.addItem(
+                    TitleDividerUiModel(
+                        isDivider = true,
+                        isSmallDivider = false,
+                    )
                 )
-            )
+            }
 
-        }
+            if (data.optional.isNotEmpty()) {
+                renderOptionalPurpose(data)
 
-        if (data.optional.isNotEmpty()) {
-            renderOptionalPurpose(data)
-
-            consentWithdrawalAdapter.addItem(
-                TitleDividerUiModel(
-                    isDivider = true,
-                    isSmallDivider = false,
+                consentWithdrawalAdapter.addItem(
+                    TitleDividerUiModel(
+                        isDivider = true,
+                        isSmallDivider = false,
+                    )
                 )
-            )
+            }
         }
 
         consentWithdrawalAdapter.notifyNewItems()
@@ -193,11 +205,6 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
         consentWithdrawalAdapter.updatePurposeState(purpose.purposeId, purpose.transactionType)
     }
 
-    private fun onFailed(throwable: Throwable) {
-        viewBinding?.consentPurposeList?.hide()
-        ErrorHandler.getErrorMessage(context, throwable)
-    }
-
     override fun onActivationButtonClicked(
         position: Int,
         isActive: Boolean,
@@ -210,9 +217,7 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
             TransactionType.OPT_OUT -> {
                 RouteManager.getIntent(context, data.optIntAppLink)
             }
-            else -> {
-                null
-            }
+            else -> null
         }
 
         intent?.let {
@@ -244,6 +249,31 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
                 data.purposeId,
                 transactionType
             )
+        }
+    }
+
+    private fun showShimmering(isLoading: Boolean) {
+        viewBinding?.apply {
+            consentPurposeList.showWithCondition(!isLoading)
+            consentWithdrawalLoading.root.showWithCondition(isLoading)
+            consentWithdrawalErrorPage.root.hide()
+        }
+    }
+
+    private fun showErrorPage(action: () -> Unit) {
+        viewBinding?.apply {
+            consentPurposeList.hide()
+            consentWithdrawalLoading.root.hide()
+            consentWithdrawalErrorPage.apply {
+                consentErrorPageBackHome.setOnClickListener {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+                    startActivity(intent)
+                }
+
+                consentErrorPageTryAgain.setOnClickListener {
+                    action.invoke()
+                }
+            }.root.show()
         }
     }
 

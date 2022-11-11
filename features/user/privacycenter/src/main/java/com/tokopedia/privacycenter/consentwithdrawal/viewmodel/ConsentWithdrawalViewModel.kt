@@ -17,7 +17,6 @@ import com.tokopedia.privacycenter.consentwithdrawal.domain.SubmitConsentPrefere
 import javax.inject.Inject
 
 class ConsentWithdrawalViewModel @Inject constructor(
-    private val getConsentGroupListUseCase: GetConsentGroupListUseCase,
     private val getConsentPurposeByGroupUseCase: GetConsentPurposeByGroupUseCase,
     private val submitConsentPreferenceUseCase: SubmitConsentPreferenceUseCase,
     dispatcher: CoroutineDispatchers
@@ -56,7 +55,6 @@ class ConsentWithdrawalViewModel @Inject constructor(
                     PurposesParam(
                         purposeID = purposeID,
                         transactionType = transactionType.alias,
-                        version = "1"
                     )
                 )
             )

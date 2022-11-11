@@ -5,14 +5,14 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class SubmitConsentPurposeReq(
     @SerializedName("purposes")
-    var param: PurposesParam = PurposesParam()
+    val param: PurposesParam = PurposesParam()
 ) : GqlParam
 
 data class PurposesParam(
     @SerializedName("purposeID")
-    var purposeID: String = "",
+    val purposeID: String = "",
     @SerializedName("transactionType")
-    var transactionType: String = "",
+    val transactionType: String = "",
     @SerializedName("version")
-    var version: String = "",
+    val version: String = "",
 )

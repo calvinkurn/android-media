@@ -5,46 +5,46 @@ import com.tokopedia.privacycenter.consentwithdrawal.ui.adapter.uimodel.ConsentW
 
 data class GetConsentPurposeDataModel(
     @SerializedName("GetPurposesByGroup")
-    var consentGroup: ConsentPurposeGroupDataModel = ConsentPurposeGroupDataModel()
+    val consentGroup: ConsentPurposeGroupDataModel = ConsentPurposeGroupDataModel()
 )
 
 data class ConsentPurposeGroupDataModel(
     @SerializedName("isSuccess")
-    var isSuccess: Boolean = false,
+    val isSuccess: Boolean = false,
     @SerializedName("refId")
-    var refId: String = "",
+    val refId: String = "",
     @SerializedName("errorMessages")
-    var errorMessages: List<String> = listOf(),
+    val errorMessages: List<String> = listOf(),
     @SerializedName("groupId")
-    var groupId: String = "",
+    val groupId: String = "",
     @SerializedName("consents")
-    var consents: ConsentPurposeDataModel = ConsentPurposeDataModel()
+    val consents: ConsentPurposeDataModel = ConsentPurposeDataModel()
 )
 
 data class ConsentPurposeDataModel(
     @SerializedName("mandatory")
-    var mandatory: List<ConsentPurposeItemDataModel> = listOf(),
+    val mandatory: List<ConsentPurposeItemDataModel> = listOf(),
     @SerializedName("optional")
-    var optional: List<ConsentPurposeItemDataModel> = listOf(),
+    val optional: List<ConsentPurposeItemDataModel> = listOf(),
 )
 
 data class ConsentPurposeItemDataModel(
     @SerializedName("consentTitle")
-    var consentTitle: String = "",
+    val consentTitle: String = "",
     @SerializedName("consentSubtitle")
-    var consentSubtitle: String = "",
+    val consentSubtitle: String = "",
     @SerializedName("consentStatus")
     var consentStatus: String = "",
     @SerializedName("purposeId")
-    var purposeId: String = "",
+    val purposeId: String = "",
     @SerializedName("optInUrl")
-    var optInUrl: String = "",
+    val optInUrl: String = "",
     @SerializedName("optOutUrl")
-    var optOutUrl: String = "",
+    val optOutUrl: String = "",
     @SerializedName("optIntAppLink")
-    var optIntAppLink: String = "",
+    val optIntAppLink: String = "",
     @SerializedName("optOutAppLink")
-    var optOutAppLink: String = "",
+    val optOutAppLink: String = "",
     @SerializedName("priority")
-    var priority: Int = 0,
+    val priority: Int = 0,
 ) : ConsentWithdrawalUiModel
