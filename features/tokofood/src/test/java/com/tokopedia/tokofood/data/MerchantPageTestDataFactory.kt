@@ -451,7 +451,46 @@ fun generateCustomListItemsWithError(): CustomListItem {
     )
 }
 
-fun generateTestDataGetCustomListItems(cartId: String): ProductUiModel {
+fun generateCustomListItemsWithoutError(): CustomListItem {
+    val original = OptionUiModel(
+        isSelected = true,
+        id = "379913bf-e89e-4a26-a2e6-a650ebe77aef",
+        status = 1,
+        name = "Original",
+        price = 0.0,
+        priceFmt = "Gratis",
+        selectionControlType = SelectionControlType.SINGLE_SELECTION
+    )
+    val hot = OptionUiModel(
+        isSelected = false,
+        id = "8af415a2-3406-4536-b2b6-0561f7b68148",
+        status = 1,
+        name = "Hot",
+        price = 0.0,
+        priceFmt = "Gratis",
+        selectionControlType = SelectionControlType.SINGLE_SELECTION
+    )
+    val spicyAddOnUiModel = AddOnUiModel(
+        id = "d105b801-75de-4306-93a6-cc7124193042",
+        name = "Spicy",
+        isRequired = true,
+        isSelected = true,
+        maxQty = 1,
+        minQty = 1,
+        options = listOf(hot, original),
+        outOfStockWording = "Stok habis"
+    )
+    return CustomListItem(
+        listItemType = CustomListItemType.PRODUCT_ADD_ON,
+        addOnUiModel = spicyAddOnUiModel
+    )
+}
+
+fun generateTestDataGetCustomListItems(cartId: String,
+                                       customCartId: String? = null,
+                                       isAddOnUiModelNull: Boolean = false,
+                                       isAddOnOptionEmpty: Boolean = false,
+                                       isCustomOrderDetailEmpty: Boolean = false): ProductUiModel {
     val original = OptionUiModel(
             isSelected = cartId.isNotBlank(),
             id = "379913bf-e89e-4a26-a2e6-a650ebe77aef",
@@ -477,12 +516,12 @@ fun generateTestDataGetCustomListItems(cartId: String): ProductUiModel {
             isSelected = cartId.isNotBlank(),
             maxQty = 1,
             minQty = 1,
-            options = listOf(hot, original),
+            options = if (isAddOnOptionEmpty) listOf() else listOf(hot, original),
             outOfStockWording = "Stok habis"
     )
     val customListItem = CustomListItem(
             listItemType = CustomListItemType.PRODUCT_ADD_ON,
-            addOnUiModel = spicyAddOnUiModel
+            addOnUiModel = if (isAddOnUiModelNull) null else spicyAddOnUiModel
     )
     return if (cartId.isBlank()) {
         ProductUiModel(
@@ -502,7 +541,7 @@ fun generateTestDataGetCustomListItems(cartId: String): ProductUiModel {
         )
     } else {
         val customOrderDetail = CustomOrderDetail(
-                cartId = cartId,
+                cartId = customCartId ?: cartId,
                 customListItems = listOf(customListItem)
         )
         ProductUiModel(
@@ -518,7 +557,11 @@ fun generateTestDataGetCustomListItems(cartId: String): ProductUiModel {
                 slashPriceFmt = "",
                 isOutOfStock = false,
                 isShopClosed = false,
-                customOrderDetails = mutableListOf(customOrderDetail)
+                customOrderDetails = if (isCustomOrderDetailEmpty) {
+                    mutableListOf()
+                } else {
+                    mutableListOf(customOrderDetail)
+                }
         )
     }
 }
