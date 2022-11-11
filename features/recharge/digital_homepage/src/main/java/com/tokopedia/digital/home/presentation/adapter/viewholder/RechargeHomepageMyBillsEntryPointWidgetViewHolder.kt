@@ -32,9 +32,9 @@ class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
             binding.containerShimmer.gone()
             val sectionItem = element.section.items.first()
             with(binding) {
-                tvTitle.text = sectionItem.title
-                tvSubtitle.text = sectionItem.subtitle
-                labelWidget.text = sectionItem.label1
+                tvTitle.text = sectionItem.content
+                tvSubtitle.text = sectionItem.attributes.soldValue
+                labelWidget.text = sectionItem.subtitle
                 ivProductIcon.loadImage(sectionItem.mediaUrl)
             }
 
