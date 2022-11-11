@@ -22,9 +22,9 @@ class AffiliateEducationBannerItemVH(itemView: View) :
     private fun setData(element: AffiliateEducationBannerUiModel?) {
         itemView.findViewById<CarouselUnify>(R.id.education_carousel).apply {
             element?.bannerList?.mapNotNull { it?.media?.mobile }?.let {
-                addBannerImages(ArrayList(it))
+                addImages(ArrayList(it))
                 bannerItemMargin = 0
-                centerMode = true
+                centerMode = false
             }
         }
     }

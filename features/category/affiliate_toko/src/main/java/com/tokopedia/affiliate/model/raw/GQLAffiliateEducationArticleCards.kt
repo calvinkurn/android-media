@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.model.raw
 
 val GQL_Affiliate_Education_Article_Cards: String = """query GetEducationArticleCards(
-    ${"$"}filter:String, ${"$"}category_id:Int, ${"$"}limit:Int,
+    ${"$"}filter:String!, ${"$"}category_id:Int, ${"$"}limit:Int,
     ${"$"}offset:Int, ${"$"}source:String, ${"$"}sort_by:String
     ) {
   cardsArticle(
