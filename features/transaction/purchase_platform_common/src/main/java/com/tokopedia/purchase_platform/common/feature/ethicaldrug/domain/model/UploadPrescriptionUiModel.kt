@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.ethicaldrug
+package com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -15,4 +15,5 @@ data class UploadPrescriptionUiModel(
         var descriptionText : String? = "",
         var isError : Boolean = false,
         var frontEndValidation : Boolean = false,
+        var isOcc : Boolean = false,
 ) : Parcelable
