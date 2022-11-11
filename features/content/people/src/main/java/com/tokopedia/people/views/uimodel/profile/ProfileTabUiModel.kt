@@ -1,5 +1,8 @@
 package com.tokopedia.people.views.uimodel.profile
 
+/**
+ * created by fachrizalmrsln on 10/11/2022
+ */
 data class ProfileTabUiModel(
     val showTabs: Boolean = false,
     val tabs: List<Tab> = listOf()
@@ -8,6 +11,6 @@ data class ProfileTabUiModel(
         val title: String = "",
         val key: String = "",
         val position: Int = 0,
-        val isActive: Boolean = false,
+        val isActive: Boolean = false
     )
 }

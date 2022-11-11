@@ -8,9 +8,12 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.people.model.UserProfileTabModel
 import javax.inject.Inject
 
+/**
+ * created by fachrizalmrsln on 10/11/2022
+ */
 @GqlQuery(GetUserProfileTabUseCase.QUERY_NAME, GetUserProfileTabUseCase.QUERY)
 class GetUserProfileTabUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository,
+    graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<UserProfileTabModel>(graphqlRepository) {
 
     init {
@@ -21,7 +24,7 @@ class GetUserProfileTabUseCase @Inject constructor(
 
     suspend fun executeOnBackground(userID: String): UserProfileTabModel {
         val request = mapOf(
-            KEY_USER_ID to userID,
+            KEY_USER_ID to userID
         )
         setRequestParams(request)
 
@@ -47,5 +50,4 @@ class GetUserProfileTabUseCase @Inject constructor(
             }
         """
     }
-
 }
