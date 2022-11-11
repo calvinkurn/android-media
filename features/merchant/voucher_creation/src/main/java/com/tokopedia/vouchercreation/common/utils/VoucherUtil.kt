@@ -353,7 +353,8 @@ fun getShareMessage(context: Context, voucher: VoucherUiModel,shopName: String, 
     val shareMessage =
         if (voucher.isPublic) {
             StringBuilder().apply {
-                append(String.format(
+                append(
+                    String.format(
                     context.getString(R.string.mvc_share_message_public).toBlankOrString(),
                     voucher.typeFormatted,
                     formattedShopName))
