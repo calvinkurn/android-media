@@ -46,6 +46,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData) {
+        if (binding.tvShopName.text.isEmpty()) {
+            // workaround for unrendered binding
+            bindData(cartShopHolderData)
+        }
         renderMaximumWeight(cartShopHolderData)
         cartShopHolderData.isNeedToRefreshWeight = false
         renderBoAfford(cartShopHolderData)

@@ -4144,6 +4144,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     override fun updateCartBoAffordability(cartShopHolderData: CartShopHolderData) {
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
         if (data != null) {
+            data.isNeedToRefreshWeight = true
             onNeedToUpdateViewItem(index)
         }
     }
