@@ -119,6 +119,20 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
     }
 
     @Test
+    fun `when loadInitial but cart data is null, should not set mini cart value`() {
+        runBlocking {
+            onLoadCartList_shouldReturn(null)
+
+            viewModel.loadInitial(SOURCE)
+
+            assertEquals(
+                null,
+                viewModel.miniCartFlow.value
+            )
+        }
+    }
+
+    @Test
     fun `when loadInitial but cart data is already exist, should set mini cart value straight`() {
         runBlocking {
             val cartListData = CheckoutTokoFood()
