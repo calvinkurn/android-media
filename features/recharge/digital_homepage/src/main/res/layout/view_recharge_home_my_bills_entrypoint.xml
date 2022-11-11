@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
-    xmlns:tools="http://schemas.android.com/tools"
     app:cornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:padding="12dp">
-        
+
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_product_icon"
             android:layout_width="32dp"
@@ -31,7 +34,7 @@
             app:typographyWeight="bold"
             tools:text="Top Up dan Tagihanku"/>
 
-        <com.tokopedia.unifycomponents.Label
+        <com.tokopedia.unifycomponents.NotificationUnify
             android:id="@+id/label_widget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +42,8 @@
             app:layout_constraintTop_toTopOf="@id/tv_title"
             app:layout_constraintBottom_toBottomOf="@id/tv_title"
             app:layout_constraintStart_toEndOf="@id/tv_title"
-            app:labelType="general_dark_red"
+            app:notificationType="text_type"
+            app:notificationColor="color_primary"
             tools:text="BARU"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -64,7 +68,47 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:icon_name="CHEVRON_RIGHT"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
         
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_product_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_product_title"
+            android:layout_width="150dp"
+            android:layout_height="12dp"
+            app:loader_corner_radius="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toTopOf="@id/loader_product_icon"
+            app:layout_constraintStart_toEndOf="@id/loader_product_icon"/>
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_product_subtitle"
+            android:layout_width="0dp"
+            android:layout_height="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toBottomOf="@id/loader_product_title"
+            app:layout_constraintStart_toEndOf="@id/loader_product_icon"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify2>
