@@ -46,8 +46,8 @@ import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
 import com.tokopedia.mvc.util.constant.NumberConstant
-import com.tokopedia.seller_mvc_creation.R
-import com.tokopedia.seller_mvc_creation.databinding.SmvcFragmentAddProductBinding
+import com.tokopedia.mvc.R
+import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable

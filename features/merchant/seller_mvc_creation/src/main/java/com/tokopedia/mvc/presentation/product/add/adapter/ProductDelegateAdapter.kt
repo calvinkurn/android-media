@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.domain.entity.Product
-import com.tokopedia.seller_mvc_creation.R
-import com.tokopedia.seller_mvc_creation.databinding.SmvcItemProductBinding
+import com.tokopedia.mvc.R
+import com.tokopedia.mvc.databinding.SmvcItemProductBinding
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductDelegateAdapter(

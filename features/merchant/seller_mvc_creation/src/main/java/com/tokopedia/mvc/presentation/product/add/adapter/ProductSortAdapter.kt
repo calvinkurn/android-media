@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.seller_mvc_creation.databinding.SmvcItemProductSortBinding
+import com.tokopedia.mvc.databinding.SmvcItemProductSortBinding
 
 class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>() {
 

@@ -31,7 +31,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import javax.inject.Inject
+import kotlin.math.max
 
 class AddProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
@@ -90,7 +92,7 @@ class AddProductViewModel @Inject constructor(
                 val metadataDeferred = async { getInitiateVoucherPageUseCase.execute(metadataParam) }
 
                 val sellerWarehouses = sellerWarehousesDeferred.await()
-                val metadata = metadataDeferred.await()
+                val metadata = metadataDeferred.await().copy(maxProduct = 10)
 
                 val defaultWarehouse = sellerWarehouses.firstOrNull() ?: return@launchCatchError
 
@@ -223,18 +225,28 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleCheckAllProduct() {
-        val enabledProducts = currentState.products.map { it.copy(isSelected = true) }
+        val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
+        val selectedProducts = currentState.products.mapIndexed { index, product ->
+            if (index < maxProductSelection) {
+                product.copy(isSelected = true, enableCheckbox = true)
+            } else {
+                product.copy(isSelected = false, enableCheckbox = false)
+            }
+        }
+
+        val selectedProductIds = selectedProducts.filter { it.isSelected }.map { it.id }
+
         _uiState.update {
             it.copy(
                 isSelectAllActive = true,
-                selectedProductsIds = enabledProducts.map { it.id },
-                products = enabledProducts
+                selectedProductsIds = selectedProductIds,
+                products = selectedProducts
             )
         }
     }
 
     private fun handleUncheckAllProduct() {
-        val disabledProducts = currentState.products.map { it.copy(isSelected = false) }
+        val disabledProducts = currentState.products.map { it.copy(isSelected = false, enableCheckbox = true) }
         _uiState.update {
             it.copy(
                 isSelectAllActive = false,
@@ -245,38 +257,45 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleAddProductToSelection(productIdToAdd: Long) {
+        val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
         val newSelectedProductCountAfterSelection = currentState.selectedProductsIds.size.inc()
-        val allowedToAddProduct = newSelectedProductCountAfterSelection <= currentState.voucherCreationMetadata?.maxProduct.orZero()
+        val isReachedMaxSelection = newSelectedProductCountAfterSelection == maxProductSelection
 
-        val updatedProducts = currentState.products.map {
-            val hasVariants = it.originalVariants.isNotEmpty()
-
-            if (it.id == productIdToAdd) {
-
-                if (hasVariants) {
-                    val modifiedVariants = it.originalVariants.toMutableList()
-                    modifiedVariants.removeLast()
-                    it.copy(isSelected = true, enableCheckbox = allowedToAddProduct, originalVariants = it.originalVariants, modifiedVariants = modifiedVariants)
-                } else {
-                    it.copy(isSelected = true, enableCheckbox = allowedToAddProduct)
-                }
-
-            } else {
-                //If the product is currently selected, then keep enable the checkbox, otherwise unselected product should have disabled checkbox
-                it.copy(enableCheckbox = it.isSelected)
-            }
+        val updatedProducts = if (isReachedMaxSelection) {
+            //Disable unselected products
+            val disabledProducts = disableUnselectedProducts(currentState.products)
+            updateProductAsSelected(productIdToAdd, disabledProducts)
+        } else {
+            updateProductAsSelected(productIdToAdd, currentState.products)
         }
 
-        val updatedSelectedProducts = currentState.selectedProductsIds.toMutableList()
-        updatedSelectedProducts.add(productIdToAdd)
-
+        val updatedProductIds = updatedProducts.filter { it.isSelected }.map { it.id }
 
         _uiState.update {
             it.copy(
-                isSelectAllActive = false,
-                selectedProductsIds = updatedSelectedProducts,
+                selectedProductsIds = updatedProductIds,
                 products = updatedProducts
             )
+        }
+    }
+
+    private fun disableUnselectedProducts(products: List<Product>): List<Product> {
+        return products.map {
+            if (it.isSelected) {
+                it.copy(isSelected = true, enableCheckbox = true)
+            } else {
+               it.copy(isSelected = false, enableCheckbox = false)
+            }
+        }
+    }
+
+    private fun updateProductAsSelected(selectedProductId: Long, products: List<Product>,) : List<Product> {
+        return products.map {
+            if (it.id == selectedProductId) {
+                it.copy(isSelected = true, enableCheckbox = true)
+            } else {
+                it
+            }
         }
     }
 

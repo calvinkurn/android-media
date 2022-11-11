@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.seller_mvc_creation.databinding.SmvcItemShowcaseBinding
+import com.tokopedia.mvc.databinding.SmvcItemShowcaseBinding
 
 class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter.ViewHolder>() {
 
