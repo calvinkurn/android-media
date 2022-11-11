@@ -78,8 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/loaderListPrivacyPolicy"
-        app:title="Terjadi Kesalahan"/>
+        app:layout_constraintTop_toBottomOf="@+id/loaderListPrivacyPolicy" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonShowAllList"

@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.di.DaggerPrivacyCenterComponent
@@ -17,6 +19,7 @@ import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.Privac
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDetailDataModel
 import com.tokopedia.privacycenter.main.section.privacypolicy.webview.PrivacyPolicyWebViewActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -96,21 +99,19 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
     private fun initObservers() {
         viewModel.privacyPolicyList.observe(viewLifecycleOwner) {
             when (it) {
-                is PrivacyCenterStateResult.Fail -> { } // TODO: handle error
-                is PrivacyCenterStateResult.Loading -> { } // // TODO: handle loading state
-                is PrivacyCenterStateResult.Success -> {
-                    onSuccessGetPrivacyPolicyAllList(it.data)
-                }
+                is PrivacyCenterStateResult.Fail -> showLocalLoad()
+                is PrivacyCenterStateResult.Loading -> loadingPrivacyPolicyList(true)
+                is PrivacyCenterStateResult.Success -> onSuccessGetPrivacyPolicyAllList(it.data)
             }
         }
 
         viewModel.privacyPolicyDetail.observe(viewLifecycleOwner) {
             when (it) {
-                is PrivacyCenterStateResult.Fail -> { } // TODO: handle error
-                is PrivacyCenterStateResult.Loading -> { } // // TODO: handle loading state
-                is PrivacyCenterStateResult.Success -> {
-                    onSuccessGetPrivacyPolicyDetail(it.data)
+                is PrivacyCenterStateResult.Fail -> {
+                    view?.let { v -> Toaster.build(v, it.error.message.toString()).show() }
                 }
+                is PrivacyCenterStateResult.Loading -> { }
+                is PrivacyCenterStateResult.Success -> onSuccessGetPrivacyPolicyDetail(it.data)
             }
         }
     }
@@ -139,7 +140,28 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
     }
 
     override fun onItemClicked(item: PrivacyPolicyDataModel) {
+        viewModel.getPrivacyPolicyDetail(item.sectionId)
+    }
 
+    private fun loadingPrivacyPolicyList(isLoading: Boolean) {
+        viewBinding?.apply {
+            listPrivacyPolicy.showWithCondition(!isLoading)
+            loaderListPrivacyPolicy.showWithCondition(isLoading)
+        }
+    }
+
+    private fun showLocalLoad() {
+        viewBinding?.apply {
+            listPrivacyPolicy.hide()
+            loaderListPrivacyPolicy.hide()
+            localLoadPrivacyPolicy.apply {
+                localLoadTitle = context.getString(R.string.privacy_center_error_network_title)
+                refreshBtn?.setOnClickListener {
+                    progressState = true
+                    viewModel.getPrivacyPolicyAllList()
+                }
+            }
+        }
     }
 
     companion object {

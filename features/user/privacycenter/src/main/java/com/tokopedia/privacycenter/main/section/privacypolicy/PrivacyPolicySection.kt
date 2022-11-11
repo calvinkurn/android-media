@@ -168,10 +168,10 @@ class PrivacyPolicySection constructor(
             loaderListPrivacyPolicy.hide()
             listPrivacyPolicy.hide()
             localLoadPrivacyPolicy.apply {
-                localLoadTitle = context.getString(R.string.error_network_title)
+                localLoadTitle = context.getString(R.string.privacy_center_error_network_title)
                 refreshBtn?.setOnClickListener {
                     progressState = true
-                    viewModel.getPrivacyPolicyAllList()
+                    viewModel.getPrivacyPolicyTopFiveList()
                 }
             }
         }
