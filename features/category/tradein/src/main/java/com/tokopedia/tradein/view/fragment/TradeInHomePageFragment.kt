@@ -331,11 +331,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                         )
                     }
                 }
-                if (tradeInDetail.activePromo.title.isNotEmpty()) {
-                    findViewById<View>(R.id.tradein_promo_view).show()
-                } else {
-                    findViewById<View>(R.id.tradein_promo_view).hide()
-                }
+
+                findViewById<View>(R.id.tradein_promo_view).isVisible = tradeInDetail.activePromo.title.isNotEmpty()
             }
         }
     }
