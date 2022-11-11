@@ -50,8 +50,8 @@
         android:layout_below="@+id/holder_top" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-                 android:layout_height="40.dp"
-                 android:layout_width="40.dp"
+                 android:layout_height="60.dp"
+                 android:layout_width="60.dp"
                 android:id="@+id/loaderCreditCardUnify"
                android:layout_centerInParent="true"
             android:visibility="gone"
