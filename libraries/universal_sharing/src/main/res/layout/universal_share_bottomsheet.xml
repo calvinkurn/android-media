@@ -193,6 +193,18 @@
                 android:contentDescription="@string/content_description_icon_redirection"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_ticker"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/item_ticker"
+        tools:itemCount="1"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rv_social_media_list"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="16dp"
@@ -331,8 +343,7 @@
         android:layout_height="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/copy_link_txtv"
-        android:background="@color/transparent"
-        />
+        android:background="@color/transparent" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/background_image"

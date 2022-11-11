@@ -44,11 +44,14 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.model.BroadcastChannelModel
+import com.tokopedia.universal_sharing.model.TickerShareModel
 import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
@@ -56,6 +59,7 @@ import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
+import com.tokopedia.universal_sharing.view.bottomsheet.adapter.TickerListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -69,7 +73,6 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -268,6 +271,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     private var affiliateRegisterTitle: Typography? = null
     private var affiliateRegisterIcon: ImageView? = null
     private var affiliateRegisterContainer: CardUnify? = null
+    private var rvTicker: RecyclerView? = null
 
     //Fixed sharing options
     private var copyLinkImage: ImageView? = null
@@ -337,8 +341,14 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var  imageGeneratorParam: ImageGeneratorParamModel? = null
 
-
     @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
+
+    /* boolean flag to show ticker list */
+    private var isShowTickerList = false
+
+    private val tickerListAdapter by lazy {
+        TickerListAdapter(::onClickTicker)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -607,6 +617,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             affiliateRegisterTitle = findViewById(R.id.tv_title_affiliate)
             affiliateRegisterIcon = findViewById(R.id.iv_affiliate)
             affiliateRegisterContainer = findViewById(R.id.card_register_affiliate)
+            rvTicker = findViewById(R.id.rv_ticker)
             setFixedOptionsClickListeners()
 
             setUserVisualData()
@@ -625,6 +636,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             generateRemoteConfigSocialMediaOrdering()
             adapter = ShareBottomSheetAdapter(context, ::executeShareOptionClick, generateSocialMediaList(context))
+        }
+
+        if (isShowTickerList) {
+            rvTicker?.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = tickerListAdapter
+            }
         }
     }
 
@@ -1221,6 +1239,12 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         sourceId = pageSourceId
     }
 
+    fun setBroadcastChannel(type: BroadcastChannelType, id: String) {
+        isShowTickerList = true
+        tickerListAdapter.addItem(BroadcastChannelModel(id = id, type = type, title = "Lewat Broadcast", description = "Sebar promo langsung ke tepat sasaran", imageResDrawable= com.tokopedia.universal_sharing.R.drawable.ic_broadcast))
+    }
+
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.clear()
@@ -1246,5 +1270,18 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         } else {
             originalScore
         }
+    }
+
+    private fun onClickTicker(ticker: TickerShareModel) {
+        when (ticker) {
+            is BroadcastChannelModel -> {
+                openBroadcastPage(ticker.id, ticker.type.value)
+            }
+        }
+    }
+
+    private fun openBroadcastPage(id: String, type: Int) {
+        RouteManager.route(context,
+            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/broadcast-chat/create/content?id=$id&type=$type"))
     }
 }

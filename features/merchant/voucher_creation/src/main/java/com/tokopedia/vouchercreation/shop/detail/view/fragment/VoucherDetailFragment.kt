@@ -34,6 +34,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -531,6 +532,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
     private fun showUniversalBottomSheet(voucherUiModel: VoucherUiModel) {
         universalBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             setOgImageUrl(voucherUiModel.imageSquare)
+            setBroadcastChannel(BroadcastChannelType.BLAST_PROMO, voucherUiModel.id.toString())
             init(object: ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     context?.let {

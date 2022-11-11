@@ -52,5 +52,6 @@
     <string name="ticker_new">Baru</string>
     <string name="content_description_icon_affiliate">icon register affiliate</string>
     <string name="content_description_icon_redirection">icon for redirecting user to register affiliate</string>
+    <string name="ticker_free">Gratis</string>
 
 </resources>
