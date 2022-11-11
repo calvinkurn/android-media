@@ -17,6 +17,7 @@ abstract class BasePrivacyCenterSection(context: Context?) {
     protected abstract val sectionTextTitle: String?
     protected abstract val sectionTextDescription: String?
     protected abstract val isShowDirectionButton: Boolean
+    open val isShowDivider: Boolean = true
     protected abstract fun initObservers()
     protected abstract fun onViewRendered()
     protected abstract fun onButtonDirectionClick(view: View)
@@ -39,6 +40,8 @@ abstract class BasePrivacyCenterSection(context: Context?) {
             if (sectionViewBinding != null) {
                 sectionContent.addView(sectionViewBinding?.root)
             }
+
+            sectionDivider.showWithCondition(isShowDivider)
         }
     }
 

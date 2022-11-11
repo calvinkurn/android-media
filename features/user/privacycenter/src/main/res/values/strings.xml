@@ -11,6 +11,10 @@
     <string name="consent_withdrawal_section_title">Persetujuan kamu</string>
     <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
 
+    <!--Section | Tokopedia Care-->
+    <string name="tokopedia_care_title">Butuh info lebih lanjut?</string>
+    <string name="tokopedia_care_item_title">Hubungi Tokopedia Care</string>
+
     <!--  CONSENT WITHDRAWAL  -->
     <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
     <string name="consent_withdrawal_secondary_data_usage">Penggunaan data tambahan</string>
