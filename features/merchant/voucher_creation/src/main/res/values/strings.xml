@@ -289,7 +289,7 @@
     <string name="mvc_quota_min">Min. %s voucher</string>
     <string name="mvc_quota_max">Maks. %s voucher</string>
     <string name="mvc_quota_success">Kuota voucher berhasil ditambahkan</string>
-    <string name="mvc_cancel_success">Voucher telah dibatalkan dan dipindahkan ke Riwayat Voucher.</string>
+    <string name="mvc_cancel_success">Kupon dibatalkan</string>
     <string name="mvc_cancel_fail">Voucher tidak berhasil dibatalkan</string>
     <string name="mvc_stop_success">Voucher telah dihentikan dan dipindahkan ke Riwayat Voucher</string>
     <string name="mvc_stop_fail">Voucher tidak berhasil dihentikan</string>

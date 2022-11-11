@@ -6,9 +6,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvStcUpgradeToPM"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginBottom="16dp"
         android:text="@string/stc_upgrade_to_pm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

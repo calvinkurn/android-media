@@ -7,7 +7,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDescProtectedParameter"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="display_2"
         android:textColor="@color/Unify_N700_96"
@@ -15,8 +15,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
         tools:text="@string/desc_relief_parameter_for_new_seller_bottom_sheet"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

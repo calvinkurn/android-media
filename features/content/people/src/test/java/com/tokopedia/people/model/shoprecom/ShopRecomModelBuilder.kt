@@ -16,7 +16,7 @@ class ShopRecomModelBuilder {
             isShown = true,
             nextCursor = "",
             title = "Toko lain sesuai rekomendasimu",
-            items = generateShopItem(type)
+            items = generateShopItem(type),
         )
     }
 
@@ -25,7 +25,7 @@ class ShopRecomModelBuilder {
             isShown = false,
             nextCursor = "",
             title = "Toko lain sesuai rekomendasimu",
-            items = generateShopItem()
+            items = generateShopItem(),
         )
     }
 
@@ -46,11 +46,10 @@ class ShopRecomModelBuilder {
                     nickname = "miisooid",
                     type = type,
                     applink = "tokopedia://shop/1353688",
-                    state = ShopRecomFollowState.UNFOLLOW
-                )
+                    state = ShopRecomFollowState.UNFOLLOW,
+                ),
             )
         }
         return shopRecomItem
     }
-
 }
