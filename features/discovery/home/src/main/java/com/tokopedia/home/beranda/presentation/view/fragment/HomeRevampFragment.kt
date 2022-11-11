@@ -100,8 +100,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home_component.customview.pullrefresh2.LottieSwipeRefreshLayout
-import com.tokopedia.home_component.customview.pullrefresh2.LottieSwipeRefreshListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
 import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
 import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
@@ -147,7 +145,6 @@ import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.util.HomeServerLogger
-//import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.customview.pullrefresh2.LayoutIconPullRefreshView
 import com.tokopedia.home_component.customview.pullrefresh2.SimpleSwipeRefreshLayout
@@ -252,8 +249,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         RecommendationWidgetListener,
         QuestWidgetCallbacks,
         CMHomeWidgetCallback,
-        HomePayLaterWidgetListener,
-        LottieSwipeRefreshListener {
+        HomePayLaterWidgetListener{
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -363,7 +359,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var navToolbar: NavToolbar? = null
-//    private var homeSnackbar: Snackbar? = null
+    private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
@@ -603,13 +599,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getSearchPlaceHolderHint()
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
-        refreshLayout.setListener(this)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)
         }
-//        homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
+        homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
         fetchRemoteConfig()
         setupStatusBar()
         setupHomeRecyclerView()
@@ -1032,10 +1027,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
         refreshLayout.setOnRefreshListener { onRefresh() }
-//        refreshLayout.setOnRefreshListener(this)
-//        refreshLayout.onProgressListener {
-//            Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
-//        }
     }
 
     private fun subscribeHome() {
@@ -2373,16 +2364,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             channel.id, channel.grids, position
                     )
             )
-            DynamicChannelViewHolder.TYPE_ORGANIC -> putEEToIris(
-                    HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
-                            channel.id, channel.grids, channel.header.name
-                    )
-            )
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                     getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
-            DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
-                    HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
         }
     }
@@ -2625,18 +2609,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (balanceSubscriptionCoachmark == null && coachmarkSubscription?.isShowing == true)
             coachmarkSubscription?.hideCoachMark()
         showCoachMark(balanceSubscriptionCoachmark)
-    }
-
-    override fun changeStatusBarToDark() {
-//        mainParentStatusBarListener?.requestStatusBarDark()
-//        navToolbar?.setMargin(0, -4, 0, 0)
-    }
-
-    override fun changeStatusBarToLight() {
-//        if (isLightThemeStatusBar) {
-//            mainParentStatusBarListener?.requestStatusBarLight()
-//        }
-//        navToolbar?.setMargin(0, 0, 0, 0)
     }
 
     override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?) {

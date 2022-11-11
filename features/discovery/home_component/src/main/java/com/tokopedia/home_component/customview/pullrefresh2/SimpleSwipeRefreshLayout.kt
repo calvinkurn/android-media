@@ -27,7 +27,6 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     defStyle: Int = 0
 ) : ViewGroup(context, attrs, defStyle), NestedScrollingParent, NestedScrollingChild {
 
-    private var lottieSwipeRefreshListener: LottieSwipeRefreshListener? = null
     private var canChildScrollUp = false
     private var notify: Boolean = true
     var layoutIconPullRefreshView: LayoutIconPullRefreshView? = null
@@ -131,10 +130,6 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     override fun onFinishInflate() {
         super.onFinishInflate()
         contentChildView = ChildView(getChildAt(0))
-    }
-
-    fun setListener(lottieSwipeRefreshListener: LottieSwipeRefreshListener) {
-        this.lottieSwipeRefreshListener = lottieSwipeRefreshListener
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -300,12 +295,6 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     }
 
     private fun positionChildren(offset: Float) {
-        if (offset > 0) {
-            lottieSwipeRefreshListener?.changeStatusBarToDark()
-        } else {
-            lottieSwipeRefreshListener?.changeStatusBarToLight()
-        }
-
         if (!overlay) {
             contentChildView.view.y = contentChildView.positionAttr.top + offset
         }
