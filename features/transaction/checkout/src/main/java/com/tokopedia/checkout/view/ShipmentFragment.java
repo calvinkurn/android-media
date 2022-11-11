@@ -1168,7 +1168,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
-                shipmentPresenter.doValidateUseLogisticPromo(itemPosition, cartString, validateUsePromoRequest, courierItemData.getSelectedShipper().getLogPromoCode());
+                shipmentPresenter.doValidateUseLogisticPromo(itemPosition, cartString, validateUsePromoRequest, courierItemData.getSelectedShipper().getLogPromoCode(), true);
             }
             checkCourierPromo(courierItemData, itemPosition);
             shipmentAdapter.setSelectedCourier(itemPosition, courierItemData, false);
@@ -2153,7 +2153,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     break;
                 }
             }
-            shipmentPresenter.doValidateUseLogisticPromo(cartPosition, cartString, validateUsePromoRequest, promoCode);
+            shipmentPresenter.doValidateUseLogisticPromo(cartPosition, cartString, validateUsePromoRequest, promoCode, true);
         }
     }
 
@@ -3743,7 +3743,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         break;
                     }
                 }
-                shipmentPresenter.doValidateUseLogisticPromo(position, shipmentCartItemModel.getCartString(), validateUsePromoRequest, selectedShipperModel.getLogPromoCode());
+                shipmentPresenter.doValidateUseLogisticPromo(
+                        position,
+                        shipmentCartItemModel.getCartString(),
+                        validateUsePromoRequest,
+                        selectedShipperModel.getLogPromoCode(),
+                        false
+                );
             }
         }
     }
