@@ -46,27 +46,6 @@ object MacroInteration {
         device.waitForIdle(IDLE_DURATION)
     }
 
-    fun recyclerViewScrollingInteraction(
-        packageName: String,
-        rvResourceId: String,
-        direction: Direction
-    ) {
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val device = UiDevice.getInstance(instrumentation)
-
-        device.wait(Until.hasObject(By.res(packageName, rvResourceId)), DEFAULT_TIMEOUT)
-        val recycler = device.findObject(By.res(packageName, rvResourceId))
-
-        // Set gesture margin to avoid triggering gesture navigation
-        // with input events from automation.
-        recycler.setGestureMargin(device.displayWidth / 5)
-
-        for (i in 0..recycler.childCount) {
-            recycler.scroll(direction, 100f)
-            device.waitForIdle(IDLE_DURATION)
-        }
-    }
-
     fun recyclerViewViewHolderInteraction(
         packageName: String,
         rvResourceId: String,

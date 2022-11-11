@@ -210,14 +210,10 @@ object MacroIntent {
         const val RECOMMENDATION_VIEW_HOLDER = "rvProductRecom"
         const val TRACE = "pdp_result_trace"
 
-        fun getStartupIntent(): Intent {
+        fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/6336029829/")
             return intent
-        }
-
-        fun getFrameTimingIntent(): Intent {
-            return getStartupIntent().apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
         }
     }
 }

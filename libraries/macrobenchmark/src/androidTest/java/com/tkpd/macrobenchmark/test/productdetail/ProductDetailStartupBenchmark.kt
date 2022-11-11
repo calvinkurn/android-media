@@ -27,15 +27,11 @@ class ProductDetailStartupBenchmark(startupMode: StartupMode) : BaseStartupBench
     override fun setupEnvironment() {
     }
 
-    override fun getIntent() = MacroIntent.ProductDetail.getStartupIntent()
+    override fun getIntent() = MacroIntent.ProductDetail.getIntent()
 
     override fun traceName() = MacroIntent.ProductDetail.TRACE
 
     override fun waitUntil() {
-        MacroInteration.waitForRecyclerViewContent(
-            MacroIntent.ProductDetail.PACKAGE_NAME,
-            MacroIntent.ProductDetail.RECYCLER_VIEW_ID
-        )
         MacroInteration.waitForRecyclerViewContent(
             MacroIntent.ProductDetail.PACKAGE_NAME,
             MacroIntent.ProductDetail.RECYCLER_VIEW_ID

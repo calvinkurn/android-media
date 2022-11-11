@@ -27,11 +27,12 @@ class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.basicRecyclerviewInteraction(
+        MacroInteration.recyclerViewViewHolderInteraction(
             MacroIntent.ProductDetail.PACKAGE_NAME,
-            MacroIntent.ProductDetail.RECYCLER_VIEW_ID
+            MacroIntent.ProductDetail.RECYCLER_VIEW_ID,
+            MacroIntent.ProductDetail.MEDIA_VIEW_HOLDER
         )
     }
 
-    override fun getIntent(): Intent = MacroIntent.ProductDetail.getStartupIntent()
+    override fun getIntent(): Intent = MacroIntent.ProductDetail.getIntent()
 }
