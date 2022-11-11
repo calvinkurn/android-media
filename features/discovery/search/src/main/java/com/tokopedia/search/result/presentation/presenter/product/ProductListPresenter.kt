@@ -967,7 +967,7 @@ class ProductListPresenter @Inject constructor(
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
             topAdsImageViewPresenterDelegate.setTopAdsImageViewModelList(
-                searchProductModel.getTopAdsImageViewModelList().toMutableList()
+                searchProductModel.getTopAdsImageViewModelList()
             )
             processTopAdsImageViewModel(searchParameter, list)
         }

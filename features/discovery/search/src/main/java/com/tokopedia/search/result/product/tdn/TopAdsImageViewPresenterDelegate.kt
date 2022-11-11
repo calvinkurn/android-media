@@ -11,8 +11,8 @@ import javax.inject.Inject
 class TopAdsImageViewPresenterDelegate @Inject constructor() {
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
 
-    fun setTopAdsImageViewModelList(topAdsImageViewModelList: MutableList<TopAdsImageViewModel>) {
-        this.topAdsImageViewModelList = topAdsImageViewModelList
+    fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
+        this.topAdsImageViewModelList = topAdsImageViewModelList.toMutableList()
     }
 
     fun processTopAdsImageViewModel(
@@ -40,7 +40,6 @@ class TopAdsImageViewPresenterDelegate @Inject constructor() {
                 } catch (exception: java.lang.Exception) {
                     Timber.w(exception)
                     logAction(exception)
-//                    view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
                 }
             }
         }
@@ -57,11 +56,9 @@ class TopAdsImageViewPresenterDelegate @Inject constructor() {
         if (isTopPosition) {
             val index = getIndexOfTopAdsImageViewModelAtTop(list)
             action(index, searchProductTopAdsImageDataView)
-//            list.add(index, searchProductTopAdsImageDataView)
         } else {
             val product = productList[data.position - 1]
             action(list.indexOf(product) + 1, searchProductTopAdsImageDataView)
-//            list.add(list.indexOf(product) + 1, searchProductTopAdsImageDataView)
         }
     }
 
