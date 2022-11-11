@@ -11,6 +11,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
@@ -22,6 +23,9 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -171,5 +175,38 @@ class OrderSummaryPageViewModelTestHelper {
     val paymentFeeDetails = listOf(
         OrderPaymentFee(fee = 500.0),
         OrderPaymentFee(fee = 1000.0)
+    )
+
+    val imageUploadDataModel = ImageUploadDataModel(
+        showImageUpload = true,
+        text = "",
+        leftIconUrl = "",
+        checkoutId = "1234",
+        frontEndValidation = true
+    )
+
+    val prescriptionIdsResponse = GetPrescriptionIdsResponse(
+        detailData = GetPrescriptionIdsResponse.EPharmacyCheckoutData(
+            prescriptionData = GetPrescriptionIdsResponse.EPharmacyCheckoutData.EPharmacyPrescriptionDetailData(
+                checkoutId = "1234567890",
+                prescriptions = listOf(
+                    GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription("123"),
+                    GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription("234"),
+                    GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription("345"),
+                )
+            )
+        )
+    )
+
+    val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = imageUploadDataModel.showImageUpload,
+            uploadImageText = imageUploadDataModel.text,
+            leftIconUrl = imageUploadDataModel.leftIconUrl,
+            checkoutId = imageUploadDataModel.checkoutId,
+            prescriptionIds = PrescriptionMapper.mapPrescriptionResponse(prescriptionIdsResponse).prescriptionIds,
+            uploadedImageCount = PrescriptionMapper.mapPrescriptionResponse(prescriptionIdsResponse).prescriptionIds.size,
+            isError = false,
+            frontEndValidation = imageUploadDataModel.frontEndValidation,
+            isOcc = true,
     )
 }
