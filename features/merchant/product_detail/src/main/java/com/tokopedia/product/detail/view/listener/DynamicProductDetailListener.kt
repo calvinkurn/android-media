@@ -25,6 +25,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.ImageUnify
 
 interface DynamicProductDetailListener {
     fun refreshPage()
@@ -100,6 +101,7 @@ interface DynamicProductDetailListener {
         appLink: String,
         label: String
     )
+    fun showOneLinersImsCoachMark(view: ImageUnify?)
 
     /**
      * ProductDiscussionViewHolder

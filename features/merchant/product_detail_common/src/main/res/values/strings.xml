@@ -67,4 +67,8 @@
     <string name="pdp_ar_coachmark_title">Ayo coba barang ini dari HP-mu</string>
     <string name="pdp_ar_coachmark_desc">Cek dulu supaya kamu makin yakin dengan kualitas barangnya!</string>
 
+    <!-- One Liners -->
+    <string name="pdp_oneliners_ims100_coachmark_title">Stok terpantau aman oleh Tokopedia!</string>
+    <string name="pdp_oneliners_ims100_coachmark_description">Nggak perlu chat tokonya lagi untuk nanya stok, deh. Yuk, langsung beli aja.</string>
+
 </resources>

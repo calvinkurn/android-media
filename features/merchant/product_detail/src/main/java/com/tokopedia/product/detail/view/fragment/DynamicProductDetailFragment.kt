@@ -58,6 +58,8 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
@@ -266,6 +268,7 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -1270,6 +1273,12 @@ open class DynamicProductDetailFragment :
         if (componentName == ProductDetailConstant.HAMPERS_INFO) {
             pdpCoachmarkHelper?.showCoachMarkHampers(viewTarget)
         }
+    }
+
+    override fun showOneLinersImsCoachMark(
+        view: ImageUnify?
+    ) {
+        pdpCoachmarkHelper?.showCoachMarkOneLiners(view)
     }
 
     override fun onBbiInfoClick(
@@ -2709,11 +2718,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun hideArCoachMark() {
-//        context?.let {
-//            if (coachMarkArView != null && coachMarkArView?.isShowing == true) {
-//                coachMarkArView?.hideCoachMark()
-//            }
-//        }
+        pdpCoachmarkHelper?.hideCoachMark()
     }
 
     private fun openBottomSheetTopAds() {

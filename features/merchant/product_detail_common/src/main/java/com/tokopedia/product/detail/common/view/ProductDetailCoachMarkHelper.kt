@@ -5,52 +5,105 @@ import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.product.detail.common.R
 
+/**
+ * CoachMark Hierarchy
+ * 1. Product AR
+ * 2. IMS
+ * 3. Hampers
+ * So if 3 of them serves in one PDP, only show one based on hierarchy. Another coach mark will show
+ * after pdp re-open
+ */
 class ProductDetailCoachMarkHelper(context: Context) {
 
     private var coachMarkView: CoachMark2? = null
-
+    private var coachMarkEverShowing = false
     private val sharedPref: SharedPreferences? by lazy {
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
 
     private val editor = sharedPref?.edit()
 
-    fun showCoachMarkHampers(targetView: View?) {
-        val shouldShowCoachMark = getCoachMarkState(PDP_HAMPERS_COACHMARK_EXTRA) == false
+    fun showCoachMarkAr(targetView: View?) {
+        val shouldShowCoachMark =
+            getCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK) == false
+
+        if (targetView != null && shouldShowCoachMark) {
+            initCoachMarkView(targetView.context)
+
+            val coachMarkList = arrayListOf<CoachMark2Item>()
+            coachMarkList.add(
+                CoachMark2Item(
+                    targetView,
+                    targetView.context.getString(R.string.pdp_ar_coachmark_title),
+                    targetView.context.getString(R.string.pdp_ar_coachmark_desc),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+
+            coachMarkView?.showCoachMark(coachMarkList, null, 0)
+            coachMarkEverShowing = true
+            setCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK, true)
+        }
+    }
+
+    fun showCoachMarkOneLiners(targetView: View?) {
+        val shouldShowCoachMark =
+            getCoachMarkState(COACH_MARK_IMS_TAG) == false &&
+                    getCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK) == true &&
+                    !coachMarkEverShowing
 
         if (targetView != null && shouldShowCoachMark) {
             initCoachMarkView(targetView.context)
 
             val coachMarkList = arrayListOf<CoachMark2Item>()
 
-            coachMarkList.add(CoachMark2Item(targetView,
-                    targetView.context.getString(R.string.pdp_hampers_coachmark_title),
-                    targetView.context.getString(R.string.pdp_hampers_coachmark_desc),
-                    CoachMark2.POSITION_TOP))
+            coachMarkList.add(
+                CoachMark2Item(
+                    anchorView = targetView,
+                    title = targetView.context.getString(R.string.pdp_oneliners_ims100_coachmark_title),
+                    description = targetView.context.getString(R.string.pdp_oneliners_ims100_coachmark_description),
+                    position = CoachMark2.POSITION_BOTTOM
+                )
+            )
 
             coachMarkView?.showCoachMark(coachMarkList, null, 0)
+            coachMarkEverShowing = true
+            setCoachMarkState(COACH_MARK_IMS_TAG, true)
+        }
+    }
 
+    fun showCoachMarkHampers(targetView: View?) {
+        val shouldShowCoachMark = getCoachMarkState(PDP_HAMPERS_COACHMARK_EXTRA) == false &&
+                getCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK) == true &&
+                getCoachMarkState(COACH_MARK_IMS_TAG) == true &&
+                !coachMarkEverShowing
+
+        if (targetView != null && shouldShowCoachMark) {
+            initCoachMarkView(targetView.context)
+
+            val coachMarkList = arrayListOf<CoachMark2Item>()
+
+            coachMarkList.add(
+                CoachMark2Item(
+                    targetView,
+                    targetView.context.getString(R.string.pdp_hampers_coachmark_title),
+                    targetView.context.getString(R.string.pdp_hampers_coachmark_desc),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+
+            coachMarkView?.showCoachMark(coachMarkList, null, 0)
+            coachMarkEverShowing = true
             setCoachMarkState(PDP_HAMPERS_COACHMARK_EXTRA, true)
         }
     }
 
-    fun showCoachMarkAr(targetView: View?) {
-        val shouldShowCoachMark = getCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK) == false
-
-        if (targetView != null && shouldShowCoachMark) {
-            initCoachMarkView(targetView.context)
-
-            val coachMarkList = arrayListOf<CoachMark2Item>()
-            coachMarkList.add(CoachMark2Item(targetView,
-                targetView.context.getString(R.string.pdp_ar_coachmark_title),
-                targetView.context.getString(R.string.pdp_ar_coachmark_desc),
-                CoachMark2.POSITION_TOP)
-            )
-
-            coachMarkView?.showCoachMark(coachMarkList, null, 0)
-            setCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK, true)
+    fun hideCoachMark() {
+        if (coachMarkView != null && coachMarkView?.isShowing == true) {
+            coachMarkView?.hideCoachMark()
         }
     }
 
@@ -73,5 +126,6 @@ class ProductDetailCoachMarkHelper(context: Context) {
         private const val PREF_NAME = "pdp_coachmark"
         private const val PDP_HAMPERS_COACHMARK_EXTRA = "pdp_hampers_coachmark"
         private const val PRODUCT_DETAIL_AR_PAGE_COACHMARK = "coach_mark_pdp_ar_page"
+        private const val COACH_MARK_IMS_TAG = "pdp_coachmark_ims"
     }
 }
