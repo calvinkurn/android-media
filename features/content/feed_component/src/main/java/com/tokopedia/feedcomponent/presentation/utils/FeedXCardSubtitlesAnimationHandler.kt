@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.res.Resources
+import android.util.Log
 import android.view.View
 import java.lang.ref.WeakReference
 import java.util.*
@@ -111,9 +112,14 @@ class FeedXCardSubtitlesAnimationHandler(
         //increment pos
         currentPositionSubtitle += 1
 
+        Log.d("FEED_ANIM", "Pertama $currentPositionSubtitle")
+
         //reset position
         if (currentPositionSubtitle == subtitles.size)
             currentPositionSubtitle = 0
+
+        Log.d("FEED_ANIM", "Kedua $currentPositionSubtitle")
+
     }
 
     private fun reset() {
