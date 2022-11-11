@@ -127,7 +127,7 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
         openDetailPrivacyPolicy(data.sectionTitle, data.sectionContent)
     }
 
-    private fun openDetailPrivacyPolicy(title: String = "", htmlContent: String = "") {
+    private fun openDetailPrivacyPolicy(title: String, htmlContent: String) {
         val intent = Intent(context, PrivacyPolicyWebViewActivity::class.java).apply {
             putExtras(Bundle().apply {
                 putString(PrivacyPolicyWebViewActivity.KEY_TITLE, title)
