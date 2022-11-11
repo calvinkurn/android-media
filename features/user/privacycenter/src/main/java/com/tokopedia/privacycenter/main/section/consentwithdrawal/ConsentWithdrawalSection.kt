@@ -11,6 +11,7 @@ import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentGroupDataModel
 import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentGroupListDataModel
 import com.tokopedia.privacycenter.databinding.SectionConsentwithdrawalBinding
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
+import com.tokopedia.privacycenter.main.section.consentwithdrawal.adapter.ConsentWithdrawalSectionAdapter
 
 class ConsentWithdrawalSection constructor(
     private val context: Context?,

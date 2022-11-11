@@ -75,10 +75,10 @@ abstract class BasePrivacyCenterSection(context: Context?) {
 
         sectionBaseViewBinding.sectionLocalLoad.apply {
             localLoadTitle = title.ifEmpty {
-                context?.resources?.getString(R.string.error_network_title).orEmpty()
+                context?.resources?.getString(R.string.privacy_center_error_network_title).orEmpty()
             }
             localLoadDescription = description.ifEmpty {
-                context?.resources?.getString(R.string.error_network_detail).orEmpty()
+                context?.resources?.getString(R.string.privacy_center_error_network_detail).orEmpty()
             }
             refreshBtn?.setOnClickListener {
                 progressState = true
