@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_explore_image;
+    public static final int LAYOUT = com.tokopedia.explore.R.layout.item_explore_image;
 
     private final ContentExploreContract.View listener;
     private final ImageView image;

@@ -11,7 +11,6 @@
     <string name="ok_button">Ok</string>
     <string name="expired_reward_title">Maaf, Anda kurang cepat</string>
     <string name="expired_reward_message">Tunggu Kesempatan Lainnya</string>
-    <string name="expired_reward_color">#ffffff</string>
     <string name="expired_reward_size">small</string>
 
     <string name="error_reward_title">Maaf, sayang sekali sepertinya</string>

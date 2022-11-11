@@ -150,7 +150,7 @@ class ProductBottomSheetCardView(
                 append(' ')
             }
 
-            val stockText = context.getString(R.string.play_product_item_stock, item.stock.stock)
+            val stockText = context.getString(R.string.play_product_item_stock, item.stock.stock.toString())
             append(stockText, stockSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         }
     }

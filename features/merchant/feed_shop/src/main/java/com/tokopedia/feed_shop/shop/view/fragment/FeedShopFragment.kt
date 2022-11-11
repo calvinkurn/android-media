@@ -43,7 +43,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -84,7 +83,7 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
-import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
@@ -490,7 +489,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         reshowFloatingActionButton()
     }
 
-    override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
+    override fun onErrorDeletePost(errorMessage: String, id: String, rowNumber: Int) {
         view?.let {
             Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 presenter.deletePost(id, rowNumber)
@@ -544,13 +543,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String, activityType: String, position: String) {
     }
 
-    override fun onFollowKolClicked(rowNumber: Int, id: Int) {
+    override fun onFollowKolClicked(
+        rowNumber: Int,
+        id: Int,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean
+    ) {
     }
 
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
     }
 
-    override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
+    override fun onLikeKolClicked(rowNumber: Int, id: Long, hasMultipleContent: Boolean, activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
@@ -558,7 +561,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
+    override fun onUnlikeKolClicked(rowNumber: Int, id: Long, hasMultipleContent: Boolean, activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.unlikeKol(id, rowNumber, this)
         } else {
@@ -566,15 +569,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Long, isLiked: Boolean) {
     }
 
-    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
+    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: String) {
     }
 
     override fun onGoToKolComment(
         rowNumber: Int,
-        id: Int,
+        id: String,
         hasMultipleContent: Boolean,
         activityType: String,
     ) {
@@ -586,7 +589,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     COMMENT_ARGS_POSITION to rowNumber.toString()
                 )
             ),
-            id.toString()
+            id
         ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
     }
 
@@ -596,7 +599,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onAvatarClick(
         positionInFeed: Int,
         redirectUrl: String,
-        activityId: Int,
+        activityId: String,
         activityName: String,
         followCta: FollowCta,
         type: String,
@@ -614,7 +617,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollow: Boolean,
         postType: String,
         isVideo: Boolean,
-        isBottomSheetMenuOnFeed: Boolean
+        isBottomSheetMenuOnFeed: Boolean,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean
     ) {
         if (type == FollowCta.AUTHOR_USER) {
             var userIdInt = 0
@@ -630,7 +634,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean, isFollowed: Boolean, id: String, authorType: String, postType: String, mediaType: String, caption: String, playChannelId: String) {
+    override fun onMenuClick(
+        positionInFeed: Int,
+        postId: String,
+        reportable: Boolean,
+        deletable: Boolean,
+        editable: Boolean,
+        isFollowed: Boolean,
+        id: String,
+        authorType: String,
+        postType: String,
+        mediaType: String,
+        caption: String,
+        playChannelId: String
+    ) {
         context?.let {
             val menus =
                     createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
@@ -668,7 +685,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
+    override fun onLikeClick(positionInFeed: Int, id: Long, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -676,13 +693,23 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, mediaType: String, shopId: String, playChannelId: String, isVideo: Boolean) {
+    override fun onCommentClick(
+        positionInFeed: Int,
+        id: String,
+        authorType: String,
+        type: String,
+        isFollowed: Boolean,
+        mediaType: String,
+        shopId: String,
+        playChannelId: String,
+        isVideo: Boolean
+    ) {
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
     override fun onShareClick(
             positionInFeed: Int,
-            id: Int,
+            id: String,
             title: String,
             description: String,
             url: String,
@@ -910,7 +937,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: String, redirectLink: String, type: String, isFollowed: Boolean, shopId: String, feedXProducts: List<FeedXProduct>, index: Int) {
+    override fun onGridItemClick(
+        positionInFeed: Int,
+        productPosition: String,
+        productId: String,
+        redirectLink: String,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        feedXProducts: List<FeedXProduct>,
+        index: Int
+    ) {
         onGoToLink(redirectLink)
     }
 
@@ -980,10 +1017,31 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
+    override fun onImageClicked(card: FeedXCard) {
     }
 
-    override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener, id: String, type: String, isFollowed: Boolean, mediaType: String, positionInFeed: Int, playChannelId: String, shopName: String) {
+    override fun onTagClicked(
+        card: FeedXCard,
+        products: List<FeedXProduct>,
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        mediaType: String,
+        positionInFeed: Int
+    ) {
+    }
+
+    override fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int) {
+
+    }
+
+    override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
+
+    }
+    override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
+
+    }
+
+    override fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int) {
+
     }
 
     override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
@@ -1062,7 +1120,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
 
-    private fun createDeleteDialog(rowNumber: Int, id: Int): DialogUnify? {
+    private fun createDeleteDialog(rowNumber: Int, id: String): DialogUnify? {
         return context?.let{
             val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
@@ -1078,13 +1136,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun goToContentReport(contentId: Int) {
+    private fun goToContentReport(contentId: String) {
         if (context != null) {
             if (userSession.isLoggedIn) {
                 val intent = RouteManager.getIntent(
                         requireContext(),
                         ApplinkConstInternalContent.CONTENT_REPORT,
-                        contentId.toString()
+                        contentId
                 )
                 startActivityForResult(intent, OPEN_CONTENT_REPORT)
             } else {

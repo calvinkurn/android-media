@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="6dp">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_promo_info"
@@ -24,6 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icon_promo_info"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginStart="12dp"
         app:typographyType="body_3"
         tools:text="Khusus Pengiriman Grab Instant, Grab SameDay, JNE YES, JNE Reguler, JNE OKE" />
 

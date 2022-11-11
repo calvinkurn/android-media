@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
+import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
@@ -65,7 +66,11 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -76,7 +81,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -143,8 +148,13 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
     var isLastApplyResponseStillValid = true
 
-    // Store last validate use request for clearing promo if got akamai error
-    var lastValidateUseRequest: ValidateUsePromoRequest? = null
+    // Store last validate use request
+    private var lastValidateUseRequest: ValidateUsePromoRequest? = null
+
+    // Store promo ticker
+    private var promoTicker: CartPromoTicker = CartPromoTicker()
+    // Store flag show choose promo widget
+    private var showChoosePromoWidget: Boolean = false
 
     // Store LCA data for bo affordability
     var lca: LocalCacheModel? = null
@@ -238,10 +248,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     private fun onSuccessGetCartList(cartData: CartData, initialLoad: Boolean) {
         view?.let {
-            val lastApplyData = cartData.promo.lastApplyPromo.lastApplyPromoData
-            if (lastApplyData.codes.isNotEmpty() || lastApplyData.listVoucherOrders.isNotEmpty()) {
-                setLastApplyValid()
-            }
+            setLastApplyValid()
             setValidateUseLastResponse(null)
             setUpdateCartAndValidateUseLastResponse(null)
             if (!initialLoad) {
@@ -249,6 +256,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             }
             setCartListData(cartData)
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData)
+            showChoosePromoWidget = cartData.promo.showChoosePromoWidget
+            promoTicker = cartData.promo.ticker
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartData)
             it.stopCartPerformanceTrace(true)
@@ -1424,7 +1433,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
             val clickUrl = recommendationItem.clickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
-        } else if (productModel is BannerShopProductViewModel) {
+        } else if (productModel is BannerShopProductUiModel) {
             productId = productModel.productId.toLongOrZero()
             shopId = productModel.shopId.toIntOrZero()
             productName = productModel.productName
@@ -1537,6 +1546,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun doValidateUse(promoRequest: ValidateUsePromoRequest) {
         val requestParams = RequestParams.create()
         requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
+        lastValidateUseRequest = promoRequest
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
                         .subscribeOn(schedulers.io)
@@ -1549,7 +1559,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemHolderData>()
-            cartListView.getAllSelectedCartDataList()?.let { listCartItemData ->
+            cartListView.getAllSelectedCartDataList().let { listCartItemData ->
                 for (data in listCartItemData) {
                     if (!data.isError) {
                         cartItemDataList.add(data)
@@ -1567,7 +1577,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
                 compositeSubscription.add(
                         updateCartAndValidateUseUseCase.createObservable(requestParams)
-                                .subscribe(UpdateCartAndValidateUseSubscriber(cartListView, this))
+                                .subscribe(UpdateCartAndValidateUseSubscriber(cartListView, this, promoTicker.enable))
                 )
             } else {
                 cartListView.hideProgressLoading()
@@ -1575,9 +1585,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         }
     }
 
-    override fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>) {
+    override fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest) {
         view?.showItemLoading()
-        clearCacheAutoApplyStackUseCase.setParams(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
+        clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
                         .subscribe(ClearRedPromosBeforeGoToCheckoutSubscriber(view))
@@ -1586,10 +1596,24 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun doClearAllPromo() {
         lastValidateUseRequest?.let {
-            val codes = arrayListOf<String>()
-            it.codes.forEach { code -> codes.add(code) }
-            it.orders.forEach { order -> codes.addAll(order.codes) }
-            clearCacheAutoApplyStackUseCase.setParams(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, codes)
+            val param = ClearPromoRequest(
+                    OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                    orderData = ClearPromoOrderData(
+                            codes = it.codes,
+                            orders = it.orders.map { order ->
+                                ClearPromoOrder(
+                                    uniqueId = order.uniqueId,
+                                    boType = order.boType,
+                                    codes = order.codes,
+                                    shopId = order.shopId,
+                                    warehouseId = order.warehouseId,
+                                    isPo = order.isPo,
+                                    poDuration = order.poDuration.toString(),
+                                )
+                            }
+                    )
+            )
+            clearCacheAutoApplyStackUseCase.setParams(param)
             compositeSubscription.add(
                     // Do nothing on subscribe
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
@@ -1597,6 +1621,14 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setLastApplyNotValid()
             setValidateUseLastResponse(ValidateUsePromoRevampUiModel())
         }
+    }
+
+    override fun setLastValidateUseRequest(validateUsePromoRequest: ValidateUsePromoRequest) {
+        lastValidateUseRequest = validateUsePromoRequest
+    }
+
+    override fun getLastValidateUseRequest(): ValidateUsePromoRequest? {
+        return lastValidateUseRequest
     }
 
     override fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel? {
@@ -1722,5 +1754,70 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         } else {
             false
         }
+    }
+
+    override fun getTickerPromoData(): CartPromoTicker {
+        return promoTicker
+    }
+
+    override fun getShowChoosePromoWidget(): Boolean {
+        return showChoosePromoWidget
+    }
+
+    override fun clearAllBo(clearPromoOrderData: ClearPromoOrderData) {
+        clearCacheAutoApplyStackUseCase.setParams(
+            ClearPromoRequest(
+                OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                orderData = clearPromoOrderData
+            )
+        )
+        compositeSubscription.add(
+            // Do nothing on subscribe
+            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+        )
+    }
+
+    override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+        val shopDataList = view?.getAllShopDataList()
+        if (shopDataList != null) {
+            val boUniqueIds = mutableSetOf<String>()
+            for (voucherOrderUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0 && voucherOrderUiModel.type == "logistic") {
+                    if (voucherOrderUiModel.messageUiModel.state == "green") {
+                        shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId }?.boCode = voucherOrderUiModel.code
+                        boUniqueIds.add(voucherOrderUiModel.uniqueId)
+                    }
+                }
+            }
+            for (shop in shopDataList) {
+                if (shop.boCode.isNotEmpty() && !boUniqueIds.contains(shop.cartString)) {
+                    clearBo(shop)
+                }
+            }
+        }
+    }
+
+    private fun clearBo(shop: CartShopHolderData) {
+        clearCacheAutoApplyStackUseCase.setParams(
+            ClearPromoRequest(
+                serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                orderData = ClearPromoOrderData(
+                    orders = listOf(
+                        ClearPromoOrder(
+                            uniqueId = shop.cartString,
+                            boType = shop.boMetadata.boType,
+                            codes = mutableListOf(shop.boCode),
+                            shopId = shop.shopId.toLongOrZero(),
+                            isPo = shop.isPo,
+                            poDuration = shop.poDuration,
+                            warehouseId = shop.warehouseId
+                        )
+                    )
+                )
+            )
+        )
+        compositeSubscription.add(clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe())
+        shop.promoCodes = ArrayList(shop.promoCodes).apply { remove(shop.boCode) }
+        shop.boCode = ""
     }
 }

@@ -5,14 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import java.util.*
 
-class InspirationCarouselOptionAdapter(private val typeFactory: InspirationCarouselOptionAdapterTypeFactory)
-    : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
+class InspirationCarouselOptionAdapter(
+    private val typeFactory: InspirationCarouselOptionTypeFactory
+) : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
     private val list = mutableListOf<Visitable<InspirationCarouselOptionTypeFactory>>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<Visitable<*>> {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
 

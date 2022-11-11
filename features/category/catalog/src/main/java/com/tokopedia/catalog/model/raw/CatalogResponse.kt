@@ -46,7 +46,9 @@ data class CatalogResponseData (
                 @Expose @SerializedName( "marketPrice")
                 val marketPrice: List<MarketPrice>?,
                 @Expose @SerializedName( "longDescription")
-                val longDescription: List<LongDescription>?
+                val longDescription: List<LongDescription>?,
+                @Expose @SerializedName("productSortingStatus")
+                val productSortingStatus: Int?
         ){
 
             data class LongDescription (

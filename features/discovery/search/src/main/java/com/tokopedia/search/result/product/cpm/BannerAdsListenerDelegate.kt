@@ -1,8 +1,6 @@
 package com.tokopedia.search.result.product.cpm
 
-import android.app.Activity
 import android.content.Context
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.utils.contextprovider.ContextProvider
@@ -40,10 +38,10 @@ class BannerAdsListenerDelegate(
     private fun trackBannerAdsClicked(position: Int, applink: String, data: CpmData) {
         if (applink.contains(SHOP)) {
             TopAdsGtmTracker.eventTopAdsHeadlineShopClick(position, queryKey, data, userId)
-            TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position)
+            TopAdsGtmTracker.eventSearchResultPromoShopClick(data, position)
         } else {
-            TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, queryKey, data, userId)
-            TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position)
+            TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, data, userId)
+            TopAdsGtmTracker.eventSearchResultPromoProductClick(data, position)
         }
     }
 

@@ -15,6 +15,7 @@ import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -22,6 +23,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
@@ -33,6 +35,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
@@ -98,6 +101,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private EgoldAttributeModel egoldAttributeModel;
     private ShippingCompletionTickerModel shippingCompletionTickerModel;
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
+    private ShipmentUpsellModel shipmentUpsellModel;
+    private ShipmentNewUpsellModel shipmentNewUpsellModel;
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
@@ -106,7 +111,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean isShowOnboarding;
     private int lastChooseCourierItemPosition;
     private int lastServiceId;
-    private int counterCrossSell;
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -158,6 +162,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return UploadPrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD();
         } else if (item instanceof ShipmentUpsellModel) {
             return ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL;
+        } else if (item instanceof ShipmentNewUpsellModel) {
+            return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL;
         }
 
         return super.getItemViewType(position);
@@ -201,6 +207,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new UploadPrescriptionViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
             return new ShipmentUpsellViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
+            return new ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -225,7 +233,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             ((ShipmentDonationViewHolder) holder).bindViewHolder(shipmentDonationModel);
         } else if (viewType == ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL) {
-            ((ShipmentCrossSellViewHolder) holder).bindViewHolder(shipmentCrossSellModelList.get(getIndexCrossSell()), getIndexCrossSell());
+            ((ShipmentCrossSellViewHolder) holder).bindViewHolder((ShipmentCrossSellModel) data);
         } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
             ((ShipmentEmasViewHolder) holder).bindViewHolder(egoldAttributeModel);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
@@ -240,6 +248,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((UploadPrescriptionViewHolder) holder).bindViewHolder((UploadPrescriptionUiModel) data);
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
             ((ShipmentUpsellViewHolder) holder).bind((ShipmentUpsellModel) data);
+        } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
+            ((ShipmentNewUpsellViewHolder) holder).bind((ShipmentNewUpsellModel) data);
         }
     }
 
@@ -278,6 +288,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentButtonPaymentModel = null;
         lastApplyUiModel = null;
         shippingCompletionTickerModel = null;
+        shipmentUpsellModel = null;
+        shipmentNewUpsellModel = null;
         notifyDataSetChanged();
     }
 
@@ -294,6 +306,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void addUpsellData(ShipmentUpsellModel shipmentUpsellModel) {
         shipmentDataList.add(shipmentUpsellModel);
+        this.shipmentUpsellModel = shipmentUpsellModel;
+    }
+
+    public void addNewUpsellData(ShipmentNewUpsellModel shipmentNewUpsellModel) {
+        shipmentDataList.add(shipmentNewUpsellModel);
+        this.shipmentNewUpsellModel = shipmentNewUpsellModel;
     }
 
     public void addAddressShipmentData(RecipientAddressModel recipientAddressModel) {
@@ -488,14 +506,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private int getIndexCrossSell() {
-        int existingIndex = counterCrossSell;
-        if (existingIndex < shipmentCrossSellModelList.size() - 1) {
-            counterCrossSell += 1;
-        }
-        return existingIndex;
-    }
-
     public void updateCrossSell(boolean checked, CrossSellModel crossSellModel) {
         if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
             for (ShipmentCrossSellModel shipmentCrossSellModel : shipmentCrossSellModelList) {
@@ -626,7 +636,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void checkDropshipperValidation() {
-        boolean hasSelectAllCourier = checkHasSelectAllCourier(true, -1, "");
+        boolean hasSelectAllCourier = checkHasSelectAllCourier(true, -1, "", false);
         if (hasSelectAllCourier) {
             boolean availableCheckout = true;
             int errorPosition = DEFAULT_ERROR_POSITION;
@@ -713,7 +723,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (index > 0) {
             notifyItemChanged(getShipmentCostPosition());
             notifyItemChanged(index);
-            checkHasSelectAllCourier(false, index, shipmentCartItemModel.getCartString());
+            checkHasSelectAllCourier(false, index, shipmentCartItemModel.getCartString(), false);
             if (shipmentCartItemModel.isEligibleNewShippingExperience()) {
                 updateShippingCompletionTickerVisibility();
             }
@@ -756,7 +766,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(position);
         int tmpPosition = isForceReload ? position : -1;
         if (shipmentCartItemModel != null && shipmentCartItemModel.isEligibleNewShippingExperience()) {
-            checkHasSelectAllCourier(false, tmpPosition, shipmentCartItemModel.getCartString());
+            checkHasSelectAllCourier(false, tmpPosition, shipmentCartItemModel.getCartString(), false);
             updateShippingCompletionTickerVisibility();
         }
 
@@ -838,7 +848,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public boolean checkHasSelectAllCourier(boolean passCheckShipmentFromPaymentClick,
                                             int lastSelectedCourierOrderIndex,
-                                            String lastSelectedCourierOrdercartString) {
+                                            String lastSelectedCourierOrdercartString,
+                                            boolean forceHitValidateUse) {
         int cartItemCounter = 0;
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -854,7 +865,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 RequestData requestData = getRequestData(null, null, false);
                 if (!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment(lastSelectedCourierOrderIndex, lastSelectedCourierOrdercartString);
+                    shipmentAdapterActionListener.onFinishChoosingShipment(lastSelectedCourierOrderIndex, lastSelectedCourierOrdercartString, forceHitValidateUse);
                 }
                 shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
                 return true;
@@ -1002,8 +1013,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         totalPrice += shipmentCostModel.getDonation();
         shipmentCostModel.setTotalPrice(totalPrice);
 
+        ShipmentCrossSellModel upsellCost = null;
+        if (shipmentNewUpsellModel != null && shipmentNewUpsellModel.isSelected() && shipmentNewUpsellModel.isShow()) {
+            CrossSellModel crossSellModel = new CrossSellModel();
+            crossSellModel.setOrderSummary(new CrossSellOrderSummaryModel(shipmentNewUpsellModel.getSummaryInfo(), ""));
+            crossSellModel.setPrice(shipmentNewUpsellModel.getPrice());
+            upsellCost = new ShipmentCrossSellModel(crossSellModel, true, true, -1);
+        }
+        ArrayList<ShipmentCrossSellModel> listCheckedCrossModel = new ArrayList<>();
         if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
-            ArrayList<ShipmentCrossSellModel> listCheckedCrossModel = new ArrayList<>();
             for (ShipmentCrossSellModel crossSellModel : shipmentCrossSellModelList) {
                 if (crossSellModel.isChecked()) {
                     listCheckedCrossModel.add(crossSellModel);
@@ -1011,8 +1029,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     shipmentCostModel.setTotalPrice(totalPrice);
                 }
             }
-            shipmentCostModel.setListCrossSell(listCheckedCrossModel);
         }
+        if (upsellCost != null) {
+            listCheckedCrossModel.add(upsellCost);
+            totalPrice += upsellCost.getCrossSellModel().getPrice();
+            shipmentCostModel.setTotalPrice(totalPrice);
+        }
+        shipmentCostModel.setListCrossSell(listCheckedCrossModel);
 
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             updateEmasCostModel();
@@ -1123,7 +1146,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 shipmentCostModel.setProductDiscountLabel(detailUiModel.getDescription());
                             }
                         }
-                    } else {
+                    } else if (hasSetAllCourier()) {
                         shipmentCostModel.setHasDiscountDetails(false);
                         shipmentCostModel.setDiscountAmount(summariesUiModel.getAmount());
                         shipmentCostModel.setDiscountLabel(summariesUiModel.getDescription());

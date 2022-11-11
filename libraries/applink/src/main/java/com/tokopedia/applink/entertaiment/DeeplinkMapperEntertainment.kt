@@ -5,7 +5,7 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
-import com.tokopedia.applink.order.DeeplinkMapperUohOrder
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 
 object DeeplinkMapperEntertainment {
     private const val EVENTS = "events"
@@ -31,7 +31,7 @@ object DeeplinkMapperEntertainment {
                 ApplinkConstInternalEntertainment.EVENT_HOME
             }
             deeplink == ApplinkConst.EVENTS_ORDER -> {
-                DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(context, deeplink)
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
             deeplink.startsWith(ApplinkConst.EVENTS_CATEGORY) -> {
                 val uri = Uri.parse(deeplink)

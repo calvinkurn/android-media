@@ -32,6 +32,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.Attachment
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayout
+import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
@@ -63,16 +64,17 @@ import java.util.Locale
  */
 
 open class TopChatViewStateImpl constructor(
-        @NonNull override val view: View,
-        private val typingListener: TypingListener,
-        protected val sendListener: SendButtonListener,
-        private val templateListener: ChatTemplateListener,
-        private val imagePickerListener: ImagePickerListener,
-        private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
-        private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
-        private val headerMenuListener: HeaderMenuListener,
-        toolbar: Toolbar,
-        val analytics: TopChatAnalytics
+    @NonNull override val view: View,
+    private val typingListener: TypingListener,
+    protected val sendListener: SendButtonListener,
+    private val templateListener: ChatTemplateListener,
+    private val imagePickerListener: ImagePickerListener,
+    private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
+    private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
+    private val headerMenuListener: HeaderMenuListener,
+    private val chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
+    toolbar: Toolbar,
+    val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener),
         TopChatViewState,
         AttachmentPreviewAdapter.AttachmentPreviewListener {
@@ -166,6 +168,7 @@ open class TopChatViewStateImpl constructor(
         setupChatStickerMenu()
 
         chatTextAreaTabLayout = view.findViewById(R.id.layout_chat_text_area)
+        chatTextAreaTabLayout?.setupListener(chatTextAreaTabLayoutListener)
         chatTextAreaShimmer = view.findViewById(R.id.chat_area_shimmer)
     }
 

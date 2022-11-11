@@ -24,8 +24,8 @@ class CameraViewModel @Inject constructor(
     private val _pictureTaken = MutableSharedFlow<File?>()
     val pictureTaken: Flow<File?> get() = _pictureTaken
 
-    private val _videoTaken = MutableSharedFlow<File>()
-    val videoTaken: Flow<File> get() = _videoTaken
+    private val _videoTaken = MutableSharedFlow<File?>()
+    val videoTaken: Flow<File?> get() = _videoTaken
 
     fun onPictureTaken(cameraSize: Size?, data: ByteArray) {
         createMediaRepository.image(cameraSize, data)

@@ -14,6 +14,8 @@ data class TopupBillsPersoFavNumberItem(
     val title: String = "",
     @SerializedName("token")
     val token: String = "",
+    @SerializedName("clientNumberHash")
+    val clientNumberHash: String = "",
     @SerializedName("subtitle")
     val subtitle: String = "",
     @SerializedName("operatorID")

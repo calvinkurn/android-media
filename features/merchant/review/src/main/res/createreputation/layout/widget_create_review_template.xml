@@ -79,11 +79,12 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingHorizontal="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="2"
-        tools:listitem="@layout/item_create_review_template_item" />
+        tools:listitem="@layout/item_create_review_template_item"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

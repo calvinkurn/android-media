@@ -265,7 +265,6 @@ class InteractiveDialogFragment @Inject constructor(
                         viewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
                     }
                     setupQuizForm(quiz.listOfChoices)
-                    setReward(quiz.reward)
                     setListener(object : QuizWidgetView.Listener {
                         override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
                             viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))

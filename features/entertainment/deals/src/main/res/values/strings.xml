@@ -98,4 +98,19 @@
     <string name="deals_pdp_total_amount">Total Pembayaran</string>
     <string name="deals_pdp_select_number_of_voucher">Pilih Jumlah Voucher</string>
     <string name="deals_pdp_content_desc_img">Desc</string>
+
+    <string name="deals_checkout_available_locations">Dapat ditukar di\u0020</string>
+    <string name="deals_checkout_voucher_delivery_destination">Tujuan pengiriman Voucher</string>
+    <string name="deals_checkout_ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
+    <string name="deals_checkout_email">Email</string>
+    <string name="deals_checkout_pricing_details">Rincian Harga</string>
+    <string name="deals_checkout_text_discount_promo">Diskon Promo</string>
+    <string name="deals_checkout_text_service_fees">Biaya Layanan</string>
+    <string name="deals_checkout_total_amount">Total Pembayaran</string>
+    <string name="deals_checkout_payment_option">Pilih Metode Pembayaran</string>
+    <string name="deals_checkout_number_of_locations">%d Lokasi</string>
+    <string name="deals_checkout_all_indonesia">Seluruh Indonesia</string>
+    <string name="deals_checkout_number_of_vouchers">%d x Vouchers</string>
+    <string name="deals_checkout_error_toaster">Ok</string>
+    <string name="deals_checkout_title">Checkout</string>
 </resources>

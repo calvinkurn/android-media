@@ -26,7 +26,9 @@ object FavoriteNumberDataMapper {
                 categoryId = it.trackingData.categoryId,
                 operatorId = it.trackingData.operatorId,
                 productId = it.trackingData.productId,
-                operatorName = it.trackingData.operatorName
+                operatorName = it.trackingData.operatorName,
+                token = it.token,
+                clientNumberHash = it.clientNumberHash,
             )
         }
     }

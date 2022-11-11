@@ -225,5 +225,6 @@
     <string name="trx_refresh">Refresh</string>
     <string name="text_checkbox_in_detail_centralize_promo">Jangan tampilkan informasi fitur ini lagi</string>
     <string name="text_badge_new">Baru</string>
+    <string name="sah_new_other_tokomember">TokoMember</string>
 
 </resources>

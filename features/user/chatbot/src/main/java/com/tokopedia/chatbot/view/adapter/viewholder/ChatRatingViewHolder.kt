@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
@@ -24,7 +24,7 @@ class ChatRatingViewHolder(
     private val chatLinkHandlerListener: ChatLinkHandlerListener,
     chatbotAdapterListener: ChatbotAdapterListener,
     private val viewListener: ChatRatingListener
-) : BaseChatBotViewHolder<ChatRatingViewModel>(itemView, chatbotAdapterListener) {
+) : BaseChatBotViewHolder<ChatRatingUiModel>(itemView, chatbotAdapterListener) {
 
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
     private val thumbsUpCntr = itemView.findViewById<CardView>(R.id.rating_option_yes_container)
@@ -33,7 +33,7 @@ class ChatRatingViewHolder(
     private val thumbsUp = itemView.findViewById<ImageView>(R.id.rating_option_yes)
     private val ratingHolder = itemView.findViewById<LinearLayout>(R.id.rating_option_holder)
 
-    override fun bind(viewModel: ChatRatingViewModel) {
+    override fun bind(viewModel: ChatRatingUiModel) {
         super.bind(viewModel)
         ChatbotMessageViewHolderBinder.bindChatMessage(
             viewModel.message,
@@ -43,31 +43,30 @@ class ChatRatingViewHolder(
         bindRatingView(viewModel)
     }
 
-    private fun bindRatingView(viewModel: ChatRatingViewModel) {
+    private fun bindRatingView(viewModel: ChatRatingUiModel) {
         resetRating()
         when (viewModel.ratingStatus) {
-            ChatRatingViewModel.RATING_NONE -> {
+            ChatRatingUiModel.RATING_NONE -> {
                 ratingHolder.show()
                 thumbsUpCntr.setOnClickListener {
                     viewListener.onClickRating(
                         viewModel,
-                        ChatRatingViewModel.RATING_GOOD
+                        ChatRatingUiModel.RATING_GOOD
                     )
                 }
 
                 thumbsDownCntr.setOnClickListener {
                     viewListener.onClickRating(
                         viewModel,
-                        ChatRatingViewModel.RATING_BAD
+                        ChatRatingUiModel.RATING_BAD
                     )
                 }
             }
 
-            ChatRatingViewModel.RATING_GOOD -> setRatingGood()
-            ChatRatingViewModel.RATING_BAD -> setRatingBad()
+            ChatRatingUiModel.RATING_GOOD -> setRatingGood()
+            ChatRatingUiModel.RATING_BAD -> setRatingBad()
             else -> ratingHolder.hide()
         }
-
     }
 
     private fun setRatingBad() {
@@ -99,7 +98,6 @@ class ChatRatingViewHolder(
         thumbsDown.colorFilter = null
         thumbsUpCntr.show()
         thumbsDownCntr.show()
-
     }
 
     override fun getCustomChatLayoutId(): Int = com.tokopedia.chatbot.R.id.customChatLayout
@@ -113,4 +111,3 @@ class ChatRatingViewHolder(
         val LAYOUT = R.layout.item_chat_rating
     }
 }
-

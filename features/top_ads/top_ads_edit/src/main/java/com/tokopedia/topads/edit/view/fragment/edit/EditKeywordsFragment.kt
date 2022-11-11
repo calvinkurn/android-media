@@ -23,6 +23,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
@@ -277,14 +278,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun getCurrentBid(): Int {
         return if (budgetInput.textFieldInput.text.toString().removeCommaRawString().isNotEmpty())
-            budgetInput.textFieldInput.text.toString().removeCommaRawString().toInt()
+            budgetInput.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
         else
             0
     }
 
     private fun getCurrentRekommendedBid(): Int {
         return if (budgetInputRekomendasi.textFieldInput.text.toString().removeCommaRawString().isNotEmpty())
-            budgetInputRekomendasi.textFieldInput.text.toString().removeCommaRawString().toInt()
+            budgetInputRekomendasi.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
         else
             0
     }
@@ -309,7 +310,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 actionEnable(false)
                 setMessageErrorField(getString(com.tokopedia.topads.common.R.string.max_bid_error_new), maxBid, true, false)
             }
-            result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
+            result % (Constants.MULTIPLY_CONST.toIntOrZero()) != 0 -> {
                 minSuggestedBidPencerian.visibility = View.GONE
                 actionEnable(false)
                 setMessageErrorField(
@@ -353,7 +354,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 actionEnable(false)
                 setMessageErrorField(getString(com.tokopedia.topads.common.R.string.max_bid_error_new), maxBid, true, true)
             }
-            result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
+            result % (Constants.MULTIPLY_CONST.toIntOrZero()) != 0 -> {
                 minSuggestedBidRekomendasi.visibility = View.GONE
                 actionEnable(false)
                 setMessageErrorField(
@@ -867,7 +868,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val list: ArrayList<KeySharedModel> = arrayListOf()
         list.addAll(adapter.getCurrentItems())
 
-        if (adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
+        if (this::adapter.isInitialized && adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->
                 if (index < adapter.data.size && (item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
                     if (isExistsOriginal(item.data.name))

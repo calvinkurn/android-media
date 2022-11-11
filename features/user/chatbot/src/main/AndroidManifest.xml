@@ -6,8 +6,7 @@
         <activity
             android:name=".view.activity.ContactUsMigrationActivity"
             android:theme="@style/Theme.AppCompat.Translucent"
-            android:exported="false"
-            >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -17,11 +16,16 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_customercare"
-                    android:path="@string/path_inbox_list" />
-
+                    android:path="@string/path_inbox_list"
+                     />
             </intent-filter>
-
         </activity>
+        <activity android:name=".view.activity.ChatbotVideoActivity"/>
+        <activity
+            android:name=".view.activity.ChatbotOnboardingActivity"
+            android:theme="@style/Theme.AppCompat.Transparent">
+        </activity>
+
         <activity
             android:name=".view.activity.ChatbotActivity"
             android:exported="false"

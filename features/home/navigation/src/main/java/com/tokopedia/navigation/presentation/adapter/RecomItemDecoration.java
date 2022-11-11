@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.tokopedia.navigation.R;
-import com.tokopedia.topads.sdk.view.adapter.SpannedGridLayoutManager;
 
 public class RecomItemDecoration extends RecyclerView.ItemDecoration {
 

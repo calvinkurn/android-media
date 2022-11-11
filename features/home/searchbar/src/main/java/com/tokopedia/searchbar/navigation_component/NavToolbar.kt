@@ -525,6 +525,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    //this needed to enable coachmark on wishlist detail page
+    fun getShareIconView(): View? {
+        val shareIconPosition = navIconAdapter?.getShareIconPosition()
+        shareIconPosition?.let {
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
     internal fun setBackgroundAlpha(alpha: Float) {
         navToolbar.apply {
             val drawable = background
@@ -553,6 +563,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navSearchBarController.etSearch?.clearFocus()
         val `in` = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         `in`.hideSoftInputFromWindow(navSearchBarController.etSearch?.windowToken, 0)
+    }
+
+    fun setSearchbarText(text: String) {
+        navSearchBarController.etSearch?.setText(text)
     }
 
     fun getCurrentSearchbarText(): String {
@@ -644,6 +658,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         toolbarCustomViewContent?.let {
             val parentLayout = layoutCustomView
             it.id = generateViewId()
+            parentLayout.removeAllViews()
             parentLayout.addView(it)
         }
     }

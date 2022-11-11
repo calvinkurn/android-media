@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_Static_White"
+    android:background="@color/Unify_Background"
     android:paddingHorizontal="@dimen/unify_space_12"
     android:paddingTop="@dimen/spacing_lvl4">
 

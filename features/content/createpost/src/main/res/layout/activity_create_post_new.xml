@@ -6,7 +6,7 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
+    <com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
         android:id="@+id/toolbar_common"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

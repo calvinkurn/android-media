@@ -43,7 +43,7 @@
                 android:id="@+id/tv_add_edit_product_step_sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="35dp"
                 android:text="@string/product_subtitle_product_information"
                 android:textColor="@color/Unify_N700"
@@ -70,14 +70,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_product_photo_step_layout"
-                android:layout_marginStart="@dimen/spacing_lvl4" />
+                android:layout_marginStart="16dp" />
 
             <include
                 android:id="@+id/add_product_description_step_layout"
                 layout="@layout/add_edit_product_description_step_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginStart="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_product_detail_step_layout" />
@@ -101,14 +101,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_product_variant_step_layout"
-                android:layout_marginStart="@dimen/spacing_lvl4" />
+                android:layout_marginStart="16dp" />
 
             <include
                 android:id="@+id/edit_product_status_layout"
                 layout="@layout/edit_product_status_step_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -120,7 +120,7 @@
                 layout="@layout/add_edit_product_no_variant_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl3"
+                android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"

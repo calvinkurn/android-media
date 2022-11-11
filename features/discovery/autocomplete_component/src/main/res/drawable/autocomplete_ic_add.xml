@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="2400"
+    android:viewportHeight="2400">
+    <group android:name="_r_g">
+        <group
+            android:name="plus_circle"
+            android:pivotX="850"
+            android:pivotY="850"
+            android:translateX="350"
+            android:translateY="350">
+            <path
+                android:name="_r_g_l_6_g_d_0_p_0"
+                android:pathData="M 1450 850 C 1450 518.63 1181.37 250 850 250 C 518.63 250 250 518.63 250 850 C 250 1181.37 518.63 1450 850 1450 C 1181.37 1450 1450 1181.37 1450 850"
+                android:strokeColor="#2e3137"
+                android:strokeWidth="100"
+                android:strokeLineCap="round"
+                android:strokeLineJoin="round"/>
+        </group>
+        <group
+            android:name="plus_horizontal"
+            android:pivotX="50"
+            android:pivotY="314"
+            android:translateX="1150"
+            android:translateY="886"
+            android:rotation="-90">
+            <path
+                android:name="_r_g_l_4_g_d_0_p_0"
+                android:pathData="M 50 50 C 50 50 50 578 50 578"
+                android:strokeColor="#2e3137"
+                android:strokeWidth="100"
+                android:strokeLineCap="round"
+                android:strokeLineJoin="round"/>
+        </group>
+        <group
+            android:name="plus_vertical"
+            android:pivotX="314"
+            android:pivotY="50"
+            android:translateX="886"
+            android:translateY="1150"
+            android:rotation="-90">
+            <path
+                android:name="_r_g_l_5_g_d_0_p_0"
+                android:pathData="M 578 50 C 578 50 50 50 50 50"
+                android:strokeColor="#2e3137"
+                android:strokeWidth="100"
+                android:strokeLineCap="round"
+                android:strokeLineJoin="round"/>
+        </group>
+        <group
+            android:name="top_left_star"
+            android:pivotX="183.81"
+            android:pivotY="183.811"
+            android:translateX="216.19"
+            android:translateY="216.189"
+            android:scaleX="0.6394"
+            android:scaleY="0">
+            <path
+                android:name="_r_g_l_0_g_d_0_p_0"
+                android:pathData="M 269.96 120.83 C 269.96 120.83 332.65 145.55 332.65 145.55 C 367.37 159.24 367.37 208.38 332.65 222.07 C 332.65 222.07 269.96 246.8 269.96 246.8 C 259.36 250.98 250.97 259.36 246.79 269.96 C 246.79 269.96 222.07 332.66 222.07 332.66 C 208.38 367.37 159.24 367.37 145.55 332.66 C 145.55 332.66 120.83 269.96 120.83 269.96 C 116.65 259.36 108.26 250.98 97.66 246.8 C 97.66 246.8 34.97 222.07 34.97 222.07 C 0.25 208.38 0.25 159.24 34.97 145.55 C 34.97 145.55 97.66 120.83 97.66 120.83 C 108.26 116.65 116.65 108.26 120.83 97.66 C 120.83 97.66 145.55 34.97 145.55 34.97 C 159.24 0.25 208.38 0.25 222.07 34.97 C 222.07 34.97 246.79 97.66 246.79 97.66 C 250.97 108.26 259.36 116.65 269.96 120.83"
+                android:fillColor="#ffdc00"/>
+        </group>
+        <group
+            android:name="top_right_star"
+            android:pivotX="183.81"
+            android:pivotY="183.811"
+            android:translateX="1816.19"
+            android:translateY="216.189"
+            android:scaleX="0.6394"
+            android:scaleY="0">
+            <path
+                android:name="_r_g_l_3_g_d_0_p_0"
+                android:pathData="M 269.96 120.83 C 269.96 120.83 332.65 145.55 332.65 145.55 C 367.37 159.24 367.37 208.38 332.65 222.07 C 332.65 222.07 269.96 246.8 269.96 246.8 C 259.36 250.98 250.97 259.36 246.79 269.96 C 246.79 269.96 222.07 332.66 222.07 332.66 C 208.38 367.37 159.24 367.37 145.55 332.66 C 145.55 332.66 120.83 269.96 120.83 269.96 C 116.65 259.36 108.26 250.98 97.66 246.8 C 97.66 246.8 34.97 222.07 34.97 222.07 C 0.25 208.38 0.25 159.24 34.97 145.55 C 34.97 145.55 97.66 120.83 97.66 120.83 C 108.26 116.65 116.65 108.26 120.83 97.66 C 120.83 97.66 145.55 34.97 145.55 34.97 C 159.24 0.25 208.38 0.25 222.07 34.97 C 222.07 34.97 246.79 97.66 246.79 97.66 C 250.97 108.26 259.36 116.65 269.96 120.83"
+                android:fillColor="#ffdc00"/>
+        </group>
+        <group
+            android:name="bottom_left_star"
+            android:pivotX="183.81"
+            android:pivotY="183.811"
+            android:translateX="216.19"
+            android:translateY="1816.189"
+            android:scaleX="0.6394"
+            android:scaleY="0">
+            <path
+                android:name="_r_g_l_2_g_d_0_p_0"
+                android:pathData="M 269.96 120.83 C 269.96 120.83 332.65 145.55 332.65 145.55 C 367.37 159.24 367.37 208.38 332.65 222.07 C 332.65 222.07 269.96 246.8 269.96 246.8 C 259.36 250.98 250.97 259.36 246.79 269.96 C 246.79 269.96 222.07 332.66 222.07 332.66 C 208.38 367.37 159.24 367.37 145.55 332.66 C 145.55 332.66 120.83 269.96 120.83 269.96 C 116.65 259.36 108.26 250.98 97.66 246.8 C 97.66 246.8 34.97 222.07 34.97 222.07 C 0.25 208.38 0.25 159.24 34.97 145.55 C 34.97 145.55 97.66 120.83 97.66 120.83 C 108.26 116.65 116.65 108.26 120.83 97.66 C 120.83 97.66 145.55 34.97 145.55 34.97 C 159.24 0.25 208.38 0.25 222.07 34.97 C 222.07 34.97 246.79 97.66 246.79 97.66 C 250.97 108.26 259.36 116.65 269.96 120.83"
+                android:fillColor="#ffdc00"/>
+        </group>
+        <group
+            android:name="bottom_right_star"
+            android:pivotX="183.81"
+            android:pivotY="183.811"
+            android:translateX="1816.19"
+            android:translateY="1816.189"
+            android:scaleX="0.6394"
+            android:scaleY="0">
+            <path
+                android:name="_r_g_l_1_g_d_0_p_0"
+                android:pathData="M 269.96 120.83 C 269.96 120.83 332.65 145.55 332.65 145.55 C 367.37 159.24 367.37 208.38 332.65 222.07 C 332.65 222.07 269.96 246.8 269.96 246.8 C 259.36 250.98 250.97 259.36 246.79 269.96 C 246.79 269.96 222.07 332.66 222.07 332.66 C 208.38 367.37 159.24 367.37 145.55 332.66 C 145.55 332.66 120.83 269.96 120.83 269.96 C 116.65 259.36 108.26 250.98 97.66 246.8 C 97.66 246.8 34.97 222.07 34.97 222.07 C 0.25 208.38 0.25 159.24 34.97 145.55 C 34.97 145.55 97.66 120.83 97.66 120.83 C 108.26 116.65 116.65 108.26 120.83 97.66 C 120.83 97.66 145.55 34.97 145.55 34.97 C 159.24 0.25 208.38 0.25 222.07 34.97 C 222.07 34.97 246.79 97.66 246.79 97.66 C 250.97 108.26 259.36 116.65 269.96 120.83"
+                android:fillColor="#ffdc00"/>
+        </group>
+    </group>
+    <group android:name="time_group" />
+</vector>
