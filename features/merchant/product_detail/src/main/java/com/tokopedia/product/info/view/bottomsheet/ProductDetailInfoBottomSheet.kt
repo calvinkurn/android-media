@@ -409,13 +409,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             trackingQueue = trackingQueue
         )
     }
-
-    override fun onPause() {
-        super.onPause()
-        if (this::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
-        }
-    }
 }
 
 interface ProductDetailBottomSheetListener {

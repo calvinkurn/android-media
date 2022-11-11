@@ -213,11 +213,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         )
     }
 
-    override fun onPause() {
-        super.onPause()
-        getTrackingQueueObj()?.sendAll()
-    }
-
     override fun onRefresh() {
     }
 
@@ -397,7 +392,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun initAdapter() {
         val mainNavFactory = MainNavTypeFactoryImpl(
-            this, getUserSession(),
+            this,
+            getUserSession(),
             object : TokopediaPlusListener {
                 override fun isShown(
                     isShown: Boolean,

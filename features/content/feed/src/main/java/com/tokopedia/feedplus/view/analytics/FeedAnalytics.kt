@@ -47,13 +47,6 @@ class FeedAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    /**
-     * Send all pending analytics in trackingQueue
-     */
-    fun sendPendingAnalytics() {
-        trackingQueue.sendAll()
-    }
-
     private fun trackEnhancedEcommerceEvent(
         eventData: HashMap<String, Any>?
     ) {
@@ -107,7 +100,8 @@ class FeedAnalytics @Inject constructor(
     }
 
     private fun getEventEcommerceView(
-        action: String, label: String,
+        action: String,
+        label: String,
         promotions: List<FeedEnhancedTracking.Promotion>,
         userId: Long
     ): HashMap<String, Any>? {
@@ -165,7 +159,8 @@ class FeedAnalytics @Inject constructor(
         }
         trackEnhancedEcommerceEvent(
             getEventEcommerceView(
-                "impression - topads shop recommendation", firstAuthorId,
+                "impression - topads shop recommendation",
+                firstAuthorId,
                 promotionList,
                 userId
             )
@@ -175,8 +170,11 @@ class FeedAnalytics @Inject constructor(
     // docs : https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
     // screenshot 13
     fun eventTopadsRecommendationClick(
-        templateType: String?, adId: String?, authorId: String,
-        cardPosition: Int, userId: Long
+        templateType: String?,
+        adId: String?,
+        authorId: String,
+        cardPosition: Int,
+        userId: Long
     ) {
         val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
         promotionList.add(
@@ -193,7 +191,8 @@ class FeedAnalytics @Inject constructor(
         )
         trackEnhancedEcommerceEvent(
             getEventEcommerceClick(
-                "click", String.format(Locale.getDefault(),"avatar - topads shop recommendation - %s", authorId),
+                "click",
+                String.format(Locale.getDefault(), "avatar - topads shop recommendation - %s", authorId),
                 promotionList,
                 userId
             )
@@ -204,24 +203,26 @@ class FeedAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EVENT_CLICK_FEED,
             CONTENT_FEED_TIMELINE,
-            String.format(Locale.getDefault(),"click %s - %s recommendation", action, authorType),
+            String.format(Locale.getDefault(), "click %s - %s recommendation", action, authorType),
             authorId
         )
     }
 
     fun eventFollowCardPost(
-        action: String?, activityName: String?, activityId: String?,
+        action: String?,
+        activityName: String?,
+        activityId: String?,
         mediaType: String?
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EVENT_CLICK_FEED,
             CONTENT_FEED_TIMELINE,
-            String.format(Locale.getDefault(),"click %s - %s - %s", action, activityName, mediaType),
+            String.format(Locale.getDefault(), "click %s - %s - %s", action, activityName, mediaType),
             activityId
         )
     }
 
-    //#FEED015
+    // #FEED015
     fun trackClickCreatePost(userId: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EVENT_CLICK_FEED,
@@ -231,7 +232,7 @@ class FeedAnalytics @Inject constructor(
         )
     }
 
-    //#FEED016
+    // #FEED016
     fun trackClickCreatePostAs(type: String, userId: String?, shopId: String?) {
         if (type.toLowerCase().contains(TYPE_AFFILIATE)) {
             TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -251,20 +252,29 @@ class FeedAnalytics @Inject constructor(
     }
 
     fun eventCardPostClick(
-        templateType: String?, activityName: String?, mediaType: String?,
-        redirectUrl: String?, imageUrl: String?, authorId: String?,
-        totalContent: Int, postId: String?, userId: Long,
-        feedPosition: Int, recomId: Long
+        templateType: String?,
+        activityName: String?,
+        mediaType: String?,
+        redirectUrl: String?,
+        imageUrl: String?,
+        authorId: String?,
+        totalContent: Int,
+        postId: String?,
+        userId: Long,
+        feedPosition: Int,
+        recomId: Long
     ) {
         val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
         promotionList.add(
             FeedEnhancedTracking.Promotion(
-                postId!!, String.format(Locale.getDefault(),"/content feed - %s - %s", activityName, mediaType),
+                postId!!,
+                String.format(Locale.getDefault(), "/content feed - %s - %s", activityName, mediaType),
                 imageUrl!!,
                 redirectUrl!!,
                 feedPosition,
                 "",
-                authorId!!, String.format(Locale.getDefault(),"%s - %s", templateType, singleOrMultiple(totalContent))
+                authorId!!,
+                String.format(Locale.getDefault(), "%s - %s", templateType, singleOrMultiple(totalContent))
             )
         )
         trackEnhancedEcommerceEvent(
@@ -279,17 +289,21 @@ class FeedAnalytics @Inject constructor(
 
     fun eventProductGridImpression(
         productList: List<ProductEcommerce>,
-        activityName: String?, postId: Int, userId: Int, recomId: Int
+        activityName: String?,
+        postId: Int,
+        userId: Int,
+        recomId: Int
     ) {
         trackEnhancedEcommerceEvent(
             DataLayer.mapOf(
                 EVENT_NAME, PRODUCT_VIEW,
                 EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
-                EVENT_ACTION, String.format(Locale.getDefault(),"impression product - %s", activityName),
-                EVENT_LABEL, String.format(Locale.getDefault(),FORMAT_2_VALUE, postId, recomId),
+                EVENT_ACTION, String.format(Locale.getDefault(), "impression product - %s", activityName),
+                EVENT_LABEL, String.format(Locale.getDefault(), FORMAT_2_VALUE, postId, recomId),
                 KEY_USER_ID, userId,
                 KEY_USER_ID_MOD, userId % 50,
-                EVENT_ECOMMERCE, getProductEcommerceImpressions(
+                EVENT_ECOMMERCE,
+                getProductEcommerceImpressions(
                     productList,
                     "/feed - system generated content"
                 )
@@ -299,17 +313,21 @@ class FeedAnalytics @Inject constructor(
 
     fun eventProductGridClick(
         product: ProductEcommerce,
-        activityName: String?, postId: Int, userId: Int, recomId: Int
+        activityName: String?,
+        postId: Int,
+        userId: Int,
+        recomId: Int
     ) {
         trackEnhancedEcommerceEvent(
             DataLayer.mapOf(
                 EVENT_NAME, PRODUCT_CLICK,
                 EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
-                EVENT_ACTION, String.format(Locale.getDefault(),"click product - %s", activityName),
-                EVENT_LABEL, String.format(Locale.getDefault(),FORMAT_2_VALUE, postId, recomId),
+                EVENT_ACTION, String.format(Locale.getDefault(), "click product - %s", activityName),
+                EVENT_LABEL, String.format(Locale.getDefault(), FORMAT_2_VALUE, postId, recomId),
                 KEY_USER_ID, userId,
                 KEY_USER_ID_MOD, userId % 50,
-                EVENT_ECOMMERCE, getProductEcommerceClick(
+                EVENT_ECOMMERCE,
+                getProductEcommerceClick(
                     product,
                     "/feed - system generated content"
                 )
@@ -318,13 +336,17 @@ class FeedAnalytics @Inject constructor(
     }
 
     fun eventVoteImpression(
-        activityName: String?, mediaType: String?, pollId: String,
-        postId: String?, userId: Long
+        activityName: String?,
+        mediaType: String?,
+        pollId: String,
+        postId: String?,
+        userId: Long
     ) {
         val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
         promotionList.add(
             FeedEnhancedTracking.Promotion(
-                postId!!, String.format(Locale.getDefault(),"/content feed - %s - %s", activityName, mediaType),
+                postId!!,
+                String.format(Locale.getDefault(), "/content feed - %s - %s", activityName, mediaType),
                 "",
                 "",
                 0,
@@ -335,7 +357,7 @@ class FeedAnalytics @Inject constructor(
         )
         trackEnhancedEcommerceEvent(
             getEventEcommerceView(
-                String.format(Locale.getDefault(),"impression - %s - %s", activityName, mediaType),
+                String.format(Locale.getDefault(), "impression - %s - %s", activityName, mediaType),
                 pollId,
                 promotionList,
                 userId
@@ -344,13 +366,20 @@ class FeedAnalytics @Inject constructor(
     }
 
     fun eventVoteClick(
-        activityName: String?, mediaType: String?, pollId: String?, optionId: String?,
-        optionName: String?, imageUrl: String?, postId: String?, userId: Long
+        activityName: String?,
+        mediaType: String?,
+        pollId: String?,
+        optionId: String?,
+        optionName: String?,
+        imageUrl: String?,
+        postId: String?,
+        userId: Long
     ) {
         val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
         promotionList.add(
             FeedEnhancedTracking.Promotion(
-                postId!!, String.format(Locale.getDefault(),"/content feed - %s - %s", activityName, mediaType),
+                postId!!,
+                String.format(Locale.getDefault(), "/content feed - %s - %s", activityName, mediaType),
                 optionId!!,
                 imageUrl!!,
                 0,
@@ -381,7 +410,8 @@ class FeedAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             EVENT_CLICK_FEED,
             CONTENT_FEED_TIMELINE,
-            "click product to feed detail", String.format(FORMAT_2_VALUE, postId, recomId)
+            "click product to feed detail",
+            String.format(FORMAT_2_VALUE, postId, recomId)
         )
     }
 
@@ -395,7 +425,8 @@ class FeedAnalytics @Inject constructor(
                 EVENT_LABEL, firstProductId,
                 KEY_USER_ID, userId,
                 KEY_USER_ID_MOD, userId % 50,
-                EVENT_ECOMMERCE, getProductEcommerceImpressions(
+                EVENT_ECOMMERCE,
+                getProductEcommerceImpressions(
                     productList,
                     "/feed detail - product list"
                 )
@@ -451,10 +482,14 @@ class FeedAnalytics @Inject constructor(
     fun eventNewPostClick() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
-                EVENT_NAME, EVENT_CLICK_FEED,
-                EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
-                EVENT_ACTION, POST_CLICK_VALUE,
-                EVENT_LABEL, ""
+                EVENT_NAME,
+                EVENT_CLICK_FEED,
+                EVENT_CATEGORY,
+                CONTENT_FEED_TIMELINE,
+                EVENT_ACTION,
+                POST_CLICK_VALUE,
+                EVENT_LABEL,
+                ""
             )
         )
     }
@@ -528,9 +563,12 @@ class FeedAnalytics @Inject constructor(
                 KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
                 KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
                 KEY_USER_ID, userId,
-                EVENT_ECOMMERCE, DataLayer.mapOf(
-                    PROMO_VIEW, DataLayer.mapOf(
-                        PROMOTIONS, getHeadlineList(adId, position)
+                EVENT_ECOMMERCE,
+                DataLayer.mapOf(
+                    PROMO_VIEW,
+                    DataLayer.mapOf(
+                        PROMOTIONS,
+                        getHeadlineList(adId, position)
                     )
                 )
             )
@@ -553,9 +591,12 @@ class FeedAnalytics @Inject constructor(
                 KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
                 KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
                 KEY_USER_ID, userId,
-                EVENT_ECOMMERCE, DataLayer.mapOf(
-                    "currencyCode", "IDR",
-                    "impressions", getProductList(products, position + 1)
+                EVENT_ECOMMERCE,
+                DataLayer.mapOf(
+                    "currencyCode",
+                    "IDR",
+                    "impressions",
+                    getProductList(products, position + 1)
                 )
             )
         )
@@ -577,12 +618,17 @@ class FeedAnalytics @Inject constructor(
                 KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
                 KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
                 KEY_USER_ID, userId,
-                EVENT_ECOMMERCE, DataLayer.mapOf(
-                    "click", DataLayer.mapOf(
-                        "actionField", DataLayer.mapOf(
-                            "list", "/feed - topads"
+                EVENT_ECOMMERCE,
+                DataLayer.mapOf(
+                    "click",
+                    DataLayer.mapOf(
+                        "actionField",
+                        DataLayer.mapOf(
+                            "list",
+                            "/feed - topads"
                         ),
-                        "products", getProductList(products, position)
+                        "products",
+                        getProductList(products, position)
                     )
                 )
             )

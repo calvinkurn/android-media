@@ -80,8 +80,7 @@ class PlayWidgetCoordinator constructor(
     private val trackingLifecycleObserver = LifecycleEventObserver { _, event ->
         when (event) {
             Lifecycle.Event.ON_PAUSE -> {
-                // no longer need to call trackingQueue.sendAll() manually}
-                trackingQueue?.sendAll()
+                // no longer need to call trackingQueue.sendAll() manually
             }
             else -> {}
         }

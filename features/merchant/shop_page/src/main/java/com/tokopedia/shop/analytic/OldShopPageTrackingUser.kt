@@ -43,11 +43,6 @@ open class OldShopPageTrackingUser(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
     }
 
-    fun sendAllTrackingQueue() {
-        // no longer need to call trackingQueue.sendAll() manually
-        trackingQueue.sendAll()
-    }
-
     private fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, shopId: String, startIndex: Int): List<Any> {
         val list: MutableList<Any> = ArrayList()
         for (i in viewModelList.indices) {

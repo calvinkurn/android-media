@@ -1809,7 +1809,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val toasterSuccess = Toaster
         view?.let { v ->
             toasterSuccess.build(
-                v, message, Toaster.LENGTH_SHORT, type, CTA_ATC,
+                v,
+                message,
+                Toaster.LENGTH_SHORT,
+                type,
+                CTA_ATC,
                 View.OnClickListener {
                     RouteManager.route(context, ApplinkConst.CART)
                     userSession.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }
@@ -2309,10 +2313,5 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         orderIdNeedUpdated = order.orderUUID
         currIndexNeedUpdate = index
         startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        trackingQueue.sendAll()
     }
 }

@@ -162,9 +162,4 @@ class ReviewGalleryTracking @Inject constructor(
     ) {
         trackMediaImpression(mediaCount, productId, attachmentId, mediaNumber, "video", "", videoId)
     }
-
-    fun sendQueuedTrackers() {
-        // no longer need to call trackingQueue.sendAll() manually
-        trackingQueue.sendAll()
-    }
 }
