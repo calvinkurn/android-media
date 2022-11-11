@@ -34,11 +34,14 @@ class PrivacyPolicySection constructor(
     private val privacyPolicyAdapter = PrivacyPolicyAdapter(this)
     private var privacyPolicySectionBottomSheet: PrivacyPolicySectionBottomSheet? = null
 
-    override val sectionViewBinding: SectionPrivacyPolicyBinding = SectionPrivacyPolicyBinding.inflate(
-        LayoutInflater.from(context)
-    )
-    override val sectionTextTitle: String? = context?.resources?.getString(R.string.privacy_policy_section_title)
-    override val sectionTextDescription: String? = context?.resources?.getString(R.string.privacy_policy_section_description)
+    override val sectionViewBinding: SectionPrivacyPolicyBinding =
+        SectionPrivacyPolicyBinding.inflate(
+            LayoutInflater.from(context)
+        )
+    override val sectionTextTitle: String? =
+        context?.resources?.getString(R.string.privacy_policy_section_title)
+    override val sectionTextDescription: String? =
+        context?.resources?.getString(R.string.privacy_policy_section_description)
     override val isShowDirectionButton: Boolean = false
     override val isFromBottomSheet: Boolean = false
 
@@ -117,7 +120,7 @@ class PrivacyPolicySection constructor(
                     is PrivacyCenterStateResult.Fail -> {
                         Toaster.build(sectionViewBinding.root, it.error.message.toString()).show()
                     }
-                    is PrivacyCenterStateResult.Loading -> { }
+                    is PrivacyCenterStateResult.Loading -> {}
                     is PrivacyCenterStateResult.Success -> onSuccessGetPrivacyPolicyDetail(it.data)
                 }
             }
@@ -157,9 +160,11 @@ class PrivacyPolicySection constructor(
     }
 
     private fun loadingPrivacyPolicyList(isLoading: Boolean) {
-        sectionViewBinding.apply {
-            loaderListPrivacyPolicy.showWithCondition(isLoading)
-            listPrivacyPolicy.showWithCondition(!isLoading)
+        if (isPrivacyPolicyListOpened) {
+            sectionViewBinding.apply {
+                loaderListPrivacyPolicy.showWithCondition(isLoading)
+                listPrivacyPolicy.showWithCondition(!isLoading)
+            }
         }
     }
 
@@ -170,7 +175,7 @@ class PrivacyPolicySection constructor(
             localLoadPrivacyPolicy.apply {
                 localLoadTitle = context.getString(R.string.privacy_center_error_network_title)
                 refreshBtn?.setOnClickListener {
-                    progressState = true
+                    this.hide()
                     viewModel.getPrivacyPolicyTopFiveList()
                 }
             }
