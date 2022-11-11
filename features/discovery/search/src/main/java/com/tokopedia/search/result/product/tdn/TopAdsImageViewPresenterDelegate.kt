@@ -8,9 +8,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
-class TopAdsImageViewPresenterDelegate @Inject constructor(
-
-) {
+class TopAdsImageViewPresenterDelegate @Inject constructor() {
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
 
     fun setTopAdsImageViewModelList(topAdsImageViewModelList: MutableList<TopAdsImageViewModel>) {
