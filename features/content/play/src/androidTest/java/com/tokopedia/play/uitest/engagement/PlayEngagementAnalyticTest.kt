@@ -192,7 +192,6 @@ class PlayEngagementAnalyticTest {
             assertCassavaByEventAction("click - voucher widget")
             clickVoucherInBottomSheet(1)
             assertCassavaByEventAction("view - toaster public voucher")
-            assertCassavaByEventAction("click - lihat toaster public voucher")
         }
     }
 
