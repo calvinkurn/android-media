@@ -1,6 +1,5 @@
 package com.tokopedia.privacycenter.common.data
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class AccountLinkingResponse(
@@ -27,8 +26,5 @@ data class AccountsLinkerStatus(
     val linkStatus: List<LinkStatusItem> = emptyList(),
 
     @SerializedName("error")
-    val error: String = "",
-
-    @SuppressLint("ResponseFieldAnnotation")
-    var phoneNumber: String = ""
+    val error: String = ""
 )

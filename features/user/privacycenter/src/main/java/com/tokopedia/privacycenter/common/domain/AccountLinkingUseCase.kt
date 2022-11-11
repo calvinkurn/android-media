@@ -15,7 +15,7 @@ class AccountLinkingUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     private val userSessionInterface: UserSessionInterface,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<String, PrivacyCenterStateResult<AccountLinkingStatus>>(dispatchers.io){
+) : CoroutineUseCase<String, PrivacyCenterStateResult<AccountLinkingStatus>>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
             query link_status(${'$'}linking_type: String!){
@@ -33,11 +33,10 @@ class AccountLinkingUseCase @Inject constructor(
 
     override suspend fun execute(params: String): PrivacyCenterStateResult<AccountLinkingStatus> {
         val parameter = mapOf(PARAM_LINKING to params)
-        val response : AccountLinkingResponse = repository.request(graphqlQuery(), parameter)
+        val response: AccountLinkingResponse = repository.request(graphqlQuery(), parameter)
 
         val linkedStatus = response.accountsLinkerStatus.linkStatus
         val phoneNumber = userSessionInterface.phoneNumber
-        response.accountsLinkerStatus.phoneNumber = phoneNumber
 
         return if (linkedStatus.isNotEmpty() && linkedStatus.first().status == KEY_ACCOUNT_LINKED) {
             val linkedTime = formatDateLocalTimezone(response.accountsLinkerStatus.linkStatus.first().linkedTime)
