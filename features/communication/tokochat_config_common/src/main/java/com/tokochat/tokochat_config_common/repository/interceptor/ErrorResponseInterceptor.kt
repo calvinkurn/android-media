@@ -33,7 +33,7 @@ class ErrorResponseInterceptor(private val responseErrorClass: Class<out BaseRes
                 if (responseError.hasBody()) {
                     Timber.d(response.headers.toString())
                     Timber.d(responseBodyString)
-                    response.body!!.close()
+                    response.body?.close()
                     throw responseError.createException()
                 } else {
                     response

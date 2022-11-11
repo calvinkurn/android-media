@@ -5,6 +5,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.converter.StringResponseConverter
@@ -30,25 +31,25 @@ object TokoChatImageAttachmentNetworkModule {
     private const val RETROFIT_TOKOCHAT_DOWNLOAD_IMAGE = "retrofit_tokochat_download_image"
     private const val OKHTTP_TOKOCHAT_DOWNLOAD_IMAGE = "okhttp_tokochat_download_image"
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
         return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun okHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy(NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideTokoChatImageApi(@TokoChatQualifier retrofit: Retrofit): TokoChatImageApi {
         return retrofit.create(TokoChatImageApi::class.java)
@@ -56,7 +57,7 @@ object TokoChatImageAttachmentNetworkModule {
 
     // Download Image Section
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     @Named(OKHTTP_TOKOCHAT_DOWNLOAD_IMAGE)
     fun provideOkHttpClientDownloadImage(
@@ -80,7 +81,7 @@ object TokoChatImageAttachmentNetworkModule {
         return builder.build()
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     @Named(RETROFIT_TOKOCHAT_DOWNLOAD_IMAGE)
     fun provideChatRetrofitDownloadImage(
@@ -93,7 +94,7 @@ object TokoChatImageAttachmentNetworkModule {
             .client(okHttpClient).build()
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideTokoChatImageApiDownload(@Named(RETROFIT_TOKOCHAT_DOWNLOAD_IMAGE) retrofit: Retrofit): TokoChatDownloadImageApi {
         return retrofit.create(TokoChatDownloadImageApi::class.java)

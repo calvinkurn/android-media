@@ -95,6 +95,7 @@ ext {
     playIntegrityVersion = '1.0.1'
     conversationsVersion = '7.6.0'
     gojekCourierVersion = '0.0.9'
+    gojekCourierClientVersion = '0.0.4.1@aar'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
@@ -323,7 +324,7 @@ ext {
             courierMessageAdapter : "com.gojek.courier:courier-message-adapter-gson:$gojekCourierVersion",
             courierStreamAdapter  : "com.gojek.courier:courier-stream-adapter-rxjava:$gojekCourierVersion",
             courierAuth           : "com.gojek.courier:courier-auth-http:$gojekCourierVersion",
-            courierClient         : "com.gojek.courier:courier-client:0.0.4.1@aar"
+            courierClient         : "com.gojek.courier:courier-client:$gojekCourierClientVersion"
     ]
 
     testDependencies = [

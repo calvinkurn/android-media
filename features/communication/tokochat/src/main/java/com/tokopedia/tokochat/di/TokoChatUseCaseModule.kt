@@ -7,6 +7,8 @@ import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
@@ -24,13 +26,13 @@ import dagger.Provides
 @Module
 object TokoChatUseCaseModule {
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideCreateChannelUseCase(
         repository: TokoChatRepository
@@ -38,7 +40,7 @@ object TokoChatUseCaseModule {
         return TokoChatChannelUseCase(repository)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideGetChatHistoryUseCase(
         repository: TokoChatRepository
@@ -46,7 +48,7 @@ object TokoChatUseCaseModule {
         return TokoChatGetChatHistoryUseCase(repository)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideMarkAsReadUseCase(
         repository: TokoChatRepository
@@ -54,7 +56,7 @@ object TokoChatUseCaseModule {
         return TokoChatMarkAsReadUseCase(repository)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideRegistrationActiveChannelUseCase(
         repository: TokoChatRepository
@@ -62,7 +64,7 @@ object TokoChatUseCaseModule {
         return TokoChatRegistrationChannelUseCase(repository)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideSendMessageUseCase(
         repository: TokoChatRepository
@@ -70,14 +72,14 @@ object TokoChatUseCaseModule {
         return TokoChatSendMessageUseCase(repository)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
-    internal fun provideTopchatCacheManager(@TokoChatContext context: Context): TokoChatCacheManager {
+    internal fun provideTopchatCacheManager(@ApplicationContext context: Context): TokoChatCacheManager {
         val topchatCachePref = context.getSharedPreferences(TokoChatValueUtil.TOKOCHAT_CACHE, Context.MODE_PRIVATE)
         return TokoChatCacheManagerImpl(topchatCachePref)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideMutationProfileUseCase(
         @TokoChatQualifier courierConnection: CourierConnection,
@@ -86,7 +88,7 @@ object TokoChatUseCaseModule {
         return TokoChatMutationProfileUseCase(courierConnection, repository)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideGetImageUseCase(
         repository: TokoChatImageRepository,

@@ -5,8 +5,8 @@ import android.text.format.DateFormat
 import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.utils.ConversationsConstants
 import com.google.gson.GsonBuilder
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat.di.TokoChatContext
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionData
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.R
@@ -20,7 +20,7 @@ import java.util.*
 import javax.inject.Inject
 
 class TokoChatConversationUiMapper @Inject constructor(
-    @TokoChatContext private val context: Context
+    @ApplicationContext private val context: Context
 ) {
 
     private val gson = GsonBuilder().create()

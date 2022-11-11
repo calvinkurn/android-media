@@ -2,6 +2,7 @@ package com.tokopedia.tokochat_common.util
 
 import android.content.Context
 import android.text.format.DateUtils
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -97,13 +98,13 @@ object TokoChatTimeConverter {
         val dayDivider = hourDivider * 24
         val monthDivider = dayDivider * 30
         when {
-            diff / monthDivider > 0 -> {
+            diff / monthDivider > Int.ZERO -> {
                 status = context.getString(R.string.tokochat_online_months_ago, diff / monthDivider)
             }
-            diff / dayDivider > 0 -> {
+            diff / dayDivider > Int.ZERO -> {
                 status = context.getString(R.string.tokochat_online_days_ago, diff / dayDivider)
             }
-            diff / hourDivider > 0 -> {
+            diff / hourDivider > Int.ZERO -> {
                 status = context.getString(
                     R.string.tokochat_online_hours_ago,
                     diff / hourDivider
@@ -111,7 +112,7 @@ object TokoChatTimeConverter {
             }
             else -> {
                 var minutes = diff / minuteDivider
-                if (minutes <= 0) minutes = 1
+                if (minutes <= Int.ZERO) minutes = 1L
                 status = context.getString(R.string.tokochat_online_minutes_ago, minutes)
             }
         }
