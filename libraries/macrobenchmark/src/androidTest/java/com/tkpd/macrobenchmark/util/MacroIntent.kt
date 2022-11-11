@@ -208,7 +208,7 @@ object MacroIntent {
         const val RECYCLER_VIEW_ID = "rv_pdp"
         const val MEDIA_VIEW_HOLDER = "viewMediaPager"
         const val RECOMMENDATION_VIEW_HOLDER = "rvProductRecom"
-        const val TRACE = "mp_product_detail"
+        const val TRACE = "pdp_result_trace"
 
         fun getStartupIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
