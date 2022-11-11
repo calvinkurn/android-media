@@ -48,7 +48,7 @@ class PlaySetupSaveProductViewModelTest {
 
         robot.use {
             val (state, event) = robot.recordStateAsListAndEvent {
-                submitAction(ProductSetupAction.SelectProduct(mockProduct))
+                submitAction(ProductSetupAction.ToggleSelectProduct(mockProduct))
                 submitAction(ProductSetupAction.SaveProducts)
             }
 
@@ -71,7 +71,7 @@ class PlaySetupSaveProductViewModelTest {
 
         robot.use {
             runBlockingTest {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockProduct))
             }
 
             val state = robot.recordSummaryState {
@@ -95,7 +95,7 @@ class PlaySetupSaveProductViewModelTest {
 
         robot.use {
             runBlockingTest {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockProduct))
             }
 
             val (state, event) = robot.recordStateAsListAndEvent {

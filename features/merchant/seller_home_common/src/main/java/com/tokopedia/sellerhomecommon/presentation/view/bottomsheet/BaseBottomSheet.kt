@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
+import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -17,10 +18,7 @@ abstract class BaseBottomSheet<T : ViewBinding> : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(
-            DialogFragment.STYLE_NO_FRAME,
-            com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle
-        )
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.ShcDialogStyle)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
