@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.view.fragment
 
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.*
-import com.google.android.exoplayer2.util.Util
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -29,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -37,6 +32,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormU
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
+import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
@@ -60,6 +56,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val userSession: UserSessionInterface,
     private val coachMarkManager: ContentCoachMarkManager,
+    private val idleManager: PlayShortsIdleManager
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
@@ -103,6 +100,14 @@ class PlayShortsPreparationFragment @Inject constructor(
         setupListener()
         setupObserver()
         setupCoachMark()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.submitAction(PlayShortsAction.ReleaseMedia)
+        coachMarkManager.dismissAllCoachMark()
+        idleManager.clear()
+        _binding = null
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -169,13 +174,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.submitAction(PlayShortsAction.ReleaseMedia)
-        coachMarkManager.dismissAllCoachMark()
-        _binding = null
-    }
-
     override fun onBackPressed(): Boolean {
         return when {
             binding.formTitle.visibility == View.VISIBLE -> {
@@ -207,6 +205,11 @@ class PlayShortsPreparationFragment @Inject constructor(
         with(binding) {
             toolbar.setOnBackClickListener {
                 activity?.onBackPressed()
+            }
+
+            root.setOnClickListener {
+                Log.d("<LOG>", "root clicked")
+                idleManager.toggleState()
             }
 
             preparationMenu.setOnMenuClickListener {
@@ -280,6 +283,19 @@ class PlayShortsPreparationFragment @Inject constructor(
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            idleManager.eventBus.subscribe().collectLatest {
+                when (it) {
+                    PlayShortsIdleManager.State.StandBy -> {
+                        Log.d("<LOG>", "Standby")
+                    }
+                    PlayShortsIdleManager.State.Idle -> {
+                        Log.d("<LOG>", "Idle")
+                    }
+                }
+            }
+        }
     }
 
     private fun setupCoachMark() {
@@ -297,7 +313,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(binding.exoPlayer.player == null) {
+        if (binding.exoPlayer.player == null) {
             binding.exoPlayer.player = curr.media.exoPlayer
         }
     }
@@ -375,6 +391,12 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun showMainComponent(isShow: Boolean) {
         binding.groupPreparationMain.showWithCondition(isShow)
+
+        if (isShow) {
+            idleManager.startIdleTimer()
+        } else {
+            idleManager.forceStandByMode()
+        }
     }
 
     private fun showTitleForm(isShow: Boolean) {
