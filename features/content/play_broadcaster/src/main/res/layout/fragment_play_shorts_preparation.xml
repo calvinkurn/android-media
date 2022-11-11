@@ -45,8 +45,7 @@
         android:id="@+id/form_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.7"
-        android:background="@color/Unify_NN900"
+        android:background="@color/Unify_N700_68"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -54,8 +53,7 @@
         android:id="@+id/form_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.7"
-        android:background="@color/Unify_NN900"
+        android:background="@color/Unify_N700_68"
         android:visibility="gone" />
 
     <com.tokopedia.unifycomponents.UnifyButton

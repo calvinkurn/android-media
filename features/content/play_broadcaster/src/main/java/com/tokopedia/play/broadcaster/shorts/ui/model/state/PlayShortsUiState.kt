@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.shorts.ui.model.state
 
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.source.BaseMediaSource
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -11,7 +14,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
  */
 data class PlayShortsUiState(
     val shortsId: String,
-    val mediaUri: String,
+    val media: PlayShortsMediaUiModel,
     val accountList: List<ContentAccountUiModel>,
     val selectedAccount: ContentAccountUiModel,
     val menuList: List<DynamicPreparationMenu>,

@@ -115,22 +115,14 @@ class PlayShortsActivity : BaseActivity() {
          * shortsId != null && mediaUri != null -> Preparation
          */
 //        when {
-//            curr.shortsId.isNotEmpty() && curr.mediaUri.isEmpty() -> {
+//            curr.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty() -> {
 //                openMediaPicker()
 //            }
-//            curr.shortsId.isNotEmpty() && curr.mediaUri.isNotEmpty() -> {
+//            curr.shortsId.isNotEmpty() && curr.media.mediaUri.isNotEmpty() -> {
 //                openPreparation()
 //            }
+//            else -> {}
 //        }
-    }
-
-    private fun renderOneTimeEvent(oneTimeEvent: PlayShortsOneTimeEvent) {
-        when (oneTimeEvent) {
-            PlayShortsOneTimeEvent.GoToSummary -> {
-                openSummaryFragment()
-            }
-            else -> {}
-        }
     }
 
     private fun openMediaPicker() {

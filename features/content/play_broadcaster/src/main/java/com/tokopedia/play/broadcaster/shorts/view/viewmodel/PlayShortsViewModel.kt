@@ -2,10 +2,13 @@ package com.tokopedia.play.broadcaster.shorts.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
+import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
@@ -23,6 +26,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -31,7 +35,9 @@ import javax.inject.Inject
  */
 class PlayShortsViewModel @Inject constructor(
     private val repo: PlayShortsRepository,
-    private val sharedPref: HydraSharedPreferences
+    private val sharedPref: HydraSharedPreferences,
+    private val exoPlayer: ExoPlayer,
+    private val mediaSourceFactory: PlayShortsMediaSourceFactory,
 ) : ViewModel() {
 
     /** Public Getter */
@@ -49,13 +55,13 @@ class PlayShortsViewModel @Inject constructor(
         get() = 30
 
     val isAllMandatoryMenuChecked: Boolean
-        get() = _titleForm.value.title.isNotEmpty() &&
-            _productSectionList.value.any { it.products.isNotEmpty() }
+        get() = _titleForm.value.title.isNotEmpty()
+//            && _productSectionList.value.any { it.products.isNotEmpty() }
 
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
 
-    private val _mediaUri = MutableStateFlow("")
+    private val _media = MutableStateFlow(PlayShortsMediaUiModel.create(exoPlayer))
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
     private val _shortsId = MutableStateFlow("")
@@ -95,17 +101,17 @@ class PlayShortsViewModel @Inject constructor(
 
     val uiState: Flow<PlayShortsUiState> = combine(
         _shortsId,
-        _mediaUri,
+        _media,
         _accountList,
         _selectedAccount,
         _menuListUiState,
         _titleForm,
         _coverForm,
-        _tags
-    ) { shortsId, mediaUri, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags ->
+        _tags,
+    ) { shortsId, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags ->
         PlayShortsUiState(
             shortsId = shortsId,
-            mediaUri = mediaUri,
+            media = media,
             accountList = accountList,
             selectedAccount = selectedAccount,
             menuList = menuListUiState,
@@ -123,13 +129,17 @@ class PlayShortsViewModel @Inject constructor(
         setupPreparationMenu()
 
         /** TODO: for mocking purpose, delete this later */
-        _mediaUri.value = "/storage/emulated/0/Movies/VID_20221110_141411.mp4"
+        submitAction(PlayShortsAction.SetMedia("/storage/emulated/0/Movies/VID_20221110_141411.mp4"))
         _shortsId.value = "123123"
     }
 
     fun submitAction(action: PlayShortsAction) {
         when (action) {
             is PlayShortsAction.PreparePage -> handlePreparePage(action.preferredAccountType)
+
+            is PlayShortsAction.SetMedia -> handleSetMedia(action.mediaUri)
+            is PlayShortsAction.StopMedia -> handleStopMedia()
+            is PlayShortsAction.ReleaseMedia -> handleReleaseMedia()
 
             /** Title Form */
             is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
@@ -165,6 +175,26 @@ class PlayShortsViewModel @Inject constructor(
             val accountList = repo.getAccountList()
         }) {
         }
+    }
+
+    private fun handleSetMedia(mediaUri: String) {
+        if(mediaUri == _media.value.mediaUri) return
+
+        _media.update {
+            val mediaSource = mediaSourceFactory.create(mediaUri)
+            it.exoPlayer.prepare(mediaSource)
+            it.exoPlayer.playWhenReady = true
+
+            it.copy(mediaUri = mediaUri)
+        }
+    }
+
+    private fun handleStopMedia() {
+        _media.value.exoPlayer.stop()
+    }
+
+    private fun handleReleaseMedia() {
+        _media.value.exoPlayer.release()
     }
 
     private fun handleOpenTitleForm() {
