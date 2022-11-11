@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -58,7 +59,7 @@ import javax.inject.Inject
 class PlayShortsPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val userSession: UserSessionInterface,
-    private val coachMarkManager: ContentCoachMarkManager
+    private val coachMarkManager: ContentCoachMarkManager,
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
@@ -87,10 +88,13 @@ class PlayShortsPreparationFragment @Inject constructor(
         return _binding?.root
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
     override fun onStop() {
         super.onStop()
-        binding.exoPlayer.player?.stop()
-        binding.exoPlayer.player?.release()
+        viewModel.submitAction(PlayShortsAction.StopMedia)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -167,7 +171,9 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.submitAction(PlayShortsAction.ReleaseMedia)
         coachMarkManager.dismissAllCoachMark()
+        _binding = null
     }
 
     override fun onBackPressed(): Boolean {
@@ -291,22 +297,9 @@ class PlayShortsPreparationFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if (prev?.mediaUri == curr.mediaUri) return
-
-        val player = SimpleExoPlayer.Builder(requireContext())
-            .build()
-            .also {
-                it.repeatMode = Player.REPEAT_MODE_ALL
-                it.playWhenReady = true
-
-                val mediaSource = ProgressiveMediaSource
-                    .Factory(DefaultDataSourceFactory(context, Util.getUserAgent(requireContext(), "Tokopedia Android")))
-                    .createMediaSource(Uri.parse(curr.mediaUri))
-
-                it.prepare(mediaSource)
-            }
-
-        binding.exoPlayer.player = player
+        if(binding.exoPlayer.player == null) {
+            binding.exoPlayer.player = curr.media.exoPlayer
+        }
     }
 
     private fun renderPreparationMenu(

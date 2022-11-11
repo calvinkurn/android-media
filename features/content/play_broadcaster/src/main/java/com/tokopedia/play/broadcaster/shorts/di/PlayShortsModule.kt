@@ -1,6 +1,13 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
 import android.content.Context
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.BaseMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -49,6 +56,28 @@ class PlayShortsModule(
     @PlayShortsScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @Provides
+    @PlayShortsScope
+    fun provideExoPlayer(): ExoPlayer {
+        return SimpleExoPlayer.Builder(activityContext)
+            .build()
+            .apply {
+                repeatMode = Player.REPEAT_MODE_ALL
+            }
+    }
+
+    @Provides
+    @PlayShortsScope
+    fun provideProgressiveMediaSourceFactory(): ProgressiveMediaSource.Factory {
+        return ProgressiveMediaSource
+            .Factory(
+                DefaultDataSourceFactory(
+                    activityContext,
+                    Util.getUserAgent(activityContext, "Tokopedia Android")
+                )
+            )
     }
 
     /** Play Broadcaster Analytic */

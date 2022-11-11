@@ -12,6 +12,11 @@ sealed interface PlayShortsAction {
         val preferredAccountType: String
     ) : PlayShortsAction
 
+    /** Media */
+    data class SetMedia(val mediaUri: String) : PlayShortsAction
+    object StopMedia : PlayShortsAction
+    object ReleaseMedia : PlayShortsAction
+
     /** Title Form */
     object OpenTitleForm : PlayShortsAction
 
