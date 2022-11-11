@@ -15,7 +15,6 @@ import com.tokopedia.search.RecyclerViewHasItemIdlingResource
 import com.tokopedia.search.SearchMockModelConfig
 import com.tokopedia.search.createIntent
 import com.tokopedia.search.disableOnBoarding
-import com.tokopedia.search.generator.utils.IDGeneratorHelper
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -23,7 +22,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ViolationTest{
+class ViolationTest {
 
     @get:Rule
     val activityRule = IntentsTestRule(
@@ -81,8 +80,6 @@ class ViolationTest{
         onView(withId(R.id.searchResultViolationProductsEmptySearchTitle)).check(matches(isDisplayed()))
         onView(withId(R.id.searchResultViolationProductsEmptySearchMessage)).check(matches(isDisplayed()))
         onView(withId(R.id.buttonSearchResultViolationProductsEmpty)).check(matches(isDisplayed()))
-
-        IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 
     @After

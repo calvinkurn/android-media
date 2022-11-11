@@ -1,31 +1,31 @@
-package com.tokopedia.search.testcase
+package com.tokopedia.search.generator
 
 import android.app.Activity
-import android.app.Instrumentation.ActivityResult
+import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.*
+import com.tokopedia.search.RecyclerViewHasItemIdlingResource
+import com.tokopedia.search.SearchMockModelConfig
+import com.tokopedia.search.createIntent
+import com.tokopedia.search.disableOnBoarding
+import com.tokopedia.search.generator.utils.IDGeneratorHelper
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
-import com.tokopedia.search.result.product.broadmatch.BroadMatchViewHolder
-import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@UiTest
-internal class BroadMatchNoResultTest {
+class BannedProductEmptySearchIDGenerator {
 
     @get:Rule
     val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
@@ -37,8 +37,7 @@ internal class BroadMatchNoResultTest {
 
     @Before
     fun setUp() {
-
-        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_broad_match_no_result_response))
+        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_banned_product_response))
 
         disableOnBoarding(context)
 
@@ -46,7 +45,8 @@ internal class BroadMatchNoResultTest {
 
         setupIdlingResource()
 
-        intending(isInternal()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.isInternal())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     private fun setupIdlingResource() {
@@ -57,18 +57,15 @@ internal class BroadMatchNoResultTest {
     }
 
     @Test
-    fun testBroadMatchNoResult() {
+    fun generateBannedProductEmptySearchID() {
         performUserJourney()
     }
 
     private fun performUserJourney() {
-        onView(withId(recyclerViewId)).check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(recyclerViewId))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        val productListAdapter = recyclerView.getProductListAdapter()
-        val broadMatchViewModelPosition = productListAdapter.itemList.getBroadMatchViewModelPosition()
-
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<BroadMatchViewHolder>(broadMatchViewModelPosition, clickChildViewWithId(R.id.searchBroadMatchSeeMore)))
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<BroadMatchViewHolder>(broadMatchViewModelPosition, clickChildViewWithId(R.id.searchBroadMatchList)))
+        IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 
     @After

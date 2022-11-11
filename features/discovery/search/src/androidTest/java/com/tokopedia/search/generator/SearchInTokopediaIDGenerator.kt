@@ -1,24 +1,23 @@
-package com.tokopedia.search.testcase
+package com.tokopedia.search.generator
 
 import android.app.Activity
 import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.*
 import com.tokopedia.search.RecyclerViewHasItemIdlingResource
 import com.tokopedia.search.SearchMockModelConfig
 import com.tokopedia.search.createIntent
 import com.tokopedia.search.disableOnBoarding
+import com.tokopedia.search.generator.utils.IDGeneratorHelper
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -26,7 +25,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class SearchInTokopediaTest {
+class SearchInTokopediaIDGenerator {
 
     @get:Rule
     val activityRule = IntentsTestRule(
@@ -71,20 +70,20 @@ class SearchInTokopediaTest {
     }
 
     @Test
-    fun testSearchInTokopedia() {
+    fun generateSearchInTokopediaID() {
         performUserJourney()
     }
 
     private fun performUserJourney() {
-        onView(withId(recyclerViewId)).check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(recyclerViewId))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        val visitableList = recyclerView.getProductListAdapter().itemList
-        recyclerView.perform(
-            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(visitableList.size - 1)
-        )
+        IDGeneratorHelper.scrollAndPrintView(recyclerView)
 
-        onView(withId(R.id.searchResultGlobalSearchInTokopediaTitle)).check(matches(isDisplayed()))
-        onView(withId(R.id.searchResultGlobalSearchInTokopediaButton)).check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.searchResultGlobalSearchInTokopediaTitle))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.searchResultGlobalSearchInTokopediaButton))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @After

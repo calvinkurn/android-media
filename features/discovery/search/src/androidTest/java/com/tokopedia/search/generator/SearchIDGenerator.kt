@@ -68,7 +68,7 @@ internal class SearchIDGenerator {
     }
 
     @Test
-    fun testSearchPage() {
+    fun generateSearchPageID() {
         performUserJourney()
     }
 

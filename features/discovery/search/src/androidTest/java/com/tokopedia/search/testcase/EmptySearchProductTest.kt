@@ -18,7 +18,6 @@ import com.tokopedia.search.RecyclerViewHasItemIdlingResource
 import com.tokopedia.search.SearchMockModelConfig
 import com.tokopedia.search.createIntent
 import com.tokopedia.search.disableOnBoarding
-import com.tokopedia.search.generator.utils.IDGeneratorHelper
 import com.tokopedia.search.getEmptySearchProductViewModelPosition
 import com.tokopedia.search.getProductListAdapter
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
@@ -74,8 +73,6 @@ internal class EmptySearchProductTest {
         val emptySearchProductViewModelPosition = productListAdapter.itemList.getEmptySearchProductViewModelPosition()
 
         assertEmptySearchProductViewModelIsShown(emptySearchProductViewModelPosition)
-
-        IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 
     private fun assertEmptySearchProductViewModelIsShown(emptySearchProductViewModelPosition: Int) {

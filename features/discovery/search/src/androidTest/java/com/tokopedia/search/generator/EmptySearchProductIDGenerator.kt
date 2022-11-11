@@ -1,24 +1,25 @@
-package com.tokopedia.search.testcase
+package com.tokopedia.search.generator
 
 import android.app.Activity
 import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.*
 import com.tokopedia.search.RecyclerViewHasItemIdlingResource
 import com.tokopedia.search.SearchMockModelConfig
 import com.tokopedia.search.createIntent
 import com.tokopedia.search.disableOnBoarding
+import com.tokopedia.search.generator.utils.IDGeneratorHelper
+import com.tokopedia.search.getEmptySearchProductViewModelPosition
+import com.tokopedia.search.getProductListAdapter
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -26,36 +27,25 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class SearchInTokopediaTest {
+class EmptySearchProductIDGenerator {
 
     @get:Rule
-    val activityRule = IntentsTestRule(
-        SearchActivity::class.java,
-        false,
-        false
-    )
+    val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
 
+    private val emptyStateProductLayout = R.id.emptyStateKeywordLayout
 
     @Before
     fun setUp() {
-        setupGraphqlMockResponse(
-            SearchMockModelConfig(
-                com.tokopedia.search.test.R.raw.search_product_last_page_response
-            )
-        )
+        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_empty_search_response))
 
         disableOnBoarding(context)
 
-        activityRule.launchActivity(
-            createIntent(
-                "?q=hairdryer&srp_page_id=383958&navsource=tokocabang&srp_page_titleDilayani+Tokopedia&srp-component_id=02.01.00.00"
-            )
-        )
+        activityRule.launchActivity(createIntent())
 
         setupIdlingResource()
 
@@ -71,20 +61,28 @@ class SearchInTokopediaTest {
     }
 
     @Test
-    fun testSearchInTokopedia() {
+    fun generateEmptySearchProductID() {
         performUserJourney()
     }
 
     private fun performUserJourney() {
-        onView(withId(recyclerViewId)).check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(recyclerViewId))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        val visitableList = recyclerView.getProductListAdapter().itemList
-        recyclerView.perform(
-            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(visitableList.size - 1)
-        )
+        val productListAdapter = recyclerView.getProductListAdapter()
+        val emptySearchProductViewModelPosition = productListAdapter.itemList.getEmptySearchProductViewModelPosition()
 
-        onView(withId(R.id.searchResultGlobalSearchInTokopediaTitle)).check(matches(isDisplayed()))
-        onView(withId(R.id.searchResultGlobalSearchInTokopediaButton)).check(matches(isDisplayed()))
+        assertEmptySearchProductViewModelIsShown(emptySearchProductViewModelPosition)
+
+        IDGeneratorHelper.scrollAndPrintView(recyclerView)
+    }
+
+    private fun assertEmptySearchProductViewModelIsShown(emptySearchProductViewModelPosition: Int) {
+        assert(emptySearchProductViewModelPosition != -1) {
+            "EmptySearchProductViewModel should be in the list"
+        }
+        Espresso.onView(ViewMatchers.withId(emptyStateProductLayout))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @After
@@ -92,3 +90,4 @@ class SearchInTokopediaTest {
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 }
+
