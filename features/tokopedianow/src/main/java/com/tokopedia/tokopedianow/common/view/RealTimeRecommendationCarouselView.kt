@@ -97,10 +97,12 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     private fun renderTitle(data: HomeRealTimeRecomUiModel) {
-        textTitle?.text = itemView?.context?.getString(
-            R.string.tokopedianow_real_time_recom_title, data.category
-        )
+        textTitle?.text = getTitle(data)
         textTitle?.show()
+    }
+
+    private fun getTitle(data: HomeRealTimeRecomUiModel?): String? {
+        return context?.getString(R.string.tokopedianow_real_time_recom_title, data?.category)
     }
 
     private fun renderProductImage(data: HomeRealTimeRecomUiModel) {
@@ -196,13 +198,13 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     private fun trackProductImpression(recomItem: RecommendationItem, position: Int) {
-        val headerName = rtrData?.headerName.orEmpty()
+        val headerName = getTitle(rtrData).orEmpty()
         val productId = rtrData?.parentProductId.orEmpty()
         analytics?.trackProductImpression(headerName, productId, recomItem, position)
     }
 
     private fun trackProductClick(recomItem: RecommendationItem, itemPosition: Int) {
-        val headerName = rtrData?.headerName.orEmpty()
+        val headerName = getTitle(rtrData).orEmpty()
         val productId = rtrData?.parentProductId.orEmpty()
         analytics?.trackProductClick(headerName, productId, recomItem, itemPosition)
     }
