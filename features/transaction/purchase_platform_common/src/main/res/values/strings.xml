@@ -29,4 +29,6 @@
     <string name="pp_epharmacy_upload_count_text">%d foto resep di-upload</string>
     <string name="pp_epharmacy_upload_success_title_text">Berhasil Upload Resep</string>
     <string name="pp_epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
+
+    <string name="pp_auto_unapply_bo_toaster_message">Pengiriman disesuaikan karena ada perubahan di promo yang kamu pilih.</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.tokopedia.cmhomewidget.presentation.customview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -16,12 +17,15 @@ import com.tokopedia.cmhomewidget.di.module.CMHomeWidgetModule
 import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
 import com.tokopedia.cmhomewidget.domain.data.*
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetPaymentCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetViewAllCardListener
 import com.tokopedia.cmhomewidget.presentation.adapter.CMHomeWidgetAdapter
 import com.tokopedia.cmhomewidget.presentation.adapter.decorator.CMHomeWidgetItemDecorator
+import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetPaymentCardViewHolder
 import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
+import java.net.URLEncoder
 import javax.inject.Inject
 
 @CMHomeWidgetScope
@@ -30,7 +34,7 @@ class CMHomeWidget @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr), CMHomeWidgetProductCardListener,
-    CMHomeWidgetViewAllCardListener {
+    CMHomeWidgetViewAllCardListener, CMHomeWidgetPaymentCardListener {
 
     @Inject
     lateinit var binding: LayoutCmHomeWidgetBinding
@@ -51,6 +55,8 @@ class CMHomeWidget @JvmOverloads constructor(
     private var isShowShimmer = false
 
     private var cmHomeWidgetCloseClickListener : CMHomeWidgetCloseClickListener? = null
+
+    private val paymentDataIndex = CMHomeWidgetPaymentCardViewHolder.FIRST_INDEX
 
     init {
         initAttrs(context, attrs)
@@ -79,6 +85,7 @@ class CMHomeWidget @JvmOverloads constructor(
             .build().inject(this)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initRecyclerView() {
         binding.rvCmHomeWidget.apply {
             layoutManager = LinearLayoutManager(
@@ -87,6 +94,7 @@ class CMHomeWidget @JvmOverloads constructor(
             )
             addItemDecoration(itemDecorator.get())
             adapter = (this@CMHomeWidget).adapter.get()
+            adapter?.notifyDataSetChanged()
             setHasFixedSize(true)
         }
     }
@@ -120,10 +128,17 @@ class CMHomeWidget @JvmOverloads constructor(
     private fun setItemsInRecyclerView() {
         val itemsList = ArrayList<CMHomeWidgetVisitable>()
         cmHomeWidgetData?.cmHomeWidgetProductCardData?.let {
-            itemsList.addAll(it)
+            if (it.isNotEmpty()) {
+                itemsList.addAll(it)
+            }
+        }
+        cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
+            if (it.isNotEmpty()) {
+                itemsList.add(it[paymentDataIndex])
+            }
         }
         cmHomeWidgetData?.cmHomeWidgetViewAllCardData?.let {
-            itemsList.add(it)
+                itemsList.add(it)
         }
         if (itemsList.isNotEmpty()) {
             binding.root.visibility = View.VISIBLE
@@ -134,9 +149,16 @@ class CMHomeWidget @JvmOverloads constructor(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setOnCMHomeWidgetCloseClickListener(cmHomeWidgetCloseClickListener: CMHomeWidgetCloseClickListener) {
         this.cmHomeWidgetCloseClickListener = cmHomeWidgetCloseClickListener
         binding.ivCmHomeWidgetClose.setOnClickListener {
+            cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
+                if (it.isNotEmpty()) {
+                    it[paymentDataIndex].isWidgetClosePress = true
+                    binding.rvCmHomeWidget.adapter?.notifyDataSetChanged()
+                }
+            }
             cmHomeWidgetData?.let {
                 cmHomeWidgetCloseClickListener.onCMHomeWidgetDismissClick(
                     it.parentId,
@@ -179,6 +201,36 @@ class CMHomeWidget @JvmOverloads constructor(
 
     override fun setProductCardHeight(height: Int) {
         productCardHeight = height
+    }
+
+    override fun onPaymentCardClick(dataItem: CMHomeWidgetPaymentData) {
+        sendCMHomeWidgetClickEvent()
+        startWebView(dataItem.appLink)
+    }
+
+    private fun startWebView(urlString: String?) {
+        RouteManager.route(context, urlString)
+    }
+
+    override fun onPaymentBtnClick(dataItem: CMHomeWidgetPaymentData) {
+        cmHomeWidgetData?.let {
+            cmHomeWidgetCloseClickListener?.onRemoveCmWidgetLocally()
+        }
+        sendCMHomeWidgetClickEvent()
+        startRequiredActivity(dataItem.actionButton?.get(0)?.appLink)
+    }
+
+    override fun setPaymentCardHeight(measuredHeight: Int) {
+        productCardHeight = measuredHeight
+    }
+
+    override fun timerUpWidgetClose() {
+        cmHomeWidgetData?.let {
+            cmHomeWidgetCloseClickListener?.onCMHomeWidgetDismissClick(
+                it.parentId,
+                it.campaignId
+            )
+        }
     }
 
     override fun onViewAllCardClick(dataItem: CMHomeWidgetViewAllCardData) {

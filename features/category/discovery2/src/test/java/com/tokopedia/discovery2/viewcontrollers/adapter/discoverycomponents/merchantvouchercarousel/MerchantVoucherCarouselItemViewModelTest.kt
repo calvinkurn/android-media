@@ -29,10 +29,10 @@ class MerchantVoucherCarouselItemViewModelTest {
     }
 
 
-//    @Test
-//    fun `test for components`(){
-//        assert(viewModel.components === componentsItem)
-//    }
+    @Test
+    fun `test for components`(){
+        assert(viewModel.components === componentsItem)
+    }
 
     @Test
     fun `test for position`(){

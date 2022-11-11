@@ -29,7 +29,11 @@ data class UohFilterCategory(
                     @SerializedName("value")
                     val value: String = "",
                     @SerializedName("label")
-                    val label: String = ""
+                    val label: String = "",
+                    @SerializedName("description")
+                    val description: String = "",
+                    @SerializedName("category_group")
+                    val categoryGroup: String = ""
             )
         }
     }

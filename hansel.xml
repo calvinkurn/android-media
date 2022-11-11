@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <switch>
+        <turnOn>true</turnOn>
+    </switch>
+
+    <includePackage name="includePackage">
+        <name>com.tkpd</name>
+        <name>com.tokopedia</name>
+        <name>com.laku6.tradeinsdk</name>
+        <name>com.gojek</name>
+    </includePackage>
+
+    <exceptPackname name="exceptPackage">
+        <name>com.tokopedia.tkpd.R</name>
+        <name>com.tokopedia.sellerapp.R</name>
+        <name>com.tokopedia.stability</name>
+    </exceptPackname>
+</resources>

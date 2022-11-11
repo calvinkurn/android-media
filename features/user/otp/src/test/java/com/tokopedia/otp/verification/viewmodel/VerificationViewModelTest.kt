@@ -15,10 +15,12 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusData
+import com.tokopedia.sessioncommon.data.pin.PinStatusParam
 import com.tokopedia.sessioncommon.data.pin.PinStatusResponse
 import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -49,6 +51,9 @@ class VerificationViewModelTest {
     lateinit var getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase
 
     @RelaxedMockK
+    lateinit var getVerificationMethodPhoneRegisterMandatoryUseCase: GetVerificationMethodPhoneRegisterMandatoryUseCase
+
+    @RelaxedMockK
     lateinit var checkPinHashV2UseCase: CheckPinHashV2UseCase
 
     @RelaxedMockK
@@ -61,10 +66,16 @@ class VerificationViewModelTest {
     lateinit var otpValidateUseCase2FA: OtpValidateUseCase2FA
 
     @RelaxedMockK
+    lateinit var otpValidatePhoneRegisterMandatoryUseCase: OtpValidatePhoneRegisterMandatoryUseCase
+
+    @RelaxedMockK
     lateinit var sendOtpUseCase2FA: SendOtp2FAUseCase
 
     @RelaxedMockK
     lateinit var sendOtpUseCase: SendOtpUseCase
+
+    @RelaxedMockK
+    lateinit var sendOtpPhoneRegisterMandatoryUseCase: SendOtpPhoneRegisterMandatoryUseCase
 
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
@@ -102,12 +113,15 @@ class VerificationViewModelTest {
             getVerificationMethodUseCase,
             getVerificationMethodUseCase2FA,
             getVerificationMethodInactivePhoneUseCase,
+            getVerificationMethodPhoneRegisterMandatoryUseCase,
             checkPinHashV2UseCase,
             generatePublicKeyUseCase,
             otpValidateUseCase,
             otpValidateUseCase2FA,
+            otpValidatePhoneRegisterMandatoryUseCase,
             sendOtpUseCase,
             sendOtpUseCase2FA,
+            sendOtpPhoneRegisterMandatoryUseCase,
             userSessionInterface,
             remoteConfig,
             dispatcherProviderTest
@@ -285,6 +299,85 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `Success get verification method phone register mandatory`() {
+        // Given
+        val otpType = "168"
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+
+        // When
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns
+            successGetVerificationMethodResponse
+        viewmodel.getVerificationMethodPhoneRegisterMandatory(otpType, validateToken, email, msisdn)
+
+        // Then
+        val result = viewmodel.getVerificationMethodResult.getOrAwaitValue()
+        assertTrue(result is Success)
+        assertEquals(successGetVerificationMethodResponse.data, result.data)
+    }
+
+    @Test
+    fun `Success get verification method phone register mandatory - error message not empty`() {
+        // Given
+        val otpType = "168"
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+        val errMsg = "error"
+        successGetVerificationMethodResponse.data.success = false
+        successGetVerificationMethodResponse.data.errorMessage = errMsg
+
+        // When
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns
+            successGetVerificationMethodResponse
+        viewmodel.getVerificationMethodPhoneRegisterMandatory(otpType, validateToken, email, msisdn)
+
+        // Then
+        val result = viewmodel.getVerificationMethodResult.value
+        assertTrue(result is Fail)
+        assertEquals(errMsg, result.throwable.message)
+    }
+
+    @Test
+    fun `Success get verification method phone register mandatory - error message empty & success false`() {
+        // Given
+        val otpType = "168"
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+        successGetVerificationMethodResponse.data.success = false
+        successGetVerificationMethodResponse.data.errorMessage = ""
+
+        // When
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) }returns
+            successGetVerificationMethodResponse
+        viewmodel.getVerificationMethodPhoneRegisterMandatory(otpType, validateToken, email, msisdn)
+
+        // Then
+        val result = viewmodel.getVerificationMethodResult.getOrAwaitValue()
+        assertTrue(result is Fail)
+    }
+
+    @Test
+    fun `Failed get verification method phone register mandatory`() {
+        // Given
+        val otpType = "168"
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+
+        // When
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } coAnswers { throw throwable }
+        viewmodel.getVerificationMethodPhoneRegisterMandatory(otpType, validateToken, email, msisdn)
+
+        // Then
+        val result = viewmodel.getVerificationMethodResult.getOrAwaitValue()
+        assertTrue(result is Fail)
+        assertEquals(throwable, result.throwable)
+    }
+
+    @Test
     fun `Success send otp method`() {
         viewmodel.sendOtpResult.observeForever(sendOtpResultObserver)
         coEvery { sendOtpUseCase.getData(any()) } returns successSendOtpResponse
@@ -309,6 +402,46 @@ class VerificationViewModelTest {
         assert(viewmodel.sendOtpResult.value is Fail)
 
         val result = viewmodel.sendOtpResult.value as Fail
+        assertEquals(throwable, result.throwable)
+    }
+
+    @Test
+    fun `Success send otp method phone register mandatory`() {
+        // Given
+        val otpType = "168"
+        val mode = "SMS"
+        val otpDigit = 6
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+
+        // When
+        coEvery { sendOtpPhoneRegisterMandatoryUseCase(any()) } returns successSendOtpResponse
+        viewmodel.sendOtpPhoneRegisterMandatory(otpType, mode, msisdn, email, otpDigit, validateToken)
+
+        // Then
+        val result = viewmodel.sendOtpResult.getOrAwaitValue()
+        assertTrue(result is Success)
+        assert(result.data == successSendOtpResponse.data)
+    }
+
+    @Test
+    fun `Failed send otp method phone register mandatory`() {
+        // Given
+        val otpType = "168"
+        val mode = "SMS"
+        val otpDigit = 6
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+
+        // When
+        coEvery { sendOtpPhoneRegisterMandatoryUseCase(any()) } coAnswers { throw throwable }
+        viewmodel.sendOtpPhoneRegisterMandatory(otpType, mode, msisdn, email, otpDigit, validateToken)
+
+        // Then
+        val result = viewmodel.sendOtpResult.getOrAwaitValue()
+        assertTrue(result is Fail)
         assertEquals(throwable, result.throwable)
     }
 
@@ -355,6 +488,20 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `Success validate otp method - pin isNeedHash false`() {
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase.getData(any()) } returns successOtpValidationResponse
+
+        val data = PinStatusData(isNeedHash = false)
+        val mockResponse = PinStatusResponse(data = data)
+        coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
+
+        viewmodel.otpValidate("", "", "08123123123", "", "", "", "PIN", "", "", 0)
+
+        coVerify(exactly = 0) { generatePublicKeyUseCase.executeOnBackground() }
+    }
+
+    @Test
     fun `Failed validate otp method error message not empty`() {
         successOtpValidationResponse.data.success = false
         successOtpValidationResponse.data.errorMessage = "error"
@@ -396,6 +543,91 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `Success validate otp method phone register mandatory`() {
+        // Given
+        val code = "123456"
+        val otpType = "168"
+        val mode = "SMS"
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+
+        // When
+        coEvery { otpValidatePhoneRegisterMandatoryUseCase(any()) } returns successOtpValidationResponse
+        viewmodel.otpValidatePhoneRegisterMandatory(code, otpType, mode, msisdn, email, validateToken)
+
+        // Then
+        val result = viewmodel.otpValidateResult.getOrAwaitValue()
+        assertTrue(result is Success)
+        assertEquals(successOtpValidationResponse.data, result.data)
+    }
+
+    @Test
+    fun `Success validate otp method phone register mandatory error message isNotEmpty`() {
+        // Given
+        val code = "123456"
+        val otpType = "168"
+        val mode = "SMS"
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+        successOtpValidationResponse.data.errorMessage = "error"
+        successOtpValidationResponse.data.success = false
+
+        // When
+        coEvery { otpValidatePhoneRegisterMandatoryUseCase(any()) } returns successOtpValidationResponse
+        viewmodel.otpValidatePhoneRegisterMandatory(code, otpType, mode, msisdn, email, validateToken)
+
+        // Then
+        val result = viewmodel.otpValidateResult.getOrAwaitValue()
+        assertTrue(result is Fail)
+    }
+
+    @Test
+    fun `Success validate otp method phone register mandatory error message isEmpty & success == false`() {
+        // Given
+        val code = "123456"
+        val otpType = "168"
+        val mode = "SMS"
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+        successOtpValidationResponse.data.errorMessage = ""
+        successOtpValidationResponse.data.success = false
+
+        // When
+        coEvery { otpValidatePhoneRegisterMandatoryUseCase(any()) } returns successOtpValidationResponse
+        viewmodel.otpValidatePhoneRegisterMandatory(code, otpType, mode, msisdn, email, validateToken)
+
+        // Then
+        val result = viewmodel.otpValidateResult.getOrAwaitValue()
+        assertTrue(result is Fail)
+    }
+
+    @Test
+    fun `Failed validate otp method phone register mandatory`() {
+        // Given
+        val code = "123456"
+        val otpType = "168"
+        val mode = "SMS"
+        val validateToken = "qwerty"
+        val email = "habibi@tokopedia.com"
+        val msisdn = "08123456789"
+        val data = PinStatusData(isNeedHash = false)
+        val mockResponse = PinStatusResponse(data = data)
+
+        // When
+        coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
+        coEvery { otpValidatePhoneRegisterMandatoryUseCase(any()) } throws throwable
+        viewmodel.otpValidatePhoneRegisterMandatory(code, otpType, mode, msisdn, email, validateToken)
+
+        // Then
+        val result = viewmodel.otpValidateResult.getOrAwaitValue()
+        assertTrue(result is Fail)
+        assertEquals(throwable, result.throwable)
+    }
+
+    @Test
     fun `Success validate otp method 2fa`() {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
@@ -407,6 +639,20 @@ class VerificationViewModelTest {
 
         val result = viewmodel.otpValidateResult.value as Success<OtpValidateData>
         assert(result.data == successOtpValidationResponse.data)
+    }
+
+    @Test
+    fun `Success validate otp method 2fa isNeedHash false`() {
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
+
+        val data = PinStatusData(isNeedHash = false)
+        val mockResponse = PinStatusResponse(data = data)
+        coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
+
+        viewmodel.otpValidate2FA("", "", "", "PIN", "", userId = 0)
+
+        coVerify(exactly = 0) { generatePublicKeyUseCase.executeOnBackground() }
     }
 
     @Test
@@ -466,7 +712,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
-        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0, true)
+        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
@@ -480,6 +726,24 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `CreateCheckPinV2Param - userid`() {
+        val testId = "12345"
+        assert(viewmodel.createCheckPinV2Param(testId, "", "").id == testId)
+    }
+
+    @Test
+    fun `CreateCheckPinV2Param - phone`() {
+        val phone = "12345"
+        assert(viewmodel.createCheckPinV2Param("", phone, "").id == phone)
+    }
+
+    @Test
+    fun `CreateCheckPinV2Param - email`() {
+        val email = "yoris.prayogo@tokopedia.com"
+        assert(viewmodel.createCheckPinV2Param("", "", email).id == email)
+    }
+
+    @Test
     fun `Validate otp method pin v2 - encryption failed`() {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase.getData(any()) } returns successOtpValidationResponse
@@ -489,7 +753,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
-        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0, true)
+        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
@@ -506,7 +770,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
 
         runBlocking {
-            assertTrue(viewmodel.isNeedHash("", ""))
+            assertTrue(viewmodel.isNeedHash(PinStatusParam("", "")))
         }
     }
 
@@ -518,7 +782,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
 
         runBlocking {
-            assertEquals(false, viewmodel.isNeedHash("", ""))
+            assertEquals(false, viewmodel.isNeedHash(PinStatusParam("", "")))
         }
     }
 
@@ -556,7 +820,7 @@ class VerificationViewModelTest {
         val msisdn = "08123123"
         val uid = 0
 
-        viewmodel.otpValidate2FA(otpType, validateToken, userIdEnc, mode, code, msisdn = msisdn, userId = uid, usePinV2 = true)
+        viewmodel.otpValidate2FA(otpType, validateToken, userIdEnc, mode, code, msisdn = msisdn, userId = uid)
 
         var params = otpValidateUseCase2FA.getParams(
             otpType = otpType,
@@ -586,7 +850,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
-        viewmodel.otpValidate2FA("", "", "", "", "", userId = 0, usePinV2 = true)
+        viewmodel.otpValidate2FA("", "", "", "", "", userId = 0)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
@@ -623,6 +887,62 @@ class VerificationViewModelTest {
         viewmodel.onCleared()
 
         assert(userSessionInterface.accessToken.isNullOrEmpty())
+    }
+
+    @Test
+    fun `on viewmodel clear isLoginRegisterFlow = false`() {
+        viewmodel.done = false
+        viewmodel.isLoginRegisterFlow = false
+        val clearValue = true
+        coEvery {
+            remoteConfig.getBoolean(
+                RemoteConfigKey.PRE_OTP_LOGIN_CLEAR,
+                true
+            )
+        } returns clearValue
+
+        viewmodel.onCleared()
+
+        verify(exactly = 0) {
+            userSessionInterface.setToken(null, null, null)
+        }
+    }
+
+    @Test
+    fun `on viewmodel clear done = true`() {
+        viewmodel.done = true
+        viewmodel.isLoginRegisterFlow = false
+        val clearValue = true
+        coEvery {
+            remoteConfig.getBoolean(
+                RemoteConfigKey.PRE_OTP_LOGIN_CLEAR,
+                true
+            )
+        } returns clearValue
+
+        viewmodel.onCleared()
+
+        verify(exactly = 0) {
+            userSessionInterface.setToken(null, null, null)
+        }
+    }
+
+    @Test
+    fun `on viewmodel clear config = false`() {
+        viewmodel.done = true
+        viewmodel.isLoginRegisterFlow = false
+        coEvery {
+            remoteConfig.getBoolean(
+                RemoteConfigKey.PRE_OTP_LOGIN_CLEAR,
+                true
+            )
+        } returns false
+
+        viewmodel.onCleared()
+
+        verify(exactly = 0) {
+            userSessionInterface.setToken(null, null, null)
+        }
     }
 
     companion object {

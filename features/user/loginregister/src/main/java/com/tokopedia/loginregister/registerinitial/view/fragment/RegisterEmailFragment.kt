@@ -32,6 +32,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
@@ -92,7 +93,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     override fun onStart() {
         super.onStart()
         activity?.let {
-            analytics?.trackScreen(it, screenName)
+            analytics.trackScreen(it, screenName)
         }
     }
 
@@ -106,8 +107,8 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        registerInitialViewModel = viewModelProvider?.get(RegisterInitialViewModel::class.java)
+        viewModelProvider = ViewModelProvider(this, viewModelFactory)
+        registerInitialViewModel = viewModelProvider.get(RegisterInitialViewModel::class.java)
         fetchRemoteConfig()
     }
 
@@ -140,11 +141,13 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        registerInitialViewModel?.registerRequestResponse?.observe(viewLifecycleOwner, Observer { registerRequestDataResult: Result<RegisterRequestData>? ->
+        registerInitialViewModel.registerRequestResponse.observe(viewLifecycleOwner) { registerRequestDataResult: Result<RegisterRequestData>? ->
             if (registerRequestDataResult is Success) {
                 val data = (registerRequestDataResult).data
-                userSession?.clearToken()
-                userSession?.setToken(data.accessToken, data.tokenType, EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
+                userSession.clearToken()
+                userSession.setToken(data.accessToken,
+                    data.tokenType,
+                    EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
                 onSuccessRegister()
                 if (activity != null) {
                     val intent = Intent()
@@ -156,12 +159,10 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             } else if (registerRequestDataResult is Fail) {
                 val throwable = registerRequestDataResult.throwable
                 dismissLoadingProgress()
-                val errorMessage = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().apply {
-                    className = RegisterEmailFragment::class.java.name
-                }.build())
-                if(throwable is MessageErrorException){
+                val errorMessage = throwable.getMessage(requireActivity())
+                if (throwable is MessageErrorException) {
                     throwable.message?.run {
-                        if(this.contains(ALREADY_REGISTERED)){
+                        if (this.contains(ALREADY_REGISTERED)) {
                             showInfo()
                         } else {
                             onErrorRegister(errorMessage)
@@ -170,7 +171,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                 } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
-                                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+                            com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
                         if (errorMessage.removeErrorCode() == forbiddenMessage) {
                             onForbidden()
                         } else {
@@ -179,7 +180,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-        })
+        }
     }
 
     private fun fetchRemoteConfig() {
@@ -242,7 +243,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         wrapperEmail?.textFieldInput?.addTextChangedListener(emailWatcher(wrapperEmail))
         wrapperPassword?.textFieldInput?.addTextChangedListener(passwordWatcher(wrapperPassword))
         wrapperName?.textFieldInput?.addTextChangedListener(nameWatcher(wrapperName))
-        if(userSession?.isLoggedIn == true) {
+        if(userSession.isLoggedIn) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
@@ -346,20 +347,20 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun registerEmail() {
         showLoadingProgress()
         if(validatePasswordInput()) {
-            registerAnalytics?.trackClickSignUpButtonEmail()
+            registerAnalytics.trackClickSignUpButtonEmail()
             if (isUseEncryption()) {
-                registerInitialViewModel?.registerRequestV2(
-                        wrapperEmail?.textFieldInput?.text.toString(),
-                        wrapperPassword?.textFieldInput?.text.toString(),
-                        wrapperName?.textFieldInput?.text.toString(),
-                        token
+                registerInitialViewModel.registerRequestV2(
+                    wrapperEmail?.textFieldInput?.text.toString(),
+                    wrapperPassword?.textFieldInput?.text.toString(),
+                    wrapperName?.textFieldInput?.text.toString(),
+                    token
                 )
             } else {
-                registerInitialViewModel?.registerRequest(
-                        wrapperEmail?.textFieldInput?.text.toString(),
-                        wrapperPassword?.textFieldInput?.text.toString(),
-                        wrapperName?.textFieldInput?.text.toString(),
-                        token
+                registerInitialViewModel.registerRequest(
+                    wrapperEmail?.textFieldInput?.text.toString(),
+                    wrapperPassword?.textFieldInput?.text.toString(),
+                    wrapperName?.textFieldInput?.text.toString(),
+                    token
                 )
             }
         } else {
@@ -448,7 +449,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             dismissLoadingProgress()
             setActionsEnabled(true)
             lostViewFocus()
-            registerAnalytics?.trackSuccessClickSignUpButtonEmail()
+            registerAnalytics.trackSuccessClickSignUpButtonEmail()
         }
     }
 
@@ -512,12 +513,12 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun onFailedRegisterEmail(errorMessage: String?) {
-        registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage?.removeErrorCode() ?: "")
-        registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage?.removeErrorCode() ?: "")
+        registerAnalytics.trackFailedClickEmailSignUpButton(errorMessage?.removeErrorCode() ?: "")
+        registerAnalytics.trackFailedClickSignUpButtonEmail(errorMessage?.removeErrorCode() ?: "")
     }
 
     fun onBackPressed() {
-        registerAnalytics?.trackClickOnBackButtonRegisterEmail()
+        registerAnalytics.trackClickOnBackButtonRegisterEmail()
     }
 
     companion object {

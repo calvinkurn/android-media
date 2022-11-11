@@ -100,7 +100,7 @@ class HomeRecommendationViewModel @Inject constructor(
         val headlineData = headlineAds.displayAds.data
         var position:Int? = null
         if (!headlineData.isNullOrEmpty()) {
-            position = headlineData.firstOrNull()?.cpm?.position
+            position = headlineData.first().cpm.position
         }
         if (topAdsBanner.isEmpty()) {
             homeBannerTopAds.firstOrNull()?.let { newList.remove(it) }

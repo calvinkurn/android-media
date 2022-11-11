@@ -37,7 +37,7 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Locale
+import java.util.*
 
 
 object DynamicProductDetailTracking {
@@ -666,6 +666,20 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_READ_MORE,
                     ""
             )
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_READ_MORE)
+        }
+
+        fun eventClickProductSpecificationReadMore(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
+            val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PG,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_SPECIFICATION_READ_MORE,
+                ""
+            ).apply {
+                put(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
+                put(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE)
+                put(ProductTrackingConstant.Tracking.KEY_TRACKER_ID, ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_SPECIFICATION)
+            }
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_READ_MORE)
         }
 
@@ -1886,37 +1900,6 @@ object DynamicProductDetailTracking {
                     String.format(ProductTrackingConstant.Label.TICKER_OOS, TrackingUtil.getTickerTypeInfoString(tickerType), tickerTitle, tickerMessage)
             )
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-        }
-
-
-        /**
-         * 26-10-2021
-         * Only triggered when using
-         * oneliner - stock assurance
-         */
-        fun eventOneLinerImpression(
-                trackingQueue: TrackingQueue?,
-                componentTrackDataModel: ComponentTrackDataModel,
-                productInfo: DynamicProductInfoP1?,
-                userId: String,
-                lcaWarehouseId: String,
-                label: String
-        ) {
-            val productId = productInfo?.basic?.productID ?: ""
-            val mapEvent = TrackingUtil.createCommonImpressionTracker(
-                    productInfo = productInfo,
-                    componentTrackDataModel = componentTrackDataModel,
-                    userId = userId,
-                    lcaWarehouseId = lcaWarehouseId,
-                    customAction = "view - pdp oneliner component",
-                    customCreativeName = "",
-                    customItemName = "product detail page - $productId",
-                    customLabel = "",
-                    customPromoCode = "",
-                    customItemId = "text:$label"
-            )
-
-            trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
         }
     }
 

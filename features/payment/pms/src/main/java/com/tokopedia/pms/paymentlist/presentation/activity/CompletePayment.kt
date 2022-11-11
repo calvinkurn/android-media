@@ -118,7 +118,9 @@ class CompletePayment : AppCompatActivity() {
     }
 
     override fun onPause() {
-        timerJob.cancel()
+        if (::timerJob.isInitialized) {
+            timerJob.cancel()
+        }
         super.onPause()
     }
 

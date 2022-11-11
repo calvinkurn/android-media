@@ -1,10 +1,11 @@
 package com.tokopedia.cart.view.mapper
 
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
-import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 /**
  * Created by Irfan Khoirul on 2019-12-11.
@@ -30,7 +31,7 @@ class WishlistMapper @Inject constructor() {
         cartWishlistItemHolderData.imageUrl = wishlist.imageUrl
         cartWishlistItemHolderData.url = wishlist.url
         cartWishlistItemHolderData.isWishlist = true
-        cartWishlistItemHolderData.rating = wishlist.rating.toIntOrZero()
+        cartWishlistItemHolderData.rating = wishlist.rating.toFloatOrZero().roundToInt()
         cartWishlistItemHolderData.minOrder = wishlist.minOrder.toIntOrZero()
         cartWishlistItemHolderData.freeShipping = wishlist.bebasOngkir.title.isNotEmpty()
         cartWishlistItemHolderData.freeShippingUrl = wishlist.bebasOngkir.imageUrl

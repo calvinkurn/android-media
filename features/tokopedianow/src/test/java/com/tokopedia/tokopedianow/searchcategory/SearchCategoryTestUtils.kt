@@ -109,6 +109,7 @@ fun verifyProductItemDataViewList(
         expectedProductList: List<Product>,
         actualProductItemDataViewList: List<ProductItemDataView>,
         startPosition: Int,
+        needToVerifyAtc: Boolean = true
 ) {
     assertThat(actualProductItemDataViewList.size, shouldBe(expectedProductList.size))
 
@@ -130,7 +131,7 @@ fun verifyProductItemDataViewList(
         assertThat(actualProductDataView.sourceEngine, shouldBe(expectedProduct.sourceEngine))
         assertThat(actualProductDataView.boosterList, shouldBe(expectedProduct.boosterList))
         assertThat(actualProductDataView.position, shouldBe(expectedPosition))
-        assertATCConfiguration(actualProductDataView, expectedProduct)
+        if (needToVerifyAtc) assertATCConfiguration(actualProductDataView, expectedProduct)
         assertLabelGroupDataView(
                 actualProductDataView.labelGroupDataViewList,
                 expectedProduct.labelGroupList

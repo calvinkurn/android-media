@@ -10,7 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/shcMlgSuccessState"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/shc_super_large_widget_height">
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/shc_super_large_widget_height">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineShcMultiLineGraphStart"
@@ -28,7 +29,6 @@
             android:layout_marginEnd="24dp"
             android:drawablePadding="8dp"
             android:textColor="@color/Unify_N700_96"
-            android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -146,8 +146,8 @@
             android:id="@+id/shcMultiLineGraphErrorView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="128dp"
-            android:layout_marginBottom="128dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/tvShcMultiLineCta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -354,7 +354,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
-            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL);
             webView.loadUrl(kycRedirectionUrl);
             return;
         }
@@ -568,21 +568,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             permissionCheckerHelper.checkPermissions(this,
                     LocationDetectorHelper.Companion.getPermissions(RequestLocationType.APPROXIMATE_OR_PRECISE),
                     new PermissionCheckerHelper.PermissionCheckListener() {
-                @Override
-                public void onPermissionDenied(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
+                        @Override
+                        public void onPermissionDenied(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
 
-                @Override
-                public void onNeverAskAgain(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
+                        @Override
+                        public void onNeverAskAgain(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
 
-                @Override
-                public void onPermissionGranted() {
-                    callback.invoke(origin, true, false);
-                }
-            }, getString(R.string.webview_rationale_need_location));
+                        @Override
+                        public void onPermissionGranted() {
+                            callback.invoke(origin, true, false);
+                        }
+                    }, getString(R.string.webview_rationale_need_location));
         } else callback.invoke(origin, true, false);
     }
 
@@ -597,7 +597,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        if (permissionCheckerHelper != null) {
+            permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        }
     }
 
     class MyWebViewClient extends WebViewClient {
@@ -971,10 +973,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private void gotoAlaCarteKyc(Uri uri) {
-        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
-        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
-        String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
-        String kycType = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE);
+        String projectId = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL);
+        String layout = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_SHOW_INTRO);
+        String kycType = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE);
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl, kycType);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }

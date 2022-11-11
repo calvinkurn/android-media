@@ -3,6 +3,7 @@ package com.tokopedia.top_ads_headline.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.top_ads_headline.Constants
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import javax.inject.Inject
 
@@ -13,7 +14,7 @@ class EditAdOthersViewModel @Inject constructor(
     fun validateGroup(adName: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launchCatchError(
                 block = {
-                    topAdsGroupValidateNameUseCase.setParams(adName)
+                    topAdsGroupValidateNameUseCase.setParams(adName, Constants.SOURCE_ANDROID_AD_EDIT)
                     val response = topAdsGroupValidateNameUseCase.executeOnBackground()
                     if (response.topAdsGroupValidateName.errors.isEmpty()) {
                         onSuccess()

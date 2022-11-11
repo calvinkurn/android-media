@@ -25,6 +25,13 @@ interface ShopHomeCarouselProductListener {
             shopHomeProductViewModel: ShopHomeProductUiModel?
     )
 
+    fun onPersonalizationTrendingCarouselProductItemClicked(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel,
+            shopHomeProductViewModel: ShopHomeProductUiModel
+    )
+
     fun onCarouselProductItemImpression(
             parentPosition: Int,
             itemPosition: Int,
@@ -37,6 +44,11 @@ interface ShopHomeCarouselProductListener {
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductUiModel?
+    )
+
+    fun onCarouselProductPersonalizationTrendingItemImpression(
+        itemPosition: Int,
+        shopHomeProductViewModel: ShopHomeProductUiModel
     )
 
     fun onCarouselProductPersonalizationReminderItemImpression(
@@ -99,6 +111,8 @@ interface ShopHomeCarouselProductListener {
     fun onCarouselProductShowcaseCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?)
 
     fun onCarouselProductWidgetImpression(adapterPosition: Int, model: ShopHomeCarousellProductUiModel)
+
+    fun onCarouselProductPersonalizationTrendingWidgetImpression()
 
     fun onProductAtcNonVariantQuantityEditorChanged(
         shopHomeProductUiModel: ShopHomeProductUiModel,

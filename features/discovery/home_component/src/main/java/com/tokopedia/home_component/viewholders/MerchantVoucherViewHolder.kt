@@ -113,7 +113,10 @@ class MerchantVoucherViewHolder(
                     buType = channel.trackingAttributionModel.galaxyAttribution,
                     topAds = element.getTopadsString(),
                     recommendationType = element.recommendationType,
-                    campaignCode = element.campaignCode.ifEmpty { channel.trackingAttributionModel.campaignCode }
+                    campaignCode = element.campaignCode.ifEmpty { channel.trackingAttributionModel.campaignCode },
+                    channelId = channel.id,
+                    attribution = element.attribution,
+                    brandId = channel.trackingAttributionModel.brandId
                 )
             )
         }
@@ -143,6 +146,7 @@ class MerchantVoucherViewHolder(
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 merchantVoucherComponentListener.onViewAllClicked(
+                    element.channelModel.id,
                     element.channelModel.channelHeader.name,
                     link,
                     merchantVoucherComponentListener.getUserId(),
@@ -168,6 +172,7 @@ class MerchantVoucherViewHolder(
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
         merchantVoucherComponentListener.onViewAllCardClicked(
+            channel.id,
             channel.channelHeader.name,
             channel.channelHeader.applink,
             merchantVoucherComponentListener.getUserId(),

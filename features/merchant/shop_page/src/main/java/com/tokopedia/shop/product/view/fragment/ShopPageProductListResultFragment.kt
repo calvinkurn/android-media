@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -30,7 +29,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
@@ -122,7 +120,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
-    lateinit var viewModel: ShopPageProductListResultViewModel
+
+    private val viewModel: ShopPageProductListResultViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopPageProductListResultViewModel::class.java)
+    }
 
     private var shopPageTracking: ShopPageTrackingBuyer? = null
     private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
@@ -138,11 +139,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductFilterParameter?.setSortId(value)
         }
     private val sortName
-        get() = if (::viewModel.isInitialized) {
-            viewModel.getSortNameById(sortId)
-        } else {
-            ""
-        }
+        get() = viewModel.getSortNameById(sortId)
+
     private var sourceRedirection: String = ""
     private var isShopPageProductSearchResultTrackerAlreadySent: Boolean = false
     private var attribution: String? = null
@@ -185,19 +183,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
     private val isMyShop: Boolean
-        get() = if (::viewModel.isInitialized) {
-            shopId?.let { viewModel.isMyShop(it) } ?: false
-        } else false
+        get() = shopId?.let { viewModel.isMyShop(it) } ?: false
 
     private val isLogin: Boolean
-        get() = if (::viewModel.isInitialized) {
-            viewModel.isLogin
-        } else false
+        get() = viewModel.isLogin
 
     private val userId: String
-        get() = if (::viewModel.isInitialized) {
-            viewModel.userId
-        } else "0"
+        get() = viewModel.userId
+
     var localCacheModel: LocalCacheModel? = null
     private var rvDefaultPaddingBottom = 0
     private val viewBinding: FragmentShopProductListResultNewBinding? by viewBinding()
@@ -284,7 +277,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         context?.let {
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
         }
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListResultViewModel::class.java)
     }
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
@@ -395,12 +387,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     selectedEtalaseId.split("_").let { it[1].toIntOrZero() }
                 } else 0
                 val restrictionParam = RestrictionEngineRequestParams().apply {
-                    userId = userIdFromSession
+                    userId = userIdFromSession.toLong()
                     dataRequest = mutableListOf(
                         RestrictionEngineDataRequest(
                                 product = RestrictionEngineDataRequestProduct(productID = 0.toString()),
-                                shop = RestrictionEngineDataRequestShop(shopID = shopId.toIntOrZero()),
-                                campaign = RestrictionEngineDataRequestCampaign(campaignID = campaignId)
+                                shop = RestrictionEngineDataRequestShop(shopID = shopId.toLongOrZero()),
+                                campaign = RestrictionEngineDataRequestCampaign(campaignID = campaignId.toLong())
                         )
                     )
                 }

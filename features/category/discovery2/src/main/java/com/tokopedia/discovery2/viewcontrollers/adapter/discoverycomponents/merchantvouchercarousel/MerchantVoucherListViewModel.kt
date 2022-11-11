@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel
 
 import android.app.Application
+import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.ErrorState
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -35,9 +36,11 @@ class MerchantVoucherListViewModel(application: Application, val components: Com
             )
             if (shouldSync) {
                 getComponent(components.id, components.pageEndPoint)?.let {
-                    if (it.getComponentsItem().isNullOrEmpty()) {
+                    if (it.getComponentsItem().isNullOrEmpty() && !it.areFiltersApplied()) {
                         it.verticalProductFailState = true
                         it.errorState = ErrorState.EmptyComponentState
+                    } else {
+                        it.verticalProductFailState = false
                     }
                 }
             }

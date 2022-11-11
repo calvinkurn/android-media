@@ -20,9 +20,11 @@ import org.junit.runner.RunWith
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
 class OfficialStoreFrameTimingBenchmark: BaseFrameTimingBenchmark() {
-    @Before
-    fun setupEnvironment() {
-        MacroDevOps.setupEnvironment(MacroIntent.OfficialStore.getOsMacroSetupIntent())
+    override fun setupEnvironment() {
+        MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
+    }
+
+    override fun setupMock() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {

@@ -10,8 +10,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -57,7 +57,7 @@ class TableViewHolder(
             data == null || element.showLoadingState -> showLoadingState()
             data.error.isNotBlank() -> {
                 showErrorState(element)
-                listener.setOnErrorWidget(adapterPosition, element, data.error)
+                listener.setOnErrorWidget(absoluteAdapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }
@@ -68,7 +68,7 @@ class TableViewHolder(
         itemView.addOnImpressionListener(element.impressHolder) {
             listener.sendTableImpressionEvent(
                 model = element,
-                position = this@TableViewHolder.adapterPosition,
+                position = this@TableViewHolder.absoluteAdapterPosition,
                 slidePosition = Int.ZERO,
                 maxSlidePosition = element.data?.dataSet?.size.orZero(),
                 isSlideEmpty = dataSet.getOrNull(Int.ZERO)?.rows.isNullOrEmpty()
@@ -92,12 +92,12 @@ class TableViewHolder(
                     shcTableView.visible()
                     shcTableView.showTable(element.data?.dataSet.orEmpty())
                     shcTableView.addOnSlideImpressionListener { position, maxPosition, isEmpty ->
-                        listener.sendTableImpressionEvent(element, adapterPosition, position, maxPosition, isEmpty)
+                        listener.sendTableImpressionEvent(element, absoluteAdapterPosition, position, maxPosition, isEmpty)
                     }
                     shcTableView.setOnSwipeListener { position, maxPosition, isEmpty ->
                         listener.sendTableOnSwipeEvent(element, position, maxPosition, isEmpty)
                     }
-                    shcTableView.addOnHtmlClickListener { url, isEmpty ->
+                    shcTableView.addOnHtmlClickListener { url, _, _, isEmpty ->
                         listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
                     }
                 }
@@ -109,9 +109,9 @@ class TableViewHolder(
                 } else {
                     if (listener.getIsShouldRemoveWidget()) {
                         itemView.toggleWidgetHeight(false)
-                        listener.removeWidget(adapterPosition, element)
+                        listener.removeWidget(absoluteAdapterPosition, element)
                     } else {
-                        listener.onRemoveWidget(adapterPosition)
+                        listener.onRemoveWidget(absoluteAdapterPosition)
                         itemView.toggleWidgetHeight(false)
                     }
                 }
@@ -249,7 +249,7 @@ class TableViewHolder(
                 text = selectedFilter?.name.orEmpty()
                 setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
                 setOnClickListener {
-                    listener.showTableFilter(element, adapterPosition)
+                    listener.showTableFilter(element, absoluteAdapterPosition)
                 }
             }
         } else {
@@ -316,7 +316,7 @@ class TableViewHolder(
         ) {
         }
 
-        fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
+        fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
         fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {}
         fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {}
         fun sendTableFilterImpression(element: TableWidgetUiModel) {}

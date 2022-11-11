@@ -19,6 +19,13 @@ import org.junit.runner.RunWith
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
 class ShopPageHomeTabFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+    override fun setupEnvironment() {
+    }
+
+    override fun setupMock() {
+    }
+
+
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicRecyclerviewInteraction(
             MacroIntent.ShopPage.PACKAGE_NAME,

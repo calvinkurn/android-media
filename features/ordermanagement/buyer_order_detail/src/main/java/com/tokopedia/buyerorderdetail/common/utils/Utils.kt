@@ -17,6 +17,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -41,9 +42,8 @@ object Utils {
     }
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
-        val color = parseColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        val drawable =
-            MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
+        val color = parseUnifyColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val drawable = MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(
             ContextCompat.getColor(
                 context,
@@ -100,5 +100,21 @@ object Utils {
         }
         val values = CurrencyFormatHelper.convertToRupiah(value.toString())
         return "$CURRENCY_RUPIAH$values"
+    }
+
+    fun getColoredResoDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
+        val color = parseUnifyColorHex(context, colorHex, defaultColor)
+        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response)
+        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        drawable.colorFilter = filter
+        return drawable
+    }
+
+    fun parseUnifyColorHex(context: Context, colorHex: String, defaultColor: Int): Int {
+        return try {
+            stringToUnifyColor(context, colorHex).run { this.unifyColor ?: this.defaultColor }
+        } catch (t: Throwable) {
+            defaultColor
+        }
     }
 }

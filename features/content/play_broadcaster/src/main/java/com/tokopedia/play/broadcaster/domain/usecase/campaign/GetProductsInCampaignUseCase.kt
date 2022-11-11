@@ -35,25 +35,26 @@ class GetProductsInCampaignUseCase @Inject constructor(
 
     companion object {
 
-        private const val PARAM_USER_ID = "userId"
-        private const val PARAM_CAMPAIGN_ID = "campaignId"
-        private const val PARAM_PAGE = "page"
-        private const val PARAM_PER_PAGE = "perPage"
+        private const val PARAM_USER_ID = "UserID"
+        private const val PARAM_CAMPAIGN_ID = "CampaignID"
+        private const val PARAM_PAGE = "Page"
+        private const val PARAM_PER_PAGE = "ResultPerPage"
+        private const val PARAM_SOURCE = "Source"
 
         const val QUERY_NAME = "GetCampaignProductUseCaseQuery"
         const val QUERY = """
-            query GetCampaignProduct(
+            query getFlashSaleProductList(
                 ${"$${PARAM_CAMPAIGN_ID}"}: Int, 
                 ${"$${PARAM_USER_ID}"}: Int!,
                 ${"$${PARAM_PAGE}"}: Int,
                 ${"$${PARAM_PER_PAGE}"}: Int
             ) {
-              getCampaignProduct(params: {
-                UserID: ${"$${PARAM_USER_ID}"},
-                Source: "broadcaster",
-                CampaignID: ${"$${PARAM_CAMPAIGN_ID}"},
-                Page: ${"$${PARAM_PAGE}"},
-                ResultPerPage: ${"$${PARAM_PER_PAGE}"}
+              getFlashSaleProductList(params: {
+                $PARAM_USER_ID: ${"$${PARAM_USER_ID}"},
+                $PARAM_SOURCE: "broadcaster",
+                $PARAM_CAMPAIGN_ID: ${"$${PARAM_CAMPAIGN_ID}"},
+                $PARAM_PAGE: ${"$${PARAM_PAGE}"},
+                $PARAM_PER_PAGE: ${"$${PARAM_PER_PAGE}"}
               }) {
                 Products {
                   ID

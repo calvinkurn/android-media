@@ -62,7 +62,6 @@ class ProductMediaViewHolder(private val view: View,
             listener = listener,
             componentTrackDataModel = getComponentTrackData(element),
             initialScrollPosition = scrollPosition,
-            shouldAnimateLabel = element.shouldAnimateLabel,
             containerType = element.containerType
         )
     }

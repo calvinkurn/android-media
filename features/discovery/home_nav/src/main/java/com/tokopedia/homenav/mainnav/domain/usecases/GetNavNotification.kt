@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.homenav.mainnav.data.pojo.notif.NavNotificationPojo
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
+import com.tokopedia.homenav.mainnav.domain.usecases.query.NavNotificationQuery
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.searchbar.navigation_component.data.notification.Param
 import com.tokopedia.usecase.RequestParams
@@ -25,7 +26,7 @@ class GetNavNotification @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): NavNotificationModel {
-        val gqlRequest = GraphqlRequest(query, NavNotificationPojo::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(NavNotificationQuery(), NavNotificationPojo::class.java, params.parameters)
         val gqlResponse = graphqlUseCase.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
@@ -44,19 +45,5 @@ class GetNavNotification @Inject constructor(
 
     companion object {
         private const val PARAM_INPUT = "input"
-        private val query = getQuery()
-        private fun getQuery(): String {
-            return """query NavNotification($$PARAM_INPUT: NotificationRequest){
-                        notifications(input: $$PARAM_INPUT){
-                            resolutionAs {
-                                buyer
-                            }
-                            inbox {
-                                inbox_ticket
-                                inbox_review
-                            }
-                    }
-                }""".trimIndent()
-        }
     }
 }

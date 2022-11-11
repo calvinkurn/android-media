@@ -73,6 +73,12 @@ object ApplinkConstInternalSellerapp {
     // Seller Shop Flash Sale - CampaignListActivity
     const val SELLER_SHOP_FLASH_SALE = "$INTERNAL_SELLERAPP/shop-flash-sale/{filter_mode}/"
 
+    // Seller Tokopedia Flash Sale - CampaignListActivity
+    const val SELLER_TOKOPEDIA_FLASH_SALE = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/{tab_menu}/"
+
+    // Seller Tokopedia Flash Sale - CampaignDetailActivity
+    const val SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "$INTERNAL_SELLERAPP/tokopedia-flash-sale/campaign-detail/{campaign_id}/"
+
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
 
@@ -100,5 +106,17 @@ object ApplinkConstInternalSellerapp {
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_VARIANT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/variant"
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_MULTI_LOC_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/multi-loc"
 
+    //TokomemberMainActivity
     const val TOKOMEMBER = "$INTERNAL_SELLERAPP/tokomember"
+    const val TOKOMEMBER_PROGRAM_LIST = "$TOKOMEMBER/program-list"
+    const val TOKOMEMBER_COUPON_LIST = "$TOKOMEMBER/coupon-list"
+    const val TOKOMEMBER_COUPON_DETAIL = "$TOKOMEMBER/coupon-detail/{coupon_id}"
+
+    //TmDashCreateActivity if registered
+    const val TOKOMEMBER_PROGRAM_CREATION = "$TOKOMEMBER/program-creation"
+    const val TOKOMEMBER_COUPON_CREATION = "$INTERNAL_SELLERAPP/tokomember/coupon-creation"
+    const val TOKOMEMBER_PROGRAM_EXTENSION = "$TOKOMEMBER/program-extension/{program_id}"
+
+    //TokomemberMemberListActivity
+    const val INTERNAL_MEMBER_LIST = "$TOKOMEMBER/member-list"
 }

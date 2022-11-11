@@ -35,6 +35,7 @@ class GetOccCartMapper @Inject constructor() {
     fun mapGetOccCartDataToOrderData(data: GetOccCartData): OrderData {
         val groupShop = data.groupShop.first()
         val orderCart = OrderCart().apply {
+            cartData = data.cartData
             cartString = groupShop.cartString
             paymentProfile = groupShop.paymentProfile
             shop = generateOrderShop(groupShop)

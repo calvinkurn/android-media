@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view;
 import androidx.fragment.app.FragmentManager;
 
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener {
 
-    void onCancelVoucherLogisticClicked(String pslCode, int position);
+    void onCancelVoucherLogisticClicked(String pslCode, int position, ShipmentCartItemModel shipmentCartItemModel);
 
     void onDataEnableToCheckout();
 
@@ -37,7 +38,7 @@ public interface ShipmentAdapterActionListener {
 
     void onTotalPaymentChange(String totalPayment, boolean enable);
 
-    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString);
+    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString, boolean forceHitValidateUse);
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
@@ -144,5 +145,13 @@ public interface ShipmentAdapterActionListener {
 
     void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
 
+    void onViewNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel);
+
+    void onClickApplyNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel);
+
+    void onClickCancelNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel);
+
     void onViewFreeShippingPlusBadge();
+
+    void onInsuranceInfoTooltipClickedTrackingAnalytics();
 }

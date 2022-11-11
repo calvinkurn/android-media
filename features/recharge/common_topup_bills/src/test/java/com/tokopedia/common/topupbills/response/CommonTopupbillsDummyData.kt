@@ -1,12 +1,23 @@
 package com.tokopedia.common.topupbills.response
 
-import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
+import com.tokopedia.common.topupbills.data.TopupBillsCatalog
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
+import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumber
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberTrackingData
+import com.tokopedia.common.topupbills.favoritepage.data.TopupBillsSeamlessFavNumberModData
+import com.tokopedia.common.topupbills.favoritepage.data.UpdateFavoriteDetail
 import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
@@ -95,6 +106,7 @@ object CommonTopupbillsDummyData {
                 updateFavoriteDetail = UpdateFavoriteDetail(
                         categoryID = 578,
                         clientNumber = "081208120812",
+                        hashedClientNumber = "tokopedia",
                         label = "Misael Jonathan",
                         lastOrderDate = "",
                         lastUpdated = "",

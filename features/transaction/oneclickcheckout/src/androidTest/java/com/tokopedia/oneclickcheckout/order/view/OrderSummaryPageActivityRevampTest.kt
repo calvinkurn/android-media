@@ -454,6 +454,8 @@ class OrderSummaryPageActivityRevampTest {
                 closeBottomSheet()
             }
 
+            promoInterceptor.customValidateUseResponsePath = null
+
             clickChangeCourierRevamp {
                 chooseCourierWithText("Next Day (1 hari)")
             }

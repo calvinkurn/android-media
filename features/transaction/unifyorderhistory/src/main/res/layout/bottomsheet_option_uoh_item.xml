@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_option_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/label_option"
+    <LinearLayout
+        android:id="@+id/ll_label_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="20dp"
         android:layout_toStartOf="@+id/rb_option"
-        android:textColor="@color/Unify_N700_96"
-        android:visibility="gone"
-        app:typographyType="heading_5" />
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+            android:visibility="gone"
+            app:typographyType="heading_5"
+            tools:visibility="visible"
+            tools:text="Test label"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_68"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            tools:visibility="visible"
+            tools:text="Test desc"/>
+
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/sublabel_option"
@@ -41,7 +62,7 @@
         android:id="@+id/divider_label"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_below="@id/label_option"
+        android:layout_below="@id/ll_label_option"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N75" />
 

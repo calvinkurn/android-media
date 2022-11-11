@@ -14,7 +14,7 @@ data class AutoTopUpData(
         val errors: List<Error> = listOf()
 ){
     data class Response(
-            @SerializedName("topAdsAutoTopupV2", alternate = ["topAdsPostAutoTopup"])
+            @SerializedName("topAdsAutoTopupV2", alternate = ["topAdsPostAutoTopupV2"])
             @Expose
             val response: AutoTopUpData? = null
     )
