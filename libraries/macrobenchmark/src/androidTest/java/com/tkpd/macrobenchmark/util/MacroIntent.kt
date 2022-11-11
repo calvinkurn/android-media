@@ -229,8 +229,6 @@ object MacroIntent {
         const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
 
         const val RECYCLER_VIEW_ID = "rv_pdp"
-        const val MEDIA_VIEW_HOLDER = "viewMediaPager"
-        const val RECOMMENDATION_VIEW_HOLDER = "rvProductRecom"
         const val TRACE = "pdp_result_trace"
 
         fun getIntent(): Intent {

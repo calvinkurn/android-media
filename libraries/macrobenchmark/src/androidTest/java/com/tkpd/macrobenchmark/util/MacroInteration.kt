@@ -71,21 +71,4 @@ object MacroInteration {
         recycler.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
         device.waitForIdle(IDLE_DURATION)
     }
-
-    fun recyclerViewViewHolderInteraction(
-        packageName: String,
-        rvResourceId: String,
-        componentId: String
-    ) {
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val device = UiDevice.getInstance(instrumentation)
-
-        device.wait(Until.hasObject(By.res(packageName, rvResourceId)), DEFAULT_TIMEOUT)
-        val recycler = device.findObject(By.res(packageName, rvResourceId))
-
-        recycler.wait(Until.hasObject(By.res(packageName, componentId)), DEFAULT_TIMEOUT)
-        val component = device.findObject(By.res(packageName, componentId))
-        component.wait(Until.findObject(By.res(packageName, componentId)), DEFAULT_TIMEOUT)
-        device.waitForIdle(IDLE_DURATION)
-    }
 }
