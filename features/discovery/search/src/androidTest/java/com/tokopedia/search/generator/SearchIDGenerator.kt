@@ -1,5 +1,6 @@
 package com.tokopedia.search.generator
 
+import android.app.Activity
 import android.app.Instrumentation
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -7,6 +8,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
@@ -36,12 +39,6 @@ internal class SearchIDGenerator {
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
-    private val blockAllIntentsMonitor = Instrumentation.ActivityMonitor(
-        null as String?,
-        null,
-        true
-    )
-
 
     @Before
     fun setUp() {
@@ -59,7 +56,8 @@ internal class SearchIDGenerator {
 
         setupIdlingResource()
 
-        InstrumentationRegistry.getInstrumentation().addMonitor(blockAllIntentsMonitor)
+        Intents.intending(IntentMatchers.isInternal())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     private fun setupIdlingResource() {
@@ -85,7 +83,6 @@ internal class SearchIDGenerator {
 
     @After
     fun tearDown() {
-        InstrumentationRegistry.getInstrumentation().removeMonitor(blockAllIntentsMonitor)
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 }
