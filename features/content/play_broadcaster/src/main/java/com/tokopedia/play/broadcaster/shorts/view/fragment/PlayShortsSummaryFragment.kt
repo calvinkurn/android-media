@@ -27,7 +27,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on November 11, 2022
  */
 class PlayShortsSummaryFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    private val viewModelFactory: ViewModelProvider.Factory
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = TAG
@@ -38,15 +38,18 @@ class PlayShortsSummaryFragment @Inject constructor(
     private val binding: FragmentPlayShortsSummaryBinding get() = _binding!!
 
     private val tagListView by viewComponent {
-        TagListViewComponent(it, binding.layoutTagRecommendation, object : TagListViewComponent.Listener {
-            override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
-                /** TODO: handle this */
-            }
+        TagListViewComponent(
+            it, binding.layoutTagRecommendation,
+            object : TagListViewComponent.Listener {
+                override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
+                    viewModel.submitAction(PlayShortsAction.SelectTag(tag))
+                }
 
-            override fun onTagRefresh(view: TagListViewComponent) {
-                /** TODO: handle this */
+                override fun onTagRefresh(view: TagListViewComponent) {
+                    viewModel.submitAction(PlayShortsAction.LoadTag)
+                }
             }
-        })
+        )
     }
 
     private val toaster by viewLifecycleBound(
@@ -105,12 +108,11 @@ class PlayShortsSummaryFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(prev?.coverForm == curr.coverForm) return
+        if (prev?.coverForm == curr.coverForm) return
 
-        if(curr.coverForm.coverUri.isEmpty()) {
+        if (curr.coverForm.coverUri.isEmpty()) {
             binding.ivCover.setImageUrl(curr.mediaUri)
-        }
-        else {
+        } else {
             binding.ivCover.setImageUrl(curr.coverForm.coverUri)
         }
     }
@@ -119,11 +121,11 @@ class PlayShortsSummaryFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(prev?.titleForm != curr.titleForm) {
+        if (prev?.titleForm != curr.titleForm) {
             binding.tvShortTitle.text = curr.titleForm.title
         }
 
-        if(prev?.selectedAccount != curr.selectedAccount) {
+        if (prev?.selectedAccount != curr.selectedAccount) {
             binding.tvName.text = curr.selectedAccount.name
             binding.ivProfile.setImageUrl(curr.selectedAccount.iconUrl)
         }
@@ -133,12 +135,13 @@ class PlayShortsSummaryFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(prev?.tags == curr.tags) return
+        if (prev?.tags == curr.tags) return
 
-        when(curr.tags) {
+        when (curr.tags) {
             is NetworkResult.Loading -> tagListView.setPlaceholder()
             is NetworkResult.Success -> tagListView.setTags(curr.tags.data.toList())
             is NetworkResult.Fail -> tagListView.setError()
+            else -> {}
         }
     }
 
@@ -146,12 +149,11 @@ class PlayShortsSummaryFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(prev?.tags == curr.tags) return
+        if (prev?.tags == curr.tags) return
 
-        val isTagSelected = if(curr.tags is NetworkResult.Success) {
+        val isTagSelected = if (curr.tags is NetworkResult.Success) {
             curr.tags.data.firstOrNull { it.isChosen } != null
-        }
-        else {
+        } else {
             false
         }
 

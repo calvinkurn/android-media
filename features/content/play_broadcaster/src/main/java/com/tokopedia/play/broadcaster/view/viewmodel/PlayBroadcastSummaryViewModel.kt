@@ -54,7 +54,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
     private val setChannelTagsUseCase: SetChannelTagsUseCase,
     private val getChannelUseCase: GetChannelUseCase,
-    private val hydraConfigStore: HydraConfigStore,
+    private val hydraConfigStore: HydraConfigStore
 ) : ViewModel() {
 
     @AssistedFactory
@@ -81,7 +81,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             coverUrl = it.coverUrl,
             date = it.date,
             duration = it.duration,
-            isEligiblePostVideo = it.isEligiblePostVideo,
+            isEligiblePostVideo = it.isEligiblePostVideo
         )
     }
 
@@ -90,9 +90,11 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     }
 
     private val _tagUiState = combine(
-        _tags, _selectedTags,
+        _tags,
+        _selectedTags
     ) { tags, selectedTags ->
-        when(tags) {
+        when (tags) {
+            is NetworkResult.Unknown -> NetworkResult.Unknown
             is NetworkResult.Loading -> NetworkResult.Loading
             is NetworkResult.Fail -> NetworkResult.Fail(tags.error)
             is NetworkResult.Success -> {
@@ -103,7 +105,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                 tag = it,
                                 isChosen = selectedTags.contains(it)
                             )
-                        },
+                        }
                     )
                 )
             }
@@ -113,15 +115,14 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     val uiState: Flow<PlayBroadcastSummaryUiState> = combine(
         _channelSummaryUiState,
         _liveReportUiState.distinctUntilChanged(),
-        _tagUiState.distinctUntilChanged(),
-    ) { channelSummaryUiState, liveReportUiState, tagUiState, ->
+        _tagUiState.distinctUntilChanged()
+    ) { channelSummaryUiState, liveReportUiState, tagUiState ->
         PlayBroadcastSummaryUiState(
             channelSummary = channelSummaryUiState,
             liveReport = liveReportUiState,
-            tag = tagUiState,
+            tag = tagUiState
         )
     }.flowOn(dispatcher.computation)
-
 
     private val _uiEvent = MutableSharedFlow<PlayBroadcastSummaryEvent>()
     val uiEvent: Flow<PlayBroadcastSummaryEvent>
@@ -137,7 +138,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
     /** Action Area */
     fun submitAction(action: PlayBroadcastSummaryAction) {
-        when(action) {
+        when (action) {
             PlayBroadcastSummaryAction.ClickCloseReportPage -> handleClickCloseReportPage()
             PlayBroadcastSummaryAction.ClickViewLeaderboard -> handleClickViewLeaderboard()
             PlayBroadcastSummaryAction.ClickPostVideo -> handleClickPostVideo()
@@ -185,15 +186,17 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         viewModelScope.launch(context = dispatcher.main) {
             when (val croppedCover = cover.croppedCover) {
                 is CoverSetupState.Cropped.Uploaded -> {
-
-                    val imageUri = if(croppedCover.coverImage.toString().isNotEmpty() &&
-                                    croppedCover.coverImage.toString().contains("http"))
+                    val imageUri = if (croppedCover.coverImage.toString().isNotEmpty() &&
+                        croppedCover.coverImage.toString().contains("http")
+                    ) {
                         croppedCover.coverImage.toString()
-                    else if (!croppedCover.localImage?.toString().isNullOrEmpty())
+                    } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
                         croppedCover.localImage.toString()
-                    else ""
+                    } else {
+                        ""
+                    }
 
-                    if(imageUri.isNotEmpty()) {
+                    if (imageUri.isNotEmpty()) {
                         _channelSummary.setValue {
                             copy(coverUrl = imageUri)
                         }
@@ -207,8 +210,11 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(context = dispatcher.main, block = {
             val newSelectedTag = _selectedTags.value.toMutableSet().apply {
                 with(tagUiModel) {
-                    if(_selectedTags.value.contains(tag)) remove(tag)
-                    else add(tag)
+                    if (_selectedTags.value.contains(tag)) {
+                        remove(tag)
+                    } else {
+                        add(tag)
+                    }
                 }
             }
 
@@ -225,9 +231,13 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             }
             _uiEvent.emit(PlayBroadcastSummaryEvent.PostVideo(NetworkResult.Success(true)))
         }) {
-            _uiEvent.emit(PlayBroadcastSummaryEvent.PostVideo(NetworkResult.Fail(it) {
-                submitAction(PlayBroadcastSummaryAction.ClickPostVideoNow)
-            }))
+            _uiEvent.emit(
+                PlayBroadcastSummaryEvent.PostVideo(
+                    NetworkResult.Fail(it) {
+                        submitAction(PlayBroadcastSummaryAction.ClickPostVideoNow)
+                    }
+                )
+            )
         }
     }
 
@@ -247,45 +257,49 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             delay(LIVE_STATISTICS_DELAY)
 
             var fetchTryCount = 0
-            lateinit var reportChannelSummary : GetLiveStatisticsResponse.ReportChannelSummary
+            lateinit var reportChannelSummary: GetLiveStatisticsResponse.ReportChannelSummary
 
             getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
             do {
                 reportChannelSummary = getLiveStatisticsUseCase.executeOnBackground()
                 fetchTryCount++
             }
-            while(reportChannelSummary.duration.isEmpty() && fetchTryCount < FETCH_REPORT_MAX_RETRY)
+            while (reportChannelSummary.duration.isEmpty() && fetchTryCount < FETCH_REPORT_MAX_RETRY)
 
             getInteractiveSummaryLivestreamUseCase.setRequestParams(GetInteractiveSummaryLivestreamUseCase.createParams(channelId))
             val participantResponse = getInteractiveSummaryLivestreamUseCase.executeOnBackground()
 
             _channelSummary.value = playBroadcastMapper.mapChannelSummary(
-                                        channel.basic.title,
-                                        channel.basic.coverUrl,
-                                        convertDate(channel.basic.timestamp.publishedAt),
-                                        reportChannelSummary.duration,
-                                        isEligiblePostVideo(reportChannelSummary.duration),
-                                    )
+                channel.basic.title,
+                channel.basic.coverUrl,
+                convertDate(channel.basic.timestamp.publishedAt),
+                reportChannelSummary.duration,
+                isEligiblePostVideo(reportChannelSummary.duration)
+            )
             getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
             val leaderboard = getSellerLeaderboardUseCase.executeOnBackground()
             val metrics = mutableListOf<TrafficMetricUiModel>().apply {
                 if (leaderboard.data.slots.isNotEmpty()) {
-                    add(TrafficMetricUiModel(
+                    add(
+                        TrafficMetricUiModel(
                             type = TrafficMetricType.GameParticipants,
-                            count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString(),
+                            count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString()
                         )
                     )
                 }
-                addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(
-                    hydraConfigStore.getAuthorType(),
-                    reportChannelSummary.channel.metrics
-                ))
+                addAll(
+                    playBroadcastMapper.mapToLiveTrafficUiMetrics(
+                        hydraConfigStore.getAuthorType(),
+                        reportChannelSummary.channel.metrics
+                    )
+                )
             }.toList()
 
             _trafficMetric.value = NetworkResult.Success(metrics)
 
-            if(!isEligiblePostVideo(reportChannelSummary.duration))
+            if (!isEligiblePostVideo(reportChannelSummary.duration)) {
                 _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
+            }
         }) {
             _channelSummary.value = ChannelSummaryUiModel.empty()
             _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
@@ -313,7 +327,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             setParams(channelId, _selectedTags.value)
         }.executeOnBackground().recommendedTags.success
 
-        if(!isSuccess) throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
+        if (!isSuccess) throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
     }
 
     private suspend fun updateChannelStatus() {
@@ -348,8 +362,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             }
 
             hour > 0 || minute > 0
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             false
         }
     }

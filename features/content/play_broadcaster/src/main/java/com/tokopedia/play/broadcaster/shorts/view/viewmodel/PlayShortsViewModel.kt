@@ -61,7 +61,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _shortsId = MutableStateFlow("")
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
-    private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Loading)
+    private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
@@ -111,7 +111,7 @@ class PlayShortsViewModel @Inject constructor(
             menuList = menuListUiState,
             titleForm = titleForm,
             coverForm = coverForm,
-            tags = tags,
+            tags = tags
         )
     }
 
@@ -124,6 +124,7 @@ class PlayShortsViewModel @Inject constructor(
 
         /** TODO: for mocking purpose, delete this later */
         _mediaUri.value = "/storage/emulated/0/Movies/VID_20221110_141411.mp4"
+        _shortsId.value = "123123"
     }
 
     fun submitAction(action: PlayShortsAction) {
@@ -241,7 +242,7 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleLoadTag() {
         viewModelScope.launchCatchError(block = {
-            if(_tags.value is NetworkResult.Loading) return@launchCatchError
+            if (_tags.value is NetworkResult.Loading || _tags.value is NetworkResult.Success) return@launchCatchError
 
             _tags.update { NetworkResult.Loading }
 
@@ -255,13 +256,16 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleSelectTag(tag: PlayTagUiModel) {
         val tagState = _tags.value
-        when(tagState is NetworkResult.Success) {
+        when (tagState is NetworkResult.Success) {
             true -> {
                 _tags.update {
                     NetworkResult.Success(
                         data = tagState.data.map {
-                            if(it.tag == tag.tag) it.copy(isChosen = !it.isChosen)
-                            else it
+                            if (it.tag == tag.tag) {
+                                it.copy(isChosen = !it.isChosen)
+                            } else {
+                                it
+                            }
                         }.toSet()
                     )
                 }

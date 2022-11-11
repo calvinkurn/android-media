@@ -63,7 +63,7 @@ class PlayShortsActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if(isBackPressedOverridden()) return
+        if (isBackPressedOverridden()) return
         super.onBackPressed()
     }
 
@@ -114,18 +114,18 @@ class PlayShortsActivity : BaseActivity() {
          * shortsId != null && mediaUri == null -> MediaPicker
          * shortsId != null && mediaUri != null -> Preparation
          */
-        when {
-            curr.shortsId.isNotEmpty() && curr.mediaUri.isEmpty() -> {
-                openMediaPicker()
-            }
-            curr.shortsId.isNotEmpty() && curr.mediaUri.isNotEmpty() -> {
-                openPreparation()
-            }
-        }
+//        when {
+//            curr.shortsId.isNotEmpty() && curr.mediaUri.isEmpty() -> {
+//                openMediaPicker()
+//            }
+//            curr.shortsId.isNotEmpty() && curr.mediaUri.isNotEmpty() -> {
+//                openPreparation()
+//            }
+//        }
     }
 
     private fun renderOneTimeEvent(oneTimeEvent: PlayShortsOneTimeEvent) {
-        when(oneTimeEvent) {
+        when (oneTimeEvent) {
             PlayShortsOneTimeEvent.GoToSummary -> {
                 openSummaryFragment()
             }
