@@ -2,24 +2,23 @@ package com.tokopedia.epharmacy.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.epharmacy.databinding.EpharmacyItemMasterMiniConsultationBsBinding
 import com.tokopedia.epharmacy.network.response.EPharmacyMiniConsultationMasterResponse.*
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.media.loader.loadImage
 
-class EpharmacyMiniConsultationStepsAdapter(private val items:MutableList<EPharmacyMiniConsultationData.ConsultationSteps?>): RecyclerView.Adapter<EpharmacyMiniConsultationStepsAdapter.ViewHolder>() {
+class EpharmacyMiniConsultationStepsAdapter: RecyclerView.Adapter<EpharmacyMiniConsultationStepsAdapter.ViewHolder>() {
+    private val stepsList = mutableListOf<EPharmacyMiniConsultationData.ConsultationSteps?>()
 
-    fun setStepList(steps: List<EPharmacyMiniConsultationData.ConsultationSteps?>) {
-        if(steps.isNullOrEmpty()) return
-        items.clear()
-        items.addAll(steps)
-        notifyDataSetChanged()
-    }
-
-    fun clearStepsList() {
-        items.clear()
-        notifyDataSetChanged()
+    fun submitList(list: List<EPharmacyMiniConsultationData.ConsultationSteps?>){
+        val diffCallback = EpharmacyMiniConsultationStepsDiffUtil(stepsList.toMutableList(), list)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        stepsList.clear()
+        stepsList.addAll(list)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,10 +27,10 @@ class EpharmacyMiniConsultationStepsAdapter(private val items:MutableList<EPharm
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(stepsList[position])
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = stepsList.size
 
     inner class ViewHolder(
         private val binding: EpharmacyItemMasterMiniConsultationBsBinding
@@ -40,7 +39,7 @@ class EpharmacyMiniConsultationStepsAdapter(private val items:MutableList<EPharm
             with(binding){
                 stepIcon.loadImage(data?.imageUrl)
                 headingTitle.text = data?.title.toEmptyStringIfNull()
-                paraSubtitle.text = data?.subtitle.toEmptyStringIfNull()
+                paraSubtitle.text = data?.subtitle?.parseAsHtml()
             }
         }
     }
