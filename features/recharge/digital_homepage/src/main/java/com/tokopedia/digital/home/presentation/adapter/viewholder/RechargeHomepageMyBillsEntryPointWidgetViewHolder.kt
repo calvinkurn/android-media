@@ -3,9 +3,10 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsEntrypointBinding
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -16,7 +17,7 @@ import com.tokopedia.media.loader.loadImage
 
 class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
     itemView: View
-): AbstractViewHolder<RechargeHomepageMyBillsEntryPointModel>(itemView) {
+) : AbstractViewHolder<RechargeHomepageMyBillsEntryPointModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -35,6 +36,10 @@ class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
                 tvSubtitle.text = sectionItem.subtitle
                 labelWidget.text = sectionItem.label1
                 ivProductIcon.loadImage(sectionItem.mediaUrl)
+            }
+
+            itemView.setOnClickListener {
+                RouteManager.route(it.context, sectionItem.applink)
             }
         } else {
             binding.containerContent.gone()
