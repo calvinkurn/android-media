@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.teleporter.Teleporter.gson
 import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.network.authentication.HEADER_DEVICE
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.flow.Flow
@@ -45,9 +46,9 @@ class ChatbotWebSocketImpl(
 
     private fun getRequest(url: String, accessToken: String): Request {
         return Request.Builder().get().url(url)
-            .header("Origin", TokopediaUrl.getInstance().WEB)
-            .header("Accounts-Authorization", "Bearer $accessToken")
-            .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
+            .header(HEADER_ORIGIN, TokopediaUrl.getInstance().WEB)
+            .header(HEADER_AUTHORIZATION, "$HEADER_BEARER $accessToken")
+            .header(HEADER_DEVICE, HEADER_ANDROID + GlobalConfig.VERSION_NAME)
             .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
             .build()
     }
@@ -88,7 +89,7 @@ class ChatbotWebSocketImpl(
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-            webSocket.close(1000, "Closing Socket")
+            webSocket.close(CODE_NORMAL_CLOSURE, SOCKET_NORMAL_CLOSURE_TEXT)
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
@@ -121,13 +122,19 @@ class ChatbotWebSocketImpl(
 
     override fun close() {
         try {
-            mWebSocket?.close(1000, "Closing Socket")
+            mWebSocket?.close(CODE_NORMAL_CLOSURE, SOCKET_NORMAL_CLOSURE_TEXT)
         } catch (e: Throwable) {
-            Timber.log(1, e)
+            Timber.log(TIMBER_PRIORITY, e)
         }
     }
 
     companion object {
         const val CODE_NORMAL_CLOSURE = 1000
+        const val SOCKET_NORMAL_CLOSURE_TEXT = "Closing Socket"
+        const val HEADER_ORIGIN = "Origin"
+        const val HEADER_AUTHORIZATION = "Accounts-Authorization"
+        const val HEADER_BEARER = "Bearer"
+        const val HEADER_ANDROID = "android-"
+        const val TIMBER_PRIORITY = 1
     }
 }
