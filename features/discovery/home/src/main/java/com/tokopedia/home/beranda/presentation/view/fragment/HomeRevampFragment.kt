@@ -146,8 +146,8 @@ import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.HomeComponentRollenceController
-import com.tokopedia.home_component.customview.pullrefresh2.LayoutIconPullRefreshView
-import com.tokopedia.home_component.customview.pullrefresh2.SimpleSwipeRefreshLayout
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+import com.tokopedia.home_component.customview.pullrefresh.SimpleSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper

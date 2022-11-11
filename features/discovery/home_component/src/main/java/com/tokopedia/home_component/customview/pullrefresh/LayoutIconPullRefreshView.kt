@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.customview.pullrefresh2
+package com.tokopedia.home_component.customview.pullrefresh
 
 import android.animation.AnimatorSet
 import android.animation.LayoutTransition

@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -31,7 +30,6 @@ import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
@@ -291,12 +289,10 @@ open class HomeRevampViewModel @Inject constructor(
     fun refreshHomeData() {
         if (getHomeDataJob?.isActive == true) {
             _hideShowLoadingLiveData.postValue(true)
-            Log.d("DevaraFikryTest", "getHomeDataJob Active")
             return
         }
         if (!homeDataModel.flowCompleted) {
             _hideShowLoadingLiveData.postValue(true)
-            Log.d("DevaraFikryTest", "flow Not completed")
             return
         }
         homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
