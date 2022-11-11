@@ -49,6 +49,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
+import com.tokopedia.feedcomponent.presentation.utils.FeedXCardSubtitlesAnimationHandler
 import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.NestedScrollableHost
 import com.tokopedia.feedcomponent.util.TagConverter
@@ -101,6 +102,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import java.net.URLEncoder
 import kotlin.math.round
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
@@ -222,6 +224,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var mData = FeedXCard()
 
     private var topAdsJob: Job? = null
+
+    private var animationHandler: FeedXCardSubtitlesAnimationHandler? = null
 
     private val adapter = FeedPostCarouselAdapter(
         dataSource = object : FeedPostCarouselAdapter.DataSource {
@@ -601,6 +605,21 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 typography.text = subtitle
 
                 topAdsProductSubtitleContainer.addView(typography)
+            }
+
+            // set animation to subtitles
+            val subtitleViewsCount = topAdsProductSubtitleContainer.childCount
+            if (subtitleViewsCount > ONE) {
+                animationHandler = FeedXCardSubtitlesAnimationHandler(
+                    WeakReference(topAdsProductSubtitleContainer.getChildAt(0) as Typography),
+                    WeakReference(topAdsProductSubtitleContainer.getChildAt(1) as Typography)
+                )
+                animationHandler?.subtitles = subtitles
+                animationHandler?.checkToCancelTimer()
+                animationHandler?.startTimer()
+            } else if (animationHandler != null) {
+                animationHandler?.stopAnimation()
+                animationHandler = null
             }
 
             topAdsProductSubtitleContainer.show()
@@ -1797,6 +1816,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (handlerHide != null) {
             handlerHide = null
         }
+        if (animationHandler != null) {
+            animationHandler?.stopAnimation()
+            animationHandler = null
+        }
         if (!fromSlide) {
             if (model is DynamicPostUiModel) {
                 model?.feedXCard?.media?.firstOrNull()?.canPlay = false
@@ -2095,6 +2118,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     companion object {
         private const val ZERO = 0
+        private const val ONE = 1
         private const val TWO = 2
     }
 

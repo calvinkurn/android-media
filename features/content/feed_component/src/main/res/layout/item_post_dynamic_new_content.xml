@@ -184,7 +184,7 @@
         <LinearLayout
             android:id="@+id/top_ads_product_subtitle_container"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="16dp"
             android:layout_marginStart="16dp"
             android:orientation="vertical"
             android:visibility="gone"
