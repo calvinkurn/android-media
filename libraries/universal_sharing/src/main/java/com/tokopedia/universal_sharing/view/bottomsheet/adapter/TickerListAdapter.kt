@@ -17,7 +17,7 @@ class TickerListAdapter(private val onClick: (data: TickerShareModel) -> Unit) :
 
     fun addItem(data: TickerShareModel) {
         tickerList.add(data)
-        notifyDataSetChanged()
+        notifyItemInserted(tickerList.size - 1)
     }
 
     inner class TickerListAdapterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
