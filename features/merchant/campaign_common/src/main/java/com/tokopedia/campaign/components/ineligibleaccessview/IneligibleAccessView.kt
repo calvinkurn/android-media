@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.campaign.databinding.LayoutIneligibleAccessViewBinding
+import com.tokopedia.campaign.databinding.CampaignCommonLayoutIneligibleAccessViewBinding
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 
@@ -14,10 +14,10 @@ class IneligibleAccessView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr){
 
-    private var binding: LayoutIneligibleAccessViewBinding
+    private var binding: CampaignCommonLayoutIneligibleAccessViewBinding
 
     init {
-        binding = LayoutIneligibleAccessViewBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = CampaignCommonLayoutIneligibleAccessViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     data class Param(
