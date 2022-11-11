@@ -105,6 +105,9 @@ class PlayBroadcasterViewModelTest {
             streamAllowed = true,
             channelStatus = ChannelStatus.Unknown
         )
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
 
         val robot = PlayBroadcastViewModelRobot(
