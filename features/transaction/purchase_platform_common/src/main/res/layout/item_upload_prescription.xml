@@ -33,7 +33,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:contentDescription="@string/promo_checkout_icon_desc"
+            android:contentDescription="@string/pp_cd_image_upload_prescription"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
