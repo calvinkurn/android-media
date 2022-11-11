@@ -205,8 +205,8 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
         val reviewSellerBundle = Bundle()
         reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !isGoToReputationHistoryTab())
         reviewSellerFragment?.arguments = reviewSellerBundle
-        createInboxReviewFragment()
-        createSellerReputationPenaltyFragment()
+        inboxReviewFragment = InboxReviewFragment.createInstance()
+        sellerReputationPenaltyFragment = newInstance()
     }
 
     private fun setupTabViewpager(tab: String?) {
@@ -385,13 +385,5 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
 
     protected open fun createRatingProductFragment() {
         reviewSellerFragment = RatingProductFragment.createInstance()
-    }
-
-    protected open fun createInboxReviewFragment() {
-        inboxReviewFragment = InboxReviewFragment.createInstance()
-    }
-
-    protected open fun createSellerReputationPenaltyFragment() {
-        sellerReputationPenaltyFragment = newInstance()
     }
 }
