@@ -911,7 +911,7 @@ class ChatbotFragment :
         manageVideoBubble()
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
-        getViewState()?.onCheckToHideQuickReply(visitable)
+//        getViewState()?.onCheckToHideQuickReply(visitable)
     }
 
     private fun manageVideoBubble() {
@@ -1446,6 +1446,10 @@ class ChatbotFragment :
         getViewState()?.showLiveChatQuickReply(quickReplyList)
     }
 
+    override fun isBackAllowed(isBackAllowed: Boolean) {
+        this.isBackAllowed = isBackAllowed
+    }
+
     override fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
         if (activity is ChatbotActivity) {
             (activity as ChatbotActivity).upadateToolbar(profileName, profileImage, badgeImage)
@@ -1592,6 +1596,7 @@ class ChatbotFragment :
     private fun sendReplyTextForResolutionComponent() {
         if (isStickyButtonClicked) {
             this.isStickyButtonClicked = false
+
             presenter.checkLinkForRedirection(
                 messageId,
                 invoiceRefNum,
