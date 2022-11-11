@@ -4,9 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 
-/**
- * [LinearLayout] that only takes 80% of available space
- */
 class TokoChatBubbleContainerLayout : LinearLayout {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
