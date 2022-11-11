@@ -123,11 +123,13 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
         runBlocking {
             onLoadCartList_shouldReturn(null)
 
+            val expectedMiniCartUiPrice = String.EMPTY
+
             viewModel.loadInitial(SOURCE)
 
             assertEquals(
-                null,
-                viewModel.miniCartFlow.value
+                expectedMiniCartUiPrice,
+                (viewModel.miniCartFlow.value as? Result.Success)?.data?.totalPriceFmt
             )
         }
     }
