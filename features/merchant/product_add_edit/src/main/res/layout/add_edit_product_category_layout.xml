@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/add_product_category_header"
         android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

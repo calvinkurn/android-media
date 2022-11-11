@@ -9,7 +9,7 @@
         android:id="@+id/settingTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:paddingTop="@dimen/setting_title_padding_top"
         android:paddingBottom="@dimen/setting_title_padding_bottom"
         android:textColor="@color/Unify_N700_68"
