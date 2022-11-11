@@ -8,10 +8,20 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.common.*
+import com.tokopedia.privacycenter.accountlinking.LinkAccountWebviewFragment
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
+import com.tokopedia.privacycenter.common.getDynamicColorStatusBar
+import com.tokopedia.privacycenter.common.getIconBackWithColor
+import com.tokopedia.privacycenter.common.getIdColor
+import com.tokopedia.privacycenter.common.setFitToWindows
+import com.tokopedia.privacycenter.common.setTextStatusBar
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
+import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
+import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
@@ -19,7 +29,8 @@ import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChangedListener {
+class PrivacyCenterFragment : BaseDaggerFragment(),
+    AppBarLayout.OnOffsetChangedListener, AccountLinkingSection.Listener {
 
     private var binding by autoClearedNullable<FragmentPrivacyCenterBinding>()
     private var privacyCenterSection: PrivacyCenterSection? = null
@@ -29,6 +40,12 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(
             PrivacyCenterViewModel::class.java
+        )
+    }
+
+    private val viewModelAccountLinkingSection by lazy {
+        ViewModelProvider(this, viewModelFactory).get(
+            AccountLinkingViewModel::class.java
         )
     }
 
@@ -122,7 +139,41 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         }
     }
 
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when(requestCode) {
+            REQUEST_ACCOUNT_WEBVIEW_REQUEST -> {
+                viewModelAccountLinkingSection.getAccountLinkingStatus()
+            }
+        }
+    }
+
+    override fun onItemAccountLinkingClicked() {
+        goToAccountLinkingWebview()
+    }
+
+    private fun goToAccountLinkingWebview() {
+        val intent = RouteManager.getIntent(
+            activity,
+            ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW).apply {
+            putExtra(
+                ApplinkConstInternalGlobal.PARAM_LD,
+                LinkAccountWebviewFragment.BACK_BTN_APPLINK
+            )
+        }
+        startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
+    }
+
     inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
+        override val accountLinkingSection: AccountLinkingSection =
+            AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
         override val dummySection: DummySection = DummySection(context)
         override val consentWithdrawalSection: ConsentWithdrawalSection = ConsentWithdrawalSection(
             context,
@@ -133,5 +184,6 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
     companion object {
         fun newInstance() = PrivacyCenterFragment()
         private const val OFFSET_CHANGE_COLOR_STATUS_BAR = -136
+        private const val REQUEST_ACCOUNT_WEBVIEW_REQUEST = 101
     }
 }

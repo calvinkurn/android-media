@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.privacycenter.consentwithdrawal.viewmodel.ConsentWithdrawalViewModel
 import com.tokopedia.privacycenter.main.PrivacyCenterViewModel
+import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,6 +24,11 @@ abstract class PrivacyCenterViewModelModule {
     @IntoMap
     @ViewModelKey(PrivacyCenterViewModel::class)
     internal abstract fun bindPrivacyCenterViewModel(viewModel: PrivacyCenterViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AccountLinkingViewModel::class)
+    internal abstract fun bindAccountLinkingViewModel(viewModel: AccountLinkingViewModel): ViewModel
 
     @Binds
     @IntoMap
