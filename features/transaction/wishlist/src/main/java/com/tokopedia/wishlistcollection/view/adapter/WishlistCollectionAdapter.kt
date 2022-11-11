@@ -10,6 +10,7 @@ import com.tokopedia.wishlist.databinding.*
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_DIVIDER
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_EMPTY_CAROUSEL
@@ -24,6 +25,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     private var listTypeData = mutableListOf<WishlistCollectionTypeLayoutData>()
     private var isTickerCloseClicked = false
     private var allCollectionView: View? = null
+    private var firstCollectionItemView: View? = null
     private var carouselItems = arrayListOf<Any>()
 
     companion object {
@@ -40,10 +42,22 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     interface ActionListener {
         fun onCloseTicker()
-        fun onKebabMenuClicked(collectionId: String, collectionName: String)
+        fun onKebabMenuClicked(
+            collectionId: String,
+            collectionName: String,
+            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+            collectionIndicatorTitle: String
+        )
         fun onCreateNewCollectionClicked()
         fun onCollectionItemClicked(id: String)
         fun onCreateCollectionItemBind(allCollectionView: View, createCollectionView: View)
+        fun onFirstCollectionItemBind(
+            anchorKebabMenuView: View,
+            collectionId: String,
+            collectionName: String,
+            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+            collectionIndicatorTitle: String
+        )
         fun onCariBarangClicked()
         fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int)
@@ -126,7 +140,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                     (holder as WishlistCollectionTickerItemViewHolder).bind(element, isTickerCloseClicked)
                 }
                 TYPE_COLLECTION_ITEM -> {
-                    (holder as WishlistCollectionItemViewHolder).bind(element)
+                    (holder as WishlistCollectionItemViewHolder).bind(element, position)
                     allCollectionView = if (holder.isAllWishlist) holder.itemView else null
                 }
                 TYPE_COLLECTION_CREATE -> {
@@ -153,7 +167,6 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     }
 
     override fun getItemCount(): Int {
-        println("++ size = ${listTypeData.size}")
         return listTypeData.size
     }
 

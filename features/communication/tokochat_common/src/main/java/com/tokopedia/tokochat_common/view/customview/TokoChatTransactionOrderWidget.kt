@@ -47,11 +47,15 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         partialOrderStatusWidgetBinding = null
         shimmerOrderStatusWidgetBinding = null
         binding = null
+        listener = null
+        tokoChatOrderProgressUiModel = null
     }
 
     init {
         setupViewBinding()
     }
+
+    fun getTokoChatOrderProgressUiModel() = tokoChatOrderProgressUiModel
 
     fun showShimmeringWidget() {
         binding?.tokochatLocalloadErrorTransactionWidget?.hide()
@@ -237,7 +241,10 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         val clickListener = OnClickListener {
             doWhenState(
                 isOpen = { changeState(State.CLOSE) },
-                isClose = { changeState(State.OPEN) }
+                isClose = {
+                    changeState(State.OPEN)
+                    listener?.onTransactionWidgetClosed()
+                }
             )
         }
         partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.setOnClickListener(clickListener)
@@ -365,6 +372,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     interface Listener {
         fun onLocalLoadRetryClicked()
         fun onTransactionWidgetClicked(appLink: String)
+        fun onTransactionWidgetClosed()
     }
 
     companion object {

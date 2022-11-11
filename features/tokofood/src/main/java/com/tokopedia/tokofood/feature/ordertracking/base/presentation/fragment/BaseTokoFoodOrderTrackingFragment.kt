@@ -20,12 +20,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -41,15 +43,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.bottomsheet.Dri
 import com.tokopedia.tokofood.feature.ordertracking.presentation.fragment.TokoFoodOrderLiveTrackingFragment
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TrackingWrapperUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -63,7 +57,8 @@ import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class BaseTokoFoodOrderTrackingFragment :
-    BaseDaggerFragment(), RecyclerViewPollerListener, OrderTrackingListener {
+    BaseDaggerFragment(), RecyclerViewPollerListener, OrderTrackingListener,
+    ConversationsGroupBookingListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -100,6 +95,10 @@ class BaseTokoFoodOrderTrackingFragment :
     private var delayAutoRefreshFinishOrderTempJob: Job? = null
 
     private var loaderDialog: LoaderDialog? = null
+
+    private var channelId: String = ""
+
+    private var goFoodOrderNumber: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -200,7 +199,16 @@ class BaseTokoFoodOrderTrackingFragment :
         viewModel.fetchDriverPhoneNumber(orderId)
     }
 
-    override fun onClickDriverChat(goFoodOrderNumber: String) {
+    override fun onClickDriverChat(goFoodOrderNumber: String, unReadChatCounter: String) {
+        tracking.clickChatIcon(
+            orderStatus = viewModel.getOrderStatus(),
+            orderId = viewModel.getOrderId(),
+            channelId = channelId,
+            source = TokoFoodAnalyticsConstants.TOKOFOOD_SOURCE,
+            role = TokoFoodAnalyticsConstants.BUYER,
+            unReadChatCounter = unReadChatCounter,
+        )
+
         val tokoChatParams = mapOf(
             ApplinkConst.TokoChat.PARAM_SOURCE to TOKOFOOD_SOURCE,
             ApplinkConst.TokoChat.ORDER_ID_TKPD to orderId,
@@ -226,11 +234,63 @@ class BaseTokoFoodOrderTrackingFragment :
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
+    override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
+        //No op
+        updateUnreadChatCounter(Int.ZERO)
+    }
+
+    override fun onGroupBookingChannelCreationStarted() {
+        //No op
+    }
+
+    override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
+        this.channelId = channelUrl
+        observeUnreadChatCount(channelId)
+    }
+
     private fun initializeChatProfile() {
         val userId = viewModel.getProfileUserId()
         if (userId.isEmpty() || userId.isBlank()) {
             viewModel.initializeConversationProfile()
         }
+    }
+
+
+    /*
+     * initializeUnreadCounter -> when get goFoodOrderNumber
+     * check channelId is Blank or not, if yes, initGroupBooking to get channelId and observeUnreadChatCount else observeUnreadChatCount
+     * initGroupBooking -> channelId -> observeUnreadChatCount
+     */
+    private fun initializeUnreadCounter(goFoodOrderNumber: String) {
+        this.goFoodOrderNumber = goFoodOrderNumber
+        if (channelId.isBlank()) {
+            viewModel.initGroupBooking(goFoodOrderNumber,this)
+        } else {
+            observeUnreadChatCount(channelId)
+        }
+    }
+
+    private fun observeUnreadChatCount(channelId: String) {
+        observe(viewModel.getUnReadChatCount(channelId)) {
+            when (it) {
+                is Success -> {
+                    updateUnreadChatCounter(it.data)
+                }
+                is Fail -> {
+                    logExceptionReadCounterToServerLogger(it.throwable)
+                    updateUnreadChatCounter(Int.ZERO)
+                }
+            }
+        }
+    }
+
+    private fun updateUnreadChatCounter(unReadCounter: Int?) {
+        val newDriverSection = orderTrackingAdapter
+            .list
+            .filterIsInstance<DriverSectionUiModel>()
+            .firstOrNull()
+            ?.copy(badgeCounter = unReadCounter)
+        orderTrackingAdapter.updateLiveTrackingItem(newDriverSection)
     }
 
     private fun showLoaderDriverCall() {
@@ -439,9 +499,12 @@ class BaseTokoFoodOrderTrackingFragment :
                     binding,
                     viewModel,
                     orderTrackingAdapter,
-                    toolbarHandler
+                    toolbarHandler,
+                    ::initializeUnreadCounter
                 )
-                orderLiveTrackingFragment?.let { lifecycle.addObserver(it) }
+                orderLiveTrackingFragment?.let {
+                    lifecycle.addObserver(it)
+                }
                 updateViewsOrderLiveTracking(
                     actionButtonsUiModel,
                     toolbarLiveTrackingUiModel,
@@ -539,6 +602,18 @@ class BaseTokoFoodOrderTrackingFragment :
             errorType,
             viewModel.userSession.deviceId.orEmpty(),
             errorDesc
+        )
+    }
+
+    private fun logExceptionReadCounterToServerLogger(
+        throwable: Throwable
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.POST_PURCHASE,
+            throwable,
+            TokofoodErrorLogger.ErrorType.ERROR_UNREAD_CHAT_COUNT_POST_PURCHASE,
+            viewModel.userSession.deviceId.orEmpty(),
+            TokofoodErrorLogger.ErrorDescription.UNREAD_CHAT_COUNT_ERROR
         )
     }
 

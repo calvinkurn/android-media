@@ -9,11 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.tokofood.R
@@ -32,6 +28,9 @@ class DriverSectionViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_driver_section
+
+        private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1.5f
+        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.6f
     }
 
     private val binding = ItemTokofoodOrderTrackingDriverSectionBinding.bind(itemView)
@@ -114,10 +113,14 @@ class DriverSectionViewHolder(
     ) {
         icDriverChat.run {
             if (isShowDriverChat()) {
-                if (badgeCounter.isZero() || badgeCounter.isLessThanZero()) {
+                if (badgeCounter == null || badgeCounter.isZero() || badgeCounter.isLessThanZero()) {
                     notificationRef.hide()
                 } else {
                     notificationRef.show()
+                    setNotifXY(
+                        ICON_DEFAULT_PERCENTAGE_X_POSITION,
+                        ICON_DEFAULT_PERCENTAGE_Y_POSITION
+                    )
 
                     notificationRef.setNotification(
                         notif = badgeCounter.toString(),
@@ -143,7 +146,7 @@ class DriverSectionViewHolder(
 
                 if (isClickableCall) {
                     setOnClickListener {
-                        listener.onClickDriverChat(goFoodOrderNumber)
+                        listener.onClickDriverChat(goFoodOrderNumber, badgeCounter.orZero().toString())
                     }
                 }
             } else {
@@ -199,6 +202,6 @@ class DriverSectionViewHolder(
 
     interface Listener {
         fun onClickDriverCall()
-        fun onClickDriverChat(goFoodOrderNumber: String)
+        fun onClickDriverChat(goFoodOrderNumber: String, unReadChatCounter: String)
     }
 }

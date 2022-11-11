@@ -86,12 +86,6 @@ open class DeepLinkMapperTestFixture {
         }
     }
 
-    protected fun foodRollenceEnabler(){
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.KEY_ROLLENCE_FOOD, "")
-        } returns RollenceKey.KEY_ROLLENCE_FOOD
-    }
-
     protected fun tokochatRollenceEnabler(result: String = RollenceKey.KEY_ROLLENCE_TOKOCHAT) {
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(

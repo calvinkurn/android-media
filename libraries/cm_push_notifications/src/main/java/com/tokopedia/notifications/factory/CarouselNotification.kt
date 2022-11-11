@@ -100,7 +100,7 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
     }
 
     private fun getDismissPendingIntent(): PendingIntent {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS
         return getPendingIntent(context, intent, requestCode)
     }
@@ -113,13 +113,13 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
     }
 
     private fun addRightCarouselButton(remoteView: RemoteViews) {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK
         remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getPendingIntent(context, intent, requestCode))
     }
 
     private fun addLeftCarouselButton(remoteView: RemoteViews) {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK
         remoteView.setOnClickPendingIntent(R.id.ivArrowLeft, getPendingIntent(context, intent, requestCode))
     }

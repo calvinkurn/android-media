@@ -77,5 +77,39 @@ class ProductChooserTest {
         robot.close()
         robot.assertExitDialog(isShown = false)
         robot.assertBottomSheet(isOpened = false)
+        robot.assertExitDialog(isShown = false)
+        robot.assertBottomSheet(isOpened = false)
+    }
+
+    @Test
+    fun testCloseBottomSheet_whenHasSelectedProduct_andThenChangeProduct() {
+        val robot = ProductChooserRobot(listener) {
+            productSetupViewModel(
+                productSectionList = mockSection,
+                repo = mockRepo,
+            )
+        }
+
+        robot.selectProduct(0)
+            .close()
+
+        robot.assertExitDialog(isShown = true)
+    }
+
+    @Test
+    fun testCloseBottomSheet_whenHasSelectedProduct_andThenNoMoreProductSelected() {
+        val robot = ProductChooserRobot(listener) {
+            productSetupViewModel(
+                productSectionList = mockSection,
+                repo = mockRepo,
+            )
+        }
+
+        robot.selectProduct(0)
+            .selectProduct(1)
+            .close()
+
+        robot.assertExitDialog(isShown = false)
+        robot.assertBottomSheet(isOpened = false)
     }
 }
