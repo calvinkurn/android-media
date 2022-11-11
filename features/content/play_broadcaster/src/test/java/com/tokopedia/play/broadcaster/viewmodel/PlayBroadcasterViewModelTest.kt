@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
@@ -15,16 +14,11 @@ import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBui
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
-import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
-import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertTrue
-import com.tokopedia.play.broadcaster.util.assertType
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -111,7 +105,7 @@ class PlayBroadcasterViewModelTest {
             streamAllowed = true,
             channelStatus = ChannelStatus.Unknown
         )
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -121,7 +115,7 @@ class PlayBroadcasterViewModelTest {
         val mock = spyk(robot.getViewModel(), recordPrivateCalls = true)
 
         robot.use {
-            mock.getConfiguration()
+            mock.submitAction(PlayBroadcastAction.GetAccountList(TYPE_SHOP))
 
             verify { mock invokeNoArgs "createChannel" }
         }
