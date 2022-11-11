@@ -27,21 +27,25 @@ object IDGeneratorHelper {
         }
     )
 
+    private val rootPrintCondition = listOf(
+        PrintCondition { view ->
+            view.parent !is RecyclerView
+        }
+    ) + printConditions
+
     private val viewPrinter = ViewHierarchyPrinter(printConditions)
+    private val rootViewPrinter = ViewHierarchyPrinter(rootPrintCondition)
     private val fileWriter = FileWriter()
     private val savedFileName = mutableListOf<String>()
 
-    private fun printView(view: RecyclerView.ViewHolder, fileName: String) {
-        val text = viewPrinter.printAsCSV(
-            view.itemView
-        )
-        if (!savedFileName.contains(fileName)) {
-            fileWriter.writeGeneratedViewIds(
-                "search_${fileName}.csv",
-                text
-            )
-            savedFileName.add(fileName)
-        }
+    fun printView(view: View, fileName: String) {
+        val text = viewPrinter.printAsCSV(view)
+        saveFile(text, fileName)
+    }
+
+    fun printRootView(view: View) {
+        val text = rootViewPrinter.printAsCSV(view)
+        saveFile(text, "rootView")
     }
 
     fun scrollAndPrintView(recyclerView: RecyclerView?) {
@@ -51,8 +55,18 @@ object IDGeneratorHelper {
             recyclerView.perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(index))
 
             recyclerView?.findViewHolderForAdapterPosition(index)?.let {
-               printView(it, it.javaClass.simpleName)
+               printView(it.itemView, it.javaClass.simpleName)
             }
+        }
+    }
+
+    private fun saveFile(text: String, fileName: String) {
+        if (!savedFileName.contains(fileName)) {
+            fileWriter.writeGeneratedViewIds(
+                "search_${fileName}.csv",
+                text
+            )
+            savedFileName.add(fileName)
         }
     }
 }

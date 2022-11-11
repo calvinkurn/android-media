@@ -3,6 +3,7 @@ package com.tokopedia.search.generator
 import android.app.Instrumentation
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
@@ -27,6 +28,7 @@ import com.tokopedia.search.getProductListAdapter
 import com.tokopedia.search.perform
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
@@ -93,6 +95,8 @@ internal class SearchIDGenerator {
         Espresso.onView(ViewMatchers.withId(recyclerViewId))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
+        val rootView = activityRule.activity.findViewById<ConstraintLayout>(R.id.rootSearchResult)
+        IDGeneratorHelper.printRootView(rootView)
         IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 
