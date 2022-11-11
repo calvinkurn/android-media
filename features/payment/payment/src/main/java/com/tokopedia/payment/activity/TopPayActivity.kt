@@ -24,7 +24,6 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient
@@ -532,13 +531,13 @@ class TopPayActivity :
         hideProgressDialog()
     }
 
-    private fun showCreditCardLoader()= activity_topay_container.post {
-            loaderCreditCardUnify.visibility = View.VISIBLE
-        }
+    private fun showCreditCardLoader() = activity_topay_container.post {
+        loaderCreditCardUnify?.visibility = View.VISIBLE
+    }
 
-    private fun hideCreditCardLoader()= activity_topay_container.post {
-            loaderCreditCardUnify.visibility = View.GONE
-        }
+    private fun hideCreditCardLoader() = activity_topay_container.post {
+        loaderCreditCardUnify?.visibility = View.GONE
+    }
 
     private fun routeToHomeCredit(appLink: String, overlayUrl: String?, headerText: String?) {
         val intent = RouteManager.getIntent(this@TopPayActivity, appLink)
