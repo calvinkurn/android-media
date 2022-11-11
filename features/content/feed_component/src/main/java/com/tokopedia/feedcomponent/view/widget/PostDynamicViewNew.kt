@@ -1994,7 +1994,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
      */
     private fun getCTAButtonSubtitle(card: FeedXCard) =
         if (card.isTypeProductHighlight && card.cta.subtitle.isNotEmpty())
-            if (card.cta.subtitle.size >= TWO) card.cta.subtitle.subList(ZERO, ONE)
+            if (card.cta.subtitle.size >= TWO) card.cta.subtitle.subList(ZERO, TWO)
             else card.cta.subtitle
         else null
 
@@ -2094,7 +2094,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     companion object {
         private const val ZERO = 0
-        private const val ONE = 1
         private const val TWO = 2
     }
 
