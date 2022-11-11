@@ -52,6 +52,7 @@ class HomeProductRecomViewHolder(
     }
 
     override fun onSeeAllClicked(
+        headerName: String,
         appLink: String
     ) {
         listener?.onSeeAllClicked(
@@ -67,7 +68,7 @@ class HomeProductRecomViewHolder(
         listener?.onSeeMoreClicked(
             channelId = channelId,
             appLink = seeMoreUiModel.appLink,
-            headerName = headerName
+            headerName = seeMoreUiModel.channelHeaderName
         )
     }
 

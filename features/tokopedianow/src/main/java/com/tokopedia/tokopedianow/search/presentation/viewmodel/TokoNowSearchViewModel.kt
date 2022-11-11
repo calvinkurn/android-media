@@ -6,17 +6,19 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.search.domain.mapper.SearchBroadMatchMapper.createBroadMatchDataView
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
@@ -28,7 +30,6 @@ import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.AllProductTitle
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -76,8 +77,8 @@ class TokoNowSearchViewModel @Inject constructor (
 ) {
 
     private val addToCartBroadMatchTrackingMutableLiveData =
-        SingleLiveEvent<Triple<Int, String, BroadMatchItemDataView>>()
-    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, BroadMatchItemDataView>> =
+        SingleLiveEvent<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>>()
+    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>> =
         addToCartBroadMatchTrackingMutableLiveData
 
     val query = queryParamMap[SearchApiConst.Q] ?: ""
@@ -207,40 +208,14 @@ class TokoNowSearchViewModel @Inject constructor (
 
     private fun processBroadMatch(action: (BroadMatchDataView) -> Unit) {
         related?.otherRelatedList?.forEach { otherRelated ->
-            val broadMatchDataView = createBroadMatchDataView(otherRelated)
+            val broadMatchDataView = createBroadMatchDataView(
+                otherRelated = otherRelated,
+                cartService = cartService
+            )
             action(broadMatchDataView)
         }
-
         related = null
     }
-
-    private fun createBroadMatchDataView(otherRelated: AceSearchProductModel.OtherRelated) =
-        BroadMatchDataView(
-            keyword = otherRelated.keyword,
-            applink = otherRelated.applink,
-            broadMatchItemDataViewList = otherRelated.productList
-                .mapIndexed { index, otherRelatedProduct ->
-                    BroadMatchItemDataView(
-                        id = otherRelatedProduct.id,
-                        name = otherRelatedProduct.name,
-                        price = otherRelatedProduct.price,
-                        imageUrl = otherRelatedProduct.imageUrl,
-                        applink = otherRelatedProduct.applink,
-                        priceString = otherRelatedProduct.priceString,
-                        position = index + 1,
-                        alternativeKeyword = otherRelated.keyword,
-                        ratingAverage = otherRelatedProduct.ratingAverage,
-                        labelGroupDataList = otherRelatedProduct.labelGroupList
-                            .map(::mapToLabelGroupDataView),
-                        shop = BroadMatchItemDataView.Shop(id = otherRelatedProduct.shop.id),
-                        nonVariantATC = NonVariantATCDataView(
-                            minQuantity = otherRelatedProduct.minOrder,
-                            maxQuantity = otherRelatedProduct.stock,
-                            quantity = cartService.getProductQuantity(otherRelatedProduct.id)
-                        ),
-                    )
-                }
-        )
 
 
     private fun createCategoryJumperDataView(): CategoryJumperDataView {
@@ -311,21 +286,21 @@ class TokoNowSearchViewModel @Inject constructor (
         index: Int,
         updatedProductIndices: MutableList<Int>,
     ) {
-        broadMatchDataView.broadMatchItemDataViewList.forEach { broadMatchItemDataView ->
+        broadMatchDataView.broadMatchItemModelList.forEach { broadMatchItemDataView ->
             updateBroadMatchItemQuantity(broadMatchItemDataView, index, updatedProductIndices)
         }
     }
 
     private fun updateBroadMatchItemQuantity(
-        broadMatchItemDataView: BroadMatchItemDataView,
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
         index: Int,
         updatedProductIndices: MutableList<Int>,
     ) {
-        val nonVariantATC = broadMatchItemDataView.nonVariantATC ?: return
-        val quantity = cartService.getProductQuantity(broadMatchItemDataView.id)
+        val productCardQuantity = broadMatchItemDataView.productCardModel.orderQuantity
+        val miniCartQuantity = cartService.getProductQuantity(broadMatchItemDataView.id)
 
-        if (nonVariantATC.quantity != quantity) {
-            nonVariantATC.quantity = quantity
+        if (productCardQuantity != miniCartQuantity) {
+            broadMatchItemDataView.productCardModel = broadMatchItemDataView.productCardModel.copy(orderQuantity = miniCartQuantity)
 
             if (!updatedProductIndices.contains(index))
                 updatedProductIndices.add(index)
@@ -333,15 +308,15 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     fun onViewATCBroadMatchItem(
-        broadMatchItem: BroadMatchItemDataView,
+        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
         broadMatchIndex: Int,
+        hasAnimationFinished: Boolean
     ) {
-        val nonVariantATC = broadMatchItem.nonVariantATC ?: return
-
         val productId = broadMatchItem.id
-        val shopId = broadMatchItem.shop.id
-        val currentQuantity = nonVariantATC.quantity
+        val shopId = broadMatchItem.shopId
+        val currentQuantity = broadMatchItem.productCardModel.orderQuantity
+        hasProductAnimationFinished = hasAnimationFinished
 
         cartService.handleCart(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
@@ -350,13 +325,16 @@ class TokoNowSearchViewModel @Inject constructor (
                 sendAddToCartBroadMatchItemTracking(quantity, it, broadMatchItem)
                 onAddToCartSuccessBroadMatchItem(broadMatchItem, it.data.quantity)
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                updateToolbarNotification()
             },
             onSuccessUpdateCart = {
                 onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
+                updateToolbarNotification()
             },
             onSuccessDeleteCart = {
                 onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                updateToolbarNotification()
             },
             onError = ::onAddToCartFailed,
             handleCartEventNonLogin = {
@@ -365,17 +343,51 @@ class TokoNowSearchViewModel @Inject constructor (
         )
     }
 
+    fun onViewATCBroadMatchItemAnimationFinished(
+        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
+        quantity: Int,
+        broadMatchIndex: Int,
+        hasAnimationFinished: Boolean
+    ) {
+        hasProductAnimationFinished = hasAnimationFinished
+
+        if (broadMatchItem.productCardModel.orderQuantity != quantity && quantity.isZero()) {
+            val productId = broadMatchItem.id
+            val shopId = broadMatchItem.shopId
+            val currentQuantity = broadMatchItem.productCardModel.orderQuantity
+
+            cartService.handleCart(
+                cartProductItem = CartProductItem(productId, shopId, currentQuantity),
+                quantity = quantity,
+                onSuccessAddToCart = { /* nothing to do */ },
+                onSuccessUpdateCart = { /* nothing to do */ },
+                onSuccessDeleteCart = {
+                    onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
+                    onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
+                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    updateToolbarNotification()
+                },
+                onError = ::onAddToCartFailed,
+                handleCartEventNonLogin = {
+                    handleAddToCartEventNonLogin(broadMatchIndex)
+                },
+            )
+        } else {
+            refreshMiniCart()
+        }
+    }
+
     private fun sendAddToCartBroadMatchItemTracking(
         quantity: Int,
         addToCartDataModel: AddToCartDataModel,
-        broadMatchItem: BroadMatchItemDataView,
+        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
     ) {
         addToCartBroadMatchTrackingMutableLiveData.value =
             Triple(quantity, addToCartDataModel.data.cartId, broadMatchItem)
     }
 
     private fun onAddToCartSuccessBroadMatchItem(
-        broadMatchItem: BroadMatchItemDataView,
+        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
         updatedQuantity: Int,
     ) {
         updateBroadMatchItemQuantity(broadMatchItem, updatedQuantity)
@@ -383,10 +395,10 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     private fun updateBroadMatchItemQuantity(
-        broadMatchItem: BroadMatchItemDataView,
+        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
         updatedQuantity: Int,
     ) {
-        broadMatchItem.nonVariantATC?.quantity = updatedQuantity
+        broadMatchItem.productCardModel = broadMatchItem.productCardModel.copy(orderQuantity = updatedQuantity)
     }
 
     companion object {

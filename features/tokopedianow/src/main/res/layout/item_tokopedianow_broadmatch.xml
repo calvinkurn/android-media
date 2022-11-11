@@ -2,46 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="16dp"
-    android:paddingBottom="4dp">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokopediaNowBroadMatchTitle"
+    <com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+        android:id="@+id/header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="12dp"
-        android:maxLines="2"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tokopediaNowBroadMatchSeeAll"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokopediaNowBroadMatchSeeAll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="@string/tokopedianow_see_all"
-        android:textColor="@color/Unify_G500"
-        android:background="?attr/selectableItemBackground"
-        app:layout_constraintBottom_toBottomOf="@id/tokopediaNowBroadMatchTitle"
-        app:layout_constraintLeft_toRightOf="@id/tokopediaNowBroadMatchTitle"
-        app:layout_constraintRight_toRightOf="parent"
-        app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.carouselproductcard.CarouselProductCardView
-        android:id="@+id/tokopediaNowBroadMatchCarouselProductCard"
+    <com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
+        android:id="@+id/product_card_carousel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/tokopediaNowBroadMatchTitle"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/header" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,7 +41,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         setupUi()
         handleTitle(model.title)
         handleSubtitle(model.subTitle, model.expiredTime)
-        handleSeeAllAppLink(model.ctaText, model.ctaTextLink)
+        handleSeeAllAppLink(model.title, model.ctaText, model.ctaTextLink)
         handleHeaderExpiredTime(model.expiredTime, model.serverTimeOffset, model.backColor)
     }
 
@@ -75,7 +75,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         }
     }
 
-    private fun handleSeeAllAppLink(ctaText: String, ctaTextLink: String) {
+    private fun handleSeeAllAppLink(title: String, ctaText: String, ctaTextLink: String) {
         if (ctaTextLink.isNotBlank()) {
             tpSeeAll?.text = if (ctaText.isNotBlank()) {
                 ctaText
@@ -84,7 +84,10 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
             }
             tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             tpSeeAll?.setOnClickListener {
-                listener?.onSeeAllClicked(ctaTextLink)
+                listener?.onSeeAllClicked(
+                    headerName = title,
+                    appLink =  ctaTextLink
+                )
             }
             tpSeeAll?.show()
         } else {
@@ -142,7 +145,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     }
 
     interface TokoNowDynamicHeaderListener {
-        fun onSeeAllClicked(appLink: String)
+        fun onSeeAllClicked(headerName: String, appLink: String)
         fun onChannelExpired()
     }
 }

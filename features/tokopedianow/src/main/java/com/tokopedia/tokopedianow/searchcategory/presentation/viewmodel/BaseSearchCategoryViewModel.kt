@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -137,6 +136,7 @@ abstract class BaseSearchCategoryViewModel(
     protected val queryParamMutable = queryParamMap.toMutableMap()
     protected var totalData = 0
     protected var chooseAddressData: LocalCacheModel? = null
+    protected var hasProductAnimationFinished = true
 
     private val filterController = FilterController()
     private var totalFetchedData = 0
@@ -144,7 +144,6 @@ abstract class BaseSearchCategoryViewModel(
     private var currentProductPosition: Int = 1
     private var recommendationPositionInVisitableList = -1
     private val recommendationList = mutableListOf<RecommendationWidget>()
-    private var hasProductAnimationFinished = true
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -1187,8 +1186,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun handleAddToCartEventNonLogin(updatedVisitableIndex: Int) {
-        routeApplinkMutableLiveData.value = ApplinkConst.LOGIN
-        updatedVisitableIndicesMutableLiveData.value = listOf(updatedVisitableIndex)
+        routeApplinkMutableLiveData.postValue(ApplinkConst.LOGIN)
+        updatedVisitableIndicesMutableLiveData.postValue(listOf(updatedVisitableIndex))
     }
 
     fun onLocalizingAddressSelected() {
