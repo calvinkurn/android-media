@@ -15,7 +15,6 @@ includeIfEnabled("features:category:common_category")
 includeIfEnabled("features:category:kategori")
 includeIfEnabled("features:category:category_levels")
 includeIfEnabled("features:category:find_native")
-includeIfEnabled("features:category:common_epharmacy")
 
 includeIfEnabled("features:content:affiliate_common")
 includeIfEnabled("features:content:content_common")
