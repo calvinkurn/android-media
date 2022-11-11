@@ -1,8 +1,8 @@
-package com.tokopedia.checkout.data.model.response.shipmentaddressform
+package com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class ImageUpload (
+data class ImageUploadResponse (
     @SerializedName("show_image_upload")
     var showImageUpload: Boolean = false,
     @SerializedName("text")

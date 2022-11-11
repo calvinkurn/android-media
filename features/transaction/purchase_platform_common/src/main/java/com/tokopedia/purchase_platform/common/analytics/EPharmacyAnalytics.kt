@@ -1,6 +1,4 @@
-package com.tokopedia.checkout.analytics
-
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
+package com.tokopedia.purchase_platform.common.analytics
 
 class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics() {
     companion object {
