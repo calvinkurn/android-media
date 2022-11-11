@@ -57,6 +57,52 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     fun getTokoChatOrderProgressUiModel() = tokoChatOrderProgressUiModel
 
+    fun updateTransactionWidget(orderProgressUiModel: TokoChatOrderProgressUiModel) {
+        if (tokoChatOrderProgressUiModel != orderProgressUiModel) {
+            updateOrderStatus(orderProgressUiModel.status)
+            updateOrderName(orderProgressUiModel.name)
+            updateEstimateLabel(orderProgressUiModel.labelTitle)
+            updateEstimateValue(orderProgressUiModel.labelValue)
+            updateOrderThumbnail(orderProgressUiModel.imageUrl)
+            tokoChatOrderProgressUiModel = orderProgressUiModel
+        }
+    }
+
+    private fun updateOrderStatus(newOrderStatus: String) {
+        if (newOrderStatus != tokoChatOrderProgressUiModel?.status) {
+            partialOrderStatusWidgetBinding?.tokochatTpOrderStatus?.text = newOrderStatus
+        }
+    }
+
+    private fun updateOrderName(newOrderName: String) {
+        if (newOrderName != tokoChatOrderProgressUiModel?.name) {
+            partialOrderStatusWidgetBinding?.tokochatTpOrderStatus?.text =
+                MethodChecker.fromHtml(newOrderName)
+        }
+    }
+
+    private fun updateEstimateLabel(estimateLabelTitle: String) {
+        if (estimateLabelTitle != tokoChatOrderProgressUiModel?.labelTitle) {
+            partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
+                estimateLabelTitle
+        }
+    }
+
+    private fun updateEstimateValue(estimateLabelValue: String) {
+        if (estimateLabelValue != tokoChatOrderProgressUiModel?.labelValue) {
+            partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
+                estimateLabelValue
+        }
+    }
+
+    private fun updateOrderThumbnail(orderImageUrl: String) {
+        if (orderImageUrl != tokoChatOrderProgressUiModel?.imageUrl) {
+            partialOrderStatusWidgetBinding?.tokochatIvOrderThumbnail?.loadImage(
+                tokoChatOrderProgressUiModel?.orderId
+            )
+        }
+    }
+
     fun showShimmeringWidget() {
         binding?.tokochatLocalloadErrorTransactionWidget?.hide()
         partialOrderStatusWidgetBinding?.root?.hide()
@@ -275,7 +321,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         if (tokoChatOrderProgressUiModel?.labelTitle?.isNotBlank() == true &&
             tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true) {
             partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
-                StringBuilder(tokoChatOrderProgressUiModel?.labelTitle.orEmpty())
+                tokoChatOrderProgressUiModel?.labelTitle.orEmpty()
             partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
                 tokoChatOrderProgressUiModel?.labelValue.orEmpty()
         } else {
