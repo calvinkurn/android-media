@@ -1,8 +1,5 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
 import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail
 import com.tokopedia.contactus.inboxticket2.data.model.ChipInboxDetails

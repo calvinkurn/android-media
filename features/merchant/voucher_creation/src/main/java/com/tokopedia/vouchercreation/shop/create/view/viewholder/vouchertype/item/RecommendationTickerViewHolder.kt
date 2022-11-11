@@ -12,6 +12,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.vouchertype.item.RecommendationTickerUiModel
@@ -74,7 +75,7 @@ class RecommendationTickerViewHolder(itemView: View,
 
             override fun updateDrawState(ds: TextPaint) {
                 context?.run {
-                    ds.color = ContextCompat.getColor(this, R.color.unify_G500)
+                    ds.color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ds.underlineColor = 0
                 }
             }

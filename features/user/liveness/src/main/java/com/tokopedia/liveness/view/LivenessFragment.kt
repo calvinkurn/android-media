@@ -27,6 +27,7 @@ import android.view.ViewGroup
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
 import com.tokopedia.liveness.databinding.FragmentRevampLivenessBinding
@@ -67,7 +68,7 @@ class LivenessFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toString()
+            projectId = it.getInt(PARAM_PROJECT_ID).toString()
         }
     }
 
@@ -116,15 +117,15 @@ class LivenessFragment : BaseDaggerFragment(),
 
         if (!isValid) {
             alertDialogDeviceNotSupported()
+
+            LivenessDetectionLogTracker.sendLog(
+                LivenessDetectionLogTracker.LogType.LIBRARY,
+                this::class.simpleName.orEmpty(),
+                throwable = Throwable("[$errorCode] $message")
+            )
         } else {
             updateTipUIView(null)
         }
-
-        LivenessDetectionLogTracker.sendLog(
-            LivenessDetectionLogTracker.LogType.LIBRARY,
-            this::class.simpleName.orEmpty(),
-            throwable = Throwable("[$errorCode] $message")
-        )
     }
 
     override fun onDetectionSuccess() {

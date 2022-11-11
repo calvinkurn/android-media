@@ -77,6 +77,7 @@ internal fun createProductItemListener(): ProductListener {
         override fun onThreeDotsClick(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onItemClicked(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onProductImpressed(itemData: ProductItemDataView?, adapterPosition: Int) {}
+        override fun onAddToCartClick(item: ProductItemDataView) {}
         override val productCardLifecycleObserver: ProductCardLifecycleObserver?
             get() = null
     }

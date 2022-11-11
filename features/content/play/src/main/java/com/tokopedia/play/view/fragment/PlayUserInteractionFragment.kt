@@ -1235,6 +1235,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun openProductSheet() {
         interactiveResultView?.hideCoachMark()
         playViewModel.onShowProductSheet(bottomSheetMaxHeight)
+        productAnalyticHelper.sendImpressedProductSheets()
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {

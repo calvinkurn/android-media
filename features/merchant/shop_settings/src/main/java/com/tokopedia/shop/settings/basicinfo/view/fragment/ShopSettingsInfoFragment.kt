@@ -23,11 +23,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
@@ -63,7 +63,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         const val EXTRA_SAVE_INSTANCE_CACHE_MANAGER_ID = "extra_save_instance_cache_manager_id"
         const val REQUEST_EDIT_BASIC_INFO = "request_edit_basic_info"
         const val REQUEST_EDIT_SCHEDULE = 782
-        private const val OPERATIONAL_HOUR_START_INDEX = 4
     }
 
     @Inject
@@ -223,8 +222,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             ShopSettingsTracking.clickStatusToko(shopId, getShopType())
         }
 
-        shopSettingsInfoViewModel.validateOsMerchantType(shopId.toInt())
-
         onFragmentResult()
 
         observeShopInfoData()
@@ -264,48 +261,51 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             if (it is Success) {
                 val shopInfoData = it.data
                 shopBadge = shopInfoData.goldOS.badge
-                if (tvPowerMerchantType?.text?.isNotEmpty() == true) {
-                    ivLogoPowerMerchant?.loadImage(shopBadge)
-                } else if (tvOfficialStore?.text?.isNotEmpty() == true) {
-                    ivLogoOfficialStore?.loadImage(shopBadge)
-                }
-
                 isShopClosedBySchedule = shopInfoData.closedInfo.closeDetail.status == ShopStatusDef.CLOSED
-                setUIShopBasicData(shopBasicDataModel ?: ShopBasicDataModel())
             }
         })
     }
 
     private fun observeShopOperationalHourList() {
         shopSettingsInfoViewModel.shopOperationalHourList.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                var operationalHourList = it.data.getShopOperationalHoursList?.data
-                if (operationalHourList?.isEmpty().orTrue()) {
-                    operationalHourList = OperationalHoursUtil.generateDefaultOpsHourList()
-                }
-                val todayOrdinalDayOfWeek = OperationalHoursUtil.getOrdinalDate(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
-                operationalHourList?.get(todayOrdinalDayOfWeek-1)?.let { opsHour ->
-                    val opsHourText = OperationalHoursUtil.generateDatetime(
+            when (it) {
+                is Success -> {
+                    var operationalHourList = it.data.getShopOperationalHoursList?.data
+                    if (operationalHourList?.isEmpty().orTrue()) {
+                        operationalHourList = OperationalHoursUtil.generateDefaultOpsHourList()
+                    }
+                    val todayOrdinalDayOfWeek = OperationalHoursUtil.getOrdinalDate(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
+                    operationalHourList?.get(todayOrdinalDayOfWeek-1)?.let { opsHour ->
+                        val opsHourText = OperationalHoursUtil.generateDatetime(
                             opsHour.startTime,
                             opsHour.endTime,
                             opsHour.status
-                    )
-                    tvShopStatus?.text = if (opsHourText == OperationalHoursUtil.HOLIDAY_CAN_ATC || opsHourText == OperationalHoursUtil.HOLIDAY_CANNOT_ATC) {
-                        opsHourText.trim()
-                    } else if (opsHourText == OperationalHoursUtil.ALL_DAY) {
-                        val opsHourTextParts = opsHourText.split(" ").toMutableList().apply {
-                            remove(first())
-                        }
-                        getString(
+                        )
+                        tvShopStatus?.text = if (opsHourText == OperationalHoursUtil.HOLIDAY_CAN_ATC || opsHourText == OperationalHoursUtil.HOLIDAY_CANNOT_ATC) {
+                            opsHourText.trim()
+                        } else if (opsHourText == OperationalHoursUtil.ALL_DAY) {
+                            val opsHourTextParts = opsHourText.split(" ").toMutableList().apply {
+                                remove(first())
+                            }
+                            getString(
                                 R.string.shop_settings_info_operational_hours,
                                 opsHourTextParts.joinToString(" ").trim()
-                        )
-                    } else {
-                        getString(
+                            )
+                        } else {
+                            getString(
                                 R.string.shop_settings_info_operational_hours,
                                 opsHourText.trim()
-                        )
+                            )
+                        }
                     }
+                }
+                is Fail -> {
+                    view?.let { view ->
+                        snackbar = Toaster.build(view, getString(R.string.error_get_shop_operational_hour_list), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar?.show()
+                    }
+                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })
@@ -380,14 +380,20 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     val pmStatus = it.data
                     userSession.setIsGoldMerchant(pmStatus.isPowerMerchant())
 
-                    if (pmStatus.isPowerMerchant()) {
-                        shopBasicDataModel?.isOfficialStore?.let { isOfficialStore ->
-                            if (!isOfficialStore) {
+                    setUIShopBasicData(shopBasicDataModel ?: ShopBasicDataModel())
+                    shopBasicDataModel?.isOfficialStore?.let { isOfficialStore ->
+                        if (isOfficialStore) {
+                            // get official store detail data
+                            shopSettingsInfoViewModel.validateOsMerchantType(shopId.toIntOrZero())
+                        } else {
+                            if (pmStatus.isPowerMerchant()) {
+                                // set power merchant UI
                                 showPowerMerchant()
+                            } else {
+                                // set regular merchant UI
+                                showRegularMerchantMembership()
                             }
                         }
-                    } else {
-                        showRegularMerchantMembership(pmStatus)
                     }
                 }
                 is Fail -> {
@@ -551,13 +557,11 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showRegularMerchantMembership(shopStatusModel: PMStatusUiModel?) {
-        shopStatusModel?.let {
-            containerRegularMerchant?.visibility = View.VISIBLE
-            containerPowerMerchant?.visibility = View.GONE
-            containerOfficialStore?.visibility = View.GONE
-            tvRegularMerchantType?.text = getString(R.string.label_regular_merchant)
-        }
+    private fun showRegularMerchantMembership() {
+        containerRegularMerchant?.visibility = View.VISIBLE
+        containerPowerMerchant?.visibility = View.GONE
+        containerOfficialStore?.visibility = View.GONE
+        tvRegularMerchantType?.text = getString(R.string.label_regular_merchant)
     }
 
     private fun showPowerMerchant() {

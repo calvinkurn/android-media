@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.variant.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ShopParam
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
@@ -26,10 +27,14 @@ object ProductManageVariantMapper {
         val variantSelections = variant.selections
         val variantSizeCharts = variant.sizeCharts
         val productName = response.productName
+        val notifymeCount = response.notifymeCount
+
         val isAllStockEmpty = response.isAllStockEmpty()
 
         val variants = response.variant.products.map {
             val variantName = getVariantName(it.combination, variantSelections)
+            val stockAlertCount =
+                if (it.stockAlertCount.isEmpty()) 0 else it.stockAlertCount.toIntOrZero()
             ProductVariant(
                 it.productID,
                 variantName,
@@ -44,14 +49,27 @@ object ProductManageVariantMapper {
                 isAllStockEmpty,
                 access,
                 it.campaignTypeList,
-                maxStock
+                maxStock,
+                it.notifymeCount,
+                it.stockAlertStatus,
+                stockAlertCount,
+                it.isBelowStockAlert,
             )
         }
 
-        return GetVariantResult(productName, variants, variantSelections, variantSizeCharts)
+        return GetVariantResult(
+            productName,
+            notifymeCount,
+            variants,
+            variantSelections,
+            variantSizeCharts
+        )
     }
 
-    fun EditVariantResult.updateVariant(variantId: String, updateBlock: (ProductVariant) -> ProductVariant): EditVariantResult {
+    fun EditVariantResult.updateVariant(
+        variantId: String,
+        updateBlock: (ProductVariant) -> ProductVariant
+    ): EditVariantResult {
         val variantList = variants.toMutableList()
         val variant = variants.find { it.id == variantId }
         val index = variants.indexOf(variant)
@@ -68,11 +86,11 @@ object ProductManageVariantMapper {
             val variantStockInput = variants.getOrNull(index)?.stock
             val variantStatusInput = variants.getOrNull(index)?.status
 
-            if(variantStockInput != variant.stock) {
+            if (variantStockInput != variant.stock) {
                 editStock = true
             }
 
-            if(variantStatusInput != variant.status) {
+            if (variantStatusInput != variant.status) {
                 editStatus = true
             }
         }
@@ -80,9 +98,11 @@ object ProductManageVariantMapper {
         return copy(editStock = editStock, editStatus = editStatus)
     }
 
-    fun mapResultToUpdateParam(shopId: String,
-                               result: EditVariantResult,
-                               shouldSetStock: Boolean = true): UpdateVariantParam {
+    fun mapResultToUpdateParam(
+        shopId: String,
+        result: EditVariantResult,
+        shouldSetStock: Boolean = true
+    ): UpdateVariantParam {
         val productInput = result.variants.map {
             val stock =
                 if (shouldSetStock) {
@@ -91,13 +111,13 @@ object ProductManageVariantMapper {
                     null
                 }
             VariantProductInput(
-                    it.status,
-                    it.combination,
-                    it.isPrimary,
-                    it.price,
-                    it.sku,
-                    stock,
-                    it.pictures
+                it.status,
+                it.combination,
+                it.isPrimary,
+                it.price,
+                it.sku,
+                stock,
+                it.pictures
             )
         }
 
@@ -107,12 +127,12 @@ object ProductManageVariantMapper {
 
         val sizeChartInput = result.sizeCharts.map {
             VariantSizeChartInput(
-                    it.picId,
-                    it.description,
-                    it.filePath,
-                    it.fileName,
-                    it.width,
-                    it.height
+                it.picId,
+                it.description,
+                it.filePath,
+                it.fileName,
+                it.width,
+                it.height
             )
         }
 
@@ -151,7 +171,7 @@ object ProductManageVariantMapper {
             optionIndexList.drop(1).mapIndexed { index, optionIndex ->
                 val selectionIndex = index + 1
                 val optionName = selections.getVariantName(selectionIndex, optionIndex)
-                variantName+= " | $optionName"
+                variantName += " | $optionName"
             }
         }
 

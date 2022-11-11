@@ -51,8 +51,7 @@
                 android:layout_height="97dp"
                 android:layout_below="@id/image_gift_box_lid"
                 android:layout_centerHorizontal="true"
-                android:scaleType="centerCrop"
-                tools:src="@color/green_200" />
+                android:scaleType="centerCrop" />
 
 
         </RelativeLayout>
