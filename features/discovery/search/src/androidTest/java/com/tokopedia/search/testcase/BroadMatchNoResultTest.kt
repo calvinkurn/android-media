@@ -15,6 +15,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.*
+import com.tokopedia.search.generator.utils.IDGeneratorHelper
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.product.broadmatch.BroadMatchViewHolder
 import com.tokopedia.test.application.annotations.UiTest
@@ -69,6 +70,8 @@ internal class BroadMatchNoResultTest {
 
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<BroadMatchViewHolder>(broadMatchViewModelPosition, clickChildViewWithId(R.id.searchBroadMatchSeeMore)))
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<BroadMatchViewHolder>(broadMatchViewModelPosition, clickChildViewWithId(R.id.searchBroadMatchList)))
+
+        IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 
     @After

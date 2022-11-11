@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.*
+import com.tokopedia.search.generator.utils.IDGeneratorHelper
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -64,6 +65,8 @@ internal class BannedProductEmptySearchTest {
         onView(withId(R.id.searchResultBannedProductsEmptySearchImage)).check(matches(isDisplayed()))
         onView(withId(R.id.searchResultBannedProductsEmptySearchTitle)).check(matches(isDisplayed()))
         onView(withId(R.id.searchResultBannedProductsEmptySearchMessage)).check(matches(isDisplayed()))
+
+        IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 
     @After

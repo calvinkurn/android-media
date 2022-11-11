@@ -15,6 +15,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.*
+import com.tokopedia.search.generator.utils.IDGeneratorHelper
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
 import com.tokopedia.test.application.annotations.UiTest
@@ -67,6 +68,8 @@ internal class TopNavCardsTest {
         val globalNavViewModelPosition = productListAdapter.itemList.getGlobalNavViewModelPosition()
 
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, clickChildViewWithId(R.id.globalNavCardItemCardView)))
+
+        IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 
     @After
