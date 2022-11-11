@@ -558,8 +558,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
     private fun onItemShareClick(shareModel: ShareModel, voucher: VoucherUiModel, shopDomain: String) {
         val formattedShopName = MethodChecker.fromHtml(shopBasicData?.shopName ?: "").toString()
-        val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopDomain}"
-        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+        val shareUrl = "${TokopediaUrl.getInstance().WEB}$shopDomain"
+        val linkerShareData = DataMapper.getLinkerShareData(
+            LinkerData().apply {
             type = LinkerData.MERCHANT_VOUCHER
             uri = shareUrl
             id = voucher.id.toString()
