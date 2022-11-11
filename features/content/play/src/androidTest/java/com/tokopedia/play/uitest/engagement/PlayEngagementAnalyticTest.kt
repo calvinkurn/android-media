@@ -16,6 +16,7 @@ import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
@@ -27,7 +28,6 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.test.application.annotations.CassavaTest
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
@@ -37,7 +37,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
-import com.tokopedia.play.R as playR
 
 /**
  * @author by astidhiyaa on 31/10/22
@@ -60,7 +59,7 @@ class PlayEngagementAnalyticTest {
         {
           "type" : "CHANNEL_INTERACTIVE_STATUS",
           "data" : {
-            "channel_id" : 12665,
+            "channel_id" : $channelId,
             "exist" : true 
           }
         }
@@ -79,8 +78,8 @@ class PlayEngagementAnalyticTest {
     private val mockRemoteConfig = mockk<RemoteConfig>(relaxed = true)
 
     init {
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = listOf(
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = listOf(
                 uiModelBuilder.buildChannelData(
                    channelDetail = PlayChannelDetailUiModel(
                         channelInfo = PlayChannelInfoUiModel(id = channelId, channelType = PlayChannelType.Live)
@@ -132,15 +131,6 @@ class PlayEngagementAnalyticTest {
 
     private fun createRobot() = PlayActivityRobot(channelId, 5000, isYouTube = false)
 
-    private fun turnOffLoader() {
-        val robot = createRobot()
-        robot.scenario.onActivity {
-            it.findViewById<LoaderUnify>(playR.id.iv_loading).apply {
-                this.avd?.stop()
-            }
-        }
-    }
-
     @Test
     fun clickVoucher_openBottomSheetCoupon () {
         val tagItems = uiModelBuilder.buildTagItem(
@@ -176,7 +166,6 @@ class PlayEngagementAnalyticTest {
             clickEngagementWidget(0)
             assertCassavaByEventAction("click - voucher widget")
             hasVoucherInBottomSheet()
-            assertCassavaByEventAction("view - voucher bottomsheet")
             clickVoucherInBottomSheet(0)
             assertCassavaByEventAction("view - toaster private voucher")
             clickToasterAction()
@@ -201,10 +190,8 @@ class PlayEngagementAnalyticTest {
             hasVoucherInBottomSheet()
             clickEngagementWidget(0)
             assertCassavaByEventAction("click - voucher widget")
-            assertCassavaByEventAction("view - voucher bottomsheet")
             clickVoucherInBottomSheet(1)
             assertCassavaByEventAction("view - toaster public voucher")
-            assertCassavaByEventAction("click - lihat toaster public voucher")
         }
     }
 
@@ -225,7 +212,6 @@ class PlayEngagementAnalyticTest {
         val robot = createRobot()
         robot.hasEngagement(isGame = true)
         robot.swipeEngagement(1)
-        assertCassavaByEventAction("swipe - voucher widget")
     }
 
     private fun assertCassavaByEventAction(eventAction: String) {
