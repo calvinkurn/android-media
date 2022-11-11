@@ -24,7 +24,7 @@ object EPharmacyMapper {
             group.prescriptionSource,
             group.consultationSource,
             false,
-            prepareCtaData(group.prescriptionSource,group.consultationData?.prescription,group.prescriptionImages),
+            prepareCtaData(group.prescriptionSource,group.consultationData,group.prescriptionImages),
             isLastIndex(group.shopInfo,index),
             (isLastIndex(group.shopInfo,index) && isLastGroup).not()
         )
@@ -32,7 +32,7 @@ object EPharmacyMapper {
 
     private fun prepareCtaData(
         prescriptionSource: List<String?>?,
-        prescription: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription?>?,
+        consultationData: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData?,
         prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?
     ) : EPharmacyItemButtonData {
         var buttonText = "Chat Dokter Buat Dapat Resep"
@@ -63,7 +63,7 @@ object EPharmacyMapper {
         if(((prescriptionImages?.size ?: 0) > 1) ){
             buttonText = "Resep Terlampir"
             buttonSubText = "Kamu punya ${prescriptionImages?.size} foto resep"
-        }else if((prescription?.size ?:0) > 1){
+        }else if(consultationData != null){
             buttonText = "Resep Digital Terlampir"
             buttonSubText = "Resep dari dokter"
         }

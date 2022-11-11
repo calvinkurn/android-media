@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -31,6 +32,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val partnerTitle = view.findViewById<Typography>(R.id.partner_title)
     private val productQuantity = view.findViewById<Typography>(R.id.product_quantity)
     private val productImageUnify = view.findViewById<ImageView>(R.id.product_image)
+    private val productImageCard = view.findViewById<CardUnify2>(R.id.product_image_card)
     private val divider = view.findViewById<DividerUnify>(R.id.divider)
     private val productAccordionView = view.findViewById<LinearLayout>(R.id.product_accordion_view)
     private val productAccordionRV = view.findViewById<RecyclerView>(R.id.accordion_expandable_rv)
@@ -66,13 +68,21 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderObstruction() {
         if(dataModel?.consultationStatus == EPharmacyConsultationStatus.REJECTED.status
             ||dataModel?.consultationStatus == EPharmacyConsultationStatus.EXPIRED.status){
-            topView.show()
-            bottomView.show()
+            topView?.run {
+                show()
+                setOnClickListener{}
+            }
+            bottomView.run {
+                show()
+                setOnClickListener{}
+            }
             ticker.show()
+            productImageCard.alpha = 0.5f
         }else {
             topView.hide()
             bottomView.hide()
             ticker.hide()
+            productImageCard.alpha = 1f
         }
     }
 

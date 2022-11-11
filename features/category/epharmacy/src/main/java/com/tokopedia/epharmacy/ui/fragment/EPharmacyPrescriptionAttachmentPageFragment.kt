@@ -36,6 +36,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -279,7 +281,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
 
     private fun startMiniConsultation(miniConsultationLink : String?) {
         miniConsultationLink?.let { webLink ->
-            RouteManager.route(activity,webLink)
+            activity?.let { safeContext ->
+                RouteManager.route(context,"tokopedia://webview?url=https://accounts-staging.tokopedia.com/oauth/sandbox/in")
+            }
         }
     }
 
