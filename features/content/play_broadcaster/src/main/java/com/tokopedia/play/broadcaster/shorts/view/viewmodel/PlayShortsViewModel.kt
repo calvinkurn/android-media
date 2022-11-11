@@ -15,8 +15,10 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.util.oneTimeUpdate
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play_common.model.result.NetworkResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,6 +60,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _shortsId = MutableStateFlow("")
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
+    private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Loading)
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
@@ -96,8 +99,9 @@ class PlayShortsViewModel @Inject constructor(
         _selectedAccount,
         _menuListUiState,
         _titleForm,
-        _coverForm
-    ) { shortsId, mediaUri, accountList, selectedAccount, menuListUiState, titleForm, coverForm ->
+        _coverForm,
+        _tags
+    ) { shortsId, mediaUri, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags ->
         PlayShortsUiState(
             shortsId = shortsId,
             mediaUri = mediaUri,
@@ -105,7 +109,8 @@ class PlayShortsViewModel @Inject constructor(
             selectedAccount = selectedAccount,
             menuList = menuListUiState,
             titleForm = titleForm,
-            coverForm = coverForm
+            coverForm = coverForm,
+            tags = tags,
         )
     }
 
@@ -138,6 +143,10 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SetProduct -> handleSetProduct(action.productSectionList)
 
             is PlayShortsAction.ClickNext -> handleClickNext()
+
+            /** Summary */
+            is PlayShortsAction.LoadTag -> handleLoadTag()
+            is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
         }
     }
 
@@ -227,6 +236,37 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleClickNext() {
         /** TODO: handle this */
+    }
+
+    private fun handleLoadTag() {
+        viewModelScope.launchCatchError(block = {
+            if(_tags.value is NetworkResult.Loading) return@launchCatchError
+
+            _tags.update { NetworkResult.Loading }
+
+            val tags = repo.getTagRecommendation(shortsId)
+
+            _tags.update { NetworkResult.Success(tags) }
+        }) { throwable ->
+            _tags.update { NetworkResult.Fail(throwable) }
+        }
+    }
+
+    private fun handleSelectTag(tag: PlayTagUiModel) {
+        val tagState = _tags.value
+        when(tagState is NetworkResult.Success) {
+            true -> {
+                _tags.update {
+                    NetworkResult.Success(
+                        data = tagState.data.map {
+                            if(it.tag == tag.tag) it.copy(isChosen = !it.isChosen)
+                            else it
+                        }.toSet()
+                    )
+                }
+            }
+            else -> {}
+        }
     }
 
     private fun setupPreparationMenu() {

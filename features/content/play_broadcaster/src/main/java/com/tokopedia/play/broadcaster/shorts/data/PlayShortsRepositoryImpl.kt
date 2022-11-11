@@ -4,9 +4,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -16,6 +18,7 @@ import javax.inject.Inject
 class PlayShortsRepositoryImpl @Inject constructor(
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
     private val mapper: PlayShortsMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : PlayShortsRepository {
@@ -23,6 +26,16 @@ class PlayShortsRepositoryImpl @Inject constructor(
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
         val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
 
-        return@withContext mapper.mapAuthorList(response)
+        mapper.mapAuthorList(response)
+    }
+
+    override suspend fun getTagRecommendation(
+        creationId: String,
+    ): Set<PlayTagUiModel> = withContext(dispatchers.io) {
+        val response = getRecommendedChannelTagsUseCase.apply {
+            setChannelId(creationId)
+        }.executeOnBackground()
+
+        mapper.mapTagRecommendation(response)
     }
 }

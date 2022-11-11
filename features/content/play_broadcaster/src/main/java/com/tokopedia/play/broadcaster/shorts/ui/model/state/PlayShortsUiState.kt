@@ -2,7 +2,9 @@ package com.tokopedia.play.broadcaster.shorts.ui.model.state
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play_common.model.result.NetworkResult
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022
@@ -15,7 +17,9 @@ data class PlayShortsUiState(
     val menuList: List<DynamicPreparationMenu>,
 
     val titleForm: PlayShortsTitleFormUiState,
-    val coverForm: PlayShortsCoverFormUiState
+    val coverForm: PlayShortsCoverFormUiState,
+
+    val tags: NetworkResult<Set<PlayTagUiModel>>,
 )
 
 data class PlayShortsTitleFormUiState(

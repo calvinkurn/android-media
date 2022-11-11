@@ -283,4 +283,5 @@
     <string name="play_shorts_exit_confirmation_exit">Keluar</string>
     
     <string name="play_shorts_summary_title">Upload Video</string>
+    <string name="play_shorts_summary_upload_action">Upload Video</string>
 </resources>

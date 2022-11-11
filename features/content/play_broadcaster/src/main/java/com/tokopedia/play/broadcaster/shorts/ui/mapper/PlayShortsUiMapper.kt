@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.shorts.ui.mapper
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.play.broadcaster.domain.model.GetRecommendedChannelTagsResponse
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import javax.inject.Inject
 
 /**
@@ -24,5 +26,14 @@ class PlayShortsUiMapper @Inject constructor(
                 hasAcceptTnc = it.livestream.enable,
             )
         }
+    }
+
+    override fun mapTagRecommendation(response: GetRecommendedChannelTagsResponse): Set<PlayTagUiModel> {
+        return response.recommendedTags.tags.map {
+            PlayTagUiModel(
+                tag = it,
+                isChosen = false,
+            )
+        }.toSet()
     }
 }
