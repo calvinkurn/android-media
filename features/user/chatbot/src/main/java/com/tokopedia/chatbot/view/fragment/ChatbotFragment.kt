@@ -1181,24 +1181,6 @@ class ChatbotFragment :
         }
     }
 
-    override fun uploadUsingOldMechanism(data: Intent) {
-        val paths = MediaPicker.result(data)
-        paths.originalPaths.forEach { path ->
-            processImagePathToUpload(path)?.let { imageUploadUiModel ->
-                getViewState()?.onImageUpload(imageUploadUiModel)
-                presenter.uploadImages(
-                    imageUploadUiModel,
-                    messageId,
-                    opponentId,
-                    onErrorImageUpload()
-                )
-            }
-
-        }
-
-    }
-
-
     private fun onErrorImageUpload(): (Throwable, ImageUploadUiModel) -> Unit {
         return { throwable, image ->
             if (view != null) {
@@ -1516,7 +1498,7 @@ class ChatbotFragment :
     private fun handleImageResendBottomSheet(element: ImageUploadUiModel,bottomSheetPage: BottomSheetUnify) {
         removeDummy(element)
         getViewState()?.onImageUpload(element)
-        presenter.uploadImages(element, messageId, opponentId, onErrorImageUpload())
+        presenter.uploadImageSecureUpload(element, messageId, opponentId, onErrorImageUpload(), element.imageUrl, context)
         bottomSheetPage.dismiss()
     }
 
