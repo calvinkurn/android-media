@@ -12,8 +12,10 @@
     <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
 
     <!--Section | Privacy Policy -->
-    <string name="section_title_privacypolicy">Kebijakan Privasi Tokopedia</string>
-    <string name="section_description_privacypolicy">Kebijakan Privasi menjelaskan data pribadimu yang disimpan, bagaimana Tokopedia menggunakannya, dan kenapa Tokopedia memprosesnya.</string>
+    <string name="privacy_policy_section_title">Kebijakan Privasi Tokopedia</string>
+    <string name="privacy_policy_section_description">Kebijakan Privasi menjelaskan data pribadimu yang disimpan, bagaimana Tokopedia menggunakannya, dan kenapa Tokopedia memprosesnya.</string>
+    <string name="privacy_policy_bottom_sheet_title">Riwayat Kebijakan Privasi</string>
+    <string name="privacy_policy_show_all_list_button">Lihat Semua</string>
 
     <!--  CONSENT WITHDRAWAL  -->
     <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
@@ -22,5 +24,4 @@
     <string name="consent_withdrawal_dialog_body">Kalau dimatikan, kamu nggak bisa pakai fitur atau produk yang butuh data ini.</string>
     <string name="consent_withdrawal_dialog_primary_cta">Ya, Matikan</string>
     <string name="consent_withdrawal_dialog_secondary_cta">Batal</string>
-
 </resources>

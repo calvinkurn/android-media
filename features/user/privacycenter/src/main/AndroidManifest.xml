@@ -44,6 +44,13 @@
 
         </activity>
 
+        <activity
+            android:name=".main.section.privacypolicy.webview.PrivacyPolicyWebViewActivity"
+            android:label="Privacy Policy"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
