@@ -68,10 +68,11 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
 
     override fun mapProfileTab(response: UserProfileTabModel): ProfileTabUiModel {
         return with(response.feedXProfileTabs) {
+            val activeTabs = tabs.filter { it.isActive }
             ProfileTabUiModel(
-                showTabs = tabs.size > 1,
-                tabs = if (tabs.isNotEmpty()) {
-                    tabs.map {
+                showTabs = activeTabs.size > 1,
+                tabs = if (activeTabs.isNotEmpty()) {
+                    activeTabs.map {
                         ProfileTabUiModel.Tab(
                             title = it.title,
                             key = it.key,

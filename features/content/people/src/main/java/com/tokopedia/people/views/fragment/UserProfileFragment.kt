@@ -56,6 +56,7 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOAR
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
+import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
@@ -81,6 +82,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
 
+@Suppress("LateinitUsage")
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private var userProfileTracker: UserProfileTracker,
@@ -111,6 +113,8 @@ class UserProfileFragment @Inject constructor(
         get() = _binding!!.mainLayout
 
     private lateinit var viewModel: UserProfileViewModel
+
+    private lateinit var pagerAdapter: UserProfilePagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,6 +180,7 @@ class UserProfileFragment @Inject constructor(
         }
 
         initFabUserProfile()
+        initTab()
     }
 
     override fun onResume() {
@@ -288,6 +293,17 @@ class UserProfileFragment @Inject constructor(
         fabUserProfile.setOnClickListener {
             fabUp.menuOpen = !fabUp.menuOpen
         }
+    }
+
+    private fun initTab() = with(mainBinding.profileTabs) {
+        pagerAdapter = UserProfilePagerAdapter(
+            childFragmentManager,
+            lifecycle,
+            tabLayout,
+            viewPager,
+            requireContext(),
+        )
+        viewPager.adapter = pagerAdapter
     }
 
     private fun initObserver() {
@@ -505,9 +521,12 @@ class UserProfileFragment @Inject constructor(
     private fun renderProfileTab(prev: ProfileTabUiModel?, value: ProfileTabUiModel) {
         if (prev == null || prev == value) return
 
-        mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
-//        if (!value.showTabs) // dont show the tab list
-//        else // initiate profile tab
+        mainBinding.userPostContainer.displayedChild = if (value.tabs.isEmpty()) PAGE_EMPTY
+        else {
+            pagerAdapter.insertFragment(value.tabs)
+            mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
+            PAGE_CONTENT
+        }
     }
 
     private fun createLiveFab(): FloatingButtonItem {
