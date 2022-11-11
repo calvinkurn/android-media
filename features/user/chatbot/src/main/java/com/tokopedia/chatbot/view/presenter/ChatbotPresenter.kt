@@ -134,11 +134,6 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.WebSocket
-import okio.ByteString
 import rx.Subscriber
 import timber.log.Timber
 import java.io.File
@@ -178,8 +173,6 @@ class ChatbotPresenter @Inject constructor(
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
     object companion{
-        const val ERROR_CODE ="400"
-        const val TEXT_HIDE = "hide"
         const val OPEN_CSAT = "13"
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER = "15"
@@ -418,12 +411,6 @@ class ChatbotPresenter @Inject constructor(
             }
         }
         return list
-    }
-
-    private fun onError(): (Throwable) -> Unit {
-        return {
-            view.showErrorToast(it)
-        }
     }
 
     override fun showErrorSnackbar(stringId: Int) {
