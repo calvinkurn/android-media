@@ -308,9 +308,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     //parent fragment
     private var parentFragmentContainer: Fragment? = null
 
-    //parent fragment lifecycle observer
-    private lateinit var parentFragmentLifecycleObserver: DefaultLifecycleObserver
-
     //Image generator page source ID
     private lateinit var sourceId: String
 
