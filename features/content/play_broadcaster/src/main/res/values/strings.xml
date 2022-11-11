@@ -281,4 +281,6 @@
     <string name="play_shorts_exit_confirmation_description">Persiapan yang sudah kamu buat akan hilang.</string>
     <string name="play_shorts_exit_confirmation_continue">Lanjut Persiapan</string>
     <string name="play_shorts_exit_confirmation_exit">Keluar</string>
+    
+    <string name="play_shorts_summary_title">Upload Video</string>
 </resources>

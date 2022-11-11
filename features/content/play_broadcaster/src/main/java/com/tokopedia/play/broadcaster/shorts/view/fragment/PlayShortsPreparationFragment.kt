@@ -168,6 +168,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         coachMarkManager.dismissAllCoachMark()
+        _binding = null
     }
 
     override fun onBackPressed(): Boolean {
