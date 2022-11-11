@@ -168,8 +168,8 @@ class PlayEngagementAnalyticTest {
             hasVoucherInBottomSheet()
             clickVoucherInBottomSheet(0)
             assertCassavaByEventAction("view - toaster private voucher")
-            clickToasterAction()
-            assertCassavaByEventAction("click - lihat toaster private voucher")
+//            clickToasterAction()
+//            assertCassavaByEventAction("click - lihat toaster private voucher")
         }
     }
 
