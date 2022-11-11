@@ -90,6 +90,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
     private var orderId = DEFAULT_ZERO_VALUE
     private var checkoutId = ""
     private var entryPoint = ""
+    private var source = ""
 
     private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseEPharmacyDataModel> = AsyncDifferConfig.Builder(
@@ -117,9 +118,10 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun initArguments() {
-        orderId = arguments?.getLong(EXTRA_ORDER_ID_LONG) ?: 0L
-        checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID_STRING, "") ?: ""
-        entryPoint = arguments?.getString(EXTRA_ENTRY_POINT_STRING, "") ?: ""
+        orderId = arguments?.getLong(EXTRA_ORDER_ID_LONG)  ?: 0L
+        checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID_STRING,"") ?: ""
+        entryPoint = arguments?.getString(EXTRA_ENTRY_POINT_STRING,"") ?: ""
+        source = arguments?.getString(EXTRA_SOURCE_STRING, ENTRY_POINT_CHECKOUT.lowercase()) ?: (ENTRY_POINT_CHECKOUT.lowercase())
     }
 
     private fun setUpObservers() {
@@ -152,8 +154,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun getData() {
         ePharmacyLoader?.show()
-        if (checkoutId.isNotBlank()) {
-            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId)
+        if(checkoutId.isNotBlank()) {
+            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId,source)
         } else if (orderId != DEFAULT_ZERO_VALUE) {
             uploadPrescriptionViewModel.getEPharmacyOrderDetail(orderId)
         }
