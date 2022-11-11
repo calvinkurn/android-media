@@ -245,7 +245,7 @@ class PlayViewerIdGenerator {
             resultState = ResultState.Success,
         )
 
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = listOf(
                 uiModelBuilder.buildChannelData(

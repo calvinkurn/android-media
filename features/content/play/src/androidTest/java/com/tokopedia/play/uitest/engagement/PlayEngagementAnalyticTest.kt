@@ -16,6 +16,7 @@ import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
@@ -77,8 +78,8 @@ class PlayEngagementAnalyticTest {
     private val mockRemoteConfig = mockk<RemoteConfig>(relaxed = true)
 
     init {
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = listOf(
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = listOf(
                 uiModelBuilder.buildChannelData(
                    channelDetail = PlayChannelDetailUiModel(
                         channelInfo = PlayChannelInfoUiModel(id = channelId, channelType = PlayChannelType.Live)
