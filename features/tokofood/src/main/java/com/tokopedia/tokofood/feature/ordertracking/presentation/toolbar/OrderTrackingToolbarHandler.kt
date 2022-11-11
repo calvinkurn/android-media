@@ -1,11 +1,14 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar
 
 import android.app.Activity
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
@@ -20,7 +23,11 @@ class OrderTrackingToolbarHandler(
     init {
         (activity.get() as? AppCompatActivity)?.apply {
             supportActionBar?.hide()
+
             setSupportActionBar(binding?.orderTrackingToolbar)
+
+            binding?.orderTrackingToolbar?.bringToFront()
+
             supportActionBar?.run {
                 title = getString(com.tokopedia.tokofood.R.string.title_tokofood_post_purchase)
             }
