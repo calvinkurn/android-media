@@ -97,12 +97,14 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel) {
             val binding = ViewRechargeHomeMyBillsItemBinding.bind(itemView)
 
-            binding.ivProductIcon.loadImage(element.item.attributes.iconUrl)
-            binding.tvMainPrice.text = element.item.label2
-            binding.tvMainPrice.setTextColor(element.item.attributes.titleColor)
+            with(binding) {
+                ivProductIcon.loadImage(element.item.attributes.iconUrl)
+                tvMainPrice.text = element.item.label2
+                tvMainPrice.setTextColor(element.item.attributes.titleColor)
 
-            renderProductInfo(binding, element.item)
-            renderExpiredInfo(binding, element.item)
+                renderProductInfo(this, element.item)
+                renderExpiredInfo(this, element.item)
+            }
         }
 
         private fun renderProductInfo(
@@ -110,7 +112,8 @@ class RechargeHomepageMyBillsWidgetViewHolder(
             element: RechargeHomepageSections.Item
         ){
             with(binding){
-                tvProductDetailName.text = element.title
+                tvProductDetailName.text = element.subtitle
+                tvProductDetailCategory.text = element.title
                 tvProductDetailNumber.text = element.content
             }
         }
@@ -154,6 +157,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel) {
             val binding = ContentRechargeHomepageMyBillsLastItemBinding.bind(itemView)
             with(binding){
+                imgBackground.loadImage(element.items.mediaUrl)
                 tvTitle.text = element.items.title
                 containerCta.setOnClickListener {
                     RouteManager.route(itemView.context, element.items.applink)
