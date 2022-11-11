@@ -586,6 +586,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val subtitles = getCTAButtonSubtitle(feedXCard)
 
         if (!subtitles.isNullOrEmpty() && topAdsProductSubtitleContainer.childCount < subtitles.size) {
+            topAdsProductSubtitleContainer.removeAllViews()
             subtitles.map { subtitle ->
                 val typography = Typography(context)
                 typography.setType(Typography.DISPLAY_3)
