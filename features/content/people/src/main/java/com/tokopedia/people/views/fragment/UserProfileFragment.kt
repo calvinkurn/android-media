@@ -312,10 +312,13 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is UserProfileUiEvent.LoadContent -> {
-                        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-
-                        // TODO maybe initiate the viewpager in here
+                    is UserProfileUiEvent.ErrorGetProfileTab -> {
+                        if (binding.swipeRefreshLayout.isRefreshing) {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                        }
+                        showErrorPost {
+                            viewModel.submitAction(UserProfileAction.LoadProfileTab)
+                        }
                     }
                     is UserProfileUiEvent.ErrorFollowUnfollow -> {
                         val message = if (event.message.isNotEmpty()) event.message else getDefaultErrorMessage()
@@ -363,6 +366,17 @@ class UserProfileFragment @Inject constructor(
 
     private fun addLiveClickListener(appLink: String) {
         RouteManager.route(context, appLink)
+    }
+
+    private fun showErrorPost(action: () -> Unit) = with(mainBinding.globalErrorPost) {
+        mainBinding.userPostContainer.displayedChild = PAGE_ERROR
+        apply {
+            progressState = false
+            refreshBtn?.setOnClickListener {
+                progressState = true
+                action.invoke()
+            }
+        }
     }
 
     /** Render UI */
@@ -489,9 +503,11 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun renderProfileTab(prev: ProfileTabUiModel?, value: ProfileTabUiModel) {
-        if (prev == value) return
+        if (prev == null || prev == value) return
 
-        // TODO initiate profile tab
+        mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
+//        if (!value.showTabs) // dont show the tab list
+//        else // initiate profile tab
     }
 
     private fun createLiveFab(): FloatingButtonItem {

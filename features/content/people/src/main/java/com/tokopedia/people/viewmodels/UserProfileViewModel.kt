@@ -134,6 +134,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
             is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
+            is UserProfileAction.LoadProfileTab -> handleLoadProfileTab()
         }
     }
 
@@ -277,6 +278,12 @@ class UserProfileViewModel @AssistedInject constructor(
             },)
     }
 
+    private fun handleLoadProfileTab() {
+        viewModelScope.launchCatchError(block = {
+            loadProfileTab()
+        }, onError = { })
+    }
+
     private fun updateLoadingStateFollowShopRecom(itemID: Long, state: ShopRecomFollowState) {
         _shopRecom.update { data ->
             data.copy(
@@ -310,29 +317,28 @@ class UserProfileViewModel @AssistedInject constructor(
         _followInfo.update { followInfo }
         _profileType.update { profileType }
 
-        // TODO load feedTab here
-        loadProfileTab(profileInfo.userID)
-
         if (profileType == ProfileType.Self) {
             _profileWhitelist.update { repo.getWhitelist() }
-            loadShopRecom()
+            if (isRefresh) loadShopRecom()
         }
 
-        // TODO need to check feedTab is success or not because when not we don't need to
-        //  emit this event or need state to letting the ui know then we don't need to initiate
-        //  the viewpager instead just showing the empty content state
-        if (isRefresh) _uiEvent.emit(UserProfileUiEvent.LoadContent)
+        if (isRefresh) loadProfileTab()
     }
 
-    private suspend fun loadProfileTab(userID: String) {
-        val result = repo.getUserProfileTab(userID)
-        _profileTab.emit(result)
+    private suspend fun loadProfileTab() {
+        viewModelScope.launchCatchError(block = {
+            val result = repo.getUserProfileTab(_profileInfo.value.userID)
+            _profileTab.update { result }
+        }, onError = {
+            _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
+        })
     }
 
     private suspend fun loadShopRecom() {
-        val result = repo.getShopRecom()
-        if (result.isShown) _shopRecom.emit(result)
-        else _shopRecom.emit(ShopRecomUiModel())
+        viewModelScope.launchCatchError(block = {
+            val result = repo.getShopRecom()
+             _shopRecom.update { if (result.isShown) result else ShopRecomUiModel() }
+        }, onError = { })
     }
 
     companion object {
