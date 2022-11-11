@@ -886,7 +886,7 @@ class OfficialStoreHomeViewModelTest {
         val osFeatured = OfficialStoreFeaturedShop()
         val osDynamicChannel = mutableListOf(
             OfficialStoreChannel(channel = Channel(
-                layout = DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL)
+                layout = DynamicChannelLayout.LAYOUT_SPRINT_LEGO)
             )
         )
         val page = 1
@@ -935,7 +935,7 @@ class OfficialStoreHomeViewModelTest {
         val osFeatured = OfficialStoreFeaturedShop()
         val osDynamicChannel = mutableListOf(
             OfficialStoreChannel(channel = Channel(
-                layout = DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL)
+                layout = DynamicChannelLayout.LAYOUT_SPRINT_LEGO)
             )
         )
         val page = 1
