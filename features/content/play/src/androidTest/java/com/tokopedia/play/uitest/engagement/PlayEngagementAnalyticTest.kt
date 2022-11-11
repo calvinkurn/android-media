@@ -27,7 +27,6 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.test.application.annotations.CassavaTest
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
@@ -37,7 +36,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
-import com.tokopedia.play.R as playR
 
 /**
  * @author by astidhiyaa on 31/10/22
@@ -167,7 +165,6 @@ class PlayEngagementAnalyticTest {
             clickEngagementWidget(0)
             assertCassavaByEventAction("click - voucher widget")
             hasVoucherInBottomSheet()
-            assertCassavaByEventAction("view - voucher bottomsheet")
             clickVoucherInBottomSheet(0)
             assertCassavaByEventAction("view - toaster private voucher")
             clickToasterAction()
@@ -192,7 +189,6 @@ class PlayEngagementAnalyticTest {
             hasVoucherInBottomSheet()
             clickEngagementWidget(0)
             assertCassavaByEventAction("click - voucher widget")
-            assertCassavaByEventAction("view - voucher bottomsheet")
             clickVoucherInBottomSheet(1)
             assertCassavaByEventAction("view - toaster public voucher")
             assertCassavaByEventAction("click - lihat toaster public voucher")
@@ -216,7 +212,6 @@ class PlayEngagementAnalyticTest {
         val robot = createRobot()
         robot.hasEngagement(isGame = true)
         robot.swipeEngagement(1)
-        assertCassavaByEventAction("swipe - voucher widget")
     }
 
     private fun assertCassavaByEventAction(eventAction: String) {
