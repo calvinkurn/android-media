@@ -18,7 +18,7 @@ class DeliveryProduct(
     val textEta: String = "",
     @SerializedName("promo_text")
     val promoText: String = "",
-    @SerializedName("id") // or timeslotId ?
+    @SerializedName("timeslot_id") // or timeslotId ?
     val id: Long = 0L,
     @SerializedName("available")
     val available: Boolean = false,
