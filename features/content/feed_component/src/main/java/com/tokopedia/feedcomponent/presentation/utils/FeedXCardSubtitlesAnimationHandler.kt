@@ -118,7 +118,7 @@ class FeedXCardSubtitlesAnimationHandler(
         if (currentPositionSubtitle == subtitles.size)
             currentPositionSubtitle = 0
 
-        Log.d("FEED_ANIM", "Kedua $currentPositionSubtitle")
+        Log.d("FEED_ANIM", "Kedua $currentPositionSubtitle ${subtitles[currentPositionSubtitle]}")
 
     }
 
