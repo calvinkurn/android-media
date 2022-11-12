@@ -4,28 +4,28 @@ import com.google.gson.annotations.SerializedName
 
 data class UserProfileTabModel(
     @SerializedName("feedXProfileTabs")
-    val feedXProfileTabs: FeedXProfileTabs,
+    val feedXProfileTabs: FeedXProfileTabs
 )
 
 data class FeedXProfileTabs(
     @SerializedName("data")
     val tabs: List<Tabs>,
     @SerializedName("meta")
-    val meta: Meta,
+    val meta: Meta
 )
 
 data class Tabs(
-    @SerializedName("is_active")
+    @SerializedName("isActive")
     val isActive: Boolean,
     @SerializedName("key")
     val key: String,
     @SerializedName("position")
     val position: Int,
     @SerializedName("title")
-    val title: String,
+    val title: String
 )
 
 data class Meta(
     @SerializedName("selectedIndex")
-    val selectedIndex: Int,
+    val selectedIndex: Int
 )
