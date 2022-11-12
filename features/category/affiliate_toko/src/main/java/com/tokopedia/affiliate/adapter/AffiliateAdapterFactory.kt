@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.AddSocialInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeMoreClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateInfoClickInterfaces
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.AffiliatePerformanceChipClick
@@ -104,7 +105,8 @@ class AffiliateAdapterFactory(
     private var onPerformaGridClick: AffiliatePerformaClickInterfaces? = null,
     private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null,
     private var affiliateInfoClickInterfaces: AffiliateInfoClickInterfaces? = null,
-    private var affiliatePerformanceChipClick: AffiliatePerformanceChipClick? = null
+    private var affiliatePerformanceChipClick: AffiliatePerformanceChipClick? = null,
+    private var affiliateEducationSeeMoreClickInterface: AffiliateEducationSeeMoreClickInterface? = null
 ) :
     BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
@@ -140,7 +142,7 @@ class AffiliateAdapterFactory(
             AffiliateEducationBannerItemVH.LAYOUT -> AffiliateEducationBannerItemVH(parent)
             AffiliateEducationArticleTopicRVVH.LAYOUT -> AffiliateEducationArticleTopicRVVH(parent)
             AffiliateEducationArticleTopicVH.LAYOUT -> AffiliateEducationArticleTopicVH(parent)
-            AffiliateEducationEventRVVH.LAYOUT -> AffiliateEducationEventRVVH(parent)
+            AffiliateEducationEventRVVH.LAYOUT -> AffiliateEducationEventRVVH(parent, affiliateEducationSeeMoreClickInterface = affiliateEducationSeeMoreClickInterface)
             AffiliateEducationEventVH.LAYOUT -> AffiliateEducationEventVH(parent)
             AffiliateEducationArticleRVVH.LAYOUT -> AffiliateEducationArticleRVVH(parent)
             AffiliateEducationArticleVH.LAYOUT -> AffiliateEducationArticleVH(parent)

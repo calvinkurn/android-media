@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateEducationSeeAllViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
@@ -124,5 +125,11 @@ abstract class AffiliateVMModule {
     @AffiliateScope
     @ViewModelKey(AffiliateEducationLandingViewModel::class)
     internal abstract fun affiliateEducationLandingViewModel(viewModel: AffiliateEducationLandingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateEducationSeeAllViewModel::class)
+    internal abstract fun affiliateEducationSeeAllViewModel(viewModel: AffiliateEducationSeeAllViewModel): ViewModel
 
 }

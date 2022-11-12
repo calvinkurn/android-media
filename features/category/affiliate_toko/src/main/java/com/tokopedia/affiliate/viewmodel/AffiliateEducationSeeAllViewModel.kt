@@ -25,7 +25,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import timber.log.Timber
 import javax.inject.Inject
 
-class AffiliateEducationLandingViewModel @Inject constructor(
+class AffiliateEducationSeeAllViewModel @Inject constructor(
     private val educationBannerUseCase: AffiliateEducationBannerUseCase,
     private val educationCategoryUseCase: AffiliateEducationCategoryTreeUseCase,
     private val educationArticleCardsUseCase: AffiliateEducationArticleCardsUseCase

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePortfolioSocialMediaBottomSheet
@@ -26,6 +27,7 @@ import com.tokopedia.affiliate.ui.fragment.AffiliatePromoSearchFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromotionHistoryFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateTransactionDetailFragment
 import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationLandingPage
+import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationSeeAllFragment
 import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
 import dagger.Component
 
@@ -83,5 +85,9 @@ interface AffiliateComponent {
     fun injectPromoSearchFragment(affiliatePromoSearchFragment: AffiliatePromoSearchFragment)
 
     fun injectEducationLandingPage(affiliateEducationLandingPage: AffiliateEducationLandingPage)
+
+    fun injectEducationSeeMoreActivity(affiliateEducationSeeAllActivity: AffiliateEducationSeeAllActivity)
+
+    fun injectEducationSeeMoreFragment(affiliateEducationSeeAllFragment: AffiliateEducationSeeAllFragment)
 
 }

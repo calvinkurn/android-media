@@ -174,4 +174,6 @@
     <string name="kamus_affiliate">Kamus Affiliate</string>
     <string name="istilah_dalam_affiliate">Istilah dalam affiliate</string>
     <string name="bantuan_seputar_tokopedia_affiliate">Bantuan seputar Tokopedia Affiliate</string>
+    <string name="affiliate_event">Event</string>
+    <string name="affiliate_artikel">Artikel</string>
 </resources>

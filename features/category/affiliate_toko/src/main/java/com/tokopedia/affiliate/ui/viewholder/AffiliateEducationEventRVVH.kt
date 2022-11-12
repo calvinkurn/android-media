@@ -5,14 +5,18 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeMoreClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventUiModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateEducationEventRVVH(
-    itemView: View
+    itemView: View,
+    private val affiliateEducationSeeMoreClickInterface: AffiliateEducationSeeMoreClickInterface?
 ) : AbstractViewHolder<AffiliateEducationEventRVUiModel>(itemView) {
 
     private var eventAdapter: AffiliateAdapter? = null
@@ -27,6 +31,10 @@ class AffiliateEducationEventRVVH(
         eventAdapter =
             AffiliateAdapter(AffiliateAdapterFactory())
         val rvEvent = itemView.findViewById<RecyclerView>(R.id.rv_edu_event)
+        val tvSeeMore = itemView.findViewById<Typography>(R.id.event_lihat_semua)
+        tvSeeMore.setOnClickListener {
+            affiliateEducationSeeMoreClickInterface?.onSeeMoreClickInterface(PAGE_EDUCATION_EVENT)
+        }
         val rvLayoutManager =
             LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         rvEvent?.apply {

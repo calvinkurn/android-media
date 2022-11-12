@@ -161,3 +161,5 @@ const val AFFILIATE_SHOP_ADP = "aff_shop_adp"
 const val PAGE_TYPE_PDP = "pdp"
 
 const val PAGE_TYPE_SHOP = "shop"
+
+const val PAGE_EDUCATION_EVENT = "education_event"
