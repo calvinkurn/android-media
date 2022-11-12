@@ -354,9 +354,10 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val result = repo.getUserProfileTab(_profileInfo.value.userID)
             _profileTab.update { result }
+            _uiEvent.emit(UserProfileUiEvent.SuccessLoadTabs(result == ProfileTabUiModel()))
         }, onError = {
-                _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
-            })
+            _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
+        })
     }
 
     private suspend fun loadShopRecom() {
