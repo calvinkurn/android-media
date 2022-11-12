@@ -90,7 +90,6 @@ class UserProfileFragment @Inject constructor(
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
     private val impressionCoordinator: ShopRecomImpressCoordinator
 ) : TkpdBaseV4Fragment(),
-    AdapterCallback,
     ShareBottomsheetListener,
     ScreenShotListener,
     PermissionListener,
@@ -882,7 +881,7 @@ class UserProfileFragment @Inject constructor(
                 val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW)
                 val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false)
 
-//                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+                (activity as? UserProfileActivity)?.listenerPlayWidget?.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
             }
         }
     }

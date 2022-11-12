@@ -17,7 +17,7 @@ import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
 open class UserPostBaseAdapter(
     callback: AdapterCallback,
     val playWidgetCallback: PlayWidgetCallback,
-    val onLoadMore: (cursor: String) -> Unit,
+    val onLoadMore: (cursor: String) -> Unit
 ) : BaseAdapter<PlayPostContentItem>(callback), PlayWidgetCardLargeChannelView.Listener {
 
     var cursor: String = ""
@@ -34,7 +34,7 @@ open class UserPostBaseAdapter(
     override fun getItemViewHolder(
         parent: ViewGroup,
         inflater: LayoutInflater,
-        viewType: Int,
+        viewType: Int
     ): BaseVH {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.up_item_user_post, parent, false)
@@ -74,7 +74,7 @@ open class UserPostBaseAdapter(
 
     private fun addVideoPostReminderClickCallBack(
         channelId: String,
-        isActive: Boolean,
+        isActive: Boolean
     ) {
         val pos = getItemPosition(channelId)
         playWidgetCallback.updatePostReminderStatus(channelId, isActive, pos)
@@ -93,7 +93,7 @@ open class UserPostBaseAdapter(
     fun updatePlayWidgetLatestData(
         channelId: String,
         totalView: String?,
-        isReminderSet: Boolean?,
+        isReminderSet: Boolean?
     ) {
         val selectedData = items
             .filterIsInstance<PlayPostContentItem>()
@@ -107,7 +107,9 @@ open class UserPostBaseAdapter(
             selectedData.stats.view.value = totalView
         } else if (isReminderSet != null && isReminderSet != currIsReminderSet) {
             selectedData.configurations.reminder.isSet = isReminderSet
-        } else return
+        } else {
+            return
+        }
 
         val position = items.indexOf(selectedData)
 
@@ -120,16 +122,17 @@ open class UserPostBaseAdapter(
 
     override fun onToggleReminderChannelClicked(
         item: PlayWidgetChannelUiModel,
-        reminderType: PlayWidgetReminderType,
+        reminderType: PlayWidgetReminderType
     ) {
         addVideoPostReminderClickCallBack(
             item.channelId,
-            reminderType.reminded,
+            reminderType.reminded
         )
     }
 
     interface PlayWidgetCallback {
         fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
+        fun updatePlayWidgetLatestData(channelId: String, totalView: String, isReminderSet: Boolean)
         fun onPlayWidgetLargeClick(appLink: String)
     }
 }

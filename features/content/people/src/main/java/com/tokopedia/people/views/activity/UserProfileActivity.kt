@@ -12,6 +12,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.people.di.DaggerUserProfileComponent
+import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment
 import javax.inject.Inject
 
@@ -19,6 +20,8 @@ class UserProfileActivity : BaseSimpleActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
+    var listenerPlayWidget: UserPostBaseAdapter.PlayWidgetCallback? = null
 
     private var bundle: Bundle? = null
 
@@ -31,21 +34,30 @@ class UserProfileActivity : BaseSimpleActivity() {
         setResult(Activity.RESULT_OK, intent)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        listenerPlayWidget = null
+    }
+
     override fun getNewFragment(): Fragment? {
         return UserProfileFragment.getFragment(
             supportFragmentManager,
             classLoader,
-            bundle ?: Bundle(),
+            bundle ?: Bundle()
         )
     }
 
     private fun inject() {
         DaggerUserProfileComponent.builder()
             .baseAppComponent(
-                (applicationContext as BaseMainApplication).baseAppComponent,
+                (applicationContext as BaseMainApplication).baseAppComponent
             )
             .build()
             .inject(this)
+    }
+
+    fun initListenerPlayWidget(listener: UserPostBaseAdapter.PlayWidgetCallback) {
+        listenerPlayWidget = listener
     }
 
     private fun setupFragmentFactory() {
@@ -58,7 +70,7 @@ class UserProfileActivity : BaseSimpleActivity() {
             bundle = UriUtil.destructiveUriBundle(
                 ApplinkConstInternalGlobal.USER_PROFILE_LANDING,
                 intent.data,
-                bundle,
+                bundle
             )
         }
 

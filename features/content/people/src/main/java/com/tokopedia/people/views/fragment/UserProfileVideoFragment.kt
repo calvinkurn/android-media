@@ -24,6 +24,7 @@ import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
+import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.LOADING
@@ -45,7 +46,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 
 class UserProfileVideoFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserPostBaseAdapter.PlayWidgetCallback {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -59,7 +60,7 @@ class UserProfileVideoFragment @Inject constructor(
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
-            requireArguments().getString(EXTRA_USERNAME) ?: "",
+            requireArguments().getString(EXTRA_USERNAME) ?: ""
         )
     }
 
@@ -72,7 +73,7 @@ class UserProfileVideoFragment @Inject constructor(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = UpFragmentVideoBinding.inflate(inflater, container, false)
         return binding.root
@@ -82,6 +83,7 @@ class UserProfileVideoFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         initObserver()
+        initListener()
         setupPlayVideo()
 
         fetchPlayVideo(viewModel.profileUserID)
@@ -114,6 +116,10 @@ class UserProfileVideoFragment @Inject constructor(
 
         addListObserver()
         adduserPostErrorObserver()
+    }
+
+    private fun initListener() {
+        (activity as? UserProfileActivity)?.initListenerPlayWidget(this)
     }
 
     private fun observeUiEvent() {
@@ -189,9 +195,7 @@ class UserProfileVideoFragment @Inject constructor(
 
     private fun getDefaultErrorMessage() = getString(R.string.up_error_unknown)
 
-    override fun getScreenName(): String {
-        return TAG
-    }
+    override fun getScreenName(): String = TAG
 
     private fun submitAction(action: UserProfileAction) {
         viewModel.submitAction(action)
@@ -214,8 +218,11 @@ class UserProfileVideoFragment @Inject constructor(
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        if (viewModel.isSelfProfile) emptyPostSelf()
-        else emptyPostVisitor()
+        if (viewModel.isSelfProfile) {
+            emptyPostSelf()
+        } else {
+            emptyPostVisitor()
+        }
         binding.userVideoContainer.displayedChild = PAGE_EMPTY
     }
 
@@ -242,11 +249,19 @@ class UserProfileVideoFragment @Inject constructor(
         if (userSession.isLoggedIn.not()) {
             startActivityForResult(
                 RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_TO_SET_REMINDER,
+                REQUEST_CODE_LOGIN_TO_SET_REMINDER
             )
         } else {
             submitAction(UserProfileAction.ClickUpdateReminder(false))
         }
+    }
+
+    override fun updatePlayWidgetLatestData(
+        channelId: String,
+        totalView: String,
+        isReminderSet: Boolean
+    ) {
+        mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
     }
 
     override fun onPlayWidgetLargeClick(appLink: String) {
@@ -260,12 +275,12 @@ class UserProfileVideoFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle,
+            bundle: Bundle
         ): UserProfileVideoFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileVideoFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                UserProfileVideoFragment::class.java.name,
+                UserProfileVideoFragment::class.java.name
             ).apply {
                 arguments = bundle
             } as UserProfileVideoFragment
