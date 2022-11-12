@@ -13,6 +13,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerU
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationLearnUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialRVUiModel
@@ -80,4 +81,5 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateEducationSocialRVUiModel): Int
     fun type(viewModel: AffiliateEducationSocialUiModel): Int
     fun type(viewModel: AffiliateEducationLearnUiModel): Int
+    fun type(viewModel: AffiliateEducationSeeAllUiModel): Int
 }

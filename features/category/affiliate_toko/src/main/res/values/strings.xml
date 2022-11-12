@@ -163,6 +163,7 @@
     <string name="promo_info_title">Promosinya gampang, komisinya dapet!</string>
     <string name="promo_info_desc"><![CDATA[Punya produk & toko favoritmu? Kamu bisa promosikan link-nya dengan cara-cara mudah yang bisa dipilih!]]></string>
     <string name="article_widget_detail">%s • %s • %s</string>
+    <string name="see_all_event_widget_detail">%s • %s</string>
     <string name="affiliate_education_article_topic_header">Pelajari topik pilihan untukmu</string>
     <string name="affiliate_lihat_semua">Lihat Semua</string>
     <string name="affiliate_education_event_header">Kalender event</string>

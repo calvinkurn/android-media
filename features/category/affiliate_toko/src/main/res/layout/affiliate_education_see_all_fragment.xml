@@ -33,8 +33,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_education_see_all"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/tv_total_items" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_total_items"
+        tools:listitem="@layout/affiliate_education_see_all_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,14 +5,18 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeMoreClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleUiModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateEducationArticleRVVH(
-    itemView: View
+    itemView: View,
+    private val affiliateEducationSeeMoreClickInterface: AffiliateEducationSeeMoreClickInterface?
 ) : AbstractViewHolder<AffiliateEducationArticleRVUiModel>(itemView) {
 
     private lateinit var articleAdapter: AffiliateAdapter
@@ -27,6 +31,10 @@ class AffiliateEducationArticleRVVH(
         articleAdapter =
             AffiliateAdapter(AffiliateAdapterFactory())
         val rvArticle = itemView.findViewById<RecyclerView>(R.id.rv_article_widget)
+        val tvSeeMore = itemView.findViewById<Typography>(R.id.article_widget_lihat_semua)
+        tvSeeMore.setOnClickListener {
+            affiliateEducationSeeMoreClickInterface?.onSeeMoreClickInterface(PAGE_EDUCATION_ARTICLE)
+        }
         val rvLayoutManager =
             LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         rvArticle?.apply {

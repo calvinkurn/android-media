@@ -6,8 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
+import com.tokopedia.affiliate.adapter.AffiliateAdapter
+import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationSeeAllViewModel
@@ -24,6 +30,12 @@ class AffiliateEducationSeeAllFragment :
 
     private var educationVM: AffiliateEducationSeeAllViewModel? = null
     private var pageType: String? = null
+    private var page: String? = null
+    private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+    private val seeAllAdapter by lazy {
+        AffiliateAdapter(AffiliateAdapterFactory())
+    }
+    private var hasMoreData = true
 
     @JvmField
     @Inject
@@ -50,14 +62,60 @@ class AffiliateEducationSeeAllFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         pageType = arguments?.getString(AffiliateEducationSeeAllActivity.PARAM_PAGE_TYPE)
+        page = when (pageType) {
+            PAGE_EDUCATION_EVENT -> getString(R.string.affiliate_event)
+            PAGE_EDUCATION_ARTICLE -> getString(R.string.affiliate_artikel)
+            else -> ""
+        }
+        educationVM?.fetchSeeAllData(pageType)
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
+
+        view.findViewById<RecyclerView>(R.id.rv_education_see_all)?.apply {
+            loadMoreTriggerListener?.let { this.addOnScrollListener(it) }
+            this.layoutManager = layoutManager
+            this.adapter = seeAllAdapter
+        }
         view.findViewById<NavToolbar>(R.id.education_see_all_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
-            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                if (pageType == PAGE_EDUCATION_EVENT) getString(R.string.affiliate_event)
-                else getString(R.string.affiliate_artikel)
+            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = page
             setOnBackButtonClickListener {
                 activity?.finish()
+            }
+        }
+        setObservers()
+
+    }
+
+    private fun setObservers() {
+        educationVM?.getEducationSeeAllData()?.observe(viewLifecycleOwner) {
+            seeAllAdapter.setVisitables(it)
+            loadMoreTriggerListener?.updateStateAfterGetData()
+        }
+
+        educationVM?.getTotalCount()?.observe(viewLifecycleOwner) {
+            view?.findViewById<Typography>(R.id.tv_total_items)?.text = buildString {
+                append(it)
+                append(" ")
+                append(page)
+            }
+        }
+
+        educationVM?.hasMoreData()?.observe(viewLifecycleOwner) {
+            hasMoreData = it
+        }
+    }
+
+    private fun getEndlessRecyclerViewListener(
+        recyclerViewLayoutManager: RecyclerView.LayoutManager
+    ): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (!hasMoreData) {
+                    educationVM?.fetchSeeAllData(pageType)
+                }
             }
         }
     }

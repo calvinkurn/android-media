@@ -163,3 +163,4 @@ const val PAGE_TYPE_PDP = "pdp"
 const val PAGE_TYPE_SHOP = "shop"
 
 const val PAGE_EDUCATION_EVENT = "education_event"
+const val PAGE_EDUCATION_ARTICLE = "education_article"
