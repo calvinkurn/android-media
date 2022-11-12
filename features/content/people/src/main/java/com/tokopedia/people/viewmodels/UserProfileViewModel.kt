@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.update
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
     private val repo: UserProfileRepository,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(Dispatchers.Main) {
 
     @AssistedFactory
@@ -142,23 +142,25 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleLoadProfile(isRefresh: Boolean) {
         viewModelScope.launchCatchError(block = {
             loadProfileInfo(isRefresh)
-        },) {
+        }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
     }
 
-    /**
-     * play video will be moved to dedicated fragment when
-     * developing another tab user profile eventually. so gonna leave as is for now
-     * */
     private fun handleLoadPlayVideo(cursor: String) {
-        viewModelScope.launchCatchError(block = {
-            val data = repo.getPlayVideo(profileUserID, cursor)
-            if (data != null) playPostContent.value = Success(data)
-            else throw NullPointerException("data is null")
-        }, onError = {
+        viewModelScope.launchCatchError(
+            block = {
+                val data = repo.getPlayVideo(profileUserID, cursor)
+                if (data != null) {
+                    playPostContent.value = Success(data)
+                } else {
+                    throw NullPointerException("data is null")
+                }
+            },
+            onError = {
                 userPostError.value = it
-            },)
+            }
+        )
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
@@ -167,11 +169,15 @@ class UserProfileViewModel @AssistedInject constructor(
 
             val followInfo = _followInfo.value
 
-            if (userSession.isLoggedIn.not() || (isFollowed && isFromLogin) || isSelfProfile)
+            if (userSession.isLoggedIn.not() || (isFollowed && isFromLogin) || isSelfProfile) {
                 return@launchCatchError
+            }
 
-            val result = if (followInfo.status) repo.unFollowProfile(followInfo.encryptedUserID)
-            else repo.followProfile(followInfo.encryptedUserID)
+            val result = if (followInfo.status) {
+                repo.unFollowProfile(followInfo.encryptedUserID)
+            } else {
+                repo.followProfile(followInfo.encryptedUserID)
+            }
 
             when (result) {
                 is MutationUiModel.Success -> {
@@ -182,7 +188,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
                 }
             }
-        },) {
+        }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
         }
     }
@@ -203,24 +209,24 @@ class UserProfileViewModel @AssistedInject constructor(
                             UserProfileUiEvent.SuccessUpdateReminder(result.message, data.position)
                         }
                         is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(Exception(result.message))
-                    },
+                    }
                 )
             }
         }, onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorUpdateReminder(it))
-            },)
+            })
     }
 
     private fun handleSaveReminderActivityResult(
         channelId: String,
         position: Int,
-        isActive: Boolean,
+        isActive: Boolean
     ) {
         _savedReminderData.update {
             SavedReminderData.Saved(
                 channelId = channelId,
                 position = position,
-                isActive = isActive,
+                isActive = isActive
             )
         }
     }
@@ -231,8 +237,11 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickFollowButtonShopRecom(itemId: Long) {
         val currentItem = _shopRecom.value.items.find { it.id == itemId } ?: return
-        val currentState = if (currentItem.state == LOADING_FOLLOW || currentItem.state == LOADING_UNFOLLOW) return
-        else currentItem.state
+        val currentState = if (currentItem.state == LOADING_FOLLOW || currentItem.state == LOADING_UNFOLLOW) {
+            return
+        } else {
+            currentItem.state
+        }
         val isCurrentStateFollow = currentState == FOLLOW
         val loadingState = if (isCurrentStateFollow) LOADING_FOLLOW else LOADING_UNFOLLOW
         val followInfo = _followInfo.value
@@ -244,12 +253,15 @@ class UserProfileViewModel @AssistedInject constructor(
                 FOLLOW_TYPE_SHOP -> {
                     repo.shopFollowUnfollow(
                         currentItem.id.toString(),
-                        if (currentState == FOLLOW) UnFollow else Follow,
+                        if (currentState == FOLLOW) UnFollow else Follow
                     )
                 }
                 FOLLOW_TYPE_BUYER -> {
-                    if (currentState == FOLLOW) repo.unFollowProfile(currentItem.encryptedID)
-                    else repo.followProfile(currentItem.encryptedID)
+                    if (currentState == FOLLOW) {
+                        repo.unFollowProfile(currentItem.encryptedID)
+                    } else {
+                        repo.followProfile(currentItem.encryptedID)
+                    }
                 }
                 else -> return@launchCatchError
             }
@@ -262,8 +274,10 @@ class UserProfileViewModel @AssistedInject constructor(
                             items = data.items.map {
                                 if (currentItem.id == it.id) {
                                     it.copy(state = if (currentState == FOLLOW) UNFOLLOW else FOLLOW)
-                                } else it
-                            },
+                                } else {
+                                    it
+                                }
+                            }
                         )
                     }
                 }
@@ -275,7 +289,7 @@ class UserProfileViewModel @AssistedInject constructor(
         }, onError = {
                 updateLoadingStateFollowShopRecom(itemId, currentState)
                 _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
-            },)
+            })
     }
 
     private fun handleLoadProfileTab() {
@@ -288,9 +302,12 @@ class UserProfileViewModel @AssistedInject constructor(
         _shopRecom.update { data ->
             data.copy(
                 items = data.items.map {
-                    if (itemID == it.id) it.copy(state = state)
-                    else it
-                },
+                    if (itemID == it.id) {
+                        it.copy(state = state)
+                    } else {
+                        it
+                    }
+                }
             )
         }
     }
@@ -306,12 +323,20 @@ class UserProfileViewModel @AssistedInject constructor(
         val profileInfo = repo.getProfile(username)
 
         val profileType = if (userSession.isLoggedIn) {
-            if (userSession.userId == profileInfo.userID) ProfileType.Self
-            else ProfileType.OtherUser
-        } else ProfileType.NotLoggedIn
+            if (userSession.userId == profileInfo.userID) {
+                ProfileType.Self
+            } else {
+                ProfileType.OtherUser
+            }
+        } else {
+            ProfileType.NotLoggedIn
+        }
 
-        val followInfo = if (userSession.isLoggedIn) repo.getFollowInfo(listOf(profileInfo.userID))
-        else FollowInfoUiModel.Empty
+        val followInfo = if (userSession.isLoggedIn) {
+            repo.getFollowInfo(listOf(profileInfo.userID))
+        } else {
+            FollowInfoUiModel.Empty
+        }
 
         _profileInfo.update { profileInfo }
         _followInfo.update { followInfo }
@@ -330,14 +355,14 @@ class UserProfileViewModel @AssistedInject constructor(
             val result = repo.getUserProfileTab(_profileInfo.value.userID)
             _profileTab.update { result }
         }, onError = {
-            _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
-        })
+                _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
+            })
     }
 
     private suspend fun loadShopRecom() {
         viewModelScope.launchCatchError(block = {
             val result = repo.getShopRecom()
-             _shopRecom.update { if (result.isShown) result else ShopRecomUiModel() }
+            _shopRecom.update { if (result.isShown) result else ShopRecomUiModel() }
         }, onError = { })
     }
 
