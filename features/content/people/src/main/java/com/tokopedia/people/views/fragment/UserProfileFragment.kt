@@ -151,6 +151,12 @@ class UserProfileFragment @Inject constructor(
             activity?.finish()
         }
 
+        mainBinding.appBarUserProfile.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
+            }
+        )
+
         binding.swipeRefreshLayout.setOnRefreshListener {
             mainBinding.userPostContainer.displayedChild = PAGE_LOADING
             if (viewModel.isShopRecomShow) mainBinding.shopRecommendation.showLoadingShopRecom()
