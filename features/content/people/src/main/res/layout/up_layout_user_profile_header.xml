@@ -312,7 +312,7 @@
         <include layout="@layout/up_shimmer_user_post" />
 
         <com.tokopedia.unifycomponents.LocalLoad
-            android:id="@+id/global_error_post"
+            android:id="@+id/global_error_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unify_space_16"
