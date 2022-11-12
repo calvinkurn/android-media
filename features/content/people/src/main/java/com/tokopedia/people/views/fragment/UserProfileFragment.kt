@@ -216,42 +216,43 @@ class UserProfileFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is UGCOnboardingParentFragment -> {
-                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
-                    override fun onSuccess() {
-                        viewModel.submitAction(UserProfileAction.LoadProfile())
-                        when (viewModel.ugcOnboardingOpenFrom) {
-                            UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
-                            UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
-                            else -> {}
+                childFragment.setListener(
+                    object : UGCOnboardingParentFragment.Listener {
+                        override fun onSuccess() {
+                            viewModel.submitAction(UserProfileAction.LoadProfile())
+                            when (viewModel.ugcOnboardingOpenFrom) {
+                                UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
+                                UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
+                                else -> {}
+                            }
                         }
-                    }
 
-                    override fun impressTncOnboarding() {
-                        userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
-                            viewModel.profileUserID
-                        )
-                    }
+                        override fun impressTncOnboarding() {
+                            userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
+                                viewModel.profileUserID
+                            )
+                        }
 
-                    override fun impressCompleteOnboarding() {
-                        userProfileTracker.impressionOnBoardingBottomSheetWithoutUsername(
-                            viewModel.profileUserID
-                        )
-                    }
+                        override fun impressCompleteOnboarding() {
+                            userProfileTracker.impressionOnBoardingBottomSheetWithoutUsername(
+                                viewModel.profileUserID
+                            )
+                        }
 
-                    override fun clickNextOnTncOnboarding() {
-                        userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
-                            viewModel.profileUserID
-                        )
-                    }
+                        override fun clickNextOnTncOnboarding() {
+                            userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
+                                viewModel.profileUserID
+                            )
+                        }
 
-                    override fun clickNextOnCompleteOnboarding() {
-                        userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
-                            viewModel.profileUserID
-                        )
-                    }
+                        override fun clickNextOnCompleteOnboarding() {
+                            userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
+                                viewModel.profileUserID
+                            )
+                        }
 
-                    override fun clickCloseIcon() {}
-                }
+                        override fun clickCloseIcon() {}
+                    }
                 )
             }
         }
@@ -876,6 +877,13 @@ class UserProfileFragment @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_TO_SET_REMINDER -> viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
+            REQUEST_CODE_PLAY_ROOM -> {
+                val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
+                val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW)
+                val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false)
+
+//                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+            }
         }
     }
 
@@ -1012,6 +1020,9 @@ class UserProfileFragment @Inject constructor(
     }
 
     companion object {
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         const val PAGE_NAME_PROFILE = "UserProfile"
         const val FEATURE_SHARE = "share"
         const val EXTRA_DISPLAY_NAME = "display_name"
@@ -1022,6 +1033,7 @@ class UserProfileFragment @Inject constructor(
         const val EXTRA_PROFILE_USER_ID = "profileUserid"
         const val EXTRA_IS_FOLLOWERS = "is_followers"
         const val APPLINK_MENU = "tokopedia://navigation/main"
+        const val REQUEST_CODE_PLAY_ROOM = 123
         const val REQUEST_CODE_LOGIN_TO_FOLLOW = 1
         const val REQUEST_CODE_LOGIN_TO_SET_REMINDER = 2
         const val REQUEST_CODE_EDIT_PROFILE = 2423
@@ -1031,6 +1043,7 @@ class UserProfileFragment @Inject constructor(
         const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
         const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
 
+        const val LOADING = -94567
         const val PAGE_CONTENT = 0
         const val PAGE_ERROR = 2
         const val PAGE_LOADING = 1
