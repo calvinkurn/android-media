@@ -92,6 +92,7 @@ class UserProfileViewModel @AssistedInject constructor(
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
 
     var ugcOnboardingOpenFrom: Int = 0
+    var viewPagerSelectedPage: Int = 0
 
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
@@ -356,8 +357,8 @@ class UserProfileViewModel @AssistedInject constructor(
             _profileTab.update { result }
             _uiEvent.emit(UserProfileUiEvent.SuccessLoadTabs(result == ProfileTabUiModel()))
         }, onError = {
-            _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
-        })
+                _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
+            })
     }
 
     private suspend fun loadShopRecom() {

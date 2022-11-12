@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
@@ -308,6 +309,12 @@ class UserProfileFragment @Inject constructor(
 
     private fun initTab() = with(mainBinding.profileTabs) {
         viewPager.adapter = pagerAdapter
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                viewModel.viewPagerSelectedPage = position
+            }
+        })
     }
 
     private fun initObserver() {
@@ -337,7 +344,10 @@ class UserProfileFragment @Inject constructor(
                             if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
                             mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                         }
-                        else mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
+                        else {
+                            mainBinding.profileTabs.viewPager.currentItem = viewModel.viewPagerSelectedPage
+                            mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
+                        }
                     }
                     is UserProfileUiEvent.ErrorGetProfileTab -> {
                         if (binding.swipeRefreshLayout.isRefreshing) {

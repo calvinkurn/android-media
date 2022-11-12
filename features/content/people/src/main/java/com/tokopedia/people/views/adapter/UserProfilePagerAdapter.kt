@@ -40,6 +40,8 @@ class UserProfilePagerAdapter(
         attachTab()
     }
 
+    fun getTabs() = listFragment
+
     private fun attachTab() {
         TabsUnifyMediator(tabLayout, viewPager) { tab, position ->
             addNewTab(tab, position)
