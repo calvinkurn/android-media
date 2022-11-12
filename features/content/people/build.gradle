@@ -79,6 +79,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.fragmentKtx
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
