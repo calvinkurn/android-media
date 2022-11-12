@@ -15,7 +15,7 @@ class AffiliateEducationSocialRVVH(
     itemView: View
 ) : AbstractViewHolder<AffiliateEducationSocialRVUiModel>(itemView) {
 
-    private lateinit var socialAdapter: AffiliateAdapter
+    private var socialAdapter: AffiliateAdapter? = null
 
     companion object {
         @JvmField
@@ -33,7 +33,7 @@ class AffiliateEducationSocialRVVH(
             layoutManager = rvLayoutManager
             adapter = socialAdapter
         }
-        socialAdapter.addMoreData(
+        socialAdapter?.addMoreData(
             element?.socialList?.map { AffiliateEducationSocialUiModel(it) }
         )
     }

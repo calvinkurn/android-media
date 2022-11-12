@@ -15,7 +15,7 @@ class AffiliateEducationArticleTopicRVVH(
     itemView: View
 ) : AbstractViewHolder<AffiliateEducationArticleTopicRVUiModel>(itemView) {
 
-    private lateinit var articleTopicAdapter: AffiliateAdapter
+    private var articleTopicAdapter: AffiliateAdapter? = null
 
     companion object {
         @JvmField
@@ -33,7 +33,7 @@ class AffiliateEducationArticleTopicRVVH(
             layoutManager = rvLayoutManager
             adapter = articleTopicAdapter
         }
-        articleTopicAdapter.addMoreData(
+        articleTopicAdapter?.addMoreData(
             element?.articleTopicList?.map { AffiliateEducationArticleTopicUiModel(it) }
         )
     }

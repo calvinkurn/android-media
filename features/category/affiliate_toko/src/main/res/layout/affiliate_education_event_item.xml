@@ -20,6 +20,7 @@
             android:id="@+id/image_event"
             android:layout_width="match_parent"
             android:layout_height="128dp"
+            android:contentDescription="@string/affiliate_event_banner_content_description"
             android:scaleType="fitXY"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
