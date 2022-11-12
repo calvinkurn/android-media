@@ -37,7 +37,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -56,6 +55,7 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOAR
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_POST
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
+import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
@@ -83,7 +83,6 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
 
-@Suppress("LateinitUsage")
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private var userProfileTracker: UserProfileTracker,
@@ -115,7 +114,7 @@ class UserProfileFragment @Inject constructor(
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
-            requireArguments().getString(EXTRA_USERNAME) ?: ""
+            requireArguments().getString(EXTRA_USERNAME).orEmpty()
         )
     }
 
@@ -158,8 +157,6 @@ class UserProfileFragment @Inject constructor(
         )
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            mainBinding.userPostContainer.displayedChild = PAGE_LOADING
-            if (viewModel.isShopRecomShow) mainBinding.shopRecommendation.showLoadingShopRecom()
             refreshLandingPageData(true)
         }
 
@@ -343,8 +340,7 @@ class UserProfileFragment @Inject constructor(
                         if (event.isEmptyContent) {
                             if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
                             mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-                        }
-                        else {
+                        } else {
                             mainBinding.profileTabs.viewPager.currentItem = viewModel.viewPagerSelectedPage
                             mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
                         }
@@ -353,7 +349,7 @@ class UserProfileFragment @Inject constructor(
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
-                        showErrorPost {
+                        showErrorContent {
                             viewModel.submitAction(UserProfileAction.LoadProfileTab)
                         }
                     }
@@ -405,7 +401,7 @@ class UserProfileFragment @Inject constructor(
         RouteManager.route(context, appLink)
     }
 
-    private fun showErrorPost(action: () -> Unit) = with(mainBinding.globalErrorPost) {
+    private fun showErrorContent(action: () -> Unit) = with(mainBinding.globalErrorContent) {
         mainBinding.userPostContainer.displayedChild = PAGE_ERROR
         apply {
             progressState = false
@@ -557,6 +553,8 @@ class UserProfileFragment @Inject constructor(
 
     private fun renderProfileTab(prev: ProfileTabUiModel?, value: ProfileTabUiModel) {
         if ((prev == null || prev == value) && value == ProfileTabUiModel()) return
+
+        if (value.tabs == pagerAdapter.getTabs()) return
 
         pagerAdapter.insertFragment(value.tabs)
         mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
@@ -724,9 +722,7 @@ class UserProfileFragment @Inject constructor(
 
     private fun getUsernameWithAdd() = getString(R.string.up_username_template, viewModel.profileUsername)
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName(): String = TAG
 
     private fun goToFollowingFollowerPage(isFollowers: Boolean) {
         if (isFollowers) {
@@ -843,40 +839,6 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onRetryPageLoad(pageNumber: Int) {
-    }
-
-    override fun onEmptyList(rawObject: Any?) {
-        if (viewModel.isSelfProfile) {
-            emptyPostSelf()
-        } else {
-            emptyPostVisitor()
-        }
-        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-    }
-
-    override fun onStartFirstPageLoad() {
-        mainBinding.userPostContainer.displayedChild = PAGE_LOADING
-    }
-
-    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
-    }
-
-    override fun onStartPageLoad(pageNumber: Int) {
-    }
-
-    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-    }
-
-    override fun onError(pageNumber: Int) {
-    }
-
-    /**
-     * OFFSET_USERINFO = 64dp(Profile) + 10dp(PaddingTop) + 16dp (margin top username) + 2dp (margin top userid) +
-     *  24dp(user name line height) + 20dp(userid line height)
-     */
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -890,8 +852,8 @@ class UserProfileFragment @Inject constructor(
             REQUEST_CODE_LOGIN_TO_SET_REMINDER -> viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
             REQUEST_CODE_PLAY_ROOM -> {
                 val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
-                val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW)
-                val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false)
+                val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW).orEmpty()
+                val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false) ?: false
 
                 (activity as? UserProfileActivity)?.listenerPlayWidget?.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
             }
