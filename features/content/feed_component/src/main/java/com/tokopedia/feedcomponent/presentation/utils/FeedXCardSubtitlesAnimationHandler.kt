@@ -112,7 +112,7 @@ class FeedXCardSubtitlesAnimationHandler(
         //increment pos
         currentPositionSubtitle += 1
 
-        Log.d("FEED_ANIM", "Pertama $currentPositionSubtitle")
+        Log.d("FEED_ANIM", "Pertama $currentPositionSubtitle : $subtitles")
 
         //reset position
         if (currentPositionSubtitle == subtitles.size)
