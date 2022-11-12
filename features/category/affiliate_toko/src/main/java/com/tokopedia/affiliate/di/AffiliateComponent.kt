@@ -16,6 +16,7 @@ import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditi
 import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
 import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateWebViewActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
@@ -89,5 +90,7 @@ interface AffiliateComponent {
     fun injectEducationSeeMoreActivity(affiliateEducationSeeAllActivity: AffiliateEducationSeeAllActivity)
 
     fun injectEducationSeeMoreFragment(affiliateEducationSeeAllFragment: AffiliateEducationSeeAllFragment)
+
+    fun injectWebViewActivity(affiliateWebViewActivity: AffiliateWebViewActivity)
 
 }

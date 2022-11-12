@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.ui.fragment.education
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,12 +8,15 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.affiliate.AFFILIATE_HELP_URL
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeMoreClickInterface
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateWebViewActivity
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -20,7 +24,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import javax.inject.Inject
 
 class AffiliateEducationLandingPage : BaseViewModelFragment<AffiliateEducationLandingViewModel>(),
-    AffiliateEducationSeeMoreClickInterface {
+    AffiliateEducationSeeMoreClickInterface, AffiliateEducationLearnClickInterface {
 
     private var eduViewModel: AffiliateEducationLandingViewModel? = null
 
@@ -66,7 +70,12 @@ class AffiliateEducationLandingPage : BaseViewModelFragment<AffiliateEducationLa
         super.onViewCreated(view, savedInstanceState)
         eduViewModel?.getEducationPageData()?.observe(viewLifecycleOwner) {
             val adapter =
-                AffiliateAdapter(AffiliateAdapterFactory(affiliateEducationSeeMoreClickInterface = this))
+                AffiliateAdapter(
+                    AffiliateAdapterFactory(
+                        affiliateEducationSeeMoreClickInterface = this,
+                        affiliateEducationLearnClickInterface = this
+                    )
+                )
             adapter.setVisitables(it)
             view.findViewById<RecyclerView>(R.id.rv_education_page).adapter = adapter
         }
@@ -75,6 +84,18 @@ class AffiliateEducationLandingPage : BaseViewModelFragment<AffiliateEducationLa
     override fun onSeeMoreClickInterface(pageType: String) {
         context?.let {
             startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType))
+        }
+    }
+
+    override fun onKamusClick() {
+        context?.let {
+            startActivity(AffiliateWebViewActivity.createIntent(it, AFFILIATE_HELP_URL))
+        }
+    }
+
+    override fun onBantuanClick() {
+        context?.let {
+            startActivity(AffiliateWebViewActivity.createIntent(it, AFFILIATE_HELP_URL))
         }
     }
 

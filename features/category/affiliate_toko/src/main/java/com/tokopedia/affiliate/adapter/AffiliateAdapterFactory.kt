@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.AddSocialInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeMoreClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateInfoClickInterfaces
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
@@ -108,7 +109,8 @@ class AffiliateAdapterFactory(
     private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null,
     private var affiliateInfoClickInterfaces: AffiliateInfoClickInterfaces? = null,
     private var affiliatePerformanceChipClick: AffiliatePerformanceChipClick? = null,
-    private var affiliateEducationSeeMoreClickInterface: AffiliateEducationSeeMoreClickInterface? = null
+    private var affiliateEducationSeeMoreClickInterface: AffiliateEducationSeeMoreClickInterface? = null,
+    private var affiliateEducationLearnClickInterface: AffiliateEducationLearnClickInterface? = null
 ) :
     BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
@@ -152,7 +154,7 @@ class AffiliateAdapterFactory(
             AffiliateEducationTutorialVH.LAYOUT -> AffiliateEducationTutorialVH(parent)
             AffiliateEducationSocialRVVH.LAYOUT -> AffiliateEducationSocialRVVH(parent)
             AffiliateEducationSocialVH.LAYOUT -> AffiliateEducationSocialVH(parent)
-            AffiliateEducationLearnVH.LAYOUT -> AffiliateEducationLearnVH(parent)
+            AffiliateEducationLearnVH.LAYOUT -> AffiliateEducationLearnVH(parent, affiliateEducationLearnClickInterface = affiliateEducationLearnClickInterface)
             AffiliateEducationSeeAllVH.LAYOUT -> AffiliateEducationSeeAllVH(parent)
             else -> super.createViewHolder(parent, type)
         }
