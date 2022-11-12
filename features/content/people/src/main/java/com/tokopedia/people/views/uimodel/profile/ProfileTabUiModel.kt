@@ -10,7 +10,6 @@ data class ProfileTabUiModel(
     data class Tab(
         val title: String = "",
         val key: String = "",
-        val position: Int = 0,
-        val isActive: Boolean = false
+        val position: Int = 0
     )
 }
