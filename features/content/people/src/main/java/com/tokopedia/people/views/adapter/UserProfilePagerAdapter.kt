@@ -1,8 +1,9 @@
 package com.tokopedia.people.views.adapter
 
-import android.content.Context
+import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -21,11 +22,11 @@ import com.tokopedia.unifycomponents.setCustomIcon
  * created by fachrizalmrsln on 11/11/2022
  */
 class UserProfilePagerAdapter(
-    fragmentManager: FragmentManager,
+    private val fragmentManager: FragmentManager,
+    private val fragmentActivity: FragmentActivity,
     lifecycle: Lifecycle,
     private val tabLayout: TabsUnify,
-    private val viewPager: ViewPager2,
-    private val context: Context,
+    private val viewPager: ViewPager2
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private val listFragment = mutableListOf<ProfileTabUiModel.Tab>()
@@ -47,7 +48,7 @@ class UserProfilePagerAdapter(
     }
 
     private fun tabSelectedListener() {
-        tabLayout.getUnifyTabLayout().addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        tabLayout.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab == null) return
                 addSelectedTab(tab)
@@ -68,10 +69,10 @@ class UserProfilePagerAdapter(
     private fun addNewTab(tab: TabLayout.Tab, position: Int) {
         when (listFragment[position].key) {
             FRAGMENT_KEY_FEEDS -> {
-                tab.setCustomIcon(getIconUnifyDrawable(context, IconUnify.FEED))
+                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.FEED))
             }
             FRAGMENT_KEY_VIDEO -> {
-                tab.setCustomIcon(getIconUnifyDrawable(context, IconUnify.VIDEO))
+                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO))
             }
         }
     }
@@ -79,10 +80,10 @@ class UserProfilePagerAdapter(
     private fun addSelectedTab(tab: TabLayout.Tab) {
         when (listFragment[tab.position].key) {
             FRAGMENT_KEY_FEEDS -> {
-                tab.setCustomIcon(getIconUnifyDrawable(context, IconUnify.FEED, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.FEED, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
             }
             FRAGMENT_KEY_VIDEO -> {
-                tab.setCustomIcon(getIconUnifyDrawable(context, IconUnify.VIDEO, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
             }
         }
     }
@@ -93,7 +94,11 @@ class UserProfilePagerAdapter(
         val currentFragment = listFragment[position]
         return when (currentFragment.key) {
             FRAGMENT_KEY_FEEDS -> UserProfileFeedFragment()
-            FRAGMENT_KEY_VIDEO -> UserProfileVideoFragment()
+            FRAGMENT_KEY_VIDEO -> UserProfileVideoFragment.getFragment(
+                fragmentManager = fragmentManager,
+                classLoader = fragmentActivity.classLoader,
+                bundle = Bundle()
+            )
             else -> Fragment()
         }
     }
@@ -102,5 +107,4 @@ class UserProfilePagerAdapter(
         private const val FRAGMENT_KEY_FEEDS = "feeds"
         private const val FRAGMENT_KEY_VIDEO = "video"
     }
-
 }

@@ -127,6 +127,16 @@ class UserProfileFragment @Inject constructor(
         )[UserProfileViewModel::class.java]
     }
 
+    private val pagerAdapter: UserProfilePagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        UserProfilePagerAdapter(
+            childFragmentManager,
+            requireActivity(),
+            lifecycle,
+            mainBinding.profileTabs.tabLayout,
+            mainBinding.profileTabs.viewPager,
+        )
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -296,13 +306,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun initTab() = with(mainBinding.profileTabs) {
-        pagerAdapter = UserProfilePagerAdapter(
-            childFragmentManager,
-            lifecycle,
-            tabLayout,
-            viewPager,
-            requireContext(),
-        )
         viewPager.adapter = pagerAdapter
     }
 
