@@ -332,6 +332,13 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
+                    is UserProfileUiEvent.SuccessLoadTabs -> {
+                        if (event.isEmptyContent) {
+                            if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
+                            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+                        }
+                        else mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
+                    }
                     is UserProfileUiEvent.ErrorGetProfileTab -> {
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
@@ -539,15 +546,10 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun renderProfileTab(prev: ProfileTabUiModel?, value: ProfileTabUiModel) {
-        if (prev == null || prev == value) return
+        if ((prev == null || prev == value) && value == ProfileTabUiModel()) return
 
-        mainBinding.userPostContainer.displayedChild = if (value.tabs.isEmpty()) {
-            PAGE_EMPTY
-        } else {
-            pagerAdapter.insertFragment(value.tabs)
-            mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
-            PAGE_CONTENT
-        }
+        pagerAdapter.insertFragment(value.tabs)
+        mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
     }
 
     private fun createLiveFab(): FloatingButtonItem {
