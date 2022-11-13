@@ -27,6 +27,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -232,9 +233,11 @@ import javax.inject.Inject
 /**
  * @author by yoasfs on 12/14/17.
  */
+
+@OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment : BaseDaggerFragment(),
-//        OnRefreshListener,
+        SwipeRefreshLayout.OnRefreshListener,
         HomeCategoryListener,
         AllNotificationListener,
         FragmentListener,
@@ -1088,7 +1091,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         })
     }
 
-    @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     private fun observeUpdateNetworkStatusData() {
         getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status, _, throwable) ->
             resetImpressionListener()
@@ -1601,7 +1603,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onRefresh() {
+    override fun onRefresh() {
         refreshQuestWidget()
         coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
