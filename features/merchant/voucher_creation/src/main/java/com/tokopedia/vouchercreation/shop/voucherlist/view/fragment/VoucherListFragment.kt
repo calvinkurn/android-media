@@ -1316,17 +1316,17 @@ class VoucherListFragment :
                 R.string.mvc_stop_success
             }
         val successMessage = context?.getString(successMessageRes).toBlankOrString()
-        val actionText = context?.getString(R.string.mvc_lihat).toBlankOrString()
+        val actionText = context?.getString(R.string.mvc_oke).toBlankOrString()
 
         view?.run {
             Toaster.make(this,
                 successMessage,
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                actionText,
-                View.OnClickListener {
-                    viewVoucherDetail(voucherId)
-                })
+                actionText
+            ) {
+                /* nothing to do */
+            }
         }
     }
 

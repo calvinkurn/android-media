@@ -15,6 +15,12 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class OfficialTopAdsBannerViewHolder(private val view: View) : AbstractViewHolder<OfficialTopAdsBannerDataModel>(view) {
     private var binding: ViewmodelOfficialTopadsBannerBinding? by viewBinding()
+    override fun bind(element: OfficialTopAdsBannerDataModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        element?.let {
+            bind(it)
+        }
+    }
 
     override fun bind(element: OfficialTopAdsBannerDataModel) {
         val tdnBannerList =

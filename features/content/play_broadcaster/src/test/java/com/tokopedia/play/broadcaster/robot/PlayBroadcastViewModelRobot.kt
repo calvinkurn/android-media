@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -112,7 +114,7 @@ internal class PlayBroadcastViewModelRobot(
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
 
-    fun getConfig() = viewModel.getConfiguration()
+    fun getAccountConfiguration(authorType: String = TYPE_UNKNOWN) = viewModel.submitAction(PlayBroadcastAction.GetAccountList(authorType))
 
     fun startLive() = viewModel.submitAction(
         PlayBroadcastAction.BroadcastStateChanged(

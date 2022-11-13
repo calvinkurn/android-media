@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/layout_lvl2">
+        android:padding="16dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imgMvcVoucherDetail"
@@ -27,7 +27,7 @@
 
         <com.tokopedia.vouchercreation.shop.detail.view.component.ButtonDownload
             android:id="@+id/btnMvcDownload"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@+id/imgMvcVoucherDetail"
             app:layout_constraintEnd_toEndOf="@+id/imgMvcVoucherDetail"
@@ -50,7 +50,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/voucherStatus"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mvc_dimen_20dp"
             android:maxLines="1"
@@ -63,7 +63,7 @@
 
         <com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
             android:id="@+id/startEndVoucher"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mvc_dimen_20dp"
             app:layout_constraintBottom_toBottomOf="@+id/imgMvcVoucherDetail"
@@ -71,7 +71,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imgMvcVoucherDetail"
             app:layout_constraintTop_toBottomOf="@+id/voucherStatus"
-            tools:maxHeight="@dimen/layout_lvl4" />
+            tools:maxHeight="32dp" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/label_vps"
@@ -90,7 +90,7 @@
             android:id="@+id/tpg_package_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginStart="4dp"
             android:visibility="gone"
             app:layout_constraintBaseline_toBaselineOf="@id/label_vps"
             app:layout_constraintLeft_toRightOf="@id/label_vps"
@@ -112,7 +112,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/canceledDate"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mvc_dimen_20dp"
             android:layout_marginTop="@dimen/mvc_dimen_12dp"

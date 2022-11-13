@@ -5,11 +5,9 @@ import android.view.View
 import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
@@ -35,7 +33,7 @@ class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) 
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all)
             btnSeeAll.visibility = View.VISIBLE
             btnSeeAll.text = content.cta.text
-            btnSeeAll.setOnClickListener { v: View? ->
+            btnSeeAll.setOnClickListener {
                 handledClick(content.cta.appLink, content.cta.url,
                         AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, "")
             }
@@ -48,12 +46,12 @@ class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) 
             view.findViewById<View>(R.id.text_sub_title).visibility = View.VISIBLE
             (view.findViewById<View>(R.id.text_sub_title) as TextView).text = content.sectionSubTitle
         }
-        if (content.layoutBannerAttr.imageList != null && !content.layoutBannerAttr.imageList.isEmpty()
+        if (content.layoutBannerAttr.imageList.isNotEmpty()
                 && URLUtil.isValidUrl(content.layoutBannerAttr.imageList[0].imageURLMobile)) {
             val imgBanner = view.findViewById<ImageView>(R.id.img_banner)
             val data = content.layoutBannerAttr.imageList[0]
             ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageURLMobile)
-            imgBanner.setOnClickListener { v: View? ->
+            imgBanner.setOnClickListener {
                 handledClick(data.redirectAppLink, data.redirectURL, "", "")
                 if (!TextUtils.isEmpty(content.sectionTitle)) sendBannerClick(content.sectionTitle)
             }
