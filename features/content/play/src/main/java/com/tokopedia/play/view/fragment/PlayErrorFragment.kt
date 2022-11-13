@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -23,6 +22,7 @@ import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play_common.model.result.PageResultState
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -118,6 +118,7 @@ class PlayErrorFragment @Inject constructor(
             when (val state = it.state) {
                 is PageResultState.Fail -> showGlobalError(state.error)
                 is PageResultState.Success -> container.hide()
+                is PageResultState.Archived -> showArchived(state.config)
             }
         })
     }
@@ -166,5 +167,18 @@ class PlayErrorFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun showArchived(config: ArchivedUiModel) {
+        globalError.apply {
+            setType(GlobalError.PAGE_FULL)
+            errorTitle.text = config.title
+            errorDescription.text = config.description
+            errorAction.text = config.btnTitle
+            setActionClickListener {
+                config.appLink
+            }
+        }
+        container.show()
     }
 }

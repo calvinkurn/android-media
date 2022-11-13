@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel.recom
 
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 
 data class PlayStatusUiModel(
     val channelStatus: PlayChannelStatus,
@@ -67,23 +68,6 @@ data class FreezeUiModel(
     companion object {
         val Empty: FreezeUiModel
             get() = FreezeUiModel(title = "")
-    }
-}
-
-data class ArchivedUiModel(
-    val title: String,
-    val description: String,
-    val btnTitle: String,
-    val appLink: String,
-) {
-    companion object {
-        val Empty: ArchivedUiModel
-            get() = ArchivedUiModel(
-                title = "",
-                description = "",
-                btnTitle = "",
-                appLink = "",
-            )
     }
 }
 

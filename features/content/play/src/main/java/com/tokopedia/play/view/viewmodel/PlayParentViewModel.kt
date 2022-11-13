@@ -17,7 +17,7 @@ import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.view.uimodel.recom.ArchivedUiModel
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -164,7 +164,7 @@ class PlayParentViewModel constructor(
                     currentValue = playChannelStateStorage.getChannelList(),
                     state = when {
                         playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true -> PageResultState.Upcoming(channelId = channelId)
-                        playChannelStateStorage.getData(channelId)?.status?.channelStatus?.statusType?.isArchive == true -> PageResultState.Archived
+                        playChannelStateStorage.getData(channelId)?.status?.channelStatus?.statusType?.isArchive == true -> PageResultState.Archived(playChannelStateStorage.getData(channelId)?.status?.config?.archivedModel ?: ArchivedUiModel.Empty)
                         else -> PageResultState.Success(pageInfo = PageInfo.Unknown)
                     }
                 )

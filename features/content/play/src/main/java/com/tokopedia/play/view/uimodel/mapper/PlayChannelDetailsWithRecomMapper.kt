@@ -19,6 +19,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
 
