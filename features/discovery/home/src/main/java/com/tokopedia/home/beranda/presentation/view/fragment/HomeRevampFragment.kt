@@ -27,7 +27,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -237,7 +237,7 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment : BaseDaggerFragment(),
-        SwipeRefreshLayout.OnRefreshListener,
+        OnRefreshListener,
         HomeCategoryListener,
         AllNotificationListener,
         FragmentListener,
