@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.R
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,12 +24,24 @@ import kotlin.math.roundToInt
 class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListener {
 
     constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        context?.let { ctx ->
+            attrs?.let { attributeSet ->
+                initWithAttrs(ctx, attributeSet)
+            }
+        }
+    }
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
-    )
+    ) {
+        context?.let { ctx ->
+            attrs?.let { attributeSet ->
+                initWithAttrs(ctx, attributeSet)
+            }
+        }
+    }
 
     private var containerIconPullRefresh: ConstraintLayout? = null
     private var loaderPullRefresh: LoaderUnify? = null
@@ -44,6 +57,8 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         private const val MAXIMUM_PROGRESS_REFRESH = 1
         private const val TIME_DURATION_ANIMATION_HEIGHT : Long = 300
         private const val HEIGHT_LAYOUT_GONE = 0
+        private const val TYPE_WHITE = 0
+        private const val TYPE_GREEN = 1
     }
 
     init {
@@ -52,6 +67,26 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         pullRefreshIcon = view.findViewById(R.id.progress_pull_refresh)
         containerIconPullRefresh?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         loaderPullRefresh = view.findViewById(R.id.loader_pull_refresh)
+    }
+
+    private fun initWithAttrs(context: Context, attributeSet: AttributeSet) {
+        val attributeArray = context.obtainStyledAttributes(attributeSet, R.styleable.LayoutIconPullRefreshView)
+        val colorType = attributeArray.getInt(
+            R.styleable.LayoutIconPullRefreshView_color_type,
+            TYPE_WHITE
+        )
+        setColorPullRefresh(colorType)
+        attributeArray.recycle()
+    }
+
+    private fun setColorPullRefresh(colorType: Int) {
+        if (colorType == TYPE_WHITE) {
+            pullRefreshIcon?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.home_component.R.color.dms_white_pull_refresh))
+            loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE_WHITE
+        } else if(colorType == TYPE_GREEN) {
+            pullRefreshIcon?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE
+        }
     }
 
     override fun maxOffsetTop(maxOffsetTop: Int) {

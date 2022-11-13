@@ -29,8 +29,7 @@
         android:descendantFocusability="blocksDescendants"
         app:indicator_overlay="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/navToolbar"
-        app:lottie_rawRes="@raw/pull_to_refresh">
+        app:layout_constraintTop_toBottomOf="@id/navToolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/root"
