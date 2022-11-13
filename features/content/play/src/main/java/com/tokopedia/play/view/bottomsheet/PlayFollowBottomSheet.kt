@@ -5,18 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
 import com.tokopedia.play.view.uimodel.action.DismissFollowPopUp
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -62,9 +69,30 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+        observeEvent()
+        observeState()
     }
 
-    fun setupView() {
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is ShowInfoEvent -> dismiss()
+                    is ShowErrorEvent -> dismiss()
+                }
+            }
+        }
+    }
+
+    private fun observeState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiState.withCache().collectLatest  { state ->
+                renderFollowButton(state.value.partner)
+            }
+        }
+    }
+
+    private fun setupView() {
         headerBinding.ivSheetClose.setOnClickListener {
             dismiss()
         }
@@ -86,8 +114,12 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         }
 
         binding.btnFollow.setOnClickListener {
-            playViewModel.submitAction(PlayViewerNewAction.Follow)
+            playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
         }
+    }
+
+    private fun renderFollowButton(state: PlayPartnerInfo) {
+        binding.btnFollow.isLoading = state.isLoadingFollow
     }
 
     fun show(fragmentManager: FragmentManager){
