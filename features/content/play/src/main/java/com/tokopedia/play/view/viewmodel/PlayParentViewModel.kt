@@ -162,11 +162,11 @@ class PlayParentViewModel constructor(
             startingChannelId?.let { channelId ->
                 _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),
-                    state = if(playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true)
-                                PageResultState.Upcoming(channelId = channelId)
-                            else if (playChannelStateStorage.getData(channelId)?.status?.channelStatus?.statusType?.isArchive == true)
-                                PageResultState.Custom(playChannelStateStorage.getData(channelId)?.status?.config?.archivedModel ?: ArchivedUiModel.Empty)
-                            else PageResultState.Success(pageInfo = PageInfo.Unknown)
+                    state = when {
+                        playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true -> PageResultState.Upcoming(channelId = channelId)
+                        playChannelStateStorage.getData(channelId)?.status?.channelStatus?.statusType?.isArchive == true -> PageResultState.Archived
+                        else -> PageResultState.Success(pageInfo = PageInfo.Unknown)
+                    }
                 )
             } ?: run {
                 _observableChannelIdsResult.value = PageResult(

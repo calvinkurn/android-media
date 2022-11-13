@@ -17,7 +17,7 @@ data class PageResult<T>(
 sealed class PageResultState {
     data class Success(val pageInfo: PageInfo) : PageResultState()
     data class Upcoming(val channelId: String) : PageResultState()
-    data class Custom(val config: Any) : PageResultState() //Page with config
+    object Archived: PageResultState() //Page with config
     object Loading : PageResultState()
     data class Fail(val error: Throwable) : PageResultState()
 }
